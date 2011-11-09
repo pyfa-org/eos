@@ -1,3 +1,8 @@
+'''
+buildJson.py script.
+This script takes a sqlite cache dump as input and outputs two bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.
+'''
+
 import time
 start = time.clock()
 
@@ -6,14 +11,14 @@ import sqlite3
 import json
 import bz2
 
-parser = argparse.ArgumentParser(description="Dumps an eve sqlite cache dump into the json files eos needs for calculations")
+parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs two bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.")
 parser.add_argument("dbPath", type=str, help="The path to the sqlite cache dump")
 parser.add_argument("-e", "--evedump", dest="eveDumpPath", default="eve.json.bz2")
 parser.add_argument("-x", "--expressiondump", dest="expressionDumpPath", default="expressions.json.bz2")
 
 args = parser.parse_args()
 
-conn = sqlite3.connect(args.dbPath, detect_types=sqlite3.PARSE_COLNAMES)
+conn = sqlite3.connect(args.dbPath, detect_types=sqlite3.PARSE_COLNAMES | sqlite3.PARSE_DECLTYPES)
 conn.row_factory = sqlite3.Row
 
 
