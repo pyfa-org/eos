@@ -10,7 +10,6 @@ class Fit(object):
     This class is essentialy a container, it has no logic of its own.
     '''
 
-
     def __init__(self, ship):
         '''
         Constructor: Accepts a shipType

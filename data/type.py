@@ -10,6 +10,7 @@ class Type(object):
     This class is typically reused by the dataHandler if the same id is requested multiple times.
     As such, there shouldn't be ANY fit-specific data on it
     '''
+
     def __init__(self, dataHandler, id, groupId, effects, attributes):
         self.dataHandler = dataHandler
         self.id = id
