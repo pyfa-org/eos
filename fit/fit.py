@@ -63,6 +63,12 @@ class ModuleList(collections.MutableSequence):
         module.fit = None #Set the fit of the to be removed module to None
         return self.__list.__delitem__(index)
 
+    def __getitem__(self, index):
+        return self.__list.__getitem__(index)
+
+    def __len__(self):
+        return self.__list.__len__()
+
     def insert(self, index, module):
         self.__setModule(module)
         return self.__list.insert(index, module)
