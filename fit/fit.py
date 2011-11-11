@@ -55,6 +55,10 @@ class ModuleList(collections.MutableSequence):
 
     def __setitem__(self, index, module):
         self.__setModule(module)
+        existing = self.__list.get(index)
+        if(existing != None):
+            existing.fit = None
+
         return self.__list.__setitem__(index, module)
 
     def __delitem__(self, index):
@@ -74,5 +78,8 @@ class ModuleList(collections.MutableSequence):
         return self.__list.insert(index, module)
 
     def __setModule(self, module):
-        assert(module.fit == None) # Make sure the module isn't used elsewhere already
+        # Make sure the module isn't used elsewhere already
+        if(module.fit != None):
+            raise ValueError("Cannot add a module to the fit which is already in another fit")
+
         module.fit = self.__fit
