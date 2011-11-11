@@ -4,7 +4,7 @@ Created on 11-nov.-2011
 @author: cncfanatics
 '''
 
-class MyClass(object):
+class Ship(object):
     '''
     Ship class. This class is fit-specific wrapper around a type, just like the Module class is.
     However, it provides helpers and calculations for when the type in question is a ship.
