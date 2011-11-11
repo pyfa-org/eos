@@ -44,13 +44,11 @@ class Fit(object):
         self.modules = ModuleList(self)
         self.ship = ship
 
-class ModuleList():
+class ModuleList(collections.MutableSequence):
     '''
     Class implementing the MutableSequence ABC intended to hold a list of modules.
     It makes sure the module knows its been added onto the fit, and makes sure a module is only in one single fit
     '''
-    __metaclass__ = collections.MutableSequence
-
     def __init__(self, fit):
         self.__fit = fit
         self.__list = [] # List used for storage internally
