@@ -20,3 +20,7 @@ class DataHandler(object):
     @abstractmethod
     def getType(self, id):
         ...
+
+    @abstractmethod
+    def getEffect(self, id):
+        ...
