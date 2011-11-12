@@ -27,6 +27,12 @@ class Module(object):
 
     def __init__(self, type):
         '''
-        Constructor. Accepts a type
+        Constructor. Accepts a Type
         '''
         self.type = type
+
+    def run(self):
+        pass
+
+    def undo(self):
+        pass

@@ -28,9 +28,9 @@ import bz2
 
 parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs two bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.")
 parser.add_argument("dbPath", type=str, help="The path to the sqlite cache dump")
-parser.add_argument("-e", "--typedump", dest="typeDumpPath", default="types.json.bz2")
-parser.add_argument("-x", "--expressiondump", dest="expressionDumpPath", default="expressions.json.bz2")
-parser.add_argument("-f", "--effectDump", dest="effectDumpPath", default="effects.json.bz2")
+parser.add_argument("-e", "--typedump", type=str, dest="typeDumpPath", default="types.json.bz2")
+parser.add_argument("-x", "--expressiondump", type=str, dest="expressionDumpPath", default="expressions.json.bz2")
+parser.add_argument("-f", "--effectDump", type=str, dest="effectDumpPath", default="effects.json.bz2")
 args = parser.parse_args()
 
 conn = sqlite3.connect(args.dbPath, detect_types=sqlite3.PARSE_COLNAMES | sqlite3.PARSE_DECLTYPES)
@@ -74,8 +74,8 @@ effects = {}
 for row in conn.execute('SELECT * FROM dgmeffects'):
     effects[row["effectID"]] = {'preExpression' : row["preExpression"],
                                 'postExpression' : row["postExpression"],
-                                'isOffensive': row["isOffensive"],
-                                'isAssistance' : row["isAssistance"]}
+                                'isOffensive': bool(row["isOffensive"]),
+                                'isAssistance' : bool(row["isAssistance"])}
 
 with bz2.BZ2File(args.effectDumpPath, 'wb') as f:
     f.write(json.dumps(effects).encode('utf-8'))
