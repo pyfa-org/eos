@@ -24,8 +24,7 @@ class Expression(object):
     As such, there shouldn't be ANY fit-specific data on it
     '''
 
-    def __init__(self, dataHandler, id, operand, value, args, typeId=0, groupId=0, attributeId=0):
-        self.dataHandler = dataHandler
+    def __init__(self, id, operand, value, args, typeId=0, groupId=0, attributeId=0):
         self.id = id
         self.operand = operand
         self.value = value

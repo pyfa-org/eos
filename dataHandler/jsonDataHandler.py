@@ -21,7 +21,7 @@ from .dataHandler import DataHandler
 import json
 import bz2
 import weakref
-from ..fit import Type, Expression, Effect
+from ..data import Type, Expression, Effect
 
 class JsonDataHandler(DataHandler):
     '''
@@ -45,14 +45,15 @@ class JsonDataHandler(DataHandler):
             self.__effectData = json.loads(f.read().decode('utf-8'))
 
     def getType(self, id):
-        '''
-        Return the type with the passed id
-        '''
+        if(not id):
+            return None
+
         type = self.__typesCache.get(id)
         if(type == None):
             # We do str(id) here because json dicts always have strings as key
-            data = self.__eveData[str(id)]
-            type = Type(self, id, data["group"], tuple(data["effects"]),
+            data = self.__typeData[str(id)]
+            type = Type(id, data["group"],
+                        [self.getEffect(effectId) for effectId in data["effects"]],
                         {x : y for x, y in data["attributes"]})
 
             self.__typesCache[id] = type
@@ -60,13 +61,14 @@ class JsonDataHandler(DataHandler):
         return type;
 
     def getExpression(self, id):
-        '''
-        return the expression with the passed id
-        '''
+        if(not id):
+            return None
+
         expression = self.__expressionsCache.get(id)
         if(expression == None):
             data = self.__expressionData[str(id)]
-            expression = Expression(self, id, data["operand"], data["value"], data["args"],
+            expression = Expression(id, data["operand"], data["value"],
+                                    [self.getExpression(expressionId) for expressionId in data["args"]],
                                     data["typeID"], data["groupID"], data["attributeID"])
 
             self.__expressionsCache[id] = expression
@@ -74,13 +76,14 @@ class JsonDataHandler(DataHandler):
         return expression
 
     def getEffect(self, id):
-        '''
-        return the effect with the passed id
-        '''
+        if(not id):
+            return None
+
         effect = self.__effectsCache.get(id)
         if(effect == None):
             data = self.__effectData[str(id)]
-            effect = Effect(self, id, data["preExpression"], data["postExpression"],
+            effect = Effect(id, self.getExpression(data["preExpression"]),
+                            self.getExpression(data["postExpression"]),
                             data["isOffensive"], data["isAssistance"])
 
             self.__effectsCache[id] = effect

@@ -31,7 +31,9 @@ class Fit(object):
 
     @ship.setter
     def ship(self, ship):
-        assert(ship.fit == None)
+        if(ship.fit != None):
+            raise ValueError("Cannot add ship which is already in another fit")
+
         ship.fit = self
         self.__ship = ship
 
@@ -41,6 +43,12 @@ class Fit(object):
         '''
         self.modules = ModuleList(self)
         self.ship = ship
+
+        # These registers are mainly used when new modules are added.
+        # A new module addition will cause registers to be checked for all that module's skills and group for effects to apply to it
+        # They usualy should NOT be changed outside the lib
+        self._skillReqRegister = {}
+        self._groupRegister = {}
 
 class ModuleList(collections.MutableSequence):
     '''
@@ -78,6 +86,6 @@ class ModuleList(collections.MutableSequence):
     def __setModule(self, module):
         # Make sure the module isn't used elsewhere already
         if(module.fit != None):
-            raise ValueError("Cannot add a module to the fit which is already in another fit")
+            raise ValueError("Cannot add a module which is already in another fit")
 
         module.fit = self.__fit
