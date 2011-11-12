@@ -15,12 +15,21 @@ class DataHandler(object):
 
     @abstractmethod
     def getExpression(self, id):
+        '''
+        return the expression with the passed id
+        '''
         ...
 
     @abstractmethod
     def getType(self, id):
+        '''
+        Return the type with the passed id
+        '''
         ...
 
     @abstractmethod
     def getEffect(self, id):
+        '''
+        return the effect with the passed id
+        '''
         ...

@@ -26,8 +26,7 @@ class Effect(object):
     As such, there shouldn't be ANY fit-specific data on it
     '''
 
-    def __init__(self, dataHandler, id, preExpression, postExpression, isOffensive, isAssistance):
-        self.dataHandler = dataHandler
+    def __init__(self, id, preExpression, postExpression, isOffensive, isAssistance):
         self.id = id
         self.preExpression = preExpression
         self.postExpression = postExpression

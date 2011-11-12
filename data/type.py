@@ -26,8 +26,7 @@ class Type(object):
     As such, there shouldn't be ANY fit-specific data on it
     '''
 
-    def __init__(self, dataHandler, id, groupId, effects, attributes):
-        self.dataHandler = dataHandler
+    def __init__(self, id, groupId, effects, attributes):
         self.id = id
         self.groupId = groupId
         self.effects = effects
