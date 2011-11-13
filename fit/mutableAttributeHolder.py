@@ -23,7 +23,6 @@ class MutableAttributeHolder(object):
 class MutableAttributeMap(collections.Mapping):
     '''
     MutableAttributeMap class, this class is what actualy keeps track of modified attribute values and who modified what so undo can work as expected.
-    It does most of the dirty tracking work using a single dictionary which in turn contains named tuples per attribute
     '''
     def __init__(self, type):
         self.__type = type
