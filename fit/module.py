@@ -29,5 +29,4 @@ class Module(MutableAttributeHolder):
         '''
         Constructor. Accepts a Type
         '''
-        self.type = type
         super().__init__(type)

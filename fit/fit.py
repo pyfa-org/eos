@@ -41,7 +41,7 @@ class Fit(object):
         '''
         Constructor: Accepts a Ship
         '''
-        self.modules = ModuleList(self)
+        self.modules = MutableAttributeHolderList(self)
         self.ship = ship
 
         # These registers are mainly used when new modules are added.
@@ -50,9 +50,9 @@ class Fit(object):
         self._skillReqRegister = {}
         self._groupRegister = {}
 
-class ModuleList(collections.MutableSequence):
+class MutableAttributeHolderList(collections.MutableSequence):
     '''
-    Class implementing the MutableSequence ABC intended to hold a list of modules.
+    Class implementing the MutableSequence ABC intended to hold a list of MutableAttributeHolders (typically: modules, drones, etc.).
     It makes sure the module knows its been added onto the fit, and makes sure a module is only in one single fit
     '''
     def __init__(self, fit):

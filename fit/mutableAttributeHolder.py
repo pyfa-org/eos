@@ -18,6 +18,8 @@ class MutableAttributeHolder(object):
         '''
         Constructor
         '''
+        self.fit = None
+        self.type = type
         self.attributes = MutableAttributeMap(type)
 
 class MutableAttributeMap(collections.Mapping):
