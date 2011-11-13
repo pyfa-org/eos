@@ -50,4 +50,4 @@ class MutableAttributeMap(collections.Mapping):
             yield k
 
     def keys(self):
-        set(self.__modifiedAttributes.keys()).intersection(self.__type.attributes.keys())
+        return set(self.__modifiedAttributes.keys()).intersection(self.__type.attributes.keys())
