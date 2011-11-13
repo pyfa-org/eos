@@ -1,8 +1,21 @@
-'''
-Created on 12-nov.-2011
-
-@author: cncfanatics
-'''
+#===============================================================================
+# Copyright (C) 2011 Diego Duclos
+#
+# This file is part of Eos.
+#
+# Eos is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Eos is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Eos. If not, see <http://www.gnu.org/licenses/>.
+#===============================================================================
 
 import collections
 
@@ -13,7 +26,6 @@ class MutableAttributeHolder(object):
     Most operations on this class are actualy simple redirects to the MutableAttributeMap object. They are only here because its more natural to call them from here
     '''
 
-
     def __init__(self, type):
         '''
         Constructor
@@ -22,7 +34,7 @@ class MutableAttributeHolder(object):
 
 class MutableAttributeMap(collections.Mapping):
     '''
-    MutableAttributeMap class, this class is what actualy keeps track of modified attribute values and who modified what so undo can work as expected.
+    MutableAttributeMap class, this class is what actually keeps track of modified attribute values and who modified what so undo can work as expected.
     '''
     def __init__(self, type):
         self.__type = type
@@ -34,7 +46,7 @@ class MutableAttributeMap(collections.Mapping):
     def __getitem__(self, key):
         val = self.__modifiedAttributes.get(key)
         if(val == None):
-            #Should actualy run calcs here instead :D
+            # Should actually run calcs here instead :D
             self.__modifiedAttributes[key] = val = self.__type.attributes[key]
 
         return val
