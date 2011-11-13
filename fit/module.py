@@ -17,7 +17,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-class Module(object):
+from .mutableAttributeHolder import MutableAttributeHolder
+
+class Module(MutableAttributeHolder):
     '''
     Module class. This class is a fit-specific wrapper around a Type. It keeps track of all the fit-specific information of it.
     As this class is fit specific, the same module shouldn't be added onto more then one fit at the same time.
@@ -28,3 +30,4 @@ class Module(object):
         Constructor. Accepts a Type
         '''
         self.type = type
+        super().__init__(type)

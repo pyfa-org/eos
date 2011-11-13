@@ -19,11 +19,10 @@
 
 from .mutableAttributeHolder import MutableAttributeHolder
 
-class Ship(MutableAttributeHolder):
+class Drone(MutableAttributeHolder):
     '''
-    Ship class. This class is fit-specific wrapper around a type, just like the Module class is.
-    However, it provides helpers and calculations for when the type in question is a ship.
-    As this class is fit specific, the same module shouldn't be added onto more then one fit at the same time.
+    Drone class. This class is a fit-specific wrapper around a Type. It keeps track of all the fit-specific information of it.
+    As this class is fit specific, the same drone shouldn't be added onto more then one fit at the same time.
     '''
 
     def __init__(self, type):
