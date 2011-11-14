@@ -24,11 +24,88 @@ class Expression(object):
     As such, there shouldn't be ANY fit-specific data on it
     '''
 
-    def __init__(self, id, operand, value, args, typeId=0, groupId=0, attributeId=0):
+    def __init__(self, id, operand, value, arg1, arg2, typeId=0, groupId=0, attributeId=0):
         self.id = id
         self.operand = operand
         self.value = value
-        self.args = args
+        self.arg1 = arg1
+        self.arg2 = arg2
         self.typeId = typeId
         self.groupId = groupId
         self.attributeId = attributeId
+        self.code = None
+
+    def run(self, fit):
+        if(self.code == None):
+            builder = ExpressionBuild(self)
+            self.code = builder.run()
+
+class ExpressionBuild(object):
+    def __init__(self, base):
+        self.base = base
+        self.activeExpression = None
+        self.expressions = []
+
+    def run(self):
+        return self.build(self.base)
+
+    def build(self, element):
+        # Sanity guard
+        if element == None:
+            return
+
+        # Get some stuff locally, we refer them often
+        activeExpression = self.activeExpression
+
+        if element.operand == 17: #Splicing operator
+
+            # If we already have an active expression, store it first.
+            # This should be when a splicer is found somewhere down a tree,
+            # I doubt this happens in practice ? It makes little sense
+            if(activeExpression != None):
+                self.expressions.append(self.activeExpression)
+
+            # Build first expression
+            self.activeExpression = ExpressionRun()
+            self.build(element.arg1)
+            self.expressions.append(self.activeExpression)
+
+            # Build second
+            self.activeExpression = ExpressionRun()
+            self.build(element.arg2)
+            self.expressions.append(self.activeExpression)
+
+            # Done
+            return
+
+        elif activeExpression == None:
+            self.activeExpression = activeExpression = ExpressionRun()
+
+        res1 = self.build(element.arg1)
+        res2 = self.build(element.arg2)
+
+        if element.operand == 6:
+            activeExpression.sourceAttributeId = res2
+
+        elif element.operand == 12:
+            return (res1, #Target
+                    res2) #Attribute
+
+        elif element.operand in (21, 24):
+            return element.value
+
+        elif element.operand == 22:
+            return element.attributeId
+
+        elif element.operand == 31:
+            activeExpression.operation = res1
+            activeExpression.target, activeExpression.targetAttributeId = res2
+
+
+class ExpressionRun(object):
+    def __init__(self):
+        self.filters = []
+        self.operation = None
+        self.target = None
+        self.targetAttributeId = None
+        self.sourceAttributeId = None

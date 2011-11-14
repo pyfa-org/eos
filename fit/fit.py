@@ -34,8 +34,13 @@ class Fit(object):
         if(ship.fit != None):
             raise ValueError("Cannot add ship which is already in another fit")
 
+        if(self.ship != None):
+            self.ship._undo()
+
         ship.fit = self
         self.__ship = ship
+
+        ship._apply()
 
     def __init__(self, ship):
         '''
@@ -59,18 +64,16 @@ class MutableAttributeHolderList(collections.MutableSequence):
         self.__fit = fit
         self.__list = [] # List used for storage internally
 
-    def __setitem__(self, index, module):
-        self.__setModule(module)
+    def __setitem__(self, index, holder):
         existing = self.__list.get(index)
         if(existing != None):
-            existing.fit = None
+            self.__unsetHolder(existing)
 
-        return self.__list.__setitem__(index, module)
+        self.__list.__setitem__(index, holder)
+        self.__setHolder(holder)
 
     def __delitem__(self, index):
-        module = self.__list.get(index)
-        assert(module.fit == self.__fit) #Make sure stuff matches
-        module.fit = None #Set the fit of the to be removed module to None
+        self.__unsetHolder(self.__list[index])
         return self.__list.__delitem__(index)
 
     def __getitem__(self, index):
@@ -79,13 +82,19 @@ class MutableAttributeHolderList(collections.MutableSequence):
     def __len__(self):
         return self.__list.__len__()
 
-    def insert(self, index, module):
-        self.__setModule(module)
-        return self.__list.insert(index, module)
+    def insert(self, index, holder):
+        self.__list.insert(index, holder)
+        self.__setHolder(holder)
 
-    def __setModule(self, module):
+    def __setHolder(self, holder):
         # Make sure the module isn't used elsewhere already
-        if(module.fit != None):
+        if(holder.fit != None):
             raise ValueError("Cannot add a module which is already in another fit")
 
-        module.fit = self.__fit
+        holder.fit = self.__fit
+        holder._apply()
+
+    def __unsetHolder(self, holder):
+        assert(holder.fit == self.__fit)
+        holder._undo()
+        holder.fit = None

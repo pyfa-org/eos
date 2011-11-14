@@ -9,18 +9,36 @@ import collections
 class MutableAttributeHolder(object):
     '''
     Base attribute holder class inherited by all classes that need to keep track of modified attributes.
-    This class holds a MutableAttributeList to keep track of changes.
-    Most operations on this class are actualy simple redirects to the MutableAttributeMap object. They are only here because its more natural to call them from here
+    This class holds a MutableAttributeMap to keep track of changes.
     '''
 
 
     def __init__(self, type):
         '''
-        Constructor
+        Constructor. Accepts a Type
         '''
         self.fit = None
         self.type = type
         self.attributes = MutableAttributeMap(type)
+
+    def _apply(self):
+        """
+        Applies all effects of the type bound to this holder. This can have for reaching consequences as it can affect anything fitted onto the fit (including itself)
+        This is typically automaticly called by eos when relevant (when a holder is added onto a fit)
+        """
+        fit = self.fit
+        for effect in self.type.effects:
+            effect._apply(fit)
+
+
+    def _undo(self):
+        """
+        Undos the operations done by apply
+        This is typically automaticly called by eos when relevant (when a holder is removed from a fit)
+        """
+        fit = self.fit
+        for effect in self.type.effects:
+            effect._undo(fit)
 
 class MutableAttributeMap(collections.Mapping):
     '''

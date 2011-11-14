@@ -31,3 +31,15 @@ class Effect(object):
         self.postExpression = postExpression
         self.isOffensive = isOffensive
         self.isAssistance = isAssistance
+
+    def _apply(self, fit):
+        '''
+        Apply this effect onto the passed fit
+        '''
+        self.preExpression.run(fit)
+
+    def _undo(self, fit):
+        '''
+        Undo this effect from the passed fit
+        '''
+        self.postExpression.run(fit)

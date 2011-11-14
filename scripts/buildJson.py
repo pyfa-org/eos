@@ -68,7 +68,8 @@ for row in conn.execute('SELECT * FROM dgmexpressions'):
                                         'typeID': row["expressionTypeID"],
                                         'groupID': row["expressionGroupID"],
                                         'attributeID': row["expressionAttributeID"],
-                                        'args': (row["arg1"], row["arg2"])}
+                                        'arg1': row["arg1"],
+                                        'arg2': row["arg2"]}
 
 with bz2.BZ2File(args.expressionDumpPath, 'wb') as f:
     f.write(json.dumps(expressions).encode('utf-8'))
