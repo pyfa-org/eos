@@ -109,6 +109,9 @@ class Table(object):
         # Check column names
         if tuple(c.name for c in self.columns) != tuple(c.name for c in other.columns):
             return False
+        # Tables with no columns also are not considered as duplicates
+        if len(self.columns) == 0 and len(other.columns) == 0:
+            return False
         # Check all data
         if self.datarows != other.datarows:
             return False
@@ -310,9 +313,22 @@ def get_source_data(sourcedata, table):
     # Temporary storage for data rows
     dictdatarows = []
     # Try dumb method of accessing header data (usually works for
-    # IndexRowset and FilterRowset)
+    # IndexRowset, CIndexedRowset and FilterRowset)
     try:
-        headers = sourcedata.header
+        headobj = sourcedata.header
+        # Sometimes header data represents itself row descriptor
+        # (for CIndexedRowset), get actual list
+        try:
+            headers = headobj.Keys()
+        # Use list itself if such data is unavailable
+        except AttributeError:
+            headers = headobj
+        # For CIndexedRowsets, do some additional things
+        else:
+            # Reverse keys and values (it's in dbrow : key format)
+            sourcedata = dict(zip(sourcedata.itervalues(),sourcedata.iterkeys()))
+            # And raise error to go to recursive data seek
+            raise AttributeError
     # Try something else (for structures like IndexedRowLists)
     except AttributeError:
         headers = []
@@ -1813,7 +1829,10 @@ if __name__ == "__main__":
     STR = 4
 
     # Dictionary with data for custom tables, which are not generally available in cache
-    customtables = { "invmarketgroups":
+    customtables = { "dgmoperands":
+                         (eve.RemoteSvc('dogma').GetOperandsForChar,
+                          "dogma operands data is unavailable"),
+                     "invmarketgroups":
                          (eve.RemoteSvc("marketProxy").GetMarketGroups,
                           "market tree data is unavailable; to cache it, open Browse tab of EVE market browser") }
 
@@ -1833,6 +1852,7 @@ if __name__ == "__main__":
                 srcdata = customtables[tablename][0]()
             except IOError:
                 print("Warning: processing table {0} failed: {1}.".format(tablename, customtables[tablename][1]))
+                continue
             except:
                 sys.stderr.write("Error: unable to get data for one of the tables, most likely due to wrong path to EVE client.\n")
                 sys.exit()
