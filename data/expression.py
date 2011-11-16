@@ -51,7 +51,7 @@ class ExpressionBuild(object):
 
     def build(self, element):
         # Sanity guard
-        if element == None:
+        if element is None:
             return
 
         # Get some stuff locally, we refer them often
@@ -62,7 +62,7 @@ class ExpressionBuild(object):
             # If we already have an active expression, store it first.
             # This should be when a splicer is found somewhere down a tree,
             # I doubt this happens in practice ? It makes little sense
-            if(activeExpression != None):
+            if activeExpression is not None:
                 self.expressions.append(self.activeExpression)
 
             # Build first expression
@@ -78,7 +78,7 @@ class ExpressionBuild(object):
             # Done
             return
 
-        elif activeExpression == None:
+        elif activeExpression is None:
             self.activeExpression = activeExpression = ExpressionInfo()
             self.expressions.append(activeExpression)
 
