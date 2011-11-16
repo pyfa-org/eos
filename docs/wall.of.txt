@@ -1,0 +1,241 @@
+Some additional data we can pull out of database:
+1) dgmtypeeffects.isDefault - default effect of an item defines several its properties, e.g. durationAttributeID. For passive modules, there's no default effect
+2) For UI purposes we expose tracking / falloff / optimal for most of the modules, hardcoding list of attributes which may be used to access them. Hardcoding can be avoided by using dgmeffects.[falloff|range|trackingSpeed]AttributeID, it refers to corresponding attribute which can be used for these purposes
+3) Currently, to prevent projection for some modules, we hardcode into effects inability to affect target if it has disallow[OffensiveModifiers/Assistance]. We can avoid such hardcoding for assistance by using dgmeffects.isAssistance, for offensive - isOffensive (which detects offensiveness) + duration effect detection (if both preExpression and postExpression effects are there and they're not stubs, it's duration effect)
+4) dgmeffects.dischargeAttributeID - refers to attribute of an item, by which value capacitor of a ship is discharged. Almost always it's capacitorNeed, but there's one exception to it. Fortunately, entities with this exception are not used in pyfa (primarily npcs), so we can just leave stuff hardcoded for performance optimization, although we should always remember about this thing
+5) We do not have way to detect chance of getting particular booster side effect. Boosters are tied to the attribute describing chance using dgmeffects.fittingUsageChanceAttributeID.
+6) Module duration. Currently we hardcode list of attributes by which it may be described, but actually this data is stored in dgmeffects.durationAttributeID.
+7) dgmeffects.isWarpSafe - we can use it for example if we want to provide button 'disable modules like in warp', all-in-all having access to this data is unlikely to be bad for fitting tool
+8) dgmeffects.rangeChance - most likely determines if some effect doesn't experience efficiency falloff penalties, just chance penalty (it's assigned to ewar stuff)
+9) dgmattribs.defaultValue - stores default value for attribute, if not specified otherwise (like, sane default values for modifiers - increases 0, multipliers 1, percentile multipliers 100, or default drone control range). Probably we'll need to  specify in effect definition (or somewhere else) if attr getter should use default attr value in case of absence real attr value.
+10) dgmattribs.maxAttributeID - stores link to attribute, whose default value keeps max value of attrib (like, resistance can't drop below 0%)
+11) shiptypes.* table contains info on modules "pre-built" into ships like zephyr (probe launcher) or noobships (miner and cannon)
+12) invgroups.fittableNonSingleton is yet another check - can charge be loaded into anything or not. Not all charges have it at 1, so we should use it too.
+13) Stacking penalties autodetection. Based on target attribute dgmattribs.stackable (0 - stacking penalty applicable, 1 - stacking penalty prohibited) and source item category (skills, implants, subsystems, ships, charges, need to be checked - celestials)
+14) Item states and which effects when applied depend on effect categories:
+  dgmEffActivation = 1 (active modules)
+  dgmEffArea = 3 (none)
+  dgmEffOnline = 4 (passive modules)
+  dgmEffPassive = 0 (passive, skills, implants, rigs)
+  dgmEffTarget = 2 (projected)
+  dgmEffOverload = 5 (active mods with this can be overloaded)
+  dgmEffDungeon = 6 (none)
+  dgmEffSystem = 7 (wh, sansha)
+15) dgmattribs.highIsGood - pretty intuitive, should be used during stacking penalty chain calculation (ordering)
+
+0) Some other things which may find use:
+a) dgmattribs.attributeCategory (8 - damage attributes, so we may avoid hardcoding of them, 9 - attributes with values in invtypes table rather than dgmtypeattribs. Attribs from some groups seem to be integers only (10 - attributeID links, 11 - typeID links, 12 - groupID links, UI could use them instead of relying on unitID)
+b) dgmattribs.chargeRechargeTimeID - 4 damage type attribs are tied to appropriate resonance attribs, charge -> rechargeRate, shieldCharge -> shieldRechargeRate, not sure if we can pull something useful out of it
+
+Partial recalculation stuff:
+
+Each value is modified during processing of some effect, which describes source attribute, modification type, item filter and target attribute.
+
+Source value, defined in expression: always has the same carrier as effect
+Modification type, defined in expression:
+  PreAssignment
+  PreMul
+  PreDiv
+  ModAdd
+  ModSub
+  PostMul
+  PostDiv
+  PostPercent
+  PostAssignment
+Item filter and target attribute, defined in expression: target attribute of matched items is affected
+
+Two approaches are applicable here:
+1) CPU-intensive: when attribute recalculation requests received, it recalculates attribute value from scratch (using list of influencing items, described below)
+2) RAM-intensive: stores alot of data for each attribute, on changes recalculation process is much easier
+
+In both cases we will need several registries, to allow painless addition of new modules and having all effects properly applied onto them.
+Registry with skill requirement ID as key (fit context)
+Registry with group ID as key (fit context)
+Registry with skill requirement ID as key (gang squad context)
+Plain list of modifiers applied onto ships (gang squad context)
+When any item has its effects running, these effects write their coordinates into registries. If some of its effects are applied onto items from given groupID - it adds these coordinates against keys by which it filters items. So any new module, which is added to the fit, can check if its group in that registry, and if it is - request these effects to partially re-run, applying their changes onto it.
+All added items (which have influence on anything else) must add themselves to it, all removed/disabled - remove.
+--Description of 1st:--
+When any of new modificators is added, it seeks for items which it should change, then seeks for target attributes, and requests recalculation. Then, full attribute recalculation is done for target attributes - it seeks for all change sources applied onto it, gathers all modifications into single data structure (on per-operand basis, see below more details) and calculates it into single value, storing just it - everything else is temporary.
+--Description of 2nd:--
+Each attribute will need to hold storage for all modifications done onto it. As stacking penalties are applied on per-operator basis (and gang stuff is likely too, but we don't have way to check it in game), we need one storage per each operator (total 9). Each for convenience purposes, each storage may hold data in generalized form (divisors converted to multiplicators, increments to decrements, percent boosts to multiplicators). Each storage should have general list of modificators, list of gang boosts, list of penalized modificators (this one is just for multiplicators only, increments are not penalized). Each special list is aggregated into single value (for gangs best value is picked, for penalized chain value of whole chain is calculated), then they take part in general calculation chain - to calculate final value of giveen storage (say, PostMul storage). When storage values are calculated, they're used to calculate final sttribute value. When any storage or sub-storage is changed, it's recalculated from scratch or using its old value. Each storage should include methods which allow items' effects to find their modification value (to change or remove it).
+If attribute isn't stacking penalized, penalty chains are not used and all modifications fall into general storage. Otherwise, general storage is occupied only by immune to penalty items (like skills).
+
+That is, how it should look for RAM-intensive calculations:
+1) Some attribute changes (eg skill level). Skill detects this change, checks if any of its implemented effects use changed attribute as source value (lets assume couple of them do), then it reapplies both effects. Each seeks for its target items (let's say it will be ship's bonus), ask target attribute to replace old value of bonus with new value (access to value is performed based on skill's item ID, effect ID and additional data like modification type), after that attribute is partially recalculated, "damage event" for target mod is launched, after which target item checks if modified (recalculated) attribute is used as source attribute for any of its implemented effects ... (like goto 0 and repeat if neccessary). Same for module removal and addition (when we consider removed/added items as affectors, not affectees)
+2) If some module is added, eos checks module's group and applies all registered effects from second registry - if there're any assigned to module's group, same for first dictionary with skill requirements.
+
+'Overoptimizing': while some may disagree, i think we must evaluate and implement as much optimizations as possible here, for example:
+1) Recalclation of sub-storages, when it is changed, leaving aggregated results of other substorages untouched (obviously we'll need to store them), instead of recalculating all of substorages and storage itself
+2) Special case if there's 1 entity for storage of any type (we should use just this single value and avoid any processing applied to it)
+3) Some effects are big (eg siege mode effect) and include multiple expressions, we may check if it's worth to partially re-apply them when some attribute changes (only some of its expressions which involve changed attribute as source)
+4) For any effect, it may be more efficient to store list of items being affected (and update it when items are added/removed) instead of traversing through all items and applying filter to each to check if it should be affected or not
+5) Post-assigns. They essentially force attribute to some value, thus we can avoid calculating anything but picking proper postAssignment, but after force is removed, we must have a way to recalculate new actual value of attribute
+
+
+Operands and expression stuff:
+"Amarr Battleship" [skill]
+  effects
+    "amarrBattleshipSkillLevelPostMulShipBonusABShip" (ID 538)
+      pre-expression (ID 2852)
+        operandID: 6
+        arg1: 2851
+        arg2: 1059
+        expressionValue: None
+        description: "Autogenerated AIM, Ship.shipBonusAB.AIM(skillLevel,PostMul)"
+        expressionName: "((CurrentShip->shipBonusAB).(PostMul)).AddItemModifier (skillLevel)"
+        expressionTypeID: 0
+        expressionGroupID: 0
+        expressionAttributeID: 0
+      post-expression (ID 2853)
+        operandID: 58
+        arg1: 2851
+        arg2: 1059
+        expressionValue: None
+        description: "Autogenerated RIM, Ship.shipBonusAB.RIM(skillLevel,PostMul)"
+        expressionName: "((CurrentShip->shipBonusAB).(PostMul)).RemoveItemModifier (skillLevel)"
+        expressionTypeID: 0
+        expressionGroupID: 0
+        expressionAttributeID: 0
+
+Expression 2851:
+  operandID: 31
+  arg1: 10
+  arg2: 2838
+  expressionValue: None
+  description: "Autogenerated EFF, PostMul modification to Ship.shipBonusAB"
+  expressionName: "(CurrentShip->shipBonusAB).(PostMul)"
+  expressionTypeID: 0
+  expressionGroupID: 0
+  expressionAttributeID: 0
+
+Expression 1059:
+  operandID: 22
+  arg1: 0
+  arg2: 0
+  expressionValue: None
+  description: "level of skill"
+  expressionName: "skillLevel"
+  expressionTypeID: 0
+  expressionGroupID: 0
+  expressionAttributeID: 280 (skillLevel)
+
+Expression 10:
+  operandID: 21
+  arg1: 0
+  arg2: 0
+  expressionValue: "PostMul"
+  description: "Post-multiplying association"
+  expressionName: "PostMul"
+  expressionTypeID: 0
+  expressionGroupID: 0
+  expressionAttributeID: 0
+
+Expression 2838:
+  operandID: 12
+  arg1: 4
+  arg2: 2799
+  expressionValue: None
+  description: "Autogenerated ATT, Ship.shipBonusAB"
+  expressionName: "CurrentShip->shipBonusAB"
+  expressionTypeID: 0
+  expressionGroupID: 0
+  expressionAttributeID: 0
+
+Expression 4:
+  operandID: 24
+  arg1: 0
+  arg2: 0
+  expressionValue: Ship
+  description: "Index of affecting ship in environment"
+  expressionName: "CurrentShip"
+  expressionTypeID: 0
+  expressionGroupID: 0
+  expressionAttributeID: 0
+
+Expression 2799:
+  operandID: 22
+  arg1: 0
+  arg2: 0
+  expressionValue: None
+  description: None
+  expressionName: "shipBonusAB"
+  expressionTypeID: 0
+  expressionGroupID: 0
+  expressionAttributeID: 492 (shipBonusAB)
+
+[04:56:17 PM] DarkPhoenix: amarrBattleshipSkillLevelPostMulShipBonusABShip pre-expression (thing which is run when item with effect steps into action) has references to two other expressions: 2851 and 1059, 1059 references attribute 280 (skillLevel), 2851 references 2 other expressions - 10 and 2838, 10 contains operation specifier (postMul), 2838 references 2 other expressions, 4 and 2799; 4 says that target is your own ship, 2799 says that that target attributte is 492 (shipBonusAB)
+[04:56:27 PM] DarkPhoenix: that's how 'efex' is defined in eve
+[04:57:23 PM] DarkPhoenix: this is equivalent of {local}ship.shipBonusAB ~* skillLevel
+
+operands:
+3:	adds item modifier directly to gangmates' ships, arg1.AGIM(arg2)													[(armorHP).(PostPercent)].AGIM(armorHpBonus) (armorTankingGang)
+5:	adds item modifier to entities of gangmates, filtered by skillrq, arg1.AGRSM(arg2)											[(Type(Propulsion Jamming).maxRange).(PostPercent)].AGRSM(commandBonus) (gangPropulsionJammingBoost)
+6:	adds item modifier directly to some entity, arg1.AIM(arg2)														((CurrentShip->maxVelocity).(PostPercent)).AddItemModifier(velocityBonus) (navigationVelocityBonusPostPercentMaxVelocityShip)
+7:	adds item modifier to entities, filtered by location and groupid, arg1.ALGM(arg2)											((CurrentShip..Shield Booster->shieldBonus).(PostPercent)).AddLocationGroupModifier(shipBonusMB) (shipBonusShieldBoosterMB1)
+8:	adds item modifier to entities, filtered by location, arg1.ALM(arg2)													((CurrentShip->heatDamage).(PostPercent)).AddLocationModifier(shipBonusStrategicCruiserAmarr) (shipBonusStrategicCruiserAmarrHeatDamage), all items related to heat
+9:	adds item modifier to entities, filtered by location and skillrq, arg1.ALRSM(arg2)											((CurrentShip[Target Painting]->signatureRadiusBonus).(PostPercent)).ALRSM(shipBonusMF2) (minmatarShipEwTargetPainterMF2)
+11:	adds item modifier to entities, filtered by owner character and skillrq, arg1.AORSM(arg2)										((CurrentChar[Standard Missiles]->maxVelocity).(PostPercent)).AORSM(shipBonusCF2) (shipMissileLightVelocityBonusCF2)
+12:	joins entity and its attribute, arg1->arg2
+17:	expression 'splicing' (join of multiple into 1 for complex effects), arg1; arg2
+18:	subtracts value of arg2 from arg1, arg1 -= arg2																CurrentShip->armorDamage-=self.armorDamageAmount (armorRepair)
+21:	expressionValue terminal, describes which operation to apply (e.g. PostMul, postPercent)
+22:	attributeID terminal, references attribute
+24:	expressionValue terminal, describes to which entity apply something (e.g. Ship, Self <effect carrier>, Char <charges, drones>, Other <charge container>)
+26:	groupID terminal, describes to which groupID modification is filtered
+29:	typeID terminal, describes by which skillID modification is filtered
+31:	joins reference entity's attribute and operation with which modifiers are applied onto it, arg1.arg2 (eg (Ship->capacity).PostMul)
+36:	typeID getter of some entity, arg1.typeID (e.g. Self.GetTypeID()])
+40:	reference to attribute terminal expression, specifying gangmates' ships as carrier
+42:	adds value of arg2 from arg1, arg1 += arg2																CurrentTarget->charge+=self.powerTransferAmount
+48:	joins entity and groupid filter by some group, arg1..arg2 (e.g. Ship..Remote Sensor Damper)
+49:	joins entity and skillrq filter by some type, arg1[arg2] (e.g. Ship[Type(Large Energy Turret)])
+55:	removes item modifier directly from gangmates' ships, arg1.RGIM(arg2)													[(armorHP).(PostPercent)].RGIM(armorHpBonus)
+57:	removes item modifier from entities of gangmates, filtered by skillrq, arg1.RGRSM(arg2)											[(Type(Propulsion Jamming).maxRange).(PostPercent)].RGRSM(commandBonus)
+58:	removes item modifier directly from some entity, arg1.RIM(arg2)														((CurrentShip->maxVelocity).(PostPercent)).RemoveItemModifier(velocityBonus)
+59:	removes item modifier from entities, filtered by location and groupid, arg1.RLGM(arg2)											((CurrentShip..Shield Booster->shieldBonus).(PostPercent)).RemoveLocationGroupModifier(shipBonusMB)
+60:	removes item modifier from entities, filtered by location, arg1.RLM(arg2)												((CurrentShip->heatDamage).(PostPercent)).RemoveLocationModifier(shipBonusStrategicCruiserAmarr)
+61:	removes item modifier from entities, filtered by location and skillrq, arg1.RLRSM(arg2)
+62:	removes item modifier from entities, filtered by owner character and skillrq, arg1.RLRSM(arg2)
+64:	joins skillrq typeid and target attributeid of filtered items, arg1.arg2 (Mining.miningAmount)
+
+auxiliary operands (not typical for most items, or typical, but used in special effects):
+1:	adds value of attribute referenced in 2nd argument to value of attribute referenced in 1st arg1+arg2 (e.g. (CurrentShip.cpuLoad())+(CurrentSelf.cpu()))
+10:	logical AND operator, e.g. top-level online pre-expression
+14:	empty terminal, either contains no data or None value in expressionValue field (used by cargoScan post-expression)
+23:	expressionValue terminal, contains boolean, is used in lot of various fitting effects (rigSlot)
+27:	expressionValue terminal, contains integer, is used in alot of offensive effects (like torpedoLaunching), also seems to be used as stub operand - to have expression doing nothing and returning success
+28:	expressionValue terminal, contains string, is used in online effect
+30:	some specific for ecm bursts (both remote and local) operand, not sure why it has been separated
+32:	some specific to AoE damage effects operand (smartbombs, suicide bombs, something else)
+35:	seems to call some function, passing some argument to it (e.g. CurrentShip.turretSlotsLeft()), or just plain attribute getter (actually it joins ship and attribute turretSlotsLeft)
+38:	logical greater than operator
+39:	logical greater than or equal operator
+41:	if-then operator
+52:	logical OR operator
+65:	attribute setter, e.g. CurrentSelf->isOnline := Int(1) (in online effect, sets isOnline attrib to 1)
+67:     the only occurence is skill check in online effect, SkillCheck(OnlineHasSkillPrerequisites) (SkillCheck(arg1))
+73:	raises error in arg, UserError(arg1), e.g. UserError(NotEnoughCpu)
+
+ooperands most likely unusable for us:
+13:	used only on statical POS turrets
+15:	used only in cheatTeleDock effect
+16:	used only in cheatTeleGate effect
+19:	used only in decloakWave effect
+44:	used by missile-launching effects (missiles, probes, snowballs, whatever), refers boolean value (at least in missileLaunching effect)
+45:	used only by defenderMissileLaunching effect, no references to other expressions
+47:	used only by fofMissileLaunching effect, no references to other expressions
+50:	used by mining devices as post-expression, no references to other stuff
+53:	used by powerBooster effect only (cap boosters), no references to other effects
+66:	used only in shipScan effect as post-expression, no references to other effects
+69:	used only in surveyScan effect as post-expression, no references to other effects
+70:	used only in targetHostiles (auto targeter) effect as post-expression, no references to other effects
+71:	used only in targetPassively effect as pre-expression, no references to other effects
+72:	terminal expression for mining effects, checks if you can mine it with your current skills (CheckToolTargetSkills)
+74:	used by mining effects, terminal expression, checks target group (seems to refuse apply mining laser to anything but asteroids by enforcing group check according to laser attributes)
+
+
+Things which may be missed out in this wall of text:
+1) Item vs charge modification: unlikely to affect concept, probably just duplicates some data structures (like all/group/skillrq dictionaries)
+2) Gang stuff. Possibly can make nice use of whole concept, and likely just needs some special processing in target attribute storage (to ensure its exclusivity)
+3) Afflictions. I believe this mechanism replaces them pretty well, but we should check it.
