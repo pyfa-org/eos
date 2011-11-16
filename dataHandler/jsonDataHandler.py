@@ -68,7 +68,7 @@ class JsonDataHandler(DataHandler):
         if(expression == None):
             data = self.__expressionData[str(id)]
             expression = Expression(id, data["operand"], data["value"],
-                                    [self.getExpression(expressionId) for expressionId in data["args"]],
+                                    self.getExpression(data["arg1"]), self.getExpression(data["arg2"]),
                                     data["typeID"], data["groupID"], data["attributeID"])
 
             self.__expressionsCache[id] = expression
