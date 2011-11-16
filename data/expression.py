@@ -66,12 +66,12 @@ class ExpressionBuild(object):
                 self.expressions.append(self.activeExpression)
 
             # Build first expression
-            self.activeExpression = ExpressionRun()
+            self.activeExpression = ExpressionInfo()
             self.build(element.arg1)
             self.expressions.append(self.activeExpression)
 
             # Build second
-            self.activeExpression = ExpressionRun()
+            self.activeExpression = ExpressionInfo()
             self.build(element.arg2)
             self.expressions.append(self.activeExpression)
 
@@ -79,30 +79,39 @@ class ExpressionBuild(object):
             return
 
         elif activeExpression == None:
-            self.activeExpression = activeExpression = ExpressionRun()
+            self.activeExpression = activeExpression = ExpressionInfo()
+            self.expressions.append(activeExpression)
 
         res1 = self.build(element.arg1)
         res2 = self.build(element.arg2)
 
-        if element.operand == 6:
+        if element.operand in (6, 7): #6: AddItemModifier #7: AddItemModifierGroupFilter
             activeExpression.sourceAttributeId = res2
 
-        elif element.operand == 12:
-            return (res1, #Target
+        elif element.operand == 12: #12: joinEntityAndAttribute
+            return (res1, #Entity
                     res2) #Attribute
 
-        elif element.operand in (21, 24):
+        elif element.operand in (21, 24, 26, 29): #21: Operand #24: Entity #26: Group
             return element.value
 
-        elif element.operand == 22:
+        elif element.operand == 22: #22: attributeId
             return element.attributeId
 
-        elif element.operand == 31:
+        elif element.operand == 31: #JoinEntityAttributeAndOperation
             activeExpression.operation = res1
             activeExpression.target, activeExpression.targetAttributeId = res2
 
+        elif element.operand == 48: #JoinGroupFilter
+            activeExpression.filters.append(("group", res2))
+            return res1 #Entity, handled by parent
 
-class ExpressionRun(object):
+        elif element.operand == 49: #JoinSkillFilter
+            activeExpression.filters.append(("skill", res2))
+            return res1 #Entity, handled by parent
+
+
+class ExpressionInfo(object):
     def __init__(self):
         self.filters = []
         self.operation = None
