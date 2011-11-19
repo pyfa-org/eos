@@ -38,7 +38,8 @@ if args.data is None or args.effect is None:
     sys.exit()
 
 # Connect to database
-conn = sqlite3.connect(args.effect)
+print(args.data)
+conn = sqlite3.connect(args.data)
 c = conn.cursor()
 
 # Get pre- and post-expressions of given effect
