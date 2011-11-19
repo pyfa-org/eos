@@ -27,19 +27,31 @@ class Effect(object):
 
     def __init__(self, id, preExpression, postExpression, isOffensive, isAssistance):
         self.id = id
-        self.preExpression = preExpression
-        self.postExpression = postExpression
-        self.isOffensive = isOffensive
-        self.isAssistance = isAssistance
+        '''The unique ID of an effect. Can be anything, as long as its unique, typically, the IDs CCP assigned to them in the SDD are used'''
 
-    def _apply(self, fit):
+        self.preExpression = preExpression
+        '''PreExpression of the effect. A preExpression is the expression that gets run when the module is activated'''
+
+        self.postExpression = postExpression
+        '''
+        PostExpression of the effect. A postExpression gets run when the module gets disabled.
+        We do not use them for our undo implementation, however, some modules that do their stuff at end of run need these (like armor reps)
+        '''
+
+        self.isOffensive = isOffensive
+        '''Wether the module is offensive (eg. guns)'''
+
+        self.isAssistance = isAssistance
+        '''Wether the module is helful (eg. Remote reps)'''
+
+    def _apply(self, owner, fit):
         '''
         Apply this effect onto the passed fit
         '''
-        self.preExpression.run(fit)
+        self.preExpression.run(owner, fit)
 
-    def _undo(self, fit):
+    def _undo(self, owner, fit):
         '''
         Undo this effect from the passed fit
         '''
-        self.postExpression.run(fit)
+        self.preExpression.undo(owner, fit)

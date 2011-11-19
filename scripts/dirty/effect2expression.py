@@ -24,10 +24,10 @@ Ugly script which outputs all expressions used by given effect, with details.
 
 import sqlite3
 
-effectName = 'mining'
-missing = {73, 74}
+effectName = 'energyWeaponDamageMultiply'
+implemented = {6, 17, 12, 21, 24, 22, 31, 7, 26, 48, 49}
 
-conn = sqlite3.connect("/home/dfx/Desktop/evechaos.db")
+conn = sqlite3.connect("d:/evesingularity.db")
 c = conn.cursor()
 
 c.execute("SELECT preExpression, postExpression FROM dgmeffects WHERE effectName = ?", (effectName,))
@@ -55,7 +55,7 @@ while(len(tocheck) > 0):
     checknext.difference_update(checked)
     tocheck = checknext
 print("Used operandIDs: {}".format(", ".join(str(opid) for opid in sorted(opids))))
-print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.intersection(missing)))))
+print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.difference(implemented)))))
 
 print("===== Effect {}, post-expression =====\n".format(effectName))
 
@@ -77,4 +77,4 @@ while(len(tocheck) > 0):
     checknext.difference_update(checked)
     tocheck = checknext
 print("Used operandIDs: {}".format(", ".join(str(opid) for opid in sorted(opids))))
-print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.intersection(missing)))))
+print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.difference(implemented)))))

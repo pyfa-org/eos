@@ -40,7 +40,7 @@ class MutableAttributeHolder(object):
         """
         fit = self.fit
         for effect in self.type.effects:
-            effect._apply(fit)
+            effect._apply(self, fit)
 
 
     def _undo(self):
