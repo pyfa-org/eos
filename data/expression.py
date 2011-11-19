@@ -45,7 +45,7 @@ class Expression(object):
         Target values will be applied to the passed Fit object according to configured filters and other settings
         See ExpressionInfo for detailed workings
         '''
-        if(self._infoList == None):
+        if(self._info == None):
             self._info = ExpressionEval()
             self._info.build(self)
 
