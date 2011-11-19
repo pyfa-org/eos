@@ -39,7 +39,6 @@ if args.data is None or args.effect is None:
 
 # Connect to database
 conn = sqlite3.connect(args.data)
-
 c = conn.cursor()
 
 # Get pre- and post-expressions of given effect
@@ -67,11 +66,6 @@ while(len(tocheck) > 0):
         checked.add(eID)
     checknext.difference_update(checked)
     tocheck = checknext
-<<<<<<< HEAD
-print("Used operandIDs: {}".format(", ".join(str(opid) for opid in sorted(opids))))
-print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.difference(implemented)))))
-=======
->>>>>>> 83792a49c99674c46dee01b60b5c91c83dd2b8a0
 
 # Same for post-expression
 print("===== Effect {}, post-expression =====\n".format(args.effect))
@@ -91,8 +85,3 @@ while(len(tocheck) > 0):
         checked.add(eID)
     checknext.difference_update(checked)
     tocheck = checknext
-<<<<<<< HEAD
-print("Used operandIDs: {}".format(", ".join(str(opid) for opid in sorted(opids))))
-print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.difference(implemented)))))
-=======
->>>>>>> 83792a49c99674c46dee01b60b5c91c83dd2b8a0
