@@ -181,7 +181,7 @@ operands:
 18:	subtracts value of arg2 from arg1, arg1 -= arg2																CurrentShip->armorDamage-=self.armorDamageAmount (armorRepair)
 21:	expressionValue terminal, describes which operation to apply (e.g. PostMul, postPercent)
 22:	attributeID terminal, references attribute
-24:	expressionValue terminal, describes to which entity apply something (e.g. Ship, Self <effect carrier>, Char <charges, drones>, Other <charge container>)
+24:	expressionValue terminal, describes to which entity apply something (e.g. Ship, Self <effect carrier>, Char <charges, drones>, Other <charge container>, Target, Area)
 26:	groupID terminal, describes to which groupID modification is filtered
 29:	typeID terminal, describes by which skillID modification is filtered
 31:	joins reference entity's attribute and operation with which modifiers are applied onto it, arg1.arg2 (eg (Ship->capacity).PostMul)

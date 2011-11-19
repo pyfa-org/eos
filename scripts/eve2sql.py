@@ -171,7 +171,7 @@ def get_eosdataspec():
     dgmattribs["defaultValue"] = [None, False, None]
     dgmattribs["published"] = [None, False, None]
     dgmattribs["displayName"] = [None, False, None]
-    dgmattribs["unitID"] = ["dgmunits.unitID", False, None]
+    dgmattribs["unitID"] = ["eveunits.unitID", False, None]
     dgmattribs["stackable"] = [None, False, None]
     dgmattribs["highIsGood"] = [None, False, None]
     #dgmattribs["categoryID"] = [None, False, None]
@@ -221,12 +221,12 @@ def get_eosdataspec():
     dgmtypeeffects["effectID"] = ["dgmeffects.effectID", False, None]
     dgmtypeeffects["isDefault"] = [None, False, None]
 
-    dataspec["dgmunits"] = [{}, False]
-    dgmunits = dataspec["dgmunits"][0]
-    dgmunits["unitID"] = [None, False, None]
-    #dgmunits["unitName"] = [None, False, None]
-    dgmunits["displayName"] = [None, False, None]
-    #dgmunits["description"] = [None, False, None]
+    dataspec["eveunits"] = [{}, False]
+    eveunits = dataspec["eveunits"][0]
+    eveunits["unitID"] = [None, False, None]
+    #eveunits["unitName"] = [None, False, None]
+    eveunits["displayName"] = [None, False, None]
+    #eveunits["description"] = [None, False, None]
 
     dataspec["icons"] = [{}, False]
     icons = dataspec["icons"][0]
@@ -300,9 +300,9 @@ def get_eosdataspec():
 
     # Additional exception specification, values from here won't be removed when there're no direct references to them
     # ( reference to keys of table for which we're making exception = values of the key to keep, additional condition, join statements )
-    exceptspec = (("dgmattribs.attributeID = dgmtypeattribs.value", "dgmunits.displayName = attributeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = dgmunits.unitID"),
-                  ("invgroups.groupID = dgmtypeattribs.value", "dgmunits.displayName = groupID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = dgmunits.unitID"),
-                  ("invtypes.typeID = dgmtypeattribs.value", "dgmunits.displayName = typeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = dgmunits.unitID"))
+    exceptspec = (("dgmattribs.attributeID = dgmtypeattribs.value", "eveunits.displayName = attributeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"),
+                  ("invgroups.groupID = dgmtypeattribs.value", "eveunits.displayName = groupID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"),
+                  ("invtypes.typeID = dgmtypeattribs.value", "eveunits.displayName = typeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"))
 
     return dataspec, filterspec, exceptspec
 
