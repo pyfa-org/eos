@@ -38,7 +38,6 @@ if args.data is None or args.effect is None:
     sys.exit()
 
 # Connect to database
-print(args.data)
 conn = sqlite3.connect(args.data)
 c = conn.cursor()
 
