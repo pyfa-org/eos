@@ -19,25 +19,38 @@
 #===============================================================================
 
 '''
-Ugly script which outputs all expressions used by given effect, with details.
+Script which outputs all expressions used by given effect, with details.
 '''
 
+import argparse
 import sqlite3
+import sys
 
-effectName = 'mining'
-missing = {73, 74}
+# Parse command line arguments
+parser = argparse.ArgumentParser(description="This script outputs all expressions used by given effect, with details")
+parser.add_argument("-d", "--data", type=str)
+parser.add_argument("-e", "--effect", type=str)
+args = parser.parse_args()
 
-conn = sqlite3.connect("/home/dfx/Desktop/evechaos.db")
+# Check if we got everything we need
+if args.data is None or args.effect is None:
+    sys.stderr.write("You must specify path to database and effect name\n")
+    sys.exit()
+
+# Connect to database
+conn = sqlite3.connect(args.effect)
 c = conn.cursor()
 
-c.execute("SELECT preExpression, postExpression FROM dgmeffects WHERE effectName = ?", (effectName,))
+# Get pre- and post-expressions of given effect
+c.execute("SELECT preExpression, postExpression FROM dgmeffects WHERE effectName = ?", (args.effect,))
 for row in c:
     pre = row[0]
     post = row[1]
 
-print("===== Effect {}, pre-expression =====\n".format(effectName))
+# Start pre-expression processing
+print("===== Effect {}, pre-expression =====\n".format(args.effect))
 
-opids = set()
+# Cyclicly go through expressions and their arguments, printing data about them
 tocheck = set()
 tocheck.add(pre)
 checked = set()
@@ -50,16 +63,13 @@ while(len(tocheck) > 0):
             print("Expression {}:\n  operandID: {}\n  arg1: {}\n  arg2: {}\n  expressionValue: {}\n  description: {}\n  expressionName: {}\n  expressionTypeID: {}\n  expressionGroupID: {}\n  expressionAttributeID: {}\n".format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]))
             checknext.add(row[2])
             checknext.add(row[3])
-            opids.add(row[1])
         checked.add(eID)
     checknext.difference_update(checked)
     tocheck = checknext
-print("Used operandIDs: {}".format(", ".join(str(opid) for opid in sorted(opids))))
-print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.intersection(missing)))))
 
-print("===== Effect {}, post-expression =====\n".format(effectName))
+# Same for post-expression
+print("===== Effect {}, post-expression =====\n".format(args.effect))
 
-opids = set()
 tocheck = set()
 tocheck.add(post)
 checked = set()
@@ -72,9 +82,6 @@ while(len(tocheck) > 0):
             print("Expression {}:\n  operandID: {}\n  arg1: {}\n  arg2: {}\n  expressionValue: {}\n  description: {}\n  expressionName: {}\n  expressionTypeID: {}\n  expressionGroupID: {}\n  expressionAttributeID: {}\n".format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]))
             checknext.add(row[2])
             checknext.add(row[3])
-            opids.add(row[1])
         checked.add(eID)
     checknext.difference_update(checked)
     tocheck = checknext
-print("Used operandIDs: {}".format(", ".join(str(opid) for opid in sorted(opids))))
-print("Undescribed operandIDs: {}\n".format(", ".join(str(opid) for opid in sorted(opids.intersection(missing)))))
