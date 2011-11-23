@@ -30,17 +30,30 @@ class MutableAttributeHolder(object):
         Constructor. Accepts a Type
         '''
         self.fit = None
+        '''
+        Which fit this holder is bound to
+        '''
         self.type = type
+        '''
+        Which type this holder wraps
+        '''
+
         self.attributes = MutableAttributeMap(type)
+        '''
+        Special dictionary subclass that holds modified attributes and data related to their calculation
+        '''
+
+    def _prepare(self):
+        for effect in self.type.effects:
+            effect._prepare(self, self.fit)
 
     def _apply(self):
         """
         Applies all effects of the type bound to this holder. This can have for reaching consequences as it can affect anything fitted onto the fit (including itself)
         This is typically automaticly called by eos when relevant (when a holder is added onto a fit)
         """
-        fit = self.fit
         for effect in self.type.effects:
-            effect._apply(self, fit)
+            effect._apply(self, self.fit)
 
 
     def _undo(self):
@@ -48,9 +61,27 @@ class MutableAttributeHolder(object):
         Undos the operations done by apply
         This is typically automaticly called by eos when relevant (when a holder is removed from a fit)
         """
-        fit = self.fit
         for effect in self.type.effects:
-            effect._undo(fit)
+            effect._undo(self.fit)
+
+    def matches(self, filters):
+        """
+        Checks wether this holder matches the passed filter definitions
+        """
+        type = self.type
+        filterType = filter.type
+        filterValue = filter.value
+        for filter in filters:
+            if filterType == "group" and filterValue != type.groupId:
+                return False
+            if filterType == "skill" and filterValue not in type.requiredSkills():
+                return False
+
+        return True
+
+    def _register(self, info):
+        self.attributes._register(info)
+
 
 class MutableAttributeMap(collections.Mapping):
     '''
@@ -83,3 +114,18 @@ class MutableAttributeMap(collections.Mapping):
 
     def keys(self):
         return set(self.__modifiedAttributes.keys()).intersection(self.__type.attributes.keys())
+
+    def _register(self):
+        """
+        Register an info object for processing
+        """
+        pass
+
+    def _damage(self, info):
+        """
+        Cause damage using a certain info object.
+        This is a recursive method that does the following:
+        - Clear the calculated values for the target of the passed info object
+        - For each info using the cleared value as source, call damage(info) again
+        """
+        pass

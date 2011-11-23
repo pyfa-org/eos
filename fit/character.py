@@ -17,7 +17,18 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from .fit import Fit
-from .module import Module
-from .ship import Ship
-from .character import Character
+from .mutableAttributeHolder import MutableAttributeHolder
+
+class Character(MutableAttributeHolder):
+    '''
+    Character class. This class represents a character.
+    While it might feel counter-intuitive to track attributes on a character, some are tracked here.
+    Examples: Intellect, Charisma, etc. Less obvious examples: maxGangModules, maxLockedTargets, maxActiveDrones
+    Remember this class is fit-specific, don't put a single one onto two fits.
+    '''
+
+    def __init__(self, type):
+        '''
+        Constructor. Accepts a Type
+        '''
+        super().__init__(type)

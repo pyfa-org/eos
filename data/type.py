@@ -37,3 +37,13 @@ class Type(object):
 
         self.attributes = attributes
         '''The attributes of this type, these are used by the effects to apply their bonusses onto when they're ran'''
+
+    def requiredSkills(self):
+        attributes = self.attributes
+        reqs = set()
+        for v in (182, 183, 184, 1285, 1289, 1290):
+            req = attributes.get(v)
+            if(req):
+                set.add(req)
+
+        return reqs;

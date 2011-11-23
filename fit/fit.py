@@ -18,11 +18,14 @@
 #===============================================================================
 
 import collections
+import itertools
+
+HolderInfo = collections.namedtuple("HolderRegisterInfo", ("holder", "info"))
 
 class Fit(object):
     '''
     Fit object. Each fit is built out of a number of Modules, as well as a Ship.
-    This class is essentialy a container, it has minimal logic.
+    This class also contains the logic to apply a single expressionInfo onto itself
     '''
 
     @property
@@ -31,16 +34,19 @@ class Fit(object):
 
     @ship.setter
     def ship(self, ship):
-        if(ship.fit != None):
-            raise ValueError("Cannot add ship which is already in another fit")
-
-        if(self.ship != None):
-            self.ship._undo()
-
-        ship.fit = self
+        self._unsetHolder(self.__ship)
         self.__ship = ship
+        self._setHolder(ship)
 
-        ship._apply()
+    @property
+    def character(self):
+        return self.__character
+
+    @character.setter
+    def character(self, character):
+        self._unsetHolder(self.__character)
+        self.__character = character
+        self._setHolder(character)
 
     def __init__(self, ship):
         '''
@@ -48,12 +54,126 @@ class Fit(object):
         '''
         self.modules = MutableAttributeHolderList(self)
         self.ship = ship
+        self.character = None
 
         # These registers are mainly used when new modules are added.
         # A new module addition will cause registers to be checked for all that module's skills and group for effects to apply to it
         # They usualy should NOT be changed outside the lib
-        self._skillReqRegister = {}
-        self._groupRegister = {}
+        self.__skillAffectorRegister = {}
+        self.__groupAffectorRegister = {}
+
+        self.__groupAffecteeRegister = {}
+        self.__skillAffecteeRegister = {}
+
+        self.__holderAttributeOperationsRegister = {}
+
+    def calculate(self):
+        """
+        Calculate all attributes on the fit.
+        This method will ONLY calculate whats needed
+        """
+        chain = itertools.chain(self.modules, (self.ship, self.character))
+        for holder in chain:
+            self._registerHolder(holder)
+            holder._prepare()
+
+    def _registerHolder(self, holder):
+        skillAffecteeRegister = self.__skillAffecteeRegister
+        for req in holder.type.requiredSkills():
+            l = skillAffecteeRegister.get(req)
+            if l is None:
+                l = skillAffecteeRegister[req] = set()
+
+            l.add(holder)
+
+        groupId = holder.type.groupId
+        l = self.__groupAffecteeRegister.get(groupId)
+        if l is None:
+            l = self.__groupAffecteeRegister[groupId] = set()
+
+        l.add(holder)
+
+    def _prepare(self, holder, info):
+        '''
+        Prepare the passed info object for execution
+        '''
+        # Fill up the registers
+        skillAffectorRegister = self.__skillAffectorRegister
+        groupAffectorRegister = self.__groupAffectorRegister
+
+        for filter in info.filters:
+            if filter.type == "skill":
+                #Get the affector set
+                s = skillAffectorRegister.get(filter.value)
+                if s is None:
+                    skillAffectorRegister[filter.value] = s = set()
+
+                s.add(holder)
+
+            elif filter.type == "group":
+                s = groupAffectorRegister.get(filter.value)
+                if s is None:
+                    groupAffectorRegister[filter.value] = s = set()
+
+                s.add(holder)
+
+        for target in self.__getTargets(holder, info):
+            pass
+
+
+    def _apply(self, holder, info):
+        '''
+        Runner, applies the passed expression onto the fit using the passed owner.
+        This is typically called for you by the ExpressionEval, unless you're running custom ExpressionInfo objects
+        '''
+        # First step: Apply the info object
+
+
+        # Second step: recalc anything that requires the attrib
+        pass
+
+    def _undo(self, holder, info):
+        '''
+        Undos the operations applied by _run, usualy also called by the ExpressionEval that owns this ExpressionInfo.
+        Unless you're running custom ExpressionInfo objects, you will usualy never call this
+        '''
+        pass
+
+    def __getTargets(self, holder, info):
+        '''
+        Returns the target(s) of the passed expression.
+        Implemented values: Self, Ship, Char
+        Unimplemented values: Target, Area, Other
+        '''
+        target = info.target
+
+        if target == "Self":
+            return (holder, )
+        #Ship can either mean the ship itself (if no filters are specified)
+        #or a filtered match on everything on the fit (if filters are specified)
+        elif target == "Ship" and len(info.filters) > 0:
+            filters = info.filters
+            return [mod for mod in self.modules if mod.matches(filters)]
+        elif target == "Ship":
+            return (self.ship, )
+        elif target == "Char":
+            return (self.character, )
+
+    def __setFit(self, holder):
+        if(holder != None):
+            holder.fit = self
+
+    def _setHolder(self, holder):
+        # Make sure the module isn't used elsewhere already
+        if holder is not None and holder.fit is not None:
+            raise ValueError("Cannot add a module which is already in another fit")
+
+        holder.fit = self
+
+    def _unsetHolder(self, holder):
+        if holder is not None:
+            assert(holder.fit == self)
+            holder.fit = None
 
 class MutableAttributeHolderList(collections.MutableSequence):
     '''
@@ -67,13 +187,13 @@ class MutableAttributeHolderList(collections.MutableSequence):
     def __setitem__(self, index, holder):
         existing = self.__list.get(index)
         if(existing != None):
-            self.__unsetHolder(existing)
+            self.fit._unsetHolder(existing)
 
         self.__list.__setitem__(index, holder)
-        self.__setHolder(holder)
+        self.__fit._setHolder(holder)
 
     def __delitem__(self, index):
-        self.__unsetHolder(self.__list[index])
+        self.__fit._unsetHolder(self.__list[index])
         return self.__list.__delitem__(index)
 
     def __getitem__(self, index):
@@ -84,17 +204,4 @@ class MutableAttributeHolderList(collections.MutableSequence):
 
     def insert(self, index, holder):
         self.__list.insert(index, holder)
-        self.__setHolder(holder)
-
-    def __setHolder(self, holder):
-        # Make sure the module isn't used elsewhere already
-        if(holder.fit != None):
-            raise ValueError("Cannot add a module which is already in another fit")
-
-        holder.fit = self.__fit
-        holder._apply()
-
-    def __unsetHolder(self, holder):
-        assert(holder.fit == self.__fit)
-        holder._undo()
-        holder.fit = None
+        self.__fit._setHolder(holder)

@@ -44,11 +44,17 @@ class Effect(object):
         self.isAssistance = isAssistance
         '''Wether the module is helful (eg. Remote reps)'''
 
+    def _prepare(self, owner, fit):
+        '''
+        Prepares the effect for execution
+        '''
+        self.preExpression.prepare(owner, fit)
+
     def _apply(self, owner, fit):
         '''
         Apply this effect onto the passed fit
         '''
-        self.preExpression.run(owner, fit)
+        self.preExpression.apply(owner, fit)
 
     def _undo(self, owner, fit):
         '''
