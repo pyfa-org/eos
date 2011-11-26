@@ -70,7 +70,7 @@ class ExpressionEval(object):
         # Get some stuff locally, we refer them often
         activeExpression = self.__activeExpression
 
-        if element.operand == 17: #Splicing operator
+        if element.operand == 17: # Splicing operator
 
             # If we already have an active expression, store it first.
             # This should be when a splicer is found somewhere down a tree,
@@ -98,27 +98,27 @@ class ExpressionEval(object):
         res1 = self.__build(element.arg1)
         res2 = self.__build(element.arg2)
 
-        if element.operand in (6, 7): #6: AddItemModifier #7: AddItemModifierGroupFilter
+        if element.operand in (6, 7): # 6: AddItemModifier #7: AddItemModifierGroupFilter
             activeExpression.sourceAttributeId = res2
 
-        elif element.operand == 12: #12: joinEntityAndAttribute
-            return (res1, #Entity
-                    res2) #Attribute
+        elif element.operand == 12: # 12: joinEntityAndAttribute
+            return (res1, # Entity
+                    res2) # Attribute
 
-        elif element.operand in (21, 24, 26, 29): #21: Operand #24: Entity #26: Group
+        elif element.operand in (21, 24, 26, 29): # 21: Operand #24: Entity #26: Group
             return element.value
 
-        elif element.operand == 22: #22: attributeId
+        elif element.operand == 22: # 22: attributeId
             return element.attributeId
 
-        elif element.operand == 31: #JoinEntityAttributeAndOperation
+        elif element.operand == 31: # JoinEntityAttributeAndOperation
             activeExpression.operation = res1
             activeExpression.target, activeExpression.targetAttributeId = res2
 
-        elif element.operand == 48: #JoinGroupFilter
+        elif element.operand == 48: # JoinGroupFilter
             activeExpression.filters.append(ExpressionFilter("group", res2))
-            return res1 #Entity, handled by parent
+            return res1 # Entity, handled by parent
 
         elif element.operand == 49: #JoinSkillFilter
             activeExpression.filters.append(ExpressionFilter("skill", res2))
-            return res1 #Entity, handled by parent
+            return res1 # Entity, handled by parent

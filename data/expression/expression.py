@@ -70,7 +70,3 @@ class Expression(object):
         # No check if __info is defined,
         # if the expression is being undo'd, it has to have been applied before anyway
         self._info._undo(owner, fit)
-
-
-
-
