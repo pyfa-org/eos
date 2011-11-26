@@ -42,8 +42,6 @@ class ExpressionInfo(object):
 
         self.target = None
         '''
-
-
         The target of this expression.
         Possible values: <None implemented yet, getting to that :)>
         Any other values will be ignored, causing the ExpressionInfo to do nothing
@@ -60,5 +58,11 @@ class ExpressionInfo(object):
         Which source attribute will be used as calculation base for the operation.
         This will be used as dictionary lookup key on the owner passed to the run method
         '''
+
+    def validate(self):
+        return self.operation is not None \
+           and self.target is not None \
+           and self.targetAttributeId is not None \
+           and self.sourceAttributeId is not None
 
 ExpressionFilter = collections.namedtuple('ExpressionFilter', ('type', 'value'))

@@ -20,8 +20,6 @@
 import collections
 import itertools
 
-HolderInfo = collections.namedtuple("HolderRegisterInfo", ("holder", "info"))
-
 class Fit(object):
     '''
     Fit object. Each fit is built out of a number of Modules, as well as a Ship.
@@ -52,10 +50,6 @@ class Fit(object):
         '''
         Constructor: Accepts a Ship
         '''
-        self.modules = MutableAttributeHolderList(self)
-        self.ship = ship
-        self.character = None
-
         # These registers are mainly used when new modules are added.
         # A new module addition will cause registers to be checked for all that module's skills and group for effects to apply to it
         # They usualy should NOT be changed outside the lib
@@ -65,6 +59,14 @@ class Fit(object):
         self.__groupAffecteeRegister = {}
         self.__skillAffecteeRegister = {}
 
+        # Vars used by properties
+        self.__ship = None
+        self.__character = None
+
+        # Public stuff
+        self.modules = MutableAttributeHolderList(self)
+        self.ship = ship
+
         self.__holderAttributeOperationsRegister = {}
 
     def calculate(self):
@@ -72,10 +74,6 @@ class Fit(object):
         Calculate all attributes on the fit.
         This method will ONLY calculate whats needed
         """
-        chain = itertools.chain(self.modules, (self.ship, self.character))
-        for holder in chain:
-            self._registerHolder(holder)
-            holder._prepare()
 
     def _registerHolder(self, holder):
         skillAffecteeRegister = self.__skillAffecteeRegister
@@ -92,6 +90,13 @@ class Fit(object):
             l = self.__groupAffecteeRegister[groupId] = set()
 
         l.add(holder)
+
+    def _unregisterHolder(self, holder):
+        skillAffecteeRegister = self.__skillAffecteeRegister
+        for req in holder.type.requiredSkills():
+            skillAffecteeRegister[req].remove(holder)
+
+        self.__groupAffecteeRegister[holder.type.groupId].remove(holder)
 
     def _prepare(self, holder, info):
         '''
@@ -118,19 +123,18 @@ class Fit(object):
                 s.add(holder)
 
         for target in self.__getTargets(holder, info):
-            pass
+            target._register(holder, info)
 
+        # Cast out damage on the freshly prepared info to reset any calculated values that it might affect
+        self._damage(holder, info)
 
-    def _apply(self, holder, info):
-        '''
-        Runner, applies the passed expression onto the fit using the passed owner.
-        This is typically called for you by the ExpressionEval, unless you're running custom ExpressionInfo objects
-        '''
-        # First step: Apply the info object
-
-
-        # Second step: recalc anything that requires the attrib
-        pass
+    def _damage(self, sourceHolder, info):
+        """
+        - Lookup all the targets of the passed info object on the passed holder
+        - For each of the found targets: damage the attribute that will be affected
+        """
+        for target in self.__getTargets(sourceHolder, info):
+            target._damage(info)
 
     def _undo(self, holder, info):
         '''
@@ -164,15 +168,19 @@ class Fit(object):
             holder.fit = self
 
     def _setHolder(self, holder):
-        # Make sure the module isn't used elsewhere already
-        if holder is not None and holder.fit is not None:
-            raise ValueError("Cannot add a module which is already in another fit")
+        if holder is not None:
+            # Make sure the module isn't used elsewhere already
+            if holder.fit is not None:
+                raise ValueError("Cannot add a module which is already in another fit")
 
-        holder.fit = self
+            holder.fit = self
+            self._registerHolder(holder)
+            holder._prepare()
 
     def _unsetHolder(self, holder):
         if holder is not None:
             assert(holder.fit == self)
+            self._unregisterHolder(holder)
             holder.fit = None
 
 class MutableAttributeHolderList(collections.MutableSequence):

@@ -19,6 +19,9 @@
 
 from .info import ExpressionInfo, ExpressionFilter
 
+class EvalException(Exception):
+    pass
+
 class ExpressionEval(object):
     '''
     Expression evaluator responsible for converting a tree of Expression objects (which isn't directly useful to us)
@@ -26,13 +29,14 @@ class ExpressionEval(object):
     '''
     def __init__(self):
         self.__activeExpression = None
-        self.expressions = []
+        self.infos = []
+        self.fail = False #Stop guard
 
     def _prepare(self, owner, fit):
         '''
         Internal method that prepares an eval object for application.
         '''
-        for e in self.expressions:
+        for e in self.infos:
             fit._prepare(owner, e)
 
     def _apply(self, owner, fit):
@@ -40,11 +44,11 @@ class ExpressionEval(object):
         Internal run method that applies all expressions stored in this eval object.
         This is typically called for you by the expression itself
         '''
-        for e in self.expressions:
+        for e in self.infos:
             fit._apply(owner, e)
 
     def _undo(self, owner, fit):
-        for e in self.expressions:
+        for e in self.infos:
             fit._undo(owner, e)
 
     def build(self, base):
@@ -54,8 +58,18 @@ class ExpressionEval(object):
         If its not, exceptions will most likely occur, or you'll get an incomplete ExpressionInfo object as a result
         If this is not called before run()/undo() they will not do anything
         '''
-        self.__build(base)
-        return self.expressions
+        #Validation: detect stubs, if a stub is found, return an empty list
+        infos = self.infos
+        if base.operand == 27 and int(base.value) == 1:
+            return infos
+
+        try:
+            self.__build(base)
+        except EvalException as e:
+            del self.infos[:]
+            print(e.args[0])
+
+        return self.infos
 
     def __build(self, element):
         '''
@@ -64,7 +78,7 @@ class ExpressionEval(object):
         into (hopefully) fully functional ExpressionInfo objects.
         '''
         # Sanity guard
-        if element is None:
+        if element is None or self.fail:
             return
 
         # Get some stuff locally, we refer them often
@@ -76,24 +90,24 @@ class ExpressionEval(object):
             # This should be when a splicer is found somewhere down a tree,
             # I doubt this happens in practice ? It makes little sense
             if activeExpression is not None:
-                self.expressions.append(self.__activeExpression)
+                self.infos.append(self.__activeExpression)
 
             # Build first expression
             self.__activeExpression = ExpressionInfo()
             self.__build(element.arg1)
-            self.expressions.append(self.__activeExpression)
+            self.infos.append(self.__activeExpression)
 
             # Build second
             self.__activeExpression = ExpressionInfo()
             self.__build(element.arg2)
-            self.expressions.append(self.__activeExpression)
+            self.infos.append(self.__activeExpression)
 
             # Done
             return
 
         elif activeExpression is None:
             self.__activeExpression = activeExpression = ExpressionInfo()
-            self.expressions.append(activeExpression)
+            self.infos.append(activeExpression)
 
         res1 = self.__build(element.arg1)
         res2 = self.__build(element.arg2)
@@ -122,3 +136,5 @@ class ExpressionEval(object):
         elif element.operand == 49: #JoinSkillFilter
             activeExpression.filters.append(ExpressionFilter("skill", res2))
             return res1 #Entity, handled by parent
+        else:
+            raise EvalException("Failed to evaluate {0}".format(element.id))

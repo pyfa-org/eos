@@ -41,7 +41,10 @@ class Expression(object):
         self._info = None
 
     def build(self):
-        if(self._info == None):
+        '''
+        Builds the info objects for this expression tree
+        '''
+        if(self._info is None):
             self._info = ExpressionEval()
             self._info.build(self)
 
@@ -70,7 +73,3 @@ class Expression(object):
         # No check if __info is defined,
         # if the expression is being undo'd, it has to have been applied before anyway
         self._info._undo(owner, fit)
-
-
-
-

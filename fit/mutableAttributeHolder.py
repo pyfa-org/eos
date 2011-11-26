@@ -19,6 +19,8 @@
 
 import collections
 
+RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
+
 class MutableAttributeHolder(object):
     '''
     Base attribute holder class inherited by all classes that need to keep track of modified attributes.
@@ -38,7 +40,7 @@ class MutableAttributeHolder(object):
         Which type this holder wraps
         '''
 
-        self.attributes = MutableAttributeMap(type)
+        self.attributes = MutableAttributeMap(self)
         '''
         Special dictionary subclass that holds modified attributes and data related to their calculation
         '''
@@ -69,26 +71,36 @@ class MutableAttributeHolder(object):
         Checks wether this holder matches the passed filter definitions
         """
         type = self.type
-        filterType = filter.type
-        filterValue = filter.value
         for filter in filters:
-            if filterType == "group" and filterValue != type.groupId:
+            if filter.type == "group" and filter.value != type.groupId:
                 return False
-            if filterType == "skill" and filterValue not in type.requiredSkills():
+            if filter.type == "skill" and filter.value not in type.requiredSkills():
                 return False
 
         return True
 
-    def _register(self, info):
-        self.attributes._register(info)
+    def _register(self, sourceHolder, info):
+        self.attributes._register(sourceHolder, info)
 
+    def _damage(self, info):
+        self.attributes._damage(info)
 
 class MutableAttributeMap(collections.Mapping):
     '''
     MutableAttributeMap class, this class is what actually keeps track of modified attribute values and who modified what so undo can work as expected.
     '''
-    def __init__(self, type):
-        self.__type = type
+    order = {"PreAssignment": 1,
+         "PreMul": 2,
+         "PreDiv": 3,
+         "ModAdd": 4,
+         "ModSub": 5,
+         "PostMul": 6,
+         "PostDiv": 7,
+         "PostPercent": 8,
+         "PostAssignment": 9}
+
+    def __init__(self, holder):
+        self.__holder = holder
         self.__modifiedAttributes = {}
 
         # The attribute register keeps track of what effects apply to what attribute
@@ -98,7 +110,7 @@ class MutableAttributeMap(collections.Mapping):
         val = self.__modifiedAttributes.get(key)
         if(val == None):
             # Should actually run calcs here instead :D
-            self.__modifiedAttributes[key] = val = self.__type.attributes[key]
+            self.__modifiedAttributes[key] = val = self.__calculate(key)
 
         return val
 
@@ -106,26 +118,82 @@ class MutableAttributeMap(collections.Mapping):
         return len(self.keys())
 
     def __contains__(self, key):
-        return key in self.__modifiedAttributes or key in self.__type.attributes
+        return key in self.__modifiedAttributes or key in self.__holder.type.attributes
 
     def __iter__(self):
         for k in self.keys():
             yield k
 
     def keys(self):
-        return set(self.__modifiedAttributes.keys()).intersection(self.__type.attributes.keys())
+        return set(self.__modifiedAttributes.keys()).intersection(self.__holder.type.attributes.keys())
 
-    def _register(self):
+    def _register(self, sourceHolder, info):
         """
         Register an info object for processing
         """
-        pass
+        register = self.__attributeRegister.get(info.targetAttributeId)
+        if register is None:
+            register = self.__attributeRegister[info.targetAttributeId] = set()
+
+        registrationInfo = RegistrationInfo(sourceHolder, info)
+        register.add(registrationInfo)
+        return registrationInfo
 
     def _damage(self, info):
         """
-        Cause damage using a certain info object.
+        Cause damage on self using a certain info object.
         This is a recursive method that does the following:
         - Clear the calculated values for the target of the passed info object
-        - For each info using the cleared value as source, call damage(info) again
+        - For each info using the cleared value as source, call fit.damage
         """
-        pass
+
+        holder = self.__holder
+        fit = holder.fit
+        targetAttributeId = info.targetAttributeId
+
+        try:
+            del self.__modifiedAttributes[targetAttributeId]
+            for attrId, s in self.__attributeRegister.items():
+                for registrationInfo in s:
+                    newInfo = registrationInfo.info
+                    if newInfo.sourceAttributeId == targetAttributeId:
+                        fit.damage(self, newInfo)
+
+        except KeyError: #KeyError is thrown by del statement if the key doesn't exist
+            pass
+
+    def __calculate(self, key):
+        """
+        Run calculations to find the actual value of key.
+        All other attribute values are assumed to be final.
+        This is obviously not always the case,
+        if any of the dependencies of this calculation change, this attrib will get damaged and thus recalculated
+        """
+
+        base = self.__holder.type.attributes.get(key)
+
+        try:
+            order = self.order
+            register = sorted(self.__attributeRegister[key], key=lambda k: order[k.info.operation])
+
+            result = base
+            for sourceHolder, info in register:
+                value = sourceHolder.attributes[info.sourceAttributeId]
+                operation = info.operation
+
+                if operation in ("PreAssignment", "PostAssignment"):
+                    result = value
+                elif operation in ("PreMul", "PostMul"):
+                    result *= value
+                elif operation == "PostPercent":
+                    result *= 1 + value / 100
+                elif operation in ("PreDiv", "PostDiv"):
+                    result /= value
+                elif operation == "ModAdd":
+                    result += value
+                elif operation == "ModSub":
+                    result -= value
+
+                return result
+        except:
+            return base

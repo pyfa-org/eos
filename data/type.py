@@ -44,6 +44,6 @@ class Type(object):
         for v in (182, 183, 184, 1285, 1289, 1290):
             req = attributes.get(v)
             if(req):
-                set.add(req)
+                reqs.add(int(req))
 
         return reqs;
