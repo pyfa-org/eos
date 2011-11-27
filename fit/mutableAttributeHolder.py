@@ -52,7 +52,7 @@ class MutableAttributeHolder(object):
     def _apply(self):
         """
         Applies all effects of the type bound to this holder. This can have for reaching consequences as it can affect anything fitted onto the fit (including itself)
-        This is typically automaticly called by eos when relevant (when a holder is added onto a fit)
+        This is typically automatically called by eos when relevant (when a holder is added onto a fit)
         """
         for effect in self.type.effects:
             effect._apply(self, self.fit)
@@ -61,14 +61,14 @@ class MutableAttributeHolder(object):
     def _undo(self):
         """
         Undos the operations done by apply
-        This is typically automaticly called by eos when relevant (when a holder is removed from a fit)
+        This is typically automatically called by eos when relevant (when a holder is removed from a fit)
         """
         for effect in self.type.effects:
             effect._undo(self.fit)
 
     def matches(self, filters):
         """
-        Checks wether this holder matches the passed filter definitions
+        Checks whether this holder matches the passed filter definitions
         """
         type = self.type
         for filter in filters:
@@ -108,7 +108,7 @@ class MutableAttributeMap(collections.Mapping):
 
     def __getitem__(self, key):
         val = self.__modifiedAttributes.get(key)
-        if(val == None):
+        if val is None:
             # Should actually run calcs here instead :D
             self.__modifiedAttributes[key] = val = self.__calculate(key)
 

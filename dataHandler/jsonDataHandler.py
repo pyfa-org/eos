@@ -45,11 +45,11 @@ class JsonDataHandler(DataHandler):
             self.__effectData = json.loads(f.read().decode('utf-8'))
 
     def getType(self, id):
-        if(not id):
+        if not id:
             return None
 
         type = self.__typesCache.get(id)
-        if(type == None):
+        if type is None:
             # We do str(id) here because json dicts always have strings as key
             data = self.__typeData[str(id)]
             type = Type(id, data["group"],
@@ -61,11 +61,11 @@ class JsonDataHandler(DataHandler):
         return type;
 
     def getExpression(self, id):
-        if(not id):
+        if not id:
             return None
 
         expression = self.__expressionsCache.get(id)
-        if(expression == None):
+        if expression is None:
             data = self.__expressionData[str(id)]
             expression = Expression(id, data["operand"], data["value"],
                                     self.getExpression(data["arg1"]), self.getExpression(data["arg2"]),
@@ -76,11 +76,11 @@ class JsonDataHandler(DataHandler):
         return expression
 
     def getEffect(self, id):
-        if(not id):
+        if not id:
             return None
 
         effect = self.__effectsCache.get(id)
-        if(effect == None):
+        if effect is None:
             data = self.__effectData[str(id)]
             effect = Effect(id, self.getExpression(data["preExpression"]),
                             self.getExpression(data["postExpression"]),
