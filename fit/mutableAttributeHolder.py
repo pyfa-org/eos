@@ -19,6 +19,8 @@
 
 import collections
 
+from eos.util import const
+
 RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 
 class MutableAttributeHolder(object):
@@ -89,15 +91,6 @@ class MutableAttributeMap(collections.Mapping):
     '''
     MutableAttributeMap class, this class is what actually keeps track of modified attribute values and who modified what so undo can work as expected.
     '''
-    order = {"PreAssignment": 1,
-         "PreMul": 2,
-         "PreDiv": 3,
-         "ModAdd": 4,
-         "ModSub": 5,
-         "PostMul": 6,
-         "PostDiv": 7,
-         "PostPercent": 8,
-         "PostAssignment": 9}
 
     def __init__(self, holder):
         self.__holder = holder
@@ -173,28 +166,37 @@ class MutableAttributeMap(collections.Mapping):
         """
 
         base = self.__holder.type.attributes.get(attrId)
+        modifiers = {}
 
         try:
-            order = self.order
-            register = sorted(self.__attributeRegister[attrId], key=lambda k: order[k.info.operation])
-
+            register = self.__attributeRegister[attrId]
             result = base
             for sourceHolder, info in register:
-                value = sourceHolder.attributes[info.sourceAttributeId]
+                modValue = sourceHolder.attributes[info.sourceAttributeId]
                 operation = info.operation
+                if not operation in modifiers:
+                    modifiers[operation] = []
+                modifiers[operation].append(modValue)
 
-                if operation in ("PreAssignment", "PostAssignment"):
-                    result = value
-                elif operation in ("PreMul", "PostMul"):
-                    result *= value
-                elif operation == "PostPercent":
-                    result *= 1 + value / 100
-                elif operation in ("PreDiv", "PostDiv"):
-                    result /= value
-                elif operation == "ModAdd":
-                    result += value
-                elif operation == "ModSub":
-                    result -= value
+            for operation in sorted(modifiers):
+                if operation in (const.operPreAssignment, const.operPostAssignment):
+                    for mod in modifiers[operation]:
+                        result = mod
+                elif operation in (const.operPreMul, const.operPostMul):
+                    for mod in modifiers[operation]:
+                        result *= mod
+                elif operation == const.operPostPercent:
+                    for mod in modifiers[operation]:
+                        result *= 1 + mod / 100
+                elif operation in (const.operPreDiv, const.operPostDiv):
+                    for mod in modifiers[operation]:
+                        result /= mod
+                elif operation == const.operModAdd:
+                    for mod in modifiers[operation]:
+                        result += mod
+                elif operation == const.operModSub:
+                    for mod in modifiers[operation]:
+                        result -= mod
 
             return result
         except:

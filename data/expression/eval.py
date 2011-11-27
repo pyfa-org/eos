@@ -17,6 +17,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos.util import const
 from .info import ExpressionInfo, ExpressionFilter
 
 class EvalException(Exception):
@@ -119,7 +120,13 @@ class ExpressionEval(object):
             return (res1, # Entity
                     res2) # Attribute
 
-        elif element.operand in (21, 24, 26, 29): # 21: Operand, 24: Entity, 26: Group
+        elif element.operand == 21: # 21: Operand
+            try:
+                return const.operConvMap[element.value]
+            except KeyError:
+                print("Unknown operator is used in expression")
+
+        elif element.operand in (24, 26, 29): # 24: Entity, 26: Group
             return element.value
 
         elif element.operand == 22: # 22: attributeId
