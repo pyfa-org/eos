@@ -44,7 +44,7 @@ class Expression(object):
         '''
         Builds the info objects for this expression tree
         '''
-        if(self._info is None):
+        if self._info is None:
             self._info = ExpressionEval()
             self._info.build(self)
 

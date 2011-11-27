@@ -39,10 +39,10 @@ class Effect(object):
         '''
 
         self.isOffensive = isOffensive
-        '''Wether the module is offensive (eg. guns)'''
+        '''Whether the module is offensive (e.g. guns)'''
 
         self.isAssistance = isAssistance
-        '''Wether the module is helful (eg. Remote reps)'''
+        '''Whether the module is helpful (e.g. Remote reps)'''
 
     def _prepare(self, owner, fit):
         '''

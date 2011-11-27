@@ -30,7 +30,7 @@ class ExpressionEval(object):
     def __init__(self):
         self.__activeExpression = None
         self.infos = []
-        self.fail = False #Stop guard
+        self.fail = False # Stop guard
 
     def _prepare(self, owner, fit):
         '''
@@ -58,7 +58,7 @@ class ExpressionEval(object):
         If its not, exceptions will most likely occur, or you'll get an incomplete ExpressionInfo object as a result
         If this is not called before run()/undo() they will not do anything
         '''
-        #Validation: detect stubs, if a stub is found, return an empty list
+        # Validation: detect stubs, if a stub is found, return an empty list
         infos = self.infos
         if base.operand == 27 and int(base.value) == 1:
             return infos
@@ -119,7 +119,7 @@ class ExpressionEval(object):
             return (res1, # Entity
                     res2) # Attribute
 
-        elif element.operand in (21, 24, 26, 29): # 21: Operand #24: Entity #26: Group
+        elif element.operand in (21, 24, 26, 29): # 21: Operand, 24: Entity, 26: Group
             return element.value
 
         elif element.operand == 22: # 22: attributeId

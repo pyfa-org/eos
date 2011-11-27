@@ -43,7 +43,7 @@ class Type(object):
         reqs = set()
         for v in (182, 183, 184, 1285, 1289, 1290):
             req = attributes.get(v)
-            if(req):
+            if req is not None:
                 reqs.add(int(req))
 
         return reqs;

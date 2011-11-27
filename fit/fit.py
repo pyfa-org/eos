@@ -164,7 +164,7 @@ class Fit(object):
             return (self.character, )
 
     def __setFit(self, holder):
-        if(holder != None):
+        if holder is not None:
             holder.fit = self
 
     def _setHolder(self, holder):
