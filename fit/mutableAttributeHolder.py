@@ -196,6 +196,6 @@ class MutableAttributeMap(collections.Mapping):
                 elif operation == "ModSub":
                     result -= value
 
-                return result
+            return result
         except:
             return base
