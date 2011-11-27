@@ -61,7 +61,7 @@ class ExpressionEval(object):
         '''
         # Validation: detect stubs, if a stub is found, return an empty list
         infos = self.infos
-        if base.operand == 27 and int(base.value) == 1:
+        if base.operand == const.opndDefInt and int(base.value) == 1:
             return infos
 
         try:
@@ -85,7 +85,7 @@ class ExpressionEval(object):
         # Get some stuff locally, we refer them often
         activeExpression = self.__activeExpression
 
-        if element.operand == 17: # Splicing operator
+        if element.operand == const.opndCombine:
 
             # If we already have an active expression, store it first.
             # This should be when a splicer is found somewhere down a tree,
@@ -113,34 +113,34 @@ class ExpressionEval(object):
         res1 = self.__build(element.arg1)
         res2 = self.__build(element.arg2)
 
-        if element.operand in (6, 7): # 6: AddItemModifier #7: AddItemModifierGroupFilter
+        if element.operand in (const.opndAIM, const.opndALGM):
             activeExpression.sourceAttributeId = res2
 
-        elif element.operand == 12: # 12: joinEntityAndAttribute
+        elif element.operand == const.opndAtt:
             return (res1, # Entity
                     res2) # Attribute
 
-        elif element.operand == 21: # 21: Operand
+        elif element.operand == const.opndDefAssociation:
             try:
                 return const.operConvMap[element.value]
             except KeyError:
                 print("Unknown operator is used in expression")
 
-        elif element.operand in (24, 26, 29): # 24: Entity, 26: Group
+        elif element.operand in (const.opndDefEnvIdx, const.opndDefGroup, const.opndDefTypeId):
             return element.value
 
-        elif element.operand == 22: # 22: attributeId
+        elif element.operand == const.opndDefAttribute:
             return element.attributeId
 
-        elif element.operand == 31: # JoinEntityAttributeAndOperation
+        elif element.operand == const.opndEff:
             activeExpression.operation = res1
             activeExpression.target, activeExpression.targetAttributeId = res2
 
-        elif element.operand == 48: # JoinGroupFilter
+        elif element.operand == const.opndLG: # JoinGroupFilter
             activeExpression.filters.append(ExpressionFilter("group", res2))
             return res1 # Entity, handled by parent
 
-        elif element.operand == 49: #JoinSkillFilter
+        elif element.operand == const.opndLS: #JoinSkillFilter
             activeExpression.filters.append(ExpressionFilter("skill", res2))
             return res1 # Entity, handled by parent
         else:

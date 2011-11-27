@@ -18,6 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+import math
+
+# Stacking penalty base constant
+stackingBase = 1 / math.exp((1 / 2.67) ** 2)
 # Dogma operators section, here we deliberately assign IDs,
 # but make sure IDs are assigned to keep operations in
 # proper order
@@ -40,3 +44,18 @@ operConvMap = {"PreAssignment": operPreAssignment,
                "PostDiv": operPostDiv,
                "PostPercent": operPostPercent,
                "PostAssignment": operPostAssignment}
+# Dogma operands section
+opndAIM = 6  # Add item modifier
+opndALGM = 7  # Add location group modifier
+opndALM = 8  # Add location modifier
+opndAtt = 12  # Attribute (joins entity and attribute name)
+opndCombine = 17  # Executes two statements
+opndDefAssociation = 21  # Define attribute association type (operator)
+opndDefAttribute = 22  # Define attribute
+opndDefEnvIdx = 24  # Define environment index
+opndDefGroup = 26  # Define group
+opndDefInt = 27  # Defines an int constant
+opndDefTypeId = 29  # Define a type ID
+opndEff = 31  # Define association type (joins target attribute of entity and operation)
+opndLG = 48  # Specify a group in a location
+opndLS = 49  # Llocation - skill required item group
