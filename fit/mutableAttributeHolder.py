@@ -164,19 +164,19 @@ class MutableAttributeMap(collections.Mapping):
 
 
 
-    def __calculate(self, key):
+    def __calculate(self, attrId):
         """
-        Run calculations to find the actual value of key.
+        Run calculations to find the actual value of attribute with ID equal to attrID.
         All other attribute values are assumed to be final.
         This is obviously not always the case,
-        if any of the dependencies of this calculation change, this attrib will get damaged and thus recalculated
+        if any of the dependencies of this calculation change, this attribute will get damaged and thus recalculated
         """
 
-        base = self.__holder.type.attributes.get(key)
+        base = self.__holder.type.attributes.get(attrId)
 
         try:
             order = self.order
-            register = sorted(self.__attributeRegister[key], key=lambda k: order[k.info.operation])
+            register = sorted(self.__attributeRegister[attrId], key=lambda k: order[k.info.operation])
 
             result = base
             for sourceHolder, info in register:
