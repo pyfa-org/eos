@@ -153,14 +153,16 @@ class MutableAttributeMap(collections.Mapping):
 
         try:
             del self.__modifiedAttributes[targetAttributeId]
+        except KeyError:
+            pass
+        finally:
             for attrId, s in self.__attributeRegister.items():
                 for registrationInfo in s:
                     newInfo = registrationInfo.info
                     if newInfo.sourceAttributeId == targetAttributeId:
                         fit.damage(self, newInfo)
 
-        except KeyError: #KeyError is thrown by del statement if the key doesn't exist
-            pass
+
 
     def __calculate(self, key):
         """
