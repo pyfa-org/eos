@@ -76,7 +76,7 @@ class MutableAttributeHolder(object):
         for filter in filters:
             if filter.type == const.filLocGrp and filter.value != type.groupId:
                 return False
-            if filter.type == const.filLocSkrq and filter.value not in type.requiredSkills():
+            if filter.type == const.filLocSrq and filter.value not in type.requiredSkills():
                 return False
 
         return True

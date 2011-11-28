@@ -59,8 +59,8 @@ penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 opndAddItmMod = 6  # Applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
 opndAddLocGrpMod = 7  # Applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
 opndAddLocMod = 8  # Applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
-opndAddLocSkrqMod = 9  # Applies modification to items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
-opndAddOwnSkrqMod = 11  # Applies modification to items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
+opndAddLocSrqMod = 9  # Applies modification to items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
+opndAddOwnSrqMod = 11  # Applies modification to items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
 opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
 opndCombine = 17  # Executes two statements, format: expression1; expression2
 opndDefOptr = 21  # Define operator, text in expressionValue field
@@ -71,7 +71,7 @@ opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
 opndDefType = 29  # Define a type, integer in expressionTypeID field
 opndTgtOptr = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).(operator)
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
-opndLocSkrq = 49  # Joins location and skillRequirement definitions into single filter, format: location[skillRequirement]
+opndLocSrq = 49  # Joins location and skillRequirement definitions into single filter, format: location[skillRequirement]
 
 
 ### Custom Eos stuff, doesn't depend on database IDs ###
@@ -118,5 +118,5 @@ locConvMap = {"Self": locSelf,
 # Filter IDs section
 filLocGrp = 0  # Filter by location and group
 filLoc = 1  # Filter by location
-filLocSkrq = 2  # Filter by location and skill requirement
-filterOwnSkrq = 3  # Filter by owner and skill requirement
+filLocSrq = 2  # Filter by location and skill requirement
+filterOwnSrq = 3  # Filter by owner and skill requirement

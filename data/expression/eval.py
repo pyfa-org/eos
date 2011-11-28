@@ -114,7 +114,7 @@ class ExpressionEval(object):
 
         # Write source attribute ID if we're dealing with modifier definition
         if element.operand in (const.opndAddItmMod, const.opndAddLocGrpMod, const.opndAddLocMod,
-                               const.opndAddLocSkrqMod, const.opndAddOwnSkrqMod):
+                               const.opndAddLocSrqMod, const.opndAddOwnSrqMod):
             activeExpression.sourceAttributeId = res2
 
         # Get item/filtered items and join them with attribute
@@ -145,8 +145,8 @@ class ExpressionEval(object):
             activeExpression.filters.append(ExpressionFilter(const.filLocGrp, res2))
             return res1 # Entity, handled by parent
 
-        elif element.operand == const.opndLocSkrq: #JoinSkillFilter
-            activeExpression.filters.append(ExpressionFilter(const.filLocSkrq, res2))
+        elif element.operand == const.opndLocSrq: #JoinSkillFilter
+            activeExpression.filters.append(ExpressionFilter(const.filLocSrq, res2))
             return res1 # Entity, handled by parent
 
         # Terminals linking to external tables' IDs
