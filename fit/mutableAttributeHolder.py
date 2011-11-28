@@ -179,22 +179,22 @@ class MutableAttributeMap(collections.Mapping):
                 modifiers[operation].append(modValue)
 
             for operation in sorted(modifiers):
-                if operation in (const.operPreAssignment, const.operPostAssignment):
+                if operation in (const.optrPreAssignment, const.optrPostAssignment):
                     for mod in modifiers[operation]:
                         result = mod
-                elif operation in (const.operPreMul, const.operPostMul):
+                elif operation in (const.optrPreMul, const.optrPostMul):
                     for mod in modifiers[operation]:
                         result *= mod
-                elif operation == const.operPostPercent:
+                elif operation == const.optrPostPercent:
                     for mod in modifiers[operation]:
                         result *= 1 + mod / 100
-                elif operation in (const.operPreDiv, const.operPostDiv):
+                elif operation in (const.optrPreDiv, const.optrPostDiv):
                     for mod in modifiers[operation]:
                         result /= mod
-                elif operation == const.operModAdd:
+                elif operation == const.optrModAdd:
                     for mod in modifiers[operation]:
                         result += mod
-                elif operation == const.operModSub:
+                elif operation == const.optrModSub:
                     for mod in modifiers[operation]:
                         result -= mod
 

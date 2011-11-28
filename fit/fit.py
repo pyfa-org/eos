@@ -108,7 +108,7 @@ class Fit(object):
         groupAffectorRegister = self.__groupAffectorRegister
 
         for filter in info.filters:
-            if filter.type == const.filterLRS:
+            if filter.type == const.filLocSkrq:
                 #Get the affector set
                 s = skillAffectorRegister.get(filter.value)
                 if s is None:
@@ -116,7 +116,7 @@ class Fit(object):
 
                 s.add(holder)
 
-            elif filter.type == const.filterLG:
+            elif filter.type == const.filLocGrp:
                 s = groupAffectorRegister.get(filter.value)
                 if s is None:
                     groupAffectorRegister[filter.value] = s = set()

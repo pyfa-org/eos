@@ -112,7 +112,7 @@ class ExpressionEval(object):
         res1 = self.__build(element.arg1)
         res2 = self.__build(element.arg2)
 
-        if element.operand in (const.opndAIM, const.opndALGM):
+        if element.operand in (const.opndAddItmMod, const.opndAddLocGrpMod):
             activeExpression.sourceAttributeId = res2
 
         elif element.operand == const.opndItmAttr:
@@ -121,7 +121,7 @@ class ExpressionEval(object):
 
         elif element.operand == const.opndDefOper:
             try:
-                return const.operConvMap[element.value]
+                return const.optrConvMap[element.value]
             except KeyError:
                 print("Unknown operator is used in expression")
                 return
@@ -143,12 +143,12 @@ class ExpressionEval(object):
             activeExpression.operation = res1
             activeExpression.target, activeExpression.targetAttributeId = res2
 
-        elif element.operand == const.opndLG: # JoinGroupFilter
-            activeExpression.filters.append(ExpressionFilter(const.filterLG, res2))
+        elif element.operand == const.opndLocGrp: # JoinGroupFilter
+            activeExpression.filters.append(ExpressionFilter(const.filLocGrp, res2))
             return res1 # Entity, handled by parent
 
-        elif element.operand == const.opndLRS: #JoinSkillFilter
-            activeExpression.filters.append(ExpressionFilter(const.filterLRS, res2))
+        elif element.operand == const.opndLocSkrq: #JoinSkillFilter
+            activeExpression.filters.append(ExpressionFilter(const.filLocSkrq, res2))
             return res1 # Entity, handled by parent
         else:
             raise EvalException("Failed to evaluate {0}".format(element.id))
