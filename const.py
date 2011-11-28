@@ -91,11 +91,6 @@ operConvMap = {"PreAssignment": operPreAssignment,
                "PostDiv": operPostDiv,
                "PostPercent": operPostPercent,
                "PostAssignment": operPostAssignment}
-# Filter IDs section=
-filterLG = 0
-filterL = 1
-filterLRS = 2
-filterORS = 3
 # Target location IDs
 locSelf = 0
 locChar = 1
@@ -110,3 +105,8 @@ locConvMap = {"Self": locSelf,
               "Target": locTgt,
               "Other": locCont,
               "Area": locArea}
+# Filter IDs section
+filterLG = 0
+filterL = 1
+filterLRS = 2
+filterORS = 3
