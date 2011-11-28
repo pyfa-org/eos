@@ -41,17 +41,20 @@ attrSkillRqMap = {attrSkillRq1: attrSkillRq1Lvl,
                   attrSkillRq4: attrSkillRq4Lvl,
                   attrSkillRq5: attrSkillRq5Lvl,
                   attrSkillRq6: attrSkillRq6Lvl}
+
 # Item categories
 catShip = 6
 catCharge = 8
 catSkill = 16
 catImplant = 20
 catSubsystem = 32
+
 # Item categories immune to stacking penalty
 penaltyImmuneCats = (catShip, catCharge, catSkill,
                      catImplant, catSubsystem)
 # Stacking penalty base constant
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
+
 # Dogma operands section
 opndAddItmMod = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
 opndAddLocGrpMod = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
@@ -68,7 +71,9 @@ opndTgtOper = 31  # Joins target (attribute of possibly filtered items) and oper
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
 opndLocSkrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skill requirement]
 
+
 ### Custom Eos stuff, doesn't depend on database IDs ###
+
 # Dogma operators section, here we deliberately assign IDs,
 # but make sure IDs are assigned to keep operations in
 # proper order
@@ -81,6 +86,7 @@ optrPostMul = 6
 optrPostDiv = 7
 optrPostPercent = 8
 optrPostAssignment = 9
+
 # Database name: ID map for Dogma operators
 optrConvMap = {"PreAssignment": optrPreAssignment,
                "PreMul": optrPreMul,
@@ -91,6 +97,7 @@ optrConvMap = {"PreAssignment": optrPreAssignment,
                "PostDiv": optrPostDiv,
                "PostPercent": optrPostPercent,
                "PostAssignment": optrPostAssignment}
+
 # Target location IDs
 locSelf = 0
 locChar = 1
@@ -105,6 +112,7 @@ locConvMap = {"Self": locSelf,
               "Target": locTgt,
               "Other": locCont,
               "Area": locArea}
+
 # Filter IDs section
 filLocGrp = 0  # Filter by location and group
 filLoc = 1  # Filter by location

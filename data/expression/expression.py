@@ -29,7 +29,8 @@ class Expression(object):
     All info in this object is taken straight from EVE's cache.
     """
 
-    def __init__(self, id, operand, value, arg1, arg2, typeId=0, groupId=0, attributeId=0):
+    def __init__(self, id, operand, value=None, arg1=None, arg2=None,
+                 typeId=None, groupId=None, attributeId=None):
         self.id = id
         self.operand = operand
         self.value = value
