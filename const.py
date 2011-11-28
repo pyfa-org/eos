@@ -106,7 +106,7 @@ locConvMap = {"Self": locSelf,
               "Other": locCont,
               "Area": locArea}
 # Filter IDs section
-filLocGrp = 0
-filLoc = 1
-filLocSkrq = 2
-filterOwnSkrq = 3
+filLocGrp = 0  # Filter by location and group
+filLoc = 1  # Filter by location
+filLocSkrq = 2  # Filter by location and skill requirement
+filterOwnSkrq = 3  # Filter by owner and skill requirement
