@@ -43,7 +43,7 @@ class Type(object):
     def requiredSkills(self):
         attributes = self.attributes
         reqs = set()
-        for v in const.attrSkillRqs:
+        for v in const.attrSkillRqMap.keys():
             req = attributes.get(v)
             if req is not None:
                 reqs.add(int(req))
