@@ -18,46 +18,46 @@
 #===============================================================================
 
 class Effect(object):
-    '''
+    """
     Represents a single effect. Effects are the building blocks of types and are what actualy make a type do something.
     In turn, each effect is made out of pre- and a post-expression
     This class is typically reused by the dataHandler if the same id is requested multiple times.
     As such, there shouldn't be ANY fit-specific data on it
-    '''
+    """
 
     def __init__(self, id, preExpression, postExpression, isOffensive, isAssistance):
         self.id = id
-        '''The unique ID of an effect. Can be anything, as long as its unique, typically, the IDs CCP assigned to them in the SDD are used'''
+        """The unique ID of an effect. Can be anything, as long as its unique, typically, the IDs CCP assigned to them in the SDD are used"""
 
         self.preExpression = preExpression
-        '''PreExpression of the effect. A preExpression is the expression that gets run when the module is activated'''
+        """PreExpression of the effect. A preExpression is the expression that gets run when the module is activated"""
 
         self.postExpression = postExpression
-        '''
+        """
         PostExpression of the effect. A postExpression gets run when the module gets disabled.
         We do not use them for our undo implementation, however, some modules that do their stuff at end of run need these (like armor reps)
-        '''
+        """
 
         self.isOffensive = isOffensive
-        '''Whether the module is offensive (e.g. guns)'''
+        """Whether the module is offensive (e.g. guns)"""
 
         self.isAssistance = isAssistance
-        '''Whether the module is helpful (e.g. Remote reps)'''
+        """Whether the module is helpful (e.g. Remote reps)"""
 
     def _prepare(self, owner, fit):
-        '''
+        """
         Prepares the effect for execution
-        '''
+        """
         self.preExpression.prepare(owner, fit)
 
     def _apply(self, owner, fit):
-        '''
+        """
         Apply this effect onto the passed fit
-        '''
+        """
         self.preExpression.apply(owner, fit)
 
     def _undo(self, owner, fit):
-        '''
+        """
         Undo this effect from the passed fit
-        '''
+        """
         self.preExpression.undo(owner, fit)

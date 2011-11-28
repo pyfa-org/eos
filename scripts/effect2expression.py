@@ -18,9 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-'''
+"""
 Script which outputs all expressions used by given effect, with details.
-'''
+"""
 
 import argparse
 import sqlite3

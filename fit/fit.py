@@ -21,10 +21,10 @@ import collections
 import itertools
 
 class Fit(object):
-    '''
+    """
     Fit object. Each fit is built out of a number of Modules, as well as a Ship.
     This class also contains the logic to apply a single expressionInfo onto itself
-    '''
+    """
 
     @property
     def ship(self):
@@ -47,9 +47,9 @@ class Fit(object):
         self._setHolder(character)
 
     def __init__(self, ship):
-        '''
+        """
         Constructor: Accepts a Ship
-        '''
+        """
         # These registers are mainly used when new modules are added.
         # A new module addition will cause registers to be checked for all that module's skills and group for effects to apply to it
         # They usualy should NOT be changed outside the lib
@@ -99,9 +99,9 @@ class Fit(object):
         self.__groupAffecteeRegister[holder.type.groupId].remove(holder)
 
     def _prepare(self, holder, info):
-        '''
+        """
         Prepare the passed info object for execution
-        '''
+        """
         # Fill up the registers
         skillAffectorRegister = self.__skillAffectorRegister
         groupAffectorRegister = self.__groupAffectorRegister
@@ -137,18 +137,18 @@ class Fit(object):
             target._damage(info)
 
     def _undo(self, holder, info):
-        '''
+        """
         Undos the operations applied by _run, usualy also called by the ExpressionEval that owns this ExpressionInfo.
         Unless you're running custom ExpressionInfo objects, you will usualy never call this
-        '''
+        """
         pass
 
     def __getTargets(self, holder, info):
-        '''
+        """
         Returns the target(s) of the passed expression.
         Implemented values: Self, Ship, Char
         Unimplemented values: Target, Area, Other
-        '''
+        """
         target = info.target
 
         if target == "Self":
@@ -184,10 +184,10 @@ class Fit(object):
             holder.fit = None
 
 class MutableAttributeHolderList(collections.MutableSequence):
-    '''
+    """
     Class implementing the MutableSequence ABC intended to hold a list of MutableAttributeHolders (typically: modules, drones, etc.).
     It makes sure the module knows its been added onto the fit, and makes sure a module is only in one single fit
-    '''
+    """
     def __init__(self, fit):
         self.__fit = fit
         self.__list = [] # List used for storage internally

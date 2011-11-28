@@ -24,27 +24,27 @@ class EvalException(Exception):
     pass
 
 class ExpressionEval(object):
-    '''
+    """
     Expression evaluator responsible for converting a tree of Expression objects (which isn't directly useful to us)
     into one or several ExpressionInfo objects which can then be ran as needed.
-    '''
+    """
     def __init__(self):
         self.__activeExpression = None
         self.infos = []
         self.fail = False # Stop guard
 
     def _prepare(self, owner, fit):
-        '''
+        """
         Internal method that prepares an eval object for application.
-        '''
+        """
         for e in self.infos:
             fit._prepare(owner, e)
 
     def _apply(self, owner, fit):
-        '''
+        """
         Internal run method that applies all expressions stored in this eval object.
         This is typically called for you by the expression itself
-        '''
+        """
         for e in self.infos:
             fit._apply(owner, e)
 
@@ -53,12 +53,12 @@ class ExpressionEval(object):
             fit._undo(owner, e)
 
     def build(self, base):
-        '''
+        """
         Prepare an ExpressionEval object for running.
         No validations are done here, what is passed should be valid.
         If its not, exceptions will most likely occur, or you'll get an incomplete ExpressionInfo object as a result
         If this is not called before run()/undo() they will not do anything
-        '''
+        """
         # Validation: detect stubs, if a stub is found, return an empty list
         infos = self.infos
         if base.operand == const.opndDefInt and int(base.value) == 1:
@@ -73,11 +73,11 @@ class ExpressionEval(object):
         return self.infos
 
     def __build(self, element):
-        '''
+        """
         Internal recursive building method.
         The public build() passes the base to this method, which will then proceed to build it, as well as all its children
         into (hopefully) fully functional ExpressionInfo objects.
-        '''
+        """
         # Sanity guard
         if element is None or self.fail:
             return

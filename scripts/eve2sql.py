@@ -18,13 +18,13 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-'''
+"""
 This script pulls data out of EVE cache and makes an SQLite dump
 Reverence library by Entity is used, check http://wiki.github.com/ntt/reverence/ for source code
 Example commands to run the script for default paths under Linux to get SQLite dump:
 Tranquility: python2.7 eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/EVE" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_eve_tranquility/cache" --sqlite="/home/"$USER"/Desktop/eve.db"
 Singularity: python2.7 eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/Singularity" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_singularity_singularity/cache" --sisi --sqlite="/home/"$USER"/Desktop/evetest.db"
-'''
+"""
 
 class Column(object):
     """

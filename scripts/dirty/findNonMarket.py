@@ -18,10 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-'''
+"""
 Goes through items and finds items which won't appear on market tree (no marketGroupID and no
 parent with marketGroupID), also tries to guess to which market group these items belong
-'''
+"""
 
 import copy
 import os.path

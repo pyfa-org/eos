@@ -24,28 +24,28 @@ from eos import const
 RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 
 class MutableAttributeHolder(object):
-    '''
+    """
     Base attribute holder class inherited by all classes that need to keep track of modified attributes.
     This class holds a MutableAttributeMap to keep track of changes.
-    '''
+    """
 
     def __init__(self, type):
-        '''
+        """
         Constructor. Accepts a Type
-        '''
+        """
         self.fit = None
-        '''
+        """
         Which fit this holder is bound to
-        '''
+        """
         self.type = type
-        '''
+        """
         Which type this holder wraps
-        '''
+        """
 
         self.attributes = MutableAttributeMap(self)
-        '''
+        """
         Special dictionary subclass that holds modified attributes and data related to their calculation
-        '''
+        """
 
     def _prepare(self):
         for effect in self.type.effects:
@@ -88,9 +88,9 @@ class MutableAttributeHolder(object):
         self.attributes._damage(info)
 
 class MutableAttributeMap(collections.Mapping):
-    '''
+    """
     MutableAttributeMap class, this class is what actually keeps track of modified attribute values and who modified what so undo can work as expected.
-    '''
+    """
 
     def __init__(self, holder):
         self.__holder = holder

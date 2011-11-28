@@ -24,12 +24,12 @@ import weakref
 from ..data import Type, Expression, Effect
 
 class JsonDataHandler(DataHandler):
-    '''
+    """
     JSON based dataHandler, this dataHandler will load eve staticdata and expression data into memory at instanciation from json files.
     Any call to getType or getExpression will be answered using the in-memory dictionaries.
     By default, files are assumed to be ./eos/data/eve.json.bz2 and ./eos/data/expressions.json.bz2
     Data is assumed to be encoded as UTF-8
-    '''
+    """
     def __init__(self, typesPath, expressionsPath, effectsPath, encoding='utf-8'):
         self.__typesCache = weakref.WeakValueDictionary()
         self.__expressionsCache = weakref.WeakValueDictionary()

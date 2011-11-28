@@ -18,10 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-'''
+"""
 Script which outputs all effects which use expressions with given operandID,
 and all items with these effects.
-'''
+"""
 
 import argparse
 import sqlite3
