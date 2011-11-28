@@ -56,20 +56,22 @@ penaltyImmuneCats = (catShip, catCharge, catSkill,
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
 # Dogma operands section
-opndAddItmMod = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
-opndAddLocGrpMod = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
-opndAddLocMod = 8  # Add location modifier, applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
+opndAddItmMod = 6  # Applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
+opndAddLocGrpMod = 7  # Applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
+opndAddLocMod = 8  # Applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
+opndAddLocSkrqMod = 9  # Applies modification to items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
+opndAddOwnSkrqMod = 11  # Applies modification to items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
 opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
 opndCombine = 17  # Executes two statements, format: expression1; expression2
-opndDefOper = 21  # Define operator, text in expressionValue field
+opndDefOptr = 21  # Define operator, text in expressionValue field
 opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
 opndDefLoc = 24  # Define location, text in expressionValue field
 opndDefGrp = 26  # Define group, integer in expressionGroupID field
 opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
 opndDefType = 29  # Define a type, integer in expressionTypeID field
-opndTgtOper = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).operator
+opndTgtOptr = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).(operator)
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
-opndLocSkrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skill requirement]
+opndLocSkrq = 49  # Joins location and skillRequirement definitions into single filter, format: location[skillRequirement]
 
 
 ### Custom Eos stuff, doesn't depend on database IDs ###

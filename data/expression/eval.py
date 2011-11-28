@@ -91,41 +91,45 @@ class ExpressionEval(object):
             # This should be when combined expression is found somewhere down a tree
             if activeExpression is not None:
                 self.infos.append(self.__activeExpression)
-
             # Build first expression
             self.__activeExpression = ExpressionInfo()
             self.__build(element.arg1)
             self.infos.append(self.__activeExpression)
-
             # Build second
             self.__activeExpression = ExpressionInfo()
             self.__build(element.arg2)
             self.infos.append(self.__activeExpression)
-
             # Done
             return
 
+        # If it's not composite, use current expression as active, and start to fill
+        # info object
         elif activeExpression is None:
             self.__activeExpression = activeExpression = ExpressionInfo()
             self.infos.append(activeExpression)
 
+        # Attempt to build linked sub-expressions
         res1 = self.__build(element.arg1)
         res2 = self.__build(element.arg2)
 
-        if element.operand in (const.opndAddItmMod, const.opndAddLocGrpMod):
+        # Write source attribute ID if we're dealing with modifier definition
+        if element.operand in (const.opndAddItmMod, const.opndAddLocGrpMod, const.opndAddLocMod,
+                               const.opndAddLocSkrqMod, const.opndAddOwnSkrqMod):
             activeExpression.sourceAttributeId = res2
 
+        # Get item/filtered items and join them with attribute
         elif element.operand == const.opndItmAttr:
-            return (res1, # Entity
-                    res2) # Attribute
+            return (res1, res2)
 
-        elif element.operand == const.opndDefOper:
+        # Get operator from value using map
+        elif element.operand == const.opndDefOptr:
             try:
                 return const.optrConvMap[element.value]
             except KeyError:
                 print("Unknown operator is used in expression")
                 return
 
+        # Get location from value using map
         elif element.operand == const.opndDefLoc:
             try:
                 return const.locConvMap[element.value]
@@ -133,16 +137,7 @@ class ExpressionEval(object):
                 print("Unknown location is used in expression")
                 return
 
-        elif element.operand == const.opndDefAttr:
-            return element.attributeId
-
-        elif element.operand == const.opndDefGrp:
-            return element.groupId
-
-        elif element.operand == const.opndDefType:
-            return element.typeId
-
-        elif element.operand == const.opndTgtOper:
+        elif element.operand == const.opndTgtOptr:
             activeExpression.operation = res1
             activeExpression.target, activeExpression.targetAttributeId = res2
 
@@ -153,5 +148,15 @@ class ExpressionEval(object):
         elif element.operand == const.opndLocSkrq: #JoinSkillFilter
             activeExpression.filters.append(ExpressionFilter(const.filLocSkrq, res2))
             return res1 # Entity, handled by parent
+
+        # Terminals linking to external tables' IDs
+        elif element.operand == const.opndDefAttr:
+            return element.attributeId
+        elif element.operand == const.opndDefGrp:
+            return element.groupId
+        elif element.operand == const.opndDefType:
+            return element.typeId
+
+        # We don't know what to do with it
         else:
             raise EvalException("Failed to evaluate {0}".format(element.id))
