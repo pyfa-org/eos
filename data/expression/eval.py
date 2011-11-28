@@ -125,7 +125,13 @@ class ExpressionEval(object):
             except KeyError:
                 print("Unknown operator is used in expression")
 
-        elif element.operand in (const.opndDefLoc, const.opndDefGrp, const.opndDefType):
+        elif element.operand == const.opndDefLoc:
+            try:
+                return const.locConvMap[element.value]
+            except KeyError:
+                print("Unknown location is used in expression")
+
+        elif element.operand in (const.opndDefGrp, const.opndDefType):
             return element.value
 
         elif element.operand == const.opndDefAttr:

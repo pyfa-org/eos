@@ -152,16 +152,16 @@ class Fit(object):
         """
         target = info.target
 
-        if target == "Self":
+        if target == const.locSelf:
             return (holder, )
         #Ship can either mean the ship itself (if no filters are specified)
         #or a filtered match on everything on the fit (if filters are specified)
-        elif target == "Ship" and len(info.filters) > 0:
+        elif target == const.locShip and len(info.filters) > 0:
             filters = info.filters
             return [mod for mod in self.modules if mod.matches(filters)]
-        elif target == "Ship":
+        elif target == const.locShip:
             return (self.ship, )
-        elif target == "Char":
+        elif target == const.locChar:
             return (self.character, )
 
     def __setFit(self, holder):

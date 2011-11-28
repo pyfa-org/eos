@@ -96,3 +96,17 @@ filterLG = 0
 filterL = 1
 filterLRS = 2
 filterORS = 3
+# Target location IDs
+locSelf = 0
+locChar = 1
+locShip = 2
+locTgt = 4
+locCont = 5
+locArea = 6
+# Database name: ID map for target locations
+locConvMap = {"Self": locSelf,
+              "Char": locChar,
+              "Ship": locShip,
+              "Target": locTgt,
+              "Other": locCont,
+              "Area": locArea}
