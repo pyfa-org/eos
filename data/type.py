@@ -17,6 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos import const
+
 class Type(object):
     '''
     A type, the basic building blocks of EVE. Everything that can do something is a type.
@@ -41,7 +43,7 @@ class Type(object):
     def requiredSkills(self):
         attributes = self.attributes
         reqs = set()
-        for v in (182, 183, 184, 1285, 1289, 1290):
+        for v in const.attrSkillRqs:
             req = attributes.get(v)
             if req is not None:
                 reqs.add(int(req))

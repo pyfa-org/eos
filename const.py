@@ -20,6 +20,30 @@
 
 import math
 
+# Attributes
+attrSkillRq1 = 182
+attrSkillRq2 = 183
+attrSkillRq3 = 184
+attrSkillRq1Lvl = 277
+attrSkillRq2Lvl = 278
+attrSkillRq3Lvl = 279
+attrSkillRq4 = 1285
+attrSkillRq4Lvl = 1286
+attrSkillRq5Lvl = 1287
+attrSkillRq6Lvl = 1288
+attrSkillRq5 = 1289
+attrSkillRq6 = 1290
+# Tuple which holds all skill requirement attribute IDs
+attrSkillRqs = (attrSkillRq1, attrSkillRq2, attrSkillRq3,
+                attrSkillRq4, attrSkillRq5, attrSkillRq6)
+# Dictionary which holds skill requirement attribute IDs
+# and their corresponding level attribute IDs
+attrSkillRqMap = {attrSkillRq1: attrSkillRq1Lvl,
+                  attrSkillRq2: attrSkillRq2Lvl,
+                  attrSkillRq3: attrSkillRq3Lvl,
+                  attrSkillRq4: attrSkillRq4Lvl,
+                  attrSkillRq5: attrSkillRq5Lvl,
+                  attrSkillRq6: attrSkillRq6Lvl,}
 # Item categories
 catShip = 6
 catCharge = 8
