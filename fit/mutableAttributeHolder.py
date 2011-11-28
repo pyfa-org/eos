@@ -19,7 +19,7 @@
 
 import collections
 
-from eos.util import const
+from eos import const
 
 RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 

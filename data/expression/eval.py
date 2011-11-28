@@ -17,7 +17,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos.util import const
+from eos import const
 from .info import ExpressionInfo, ExpressionFilter
 
 class EvalException(Exception):
