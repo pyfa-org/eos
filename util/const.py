@@ -27,10 +27,10 @@ catSkill = 16
 catImplant = 20
 catSubsystem = 32
 # Item categories immune to stacking penalty
-stackingImmuneCats = (catShip, catCharge, catSkill,
-                      catImplant, catSubsystem)
+penaltyImmuneCats = (catShip, catCharge, catSkill,
+                     catImplant, catSubsystem)
 # Stacking penalty base constant
-stackingBase = 1 / math.exp((1 / 2.67) ** 2)
+penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 # Dogma operators section, here we deliberately assign IDs,
 # but make sure IDs are assigned to keep operations in
 # proper order
