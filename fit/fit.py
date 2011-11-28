@@ -18,7 +18,8 @@
 #===============================================================================
 
 import collections
-import itertools
+
+from eos import const
 
 class Fit(object):
     """
@@ -107,7 +108,7 @@ class Fit(object):
         groupAffectorRegister = self.__groupAffectorRegister
 
         for filter in info.filters:
-            if filter.type == "skill":
+            if filter.type == const.filterLRS:
                 #Get the affector set
                 s = skillAffectorRegister.get(filter.value)
                 if s is None:
@@ -115,7 +116,7 @@ class Fit(object):
 
                 s.add(holder)
 
-            elif filter.type == "group":
+            elif filter.type == const.filterLG:
                 s = groupAffectorRegister.get(filter.value)
                 if s is None:
                     groupAffectorRegister[filter.value] = s = set()

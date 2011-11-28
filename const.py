@@ -52,6 +52,23 @@ penaltyImmuneCats = (catShip, catCharge, catSkill,
                      catImplant, catSubsystem)
 # Stacking penalty base constant
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
+# Dogma operands section
+opndAIM = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
+opndALGM = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
+opndALM = 8  # Add location modifier, applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
+opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
+opndCombine = 17  # Executes two statements, format: expression1; expression2
+opndDefOper = 21  # Define operator, text in expressionValue field
+opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
+opndDefLoc = 24  # Define location, text in expressionValue field
+opndDefGrp = 26  # Define group, integer in expressionGroupID field
+opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
+opndDefType = 29  # Define a type, integer in expressionTypeID field
+opndTgtOper = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).operator
+opndLG = 48  # Joins location and group definitions into single filter, format: location..group
+opndLRS = 49  # Joins location and skill requirement definitions into single filter, format: location[skill requirement]
+
+### Custom Eos stuff, doesn't depend on database IDs ###
 # Dogma operators section, here we deliberately assign IDs,
 # but make sure IDs are assigned to keep operations in
 # proper order
@@ -74,18 +91,8 @@ operConvMap = {"PreAssignment": operPreAssignment,
                "PostDiv": operPostDiv,
                "PostPercent": operPostPercent,
                "PostAssignment": operPostAssignment}
-# Dogma operands section
-opndAIM = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
-opndALGM = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
-opndALM = 8  # Add location modifier, applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
-opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
-opndCombine = 17  # Executes two statements, format: expression1; expression2
-opndDefOper = 21  # Define operator, text in expressionValue field
-opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
-opndDefLoc = 24  # Define location, text in expressionValue field
-opndDefGrp = 26  # Define group, integer in expressionGroupID field
-opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
-opndDefType = 29  # Define a type, integer in expressionTypeID field
-opndTgtOper = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).operator
-opndLG = 48  # Joins location and group definitions into single filter, format: location..group
-opndLRS = 49  # Joins location and skill requirement definitions into single filter, format: location[skill requirement]
+# Filter IDs section=
+filterLG = 0
+filterL = 1
+filterLRS = 2
+filterORS = 3

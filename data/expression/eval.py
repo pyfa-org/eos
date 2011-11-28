@@ -31,7 +31,7 @@ class ExpressionEval(object):
     def __init__(self):
         self.__activeExpression = None
         self.infos = []
-        self.fail = False # Stop guard
+        self.fail = False  # Stop guard, true if parsing this expression failed at some point
 
     def _prepare(self, owner, fit):
         """
@@ -82,14 +82,13 @@ class ExpressionEval(object):
         if element is None or self.fail:
             return
 
-        # Get some stuff locally, we refer them often
+        # Get some stuff locally, we refer it often
         activeExpression = self.__activeExpression
 
+        # Check if expression is composite
         if element.operand == const.opndCombine:
-
             # If we already have an active expression, store it first.
-            # This should be when a splicer is found somewhere down a tree,
-            # I doubt this happens in practice ? It makes little sense
+            # This should be when combined expression is found somewhere down a tree
             if activeExpression is not None:
                 self.infos.append(self.__activeExpression)
 
@@ -137,11 +136,11 @@ class ExpressionEval(object):
             activeExpression.target, activeExpression.targetAttributeId = res2
 
         elif element.operand == const.opndLG: # JoinGroupFilter
-            activeExpression.filters.append(ExpressionFilter("group", res2))
+            activeExpression.filters.append(ExpressionFilter(const.filterLG, res2))
             return res1 # Entity, handled by parent
 
         elif element.operand == const.opndLRS: #JoinSkillFilter
-            activeExpression.filters.append(ExpressionFilter("skill", res2))
+            activeExpression.filters.append(ExpressionFilter(const.filterLRS, res2))
             return res1 # Entity, handled by parent
         else:
             raise EvalException("Failed to evaluate {0}".format(element.id))
