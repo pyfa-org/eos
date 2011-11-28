@@ -116,23 +116,23 @@ class ExpressionEval(object):
         if element.operand in (const.opndAIM, const.opndALGM):
             activeExpression.sourceAttributeId = res2
 
-        elif element.operand == const.opndAtt:
+        elif element.operand == const.opndItmAttr:
             return (res1, # Entity
                     res2) # Attribute
 
-        elif element.operand == const.opndDefAssociation:
+        elif element.operand == const.opndDefOper:
             try:
                 return const.operConvMap[element.value]
             except KeyError:
                 print("Unknown operator is used in expression")
 
-        elif element.operand in (const.opndDefEnvIdx, const.opndDefGroup, const.opndDefTypeId):
+        elif element.operand in (const.opndDefLoc, const.opndDefGrp, const.opndDefType):
             return element.value
 
-        elif element.operand == const.opndDefAttribute:
+        elif element.operand == const.opndDefAttr:
             return element.attributeId
 
-        elif element.operand == const.opndEff:
+        elif element.operand == const.opndTgtOper:
             activeExpression.operation = res1
             activeExpression.target, activeExpression.targetAttributeId = res2
 
@@ -140,7 +140,7 @@ class ExpressionEval(object):
             activeExpression.filters.append(ExpressionFilter("group", res2))
             return res1 # Entity, handled by parent
 
-        elif element.operand == const.opndLS: #JoinSkillFilter
+        elif element.operand == const.opndLRS: #JoinSkillFilter
             activeExpression.filters.append(ExpressionFilter("skill", res2))
             return res1 # Entity, handled by parent
         else:

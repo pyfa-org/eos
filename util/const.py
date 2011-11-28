@@ -54,17 +54,17 @@ operConvMap = {"PreAssignment": operPreAssignment,
                "PostPercent": operPostPercent,
                "PostAssignment": operPostAssignment}
 # Dogma operands section
-opndAIM = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operation)).AIM(sourceAttribute)
-opndALGM = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operation)).ALGM(sourceAttribute)
-opndALM = 8  # Add location modifier, applies modification to all items belonging to some location, format: ((location->targetAttribute).(operation)).ALM(sourceAttribute)
-opndAtt = 12  # Joins location and attribute, format:
-opndCombine = 17  # Executes two statements
-opndDefAssociation = 21  # Define attribute association type (operator)
-opndDefAttribute = 22  # Define attribute
-opndDefEnvIdx = 24  # Define environment index
-opndDefGroup = 26  # Define group
-opndDefInt = 27  # Defines an int constant
-opndDefTypeId = 29  # Define a type ID
-opndEff = 31  # Define association type (joins target attribute of entity and operation)
-opndLG = 48  # Specify a group in a location
-opndLS = 49  # Location - skill required item group
+opndAIM = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
+opndALGM = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
+opndALM = 8  # Add location modifier, applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
+opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
+opndCombine = 17  # Executes two statements, format: expression1; expression2
+opndDefOper = 21  # Define operator, text in expressionValue field
+opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
+opndDefLoc = 24  # Define location, text in expressionValue field
+opndDefGrp = 26  # Define group, integer in expressionGroupID field
+opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
+opndDefType = 29  # Define a type, integer in expressionTypeID field
+opndTgtOper = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).operator
+opndLG = 48  # Joins location and group definitions into single filter, format: location..group
+opndLRS = 49  # Joins location and skill requirement definitions into single filter, format: location[skill requirement]
