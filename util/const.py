@@ -20,6 +20,15 @@
 
 import math
 
+# Item categories
+catShip = 6
+catCharge = 8
+catSkill = 16
+catImplant = 20
+catSubsystem = 32
+# Item categories immune to stacking penalty
+stackingImmuneCats = (catShip, catCharge, catSkill,
+                      catImplant, catSubsystem)
 # Stacking penalty base constant
 stackingBase = 1 / math.exp((1 / 2.67) ** 2)
 # Dogma operators section, here we deliberately assign IDs,
@@ -45,10 +54,10 @@ operConvMap = {"PreAssignment": operPreAssignment,
                "PostPercent": operPostPercent,
                "PostAssignment": operPostAssignment}
 # Dogma operands section
-opndAIM = 6  # Add item modifier
-opndALGM = 7  # Add location group modifier
-opndALM = 8  # Add location modifier
-opndAtt = 12  # Attribute (joins entity and attribute name)
+opndAIM = 6  # Add Item Modifier, applies modification directly to some item, format: ((location->targetAttribute).(operation)).AIM(sourceAttribute)
+opndALGM = 7  # Add location group modifier, applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operation)).ALGM(sourceAttribute)
+opndALM = 8  # Add location modifier, applies modification to all items belonging to some location, format: ((location->targetAttribute).(operation)).ALM(sourceAttribute)
+opndAtt = 12  # Joins location and attribute, format:
 opndCombine = 17  # Executes two statements
 opndDefAssociation = 21  # Define attribute association type (operator)
 opndDefAttribute = 22  # Define attribute
@@ -58,4 +67,4 @@ opndDefInt = 27  # Defines an int constant
 opndDefTypeId = 29  # Define a type ID
 opndEff = 31  # Define association type (joins target attribute of entity and operation)
 opndLG = 48  # Specify a group in a location
-opndLS = 49  # Llocation - skill required item group
+opndLS = 49  # Location - skill required item group
