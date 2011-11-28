@@ -133,11 +133,14 @@ class ExpressionEval(object):
                 print("Unknown location is used in expression")
                 return
 
-        elif element.operand in (const.opndDefGrp, const.opndDefType):
-            return element.value
-
         elif element.operand == const.opndDefAttr:
             return element.attributeId
+
+        elif element.operand == const.opndDefGrp:
+            return element.groupId
+
+        elif element.operand == const.opndDefType:
+            return element.typeId
 
         elif element.operand == const.opndTgtOper:
             activeExpression.operation = res1
