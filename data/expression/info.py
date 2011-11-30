@@ -19,6 +19,8 @@
 
 import collections
 
+from eos import const
+
 class ExpressionInfo(object):
     """
     The ExpressionInfo objects are the actual "Core" of eos,
@@ -63,8 +65,8 @@ class ExpressionInfo(object):
         """
 
     def validate(self):
-        return self.operation is not None \
-           and self.target is not None \
-           and self.targetAttributeId is not None \
-           and self.sourceAttributeId is not None
-
+        if self.type == const.infoAddItmMod:
+            if self.filter is None and self.operation is not None and self.target is not None and \
+            self.targetAttributeId is not None and self.sourceAttributeId is not None:
+                return True
+        return False

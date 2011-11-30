@@ -67,9 +67,15 @@ class ExpressionEval(object):
         try:
             print("Building expression tree with base {}".format(base.id))
             self.__generic(base)
-        except EvalException as e:
+        except:
             del self.infos[:]
-            print("Error parsing tree {}: {}".format(base.id, e.args[0]))
+            print("Error building expression tree with base {}".format(base.id))
+
+        for info in self.infos:
+            if info.validate() is not True:
+                del self.infos[:]
+                print("Error validating one of the infos of expression tree with base {}".format(base.id))
+                break
 
         return self.infos
 
@@ -79,97 +85,39 @@ class ExpressionEval(object):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
                         const.opndAddItmMod: self.__addItmMod}
-        try:
-            genericMethod = genericOpnds[element.operand]
-        except KeyError:
-            raise EvalException("unknown operand in generic expression {}".format(element.id))
-        genericMethod(element)
+        genericOpnds[element.operand](element)
 
     def __splice(self, element):
         """Auxiliary combining expression, lets to reference multiple meaningful expressions from one"""
-        # Pre-checks
-        if element.arg1 is None or element.arg2 is None:
-            raise EvalException("child is missing in splice expression {}".format(element.id))
-        # Data processing
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
     def __addItmMod(self, element):
         """Modifying expression, adds modification directly to item"""
-        # Pre-checks
-        if element.arg1 is None or element.arg2 is None:
-            raise EvalException("child is missing in addItmMod expression {}".format(element.id))
-        # Data processing
         info = ExpressionInfo()
         info.type = const.infoAddItmMod
         self.__tgtOptr(element.arg1, info)
         info.sourceAttributeId = self.__getAttrId(element.arg2)
-        # Post-checks
-        if info.filter is not None:
-            raise EvalException("filter has been set in addItmMod expression {}".format(element.id))
-        if info.target is None:
-            raise EvalException("no target in addItmMod expression {}".format(element.id))
-        if info.targetAttributeId is None:
-            raise EvalException("no target attribute in addItmMod expression {}".format(element.id))
-        if info.sourceAttributeId is None:
-            raise EvalException("no source attribute in addItmMod expression {}".format(element.id))
         self.infos.append(info)
 
     def __tgtOptr(self, element, info):
         """Helper for modifying expressions, joins target attribute of items and info operator"""
-        # pre-checks
-        if element.operand != const.opndTgtOptr:
-            raise EvalException("operand mismatch in tgtOptr expression {}".format(element.id))
-        if element.arg1 is None or element.arg2 is None:
-            raise EvalException("child is missing in tgtOptr expression {}".format(element.id))
-        # Data processing
         info.operation = self.__getOptr(element.arg1)
         self.__itmAttr(element.arg2, info)
 
     def __itmAttr(self, element, info):
         """Helper for modifying expressions, joins target items with target attribute"""
-        # Pre-checks
-        if element.operand != const.opndItmAttr:
-            raise EvalException("operand mismatch in itmAttr expression {}".format(element.id))
-        if element.arg1 is None or element.arg2 is None:
-            raise EvalException("child is missing in itmAttr expression {}".format(element.id))
-        # Data processing
         info.target = self.__getLoc(element.arg1)
         info.targetAttributeId = self.__getAttrId(element.arg2)
 
     def __getAttrId(self, element):
         """Helper for modifying expressions, references attribute via ID"""
-        # Pre-checks
-        if element.operand != const.opndDefAttr:
-            raise EvalException("operand mismatch in defAttr expression {}".format(element.id))
-        if not element.attributeId:
-            raise EvalException("attribute ID specifier is empty in defAttr expression {}".format(element.id))
-        # Data processing
         return element.attributeId
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
-        # Pre-checks
-        if element.operand != const.opndDefOptr:
-            raise EvalException("operand mismatch in defOptr expression {}".format(element.id))
-        if not element.value:
-            raise EvalException("value specifier is empty in defOptr expression {}".format(element.id))
-        # Data processing and integrity check
-        try:
-            return const.optrConvMap[element.value]
-        except KeyError:
-            raise EvalException("unknown operator in defOptr expression {}".format(element.id))
+        return const.optrConvMap[element.value]
 
     def __getLoc(self, element):
         """Helper for modifying expressions, defines location"""
-        # Pre-checks
-        if element.operand != const.opndDefLoc:
-            raise EvalException("operand mismatch in defLoc expression {}".format(element.id))
-        if not element.value:
-            raise EvalException("value specifier is empty in defLoc expression {}".format(element.id))
-        # Data processing and integrity check
-        try:
-            loc = const.locConvMap[element.value]
-        except KeyError:
-            raise EvalException("unknown location in defLoc expression {}".format(element.id))
-        return loc
+        return const.locConvMap[element.value]
