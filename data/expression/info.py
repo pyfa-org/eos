@@ -28,9 +28,9 @@ class ExpressionInfo(object):
     but nothing prevents a user from making some of his own and running them onto a fit
     """
     def __init__(self):
-        self.filters = None
+        self.filter = None
         """
-        List of ExpressionFilter objects, each describing a single filter. ALL filters must be matched before anything is done
+        ExpressionFilter object. It must match before anything is done
         """
 
         self.operation = None

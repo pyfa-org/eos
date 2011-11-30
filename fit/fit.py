@@ -107,7 +107,8 @@ class Fit(object):
         skillAffectorRegister = self.__skillAffectorRegister
         groupAffectorRegister = self.__groupAffectorRegister
 
-        for filter in info.filters:
+        if info.filter is not None:
+            filter = info.filter
             if filter.type == const.filLocSrq:
                 #Get the affector set
                 s = skillAffectorRegister.get(filter.value)
@@ -156,9 +157,8 @@ class Fit(object):
             return (holder, )
         #Ship can either mean the ship itself (if no filters are specified)
         #or a filtered match on everything on the fit (if filters are specified)
-        elif target == const.locShip and len(info.filters) > 0:
-            filters = info.filters
-            return [mod for mod in self.modules if mod.matches(filters)]
+        elif target == const.locShip and info.filter is not None:
+            return [mod for mod in self.modules if mod.matches(info.filter)]
         elif target == const.locShip:
             return (self.ship, )
         elif target == const.locChar:
