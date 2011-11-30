@@ -84,7 +84,8 @@ class ExpressionEval(object):
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
-                        const.opndAddItmMod: self.__addItmMod}
+                        const.opndAddItmMod: self.__addItmMod,
+                        const.opndAddLocGrpMod: self.__addLocGrpMod}
         genericOpnds[element.operand](element)
 
     def __splice(self, element):
@@ -97,7 +98,15 @@ class ExpressionEval(object):
         info = ExpressionInfo()
         info.type = const.infoAddItmMod
         self.__tgtOptr(element.arg1, info)
-        info.sourceAttributeId = self.__getAttrId(element.arg2)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addLocGrpMod(self, element):
+        """Modifying expression, adds modification items with location and group filters"""
+        info = ExpressionInfo()
+        info.type = const.infoAddLocGrpMod
+        self.__tgtOptr(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
 
     def __tgtOptr(self, element, info):
@@ -107,12 +116,26 @@ class ExpressionEval(object):
 
     def __itmAttr(self, element, info):
         """Helper for modifying expressions, joins target items with target attribute"""
-        info.target = self.__getLoc(element.arg1)
-        info.targetAttributeId = self.__getAttrId(element.arg2)
+        itmGetterMap = {const.opndDefLoc: self.__itm,
+                        const.opndLocGrp: self.__locGrp}
+        itmGetterMap[element.arg1.operand](element.arg1, info)
+        info.targetAttributeId = self.__getAttr(element.arg2)
 
-    def __getAttrId(self, element):
+    def __itm(self, element, info):
+        """Helper for modifying expressions, gets location directly"""
+        info.target = self.__getLoc(element)
+
+    def __locGrp(self, element, info):
+        """Helper for modifying expressions, joins target location and group filters"""
+        info.target = (self.__getLoc(element.arg1), self.__getGrp(element.arg2))
+
+    def __getAttr(self, element):
         """Helper for modifying expressions, references attribute via ID"""
         return element.attributeId
+
+    def __getGrp(self, element):
+        """Helper for modifying expressions, references group via ID"""
+        return element.groupId
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""

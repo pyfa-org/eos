@@ -109,20 +109,20 @@ class Fit(object):
 
         if info.type == const.infoAddLocSrqMod:
             #Get the affector set
-            s = skillAffectorRegister.get(info.filter)
+            s = skillAffectorRegister.get(info.target)
             if s is None:
-                skillAffectorRegister[info.filter] = s = set()
+                skillAffectorRegister[info.target] = s = set()
 
             s.add(holder)
         elif info.type == const.infoAddLocGrpMod:
-            s = groupAffectorRegister.get(info.filter)
+            s = groupAffectorRegister.get(info.target)
             if s is None:
-                groupAffectorRegister[info.filter] = s = set()
+                groupAffectorRegister[info.target] = s = set()
 
             s.add(holder)
 
-        for target in self.__getTargets(holder, info):
-            target._register(holder, info)
+        #for target in self.__getTargets(holder, info):
+        #    target._register(holder, info)
 
         # Cast out damage on the freshly prepared info to reset any calculated values that it might affect
         self._damage(holder, info)
@@ -132,8 +132,8 @@ class Fit(object):
         - Lookup all the targets of the passed info object on the passed holder
         - For each of the found targets: damage the attribute that will be affected
         """
-        for target in self.__getTargets(sourceHolder, info):
-            target._damage(info)
+        #for target in self.__getTargets(sourceHolder, info):
+        #    target._damage(info)
 
     def _undo(self, holder, info):
         """
@@ -154,8 +154,8 @@ class Fit(object):
             return (holder, )
         #Ship can either mean the ship itself (if no filters are specified)
         #or a filtered match on everything on the fit (if filters are specified)
-        elif target == const.locShip and info.filter is not None:
-            return [mod for mod in self.modules if mod.matches(info.filter)]
+        elif target == const.locShip and info.target is not None and info.type != const.infoAddItmMod:
+            return [mod for mod in self.modules if mod.matches(info.target)]
         elif target == const.locShip:
             return (self.ship, )
         elif target == const.locChar:

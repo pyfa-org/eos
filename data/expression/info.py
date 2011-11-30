@@ -35,20 +35,15 @@ class ExpressionInfo(object):
         Type of the instance, describes which modification should be applied onto targets.
         """
 
-        self.filter = None
+        self.target = None
         """
-        Filter for target items, doesn't have to be defined for all modification types
+        The target of this expression.
+        May specify some destination location or filter, depending on info type.
         """
 
         self.operation = None
         """
         Which operation should be applied.
-        Any other values will be ignored, causing the ExpressionInfo to do nothing
-        """
-
-        self.target = None
-        """
-        The target of this expression.
         Any other values will be ignored, causing the ExpressionInfo to do nothing
         """
 
@@ -65,8 +60,22 @@ class ExpressionInfo(object):
         """
 
     def validate(self):
+        # Usual assortment of checks, applicable to any info object
+        if self.target is None or self.operation is None or self.targetAttributeId is None or \
+        self.sourceAttributeId is None:
+            return False
+        # For direct assignments, we must ensure that we target item directly
         if self.type == const.infoAddItmMod:
-            if self.filter is None and self.operation is not None and self.target is not None and \
-            self.targetAttributeId is not None and self.sourceAttributeId is not None:
+            if self.target in const.locConvMap.values():
                 return True
+        # For location+group filters, check possible target location and presence of group specifier
+        elif self.type == const.infoAddLocGrpMod:
+            try:
+                filterLoc, filterGrp = self.target
+            except (TypeError, ValueError):
+                return False
+            validLocs = (const.locChar, const.locShip)
+            if filterLoc in validLocs and filterGrp is not None:
+                return True
+        # Mark all unknown for validator info types as invalid
         return False
