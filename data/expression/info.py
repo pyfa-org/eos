@@ -28,22 +28,25 @@ class ExpressionInfo(object):
     but nothing prevents a user from making some of his own and running them onto a fit
     """
     def __init__(self):
+        self.type = None
+        """
+        Type of the instance, describes which modification should be applied onto targets.
+        """
+
         self.filter = None
         """
-        ExpressionFilter object. It must match before anything is done
+        Filter for target items, doesn't have to be defined for all modification types
         """
 
         self.operation = None
         """
         Which operation should be applied.
-        Possible values: <None implemented yet, getting to that :)>
         Any other values will be ignored, causing the ExpressionInfo to do nothing
         """
 
         self.target = None
         """
         The target of this expression.
-        Possible values: <None implemented yet, getting to that :)>
         Any other values will be ignored, causing the ExpressionInfo to do nothing
         """
 
@@ -65,4 +68,3 @@ class ExpressionInfo(object):
            and self.targetAttributeId is not None \
            and self.sourceAttributeId is not None
 
-ExpressionFilter = collections.namedtuple('ExpressionFilter', ('type', 'value'))

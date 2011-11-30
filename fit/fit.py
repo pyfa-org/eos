@@ -107,22 +107,19 @@ class Fit(object):
         skillAffectorRegister = self.__skillAffectorRegister
         groupAffectorRegister = self.__groupAffectorRegister
 
-        if info.filter is not None:
-            filter = info.filter
-            if filter.type == const.filLocSrq:
-                #Get the affector set
-                s = skillAffectorRegister.get(filter.value)
-                if s is None:
-                    skillAffectorRegister[filter.value] = s = set()
+        if info.type == const.infoAddLocSrqMod:
+            #Get the affector set
+            s = skillAffectorRegister.get(info.filter)
+            if s is None:
+                skillAffectorRegister[info.filter] = s = set()
 
-                s.add(holder)
+            s.add(holder)
+        elif info.type == const.infoAddLocGrpMod:
+            s = groupAffectorRegister.get(info.filter)
+            if s is None:
+                groupAffectorRegister[info.filter] = s = set()
 
-            elif filter.type == const.filLocGrp:
-                s = groupAffectorRegister.get(filter.value)
-                if s is None:
-                    groupAffectorRegister[filter.value] = s = set()
-
-                s.add(holder)
+            s.add(holder)
 
         for target in self.__getTargets(holder, info):
             target._register(holder, info)

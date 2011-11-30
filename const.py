@@ -62,7 +62,7 @@ opndAddLocMod = 8  # Applies modification to all items belonging to some locatio
 opndAddLocSrqMod = 9  # Applies modification to items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
 opndAddOwnSrqMod = 11  # Applies modification to items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
 opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
-opndCombine = 17  # Executes two statements, format: expression1; expression2
+opndSplice = 17  # Executes two statements, format: expression1; expression2
 opndDefOptr = 21  # Define operator, text in expressionValue field
 opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
 opndDefLoc = 24  # Define location, text in expressionValue field
@@ -115,8 +115,9 @@ locConvMap = {"Self": locSelf,
               "Other": locCont,
               "Area": locArea}
 
-# Filter IDs section
-filLocGrp = 0  # Filter by location and group
-filLoc = 1  # Filter by location
-filLocSrq = 2  # Filter by location and skill requirement
-filterOwnSrq = 3  # Filter by owner and skill requirement
+# Info type IDs section
+infoAddItmMod = 0  # Should be applied directly to some item
+infoAddLocGrpMod = 1  # Should be applied to items in certain location, filtered by group
+infoAddLocMod = 2  # Should be applied to items in certain location
+infoAddLocSrqMod = 3  # Should be applied to items in certain location, filtered by skill requirement
+infoAddOwnSrqMod = 4  # Should be applied to items, filtered by owner and skill requirement

@@ -18,7 +18,7 @@
 #===============================================================================
 
 from eos import const
-from .info import ExpressionInfo, ExpressionFilter
+from .info import ExpressionInfo
 
 class EvalException(Exception):
     pass
@@ -65,98 +65,111 @@ class ExpressionEval(object):
             return infos
 
         try:
-            self.__build(base)
+            print("Building expression tree with base {}".format(base.id))
+            self.__generic(base)
         except EvalException as e:
             del self.infos[:]
-            print(e.args[0])
+            print("Error parsing tree {}: {}".format(base.id, e.args[0]))
 
         return self.infos
 
-    def __build(self, element):
-        """
-        Internal recursive building method.
-        The public build() passes the base to this method, which will then proceed to build it, as well as all its children
-        into (hopefully) fully functional ExpressionInfo objects.
-        """
-        # Sanity guard
-        if element is None or self.fail:
-            return
+    ### Alternative parser implementation ###
 
-        # Get some stuff locally, we refer it often
-        activeExpression = self.__activeExpression
+    def __generic(self, element):
+        """Generic entry point, used if we expect passed element to be meaningful"""
+        genericOpnds = {const.opndSplice: self.__splice,
+                        const.opndAddItmMod: self.__addItmMod}
+        try:
+            genericMethod = genericOpnds[element.operand]
+        except KeyError:
+            raise EvalException("unknown operand in generic expression {}".format(element.id))
+        genericMethod(element)
 
-        # Check if expression is composite
-        if element.operand == const.opndCombine:
-            # If we already have an active expression, store it first.
-            # This should be when combined expression is found somewhere down a tree
-            if activeExpression is not None:
-                self.infos.append(self.__activeExpression)
-            # Build first expression
-            self.__activeExpression = ExpressionInfo()
-            self.__build(element.arg1)
-            self.infos.append(self.__activeExpression)
-            # Build second
-            self.__activeExpression = ExpressionInfo()
-            self.__build(element.arg2)
-            self.infos.append(self.__activeExpression)
-            # Done
-            return
+    def __splice(self, element):
+        """Auxiliary combining expression, lets to reference multiple meaningful expressions from one"""
+        # Pre-checks
+        if element.arg1 is None or element.arg2 is None:
+            raise EvalException("child is missing in splice expression {}".format(element.id))
+        # Data processing
+        self.__generic(element.arg1)
+        self.__generic(element.arg2)
 
-        # If it's not composite, use current expression as active, and start to fill
-        # info object
-        elif activeExpression is None:
-            self.__activeExpression = activeExpression = ExpressionInfo()
-            self.infos.append(activeExpression)
+    def __addItmMod(self, element):
+        """Modifying expression, adds modification directly to item"""
+        # Pre-checks
+        if element.arg1 is None or element.arg2 is None:
+            raise EvalException("child is missing in addItmMod expression {}".format(element.id))
+        # Data processing
+        info = ExpressionInfo()
+        info.type = const.infoAddItmMod
+        self.__tgtOptr(element.arg1, info)
+        info.sourceAttributeId = self.__getAttrId(element.arg2)
+        # Post-checks
+        if info.filter is not None:
+            raise EvalException("filter has been set in addItmMod expression {}".format(element.id))
+        if info.target is None:
+            raise EvalException("no target in addItmMod expression {}".format(element.id))
+        if info.targetAttributeId is None:
+            raise EvalException("no target attribute in addItmMod expression {}".format(element.id))
+        if info.sourceAttributeId is None:
+            raise EvalException("no source attribute in addItmMod expression {}".format(element.id))
+        self.infos.append(info)
 
-        # Attempt to build linked sub-expressions
-        res1 = self.__build(element.arg1)
-        res2 = self.__build(element.arg2)
+    def __tgtOptr(self, element, info):
+        """Helper for modifying expressions, joins target attribute of items and info operator"""
+        # pre-checks
+        if element.operand != const.opndTgtOptr:
+            raise EvalException("operand mismatch in tgtOptr expression {}".format(element.id))
+        if element.arg1 is None or element.arg2 is None:
+            raise EvalException("child is missing in tgtOptr expression {}".format(element.id))
+        # Data processing
+        info.operation = self.__getOptr(element.arg1)
+        self.__itmAttr(element.arg2, info)
 
-        # Write source attribute ID if we're dealing with modifier definition
-        if element.operand in (const.opndAddItmMod, const.opndAddLocGrpMod, const.opndAddLocMod,
-                               const.opndAddLocSrqMod, const.opndAddOwnSrqMod):
-            activeExpression.sourceAttributeId = res2
+    def __itmAttr(self, element, info):
+        """Helper for modifying expressions, joins target items with target attribute"""
+        # Pre-checks
+        if element.operand != const.opndItmAttr:
+            raise EvalException("operand mismatch in itmAttr expression {}".format(element.id))
+        if element.arg1 is None or element.arg2 is None:
+            raise EvalException("child is missing in itmAttr expression {}".format(element.id))
+        # Data processing
+        info.target = self.__getLoc(element.arg1)
+        info.targetAttributeId = self.__getAttrId(element.arg2)
 
-        # Get item/filtered items and join them with attribute
-        elif element.operand == const.opndItmAttr:
-            return (res1, res2)
+    def __getAttrId(self, element):
+        """Helper for modifying expressions, references attribute via ID"""
+        # Pre-checks
+        if element.operand != const.opndDefAttr:
+            raise EvalException("operand mismatch in defAttr expression {}".format(element.id))
+        if not element.attributeId:
+            raise EvalException("attribute ID specifier is empty in defAttr expression {}".format(element.id))
+        # Data processing
+        return element.attributeId
 
-        # Get operator from value using map
-        elif element.operand == const.opndDefOptr:
-            try:
-                return const.optrConvMap[element.value]
-            except KeyError:
-                print("Unknown operator is used in expression")
-                return
+    def __getOptr(self, element):
+        """Helper for modifying expressions, defines operator"""
+        # Pre-checks
+        if element.operand != const.opndDefOptr:
+            raise EvalException("operand mismatch in defOptr expression {}".format(element.id))
+        if not element.value:
+            raise EvalException("value specifier is empty in defOptr expression {}".format(element.id))
+        # Data processing and integrity check
+        try:
+            return const.optrConvMap[element.value]
+        except KeyError:
+            raise EvalException("unknown operator in defOptr expression {}".format(element.id))
 
-        # Get location from value using map
-        elif element.operand == const.opndDefLoc:
-            try:
-                return const.locConvMap[element.value]
-            except KeyError:
-                print("Unknown location is used in expression")
-                return
-
-        elif element.operand == const.opndTgtOptr:
-            activeExpression.operation = res1
-            activeExpression.target, activeExpression.targetAttributeId = res2
-
-        elif element.operand == const.opndLocGrp: # JoinGroupFilter
-            activeExpression.filters.append(ExpressionFilter(const.filLocGrp, res2))
-            return res1 # Entity, handled by parent
-
-        elif element.operand == const.opndLocSrq: #JoinSkillFilter
-            activeExpression.filters.append(ExpressionFilter(const.filLocSrq, res2))
-            return res1 # Entity, handled by parent
-
-        # Terminals linking to external tables' IDs
-        elif element.operand == const.opndDefAttr:
-            return element.attributeId
-        elif element.operand == const.opndDefGrp:
-            return element.groupId
-        elif element.operand == const.opndDefType:
-            return element.typeId
-
-        # We don't know what to do with it
-        else:
-            raise EvalException("Failed to evaluate {0}".format(element.id))
+    def __getLoc(self, element):
+        """Helper for modifying expressions, defines location"""
+        # Pre-checks
+        if element.operand != const.opndDefLoc:
+            raise EvalException("operand mismatch in defLoc expression {}".format(element.id))
+        if not element.value:
+            raise EvalException("value specifier is empty in defLoc expression {}".format(element.id))
+        # Data processing and integrity check
+        try:
+            loc = const.locConvMap[element.value]
+        except KeyError:
+            raise EvalException("unknown location in defLoc expression {}".format(element.id))
+        return loc
