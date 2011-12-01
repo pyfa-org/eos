@@ -61,7 +61,7 @@ class ExpressionInfo(object):
 
     def validate(self):
         # Usual assortment of checks, applicable to any info object
-        if self.target is None or self.operation is None or self.targetAttributeId is None or \
+        if self.operation is None or self.targetAttributeId is None or \
         self.sourceAttributeId is None:
             return False
         # For direct assignments, we must ensure that we target item directly
@@ -100,6 +100,10 @@ class ExpressionInfo(object):
             except (TypeError, ValueError):
                 return False
             if filterOwn is const.locChar and filterSrq is not None:
+                return True
+        # For direct gang modifications, target must be none (assumed it's ship)
+        elif self.type == const.infoAddGangItmMod:
+            if self.target is None:
                 return True
         # Mark all unknown for validator info types as invalid
         return False

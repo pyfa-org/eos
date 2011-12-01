@@ -84,6 +84,7 @@ class ExpressionEval(object):
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
+                        const.opndAddGangItmMod: self.__addGangItmMod,
                         const.opndAddItmMod: self.__addItmMod,
                         const.opndAddLocGrpMod: self.__addLocGrpMod,
                         const.opndAddLocMod: self.__addLocMod,
@@ -95,6 +96,14 @@ class ExpressionEval(object):
         """Auxiliary combining expression, lets to reference multiple meaningful expressions from one"""
         self.__generic(element.arg1)
         self.__generic(element.arg2)
+
+    def __addGangItmMod(self, element):
+        """Modifying expression, adds modification directly to gang-mates"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangItmMod
+        self.__tgtOptr(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
 
     def __addItmMod(self, element):
         """Modifying expression, adds modification directly to item"""
@@ -139,15 +148,25 @@ class ExpressionEval(object):
     def __tgtOptr(self, element, info):
         """Helper for modifying expressions, joins target attribute of items and info operator"""
         info.operation = self.__getOptr(element.arg1)
-        self.__itmAttr(element.arg2, info)
+        self.__tgtRouter(element.arg2, info)
+
+    def __tgtRouter(self, element, info):
+        """Helper for modifying expressions, handles target specification to appropriate method"""
+        itmAttrMap = {const.opndItmAttr: self.__itmAttr,
+                      const.opndGenAttr: self.__attr}
+        itmAttrMap[element.operand](element, info)
 
     def __itmAttr(self, element, info):
-        """Helper for modifying expressions, joins target items with target attribute"""
+        """Helper for modifying expressions, joins target item specification and destination attribute"""
         itmGetterMap = {const.opndDefLoc: self.__loc,
                         const.opndLocGrp: self.__locGrp,
                         const.opndLocSrq: self.__locSrq}
         itmGetterMap[element.arg1.operand](element.arg1, info)
         info.targetAttributeId = self.__getAttr(element.arg2)
+
+    def __attr(self, element, info):
+        """Helper for modifying expressions, gets attribute and stores it"""
+        info.targetAttributeId = self.__getAttr(element.arg1)
 
     def __loc(self, element, info):
         """Helper for modifying expressions, gets location directly"""

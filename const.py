@@ -56,6 +56,7 @@ penaltyImmuneCats = (catShip, catCharge, catSkill,
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
 # Dogma operands section
+opndAddGangItmMod = 3  # Applies modification directly to some item of gang-mates, usually ship, format: [(targetAttribute).(operator)].AGIM(sourceAttribute)
 opndAddItmMod = 6  # Applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
 opndAddLocGrpMod = 7  # Applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
 opndAddLocMod = 8  # Applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
@@ -70,6 +71,7 @@ opndDefGrp = 26  # Define group, integer in expressionGroupID field
 opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
 opndDefType = 29  # Define a type, integer in expressionTypeID field
 opndTgtOptr = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).(operator)
+opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
 opndLocSrq = 49  # Joins location and skillRequirement definitions into single filter, format: location[skillRequirement]
 
@@ -116,8 +118,9 @@ locConvMap = {"Self": locSelf,
               "Area": locArea}
 
 # Info type IDs section
-infoAddItmMod = 0  # Should be applied directly to some item
-infoAddLocGrpMod = 1  # Should be applied to items in certain location, filtered by group
-infoAddLocMod = 2  # Should be applied to items in certain location
-infoAddLocSrqMod = 3  # Should be applied to items in certain location, filtered by skill requirement
-infoAddOwnSrqMod = 4  # Should be applied to items, filtered by owner and skill requirement
+infoAddGangItmMod = 0  # Should be applied directly to gang-mates
+infoAddItmMod = 1  # Should be applied directly to some item
+infoAddLocGrpMod = 2  # Should be applied to items in certain location, filtered by group
+infoAddLocMod = 3  # Should be applied to items in certain location
+infoAddLocSrqMod = 4  # Should be applied to items in certain location, filtered by skill requirement
+infoAddOwnSrqMod = 5  # Should be applied to items, filtered by owner and skill requirement
