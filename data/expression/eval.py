@@ -101,77 +101,48 @@ class ExpressionEval(object):
     # Fit-local modifications
     def __addItmMod(self, element):
         """Add modification directly to item"""
-        info = ExpressionInfo()
-        info.type = const.infoAddItmMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddItmMod, element)
 
     def __addLocGrpMod(self, element):
         """Add modification to items with location and group filters"""
-        info = ExpressionInfo()
-        info.type = const.infoAddLocGrpMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddLocGrpMod, element)
 
     def __addLocMod(self, element):
         """Add modification to items with location filter"""
-        info = ExpressionInfo()
-        info.type = const.infoAddLocMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddLocMod, element)
 
     def __addLocSrqMod(self, element):
         """Add modification to items with location and skill requirement filters"""
-        info = ExpressionInfo()
-        info.type = const.infoAddLocSrqMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddLocSrqMod, element)
 
     def __addOwnSrqMod(self, element):
         """Add modification to items with owner and skill requirement filters"""
-        info = ExpressionInfo()
-        info.type = const.infoAddOwnSrqMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddOwnSrqMod, element)
 
     # Gang modifications
     def __addGangGrpMod(self, element):
         """Add modification to gang-mates' items with group filter"""
-        info = ExpressionInfo()
-        info.type = const.infoAddGangGrpMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddGangGrpMod, element)
 
     def __addGangItmMod(self, element):
         """Add modification directly to gang-mates"""
-        info = ExpressionInfo()
-        info.type = const.infoAddGangItmMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddGangItmMod, element)
 
     def __addGangOwnSrqMod(self, element):
         """Add modification to gang-mates' items with owner and skill requirement filters"""
-        info = ExpressionInfo()
-        info.type = const.infoAddGangOwnSrqMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
+        self.__makeInfo(const.infoAddGangOwnSrqMod, element)
 
     def __addGangSrqMod(self, element):
         """Add modification to gang-mates' items with skill requirement filter"""
+        self.__makeInfo(const.infoAddGangSrqMod, element)
+
+    def __makeInfo(self, infoType, element):
+        """Make info according to passed data"""
         info = ExpressionInfo()
-        info.type = const.infoAddGangSrqMod
+        info.type = infoType
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
-
     # Bottom-level servicing methods
     def __optrTgt(self, element, info):
         """Join operator and target definition"""
