@@ -74,12 +74,12 @@ class ExpressionInfo(object):
                 filterLoc, filterGrp = self.target
             except (TypeError, ValueError):
                 return False
-            validLocs = (const.locChar, const.locShip)
+            validLocs = (const.locChar, const.locShip, const.locTgt)
             if filterLoc in validLocs and filterGrp is not None:
                 return True
         # For location, check possible target location
         elif self.type == const.infoAddLocMod:
-            validLocs = (const.locChar, const.locShip)
+            validLocs = (const.locChar, const.locShip, const.locTgt)
             if self.target in validLocs:
                 return True
         # For location+skill requirement filters, check possible target location and presence of
@@ -89,7 +89,7 @@ class ExpressionInfo(object):
                 filterLoc, filterSrq = self.target
             except (TypeError, ValueError):
                 return False
-            validLocs = (const.locChar, const.locShip)
+            validLocs = (const.locChar, const.locShip, const.locTgt)
             if filterLoc in validLocs and filterSrq is not None:
                 return True
         # For owner+skill requirement filters, check if target is character and presence
