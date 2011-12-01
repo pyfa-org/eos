@@ -83,14 +83,14 @@ class ExpressionEval(object):
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
-                        const.opndAddGangGrpMod: self.__addGangGrpMod,
-                        const.opndAddGangItmMod: self.__addGangItmMod,
-                        const.opndAddGangSrqMod: self.__addGangSrqMod,
-                        const.opndAddItmMod: self.__addItmMod,
-                        const.opndAddLocGrpMod: self.__addLocGrpMod,
-                        const.opndAddLocMod: self.__addLocMod,
-                        const.opndAddLocSrqMod: self.__addLocSrqMod,
-                        const.opndAddOwnSrqMod: self.__addOwnSrqMod}
+                        const.opndAddGangGrpMod: self.__makeInfo,
+                        const.opndAddGangItmMod: self.__makeInfo,
+                        const.opndAddGangSrqMod: self.__makeInfo,
+                        const.opndAddItmMod: self.__makeInfo,
+                        const.opndAddLocGrpMod: self.__makeInfo,
+                        const.opndAddLocMod: self.__makeInfo,
+                        const.opndAddLocSrqMod: self.__makeInfo,
+                        const.opndAddOwnSrqMod: self.__makeInfo}
         genericOpnds[element.operand](element)
 
     def __splice(self, element):
@@ -98,52 +98,22 @@ class ExpressionEval(object):
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
-    # Fit-local modifications
-    def __addItmMod(self, element):
-        """Add modification directly to item"""
-        self.__makeInfo(const.infoAddItmMod, element)
-
-    def __addLocGrpMod(self, element):
-        """Add modification to items with location and group filters"""
-        self.__makeInfo(const.infoAddLocGrpMod, element)
-
-    def __addLocMod(self, element):
-        """Add modification to items with location filter"""
-        self.__makeInfo(const.infoAddLocMod, element)
-
-    def __addLocSrqMod(self, element):
-        """Add modification to items with location and skill requirement filters"""
-        self.__makeInfo(const.infoAddLocSrqMod, element)
-
-    def __addOwnSrqMod(self, element):
-        """Add modification to items with owner and skill requirement filters"""
-        self.__makeInfo(const.infoAddOwnSrqMod, element)
-
-    # Gang modifications
-    def __addGangGrpMod(self, element):
-        """Add modification to gang-mates' items with group filter"""
-        self.__makeInfo(const.infoAddGangGrpMod, element)
-
-    def __addGangItmMod(self, element):
-        """Add modification directly to gang-mates"""
-        self.__makeInfo(const.infoAddGangItmMod, element)
-
-    def __addGangOwnSrqMod(self, element):
-        """Add modification to gang-mates' items with owner and skill requirement filters"""
-        self.__makeInfo(const.infoAddGangOwnSrqMod, element)
-
-    def __addGangSrqMod(self, element):
-        """Add modification to gang-mates' items with skill requirement filter"""
-        self.__makeInfo(const.infoAddGangSrqMod, element)
-
-    def __makeInfo(self, infoType, element):
+    def __makeInfo(self, element):
         """Make info according to passed data"""
+        opndInfoMap = {const.opndAddGangGrpMod: const.infoAddGangGrpMod,
+                       const.opndAddGangItmMod: const.infoAddGangItmMod,
+                       const.opndAddGangSrqMod: const.infoAddGangSrqMod,
+                       const.opndAddItmMod: const.infoAddItmMod,
+                       const.opndAddLocGrpMod: const.infoAddLocGrpMod,
+                       const.opndAddLocMod: const.infoAddLocMod,
+                       const.opndAddLocSrqMod: const.infoAddLocSrqMod,
+                       const.opndAddOwnSrqMod: const.infoAddOwnSrqMod}
         info = ExpressionInfo()
-        info.type = infoType
+        info.type = opndInfoMap[element.operand]
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
-    # Bottom-level servicing methods
+
     def __optrTgt(self, element, info):
         """Join operator and target definition"""
         info.operation = self.__getOptr(element.arg1)
