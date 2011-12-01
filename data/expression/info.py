@@ -105,13 +105,20 @@ class ExpressionInfo(object):
         elif self.type == const.infoAddGangItmMod:
             if self.target is None:
                 return True
-        # For skill requirement filtered gang modification, target must be skill specifier
+        # For skill requirement filtered gang ship items modification, target
+        # must be skill specifier
         elif self.type == const.infoAddGangSrqMod:
             if self.target is not None:
                 return True
-        # For group filtered gang modification, target must be group specifier
+        # For group filtered gang ship items modification, target must be
+        # group specifier
         elif self.type == const.infoAddGangGrpMod:
             if self.target is not None:
-                return Tru
+                return True
+        # For skill requirement filtered gang in-space items modification,
+        # target must be skill specifier
+        elif self.type == const.infoAddGangOwnSrqMod:
+            if self.target is not None:
+                return True
         # Mark all unknown for validator info types as invalid
         return False

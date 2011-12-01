@@ -57,8 +57,8 @@ penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
 # Dogma operands section
 opndAddGangGrpMod = 2  # Applies modification to items of gang-mates, filtered by group, format: [(groupFilter.targetAttribute).(operator)].AGGM(sourceAttribute)
-opndAddGangItmMod = 3  # Applies modification directly to ships gang-mates, usually , format: ((targetAttribute).(operator)).AGIM(sourceAttribute)
-opndAddGangOwnSrqMod = 4  # No data for now
+opndAddGangItmMod = 3  # Applies modification directly to ships gang-mates, format: ((targetAttribute).(operator)).AGIM(sourceAttribute)
+opndAddGangOwnSrqMod = 4  # Applies modification to items of gang-mates, filtered by owner and skill requirement
 opndAddGangSrqMod = 5  # Applies modification to items of gang-mates, filtered by skill requirement, format: (skillRequirement.targetAttribute).(operator)).AGRSM(sourceAttribute))
 opndAddItmMod = 6  # Applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
 opndAddLocGrpMod = 7  # Applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
@@ -123,10 +123,10 @@ locConvMap = {"Self": locSelf,
               "Area": locArea}
 
 # Info type IDs section
-infoAddGangGrpMod = 1  # Applied to gang-mates' items, filtered by group
+infoAddGangGrpMod = 1  # Applied to gang-mates' ships' items, filtered by group
 infoAddGangItmMod = 2  # Applied directly to gang-mates' ships
-infoAddGangOwnSrqMod = 3
-infoAddGangSrqMod = 4  # Applied to gang-mates' items, filtered by skill requirement
+infoAddGangOwnSrqMod = 3  # Applies to gang-mates' in-space items (drones, missiles), filtered by skill requirement
+infoAddGangSrqMod = 4  # Applied to gang-mates' ships' items, filtered by skill requirement
 infoAddItmMod = 5  # Applied directly to some item
 infoAddLocGrpMod = 6  # Applied to items in certain location, filtered by group
 infoAddLocMod = 7  # Applied to items in certain location

@@ -79,8 +79,8 @@ class ExpressionEval(object):
 
         return self.infos
 
-    ### Alternative parser implementation ###
 
+    # Top-level methods - combining, routing, etc
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
@@ -99,30 +99,7 @@ class ExpressionEval(object):
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
-    def __addGangGrpMod(self, element):
-        """Modifying expression, adds modification directly to gang-mates"""
-        info = ExpressionInfo()
-        info.type = const.infoAddGangGrpMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
-
-    def __addGangItmMod(self, element):
-        """Modifying expression, adds modification directly to gang-mates"""
-        info = ExpressionInfo()
-        info.type = const.infoAddGangItmMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
-
-    def __addGangSrqMod(self, element):
-        """Modifying expression, adds modification to gang-mates' items with skill requirement filter"""
-        info = ExpressionInfo()
-        info.type = const.infoAddGangSrqMod
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.infos.append(info)
-
+    # Fit-local modifications
     def __addItmMod(self, element):
         """Modifying expression, adds modification directly to item"""
         info = ExpressionInfo()
@@ -163,6 +140,40 @@ class ExpressionEval(object):
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
 
+    # Gang modifications
+    def __addGangGrpMod(self, element):
+        """Modifying expression, adds modification to gang-mates' items with group filter"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangGrpMod
+        self.__optrTgt(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addGangItmMod(self, element):
+        """Modifying expression, adds modification directly to gang-mates"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangItmMod
+        self.__optrTgt(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addGangOwnSrqMod(self, element):
+        """Modifying expression, adds modification to gang-mates' items with owner and skill requirement filters"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangOwnSrqMod
+        self.__optrTgt(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addGangSrqMod(self, element):
+        """Modifying expression, adds modification to gang-mates' items with skill requirement filter"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangSrqMod
+        self.__optrTgt(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    # Bottom-level servicing methods
     def __optrTgt(self, element, info):
         """Helper for modifying expressions, joins target attribute of items and info operator"""
         info.operation = self.__getOptr(element.arg1)
