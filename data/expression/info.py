@@ -77,7 +77,8 @@ class ExpressionInfo(object):
             validLocs = (const.locChar, const.locShip)
             if filterLoc in validLocs and filterGrp is not None:
                 return True
-        # For location+group filters, check possible target location and presence of skill specifier
+        # For location+skill requirement filters, check possible target location and presence of
+        # skill requirement specifier
         elif self.type == const.infoAddLocSrqMod:
             try:
                 filterLoc, filterSrq = self.target
@@ -85,6 +86,15 @@ class ExpressionInfo(object):
                 return False
             validLocs = (const.locChar, const.locShip)
             if filterLoc in validLocs and filterSrq is not None:
+                return True
+        # For location+skill requirement filters, check if target is character and presence
+        # of skill requirement specifier
+        elif self.type == const.infoAddOwnSrqMod:
+            try:
+                filterOwn, filterSrq = self.target
+            except (TypeError, ValueError):
+                return False
+            if filterOwn is const.locChar and filterSrq is not None:
                 return True
         # Mark all unknown for validator info types as invalid
         return False

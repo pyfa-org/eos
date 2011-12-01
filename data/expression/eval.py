@@ -86,7 +86,8 @@ class ExpressionEval(object):
         genericOpnds = {const.opndSplice: self.__splice,
                         const.opndAddItmMod: self.__addItmMod,
                         const.opndAddLocGrpMod: self.__addLocGrpMod,
-                        const.opndAddLocSrqMod: self.__addLocSrqMod}
+                        const.opndAddLocSrqMod: self.__addLocSrqMod,
+                        const.opndAddOwnSrqMod: self.__addOwnSrqMod}
         genericOpnds[element.operand](element)
 
     def __splice(self, element):
@@ -103,7 +104,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addLocGrpMod(self, element):
-        """Modifying expression, adds modification items with location and group filters"""
+        """Modifying expression, adds modification to items with location and group filters"""
         info = ExpressionInfo()
         info.type = const.infoAddLocGrpMod
         self.__tgtOptr(element.arg1, info)
@@ -111,9 +112,17 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addLocSrqMod(self, element):
-        """Modifying expression, adds modification items with location and skill requirement filters"""
+        """Modifying expression, adds modification to items with location and skill requirement filters"""
         info = ExpressionInfo()
         info.type = const.infoAddLocSrqMod
+        self.__tgtOptr(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addOwnSrqMod(self, element):
+        """Modifying expression, adds modification to items with owner and skill requirement filters"""
+        info = ExpressionInfo()
+        info.type = const.infoAddOwnSrqMod
         self.__tgtOptr(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
