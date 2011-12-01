@@ -84,6 +84,7 @@ class ExpressionEval(object):
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
+                        const.opndAddGangGrpMod: self.__addGangGrpMod,
                         const.opndAddGangItmMod: self.__addGangItmMod,
                         const.opndAddGangSrqMod: self.__addGangSrqMod,
                         const.opndAddItmMod: self.__addItmMod,
@@ -98,6 +99,14 @@ class ExpressionEval(object):
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
+    def __addGangGrpMod(self, element):
+        """Modifying expression, adds modification directly to gang-mates"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangGrpMod
+        self.__optrTgt(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
     def __addGangItmMod(self, element):
         """Modifying expression, adds modification directly to gang-mates"""
         info = ExpressionInfo()
@@ -107,7 +116,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addGangSrqMod(self, element):
-        """Modifying expression, adds modification gang-mates' items with skill requirement filter"""
+        """Modifying expression, adds modification to gang-mates' items with skill requirement filter"""
         info = ExpressionInfo()
         info.type = const.infoAddGangSrqMod
         self.__optrTgt(element.arg1, info)
@@ -159,7 +168,8 @@ class ExpressionEval(object):
         info.operation = self.__getOptr(element.arg1)
         tgtRouteMap = {const.opndItmAttr: self.__itmAttr,
                        const.opndGenAttr: self.__attr,
-                       const.opndSrqAttr: self.__srqAttr}
+                       const.opndSrqAttr: self.__srqAttr,
+                       const.opndGrpAttr: self.__grpAttr}
         tgtRouteMap[element.arg2.operand](element.arg2, info)
 
     def __itmAttr(self, element, info):
@@ -177,6 +187,11 @@ class ExpressionEval(object):
     def __loc(self, element, info):
         """Helper for modifying expressions, gets location directly"""
         info.target = self.__getLoc(element)
+
+    def __grpAttr(self, element, info):
+        """Helper for modifying expressions, joins target group and destination attribute"""
+        info.target = self.__getGrp(element.arg1)
+        info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __srqAttr(self, element, info):
         """Helper for modifying expressions, joins target skill requirement and destination attribute"""

@@ -109,5 +109,9 @@ class ExpressionInfo(object):
         elif self.type == const.infoAddGangSrqMod:
             if self.target is not None:
                 return True
+        # For group filtered gang modification, target must be group specifier
+        elif self.type == const.infoAddGangGrpMod:
+            if self.target is not None:
+                return Tru
         # Mark all unknown for validator info types as invalid
         return False
