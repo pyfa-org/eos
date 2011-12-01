@@ -86,6 +86,7 @@ class ExpressionEval(object):
         genericOpnds = {const.opndSplice: self.__splice,
                         const.opndAddItmMod: self.__addItmMod,
                         const.opndAddLocGrpMod: self.__addLocGrpMod,
+                        const.opndAddLocMod: self.__addLocMod,
                         const.opndAddLocSrqMod: self.__addLocSrqMod,
                         const.opndAddOwnSrqMod: self.__addOwnSrqMod}
         genericOpnds[element.operand](element)
@@ -107,6 +108,14 @@ class ExpressionEval(object):
         """Modifying expression, adds modification to items with location and group filters"""
         info = ExpressionInfo()
         info.type = const.infoAddLocGrpMod
+        self.__tgtOptr(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addLocMod(self, element):
+        """Modifying expression, adds modification to items with location filter"""
+        info = ExpressionInfo()
+        info.type = const.infoAddLocMod
         self.__tgtOptr(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
@@ -134,13 +143,13 @@ class ExpressionEval(object):
 
     def __itmAttr(self, element, info):
         """Helper for modifying expressions, joins target items with target attribute"""
-        itmGetterMap = {const.opndDefLoc: self.__itm,
+        itmGetterMap = {const.opndDefLoc: self.__loc,
                         const.opndLocGrp: self.__locGrp,
                         const.opndLocSrq: self.__locSrq}
         itmGetterMap[element.arg1.operand](element.arg1, info)
         info.targetAttributeId = self.__getAttr(element.arg2)
 
-    def __itm(self, element, info):
+    def __loc(self, element, info):
         """Helper for modifying expressions, gets location directly"""
         info.target = self.__getLoc(element)
 
