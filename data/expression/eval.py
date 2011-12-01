@@ -79,7 +79,6 @@ class ExpressionEval(object):
 
         return self.infos
 
-
     # Top-level methods - combining, routing, etc
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
@@ -95,13 +94,13 @@ class ExpressionEval(object):
         genericOpnds[element.operand](element)
 
     def __splice(self, element):
-        """Auxiliary combining expression, lets to reference multiple meaningful expressions from one"""
+        """Reference two expressions from self"""
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
     # Fit-local modifications
     def __addItmMod(self, element):
-        """Modifying expression, adds modification directly to item"""
+        """Add modification directly to item"""
         info = ExpressionInfo()
         info.type = const.infoAddItmMod
         self.__optrTgt(element.arg1, info)
@@ -109,7 +108,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addLocGrpMod(self, element):
-        """Modifying expression, adds modification to items with location and group filters"""
+        """Add modification to items with location and group filters"""
         info = ExpressionInfo()
         info.type = const.infoAddLocGrpMod
         self.__optrTgt(element.arg1, info)
@@ -117,7 +116,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addLocMod(self, element):
-        """Modifying expression, adds modification to items with location filter"""
+        """Add modification to items with location filter"""
         info = ExpressionInfo()
         info.type = const.infoAddLocMod
         self.__optrTgt(element.arg1, info)
@@ -125,7 +124,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addLocSrqMod(self, element):
-        """Modifying expression, adds modification to items with location and skill requirement filters"""
+        """Add modification to items with location and skill requirement filters"""
         info = ExpressionInfo()
         info.type = const.infoAddLocSrqMod
         self.__optrTgt(element.arg1, info)
@@ -133,7 +132,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addOwnSrqMod(self, element):
-        """Modifying expression, adds modification to items with owner and skill requirement filters"""
+        """Add modification to items with owner and skill requirement filters"""
         info = ExpressionInfo()
         info.type = const.infoAddOwnSrqMod
         self.__optrTgt(element.arg1, info)
@@ -142,7 +141,7 @@ class ExpressionEval(object):
 
     # Gang modifications
     def __addGangGrpMod(self, element):
-        """Modifying expression, adds modification to gang-mates' items with group filter"""
+        """Add modification to gang-mates' items with group filter"""
         info = ExpressionInfo()
         info.type = const.infoAddGangGrpMod
         self.__optrTgt(element.arg1, info)
@@ -150,7 +149,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addGangItmMod(self, element):
-        """Modifying expression, adds modification directly to gang-mates"""
+        """Add modification directly to gang-mates"""
         info = ExpressionInfo()
         info.type = const.infoAddGangItmMod
         self.__optrTgt(element.arg1, info)
@@ -158,7 +157,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addGangOwnSrqMod(self, element):
-        """Modifying expression, adds modification to gang-mates' items with owner and skill requirement filters"""
+        """Add modification to gang-mates' items with owner and skill requirement filters"""
         info = ExpressionInfo()
         info.type = const.infoAddGangOwnSrqMod
         self.__optrTgt(element.arg1, info)
@@ -166,7 +165,7 @@ class ExpressionEval(object):
         self.infos.append(info)
 
     def __addGangSrqMod(self, element):
-        """Modifying expression, adds modification to gang-mates' items with skill requirement filter"""
+        """Add modification to gang-mates' items with skill requirement filter"""
         info = ExpressionInfo()
         info.type = const.infoAddGangSrqMod
         self.__optrTgt(element.arg1, info)
@@ -175,7 +174,7 @@ class ExpressionEval(object):
 
     # Bottom-level servicing methods
     def __optrTgt(self, element, info):
-        """Helper for modifying expressions, joins target attribute of items and info operator"""
+        """Join operator and target definition"""
         info.operation = self.__getOptr(element.arg1)
         tgtRouteMap = {const.opndItmAttr: self.__itmAttr,
                        const.opndGenAttr: self.__attr,
@@ -184,7 +183,7 @@ class ExpressionEval(object):
         tgtRouteMap[element.arg2.operand](element.arg2, info)
 
     def __itmAttr(self, element, info):
-        """Helper for modifying expressions, joins target item specification and destination attribute"""
+        """Join target item specification and target attribute"""
         itmGetterMap = {const.opndDefLoc: self.__loc,
                         const.opndLocGrp: self.__locGrp,
                         const.opndLocSrq: self.__locSrq}
@@ -192,29 +191,29 @@ class ExpressionEval(object):
         info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __attr(self, element, info):
-        """Helper for modifying expressions, gets attribute and stores it"""
+        """Get attribute and stores it"""
         info.targetAttributeId = self.__getAttr(element.arg1)
 
     def __loc(self, element, info):
-        """Helper for modifying expressions, gets location directly"""
+        """Get location and store it"""
         info.target = self.__getLoc(element)
 
     def __grpAttr(self, element, info):
-        """Helper for modifying expressions, joins target group and destination attribute"""
+        """Join target group and target attribute"""
         info.target = self.__getGrp(element.arg1)
         info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __srqAttr(self, element, info):
-        """Helper for modifying expressions, joins target skill requirement and destination attribute"""
+        """Join target skill requirement and target attribute"""
         info.target = self.__getType(element.arg1)
         info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __locGrp(self, element, info):
-        """Helper for modifying expressions, joins target location and group filters"""
+        """Join target location filter and group filter"""
         info.target = (self.__getLoc(element.arg1), self.__getGrp(element.arg2))
 
     def __locSrq(self, element, info):
-        """Helper for modifying expressions, joins target location and skill requirement filters"""
+        """Join target location filter and skill requirement filter"""
         info.target = (self.__getLoc(element.arg1), self.__getType(element.arg2))
 
     def __getOptr(self, element):
@@ -222,17 +221,17 @@ class ExpressionEval(object):
         return const.optrConvMap[element.value]
 
     def __getLoc(self, element):
-        """Helper for modifying expressions, defines location"""
+        """Define location"""
         return const.locConvMap[element.value]
 
     def __getAttr(self, element):
-        """Helper for modifying expressions, references attribute via ID"""
+        """Reference attribute via ID"""
         return element.attributeId
 
     def __getGrp(self, element):
-        """Helper for modifying expressions, references group via ID"""
+        """Reference group via ID"""
         return element.groupId
 
     def __getType(self, element):
-        """Helper for modifying expressions, references group via ID"""
+        """Reference type via ID"""
         return element.typeId
