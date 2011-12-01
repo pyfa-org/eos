@@ -85,6 +85,7 @@ class ExpressionEval(object):
         """Generic entry point, used if we expect passed element to be meaningful"""
         genericOpnds = {const.opndSplice: self.__splice,
                         const.opndAddGangItmMod: self.__addGangItmMod,
+                        const.opndAddGangSrqMod: self.__addGangSrqMod,
                         const.opndAddItmMod: self.__addItmMod,
                         const.opndAddLocGrpMod: self.__addLocGrpMod,
                         const.opndAddLocMod: self.__addLocMod,
@@ -101,6 +102,14 @@ class ExpressionEval(object):
         """Modifying expression, adds modification directly to gang-mates"""
         info = ExpressionInfo()
         info.type = const.infoAddGangItmMod
+        self.__optrTgt(element.arg1, info)
+        info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.infos.append(info)
+
+    def __addGangSrqMod(self, element):
+        """Modifying expression, adds modification gang-mates' items with skill requirement filter"""
+        info = ExpressionInfo()
+        info.type = const.infoAddGangSrqMod
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
@@ -149,7 +158,8 @@ class ExpressionEval(object):
         """Helper for modifying expressions, joins target attribute of items and info operator"""
         info.operation = self.__getOptr(element.arg1)
         tgtRouteMap = {const.opndItmAttr: self.__itmAttr,
-                       const.opndGenAttr: self.__attr}
+                       const.opndGenAttr: self.__attr,
+                       const.opndSrqAttr: self.__srqAttr}
         tgtRouteMap[element.arg2.operand](element.arg2, info)
 
     def __itmAttr(self, element, info):
@@ -167,6 +177,11 @@ class ExpressionEval(object):
     def __loc(self, element, info):
         """Helper for modifying expressions, gets location directly"""
         info.target = self.__getLoc(element)
+
+    def __srqAttr(self, element, info):
+        """Helper for modifying expressions, joins target skill requirement and destination attribute"""
+        info.target = self.__getType(element.arg1)
+        info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __locGrp(self, element, info):
         """Helper for modifying expressions, joins target location and group filters"""

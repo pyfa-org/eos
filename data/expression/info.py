@@ -105,5 +105,9 @@ class ExpressionInfo(object):
         elif self.type == const.infoAddGangItmMod:
             if self.target is None:
                 return True
+        # For skill requirement filtered gang modification, target must be skill specifier
+        elif self.type == const.infoAddGangSrqMod:
+            if self.target is not None:
+                return True
         # Mark all unknown for validator info types as invalid
         return False

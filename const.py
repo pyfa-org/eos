@@ -56,7 +56,8 @@ penaltyImmuneCats = (catShip, catCharge, catSkill,
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
 # Dogma operands section
-opndAddGangItmMod = 3  # Applies modification directly to some item of gang-mates, usually ship, format: [(targetAttribute).(operator)].AGIM(sourceAttribute)
+opndAddGangItmMod = 3  # Applies modification directly to ships gang-mates, usually , format: ((targetAttribute).(operator)).AGIM(sourceAttribute)
+opndAddGangSrqMod = 5  # Applies modification to items of gang-mates, filtered by skill requirement, format: (skillRequirement.targetAttribute).(operator)).AGRSM(sourceAttribute))
 opndAddItmMod = 6  # Applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
 opndAddLocGrpMod = 7  # Applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
 opndAddLocMod = 8  # Applies modification to all items belonging to some location, format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
@@ -70,10 +71,11 @@ opndDefLoc = 24  # Define location, text in expressionValue field
 opndDefGrp = 26  # Define group, integer in expressionGroupID field
 opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
 opndDefType = 29  # Define a type, integer in expressionTypeID field
-opndOptrTgt = 31  # Joins target (attribute of possibly filtered items) and operator definitions, format: (location->targetAttribute).(operator)
+opndOptrTgt = 31  # Joins operator and target (attribute of possibly filtered items) definitions, format: (location->targetAttribute).(operator)
 opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
-opndLocSrq = 49  # Joins location and skillRequirement definitions into single filter, format: location[skillRequirement]
+opndLocSrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skillRequirement]
+opndSrqAttr = 64 # Joins skill requirement and attribute into target definition, format: skillRequirement.speedFactor
 
 
 ### Custom Eos stuff, doesn't depend on database IDs ###
@@ -118,9 +120,10 @@ locConvMap = {"Self": locSelf,
               "Area": locArea}
 
 # Info type IDs section
-infoAddGangItmMod = 0  # Should be applied directly to gang-mates
-infoAddItmMod = 1  # Should be applied directly to some item
-infoAddLocGrpMod = 2  # Should be applied to items in certain location, filtered by group
-infoAddLocMod = 3  # Should be applied to items in certain location
-infoAddLocSrqMod = 4  # Should be applied to items in certain location, filtered by skill requirement
-infoAddOwnSrqMod = 5  # Should be applied to items, filtered by owner and skill requirement
+infoAddGangItmMod = 0  # Applied directly to gang-mates' ships
+infoAddGangSrqMod = 1  # Applied to gang-mates' items, filtered by skill requirement
+infoAddItmMod = 2  # Applied directly to some item
+infoAddLocGrpMod = 3  # Applied to items in certain location, filtered by group
+infoAddLocMod = 4  # Applied to items in certain location
+infoAddLocSrqMod = 5  # Applied to items in certain location, filtered by skill requirement
+infoAddOwnSrqMod = 6  # Applied to items, filtered by owner and skill requirement
