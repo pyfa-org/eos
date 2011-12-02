@@ -20,6 +20,24 @@
 from eos import const
 from .info import ExpressionInfo
 
+operandInfoMap = {const.opndAddGangGrpMod: const.infoAddGangGrpMod,
+                  const.opndAddGangItmMod: const.infoAddGangItmMod,
+                  const.opndAddGangSrqMod: const.infoAddGangSrqMod,
+                  const.opndAddItmMod: const.infoAddItmMod,
+                  const.opndAddLocGrpMod: const.infoAddLocGrpMod,
+                  const.opndAddLocMod: const.infoAddLocMod,
+                  const.opndAddLocSrqMod: const.infoAddLocSrqMod,
+                  const.opndAddOwnSrqMod: const.infoAddOwnSrqMod,
+                  const.opndRmGangGrpMod: const.infoRmGangGrpMod,
+                  const.opndRmGangItmMod: const.infoRmGangItmMod,
+                  const.opndRmGangSrqMod: const.infoRmGangSrqMod,
+                  const.opndRmItmMod: const.infoRmItmMod,
+                  const.opndRmLocGrpMod: const.infoRmLocGrpMod,
+                  const.opndRmLocMod: const.infoRmLocMod,
+                  const.opndRmLocSrqMod: const.infoRmLocSrqMod,
+                  const.opndRmOwnSrqMod: const.infoRmOwnSrqMod}
+
+
 class EvalException(Exception):
     pass
 
@@ -82,24 +100,11 @@ class ExpressionEval(object):
     # Top-level methods - combining, routing, etc
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
-        genericOpnds = {const.opndSplice: self.__splice,
-                        const.opndAddGangGrpMod: self.__makeInfo,
-                        const.opndAddGangItmMod: self.__makeInfo,
-                        const.opndAddGangSrqMod: self.__makeInfo,
-                        const.opndAddItmMod: self.__makeInfo,
-                        const.opndAddLocGrpMod: self.__makeInfo,
-                        const.opndAddLocMod: self.__makeInfo,
-                        const.opndAddLocSrqMod: self.__makeInfo,
-                        const.opndAddOwnSrqMod: self.__makeInfo,
-                        const.opndRmGangGrpMod: self.__makeInfo,
-                        const.opndRmGangItmMod: self.__makeInfo,
-                        const.opndRmGangSrqMod: self.__makeInfo,
-                        const.opndRmItmMod: self.__makeInfo,
-                        const.opndRmLocGrpMod: self.__makeInfo,
-                        const.opndRmLocMod: self.__makeInfo,
-                        const.opndRmLocSrqMod: self.__makeInfo,
-                        const.opndRmOwnSrqMod: self.__makeInfo}
-        genericOpnds[element.operand](element)
+        if element.operand in operandInfoMap:
+            self.__makeInfo(element)
+        else:
+            genericOpnds = {const.opndSplice: self.__splice}
+            genericOpnds[element.operand](element)
 
     def __splice(self, element):
         """Reference two expressions from self"""
@@ -108,24 +113,8 @@ class ExpressionEval(object):
 
     def __makeInfo(self, element):
         """Make info according to passed data"""
-        opndInfoMap = {const.opndAddGangGrpMod: const.infoAddGangGrpMod,
-                       const.opndAddGangItmMod: const.infoAddGangItmMod,
-                       const.opndAddGangSrqMod: const.infoAddGangSrqMod,
-                       const.opndAddItmMod: const.infoAddItmMod,
-                       const.opndAddLocGrpMod: const.infoAddLocGrpMod,
-                       const.opndAddLocMod: const.infoAddLocMod,
-                       const.opndAddLocSrqMod: const.infoAddLocSrqMod,
-                       const.opndAddOwnSrqMod: const.infoAddOwnSrqMod,
-                       const.opndRmGangGrpMod: const.infoRmGangGrpMod,
-                       const.opndRmGangItmMod: const.infoRmGangItmMod,
-                       const.opndRmGangSrqMod: const.infoRmGangSrqMod,
-                       const.opndRmItmMod: const.infoRmItmMod,
-                       const.opndRmLocGrpMod: const.infoRmLocGrpMod,
-                       const.opndRmLocMod: const.infoRmLocMod,
-                       const.opndRmLocSrqMod: const.infoRmLocSrqMod,
-                       const.opndRmOwnSrqMod: const.infoRmOwnSrqMod}
         info = ExpressionInfo()
-        info.type = opndInfoMap[element.operand]
+        info.type = operandInfoMap[element.operand]
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)
