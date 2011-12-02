@@ -90,7 +90,15 @@ class ExpressionEval(object):
                         const.opndAddLocGrpMod: self.__makeInfo,
                         const.opndAddLocMod: self.__makeInfo,
                         const.opndAddLocSrqMod: self.__makeInfo,
-                        const.opndAddOwnSrqMod: self.__makeInfo}
+                        const.opndAddOwnSrqMod: self.__makeInfo,
+                        const.opndRmGangGrpMod: self.__makeInfo,
+                        const.opndRmGangItmMod: self.__makeInfo,
+                        const.opndRmGangSrqMod: self.__makeInfo,
+                        const.opndRmItmMod: self.__makeInfo,
+                        const.opndRmLocGrpMod: self.__makeInfo,
+                        const.opndRmLocMod: self.__makeInfo,
+                        const.opndRmLocSrqMod: self.__makeInfo,
+                        const.opndRmOwnSrqMod: self.__makeInfo}
         genericOpnds[element.operand](element)
 
     def __splice(self, element):
@@ -107,7 +115,15 @@ class ExpressionEval(object):
                        const.opndAddLocGrpMod: const.infoAddLocGrpMod,
                        const.opndAddLocMod: const.infoAddLocMod,
                        const.opndAddLocSrqMod: const.infoAddLocSrqMod,
-                       const.opndAddOwnSrqMod: const.infoAddOwnSrqMod}
+                       const.opndAddOwnSrqMod: const.infoAddOwnSrqMod,
+                       const.opndRmGangGrpMod: const.infoRmGangGrpMod,
+                       const.opndRmGangItmMod: const.infoRmGangItmMod,
+                       const.opndRmGangSrqMod: const.infoRmGangSrqMod,
+                       const.opndRmItmMod: const.infoRmItmMod,
+                       const.opndRmLocGrpMod: const.infoRmLocGrpMod,
+                       const.opndRmLocMod: const.infoRmLocMod,
+                       const.opndRmLocSrqMod: const.infoRmLocSrqMod,
+                       const.opndRmOwnSrqMod: const.infoRmOwnSrqMod}
         info = ExpressionInfo()
         info.type = opndInfoMap[element.operand]
         self.__optrTgt(element.arg1, info)

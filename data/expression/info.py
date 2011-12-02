@@ -65,11 +65,11 @@ class ExpressionInfo(object):
         self.sourceAttributeId is None:
             return False
         # For direct assignments, we must ensure that we target item directly
-        if self.type == const.infoAddItmMod:
+        if self.type in (const.infoAddItmMod, const.infoRmItmMod):
             if self.target in const.locConvMap.values():
                 return True
         # For location+group filters, check possible target location and presence of group specifier
-        elif self.type == const.infoAddLocGrpMod:
+        elif self.type in (const.infoAddLocGrpMod, const.infoRmLocGrpMod):
             try:
                 filterLoc, filterGrp = self.target
             except (TypeError, ValueError):
@@ -78,13 +78,13 @@ class ExpressionInfo(object):
             if filterLoc in validLocs and filterGrp is not None:
                 return True
         # For location, check possible target location
-        elif self.type == const.infoAddLocMod:
+        elif self.type in (const.infoAddLocMod, const.infoRmLocMod):
             validLocs = (const.locChar, const.locShip, const.locTgt)
             if self.target in validLocs:
                 return True
         # For location+skill requirement filters, check possible target location and presence of
         # skill requirement specifier
-        elif self.type == const.infoAddLocSrqMod:
+        elif self.type in (const.infoAddLocSrqMod, const.infoRmLocSrqMod):
             try:
                 filterLoc, filterSrq = self.target
             except (TypeError, ValueError):
@@ -94,7 +94,7 @@ class ExpressionInfo(object):
                 return True
         # For owner+skill requirement filters, check if target is character and presence
         # of skill requirement specifier
-        elif self.type == const.infoAddOwnSrqMod:
+        elif self.type in (const.infoAddOwnSrqMod, const.infoRmOwnSrqMod):
             try:
                 filterOwn, filterSrq = self.target
             except (TypeError, ValueError):
@@ -102,22 +102,22 @@ class ExpressionInfo(object):
             if filterOwn is const.locChar and filterSrq is not None:
                 return True
         # For direct gang modifications, target must be none (assumed it's ship)
-        elif self.type == const.infoAddGangItmMod:
+        elif self.type in (const.infoAddGangItmMod, const.infoRmGangItmMod):
             if self.target is None:
                 return True
         # For skill requirement filtered gang ship items modification, target
         # must be skill specifier
-        elif self.type == const.infoAddGangSrqMod:
+        elif self.type in (const.infoAddGangSrqMod, const.infoRmGangSrqMod):
             if self.target is not None:
                 return True
         # For group filtered gang ship items modification, target must be
         # group specifier
-        elif self.type == const.infoAddGangGrpMod:
+        elif self.type in (const.infoAddGangGrpMod, const.infoRmGangGrpMod):
             if self.target is not None:
                 return True
         # For skill requirement filtered gang in-space items modification,
         # target must be skill specifier
-        elif self.type == const.infoAddGangOwnSrqMod:
+        elif self.type in (const.infoAddGangOwnSrqMod, const.infoRmGangOwnSrqMod):
             if self.target is not None:
                 return True
         # Mark all unknown for validator info types as invalid
