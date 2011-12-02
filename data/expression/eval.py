@@ -20,24 +20,6 @@
 from eos import const
 from .info import ExpressionInfo
 
-operandInfoMap = {const.opndAddGangGrpMod: const.infoAddGangGrpMod,
-                  const.opndAddGangItmMod: const.infoAddGangItmMod,
-                  const.opndAddGangSrqMod: const.infoAddGangSrqMod,
-                  const.opndAddItmMod: const.infoAddItmMod,
-                  const.opndAddLocGrpMod: const.infoAddLocGrpMod,
-                  const.opndAddLocMod: const.infoAddLocMod,
-                  const.opndAddLocSrqMod: const.infoAddLocSrqMod,
-                  const.opndAddOwnSrqMod: const.infoAddOwnSrqMod,
-                  const.opndRmGangGrpMod: const.infoRmGangGrpMod,
-                  const.opndRmGangItmMod: const.infoRmGangItmMod,
-                  const.opndRmGangSrqMod: const.infoRmGangSrqMod,
-                  const.opndRmItmMod: const.infoRmItmMod,
-                  const.opndRmLocGrpMod: const.infoRmLocGrpMod,
-                  const.opndRmLocMod: const.infoRmLocMod,
-                  const.opndRmLocSrqMod: const.infoRmLocSrqMod,
-                  const.opndRmOwnSrqMod: const.infoRmOwnSrqMod}
-
-
 class EvalException(Exception):
     pass
 
@@ -100,7 +82,7 @@ class ExpressionEval(object):
     # Top-level methods - combining, routing, etc
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
-        if element.operand in operandInfoMap:
+        if element.operand in const.opndInfoMap:
             self.__makeInfo(element)
         else:
             genericOpnds = {const.opndSplice: self.__splice}
@@ -114,7 +96,7 @@ class ExpressionEval(object):
     def __makeInfo(self, element):
         """Make info according to passed data"""
         info = ExpressionInfo()
-        info.type = operandInfoMap[element.operand]
+        info.type = const.opndInfoMap[element.operand]
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
         self.infos.append(info)

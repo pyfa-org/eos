@@ -150,3 +150,20 @@ infoRmLocGrpMod = 15  # Undid from items in certain location, filtered by group
 infoRmLocMod = 16  # Undid from items in certain location
 infoRmLocSrqMod = 17  # Undid from items in certain location, filtered by skill requirement
 infoRmOwnSrqMod = 18  # Undid from items, filtered by owner and skill requirement
+# Maps top-level operand IDs for each modification type to corresponding info IDs
+opndInfoMap = {opndAddGangGrpMod: infoAddGangGrpMod,
+               opndAddGangItmMod: infoAddGangItmMod,
+               opndAddGangSrqMod: infoAddGangSrqMod,
+               opndAddItmMod: infoAddItmMod,
+               opndAddLocGrpMod: infoAddLocGrpMod,
+               opndAddLocMod: infoAddLocMod,
+               opndAddLocSrqMod: infoAddLocSrqMod,
+               opndAddOwnSrqMod: infoAddOwnSrqMod,
+               opndRmGangGrpMod: infoRmGangGrpMod,
+               opndRmGangItmMod: infoRmGangItmMod,
+               opndRmGangSrqMod: infoRmGangSrqMod,
+               opndRmItmMod: infoRmItmMod,
+               opndRmLocGrpMod: infoRmLocGrpMod,
+               opndRmLocMod: infoRmLocMod,
+               opndRmLocSrqMod: infoRmLocSrqMod,
+               opndRmOwnSrqMod: infoRmOwnSrqMod}
