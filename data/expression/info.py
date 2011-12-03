@@ -30,18 +30,20 @@ class ExpressionInfo(object):
     but nothing prevents a user from making some of his own and running them onto a fit
     """
     def __init__(self):
-        self.type = None
-        """
-        Type of the instance, describes which modification should be applied onto targets.
-        """
         self.location = None
         """
         The location of this expression.
         """
 
-        self.filter = None
+        self.filterType = None
         """
-        The filter of this expression, this can be a group or skillRequirement Id
+        The filterType of the expression, is either filterAll, filterSkill or filterGroup
+        """
+
+        self.filterValue = None
+        """
+        The filter value of the expression. None for filterAll.
+        Corresponding skill typeID or groupID for filterSkill & filterGroup respectivly
         """
 
         self.operation = None
@@ -65,40 +67,5 @@ class ExpressionInfo(object):
     def validate(self):
         # Usual assortment of checks, applicable to any info object
         if self.operation is None or self.targetAttributeId is None or \
-        self.sourceAttributeId is None:
-            return False
-        # For direct assignments, we must ensure that we target item directly
-        if self.type in (const.infoAddItmMod, const.infoRmItmMod):
-            return self.location in const.locConvMap.values()
-        # For location+group filters, check possible target location and presence of group specifier
-        elif self.type in (const.infoAddLocGrpMod, const.infoRmLocGrpMod):
-            return self.location in (const.locChar, const.locShip, const.locTgt) and self.filter is not None
-        # For location, check possible target location
-        elif self.type in (const.infoAddLocMod, const.infoRmLocMod):
-            return self.target in (const.locChar, const.locShip, const.locTgt)
-        # For location+skill requirement filters, check possible target location and presence of
-        # skill requirement specifier
-        elif self.type in (const.infoAddLocSrqMod, const.infoRmLocSrqMod):
-            return self.location in (const.locChar, const.locShip, const.locTgt) and self.filter is not None
-        # For owner+skill requirement filters, check if target is character and presence
-        # of skill requirement specifier
-        elif self.type in (const.infoAddOwnSrqMod, const.infoRmOwnSrqMod):
-            return self.location is const.locChar and self.filter is not None
-        # For direct gang modifications, target must be none (assumed it's ship)
-        elif self.type in (const.infoAddGangItmMod, const.infoRmGangItmMod):
-            return self.location is None
-        # For skill requirement filtered gang ship items modification, target
-        # must be skill specifier
-        elif self.type in (const.infoAddGangSrqMod, const.infoRmGangSrqMod):
-            return self.filter is not None
-        # For group filtered gang ship items modification, target must be
-        # group specifier
-        elif self.type in (const.infoAddGangGrpMod, const.infoRmGangGrpMod):
-            return self.filter is not None
-        # For skill requirement filtered gang in-space items modification,
-        # target must be skill specifier
-        elif self.type in (const.infoAddGangOwnSrqMod, const.infoRmGangOwnSrqMod):
-            return self.filter is not None
-        # Mark all unknown for validator info types as invalid
-        else:
+        self.sourceAttributeId is None or self.location is None:
             return False
