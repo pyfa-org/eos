@@ -39,38 +39,16 @@ class Expression(object):
         self.typeId = typeId
         self.groupId = groupId
         self.attributeId = attributeId
-        self._info = None
+        self.__infos = None
 
     def build(self):
         """
         Builds the info objects for this expression tree
         """
         if self._info is None:
-            self._info = ExpressionEval()
-            self._info.build(self)
+            eval = ExpressionEval()
+            self.__infos = self._info.build(self)
 
-    def prepare(self, owner, fit):
-        """
-        Prepare the expression for execution
-        """
+    def getInfos(self):
         self.build()
-        self._info._prepare(owner, fit)
-
-    def apply(self, owner, fit):
-        """
-        Run the effect against the passed owner and fit.
-        The owner is the MutableAttributeHolder which will be used to apply/get source values
-        Target values will be applied to the passed Fit object according to configured filters and other settings
-        See ExpressionInfo for detailed workings
-        """
-        self.build()
-        self._info._apply(owner, fit)
-
-    def undo(self, owner, fit):
-        """
-        Apply the reverse operation that was applied when run was called.
-        run fills up a number of registers to make this operation possible
-        """
-        # No check if __info is defined,
-        # if the expression is being undo'd, it has to have been applied before anyway
-        self._info._undo(owner, fit)
+        return self.__infos

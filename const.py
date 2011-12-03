@@ -117,12 +117,14 @@ optrConvMap = {"PreAssignment": optrPreAssignment,
                "PostAssignment": optrPostAssignment}
 
 # Target location IDs
-locSelf = 0
-locChar = 1
-locShip = 2
-locTgt = 4
-locCont = 5
-locArea = 6
+locSelf = 0 # Targetting self, aka, the target is the source
+locChar = 1 # Targettin character
+locShip = 2 # Targetting ship
+locTgt = 4 # Targetting the "target", what the ship has locked and targetted
+locCont = 5 # Targetting the container that we're stored in
+locArea = 6 # ?
+locSpace = 7 # Target stuff in space (=Drones and missiles). This location is eos specific and not taken from EVE
+
 # Database name: ID map for target locations
 locConvMap = {"Self": locSelf,
               "Char": locChar,
@@ -150,6 +152,7 @@ infoRmLocGrpMod = 15  # Undid from items in certain location, filtered by group
 infoRmLocMod = 16  # Undid from items in certain location
 infoRmLocSrqMod = 17  # Undid from items in certain location, filtered by skill requirement
 infoRmOwnSrqMod = 18  # Undid from items, filtered by owner and skill requirement
+
 # Maps top-level operand IDs for each modification type to corresponding info IDs
 opndInfoMap = {opndAddGangGrpMod: infoAddGangGrpMod,
                opndAddGangItmMod: infoAddGangItmMod,
@@ -167,3 +170,10 @@ opndInfoMap = {opndAddGangGrpMod: infoAddGangGrpMod,
                opndRmLocMod: infoRmLocMod,
                opndRmLocSrqMod: infoRmLocSrqMod,
                opndRmOwnSrqMod: infoRmOwnSrqMod}
+
+# Map infoTypeIDs to constant locations if they have one
+infoTypeLocMap = {infoAddGangGrpMod: locShip,
+                  infoAddGangItmMod: locShip,
+                  infoAddGangOwnSrqMod: locSpace,
+                  infoAddGangSrqMod: locShip,
+                  infoAddOwnSrqMod: locSpace}

@@ -20,6 +20,8 @@
 import collections
 
 from eos import const
+from abc import ABCMeta
+from abc import abstractproperty
 
 RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 
@@ -28,6 +30,11 @@ class MutableAttributeHolder(object):
     Base attribute holder class inherited by all classes that need to keep track of modified attributes.
     This class holds a MutableAttributeMap to keep track of changes.
     """
+    __metaclass__ = ABCMeta
+
+    @abstractproperty
+    def location(self):
+        ...
 
     def __init__(self, type):
         """
