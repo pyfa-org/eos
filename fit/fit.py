@@ -20,6 +20,7 @@
 import collections
 
 from eos import const
+from .register import Register
 
 class Fit(object):
     """
@@ -51,15 +52,6 @@ class Fit(object):
         """
         Constructor: Accepts a Ship
         """
-        # These registers are mainly used when new modules are added.
-        # A new module addition will cause registers to be checked for all that module's skills and group for effects to apply to it
-        # They usualy should NOT be changed outside the lib
-        self.__skillAffectorRegister = {}
-        self.__groupAffectorRegister = {}
-
-        self.__groupAffecteeRegister = {}
-        self.__skillAffecteeRegister = {}
-
         # Vars used by properties
         self.__ship = None
         self.__character = None
@@ -68,7 +60,7 @@ class Fit(object):
         self.modules = MutableAttributeHolderList(self)
         self.ship = ship
 
-        self.__holderAttributeOperationsRegister = {}
+        self.__register = Register(self)
 
     def calculate(self):
         """
