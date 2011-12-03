@@ -124,25 +124,27 @@ class ExpressionEval(object):
 
     def __loc(self, element, info):
         """Get location and store it"""
-        info.target = self.__getLoc(element)
+        info.location = self.__getLoc(element)
 
     def __grpAttr(self, element, info):
         """Join target group and target attribute"""
-        info.target = self.__getGrp(element.arg1)
+        info.filter = self.__getGrp(element.arg1)
         info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __srqAttr(self, element, info):
         """Join target skill requirement and target attribute"""
-        info.target = self.__getType(element.arg1)
+        info.filter = self.__getType(element.arg1)
         info.targetAttributeId = self.__getAttr(element.arg2)
 
     def __locGrp(self, element, info):
         """Join target location filter and group filter"""
-        info.target = (self.__getLoc(element.arg1), self.__getGrp(element.arg2))
+        info.location = self.__getLoc(element.arg1)
+        info.filter = self.__getGrp(element.arg2)
 
     def __locSrq(self, element, info):
         """Join target location filter and skill requirement filter"""
-        info.target = (self.__getLoc(element.arg1), self.__getType(element.arg2))
+        info.location = self.__getLoc(element.arg1)
+        info.filter = self.__getType(element.arg2)
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
