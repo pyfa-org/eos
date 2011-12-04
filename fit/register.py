@@ -115,3 +115,46 @@ class Register():
                     s = map[key] = set()
 
                 set.add(value)
+
+    def getAffectors(self, holder):
+        """
+        Get a set of (sourceHolder, info) tuples affecting the passed holder
+        """
+        s = set()
+        if holder.specific:
+            s.update(holder.location)
+        else:
+            affectorMaps = [(location, self.__affectorSpecificLocation), # Specific location register
+                            ((location, holder.type.groupId), self.__affectorGroupLocation)] #group location register
+
+            affectorSkillLocation = self.__affectorSkillLocation
+
+            # Add the skills to the affectee/affector fillup maps
+            for skillId in holder.type.requiredSkills():
+                key = (location, skillId)
+                affectorMaps.append((key, affectorSkillLocation))
+
+            for key, map in affectorMaps:
+                s.update(map[key])
+
+        return s;
+
+    def getAffectees(self, registrationInfo):
+        """
+        Get the holders that the passed (sourceHolder, info) tuple affects
+        """
+        s = set()
+        affecteeMaps = [(location, self.__affecteeLocation), # Location only register
+                        ((location, holder.type.groupId), self.__affecteeGroupLocation)] # Location group register
+
+        affecteeSkillLocation = self.__affecteeSkillLocation
+
+        # Add the skills to the affectee/affector fillup maps
+        for skillId in holder.type.requiredSkills():
+            key = (location, skillId)
+            affecteeMaps.append((key, affecteeSkillLocation))
+
+        for key, map in affecteeMaps:
+            s.update(map[key])
+
+        return s;
