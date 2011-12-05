@@ -117,13 +117,13 @@ optrConvMap = {"PreAssignment": optrPreAssignment,
                "PostAssignment": optrPostAssignment}
 
 # Target location IDs
-locSelf = 0 # Targetting self, aka, the target is the source
-locChar = 1 # Targettin character
-locShip = 2 # Targetting ship
-locTgt = 4 # Targetting the "target", what the ship has locked and targetted
-locCont = 5 # Targetting the container that we're stored in
-locArea = 6 # ?
-locSpace = 7 # Target stuff in space (=Drones and missiles). This location is eos specific and not taken from EVE
+locSelf = 0  # Target self, i.e. carrier of modification source
+locChar = 1  # Target character
+locShip = 2  # Target ship
+locTgt = 4  # Target currently locked and selected ship as target
+locCont = 5  # Targeting the container of the modification source carrier
+locArea = 6  # ?
+locSpace = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 # Database name: ID map for target locations
 locConvMap = {"Self": locSelf,
@@ -133,52 +133,7 @@ locConvMap = {"Self": locSelf,
               "Other": locCont,
               "Area": locArea}
 
-# Info type IDs section
-infoAddGangGrpMod = 1  # Applied to gang-mates' ships' items, filtered by group
-infoAddGangItmMod = 2  # Applied directly to gang-mates' ships
-infoAddGangOwnSrqMod = 3  # Applies to gang-mates' in-space items (drones, missiles), filtered by skill requirement
-infoAddGangSrqMod = 4  # Applied to gang-mates' ships' items, filtered by skill requirement
-infoAddItmMod = 5  # Applied directly to some item
-infoAddLocGrpMod = 6  # Applied to items in certain location, filtered by group
-infoAddLocMod = 7  # Applied to items in certain location
-infoAddLocSrqMod = 8  # Applied to items in certain location, filtered by skill requirement
-infoAddOwnSrqMod = 9  # Applied to items, filtered by owner and skill requirement
-infoRmGangGrpMod = 10  # Undid from gang-mates' ships' items, filtered by group
-infoRmGangItmMod = 11  # Undid directly from gang-mates' ships
-infoRmGangOwnSrqMod = 12  # Undid from gang-mates' in-space items (drones, missiles), filtered by skill requirement
-infoRmGangSrqMod = 13  # Undid from gang-mates' ships' items, filtered by skill requirement
-infoRmItmMod = 14  # Undid directly from some item
-infoRmLocGrpMod = 15  # Undid from items in certain location, filtered by group
-infoRmLocMod = 16  # Undid from items in certain location
-infoRmLocSrqMod = 17  # Undid from items in certain location, filtered by skill requirement
-infoRmOwnSrqMod = 18  # Undid from items, filtered by owner and skill requirement
-
 # Filter types
 filterAll = 0
 filterGroup = 1
 filterSkill = 2
-
-# Maps top-level operand IDs for each modification type to corresponding info IDs
-opndInfoMap = {opndAddGangGrpMod: infoAddGangGrpMod,
-               opndAddGangItmMod: infoAddGangItmMod,
-               opndAddGangSrqMod: infoAddGangSrqMod,
-               opndAddItmMod: infoAddItmMod,
-               opndAddLocGrpMod: infoAddLocGrpMod,
-               opndAddLocMod: infoAddLocMod,
-               opndAddLocSrqMod: infoAddLocSrqMod,
-               opndAddOwnSrqMod: infoAddOwnSrqMod,
-               opndRmGangGrpMod: infoRmGangGrpMod,
-               opndRmGangItmMod: infoRmGangItmMod,
-               opndRmGangSrqMod: infoRmGangSrqMod,
-               opndRmItmMod: infoRmItmMod,
-               opndRmLocGrpMod: infoRmLocGrpMod,
-               opndRmLocMod: infoRmLocMod,
-               opndRmLocSrqMod: infoRmLocSrqMod,
-               opndRmOwnSrqMod: infoRmOwnSrqMod}
-
-# Map infoTypeIDs to constant locations if they have one
-infoTypeLocMap = {infoAddGangGrpMod: locShip,
-                  infoAddGangItmMod: locShip,
-                  infoAddGangOwnSrqMod: locSpace,
-                  infoAddGangSrqMod: locShip,
-                  infoAddOwnSrqMod: locSpace}
