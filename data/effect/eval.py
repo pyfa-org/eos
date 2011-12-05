@@ -18,45 +18,33 @@
 #===============================================================================
 
 from eos import const
-from .info import ExpressionInfo
+from .info import EffectInfo
 
-class EvalException(Exception):
-    pass
+class Modifier(object):
+    """
+    Internal for eval object, stores meaningful elements of expression tree temporarily
+    """
+    def __init__(self):
+        # Type of modification
+        self.type = None
+        self.operation = None
+        self.targetAttributeId = None
+        self.sourceAttributeId = None
 
 class ExpressionEval(object):
     """
     Expression evaluator responsible for converting a tree of Expression objects (which isn't directly useful to us)
-    into one or several ExpressionInfo objects which can then be ran as needed.
+    into one or several EffectInfo objects which can then be ran as needed.
     """
     def __init__(self):
-        self.__activeExpression = None
         self.infos = []
         self.fail = False  # Stop guard, true if parsing this expression failed at some point
-
-    def _prepare(self, owner, fit):
-        """
-        Internal method that prepares an eval object for application.
-        """
-        for e in self.infos:
-            fit._prepare(owner, e)
-
-    def _apply(self, owner, fit):
-        """
-        Internal run method that applies all expressions stored in this eval object.
-        This is typically called for you by the expression itself
-        """
-        for e in self.infos:
-            fit._apply(owner, e)
-
-    def _undo(self, owner, fit):
-        for e in self.infos:
-            fit._undo(owner, e)
 
     def build(self, base):
         """
         Prepare an ExpressionEval object for running.
         No validations are done here, what is passed should be valid.
-        If its not, exceptions will most likely occur, or you'll get an incomplete ExpressionInfo object as a result
+        If its not, exceptions will most likely occur, or you'll get an incomplete EffectInfo object as a result
         If this is not called before run()/undo() they will not do anything
         """
         # Validation: detect stubs, if a stub is found, return an empty list
@@ -95,7 +83,7 @@ class ExpressionEval(object):
 
     def __makeInfo(self, element):
         """Make info according to passed data"""
-        info = ExpressionInfo()
+        info = EffectInfo()
         info.type = const.opndInfoMap[element.operand]
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)

@@ -17,10 +17,6 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-import collections
-
-from .eval import ExpressionEval
-
 class Expression(object):
     """
     Expression class. Each effect is made out of several expressions. Which in turn, can be made out of expressions themselves.
@@ -40,15 +36,3 @@ class Expression(object):
         self.groupId = groupId
         self.attributeId = attributeId
         self.__infos = None
-
-    def build(self):
-        """
-        Builds the info objects for this expression tree
-        """
-        if self._info is None:
-            eval = ExpressionEval()
-            self.__infos = self._info.build(self)
-
-    def getInfos(self):
-        self.build()
-        return self.__infos
