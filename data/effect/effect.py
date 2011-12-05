@@ -44,9 +44,15 @@ class Effect(object):
         self.isAssistance = isAssistance
         """Whether the module is helpful (e.g. Remote reps)"""
 
-    def getInfos(self):
+        self.__infos = None
+        """Stores EffectInfos which are assigned to given effect"""
+
+    @property
+    def infos(self):
         """
         Return a set of all infos this effect contains
         """
-        return self.preExpression.getInfos()
+        if self.__infos is None:
+            self.__infos = self.preExpression.getInfos()
+        return self.__infos
 

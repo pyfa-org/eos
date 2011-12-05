@@ -56,6 +56,6 @@ class Type(object):
         """
         infos = set()
         for e in self.effects:
-            set.update(e.getInfos())
+            set.update(e.infos)
 
         return infos;
