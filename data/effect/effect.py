@@ -49,3 +49,4 @@ class Effect(object):
         Return a set of all infos this effect contains
         """
         return self.preExpression.getInfos()
+
