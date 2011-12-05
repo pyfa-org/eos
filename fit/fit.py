@@ -56,35 +56,11 @@ class Fit(object):
         self.__ship = None
         self.__character = None
 
+        self.__register = Register(self)
+
         # Public stuff
         self.modules = MutableAttributeHolderList(self)
         self.ship = ship
-
-        self.__register = Register(self)
-
-
-    def __getTargets(self, holder, info):
-        """
-        Returns the target(s) of the passed expression.
-        Implemented values: Self, Ship, Char
-        Unimplemented values: Target, Area, Other
-        """
-        target = info.target
-
-        if target == const.locSelf:
-            return (holder, )
-        #Ship can either mean the ship itself (if no filters are specified)
-        #or a filtered match on everything on the fit (if filters are specified)
-        elif target == const.locShip and info.target is not None and info.type != const.infoAddItmMod:
-            return [mod for mod in self.modules if mod.matches(info.target)]
-        elif target == const.locShip:
-            return (self.ship, )
-        elif target == const.locChar:
-            return (self.character, )
-
-    def __setFit(self, holder):
-        if holder is not None:
-            holder.fit = self
 
     def _setHolder(self, holder):
         if holder is not None:
@@ -93,14 +69,24 @@ class Fit(object):
                 raise ValueError("Cannot add a module which is already in another fit")
 
             holder.fit = self
-            self._registerHolder(holder)
-            holder._prepare()
+            self.__register.register(holder)
+            holder._register()
+
 
     def _unsetHolder(self, holder):
         if holder is not None:
             assert(holder.fit == self)
-            self._unregisterHolder(holder)
+            self.__register.unregister(holder)
             holder.fit = None
+            holder._unregister()
+
+    def _getAffectors(self, holder):
+        """Get a set of (sourceHolder, info) tuples affecting the passed holder"""
+        self.__register.getAffectors(holder)
+
+    def _getAffectees(self, registrationInfo):
+        """Get the holders that the passed (sourceHolder, info) tuple affects"""
+        self.__register.getAffectees(registrationInfo)
 
 class MutableAttributeHolderList(collections.MutableSequence):
     """

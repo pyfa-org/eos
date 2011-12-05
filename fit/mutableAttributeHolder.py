@@ -54,45 +54,11 @@ class MutableAttributeHolder(object):
         Special dictionary subclass that holds modified attributes and data related to their calculation
         """
 
-    def _prepare(self):
-        for effect in self.type.effects:
-            effect._prepare(self, self.fit)
+    def _register(self):
+        self.attributes._register()
 
-    def _apply(self):
-        """
-        Applies all effects of the type bound to this holder. This can have for reaching consequences as it can affect anything fitted onto the fit (including itself)
-        This is typically automatically called by eos when relevant (when a holder is added onto a fit)
-        """
-        for effect in self.type.effects:
-            effect._apply(self, self.fit)
-
-
-    def _undo(self):
-        """
-        Undos the operations done by apply
-        This is typically automatically called by eos when relevant (when a holder is removed from a fit)
-        """
-        for effect in self.type.effects:
-            effect._undo(self.fit)
-
-    def matches(self, filters):
-        """
-        Checks whether this holder matches the passed filter definitions
-        """
-        type = self.type
-        for filter in filters:
-            if filter.type == const.filLocGrp and filter.value != type.groupId:
-                return False
-            if filter.type == const.filLocSrq and filter.value not in type.requiredSkills():
-                return False
-
-        return True
-
-    def _register(self, sourceHolder, info):
-        self.attributes._register(sourceHolder, info)
-
-    def _damage(self, info):
-        self.attributes._damage(info)
+    def _unregister(self):
+        self.attributes._unregister()
 
 class MutableAttributeMap(collections.Mapping):
     """
@@ -127,42 +93,11 @@ class MutableAttributeMap(collections.Mapping):
     def keys(self):
         return set(self.__modifiedAttributes.keys()).intersection(self.__holder.type.attributes.keys())
 
-    def _register(self, sourceHolder, info):
-        """
-        Register an info object for processing
-        """
-        register = self.__attributeRegister.get(info.targetAttributeId)
-        if register is None:
-            register = self.__attributeRegister[info.targetAttributeId] = set()
+    def _register(self):
+        pass
 
-        registrationInfo = RegistrationInfo(sourceHolder, info)
-        register.add(registrationInfo)
-        return registrationInfo
-
-    def _damage(self, info):
-        """
-        Cause damage on self using a certain info object.
-        This is a recursive method that does the following:
-        - Clear the calculated values for the target of the passed info object
-        - For each info using the cleared value as source, call fit.damage
-        """
-
-        holder = self.__holder
-        fit = holder.fit
-        targetAttributeId = info.targetAttributeId
-
-        try:
-            del self.__modifiedAttributes[targetAttributeId]
-        except KeyError:
-            pass
-        finally:
-            for attrId, s in self.__attributeRegister.items():
-                for registrationInfo in s:
-                    newInfo = registrationInfo.info
-                    if newInfo.sourceAttributeId == targetAttributeId:
-                        fit.damage(self, newInfo)
-
-
+    def _unregister(self):
+        pass
 
     def __calculate(self, attrId):
         """

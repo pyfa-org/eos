@@ -44,20 +44,8 @@ class Effect(object):
         self.isAssistance = isAssistance
         """Whether the module is helpful (e.g. Remote reps)"""
 
-    def _prepare(self, owner, fit):
+    def getInfos(self):
         """
-        Prepares the effect for execution
+        Return a set of all infos this effect contains
         """
-        self.preExpression.prepare(owner, fit)
-
-    def _apply(self, owner, fit):
-        """
-        Apply this effect onto the passed fit
-        """
-        self.preExpression.apply(owner, fit)
-
-    def _undo(self, owner, fit):
-        """
-        Undo this effect from the passed fit
-        """
-        self.preExpression.undo(owner, fit)
+        return self.preExpression.getInfos()

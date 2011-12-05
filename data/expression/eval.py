@@ -99,7 +99,12 @@ class ExpressionEval(object):
         info.type = const.opndInfoMap[element.operand]
         self.__optrTgt(element.arg1, info)
         info.sourceAttributeId = self.__getAttr(element.arg2)
+        self.__applyLocation(info)
         self.infos.append(info)
+
+    def __applyLocation(self, info):
+        """Some info types have a fixed location they affect, apply it here"""
+        pass
 
     def __optrTgt(self, element, info):
         """Join operator and target definition"""

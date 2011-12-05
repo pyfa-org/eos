@@ -17,6 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos import const
+
 class Register():
     """
     Register class. Keeps track of fit specific
@@ -74,7 +76,7 @@ class Register():
         Value: set of holders
         """
 
-    def register(self, holder):
+    def __getMaps(self, holder):
         location = holder.location
 
         # Keep all maps we need to add all info tuples to here to do it as efficiently as possible
@@ -97,17 +99,21 @@ class Register():
             affecteeMaps.append((key, affecteeSkillLocation))
             affectorMaps.append((key, affectorSkillLocation))
 
+        return (affecteeMaps, affectorMaps)
+
+    def register(self, holder):
+        affecteeMaps, affectorMaps = self.__getMaps(holder)
+
         # Add to affectee registers first
         for key, map in affecteeMaps:
-            s = map.get(location)
+            s = map.get(key)
             if s is None:
-                s = map[location] = set()
+                s = map[key] = set()
 
             s.add(holder)
 
         # Now add to affector register the same way, except we also loop through infos to compose the values
-        infoList = holder.type.getInfos()
-        for info in infoList:
+        for info in holder.type.getInfos():
             value = (holder, info)
             for key, map in affectorMaps:
                 s = map.get(key)
@@ -116,10 +122,26 @@ class Register():
 
                 set.add(value)
 
+    def unregister(self, holder):
+        if holder is None:
+            return
+
+        affecteeMaps, affectorMaps = self.__getMaps(holder)
+
+        for key, map in affecteeMaps:
+            map[key].remove(holder)
+
+        for info in holder.type.getInfos():
+            value = (holder, info)
+            for key, map in affectorMaps:
+                map[key].remove(value)
+
     def getAffectors(self, holder):
         """
         Get a set of (sourceHolder, info) tuples affecting the passed holder
         """
+        location = holder.location
+
         s = set()
         if holder.specific:
             s.update(holder.location)
@@ -143,18 +165,27 @@ class Register():
         """
         Get the holders that the passed (sourceHolder, info) tuple affects
         """
+        _, info = registrationInfo
+        location = info.location
+
         s = set()
-        affecteeMaps = [(location, self.__affecteeLocation), # Location only register
-                        ((location, holder.type.groupId), self.__affecteeGroupLocation)] # Location group register
 
-        affecteeSkillLocation = self.__affecteeSkillLocation
+        # No filterType ==> The location is specificly targetted
+        if info.filterType == None:
+            if location == const.locShip:
+                s.add(self.__fit.ship)
+            elif location == const.locChar:
+                s.add(self.__fit.character)
+            elif location == const.locSpace:
+                raise NotImplementedError("Not implemented until we keep track of drones & missiles")
 
-        # Add the skills to the affectee/affector fillup maps
-        for skillId in holder.type.requiredSkills():
-            key = (location, skillId)
-            affecteeMaps.append((key, affecteeSkillLocation))
+        elif info.filterType == const.filterAll:
+            s.update(self.__affecteeLocation.get((location, info.filterValue)) or ())
 
-        for key, map in affecteeMaps:
-            s.update(map[key])
+        elif info.filterType == const.filterSkill:
+            s.update(self.__affecteeSkillLocation.get((location, info.filterValue)) or ())
+
+        elif info.filterType == const.filterGroup:
+            s.update(self.__affecteeGroupLocation.get((location, info.filterValue)) or ())
 
         return s;

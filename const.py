@@ -153,6 +153,11 @@ infoRmLocMod = 16  # Undid from items in certain location
 infoRmLocSrqMod = 17  # Undid from items in certain location, filtered by skill requirement
 infoRmOwnSrqMod = 18  # Undid from items, filtered by owner and skill requirement
 
+# Filter types
+filterAll = 0
+filterGroup = 1
+filterSkill = 2
+
 # Maps top-level operand IDs for each modification type to corresponding info IDs
 opndInfoMap = {opndAddGangGrpMod: infoAddGangGrpMod,
                opndAddGangItmMod: infoAddGangItmMod,
