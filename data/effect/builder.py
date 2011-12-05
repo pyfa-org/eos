@@ -40,6 +40,12 @@ class Modifier(object):
     def __init__(self):
         # Type of modification
         self.type = None
+        # Source attribute ID
+        self.sourceAttribute = None
+        # Operation to be applied on target
+        self.operation = None
+        # Target attribute ID
+        self.targetAttribute = None
         # Direct target for modification
         self.target = None
         # Target location with multiple items for modification
@@ -48,28 +54,54 @@ class Modifier(object):
         self.targetGroup = None
         # Skill requirement ID of target items
         self.targetSkillRq = None
-        # Operation to be applied on target
-        self.operation = None
-        # Target attribute ID
-        self.targetAttribute = None
-        # Source attribute ID
-        self.sourceAttribute = None
 
     def validate(self):
         """Self-validation for modifier objects"""
+        # These fields always should be filled
         if self.operation is None or self.targetAttribute is None or \
         self.sourceAttribute is None:
             return False
-        fieldMap = {const.opndAddLocSrqMod: self.__locSrq,
-                    const.opndRmLocSrqMod: self.__locSrq}
-        return fieldMap[self.type]()
+        # Other fields are optional, check them using modifier type
+        validateMap = {const.opndAddLocSrqMod: self.__valLocSrq,
+                       const.opndRmLocSrqMod: self.__valLocSrq}
+        return validateMap[self.type]()
 
-    def __locSrq(self):
+    def __valLocSrq(self):
         if self.target is not None or self.targetGroup is not None:
             return False
-        if self.targetLocation is None or self.targetSkillRq is None:
+        validLocs = (const.locChar, const.locShip, const.locTgt)
+        if not self.targetLocation in validLocs or self.targetSkillRq is None:
             return False
         return True
+
+    def convertToInfo(self, other):
+        # First, check type, it should be mirror according to map
+        if self.type in mirrorMods:
+            if other.type != mirrorMods[self.type]:
+                return None
+        else:
+            if self.type != mirrorMods[other.type]:
+                return None
+        # Then, check all other fields of modifier
+        if self.sourceAttribute != other.sourceAttribute or self.operation != other.operation or \
+        self.targetAttribute != other.targetAttribute or self.target != other.target or \
+        self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or \
+        self.targetSkillRq != other.targetSkillRq:
+            return None
+        # If all conditions were met, start actual conversion
+        conversionMap = {const.opndAddLocSrqMod: self.__convLocSrq,
+                         const.opndRmLocSrqMod: self.__convLocSrq}
+        return conversionMap[self.type]()
+
+    def __convLocSrq(self):
+        info = EffectInfo()
+        info.location = self.targetLocation
+        info.filterType = const.filterGroup
+        info.filterValue = self.targetGroup
+        info.operation = self.operation
+        info.targetAttributeId = self.targetAttribute
+        info.sourceAttributeId = self.sourceAttribute
+        return info
 
 
 class InfoBuilder(object):
@@ -116,6 +148,13 @@ class InfoBuilder(object):
             if mod.validate() is not True:
                 print("Invalid post")
                 break
+
+        for preMod in self.preMods:
+            for postMod in self.postMods:
+                result = preMod.convertToInfo(postMod)
+                if result is not None:
+                    self.infos.append(result)
+                    break
 
         return self.infos
 
