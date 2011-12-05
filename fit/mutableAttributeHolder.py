@@ -55,10 +55,12 @@ class MutableAttributeHolder(object):
         """
 
     def _register(self):
-        self.attributes._register()
+        """Registers this holder, called when a holder is added to a fit"""
+        self.attributes._registerAll()
 
     def _unregister(self):
-        self.attributes._unregister()
+        """Unregisters this holder, called when a holder is removed from a fit"""
+        self.attributes._unregisterAll()
 
 class MutableAttributeMap(collections.Mapping):
     """
@@ -93,11 +95,54 @@ class MutableAttributeMap(collections.Mapping):
     def keys(self):
         return set(self.__modifiedAttributes.keys()).intersection(self.__holder.type.attributes.keys())
 
-    def _register(self):
-        pass
+    def _registerAll(self):
+        """
+        Populate the attributeRegister completely with what affects us
+        and also add ourselves onto anything we affect.
 
-    def _unregister(self):
-        pass
+        This is called for newly added holders to populate them entirely
+        """
+        # Populate our affectors
+        holder = self.__holder
+        fit = holder.fit
+
+        for registrationInfo in fit._getAffectors(holder):
+            self._registerOne(registrationInfo)
+
+
+        for info in holder.type.getInfos():
+            registrationInfo = (self, info)
+            for affectee in fit._getAffectees(registrationInfo):
+                affectee._registerOne(registrationInfo)
+
+
+    def _registerOne(self, registrationInfo):
+        _, info = registrationInfo
+        s = self.__attributeRegister.get(info.targetAttributeId)
+        if s is None:
+            s = self.__attributeRegister[info.targetAttributeId] = set()
+
+        s.add(registrationInfo)
+
+        try:
+            del self.__modifiedAttributes[info.targetAttributeId]
+        except:
+            pass
+
+    def _unregisterAll(self):
+        fit = self.__holder.fit
+        for info in self.__holder.type.getInfos():
+            registrationInfo = (self, info)
+            for affectee in fit._getAffectees(registrationInfo):
+                affectee._unregisterOne(registrationInfo)
+
+        del self.__attributeRegister[:]
+        del self.__modifiedAttributes[:]
+
+    def _unregisterOne(self, registrationInfo):
+        _, info = registrationInfo
+        self.__attributeRegister[info.targetAttributeId].remove(registrationInfo)
+        del self.__modifiedAttributes[info.targetAttributeId]
 
     def __calculate(self, attrId):
         """
