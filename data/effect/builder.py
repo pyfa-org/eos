@@ -55,6 +55,23 @@ class Modifier(object):
         # Source attribute ID
         self.sourceAttribute = None
 
+    def validate(self):
+        """Self-validation for modifier objects"""
+        if self.operation is None or self.targetAttribute is None or \
+        self.sourceAttribute is None:
+            return False
+        fieldMap = {const.opndAddLocSrqMod: self.__locSrq,
+                    const.opndRmLocSrqMod: self.__locSrq}
+        return fieldMap[self.type]()
+
+    def __locSrq(self):
+        if self.target is not None or self.targetGroup is not None:
+            return False
+        if self.targetLocation is None or self.targetSkillRq is None:
+            return False
+        return True
+
+
 class InfoBuilder(object):
     """
     EffectInfo is responsible for converting two trees (pre and post) of Expression objects (which
@@ -81,14 +98,24 @@ class InfoBuilder(object):
             print("Building pre-expression tree with base {}".format(preExpression.id))
             self.__generic(preExpression)
         except:
+            self.preMods = []
             print("Error building pre-expression tree with base {}".format(preExpression.id))
+        for mod in self.preMods:
+            if mod.validate() is not True:
+                print("Invalid pre")
+                break
 
         self.activeList = self.postMods
         try:
             print("Building post-expression tree with base {}".format(postExpression.id))
             self.__generic(postExpression)
         except:
+            self.postMods = []
             print("Error building post-expression tree with base {}".format(postExpression.id))
+        for mod in self.postMods:
+            if mod.validate() is not True:
+                print("Invalid post")
+                break
 
         return self.infos
 

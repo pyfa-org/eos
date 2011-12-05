@@ -56,9 +56,3 @@ class EffectInfo(object):
         """
         Which source attribute will be used as modification value for the operation.
         """
-
-    def validate(self):
-        # Usual assortment of checks, applicable to any info object
-        if self.operation is None or self.targetAttributeId is None or \
-        self.sourceAttributeId is None or self.location is None:
-            return False
