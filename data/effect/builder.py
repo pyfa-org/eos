@@ -20,16 +20,40 @@
 from eos import const
 from .info import EffectInfo
 
+# Mirror modifications, top-level operands
+mirrorMods = {const.opndAddGangGrpMod: const.opndRmGangGrpMod,
+              const.opndAddGangItmMod: const.opndRmGangItmMod,
+              const.opndAddGangOwnSrqMod: const.opndRmGangOwnSrqMod,
+              const.opndAddGangSrqMod: const.opndRmGangSrqMod,
+              const.opndAddItmMod: const.opndRmItmMod,
+              const.opndAddLocGrpMod: const.opndRmLocGrpMod,
+              const.opndAddLocMod: const.opndRmLocMod,
+              const.opndAddLocSrqMod: const.opndRmLocSrqMod,
+              const.opndAddOwnSrqMod: const.opndRmOwnSrqMod}
+# Plain modifications list
+modifiers = set(mirrorMods.keys()).union(set(mirrorMods.values()))
+
 class Modifier(object):
     """
-    Internal for eval object, stores meaningful elements of expression tree temporarily
+    Internal builder object, stores meaningful elements of expression tree temporarily
     """
     def __init__(self):
         # Type of modification
         self.type = None
+        # Direct target for modification
+        self.target = None
+        # Target location with multiple items for modification
+        self.targetLocation = None
+        # Target group ID of items
+        self.targetGroup = None
+        # Skill requirement ID of target items
+        self.targetSkillRq = None
+        # Operation to be applied on target
         self.operation = None
-        self.targetAttributeId = None
-        self.sourceAttributeId = None
+        # Target attribute ID
+        self.targetAttribute = None
+        # Source attribute ID
+        self.sourceAttribute = None
 
 class InfoBuilder(object):
     """
@@ -37,37 +61,42 @@ class InfoBuilder(object):
     aren't directly useful to us) into EffectInfo objects which can then be used as needed.
     """
     def __init__(self):
+        # List for EffectInfos which we will return
         self.infos = []
+        # Modifiers we got out of preExpression
+        self.preMods = []
+        # Modifiers we got out of postExpression
+        self.postMods = []
+        # Which modifier list we're using at the moment
+        self.activeList = None
+        # Which modifier we're referencing at the moment
+        self.activeMod = None
 
-    def build(self, base):
+    def build(self, preExpression, postExpression):
         """
         Go through both trees and compose our EffectInfos
         """
-        # Validation: detect stubs, if a stub is found, return an empty list
-        infos = self.infos
-        if base.operand == const.opndDefInt and int(base.value) == 1:
-            return infos
-
+        self.activeList = self.preMods
         try:
-            print("Building expression tree with base {}".format(base.id))
-            self.__generic(base)
+            print("Building pre-expression tree with base {}".format(preExpression.id))
+            self.__generic(preExpression)
         except:
-            del self.infos[:]
-            print("Error building expression tree with base {}".format(base.id))
+            print("Error building pre-expression tree with base {}".format(preExpression.id))
 
-        for info in self.infos:
-            if info.validate() is not True:
-                del self.infos[:]
-                print("Error validating one of the infos of expression tree with base {}".format(base.id))
-                break
+        self.activeList = self.postMods
+        try:
+            print("Building post-expression tree with base {}".format(postExpression.id))
+            self.__generic(postExpression)
+        except:
+            print("Error building post-expression tree with base {}".format(postExpression.id))
 
         return self.infos
 
     # Top-level methods - combining, routing, etc
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
-        if element.operand in const.opndInfoMap:
-            self.__makeInfo(element)
+        if element.operand in modifiers:
+            self.__makeModifier(element)
         else:
             genericOpnds = {const.opndSplice: self.__splice}
             genericOpnds[element.operand](element)
@@ -77,63 +106,70 @@ class InfoBuilder(object):
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
-    def __makeInfo(self, element):
+    def __makeModifier(self, element):
         """Make info according to passed data"""
-        info = EffectInfo()
-        info.type = const.opndInfoMap[element.operand]
-        self.__optrTgt(element.arg1, info)
-        info.sourceAttributeId = self.__getAttr(element.arg2)
-        self.__applyLocation(info)
-        self.infos.append(info)
+        # Make modifier object and let builder know we're working with it
+        self.activeMod = Modifier()
+        # Write modifier type, which corresponds to top-level operand of modification
+        self.activeMod.type = element.operand
+        # Request operator and target data, it's always in arg1
+        self.__optrTgt(element.arg1)
+        # Write down source attribute from arg2
+        self.activeMod.sourceAttribute = self.__getAttr(element.arg2)
+        # Append filled modifier to list we're currently working with
+        self.activeList.append(self.activeMod)
+        # If something weird happens, clean current modifier to throw
+        # exceptions instead of filling old modifier if something goes wrong
+        self.activeMod = None
 
-    def __applyLocation(self, info):
-        """Some info types have a fixed location they affect, apply it here"""
-        pass
-
-    def __optrTgt(self, element, info):
+    def __optrTgt(self, element):
         """Join operator and target definition"""
-        info.operation = self.__getOptr(element.arg1)
-        tgtRouteMap = {const.opndItmAttr: self.__itmAttr,
-                       const.opndGenAttr: self.__attr,
-                       const.opndSrqAttr: self.__srqAttr,
-                       const.opndGrpAttr: self.__grpAttr}
-        tgtRouteMap[element.arg2.operand](element.arg2, info)
+        # Operation is always in arg1
+        self.activeMod.operation = self.__getOptr(element.arg1)
+        # Handling of arg2 depends on its operand
+        tgtRouteMap = {const.opndGenAttr: self.__tgtAttr,
+                       const.opndGrpAttr: self.__tgtGrpAttr,
+                       const.opndSrqAttr: self.__tgtSrqAttr,
+                       const.opndItmAttr: self.__tgtItmAttr}
+        tgtRouteMap[element.arg2.operand](element.arg2)
 
-    def __itmAttr(self, element, info):
-        """Join target item specification and target attribute"""
-        itmGetterMap = {const.opndDefLoc: self.__loc,
-                        const.opndLocGrp: self.__locGrp,
-                        const.opndLocSrq: self.__locSrq}
-        itmGetterMap[element.arg1.operand](element.arg1, info)
-        info.targetAttributeId = self.__getAttr(element.arg2)
+    def __tgtAttr(self, element):
+        """Get target attribute and store it"""
+        self.activeMod.targetAttribute = self.__getAttr(element.arg1)
 
-    def __attr(self, element, info):
-        """Get attribute and stores it"""
-        info.targetAttributeId = self.__getAttr(element.arg1)
-
-    def __loc(self, element, info):
-        """Get location and store it"""
-        info.location = self.__getLoc(element)
-
-    def __grpAttr(self, element, info):
-        """Join target group and target attribute"""
-        info.filter = self.__getGrp(element.arg1)
-        info.targetAttributeId = self.__getAttr(element.arg2)
-
-    def __srqAttr(self, element, info):
+    def __tgtSrqAttr(self, element):
         """Join target skill requirement and target attribute"""
-        info.filter = self.__getType(element.arg1)
-        info.targetAttributeId = self.__getAttr(element.arg2)
+        self.activeMod.targetSkillRq = self.__getType(element.arg1)
+        self.activeMod.targetAttribute = self.__getAttr(element.arg2)
 
-    def __locGrp(self, element, info):
+    def __tgtGrpAttr(self, element):
+        """Join target group and target attribute"""
+        self.activeMod.targetGroup = self.__getGrp(element.arg1)
+        self.activeMod.targetAttribute = self.__getAttr(element.arg2)
+
+    def __tgtItmAttr(self, element):
+        """Join target item specification and target attribute"""
+        # Item specification format depends on operand of arg1
+        itmGetterMap = {const.opndDefLoc: self.__tgtItm,
+                        const.opndLocGrp: self.__tgtLocGrp,
+                        const.opndLocSrq: self.__tgtLocSrq}
+        itmGetterMap[element.arg1.operand](element.arg1)
+        # Target attribute is always specified in arg2
+        self.activeMod.targetAttribute = self.__getAttr(element.arg2)
+
+    def __tgtItm(self, element):
+        """Get target location and store it"""
+        self.activeMod.target = self.__getLoc(element)
+
+    def __tgtLocGrp(self, element):
         """Join target location filter and group filter"""
-        info.location = self.__getLoc(element.arg1)
-        info.filter = self.__getGrp(element.arg2)
+        self.activeMod.targetLocation = self.__getLoc(element.arg1)
+        self.activeMod.targetGroup = self.__getGrp(element.arg2)
 
-    def __locSrq(self, element, info):
+    def __tgtLocSrq(self, element):
         """Join target location filter and skill requirement filter"""
-        info.location = self.__getLoc(element.arg1)
-        info.filter = self.__getType(element.arg2)
+        self.activeMod.targetLocation = self.__getLoc(element.arg1)
+        self.activeMod.targetSkillRq = self.__getType(element.arg2)
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""

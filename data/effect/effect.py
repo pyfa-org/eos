@@ -17,6 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from .builder import InfoBuilder
+
 class Effect(object):
     """
     Represents a single effect. Effects are the building blocks of types and are what actualy make a type do something.
@@ -53,6 +55,6 @@ class Effect(object):
         Return a set of all infos this effect contains
         """
         if self.__infos is None:
-            self.__infos = self.preExpression.getInfos()
+            self.__infos = InfoBuilder().build(self.preExpression, self.postExpression)
         return self.__infos
 
