@@ -46,16 +46,12 @@ class Modifier(object):
         self.operation = None
         # Target attribute ID
         self.targetAttribute = None
-        # Direct target for modification
-        self.target = None
-        # Target location with multiple items for modification
+        # Target location for modification
         self.targetLocation = None
         # Target group ID of items
         self.targetGroup = None
         # Skill requirement ID of target items
         self.targetSkillRq = None
-        # Owner of target items
-        self.targetOwner = None
 
     # Set of validation methods
     def validate(self):
@@ -78,16 +74,14 @@ class Modifier(object):
         return validateMap[self.type]()
 
     def __valItm(self):
-        if self.targetLocation is not None or self.targetGroup is not None or \
-        self.targetSkillRq is not None or self.targetOwner is not None:
+        if self.targetGroup is not None or self.targetSkillRq is not None:
             return False
-        if self.target is None:
+        if self.targetLocation is None:
             return False
         return True
 
     def __valLocGrp(self):
-        if self.target is not None or self.targetSkillRq is not None or \
-        self.targetOwner is not None:
+        if self.targetSkillRq is not None:
             return False
         validLocs = (const.locChar, const.locShip, const.locTgt)
         if not self.targetLocation in validLocs or self.targetGroup is None:
@@ -95,16 +89,14 @@ class Modifier(object):
         return True
 
     def __valLoc(self):
-        if self.target is not None or self.targetGroup is not None or \
-        self.targetSkillRq is not None or self.targetOwner is not None:
+        if self.targetGroup is not None or self.targetSkillRq is not None:
             return False
         if self.targetLocation is None:
             return False
         return True
 
     def __valLocSrq(self):
-        if self.target is not None or self.targetGroup is not None or \
-        self.targetOwner is not None:
+        if self.targetGroup is not None:
             return False
         validLocs = (const.locChar, const.locShip, const.locTgt)
         if not self.targetLocation in validLocs or self.targetSkillRq is None:
@@ -112,10 +104,9 @@ class Modifier(object):
         return True
 
     def __valOwnSrq(self):
-        if self.target is not None or self.targetLocation is not None or \
-        self.targetGroup is not None:
+        if self.targetGroup is not None:
             return False
-        if self.targetOwner != const.locChar or self.targetSkillRq is None:
+        if self.targetLocation != const.locChar or self.targetSkillRq is None:
             return False
         return True
 
@@ -130,29 +121,55 @@ class Modifier(object):
                 return False
         # Then, check all other fields of modifier
         if self.sourceAttribute != other.sourceAttribute or self.operation != other.operation or \
-        self.targetAttribute != other.targetAttribute or self.target != other.target or \
-        self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or \
-        self.targetSkillRq != other.targetSkillRq:
+        self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or \
+        self.targetGroup != other.targetGroup or self.targetSkillRq != other.targetSkillRq:
             return False
         # If all conditions were met, then it's actually mirror
         return True
 
     # Set of conversion functions
     def convertToInfo(self):
-        # If all conditions were met, start actual conversion
-        conversionMap = {const.opndAddLocSrqMod: self.__convLocSrq,
-                         const.opndRmLocSrqMod: self.__convLocSrq}
-        return conversionMap[self.type]()
-
-    def __convLocSrq(self):
+        """Convert Modifier object to EffectInfo object"""
+        # Create object and fill generic fields
         info = EffectInfo()
+        info.operation = self.operation
+        info.sourceAttributeId = self.sourceAttribute
+        info.targetAttributeId = self.targetAttribute
+        # Fill remaining fields on per-modifier basis
+        conversionMap = {const.opndAddItmMod: self.__convItm,
+                         const.opndRmItmMod: self.__convItm,
+                         const.opndAddLocGrpMod: self.__convLocGrp,
+                         const.opndRmLocGrpMod: self.__convLocGrp,
+                         const.opndAddLocMod: self.__convLoc,
+                         const.opndRmLocMod: self.__convLoc,
+                         const.opndAddLocSrqMod: self.__convLocSrq,
+                         const.opndRmLocSrqMod: self.__convLocSrq,
+                         const.opndAddOwnSrqMod: self.__convOwnSrq,
+                         const.opndRmOwnSrqMod: self.__convOwnSrq}
+        conversionMap[self.type](info)
+        return info
+
+    def __convItm(self, info):
+        info.location = self.targetLocation
+
+    def __convLocGrp(self, info):
         info.location = self.targetLocation
         info.filterType = const.filterGroup
         info.filterValue = self.targetGroup
-        info.operation = self.operation
-        info.targetAttributeId = self.targetAttribute
-        info.sourceAttributeId = self.sourceAttribute
-        return info
+
+    def __convLoc(self, info):
+        info.location = self.targetLocation
+        info.filterType = const.filterAll
+
+    def __convLocSrq(self, info):
+        info.location = self.targetLocation
+        info.filterType = const.filterSkill
+        info.filterValue = self.targetSkillRq
+
+    def __convOwnSrq(self, info):
+        info.location = const.locSpace
+        info.filterType = const.filterSkill
+        info.filterValue = self.targetSkillRq
 
 
 class InfoBuilder(object):
