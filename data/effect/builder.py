@@ -32,6 +32,10 @@ mirrorMods = {const.opndAddGangGrpMod: const.opndRmGangGrpMod,
               const.opndAddOwnSrqMod: const.opndRmOwnSrqMod}
 # Plain modifications list
 modifiers = set(mirrorMods.keys()).union(set(mirrorMods.values()))
+# Operands which are not used in any way in current Eos implementation
+inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
+                 const.opndSurveyScan, const.opndCargoScan, const.opndPowerBooster,
+                 const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent}
 
 class Modifier(object):
     """
@@ -182,14 +186,12 @@ class InfoBuilder(object):
     aren't directly useful to us) into EffectInfo objects which can then be used as needed.
     """
     def __init__(self):
-        # List for EffectInfos which we will return
-        self.infos = []
         # Modifiers we got out of preExpression
-        self.preMods = []
+        self.preMods = set()
         # Modifiers we got out of postExpression
-        self.postMods = []
+        self.postMods = set()
         # Which modifier list we're using at the moment
-        self.activeList = None
+        self.activeSet = None
         # Which modifier we're referencing at the moment
         self.activeMod = None
 
@@ -197,7 +199,7 @@ class InfoBuilder(object):
         """
         Go through both trees and compose our EffectInfos
         """
-        self.activeList = self.preMods
+        self.activeSet = self.preMods
         try:
             self.__generic(preExpression)
         except:
@@ -209,7 +211,7 @@ class InfoBuilder(object):
                 print("Error validating pre-modifiers of base {}".format(preExpression.id))
                 return []
 
-        self.activeList = self.postMods
+        self.activeSet = self.postMods
         try:
             self.__generic(postExpression)
         except:
@@ -221,28 +223,56 @@ class InfoBuilder(object):
                 print("Error validating post-modifiers of base {}".format(postExpression.id))
                 return []
 
+        infos = []
+        usedPres = set()
+        usedPosts = set()
         for preMod in self.preMods:
             for postMod in self.postMods:
+                if postMod in usedPosts:
+                    continue
                 if preMod.isMirror(postMod) is True:
                     info = preMod.convertToInfo()
-                    self.infos.append(info)
+                    infos.append(info)
+                    usedPres.add(preMod)
+                    usedPosts.add(postMod)
                     break
+        for preMod in self.preMods:
+            if not preMod in usedPres:
+                print("Warning: unused pre-expression modifier in base {}".format(preExpression.id))
+                break
+        for postMod in self.postMods:
+            if not postMod in usedPosts:
+                print("Warning: unused post-expression modifier in base {}".format(postExpression.id))
+                break
 
-        return self.infos
+        return infos
 
     # Top-level methods - combining, routing, etc
     def __generic(self, element):
         """Generic entry point, used if we expect passed element to be meaningful"""
+        # For actual modifications, call method which handles them
         if element.operand in modifiers:
             self.__makeModifier(element)
+        # Do nothing for inactive operands
+        elif element.operand in inactiveOpnds:
+            pass
+        # Process expressions with other operands using the map
         else:
-            genericOpnds = {const.opndSplice: self.__splice}
+            genericOpnds = {const.opndSplice: self.__splice,
+                            const.opndDefInt: self.__checkStub}
             genericOpnds[element.operand](element)
 
     def __splice(self, element):
         """Reference two expressions from self"""
         self.__generic(element.arg1)
         self.__generic(element.arg2)
+
+    def __checkStub(self, element):
+        """Checks if given expression is stub, returning integer 1"""
+        value = self.__getInt(element)
+        if value != 1:
+            raise ValueError("stub with value other than 1")
+
 
     def __makeModifier(self, element):
         """Make info according to passed data"""
@@ -255,7 +285,7 @@ class InfoBuilder(object):
         # Write down source attribute from arg2
         self.activeMod.sourceAttribute = self.__getAttr(element.arg2)
         # Append filled modifier to list we're currently working with
-        self.activeList.append(self.activeMod)
+        self.activeSet.add(self.activeMod)
         # If something weird happens, clean current modifier to throw
         # exceptions instead of filling old modifier if something goes wrong
         self.activeMod = None
@@ -328,3 +358,7 @@ class InfoBuilder(object):
     def __getType(self, element):
         """Reference type via ID"""
         return element.typeId
+
+    def __getInt(self, element):
+        """Get integer from value"""
+        return int(element.value)

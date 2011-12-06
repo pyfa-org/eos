@@ -66,18 +66,23 @@ opndAddLocMod = 8  # Applies modification to all items belonging to some locatio
 opndAddLocSrqMod = 9  # Applies modification to items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
 opndAddOwnSrqMod = 11  # Applies modification to items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
 opndItmAttr = 12  # Joins target items and attribute into target definition, format: location->targetAttribute
+opndCargoScan = 14  # Special operand, used to define cargo scan
 opndSplice = 17  # Executes two statements, format: expression1; expression2
+opndAoeDecloak = 19  # Special operand, defines area-of-effect decloak
 opndDefOptr = 21  # Define operator, text in expressionValue field
 opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
 opndDefLoc = 24  # Define location, text in expressionValue field
 opndDefGrp = 26  # Define group, integer in expressionGroupID field
 opndDefInt = 27  # Defines an integer constant, integer in expressionValue field
 opndDefType = 29  # Define a type, integer in expressionTypeID field
+opndEcmBurst = 30  # Special operand, used in ECM Burst effects
 opndOptrTgt = 31  # Joins operator and target (attribute of possibly filtered items) definitions, format: (location->targetAttribute).(operator)
+opndAoeDmg = 32  # Special operand, defines area-of-effect damage for modules like smartbombs and old doomsday
 opndGrpAttr = 34  # Joins group and attribute into target definition, format: groupFilter.targetAttribute
 opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
 opndLocSrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skillRequirement]
+opndPowerBooster = 53  # Special operand, defines cap booster effect
 opndRmGangGrpMod = 54  # Undos modification from items of gang-mates, filtered by group, format: [(groupFilter.targetAttribute).(operator)].RGGM(sourceAttribute)
 opndRmGangItmMod = 55  # Undos modification directly from ships gang-mates, format: ((targetAttribute).(operator)).RGIM(sourceAttribute)
 opndRmGangOwnSrqMod = 56  # Undos modification from items of gang-mates, filtered by owner and skill requirement
@@ -88,6 +93,10 @@ opndRmLocMod = 60  # Undos modification from all items belonging to some locatio
 opndRmLocSrqMod = 61  # Undos modification from items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).RLRSM(sourceAttribute)
 opndRmOwnSrqMod = 62  # Undos modification from items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).RORSM(sourceAttribute)
 opndSrqAttr = 64  # Joins skill requirement and attribute into target definition, format: skillRequirement.targetAttribute
+opndShipScan = 66  # Special operand, used to define ship scan
+opndSurveyScan = 69  # Special operand, used to define ore scan
+opndTgtHostile = 70  # Special operand, used in auto-targeting systems
+opndTgtSilent = 71  # Special operand, used in passive targeting systems
 
 
 ### Custom Eos stuff, doesn't depend on database IDs ###
