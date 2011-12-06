@@ -87,6 +87,7 @@ opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just ref
 opndMissileLaunch = 44  # Special operand, handles missile launching
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
 opndLocSrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skillRequirement]
+opndMine = 50  # Special operand, handles transfer of ore from asteroid to cargo
 opndPowerBooster = 53  # Special operand, defines cap booster effect
 opndRmGangGrpMod = 54  # Undos modification from items of gang-mates, filtered by group, format: [(groupFilter.targetAttribute).(operator)].RGGM(sourceAttribute)
 opndRmGangItmMod = 55  # Undos modification directly from ships gang-mates, format: ((targetAttribute).(operator)).RGIM(sourceAttribute)
@@ -102,6 +103,8 @@ opndShipScan = 66  # Special operand, used to define ship scan
 opndSurveyScan = 69  # Special operand, used to define ore scan
 opndTgtHostile = 70  # Special operand, used in auto-targeting systems
 opndTgtSilent = 71  # Special operand, used in passive targeting systems
+opndToolTgtSkills = 72  # Special operand, most likely checks if you have enough skills to use currently loaded charge, or have enough skills to work with current target
+opndVrfTgtGrp = 74  # Special operand, used to verify if target can have effect's carrier applied onto it, otherwise raises error
 
 
 ### Custom Eos stuff, doesn't depend on database IDs ###
@@ -136,7 +139,7 @@ locChar = 1  # Target character
 locShip = 2  # Target ship
 locTgt = 4  # Target currently locked and selected ship as target
 locOther = 5  # If used from charge, targets charge's container, is used from container, targets its charge
-locArea = 6  # ?
+locArea = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
 locSpace = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 # Database name: ID map for target locations

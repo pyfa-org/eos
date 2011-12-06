@@ -37,7 +37,8 @@ inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndSurveyScan, const.opndCargoScan, const.opndPowerBooster,
                  const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent,
                  const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
-                 const.opndMissileLaunch}
+                 const.opndMissileLaunch, const.opndVrfTgtGrp, const.opndToolTgtSkills,
+                 const.opndMine}
 
 class Modifier(object):
     """
