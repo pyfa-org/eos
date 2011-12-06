@@ -71,6 +71,7 @@ opndCargoScan = 14  # Special operand, used to define cargo scan
 opndCheatTeleDock = 15  # Special operand, handles GM tools
 opndCheatTeleGate = 16  # Special operand, handles GM tools
 opndSplice = 17  # Executes two statements, format: expression1; expression2
+opndDec = 18  # Decreases value for some attribute by value of another one
 opndAoeDecloak = 19  # Special operand, defines area-of-effect decloak
 opndDefOptr = 21  # Define operator, text in expressionValue field
 opndDefAttr = 22  # Define attribute, integer in expressionAttributeID field
@@ -84,6 +85,7 @@ opndOptrTgt = 31  # Joins operator and target (attribute of possibly filtered it
 opndAoeDmg = 32  # Special operand, defines area-of-effect damage for modules like smartbombs and old doomsday
 opndGrpAttr = 34  # Joins group and attribute into target definition, format: groupFilter.targetAttribute
 opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
+opndInc = 42  # Increases value of some attribute by the value of another one
 opndMissileLaunch = 44  # Special operand, handles missile launching
 opndDefenderLaunch = 45  # Special operand, handles defender missile launching
 opndFofLaunch = 47  # Special operand, handles friend-or-foe missile launching
@@ -101,6 +103,7 @@ opndRmLocMod = 60  # Undos modification from all items belonging to some locatio
 opndRmLocSrqMod = 61  # Undos modification from items belonging to some location, filtered by skill requirement, format: ((location[skillRequirement]->targetAttribute).(operator)).RLRSM(sourceAttribute)
 opndRmOwnSrqMod = 62  # Undos modification from items belonging to some location, filtered by owner of source, format: ((location[skillRequirement]->targetAttribute).(operator)).RORSM(sourceAttribute)
 opndSrqAttr = 64  # Joins skill requirement and attribute into target definition, format: skillRequirement.targetAttribute
+opndAssign = 65  # Direct assignment to one attribute value of another one
 opndShipScan = 66  # Special operand, used to define ship scan
 opndSurveyScan = 69  # Special operand, used to define ore scan
 opndTgtHostile = 70  # Special operand, used in auto-targeting systems
@@ -123,6 +126,10 @@ optrPostMul = 6
 optrPostDiv = 7
 optrPostPercent = 8
 optrPostAssignment = 9
+# Following operators are for immediate modification
+optrIncr = 10
+optrDecr = 11
+optrAssign = 12
 
 # Database name: ID map for Dogma operators
 optrConvMap = {"PreAssignment": optrPreAssignment,
