@@ -18,6 +18,7 @@
 #===============================================================================
 
 from .mutableAttributeHolder import MutableAttributeHolder
+import const
 
 class Character(MutableAttributeHolder):
     """
@@ -26,6 +27,14 @@ class Character(MutableAttributeHolder):
     Examples: Intellect, Charisma, etc. Less obvious examples: maxGangModules, maxLockedTargets, maxActiveDrones
     Remember this class is fit-specific, don't put a single one onto two fits.
     """
+
+    @property
+    def location(self):
+        return const.locChar
+
+    @property
+    def specific(self):
+        return True
 
     def __init__(self, type):
         """

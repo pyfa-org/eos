@@ -120,7 +120,7 @@ class Register():
                 if s is None:
                     s = map[key] = set()
 
-                set.add(value)
+                s.add(value)
 
     def unregister(self, holder):
         if holder is None:
@@ -144,7 +144,9 @@ class Register():
 
         s = set()
         if holder.specific:
-            s.update(holder.location)
+            specific = self.__affectorSpecificLocation.get(location)
+            if specific is not None:
+                s.update(specific)
         else:
             affectorMaps = [(location, self.__affectorSpecificLocation), # Specific location register
                             ((location, holder.type.groupId), self.__affectorGroupLocation)] #group location register
@@ -157,7 +159,9 @@ class Register():
                 affectorMaps.append((key, affectorSkillLocation))
 
             for key, map in affectorMaps:
-                s.update(map[key])
+                affectors = map.get(key)
+                if affectors is not None:
+                    s.update(affectors)
 
         return s;
 
