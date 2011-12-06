@@ -21,7 +21,7 @@ from .dataHandler import DataHandler
 import json
 import bz2
 import weakref
-from ..data import Type, Expression, Effect
+from ..data import Type, Expression, Effect, Attribute
 
 class JsonDataHandler(DataHandler):
     """
@@ -30,10 +30,11 @@ class JsonDataHandler(DataHandler):
     By default, files are assumed to be ./eos/data/eve.json.bz2 and ./eos/data/expressions.json.bz2
     Data is assumed to be encoded as UTF-8
     """
-    def __init__(self, typesPath, expressionsPath, effectsPath, encoding='utf-8'):
+    def __init__(self, typesPath, expressionsPath, effectsPath, attributesPath, encoding='utf-8'):
         self.__typesCache = weakref.WeakValueDictionary()
         self.__expressionsCache = weakref.WeakValueDictionary()
         self.__effectsCache = weakref.WeakValueDictionary()
+        self.__attributesCache = weakref.WeakValueDictionary()
 
         with bz2.BZ2File(typesPath, 'r') as f:
             self.__typeData = json.loads(f.read().decode('utf-8'))
@@ -43,6 +44,9 @@ class JsonDataHandler(DataHandler):
 
         with bz2.BZ2File(effectsPath, 'r') as f:
             self.__effectData = json.loads(f.read().decode('utf-8'))
+
+        with bz2.BZ2File(attributesPath, 'r') as f:
+            self.__attributeData = json.loads(f.read().decode('utf-8'))
 
     def getType(self, id):
         if not id:
@@ -54,7 +58,8 @@ class JsonDataHandler(DataHandler):
             data = self.__typeData[str(id)]
             type = Type(id, data["group"],
                         [self.getEffect(effectId) for effectId in data["effects"]],
-                        {x : y for x, y in data["attributes"]})
+                        {x : y for x, y in data["attributes"]},
+                        {x : self.getAttribute(x) for x, y in data["attributes"]})
 
             self.__typesCache[id] = type
 
@@ -89,3 +94,16 @@ class JsonDataHandler(DataHandler):
             self.__effectsCache[id] = effect
 
         return effect
+
+    def getAttribute(self, id):
+        if not id:
+            return None
+
+        attribute = self.__attributesCache.get(id)
+        if attribute is None:
+            data = self.__attributeData[str(id)]
+            attribute = Attribute(id, data["highIsGood"], data["stackable"])
+
+            self.__attributesCache[id] = attribute
+
+        return attribute

@@ -17,7 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from .type import Type
-from .expression import Expression
-from .effect import Effect
-from .attribute import Attribute
+class Attribute:
+    def __init__(self, id, highIsGood, stackable):
+        self.id = id
+        self.highIsGood = highIsGood
+        self.stackable = stackable

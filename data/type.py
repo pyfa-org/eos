@@ -27,7 +27,7 @@ class Type(object):
     As such, there shouldn't be ANY fit-specific data on it
     """
 
-    def __init__(self, id, groupId, effects, attributes):
+    def __init__(self, id, groupId, effects, attributes, attributeTypes):
         self.id = id
         """The id of the type, typically, this is the one taken from the SDD from CCP. Can be anything if you're defining your own types, as long as its hashable"""
 
@@ -39,6 +39,9 @@ class Type(object):
 
         self.attributes = attributes
         """The attributes of this type, these are used by the effects to apply their bonusses onto when they're ran"""
+
+        self.attributeTypes = attributeTypes
+        """The attributeTypes of this type, they contain some important calculation information used by the calculation process"""
 
     def requiredSkills(self):
         attributes = self.attributes
