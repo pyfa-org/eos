@@ -82,11 +82,11 @@ class Fit(object):
 
     def _getAffectors(self, holder):
         """Get a set of (sourceHolder, info) tuples affecting the passed holder"""
-        self.__register.getAffectors(holder)
+        return self.__register.getAffectors(holder)
 
     def _getAffectees(self, registrationInfo):
         """Get the holders that the passed (sourceHolder, info) tuple affects"""
-        self.__register.getAffectees(registrationInfo)
+        return self.__register.getAffectees(registrationInfo)
 
 class MutableAttributeHolderList(collections.MutableSequence):
     """

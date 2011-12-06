@@ -18,6 +18,7 @@
 #===============================================================================
 
 from .mutableAttributeHolder import MutableAttributeHolder
+import const
 
 class Ship(MutableAttributeHolder):
     """
@@ -25,6 +26,14 @@ class Ship(MutableAttributeHolder):
     However, it provides helpers and calculations for when the type in question is a ship.
     As this class is fit specific, the same module shouldn't be added onto more then one fit at the same time.
     """
+
+    @property
+    def location(self):
+        return const.locShip
+
+    @property
+    def specific(self):
+        return True
 
     def __init__(self, type):
         """

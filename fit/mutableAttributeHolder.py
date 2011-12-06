@@ -25,7 +25,7 @@ from abc import abstractproperty
 
 RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 
-class MutableAttributeHolder(object):
+class MutableAttributeHolder:
     """
     Base attribute holder class inherited by all classes that need to keep track of modified attributes.
     This class holds a MutableAttributeMap to keep track of changes.
@@ -34,6 +34,10 @@ class MutableAttributeHolder(object):
 
     @abstractproperty
     def location(self):
+        ...
+
+    @abstractproperty
+    def specific(self):
         ...
 
     def __init__(self, type):
@@ -111,9 +115,9 @@ class MutableAttributeMap(collections.Mapping):
 
 
         for info in holder.type.getInfos():
-            registrationInfo = (self, info)
+            registrationInfo = (holder, info)
             for affectee in fit._getAffectees(registrationInfo):
-                affectee._registerOne(registrationInfo)
+                affectee.attributes._registerOne(registrationInfo)
 
 
     def _registerOne(self, registrationInfo):
@@ -134,7 +138,7 @@ class MutableAttributeMap(collections.Mapping):
         for info in self.__holder.type.getInfos():
             registrationInfo = (self, info)
             for affectee in fit._getAffectees(registrationInfo):
-                affectee._unregisterOne(registrationInfo)
+                affectee.attributes._unregisterOne(registrationInfo)
 
         del self.__attributeRegister[:]
         del self.__modifiedAttributes[:]
