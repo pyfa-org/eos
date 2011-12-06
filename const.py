@@ -50,8 +50,8 @@ catImplant = 20
 catSubsystem = 32
 
 # Item categories immune to stacking penalty
-penaltyImmuneCats = (catShip, catCharge, catSkill,
-                     catImplant, catSubsystem)
+penaltyImmuneCats = {catShip, catCharge, catSkill,
+                     catImplant, catSubsystem}
 # Stacking penalty base constant
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
