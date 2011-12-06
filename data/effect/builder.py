@@ -35,7 +35,9 @@ modifiers = set(mirrorMods.keys()).union(set(mirrorMods.values()))
 # Operands which are not used in any way in current Eos implementation
 inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndSurveyScan, const.opndCargoScan, const.opndPowerBooster,
-                 const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent}
+                 const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent,
+                 const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
+                 const.opndMissileLnch}
 
 class Modifier(object):
     """
@@ -203,27 +205,25 @@ class InfoBuilder(object):
         try:
             self.__generic(preExpression)
         except:
-            self.preMods = []
             print("Error building pre-expression tree with base {}".format(preExpression.id))
-            return []
+            return set()
         for mod in self.preMods:
             if mod.validate() is not True:
                 print("Error validating pre-modifiers of base {}".format(preExpression.id))
-                return []
+                return set()
 
         self.activeSet = self.postMods
         try:
             self.__generic(postExpression)
         except:
-            self.postMods = []
             print("Error building post-expression tree with base {}".format(postExpression.id))
-            return []
+            return set()
         for mod in self.postMods:
             if mod.validate() is not True:
                 print("Error validating post-modifiers of base {}".format(postExpression.id))
-                return []
+                return set()
 
-        infos = []
+        infos = set()
         usedPres = set()
         usedPosts = set()
         for preMod in self.preMods:
@@ -232,7 +232,7 @@ class InfoBuilder(object):
                     continue
                 if preMod.isMirror(postMod) is True:
                     info = preMod.convertToInfo()
-                    infos.append(info)
+                    infos.add(info)
                     usedPres.add(preMod)
                     usedPosts.add(postMod)
                     break
@@ -259,7 +259,8 @@ class InfoBuilder(object):
         # Process expressions with other operands using the map
         else:
             genericOpnds = {const.opndSplice: self.__splice,
-                            const.opndDefInt: self.__checkStub}
+                            const.opndDefInt: self.__checkIntStub,
+                            const.opndDefBool: self.__checkBoolStub}
             genericOpnds[element.operand](element)
 
     def __splice(self, element):
@@ -267,12 +268,17 @@ class InfoBuilder(object):
         self.__generic(element.arg1)
         self.__generic(element.arg2)
 
-    def __checkStub(self, element):
+    def __checkIntStub(self, element):
         """Checks if given expression is stub, returning integer 1"""
         value = self.__getInt(element)
         if value != 1:
-            raise ValueError("stub with value other than 1")
+            raise ValueError("integer stub with value other than 1")
 
+    def __checkBoolStub(self, element):
+        """Checks if given expression is stub, returning boolean true"""
+        value = self.__getBool(element)
+        if value is not True:
+            raise ValueError("boolean stub with value other than True")
 
     def __makeModifier(self, element):
         """Make info according to passed data"""
@@ -362,3 +368,7 @@ class InfoBuilder(object):
     def __getInt(self, element):
         """Get integer from value"""
         return int(element.value)
+
+    def __getBool(self, element):
+        """Get integer from value"""
+        return bool(element.value)
