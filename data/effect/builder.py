@@ -61,6 +61,8 @@ class Modifier(object):
         self.targetGroup = None
         # Skill requirement ID of target items
         self.targetSkillRq = None
+        # For instant effects, describes when it should be applied
+        self.runTime = None
 
     # Set of validation methods
     def validate(self):
@@ -97,7 +99,8 @@ class Modifier(object):
         return method()
 
     def __valGangGrp(self):
-        if self.targetLocation is not None or self.targetSkillRq is not None:
+        if self.targetLocation is not None or self.targetSkillRq is not None or \
+        self.runTime is not None:
             return False
         if self.operation is None or self.targetGroup is None:
             return False
@@ -105,35 +108,38 @@ class Modifier(object):
 
     def __valGangItm(self):
         if self.targetGroup is not None or self.targetSkillRq is not None or \
-        self.targetLocation is not None:
+        self.targetLocation is not None or self.runTime is not None:
             return False
         if self.operation is None:
             return False
         return True
 
     def __valGangOwnSrq(self):
-        if self.targetLocation is not None or self.targetGroup is not None:
+        if self.targetLocation is not None or self.targetGroup is not None or \
+        self.runTime is not None:
             return False
         if self.operation is None or self.targetSkillRq is None:
             return False
         return True
 
     def __valGangSrq(self):
-        if self.targetLocation is not None or self.targetGroup is not None:
+        if self.targetLocation is not None or self.targetGroup is not None or \
+        self.runTime is not None:
             return False
         if self.operation is None or self.targetSkillRq is None:
             return False
         return True
 
     def __valItm(self):
-        if self.targetGroup is not None or self.targetSkillRq is not None:
+        if self.targetGroup is not None or self.targetSkillRq is not None or \
+        self.runTime is not None:
             return False
         if self.operation is None or self.targetLocation is None:
             return False
         return True
 
     def __valLocGrp(self):
-        if self.targetSkillRq is not None:
+        if self.targetSkillRq is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
         if self.operation is None or not self.targetLocation in validLocs or \
@@ -142,7 +148,8 @@ class Modifier(object):
         return True
 
     def __valLoc(self):
-        if self.targetGroup is not None or self.targetSkillRq is not None:
+        if self.targetGroup is not None or self.targetSkillRq is not None or \
+        self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
         if self.operation is None or not self.targetLocation in validLocs:
@@ -150,7 +157,7 @@ class Modifier(object):
         return True
 
     def __valLocSrq(self):
-        if self.targetGroup is not None:
+        if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
         if self.operation is None or not self.targetLocation in validLocs or \
@@ -159,7 +166,7 @@ class Modifier(object):
         return True
 
     def __valOwnSrq(self):
-        if self.targetGroup is not None:
+        if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip}
         if self.operation is None or not self.targetLocation in validLocs or \
@@ -171,7 +178,8 @@ class Modifier(object):
         if self.operation is not None or self.targetGroup is not None or \
         self.targetSkillRq is not None:
             return False
-        if self.targetLocation is None:
+        validRunTimes = {const.infoPre, const.infoPost}
+        if self.targetLocation is None or not self.runTime in validRunTimes:
             return False
         return True
 
@@ -197,7 +205,7 @@ class Modifier(object):
         return True
 
     # Set of conversion functions
-    def convertToInfo(self, instantType=None):
+    def convertToInfo(self):
         """Convert Modifier object to EffectInfo object"""
         # Create object and fill generic fields
         info = EffectInfo()
@@ -225,10 +233,10 @@ class Modifier(object):
                          const.opndAssign: self.__convAssign,
                          const.opndInc: self.__convInc,
                          const.opndDec: self.__convDec}
-        conversionMap[self.type](info, instantType)
+        conversionMap[self.type](info)
         return info
 
-    def __convGangGrp(self, info, *args):
+    def __convGangGrp(self, info):
         info.type = const.infoDuration
         info.gang = True
         info.operation = self.operation
@@ -236,13 +244,13 @@ class Modifier(object):
         info.filterType = const.filterGroup
         info.filterValue = self.targetGroup
 
-    def __convGangItm(self, info, *args):
+    def __convGangItm(self, info):
         info.type = const.infoDuration
         info.gang = True
         info.operation = self.operation
         info.location = const.locShip
 
-    def __convGangOwnSrq(self, info, *args):
+    def __convGangOwnSrq(self, info):
         info.type = const.infoDuration
         info.gang = True
         info.operation = self.operation
@@ -250,7 +258,7 @@ class Modifier(object):
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
-    def __convGangSrq(self, info, *args):
+    def __convGangSrq(self, info):
         info.type = const.infoDuration
         info.gang = True
         info.operation = self.operation
@@ -258,59 +266,50 @@ class Modifier(object):
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
-    def __convItm(self, info, *args):
+    def __convItm(self, info):
         info.type = const.infoDuration
         info.operation = self.operation
         info.location = self.targetLocation
 
-    def __convLocGrp(self, info, *args):
+    def __convLocGrp(self, info):
         info.type = const.infoDuration
         info.operation = self.operation
         info.location = self.targetLocation
         info.filterType = const.filterGroup
         info.filterValue = self.targetGroup
 
-    def __convLoc(self, info, *args):
+    def __convLoc(self, info):
         info.type = const.infoDuration
         info.operation = self.operation
         info.location = self.targetLocation
         info.filterType = const.filterAll
 
-    def __convLocSrq(self, info, *args):
+    def __convLocSrq(self, info):
         info.type = const.infoDuration
         info.operation = self.operation
         info.location = self.targetLocation
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
-    def __convOwnSrq(self, info, *args):
+    def __convOwnSrq(self, info):
         info.type = const.infoDuration
         info.operation = self.operation
         info.location = const.locSpace
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
-    def __convAssign(self, info, instantType):
-        allowedTypes = {const.infoPre, const.infoPost}
-        if not instantType in allowedTypes:
-            raise ValueError("instantType must be either pre or post")
-        info.type = instantType
+    def __convAssign(self, info):
+        info.type = self.runTime
         info.operation = const.optrAssign
         info.location = self.targetLocation
 
-    def __convInc(self, info, instantType):
-        allowedTypes = {const.infoPre, const.infoPost}
-        if not instantType in allowedTypes:
-            raise ValueError("instantType must be either pre or post")
-        info.type = instantType
+    def __convInc(self, info):
+        info.type = self.runTime
         info.operation = const.optrIncr
         info.location = self.targetLocation
 
-    def __convDec(self, info, instantType):
-        allowedTypes = {const.infoPre, const.infoPost}
-        if not instantType in allowedTypes:
-            raise ValueError("instantType must be either pre or post")
-        info.type = instantType
+    def __convDec(self, info):
+        info.type = self.runTime
         info.operation = const.optrDecr
         info.location = self.targetLocation
 
@@ -372,13 +371,13 @@ class InfoBuilder(object):
         for preMod in self.preMods:
             if preMod in usedPres:
                 continue
-            info = preMod.convertToInfo(instantType=const.infoPre)
+            info = preMod.convertToInfo()
             infos.add(info)
             usedPres.add(preMod)
         for postMod in self.postMods:
             if postMod in usedPosts:
                 continue
-            info = postMod.convertToInfo(instantType=const.infoPost)
+            info = postMod.convertToInfo()
             infos.add(info)
             usedPosts.add(postMod)
 
@@ -452,6 +451,11 @@ class InfoBuilder(object):
         # As our operation is specified by top-level operand, call target router directly
         self.__tgtRouter(element.arg1)
         self.activeMod.sourceAttribute = self.__getAttr(element.arg2)
+        # Set runtime according to active list
+        if self.activeSet is self.preMods:
+            self.activeMod.runTime = const.infoPre
+        elif self.activeSet is self.postMods:
+            self.activeMod.runTime = const.infoPost
         self.activeSet.add(self.activeMod)
         self.activeMod = None
 
