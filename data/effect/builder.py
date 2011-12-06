@@ -71,7 +71,11 @@ class Modifier(object):
                        const.opndRmLocSrqMod: self.__valLocSrq,
                        const.opndAddOwnSrqMod: self.__valOwnSrq,
                        const.opndRmOwnSrqMod: self.__valOwnSrq}
-        return validateMap[self.type]()
+        try:
+            method = validateMap[self.type]
+        except KeyError:
+            return False
+        return method()
 
     def __valItm(self):
         if self.targetGroup is not None or self.targetSkillRq is not None:
@@ -203,7 +207,7 @@ class InfoBuilder(object):
         for mod in self.preMods:
             if mod.validate() is not True:
                 print("Invalid pre")
-                break
+                return []
 
         self.activeList = self.postMods
         try:
@@ -215,7 +219,7 @@ class InfoBuilder(object):
         for mod in self.postMods:
             if mod.validate() is not True:
                 print("Invalid post")
-                break
+                return []
 
         for preMod in self.preMods:
             for postMod in self.postMods:
