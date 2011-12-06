@@ -37,7 +37,7 @@ inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndSurveyScan, const.opndCargoScan, const.opndPowerBooster,
                  const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent,
                  const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
-                 const.opndMissileLnch}
+                 const.opndMissileLaunch}
 
 class Modifier(object):
     """
@@ -67,7 +67,15 @@ class Modifier(object):
         self.sourceAttribute is None:
             return False
         # Other fields are optional, check them using modifier type
-        validateMap = {const.opndAddItmMod: self.__valItm,
+        validateMap = {const.opndAddGangGrpMod: self.__valGangGrp,
+                       const.opndRmGangGrpMod: self.__valGangGrp,
+                       const.opndAddGangItmMod: self.__valGangItm,
+                       const.opndRmGangItmMod: self.__valGangItm,
+                       const.opndAddGangOwnSrqMod: self.__valGangOwnSrq,
+                       const.opndRmGangOwnSrqMod: self.__valGangOwnSrq,
+                       const.opndAddGangSrqMod: self.__valGangSrq,
+                       const.opndRmGangSrqMod: self.__valGangSrq,
+                       const.opndAddItmMod: self.__valItm,
                        const.opndRmItmMod: self.__valItm,
                        const.opndAddLocGrpMod: self.__valLocGrp,
                        const.opndRmLocGrpMod: self.__valLocGrp,
@@ -83,6 +91,33 @@ class Modifier(object):
             return False
         return method()
 
+    def __valGangGrp(self):
+        if self.targetLocation is not None or self.targetSkillRq is not None:
+            return False
+        if self.targetGroup is None:
+            return False
+        return True
+
+    def __valGangItm(self):
+        if self.targetGroup is not None or self.targetSkillRq is not None or \
+        self.targetLocation is not None:
+            return False
+        return True
+
+    def __valGangOwnSrq(self):
+        if self.targetLocation is not None or self.targetGroup is not None:
+            return False
+        if self.targetSkillRq is None:
+            return False
+        return True
+
+    def __valGangSrq(self):
+        if self.targetLocation is not None or self.targetGroup is not None:
+            return False
+        if self.targetSkillRq is None:
+            return False
+        return True
+
     def __valItm(self):
         if self.targetGroup is not None or self.targetSkillRq is not None:
             return False
@@ -93,7 +128,7 @@ class Modifier(object):
     def __valLocGrp(self):
         if self.targetSkillRq is not None:
             return False
-        validLocs = (const.locChar, const.locShip, const.locTgt)
+        validLocs = (const.locChar, const.locShip, const.locTgt, const.locSelf)
         if not self.targetLocation in validLocs or self.targetGroup is None:
             return False
         return True
@@ -101,14 +136,15 @@ class Modifier(object):
     def __valLoc(self):
         if self.targetGroup is not None or self.targetSkillRq is not None:
             return False
-        if self.targetLocation is None:
+        validLocs = (const.locChar, const.locShip, const.locTgt, const.locSelf)
+        if not self.targetLocation in validLocs:
             return False
         return True
 
     def __valLocSrq(self):
         if self.targetGroup is not None:
             return False
-        validLocs = (const.locChar, const.locShip, const.locTgt)
+        validLocs = (const.locChar, const.locShip, const.locTgt, const.locSelf)
         if not self.targetLocation in validLocs or self.targetSkillRq is None:
             return False
         return True
@@ -146,7 +182,15 @@ class Modifier(object):
         info.sourceAttributeId = self.sourceAttribute
         info.targetAttributeId = self.targetAttribute
         # Fill remaining fields on per-modifier basis
-        conversionMap = {const.opndAddItmMod: self.__convItm,
+        conversionMap = {const.opndAddGangGrpMod: self.__convGangGrp,
+                         const.opndRmGangGrpMod: self.__convGangGrp,
+                         const.opndAddGangItmMod: self.__convGangItm,
+                         const.opndRmGangItmMod: self.__convGangItm,
+                         const.opndAddGangOwnSrqMod: self.__convGangOwnSrq,
+                         const.opndRmGangOwnSrqMod: self.__convGangOwnSrq,
+                         const.opndAddGangSrqMod: self.__convGangSrq,
+                         const.opndRmGangSrqMod: self.__convGangSrq,
+                         const.opndAddItmMod: self.__convItm,
                          const.opndRmItmMod: self.__convItm,
                          const.opndAddLocGrpMod: self.__convLocGrp,
                          const.opndRmLocGrpMod: self.__convLocGrp,
@@ -158,6 +202,28 @@ class Modifier(object):
                          const.opndRmOwnSrqMod: self.__convOwnSrq}
         conversionMap[self.type](info)
         return info
+
+    def __convGangGrp(self, info):
+        info.gang = True
+        info.location = const.locShip
+        info.filterType = const.filterGroup
+        info.filterValue = self.targetGroup
+
+    def __convGangItm(self, info):
+        info.gang = True
+        info.location = const.locShip
+
+    def __convGangOwnSrq(self, info):
+        info.gang = True
+        info.location = const.locSpace
+        info.filterType = const.filterSkill
+        info.filterValue = self.targetSkillRq
+
+    def __convGangSrq(self, info):
+        info.gang = True
+        info.location = const.locShip
+        info.filterType = const.filterSkill
+        info.filterValue = self.targetSkillRq
 
     def __convItm(self, info):
         info.location = self.targetLocation
