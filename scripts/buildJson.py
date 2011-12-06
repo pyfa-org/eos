@@ -36,6 +36,7 @@ parser.add_argument("dbPath", type=str, help="The path to the sqlite cache dump"
 parser.add_argument("-e", "--typedump", type=str, dest="typeDumpPath", default="types.json.bz2")
 parser.add_argument("-x", "--expressiondump", type=str, dest="expressionDumpPath", default="expressions.json.bz2")
 parser.add_argument("-f", "--effectDump", type=str, dest="effectDumpPath", default="effects.json.bz2")
+parser.add_argument("-a", "--attributeDump", type=str, dest="attributeDumpPath", default="attributes.json.bz2")
 args = parser.parse_args()
 
 conn = sqlite3.connect(args.dbPath, detect_types=sqlite3.PARSE_COLNAMES | sqlite3.PARSE_DECLTYPES)
@@ -85,5 +86,14 @@ for row in conn.execute('SELECT * FROM dgmeffects'):
 
 with bz2.BZ2File(args.effectDumpPath, 'wb') as f:
     f.write(json.dumps(effects).encode('utf-8'))
+
+print("dumping attributes")
+attributes = {}
+for row in conn.execute('SELECT * FROM dgmattribs'):
+    attributes[row["attributeID"]] = {'highIsGood': bool(row["highIsGood"]),
+                                      'stackable': bool(row["stackable"])}
+
+with bz2.BZ2File(args.attributeDumpPath, 'wb') as f:
+    f.write(json.dumps(attributes).encode('utf-8'))
 
 print("dumping done in " + str(time.clock() - start))

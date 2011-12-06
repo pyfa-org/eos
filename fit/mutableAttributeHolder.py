@@ -153,41 +153,46 @@ class MutableAttributeMap(collections.Mapping):
         Run calculations to find the actual value of attribute with ID equal to attrID.
         All other attribute values are assumed to be final.
         This is obviously not always the case,
-        if any of the dependencies of this calculation change, this attribute will get damaged and thus recalculated
+        if any of the dependencies of this calculation change, this attribute will get invalidated and thus recalculated when its next needed
         """
 
         base = self.__holder.type.attributes.get(attrId)
-        modifiers = {}
 
         try:
-            register = self.__attributeRegister[attrId]
-            result = base
-            for sourceHolder, info in register:
-                modValue = sourceHolder.attributes[info.sourceAttributeId]
-                operation = info.operation
-                if not operation in modifiers:
-                    modifiers[operation] = []
-                modifiers[operation].append(modValue)
+            attributeType = self.__holder.type.attributeTypes[attrId]
+            stackable = attributeType.stackable
 
-            for operation in sorted(modifiers):
-                if operation in (const.optrPreAssignment, const.optrPostAssignment):
-                    for mod in modifiers[operation]:
-                        result = mod
+            register = sorted(self.__attributeRegister[attrId], key=lambda registrationInfo: registrationInfo[1].operation)
+
+            result = base
+
+            penalizedUp = set()
+            penalizedDown = set()
+
+            for registrationInfo in register:
+                sourceHolder, info = registrationInfo
+                operation = info.operation
+                value = sourceHolder.attributes[info.sourceAttributeId]
+
+                if not stackable and sourceHolder.categoryId not in const.penaltyImmuneCats \
+                   and operation in (const.optrPreMul, const.optrPostMul, const.optrPreDiv, const.optrPostDiv):
+                    isMul = operation in (const.optrPreMul, const.optrPostMul)
+
+                    s = penalizedUp if ((isMul and value > 1) or (not isMul and value < 1)) else penalizedDown
+                    s.add(registrationInfo)
+
+                elif operation in (const.optrPreAssignment, const.optrPostAssignment):
+                    result = value
                 elif operation in (const.optrPreMul, const.optrPostMul):
-                    for mod in modifiers[operation]:
-                        result *= mod
+                    result *= value
                 elif operation == const.optrPostPercent:
-                    for mod in modifiers[operation]:
-                        result *= 1 + mod / 100
+                    result *= 1 + value / 100
                 elif operation in (const.optrPreDiv, const.optrPostDiv):
-                    for mod in modifiers[operation]:
-                        result /= mod
+                    result /= value
                 elif operation == const.optrModAdd:
-                    for mod in modifiers[operation]:
-                        result += mod
+                    result += value
                 elif operation == const.optrModSub:
-                    for mod in modifiers[operation]:
-                        result -= mod
+                    result -= value
 
             return result
         except:
