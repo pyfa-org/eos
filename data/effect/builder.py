@@ -128,7 +128,7 @@ class Modifier(object):
     def __valLocGrp(self):
         if self.targetSkillRq is not None:
             return False
-        validLocs = (const.locChar, const.locShip, const.locTgt)
+        validLocs = (const.locChar, const.locShip, const.locTgt, const.locSelf)
         if not self.targetLocation in validLocs or self.targetGroup is None:
             return False
         return True
@@ -136,14 +136,15 @@ class Modifier(object):
     def __valLoc(self):
         if self.targetGroup is not None or self.targetSkillRq is not None:
             return False
-        if self.targetLocation is None:
+        validLocs = (const.locChar, const.locShip, const.locTgt, const.locSelf)
+        if not self.targetLocation in validLocs:
             return False
         return True
 
     def __valLocSrq(self):
         if self.targetGroup is not None:
             return False
-        validLocs = (const.locChar, const.locShip, const.locTgt)
+        validLocs = (const.locChar, const.locShip, const.locTgt, const.locSelf)
         if not self.targetLocation in validLocs or self.targetSkillRq is None:
             return False
         return True
