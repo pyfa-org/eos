@@ -136,7 +136,7 @@ locChar = 1  # Target character
 locShip = 2  # Target ship
 locTgt = 4  # Target currently locked and selected ship as target
 locOther = 5  # If used from charge, targets charge's container, is used from container, targets its charge
-locArea = 6  # ?
+locArea = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
 locSpace = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 # Database name: ID map for target locations
