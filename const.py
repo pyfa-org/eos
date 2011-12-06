@@ -135,7 +135,7 @@ locSelf = 0  # Target self, i.e. carrier of modification source
 locChar = 1  # Target character
 locShip = 2  # Target ship
 locTgt = 4  # Target currently locked and selected ship as target
-locCont = 5  # Targeting the container of the modification source carrier
+locOther = 5  # If used from charge, targets charge's container, is used from container, targets its charge
 locArea = 6  # ?
 locSpace = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
@@ -144,7 +144,7 @@ locConvMap = {"Self": locSelf,
               "Char": locChar,
               "Ship": locShip,
               "Target": locTgt,
-              "Other": locCont,
+              "Other": locOther,
               "Area": locArea}
 
 # Filter types

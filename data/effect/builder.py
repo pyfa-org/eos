@@ -152,7 +152,8 @@ class Modifier(object):
     def __valOwnSrq(self):
         if self.targetGroup is not None:
             return False
-        if self.targetLocation != const.locChar or self.targetSkillRq is None:
+        validLocs = (const.locChar, const.locShip)
+        if not self.targetLocation in validLocs or self.targetSkillRq is None:
             return False
         return True
 
