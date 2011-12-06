@@ -87,6 +87,7 @@ opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just ref
 opndMissileLaunch = 44  # Special operand, handles missile launching
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
 opndLocSrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skillRequirement]
+opndMine = 50  # Special operand, handles transfer of ore from asteroid to cargo
 opndPowerBooster = 53  # Special operand, defines cap booster effect
 opndRmGangGrpMod = 54  # Undos modification from items of gang-mates, filtered by group, format: [(groupFilter.targetAttribute).(operator)].RGGM(sourceAttribute)
 opndRmGangItmMod = 55  # Undos modification directly from ships gang-mates, format: ((targetAttribute).(operator)).RGIM(sourceAttribute)
@@ -102,6 +103,8 @@ opndShipScan = 66  # Special operand, used to define ship scan
 opndSurveyScan = 69  # Special operand, used to define ore scan
 opndTgtHostile = 70  # Special operand, used in auto-targeting systems
 opndTgtSilent = 71  # Special operand, used in passive targeting systems
+opndToolTgtSkills = 72  # Special operand, most likely checks if you have enough skills to use currently loaded charge, or have enough skills to work with current target
+opndVrfTgtGrp = 74  # Special operand, used to verify if target can have effect's carrier applied onto it, otherwise raises error
 
 
 ### Custom Eos stuff, doesn't depend on database IDs ###
