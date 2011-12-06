@@ -38,7 +38,7 @@ inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent,
                  const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
                  const.opndMissileLaunch, const.opndVrfTgtGrp, const.opndToolTgtSkills,
-                 const.opndMine}
+                 const.opndMine, const.opndDefenderLaunch, const.opndFofLaunch}
 
 class Modifier(object):
     """
@@ -206,45 +206,54 @@ class Modifier(object):
         return info
 
     def __convGangGrp(self, info):
+        info.type = const.infoDuration
         info.gang = True
         info.location = const.locShip
         info.filterType = const.filterGroup
         info.filterValue = self.targetGroup
 
     def __convGangItm(self, info):
+        info.type = const.infoDuration
         info.gang = True
         info.location = const.locShip
 
     def __convGangOwnSrq(self, info):
+        info.type = const.infoDuration
         info.gang = True
         info.location = const.locSpace
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
     def __convGangSrq(self, info):
+        info.type = const.infoDuration
         info.gang = True
         info.location = const.locShip
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
     def __convItm(self, info):
+        info.type = const.infoDuration
         info.location = self.targetLocation
 
     def __convLocGrp(self, info):
+        info.type = const.infoDuration
         info.location = self.targetLocation
         info.filterType = const.filterGroup
         info.filterValue = self.targetGroup
 
     def __convLoc(self, info):
+        info.type = const.infoDuration
         info.location = self.targetLocation
         info.filterType = const.filterAll
 
     def __convLocSrq(self, info):
+        info.type = const.infoDuration
         info.location = self.targetLocation
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq
 
     def __convOwnSrq(self, info):
+        info.type = const.infoDuration
         info.location = const.locSpace
         info.filterType = const.filterSkill
         info.filterValue = self.targetSkillRq

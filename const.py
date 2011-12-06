@@ -85,6 +85,8 @@ opndAoeDmg = 32  # Special operand, defines area-of-effect damage for modules li
 opndGrpAttr = 34  # Joins group and attribute into target definition, format: groupFilter.targetAttribute
 opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
 opndMissileLaunch = 44  # Special operand, handles missile launching
+opndDefenderLaunch = 45  # Special operand, handles defender missile launching
+opndFofLaunch = 47  # Special operand, handles friend-or-foe missile launching
 opndLocGrp = 48  # Joins location and group definitions into single filter, format: location..group
 opndLocSrq = 49  # Joins location and skill requirement definitions into single filter, format: location[skillRequirement]
 opndMine = 50  # Special operand, handles transfer of ore from asteroid to cargo
@@ -154,3 +156,8 @@ locConvMap = {"Self": locSelf,
 filterAll = 0
 filterGroup = 1
 filterSkill = 2
+
+# Effect info types
+infoDuration = 0
+infoPre = 1
+infoPost = 2

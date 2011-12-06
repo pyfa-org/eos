@@ -26,6 +26,12 @@ class EffectInfo(object):
     but nothing prevents a user from making some of his own and running them onto a fit
     """
     def __init__(self):
+        self.type = None
+        """
+        Describes type of modification. Can be modification applied for some duration
+        or modification applied single time in the beginning/end of the cycle.
+        """
+
         self.gang = False
         """
         Flag identifying local/gang change.
