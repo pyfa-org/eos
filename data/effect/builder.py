@@ -199,26 +199,26 @@ class InfoBuilder(object):
         """
         self.activeList = self.preMods
         try:
-            print("Building pre-expression tree with base {}".format(preExpression.id))
             self.__generic(preExpression)
         except:
             self.preMods = []
             print("Error building pre-expression tree with base {}".format(preExpression.id))
+            return []
         for mod in self.preMods:
             if mod.validate() is not True:
-                print("Invalid pre")
+                print("Error validating pre-modifiers of base {}".format(preExpression.id))
                 return []
 
         self.activeList = self.postMods
         try:
-            print("Building post-expression tree with base {}".format(postExpression.id))
             self.__generic(postExpression)
         except:
             self.postMods = []
             print("Error building post-expression tree with base {}".format(postExpression.id))
+            return []
         for mod in self.postMods:
             if mod.validate() is not True:
-                print("Invalid post")
+                print("Error validating post-modifiers of base {}".format(postExpression.id))
                 return []
 
         for preMod in self.preMods:
