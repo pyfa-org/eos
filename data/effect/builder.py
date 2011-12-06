@@ -288,16 +288,16 @@ class InfoBuilder(object):
     def __tgtItmAttr(self, element):
         """Join target item specification and target attribute"""
         # Item specification format depends on operand of arg1
-        itmGetterMap = {const.opndDefLoc: self.__tgtItm,
+        itmGetterMap = {const.opndDefLoc: self.__tgtLoc,
                         const.opndLocGrp: self.__tgtLocGrp,
                         const.opndLocSrq: self.__tgtLocSrq}
         itmGetterMap[element.arg1.operand](element.arg1)
         # Target attribute is always specified in arg2
         self.activeMod.targetAttribute = self.__getAttr(element.arg2)
 
-    def __tgtItm(self, element):
+    def __tgtLoc(self, element):
         """Get target location and store it"""
-        self.activeMod.target = self.__getLoc(element)
+        self.activeMod.targetLocation = self.__getLoc(element)
 
     def __tgtLocGrp(self, element):
         """Join target location filter and group filter"""
