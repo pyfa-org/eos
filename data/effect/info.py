@@ -26,6 +26,11 @@ class EffectInfo(object):
     but nothing prevents a user from making some of his own and running them onto a fit
     """
     def __init__(self):
+        self.gang = False
+        """
+        Flag identifying local/gang change.
+        """
+
         self.location = None
         """
         Target location to change.
