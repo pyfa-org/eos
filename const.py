@@ -143,9 +143,9 @@ optrConvMap = {"PreAssignment": optrPreAssignment,
                "PostAssignment": optrPostAssignment}
 
 # Target location IDs
-locSelf = 0  # Target self, i.e. carrier of modification source
-locChar = 1  # Target character
-locShip = 2  # Target ship
+locSelf = 1  # Target self, i.e. carrier of modification source
+locChar = 2  # Target character
+locShip = 3  # Target ship
 locTgt = 4  # Target currently locked and selected ship as target
 locOther = 5  # If used from charge, targets charge's container, is used from container, targets its charge
 locArea = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
