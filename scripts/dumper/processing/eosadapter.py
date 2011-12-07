@@ -35,6 +35,7 @@ class EosAdapter(object):
         self.tables = tables
 
     def run(self):
+        """Control database refactoring workflow"""
         print("Refactoring database for Eos")
         self.dbspec = self.__get_dbspec()
         # Delete malformed entries in both structures; also, fill actual data
@@ -48,12 +49,13 @@ class EosAdapter(object):
             self.removed_data[tabname] = {}
         # Filter out data for invtypes table
         self.__manual_filter_invtypes()
+        # Container to store signs of so-called strong data, such rows are immune to removal
+        # Format: {table name: {column index: {exception values}}
+        self.strong_data = {}
+        # Fill it with manually specified data
+        self.__process_manual_strongs()
         # Print some statistics to know what has been cleaned
         self.__print_stats()
-
-        # Old workflow is still kept here
-        #self.exceptspec = self.__get_exceptspec()
-        #self.__database_refactor()
 
     def __get_dbspec(self):
         """Return specification of data Eos needs"""
@@ -340,6 +342,31 @@ class EosAdapter(object):
             type_table.datarows.remove(datarow)
         return
 
+    def __process_manual_strongs(self):
+        """Add manually specified strong data to internal temporary storage"""
+        # Go through all tables in specifications
+        for tabname in self.dbspec:
+            table = self.tables[tabname]
+            # All their columns
+            for colname in self.dbspec[tabname].columns:
+                # Check strong values section
+                strong_vals = self.dbspec[tabname].columns[colname].strongvals
+                # If it's empty, go on
+                if strong_vals is None:
+                    continue
+                # Create sub-dictionary for table if it doesn't have it yet
+                if not tabname in self.strong_data:
+                    self.strong_data[tabname] = {}
+                # Get index of column in question
+                colidx = table.columns.index(table.getcolumn(colname))
+                # If it's not yet in sub-dictionary, add it as key and corresponding
+                # set as value
+                if not colidx in self.strong_data[tabname]:
+                    self.strong_data[tabname][colidx] = set()
+                # Add values to set
+                self.strong_data[tabname][colidx].update(strong_vals)
+        return
+
     def __print_stats(self):
         """Print statistics about removed data"""
         # Print some statistics
@@ -385,35 +412,7 @@ class EosAdapter(object):
     def __database_refactor(self):
         """Refactor database according to passed specification"""
 
-        ## STAGE 3: exception processing: sometimes we have to leave some
-        ## data in the database (protect it from automatic removal), exceptions
-        ## serve solely this purpose. There're 2 types of exceptions: hard-coded by column
-        ## value in general database specifications and flexible filter-based exceptions
-        # Custom local data structure for exception stuff
-        # { table name : {column index : set (exception values) } }
-        exceptions = {}
-        # Fill hard-coded exceptions
-        # Go through all tables in specifications
-        for tabname in self.dbspec:
-            table = self.tables[tabname]
-            # All their columns
-            for colname in self.dbspec[tabname][0]:
-                # Check exceptions section
-                excspec = self.dbspec[tabname][0][colname][2]
-                # If it's empty, go on
-                if excspec is None:
-                    continue
-                # Create sub-dictionary for table if it doesn't have it yet
-                if not tabname in exceptions:
-                    exceptions[tabname] = {}
-                # Get index of column in question
-                colidx = table.columns.index(table.getcolumn(colname))
-                # If it's not yet in sub-dictionary, add it as key and corresponding
-                # set as value
-                if not colidx in exceptions[tabname]:
-                    exceptions[tabname][colidx] = set()
-                # Add values to set
-                exceptions[tabname][colidx].update(set(excspec))
+
 
         # Now, process flexible filter-based exception definitions
         # Exception error flag
