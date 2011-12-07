@@ -182,120 +182,6 @@ def get_eosdataspec():
 
     return dataspec, filterspec, exceptspec
 
-
-
-def remove_duplicate_tables(tables):
-    """
-    Remove tables with duplicate data
-    """
-    # Container for lists of duplicated tables
-    dupetablegroups = []
-    # Plain set for tables that were marked as duplicates
-    dupes = set()
-    # Iterate through all possible table combinations with 2 members
-    for combination in itertools.combinations(tables.itervalues(), 2):
-        table1 = combination[0]
-        table2 = combination[1]
-        # If both tables were checked already, go to the next combination
-        if table1 in dupes and table2 in dupes:
-            continue
-        # Check if they possess the same data
-        if table1.isduplicate(table2) is True:
-            # If one of tables is already in set, we want to add it to existing group
-            if table1 in dupes or table2 in dupes:
-                # Cycle through groups
-                for dupetablegroup in dupetablegroups:
-                    # Find the one with table
-                    if table1 in dupetablegroup or table2 in dupetablegroup:
-                        # Add new table to group set and general set
-                        dupetablegroup.add(table1)
-                        dupes.add(table1)
-                        dupetablegroup.add(table2)
-                        dupes.add(table2)
-                        break
-            # If they were never reported as duplicate
-            else:
-                # Make new group
-                dupetablegroups.append(set(combination))
-                # And add both tables to general set
-                dupes.add(table1)
-                dupes.add(table2)
-    # Now, when we detected all duplicate tables, go through all
-    # duplicate groups and choose the survivor
-    for dupetablegroup in dupetablegroups:
-        candidates = collections.OrderedDict()
-        for table in dupetablegroup:
-            # Get lower-cased table name
-            tablename = table.name.lower()
-            # Get header primary key header names w/o ID suffix and make it lower-cased
-            pks = list(re.sub("ID$", "", column.name).lower() for column in table.getpks())
-            # Dictionary for the slices left after matches
-            tablesliced = [tablename,]
-            # Storage for matches
-            matches = []
-            # Go through all keys
-            for pk in pks:
-                # Match of maximum length for given key
-                maxmatch = None
-                # Index of source segment in slices list where max match occurred
-                maxmatchsliceidx = None
-                # Create new matcher object for each, setting key as cached string
-                matcher = difflib.SequenceMatcher(b=pk)
-                # Slice index starts from 0
-                # We need to track it manually to properly support duplicate
-                # data within the slice list
-                sliceidx = 0
-                # Iterate through slices
-                for tableslice in tablesliced:
-                    # Reuse matcher within loop, and set non-cached sequence here
-                    matcher.set_seq1(tableslice)
-                    # Find longest match using matcher
-                    match = matcher.find_longest_match(0, len(tableslice), 0, len(pk))
-                    # Ignore all matches less than 3 in size
-                    if match.size >= 3:
-                        # If we found bigger and better match, write it down
-                        if maxmatch is None or match.size >= maxmatch.size:
-                            maxmatch = match
-                            maxmatchsliceidx = sliceidx
-                    # Increment index manually
-                    sliceidx += 1
-                # If we got match that deserves our attention
-                if maxmatch is not None:
-                    # Slice'n'dice
-                    slicesrc = tablesliced[maxmatchsliceidx]
-                    # Matching part
-                    slicematch = slicesrc[maxmatch.a:maxmatch.a+maxmatch.size]
-                    # Parts of table name slice before and after match
-                    tablepre = slicesrc[:maxmatch.a]
-                    tablepost = slicesrc[maxmatch.a+maxmatch.size:]
-                    # Add match to list of matches
-                    matches.append(slicematch)
-                    # Replace source slice by pre-match
-                    tablesliced[maxmatchsliceidx] = tablepre
-                    # Insert post-match right after it
-                    tablesliced.insert(maxmatchsliceidx+1, tablepost)
-            # Length of all primary keys
-            pkslen = sum(len(pk) for pk in pks)
-            # Same for matches
-            matcheslen = sum(len(match) for match in matches)
-            # Score multiplier
-            mult = 1.0
-            for tableslice in tablesliced:
-                # If there's "by" in table name remnants, halve score
-                # CCP usually adds them to alternatively sorted tables with the same contents
-                if "by" in tableslice:
-                    mult = 0.5
-                    break
-            candidates[table] = mult * matcheslen / (len(table.name) + pkslen)
-        # The winner takes it all
-        winner = max(candidates, key=candidates.get)
-        # Losers die
-        for table in dupetablegroup:
-            if table != winner:
-                print("  Removed table {0} in favor of {1}".format(table.name, winner.name))
-                del tables[table.name]
-    return
-
 def database_refactor(tables, dbspec, filterspec, exceptspec):
     """
     Refactor database according to passed specification
@@ -1021,17 +907,13 @@ if __name__ == "__main__":
         sys.stderr.write("This application requires Python 2.7 to run, but {0}.{1} was used\n".format(major, minor))
         sys.exit()
 
-    import codecs
     import collections
-    import difflib
-    import itertools
     import os.path
     import re
-    import sqlite3
     from optparse import OptionParser
 
     import const
-    from processing import DataMiner, Preprocessor, Dumper
+    from processing import DataMiner, Preprocessor, Deduplicator, Dumper
 
     # Parse command line options
     usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE]"
@@ -1078,8 +960,8 @@ if __name__ == "__main__":
         # Automatic mode: eve cache contains structures with the same actual data,
         # but differently grouped, so we're going to remove duplicates. This method
         # relies on table names and PK names, thus must be placed after PK detection
-        print("Removing duplicate tables")
-        remove_duplicate_tables(tables)
+        deduplicator = Deduplicator(tables)
+        deduplicator.run()
 
     # Create dumper object to write data to actual files
     dumper = Dumper(tables)
