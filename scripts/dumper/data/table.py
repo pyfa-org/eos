@@ -29,25 +29,22 @@ class Table(object):
         self.datarows = set()
 
     def addcolumn(self, name):
-        """
-        Add column to table
-        """
-        self.columns.append(Column(name))
-        return
+        """Add column to table"""
+        existing = self.getcolumn(name)
+        if existing is None:
+            self.columns.append(Column(name))
+        else:
+            raise ValueError("column with name {0} already exists".format(name))
 
     def getcolumn(self, name):
-        """
-        Get column with requested name
-        """
+        """Get column with requested name"""
         for column in self.columns:
             if column.name == name:
                 return column
         return None
 
     def removecolumns(self, colnames):
-        """
-        Remove columns and all associated data
-        """
+        """Remove columns and all associated data"""
         # Problems flag
         problems = False
         # Gather list of columns to be removed and indices of
@@ -79,9 +76,7 @@ class Table(object):
         return problems
 
     def isduplicate(self, other):
-        """
-        Compare two tables and report if they're duplicates
-        """
+        """Compare two tables and report if they're duplicates"""
         # Do not consider self as duplicate
         if self == other:
             return False
@@ -97,31 +92,22 @@ class Table(object):
         return True
 
     def getpks(self):
-        """
-        Get tuple with primary keys of table
-        """
+        """Get tuple with primary keys of table"""
         pks = tuple(filter(lambda col: col.pk is True, self.columns))
         return pks
 
     def getfks(self):
-        """
-        Get tuple with foreign keys of table
-        """
+        """Get tuple with foreign keys of table"""
         fks = tuple(filter(lambda col: col.fk is not None, self.columns))
         return fks
 
     def getindices(self):
-        """
-        Get tuple with indexed columns of table
-        """
+        """Get tuple with indexed columns of table"""
         indices = tuple(filter(lambda col: col.index is True, self.columns))
         return indices
 
-
     def getcolumndataset(self, name):
-        """
-        Get all data from certain column into set
-        """
+        """Get all data from certain column into set"""
         column = self.getcolumn(name)
         idx = self.columns.index(column)
         dataset = set(dr[idx] for dr in self.datarows)
