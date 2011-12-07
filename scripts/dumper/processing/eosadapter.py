@@ -18,9 +18,13 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+import collections
 import re
 
 import const
+
+TableSpec = collections.namedtuple("TableSpec", ("columns", "strong"))
+ColumnSpec = collections.namedtuple("ColumnSpec", ("fk", "index", "strongvals"))
 
 class EosAdapter(object):
     """
@@ -31,9 +35,12 @@ class EosAdapter(object):
 
     def run(self):
         print("Refactoring database for Eos")
-        self.__database_refactor(self.tables, *self.__get_eosdataspec())
+        self.dbspec = self.__get_dbspec()
+        self.filterspec = self.__get_filterspec()
+        self.exceptspec = self.__get_exceptspec()
+        self.__database_refactor()
 
-    def __get_eosdataspec(self):
+    def __get_dbspec(self):
         """Return specification of data Eos needs"""
         # Data specification, container for tables:
         # { table name : [ columns, strength ] }
@@ -41,226 +48,212 @@ class EosAdapter(object):
         # { column name : [ foreign.key, index, noref exceptions ] }
         dataspec = {}
 
-        dataspec["dgmattribs"] = [{}, False]
-        dgmattribs = dataspec["dgmattribs"][0]
-        dgmattribs["attributeID"] = [None, False, None]
-        dgmattribs["attributeName"] = [None, False, {"radius", "mass", "volume", "capacity"}]
-        #dgmattribs["attributeCategory"] = [None, False, None]
-        #dgmattribs["description"] = [None, False, None]
-        dgmattribs["maxAttributeID"] = ["dgmattribs.attributeID", False, None]
-        #dgmattribs["chargeRechargeTimeID"] = ["dgmattribs.attributeID", False, None]
-        dgmattribs["defaultValue"] = [None, False, None]
-        dgmattribs["published"] = [None, False, None]
-        dgmattribs["displayName"] = [None, False, None]
-        dgmattribs["unitID"] = ["eveunits.unitID", False, None]
-        dgmattribs["stackable"] = [None, False, None]
-        dgmattribs["highIsGood"] = [None, False, None]
-        #dgmattribs["categoryID"] = [None, False, None]
-        dgmattribs["iconID"] = ["icons.iconID", False, None]
+        dataspec["dgmattribs"] = TableSpec({}, False)
+        dgmattribs = dataspec["dgmattribs"].columns
+        dgmattribs["attributeID"] = ColumnSpec(None, False, None)
+        dgmattribs["attributeName"] = ColumnSpec(None, False, {"radius", "mass", "volume", "capacity"})
+        #dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
+        #dgmattribs["description"] = ColumnSpec(None, False, None)
+        dgmattribs["maxAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        #dgmattribs["chargeRechargeTimeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmattribs["defaultValue"] = ColumnSpec(None, False, None)
+        dgmattribs["published"] = ColumnSpec(None, False, None)
+        dgmattribs["displayName"] = ColumnSpec(None, False, None)
+        dgmattribs["unitID"] = ColumnSpec("eveunits.unitID", False, None)
+        dgmattribs["stackable"] = ColumnSpec(None, False, None)
+        dgmattribs["highIsGood"] = ColumnSpec(None, False, None)
+        #dgmattribs["categoryID"] = ColumnSpec(None, False, None)
+        dgmattribs["iconID"] = ColumnSpec("icons.iconID", False, None)
 
-        dataspec["dgmeffects"] = [{}, False]
-        dgmeffects = dataspec["dgmeffects"][0]
-        dgmeffects["effectID"] = [None, False, None]
-        dgmeffects["effectName"] = [None, False, None]
-        dgmeffects["preExpression"] = ["dgmexpressions.expressionID", False, None]
-        dgmeffects["postExpression"] = ["dgmexpressions.expressionID", False, None]
-        dgmeffects["effectCategory"] = [None, False, None]
-        #dgmeffects["description"] = [None, False, None]
-        dgmeffects["isOffensive"] = [None, False, None]
-        dgmeffects["isAssistance"] = [None, False, None]
-        dgmeffects["durationAttributeID"] = ["dgmattribs.attributeID", False, None]
-        dgmeffects["trackingSpeedAttributeID"] = ["dgmattribs.attributeID", False, None]
-        dgmeffects["dischargeAttributeID"] = ["dgmattribs.attributeID", False, None]
-        dgmeffects["rangeAttributeID"] = ["dgmattribs.attributeID", False, None]
-        dgmeffects["falloffAttributeID"] = ["dgmattribs.attributeID", False, None]
-        #dgmeffects["published"] = [None, False, None]
-        dgmeffects["displayName"] = [None, False, None]
-        #dgmeffects["isWarpSafe"] = [None, False, None]
-        dgmeffects["fittingUsageChanceAttributeID"] = ["dgmattribs.attributeID", False, None]
-        dgmeffects["iconID"] = ["icons.iconID", False, None]
+        dataspec["dgmeffects"] = TableSpec({}, False)
+        dgmeffects = dataspec["dgmeffects"].columns
+        dgmeffects["effectID"] = ColumnSpec(None, False, None)
+        dgmeffects["effectName"] = ColumnSpec(None, False, None)
+        dgmeffects["preExpression"] = ColumnSpec("dgmexpressions.expressionID", False, None)
+        dgmeffects["postExpression"] = ColumnSpec("dgmexpressions.expressionID", False, None)
+        dgmeffects["effectCategory"] = ColumnSpec(None, False, None)
+        #dgmeffects["description"] = ColumnSpec(None, False, None)
+        dgmeffects["isOffensive"] = ColumnSpec(None, False, None)
+        dgmeffects["isAssistance"] = ColumnSpec(None, False, None)
+        dgmeffects["durationAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmeffects["trackingSpeedAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmeffects["dischargeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmeffects["rangeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmeffects["falloffAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        #dgmeffects["published"] = ColumnSpec(None, False, None)
+        dgmeffects["displayName"] = ColumnSpec(None, False, None)
+        #dgmeffects["isWarpSafe"] = ColumnSpec(None, False, None)
+        dgmeffects["fittingUsageChanceAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmeffects["iconID"] = ColumnSpec("icons.iconID", False, None)
 
-        dataspec["dgmexpressions"] = [{}, False]
-        dgmexpressions = dataspec["dgmexpressions"][0]
-        dgmexpressions["expressionID"] = [None, False, None]
-        dgmexpressions["operandID"] = [None, False, None]
-        dgmexpressions["arg1"] = ["dgmexpressions.expressionID", False, None]
-        dgmexpressions["arg2"] = ["dgmexpressions.expressionID", False, None]
-        dgmexpressions["expressionValue"] = [None, False, None]
-        dgmexpressions["expressionTypeID"] = ["invtypes.typeID", False, None]
-        dgmexpressions["expressionGroupID"] = ["invgroups.groupID", False, None]
-        dgmexpressions["expressionAttributeID"] = ["dgmattribs.attributeID", False, None]
+        dataspec["dgmexpressions"] = TableSpec({}, False)
+        dgmexpressions = dataspec["dgmexpressions"].columns
+        dgmexpressions["expressionID"] = ColumnSpec(None, False, None)
+        dgmexpressions["operandID"] = ColumnSpec(None, False, None)
+        dgmexpressions["arg1"] = ColumnSpec("dgmexpressions.expressionID", False, None)
+        dgmexpressions["arg2"] = ColumnSpec("dgmexpressions.expressionID", False, None)
+        dgmexpressions["expressionValue"] = ColumnSpec(None, False, None)
+        dgmexpressions["expressionTypeID"] = ColumnSpec("invtypes.typeID", False, None)
+        dgmexpressions["expressionGroupID"] = ColumnSpec("invgroups.groupID", False, None)
+        dgmexpressions["expressionAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
 
-        dataspec["dgmtypeattribs"] = [{}, False]
-        dgmtypeattribs = dataspec["dgmtypeattribs"][0]
-        dgmtypeattribs["typeID"] = ["invtypes.typeID", False, None]
-        dgmtypeattribs["attributeID"] = ["dgmattribs.attributeID", False, None]
-        dgmtypeattribs["value"] = [None, False, None]
+        dataspec["dgmtypeattribs"] = TableSpec({}, False)
+        dgmtypeattribs = dataspec["dgmtypeattribs"].columns
+        dgmtypeattribs["typeID"] = ColumnSpec("invtypes.typeID", False, None)
+        dgmtypeattribs["attributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmtypeattribs["value"] = ColumnSpec(None, False, None)
 
-        dataspec["dgmtypeeffects"] = [{}, False]
-        dgmtypeeffects = dataspec["dgmtypeeffects"][0]
-        dgmtypeeffects["typeID"] = ["invtypes.typeID", False, None]
-        dgmtypeeffects["effectID"] = ["dgmeffects.effectID", False, None]
-        dgmtypeeffects["isDefault"] = [None, False, None]
+        dataspec["dgmtypeeffects"] = TableSpec({}, False)
+        dgmtypeeffects = dataspec["dgmtypeeffects"].columns
+        dgmtypeeffects["typeID"] = ColumnSpec("invtypes.typeID", False, None)
+        dgmtypeeffects["effectID"] = ColumnSpec("dgmeffects.effectID", False, None)
+        dgmtypeeffects["isDefault"] = ColumnSpec(None, False, None)
 
-        dataspec["eveunits"] = [{}, False]
-        eveunits = dataspec["eveunits"][0]
-        eveunits["unitID"] = [None, False, None]
-        #eveunits["unitName"] = [None, False, None]
-        eveunits["displayName"] = [None, False, None]
-        #eveunits["description"] = [None, False, None]
+        dataspec["eveunits"] = TableSpec({}, False)
+        eveunits = dataspec["eveunits"].columns
+        eveunits["unitID"] = ColumnSpec(None, False, None)
+        #eveunits["unitName"] = ColumnSpec(None, False, None)
+        eveunits["displayName"] = ColumnSpec(None, False, None)
+        #eveunits["description"] = ColumnSpec(None, False, None)
 
-        dataspec["icons"] = [{}, False]
-        icons = dataspec["icons"][0]
-        icons["iconID"] = [None, False, None]
-        icons["iconFile"] = [None, False, None]
-        #icons["description"] = [None, False, None]
-        #icons["iconType"] = [None, False, None]
+        dataspec["icons"] = TableSpec({}, False)
+        icons = dataspec["icons"].columns
+        icons["iconID"] = ColumnSpec(None, False, None)
+        icons["iconFile"] = ColumnSpec(None, False, None)
+        #icons["description"] = ColumnSpec(None, False, None)
+        #icons["iconType"] = ColumnSpec(None, False, None)
 
-        dataspec["invcategories"] = [{}, False]
-        invcategories = dataspec["invcategories"][0]
-        invcategories["categoryID"] = [None, False, None]
-        invcategories["categoryName"] = [None, False, None]
-        #invcategories["description"] = [None, False, None]
-        #invcategories["published"] = [None, False, None]
-        #invcategories["iconID"] = ["icons.iconID", False, None]
+        dataspec["invcategories"] = TableSpec({}, False)
+        invcategories = dataspec["invcategories"].columns
+        invcategories["categoryID"] = ColumnSpec(None, False, None)
+        invcategories["categoryName"] = ColumnSpec(None, False, None)
+        #invcategories["description"] = ColumnSpec(None, False, None)
+        #invcategories["published"] = ColumnSpec(None, False, None)
+        #invcategories["iconID"] = ColumnSpec("icons.iconID", False, None)
 
-        dataspec["invgroups"] = [{}, False]
-        invgroups = dataspec["invgroups"][0]
-        invgroups["groupID"] = [None, False, None]
-        invgroups["categoryID"] = ["invcategories.categoryID", False, None]
-        invgroups["groupName"] = [None, False, None]
-        invgroups["fittableNonSingleton"] = [None, False, None]
-        #invgroups["description"] = [None, False, None]
-        invgroups["published"] = [None, False, None]
-        invgroups["iconID"] = ["icons.iconID", False, None]
+        dataspec["invgroups"] = TableSpec({}, False)
+        invgroups = dataspec["invgroups"].columns
+        invgroups["groupID"] = ColumnSpec(None, False, None)
+        invgroups["categoryID"] = ColumnSpec("invcategories.categoryID", False, None)
+        invgroups["groupName"] = ColumnSpec(None, False, None)
+        invgroups["fittableNonSingleton"] = ColumnSpec(None, False, None)
+        #invgroups["description"] = ColumnSpec(None, False, None)
+        invgroups["published"] = ColumnSpec(None, False, None)
+        invgroups["iconID"] = ColumnSpec("icons.iconID", False, None)
 
-        dataspec["invmarketgroups"] = [{}, False]
-        invmarketgroups = dataspec["invmarketgroups"][0]
-        invmarketgroups["parentGroupID"] = ["invmarketgroups.marketGroupID", False, None]
-        invmarketgroups["marketGroupID"] = [None, False, None]
-        invmarketgroups["marketGroupName"] = [None, False, None]
-        #invmarketgroups["description"] = [None, False, None]
-        invmarketgroups["hasTypes"] = [None, False, None]
-        invmarketgroups["iconID"] = ["icons.iconID", False, None]
+        dataspec["invmarketgroups"] = TableSpec({}, False)
+        invmarketgroups = dataspec["invmarketgroups"].columns
+        invmarketgroups["parentGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, None)
+        invmarketgroups["marketGroupID"] = ColumnSpec(None, False, None)
+        invmarketgroups["marketGroupName"] = ColumnSpec(None, False, None)
+        #invmarketgroups["description"] = ColumnSpec(None, False, None)
+        invmarketgroups["hasTypes"] = ColumnSpec(None, False, None)
+        invmarketgroups["iconID"] = ColumnSpec("icons.iconID", False, None)
 
-        dataspec["invmetagroups"] = [{}, False]
-        invmetagroups = dataspec["invmetagroups"][0]
-        invmetagroups["metaGroupID"] = [None, False, None]
-        invmetagroups["metaGroupName"] = [None, False, None]
-        #invmetagroups["description"] = [None, False, None]
+        dataspec["invmetagroups"] = TableSpec({}, False)
+        invmetagroups = dataspec["invmetagroups"].columns
+        invmetagroups["metaGroupID"] = ColumnSpec(None, False, None)
+        invmetagroups["metaGroupName"] = ColumnSpec(None, False, None)
+        #invmetagroups["description"] = ColumnSpec(None, False, None)
 
-        dataspec["invmetatypes"] = [{}, False]
-        invmetatypes = dataspec["invmetatypes"][0]
-        invmetatypes["typeID"] = ["invtypes.typeID", False, None]
-        invmetatypes["parentTypeID"] = ["invtypes.typeID", False, None]
-        invmetatypes["metaGroupID"] = ["invmetagroups.metaGroupID", False, None]
+        dataspec["invmetatypes"] = TableSpec({}, False)
+        invmetatypes = dataspec["invmetatypes"].columns
+        invmetatypes["typeID"] = ColumnSpec("invtypes.typeID", False, None)
+        invmetatypes["parentTypeID"] = ColumnSpec("invtypes.typeID", False, None)
+        invmetatypes["metaGroupID"] = ColumnSpec("invmetagroups.metaGroupID", False, None)
 
-        dataspec["invtypes"] = [{}, True]
-        invtypes = dataspec["invtypes"][0]
-        invtypes["typeID"] = [None, False, None]
-        invtypes["groupID"] = ["invgroups.groupID", False, None]
-        invtypes["typeName"] = [None, False, None]
-        invtypes["description"] = [None, False, None]
-        invtypes["radius"] = [None, False, None]
-        invtypes["mass"] = [None, False, None]
-        invtypes["volume"] = [None, False, None]
-        invtypes["capacity"] = [None, False, None]
-        invtypes["raceID"] = [None, False, None]
-        invtypes["published"] = [None, False, None]
-        invtypes["marketGroupID"] = ["invmarketgroups.marketGroupID", False, None]
-        invtypes["iconID"] = ["icons.iconID", False, None]
+        dataspec["invtypes"] = TableSpec({}, True)
+        invtypes = dataspec["invtypes"].columns
+        invtypes["typeID"] = ColumnSpec(None, False, None)
+        invtypes["groupID"] = ColumnSpec("invgroups.groupID", False, None)
+        invtypes["typeName"] = ColumnSpec(None, False, None)
+        invtypes["description"] = ColumnSpec(None, False, None)
+        invtypes["radius"] = ColumnSpec(None, False, None)
+        invtypes["mass"] = ColumnSpec(None, False, None)
+        invtypes["volume"] = ColumnSpec(None, False, None)
+        invtypes["capacity"] = ColumnSpec(None, False, None)
+        invtypes["raceID"] = ColumnSpec(None, False, None)
+        invtypes["published"] = ColumnSpec(None, False, None)
+        invtypes["marketGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, None)
+        invtypes["iconID"] = ColumnSpec("icons.iconID", False, None)
 
-        dataspec["metadata"] = [{}, False]
-        metadata = dataspec["metadata"][0]
-        metadata["fieldName"] = [None, False, None]
-        metadata["fieldValue"] = [None, False, None]
+        dataspec["metadata"] = TableSpec({}, False)
+        metadata = dataspec["metadata"].columns
+        metadata["fieldName"] = ColumnSpec(None, False, None)
+        metadata["fieldValue"] = ColumnSpec(None, False, None)
 
+        return dataspec
+
+    def __get_filterspec(self):
         # Data filter specification
         # ( table to clean, with column used as key, join statements, filter )
         filterspec = (("invtypes.typeID", "invtypes.groupID = invgroups.groupID | invgroups.categoryID = invcategories.categoryID", "invcategories.categoryName(Ship, Module, Charge, Skill, Drone, Implant, Subsystem) | invgroups.groupName(Effect Beacon)"),)
+        return filterspec
 
+    def __get_exceptspec(self):
         # Additional exception specification, values from here won't be removed when there're no direct references to them
         # ( reference to keys of table for which we're making exception = values of the key to keep, additional condition, join statements )
         exceptspec = (("dgmattribs.attributeID = dgmtypeattribs.value", "eveunits.displayName = attributeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"),
                       ("invgroups.groupID = dgmtypeattribs.value", "eveunits.displayName = groupID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"),
                       ("invtypes.typeID = dgmtypeattribs.value", "eveunits.displayName = typeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"))
+        return exceptspec
 
-        return dataspec, filterspec, exceptspec
-
-    def __database_refactor(self, tables, dbspec, filterspec, exceptspec):
-        """
-        Refactor database according to passed specification
-        """
-        # Gather number of data rows for statistics
-        rowlen = {}
-        for tabname in tables:
-            rowlen[tabname] = len(tables[tabname].datarows)
-
-        ## STAGE 1: here we make database specification structure and
-        ## actual database consistent, performing series of checks and
-        ## removing data which isn't reflected in other entity. Also here
-        ## we fill in-script database representation structure with several
-        ## column flags (FK, indices) and do some auxiliary stuff for further
-        ## stages
+    def __synch_dbinfo(self):
+        """Synchronize data between data specification and actual database structure"""
         # Just error flag, used for user's convenience
         specerrors = False
         # Detect non-existing tables
-        tab404 = set(dbspec.iterkeys()).difference(tables.iterkeys())
+        tab404 = set(self.dbspec.iterkeys()).difference(self.tables.iterkeys())
         # If we found any
         if len(tab404) > 0:
             # Remove them from specification container
             for tabname in tab404:
-                del dbspec[tabname]
+                del self.dbspec[tabname]
             # And inform about it
             plu = "" if len(tab404) == 1 else "s"
             tab404names = ", ".join(sorted(tab404))
             print("  Unable to find specified table{0}: {1}".format(plu, tab404names))
             # Set error flag to True
             specerrors = True
-        # Get set of tables to be removed and get rid of them
-        toremove = set(tables.iterkeys()).difference(set(dbspec.iterkeys()))
+        # Get set of tables to be removed from actual data and get rid of them
+        toremove = set(self.tables.iterkeys()).difference(set(self.dbspec.iterkeys()))
         for tabname in toremove:
-            del tables[tabname]
-        # Cycle through remaining tables, sort them for alphabetic table
-        # name sorting in case of any errors, this doesn't matter otherwise
-        for tabname in sorted(dbspec.iterkeys()):
-            table = tables[tabname]
+            del self.tables[tabname]
+        # Cycle through remaining tables
+        # Sort them for alphabetic table name sorting, this is done for pretty-print
+        # in case of any errors (doesn't matter otherwise)
+        for tabname in sorted(self.dbspec.iterkeys()):
+            table = self.tables[tabname]
             actcolnames = set(col.name for col in table.columns)
-            specolnames = set(dbspec[tabname][0].iterkeys())
+            specolnames = set(self.dbspec[tabname][0].iterkeys())
             # Detect non-existing columns
             col404 = specolnames.difference(actcolnames)
             # If we've got such columns
             if len(col404) > 0:
                 # Remove them from specification
                 for col in col404:
-                    del dbspec[tabname][0][col]
+                    del self.dbspec[tabname][0][col]
                 # Tell user about it
                 plu = "" if len(col404) == 1 else "s"
                 col404names = ", ".join(sorted(col404))
                 print("  Unable to find specified column{0} for table {1}: {2}".format(plu, tabname, col404names))
                 # Set error flag to True
                 specerrors = True
-            # Finally, get rid of unneeded columns
-            toremove = actcolnames.difference(dbspec[tabname][0].iterkeys())
+            # Finally, get rid of unneeded columns in actual data structure
+            toremove = actcolnames.difference(self.dbspec[tabname][0].iterkeys())
             problems = table.removecolumns(toremove)
             # If we had any errors during column  removal, set error flag
             if problems is True:
                 specerrors = True
-        # Local data structures to store FK relations
-        # 1:1 source-target relation
-        # { source table : { source column : target } }
-        src_fk_tgt = {}
-        # 1:many target-source relation
-        # { target table : { target column : sources } }
-        tgt_fk_src = {}
+
         # Fill foreign key references for all columns according to specification
         # As our data/specification structures are now 'synchronized', we can go
         # through any of them - here we picked data as it's faster and more convenient
-        for tabname in tables:
-            table = tables[tabname]
+        for tabname in self.tables:
+            table = self.tables[tabname]
             for column in table.columns:
                 # Get FK specification string
-                fkspec = dbspec[table.name][0][column.name][0]
+                fkspec = self.dbspec[table.name][0][column.name][0]
                 # If it's None, ignore current column
                 if fkspec is None:
                     continue
@@ -278,11 +271,11 @@ class EosAdapter(object):
                 fktabname = fkspec[0]
                 fkcolname = fkspec[1]
                 # FK target must exist
-                if not fktabname in tables or tables[fktabname].getcolumn(fkcolname) is None:
+                if not fktabname in self.tables or self.tables[fktabname].getcolumn(fkcolname) is None:
                     print("  Unable to find foreign key target for {0}.{1} ({2}.{3})".format(table.name, column.name, fktabname, fkcolname))
                     specerrors = True
                     continue
-                fktable = tables[fktabname]
+                fktable = self.tables[fktabname]
                 fkcolumn = fktable.getcolumn(fkcolname)
                 # FK target must be PK
                 if fkcolumn.pk is not True:
@@ -296,23 +289,13 @@ class EosAdapter(object):
                     continue
                 # Store FK value in column field
                 column.fk = "{0}.{1}".format(fktable.name, fkcolumn.name)
-                # Also store in local structures; source-target map
-                if not table.name in src_fk_tgt:
-                    src_fk_tgt[table.name] = {}
-                src_fk_tgt[table.name][column.name] = "{0}.{1}".format(fktable.name, fkcolumn.name)
-                # And target-source
-                if not fktable.name in tgt_fk_src:
-                    tgt_fk_src[fktable.name] = {}
-                if not fkcolumn.name in tgt_fk_src[fktable.name]:
-                    tgt_fk_src[fktable.name][fkcolumn.name] = set()
-                tgt_fk_src[fktable.name][fkcolumn.name].add("{0}.{1}".format(table.name, column.name))
 
         # Set index flags for all appropriate columns
-        for tabname in sorted(dbspec.iterkeys()):
-            for colname in dbspec[tabname][0]:
-                idxize = dbspec[tabname][0][colname][1]
-                if idxize is True or idxize is False:
-                    tables[tabname].getcolumn(colname).index = idxize
+        for tabname in sorted(self.dbspec.iterkeys()):
+            for colname in self.dbspec[tabname][0]:
+                idxize = self.dbspec[tabname][0][colname][1]
+                if idxize in (True, False):
+                    self.tables[tabname].getcolumn(colname).index = idxize
                 # Print error on unexpected values
                 else:
                     print("  Corrupted index data for {0}.{1}".format(tabname, colname))
@@ -321,12 +304,25 @@ class EosAdapter(object):
         if specerrors is True:
             print("  Please revise data specification")
 
+    def __database_refactor(self):
+        """
+        Refactor database according to passed specification
+        """
+        # Delete malformed entries in both structures; also, fill actual data
+        # with additional flags taken from custom data specification
+        self.__synch_dbinfo()
+
+        # Gather number of data rows for statistics
+        rowlen = {}
+        for tabname in self.tables:
+            rowlen[tabname] = len(self.tables[tabname].datarows)
+
         # Dictionaries to track number of removed rows per table
         rmvd_filter = {}
         rmvd_brokenref = {}
         rmvd_norefto = {}
         # Fill them with zeros for all tables by default
-        for tabname in tables:
+        for tabname in self.tables:
             rmvd_filter[tabname] = 0
             rmvd_brokenref[tabname] = 0
             rmvd_norefto[tabname] = 0
@@ -337,8 +333,8 @@ class EosAdapter(object):
         filteredout = {}
 
         # Run table data filters
-        for rowfilter in filterspec:
-            success = self.__table_filter(tables, rowfilter, rmvd_filter, filteredout)
+        for rowfilter in self.filterspec:
+            success = self.__table_filter(self.tables, rowfilter, rmvd_filter, filteredout)
             # Print some notification if we had errors during its processing
             if success is False:
                 print("  Data filtering failed, please revise filter specification")
@@ -352,12 +348,12 @@ class EosAdapter(object):
         exceptions = {}
         # Fill hard-coded exceptions
         # Go through all tables in specifications
-        for tabname in dbspec:
-            table = tables[tabname]
+        for tabname in self.dbspec:
+            table = self.tables[tabname]
             # All their columns
-            for colname in dbspec[tabname][0]:
+            for colname in self.dbspec[tabname][0]:
                 # Check exceptions section
-                excspec = dbspec[tabname][0][colname][2]
+                excspec = self.dbspec[tabname][0][colname][2]
                 # If it's empty, go on
                 if excspec is None:
                     continue
@@ -388,7 +384,7 @@ class EosAdapter(object):
             # Re-set changes flag
             changed = False
             # Cycle through entries in exception definitions
-            for exc in exceptspec:
+            for exc in self.exceptspec:
                 # Check if this specification is know to be erroneous
                 if exc in errexcspecs:
                     # And skip if it is
@@ -434,11 +430,11 @@ class EosAdapter(object):
                         break
                     tabname = tabcolsplit[0]
                     colname = tabcolsplit[1]
-                    if not tabname in tables:
+                    if not tabname in self.tables:
                         print("  Unable to find table specified in exception definition: {0}".format(tabname))
                         errexcspecs.add(exc)
                         break
-                    if tables[tabname].getcolumn(colname) is None:
+                    if self.tables[tabname].getcolumn(colname) is None:
                         print("  Unable to find column of table {0} specified in exception definition: {1}".format(tabname, colname))
                         errexcspecs.add(exc)
                         break
@@ -446,7 +442,7 @@ class EosAdapter(object):
                     excerrors = True
                     continue
                 # Start doing actual job; join columns as stated in join statement set
-                success, joinedcols, joinedrows = self.__table_join(tables, joinspec)
+                success, joinedcols, joinedrows = self.__table_join(self.tables, joinspec)
                 # Bail in case of any errors, as usual
                 if success is not True:
                     excerrors = True
@@ -456,7 +452,7 @@ class EosAdapter(object):
                 excfiltabname = filtertabcol.split(".")[0]
                 excfilcolname = filtertabcol.split(".")[1]
                 try:
-                    excfilidx = joinedcols.index(tables[excfiltabname].getcolumn(excfilcolname))
+                    excfilidx = joinedcols.index(self.tables[excfiltabname].getcolumn(excfilcolname))
                 # Error for case when such column wasn't found in joined table
                 except ValueError:
                     print("  Unable to find exception filter column {0} in joined table".format(filtertabcol))
@@ -467,7 +463,7 @@ class EosAdapter(object):
                 excsrctabname = excsource.split(".")[0]
                 excsrccolname = excsource.split(".")[1]
                 try:
-                    excsrcidx = joinedcols.index(tables[excsrctabname].getcolumn(excsrccolname))
+                    excsrcidx = joinedcols.index(self.tables[excsrctabname].getcolumn(excsrccolname))
                 # Error for case when such column wasn't found in joined table
                 except ValueError:
                     print("  Unable to find exception source data column {0} in joined table".format(excsource))
@@ -491,7 +487,7 @@ class EosAdapter(object):
                 if not exctgttabname in exceptions:
                     exceptions[exctgttabname] = {}
                 # Get index of target column in target table
-                exctgtcolidx = tables[exctgttabname].columns.index(tables[exctgttabname].getcolumn(exctgtcolname))
+                exctgtcolidx = self.tables[exctgttabname].columns.index(self.tables[exctgttabname].getcolumn(exctgtcolname))
                 # Un-nothing column data set for target table too
                 if not exctgtcolidx in exceptions[exctgttabname]:
                     exceptions[exctgttabname][exctgtcolidx] = set()
@@ -519,7 +515,7 @@ class EosAdapter(object):
                 # Do anything only if we have something we actually should restore
                 if len(putback) > 0:
                     # Actually return data to dictionary
-                    tables[tabname].datarows.update(putback)
+                    self.tables[tabname].datarows.update(putback)
                     # And remove it from filtered out columns
                     filteredout[tabname].difference_update(putback)
                     # Also modify statistics counter to properly reflect it
@@ -533,6 +529,34 @@ class EosAdapter(object):
 
         ## STAGE 4: automatic removal of data with no references to it or
         ## broken references
+        # Define local auxiliary dictionaries for FK relations
+        # 1:1 source-target relation
+        # { source table : { source column : target } }
+        src_fk_tgt = {}
+        # 1:many target-source relation
+        # { target table : { target column : sources } }
+        tgt_fk_src = {}
+
+        for tabname in self.tables:
+            table = self.tables[tabname]
+            for column in table.columns:
+                if column.fk is None:
+                    continue
+                fktabname, fkcolname = column.fk.split(".")
+                fktable = self.tables[fktabname]
+                fkcolumn = fktable.getcolumn(fkcolname)
+                # Also store in local structures; source-target map
+                if not table.name in src_fk_tgt:
+                    src_fk_tgt[table.name] = {}
+                src_fk_tgt[table.name][column.name] = "{0}.{1}".format(fktable.name, fkcolumn.name)
+                # And target-source
+                if not fktable.name in tgt_fk_src:
+                    tgt_fk_src[fktable.name] = {}
+                if not fkcolumn.name in tgt_fk_src[fktable.name]:
+                    tgt_fk_src[fktable.name][fkcolumn.name] = set()
+                tgt_fk_src[fktable.name][fkcolumn.name].add("{0}.{1}".format(table.name, column.name))
+
+
         # Changes flag, set to True for first cycle
         changed = True
         # We will cycle if we had any changes on previous cycle, we need to run
@@ -550,20 +574,20 @@ class EosAdapter(object):
                 for colname in src_fk_tgt[tabname]:
                     key = "{0}.{1}".format(tabname, colname)
                     if not key in coldata:
-                        coldata[key] = tables[tabname].getcolumndataset(colname)
+                        coldata[key] = self.tables[tabname].getcolumndataset(colname)
             # Then with data for columns which are referenced by other columns
             for tabname in tgt_fk_src:
                 for colname in tgt_fk_src[tabname]:
                     key = "{0}.{1}".format(tabname, colname)
                     if not key in coldata:
-                        coldata[key] = tables[tabname].getcolumndataset(colname)
+                        coldata[key] = self.tables[tabname].getcolumndataset(colname)
             # Go through data container and remove zero from every set, as
             # CCP seem to set zeros in some cases when they should've set None
             for column in coldata:
                 coldata[column].difference_update({0})
             # Do actual cleaning
-            for tabname in tables:
-                table = tables[tabname]
+            for tabname in self.tables:
+                table = self.tables[tabname]
                 # First, rows with broken FK references to other columns
                 if tabname in src_fk_tgt:
                     for fkcolname in src_fk_tgt[tabname]:
@@ -590,7 +614,7 @@ class EosAdapter(object):
                             # Set changes flag to run one more iteration
                             changed  = True
                 # Get strength status of table
-                tabstrength = dbspec[tabname][1]
+                tabstrength = self.dbspec[tabname][1]
                 # We don't want to process "strong" tables - tables, for which we don't
                 # want to delete data rows even if there're no references to it
                 if tabname in tgt_fk_src and tabstrength is not True:
@@ -640,7 +664,7 @@ class EosAdapter(object):
                             changed  = True
 
         # Print some statistics
-        for tabname in sorted(tables.iterkeys()):
+        for tabname in sorted(self.tables.iterkeys()):
             # Get number of items removed due to some reason
             filtered = rmvd_filter[tabname]
             brokenref = rmvd_brokenref[tabname]
