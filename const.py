@@ -161,14 +161,14 @@ locConvMap = {"Self": locSelf,
               "Area": locArea}
 
 # Filter types
-filterAll = 0
-filterGroup = 1
-filterSkill = 2
+filterAll = 1
+filterGroup = 2
+filterSkill = 3
 
 # Effect info types
-infoDuration = 0
-infoPre = 1
-infoPost = 2
+infoDuration = 1
+infoPre = 2
+infoPost = 3
 
 # Self type getter ID
 selfTypeID = -1

@@ -28,42 +28,52 @@ class EffectInfo(object):
     def __init__(self):
         self.type = None
         """
-        Describes type of modification. Can be modification applied for some duration
-        or modification applied single time in the beginning/end of the cycle.
+        Describes type of modification.
+        Can have infoDuration, infoPre or infoPost value from consts file.
         """
 
         self.gang = False
         """
         Flag identifying local/gang change.
+        Can be either True or False.
         """
 
         self.location = None
         """
         Target location to change.
+        Can have locSelf, locChar, locShip, locTgt, locOther, locArea or locSpace values from consts file.
         """
 
         self.filterType = None
         """
-        The filterType of the modification, is either filterAll, filterSkill or filterGroup
+        The filterType of the modification.
+        Can have filterAll, filterSkill or filterGroup value from consts file.
         """
 
         self.filterValue = None
         """
-        The filter value of the modification. None for filterAll.
-        Corresponding skill typeID or groupID for filterSkill & filterGroup respectively
+        The filter value of the modification.
+        For filterAll must be None.
+        For filterGroup has some integer, referencing group via ID.
+        For filterSkill has some integer, referencing type via ID, or -1 to reference type of carrier.
         """
 
         self.operation = None
         """
         Which operation should be applied.
+        Can have optrPreAssignment, optrPreMul, optrPreDiv, optrModAdd, optrModSub, optrPostMul,
+        optrPostDiv, optrPostPercent, optrPostAssignment, optrIncr, optrDecr or optrAssign from
+        consts file.
         """
 
         self.targetAttributeId = None
         """
         Which attribute will be affected by the operation on the target.
+        Keeps integer which references attribute via ID.
         """
 
         self.sourceAttributeId = None
         """
         Which source attribute will be used as modification value for the operation.
+        Keeps integer which references attribute via ID.
         """
