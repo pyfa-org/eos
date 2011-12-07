@@ -84,6 +84,7 @@ opndEcmBurst = 30  # Special operand, used in ECM Burst effects
 opndOptrTgt = 31  # Joins operator and target (attribute of possibly filtered items) definitions, format: (location->targetAttribute).(operator)
 opndAoeDmg = 32  # Special operand, defines area-of-effect damage for modules like smartbombs and old doomsday
 opndGrpAttr = 34  # Joins group and attribute into target definition, format: groupFilter.targetAttribute
+opndGetType = 36  # Gets type of item in arg1
 opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
 opndInc = 42  # Increases value of some attribute by the value of another one
 opndMissileLaunch = 44  # Special operand, handles missile launching
@@ -168,3 +169,6 @@ filterSkill = 2
 infoDuration = 0
 infoPre = 1
 infoPost = 2
+
+# Self type getter ID
+selfTypeID = -1

@@ -529,7 +529,16 @@ class InfoBuilder(object):
 
     def __getGrp(self, element):
         """Reference group via ID"""
-        return element.groupId
+        # Type getter function has special handling
+        if element.operand == const.opndGetType:
+            # Currently, we have only ID representing self type getter, so run
+            # additional check if type getter is for self
+            if self.__getLoc(element.arg1) == const.locSelf:
+                return const.selfTypeID
+            else:
+                raise ValueError("unexpected location referenced in type getter")
+        else:
+            return element.groupId
 
     def __getType(self, element):
         """Reference type via ID"""
