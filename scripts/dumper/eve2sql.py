@@ -22,133 +22,9 @@
 This script pulls data out of EVE cache and makes an SQLite dump
 Reverence library by Entity is used, check http://wiki.github.com/ntt/reverence/ for source code
 Example commands to run the script for default paths under Linux to get SQLite dump:
-Tranquility: python2.7 eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/EVE" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_eve_tranquility/cache" --sqlite="/home/"$USER"/Desktop/eve.db"
-Singularity: python2.7 eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/Singularity" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_singularity_singularity/cache" --sisi --sqlite="/home/"$USER"/Desktop/evetest.db"
+Tranquility: python eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/EVE" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_eve_tranquility/cache" --sqlite="/home/"$USER"/Desktop/eve.db"
+Singularity: python eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/Singularity" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_singularity_singularity/cache" --sisi --sqlite="/home/"$USER"/Desktop/evetest.db"
 """
-
-class Column(object):
-    """
-    Class-container for column data
-    """
-    def __init__(self, name):
-        self.name = name
-        self.datatype = None
-        self.datalen = None
-        self.notnull = None
-        self.unique = None
-        self.pk = None
-        self.fk = None
-        self.index = None
-
-class Table(object):
-    """
-    Class-container for table data, plus several auxiliary methods
-    """
-    def __init__(self, name):
-        self.name = name
-        self.columns = []
-        self.datarows = set()
-
-    def addcolumn(self, name):
-        """
-        Add column to table
-        """
-        self.columns.append(Column(name))
-        return
-
-    def getcolumn(self, name):
-        """
-        Get column with requested name
-        """
-        for column in self.columns:
-            if column.name == name:
-                return column
-        return None
-
-    def removecolumns(self, colnames):
-        """
-        Remove columns and all associated data
-        """
-        # Problems flag
-        problems = False
-        # Gather list of columns to be removed and indices of
-        # columns to be kept
-        colstoremove = []
-        indicestokeep = []
-        for column in self.columns:
-            # We don't want to remove PKs, inform about it
-            if column.name in colnames and column.pk is True:
-                print("  Primary key {0} of table {1} forcibly passes filter".format(column.name, self.name))
-                # And set error flag
-                problems = True
-            # And actually make sure we don't remove it
-            if column.name in colnames and column.pk is not True:
-                colstoremove.append(column)
-            else:
-                indicestokeep.append(self.columns.index(column))
-        # Remove column objects from list
-        for col in colstoremove:
-            self.columns.remove(col)
-        # Compose new set of data
-        newrows = set()
-        for datarow in self.datarows:
-            newrow = tuple(datarow[i] for i in indicestokeep)
-            newrows.add(newrow)
-        # Replace old set with new one
-        self.datarows = newrows
-        # Return error flag
-        return problems
-
-    def isduplicate(self, other):
-        """
-        Compare two tables and report if they're duplicates
-        """
-        # Do not consider self as duplicate
-        if self == other:
-            return False
-        # Check column names
-        if tuple(c.name for c in self.columns) != tuple(c.name for c in other.columns):
-            return False
-        # Tables with no columns also are not considered as duplicates
-        if len(self.columns) == 0 and len(other.columns) == 0:
-            return False
-        # Check all data
-        if self.datarows != other.datarows:
-            return False
-        return True
-
-    def getpks(self):
-        """
-        Get tuple with primary keys of table
-        """
-        pks = tuple(filter(lambda col: col.pk is True, self.columns))
-        return pks
-
-    def getfks(self):
-        """
-        Get tuple with foreign keys of table
-        """
-        fks = tuple(filter(lambda col: col.fk is not None, self.columns))
-        return fks
-
-    def getindices(self):
-        """
-        Get tuple with indexed columns of table
-        """
-        indices = tuple(filter(lambda col: col.index is True, self.columns))
-        return indices
-
-
-    def getcolumndataset(self, name):
-        """
-        Get all data from certain column into set
-        """
-        column = self.getcolumn(name)
-        idx = self.columns.index(column)
-        dataset = set(dr[idx] for dr in self.datarows)
-        # Remove None value from set, if it's there
-        dataset.difference_update({None})
-        return dataset
 
 def get_eosdataspec():
     """
@@ -1788,6 +1664,8 @@ if __name__ == "__main__":
     from optparse import OptionParser
 
     from reverence import blue
+
+    from data import Table
 
     # Parse command line options
     usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE]"
