@@ -182,410 +182,7 @@ def get_eosdataspec():
 
     return dataspec, filterspec, exceptspec
 
-def get_source_data(sourcedata, table):
-    """
-    Pull data from the source data structure
-    """
-    # Temporary storage for data rows
-    dictdatarows = []
-    # Try dumb method of accessing header data (usually works for
-    # IndexRowset, CIndexedRowset and FilterRowset)
-    try:
-        headobj = sourcedata.header
-        # Sometimes header data represents itself row descriptor
-        # (for CIndexedRowset), get actual list
-        try:
-            headers = headobj.Keys()
-        # Use list itself if such data is unavailable
-        except AttributeError:
-            headers = headobj
-        # For CIndexedRowsets, do some additional things
-        else:
-            # Reverse keys and values (it's in dbrow : key format)
-            sourcedata = dict(zip(sourcedata.itervalues(),sourcedata.iterkeys()))
-            # And raise error to go to recursive data seek
-            raise AttributeError
-    # Try something else (for structures like IndexedRowLists)
-    except AttributeError:
-        headers = []
-        # IndexedRowLists structure may differ from table to table,
-        # run recursion on it
-        recursive_data_seek(sourcedata, headers, dictdatarows)
-    # We got our headers, now get the data
-    else:
-        # Try to use efficient getter right away, should work for IndexRowset
-        try:
-            sourcedatalines = sourcedata.Select(*headers)
-        # Other method for FilterRowsets
-        except AttributeError:
-            # Iterate through their keys
-            for key in sourcedata.iterkeys():
-                # Grab row sets
-                rowset = sourcedata[key]
-                rowsetdatalines = rowset.Select(*headers)
-                # And process each data row
-                for dataline in rowsetdatalines:
-                    datarow = {}
-                    for i in range(len(headers)):
-                        datarow[headers[i]] = dataline[i]
-                    dictdatarows.append(datarow)
-        # Process data returned by getter
-        else:
-            for dataline in sourcedatalines:
-                datarow = {}
-                for i in range(len(headers)):
-                    datarow[headers[i]] = dataline[i]
-                dictdatarows.append(datarow)
-    # Add columns into table object
-    for header in headers:
-        table.addcolumn(header)
-    # Cycle through all the data we got
-    for dictdatarow in dictdatarows:
-        # Also convert ASCII strings to unicode using CCP's default encoding
-        for k, v in dictdatarow.iteritems():
-            if isinstance(v, str):
-                dictdatarow[k] = unicode(v, "cp1252")
-            # Also convert container data types to unicode string
-            elif isinstance(v, (tuple, list, set)):
-                dictdatarow[k] = u",".join(unicode(entry) for entry in v)
-        # Convert it into tuples
-        datarow = tuple(dictdatarow.get(column.name) for column in table.columns)
-        # And add to the row set
-        table.datarows.add(datarow)
-    return
 
-def recursive_data_seek(sourcedata, headerlist, datarows):
-    """
-    Recursively seek for data containers and pull data out of them
-    """
-    # Cycle through top-level data structure
-    for iterentity in sourcedata:
-        # Check if entities enclosed in it have header data
-        try:
-            headerdata = iterentity.__header__
-        # If there's no such data, then we're dealing with dictionary keys
-        except AttributeError:
-            dictval = sourcedata[iterentity]
-            # Check if these values have header data
-            try:
-                headerdata = dictval.__header__
-            # If they don't, we're dealing with dictionary or list
-            except AttributeError:
-                # Let recursion run on it
-                recursive_data_seek(dictval, headerlist, datarows)
-            # Or pull data from dictionary value
-            else:
-                datarow = {}
-                for header in headerdata.Keys():
-                    datarow[header] = dictval[header]
-                    if header not in headerlist:
-                        headerlist.append(header)
-                datarows.append(datarow)
-        # If top-level data was list, get our data here
-        else:
-            datarow = {}
-            for header in headerdata.Keys():
-                datarow[header] = iterentity[header]
-                if header not in headerlist:
-                    headerlist.append(header)
-            datarows.append(datarow)
-    return
-
-def detect_column_types(table):
-    """
-    Detect data type stored in columns of given table
-    """
-    # Bail if table has no data
-    if len(table.datarows) == 0:
-        return
-    # Go through all columns of given table
-    for column in table.columns:
-        colidx = table.columns.index(column)
-        # Assume the most limited data type by default
-        datatype = BOOL
-        # Cycle through data rows
-        for datarow in table.datarows:
-            # Get value for our column
-            value = datarow[colidx]
-            if value is None:
-                continue
-            # Boolean check
-            if datatype <= BOOL:
-                if isinstance(value, bool):
-                    continue
-                else:
-                    datatype = INT
-            # Integer check
-            if datatype <= INT:
-                if isinstance(value, int):
-                    continue
-                else:
-                    datatype = FLOAT
-            # Float check
-            if datatype <= FLOAT:
-                if isinstance(value, float):
-                    continue
-                else:
-                    datatype = STR
-                    # It can't be worse than string, so stop cycling
-                    break
-        # Write down results for current column
-        column.datatype = datatype
-    return
-
-def detect_data_length(table):
-    """
-    Detect length of any given data type for each column
-    """
-    # Bail if table has no data
-    if len(table.datarows) == 0:
-        return
-    # Iterate through all columns
-    for column in table.columns:
-        # We do not have any special restrictions on booleans or floats
-        if column.datatype in (BOOL, FLOAT):
-            continue
-        colidx = table.columns.index(column)
-        # Integer processing
-        if column.datatype == INT:
-            # Default min and max values are stored as Nones
-            minval = None
-            maxval = None
-            # Just go through all data rows and find min/max values
-            for datarow in table.datarows:
-                value = datarow[colidx]
-                if value is None:
-                    continue
-                if value < minval or minval is None:
-                    minval = value
-                if value > maxval or maxval is None:
-                    maxval = value
-            # Store them in the data length specificator
-            column.datalen = (minval, maxval)
-        # String processing
-        elif column.datatype == STR:
-            # Start from zero length for both  bytes and characters
-            maxchars = 0
-            maxbytes = 0
-            # Go through all the data rows
-            for datarow in table.datarows:
-                value = datarow[colidx]
-                if value is None:
-                    continue
-                # If value turned out to be not unicode, convert it
-                if not isinstance(value, unicode):
-                    value = unicode(value)
-                # Get number of characters in the string
-                valchars = len(value)
-                # And overwrite maximum if it's over it
-                if valchars > maxchars:
-                    maxchars = valchars
-                # Get number of bytes required to store string
-                valbytes = len(value.encode("utf-8"))
-                # Memorize it too, if it's higher than max
-                if valbytes > maxbytes:
-                    maxbytes = valbytes
-            # Write data to column length specificator
-            column.datalen = (maxchars, maxbytes)
-    return
-
-def detect_notnulls(table):
-    """
-    Check if any given column can be null
-    """
-    # Bail if table has no data
-    if len(table.datarows) == 0:
-        return
-    # Iterate through all columns
-    for column in table.columns:
-        colidx = table.columns.index(column)
-        # Assume that column doesn't have null values by default
-        notnull = True
-        # Iterate through all rows
-        for datarow in table.datarows:
-            value = datarow[colidx]
-            # If it does, mark the result and break the loop
-            if value is None:
-                notnull = False
-                break
-        column.notnull = notnull
-    return
-
-def detect_uniques(table):
-    """
-    Check if column contains only unique values
-    """
-    # Bail if table has no data
-    if len(table.datarows) == 0:
-        return
-    # Iterate through all columns
-    for column in table.columns:
-        colidx = table.columns.index(column)
-        # Assume that column has unique values by default
-        unique = True
-        columndata = set()
-        # Iterate through all rows
-        for datarow in table.datarows:
-            value = datarow[colidx]
-            # Skip Nones as they're not considered when detecting uniqueness
-            if value is None:
-                continue
-            # On first duplicate, mark the result and break the loop
-            if value in columndata:
-                unique = False
-                break
-            columndata.add(value)
-        column.unique = unique
-    return
-
-def guess_primarykey(table):
-    """
-    Attempt to detect primary key columns of the table
-    """
-    # Bail if table has no data
-    if len(table.datarows) == 0:
-        return
-    # Dictionary for PK candidates
-    candidates = collections.OrderedDict()
-    # Max score for any evaluation type
-    POSITIONMAX = 100
-    NAMEMAX = 200
-    SEQUENCE = 200
-    # Check all columns
-    for column in table.columns:
-        # Take only integers with some data in each row
-        if column.datatype == INT and column.notnull is True:
-            # Assign zero score
-            candidates[column] = 0
-    for column in candidates:
-        # Do not process anything if we don't really need comparison
-        if len(candidates) < 2:
-            break
-        colidx = table.columns.index(column)
-        # Calculate position score
-        # The farther to end of table, the less score
-        maxindex = len(table.columns)-1
-        positionscore = float(POSITIONMAX)*(maxindex-colidx)/(maxindex)
-        candidates[column] += positionscore
-        # Calculate name score
-        # The more name of column looks like table name, the more score
-        # ID suffix also adds some points
-        namescore = 0
-        idscore = float(NAMEMAX)/10
-        maxmatchscore = NAMEMAX - idscore
-        # If name ends with ID, add some
-        if re.search("ID$", column.name):
-            namescore += idscore
-        simratio = get_similarity(table.name, re.sub("ID$", "", column.name))
-        namescore += maxmatchscore * simratio
-        candidates[column] += namescore
-        # Check sequence quality, only for full-filled unique columns
-        if column.unique is True and column.notnull is True:
-            # Get all column data into single set
-            columndata = set()
-            for datarow in table.datarows:
-                columndata.add(datarow[colidx])
-            # Get start and end values of data
-            start = min(columndata)
-            end = max(columndata)
-            # Number of entries which potentially can fit into [start, ..., end] range
-            # For strictly positive sequences, consider that start is at 1
-            fitrange = end - min((start, 1)) + 1
-            # Sequence quality score multiplier, score is halved
-            # if sequence starts from negative values
-            seqmult = 1 if start >= 0 else 0.5
-            sequencescore = float(SEQUENCE) * seqmult * len(columndata) / fitrange
-            candidates[column] += sequencescore
-    # Start from one column considered as primary key
-    pks = 1
-    # Set with columns which were confirmed as primary keys
-    confirmedpks = set()
-    # Number of columns considered as table primary
-    # keys is changed between these cycles
-    while(pks <= len(candidates)):
-        # Get all possible combinations of given number of columns from candidates
-        combinations = collections.OrderedDict()
-        for combination in itertools.combinations(candidates.iterkeys(), pks):
-            combinations[combination] = 0
-            # Calculate total score for given combination
-            for column in combination:
-                combinations[combination] += candidates[column]
-        # Arrange them into a tuple sorted by score, descending
-        placement = tuple(sorted(combinations.iterkeys(), key=combinations.get, reverse=True))
-        for combination in placement:
-            if pks == 1:
-                column = combination[0]
-                if column.unique is True:
-                    # Add it to confirmed key list
-                    confirmedpks.add(column)
-                    # Stop cycling through combinations
-                    break
-            else:
-                # Will keep our temporary data
-                data = set()
-                # Assume this column combo can be used to address row
-                canbepk = True
-                for datarow in table.datarows:
-                    # Get data for columns present in tested combination
-                    datacomb = tuple(datarow[table.columns.index(column)] for column in combination)
-                    # Any duplicate entry is unacceptable
-                    if datacomb in data:
-                        canbepk = False
-                        break
-                    data.add(datacomb)
-                # If tested column combination is fine, fill the result
-                if canbepk is True:
-                    for column in combination:
-                        confirmedpks.add(column)
-            # Jump out of combination loop if we have the result
-            if len(confirmedpks) > 0:
-                break
-        # Jump out of the outer loop too
-        if len(confirmedpks) > 0:
-            break
-        # Increment number of minimal number of keyed columns
-        pks += 1
-
-    # Mark primary key columns
-    for column in confirmedpks:
-        column.pk = True
-    # Mark the rest of the columns as non-primary keyed
-    for column in set(table.columns).difference(confirmedpks):
-        column.pk = False
-    return
-
-def get_similarity(one, two, ignorecase=True):
-    """
-    Compare 2 strings and return similarity ratio
-    """
-    # If we're asked to ignore case, make everything lower-cased
-    if ignorecase is True:
-        one = one.lower()
-        two = two.lower()
-    # Similarity ratio base value
-    ratio = 0
-    # Seek for longest full match
-    matcher = difflib.SequenceMatcher(a=one, b=two)
-    match = matcher.find_longest_match(0, len(one), 0, len(two))
-    # Process matches which are longer than 3
-    if match.size >= 3:
-        fullbothlen = len(one) + len(two)
-        # Longest full match gets full score
-        fullscore = 2.0 * match.size / fullbothlen
-        ratio += fullscore
-        # Partial and shorter matches get partial score, 1/4
-        partmult = 0.25
-        # The ones before full match
-        prebothlen = match.a + match.b
-        preratio = difflib.SequenceMatcher(a=one[:match.a], b=two[:match.b]).ratio()
-        prescore = partmult * prebothlen * preratio / fullbothlen
-        ratio += prescore
-        # And the ones after
-        postbothlen = len(one) - match.a + len(two) - match.b - match.size * 2
-        postratio = difflib.SequenceMatcher(a=one[match.a+match.size:], b=two[match.b+match.size:]).ratio()
-        postscore = partmult * postbothlen * postratio / fullbothlen
-        ratio += postscore
-    return ratio
 
 def remove_duplicate_tables(tables):
     """
@@ -777,7 +374,7 @@ def database_refactor(tables, dbspec, filterspec, exceptspec):
             if fkspec is None:
                 continue
             # Source data column must be integer
-            if column.datatype != INT:
+            if column.datatype != const.INT:
                 print("  Non-integer column {0}.{1} has foreign key reference".format(table.name, column.name))
                 specerrors = True
                 continue
@@ -1424,10 +1021,10 @@ def dump_sqlite(tables, path):
     c = conn.cursor()
 
     # Data type specification for SQLite
-    datatypes = { BOOL : "INTEGER",
-                  INT : "INTEGER",
-                  FLOAT : "REAL",
-                  STR : "TEXT" }
+    datatypes = {const.BOOL: "INTEGER",
+                 const.INT: "INTEGER",
+                 const.FLOAT: "REAL",
+                 const.STR: "TEXT"}
 
     # For each table
     for tablename in sorted(tables):
@@ -1529,10 +1126,10 @@ def dump_mysql(tables, path):
             colspec.append(u"`{0}`".format(column.name))
             # Now, detect types
             # Booleans are straight
-            if column.datatype == BOOL:
+            if column.datatype == const.BOOL:
                 colspec.append("TINYINT")
             # Integers are a bit more complex
-            elif column.datatype == INT:
+            elif column.datatype == const.INT:
                 # Unpack data length first
                 minval, maxval = column.datalen
                 # Use this block for signed integers
@@ -1563,10 +1160,10 @@ def dump_mysql(tables, path):
                     # Let MySQL know that integer is unsigned
                     colspec.append("UNSIGNED")
             # Floats are straight too
-            elif column.datatype == FLOAT:
+            elif column.datatype == const.FLOAT:
                 colspec.append("DOUBLE")
             # String is also complex
-            elif column.datatype == STR:
+            elif column.datatype == const.STR:
                 # Unpack length info
                 maxchars, maxbytes = column.datalen
                 # Varchar can fit max 65535 bytes
@@ -1660,12 +1257,10 @@ if __name__ == "__main__":
     import os.path
     import re
     import sqlite3
-    from ConfigParser import ConfigParser
     from optparse import OptionParser
 
-    from reverence import blue
-
-    from data import Table
+    import const
+    from processing import DataMiner, Preprocessor
 
     # Parse command line options
     usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE]"
@@ -1692,90 +1287,16 @@ if __name__ == "__main__":
     PATH_EVE = os.path.expanduser(options.eve)
     PATH_CACHE = os.path.expanduser(options.cache)
 
-    # Initialize Reverence cache manager
-    try:
-        eve = blue.EVE(PATH_EVE, cachepath=PATH_CACHE, server=server)
-    except RuntimeError:
-        sys.stderr.write("Unable to find EVE cache or it's corrupted, please log into EVE to fix this.\n")
-        sys.exit()
-    cfg = eve.getconfigmgr()
-
-    # List of data types, sorted by ability to store data
-    BOOL = 1
-    INT = 2
-    FLOAT = 3
-    STR = 4
-
-    # Dictionary with data for custom tables, which are not generally available in cache
-    customtables = { "dgmoperands":
-                         (eve.RemoteSvc('dogma').GetOperandsForChar,
-                          "dogma operands data is unavailable"),
-                     "invmarketgroups":
-                         (eve.RemoteSvc("marketProxy").GetMarketGroups,
-                          "market tree data is unavailable; to cache it, open Browse tab of EVE market browser") }
-
     # Container for tables
     tables = collections.OrderedDict()
 
-    print("Getting data from EVE Client")
-    for tablename in itertools.chain(cfg.tables, customtables.iterkeys()):
-        # Create new table object and add it to our table map
-        table = Table(tablename)
-        tables[tablename] = table
-        # Get source data object from reverence
-        try:
-            srcdata = getattr(cfg, tablename)
-        except AttributeError:
-            try:
-                srcdata = customtables[tablename][0]()
-            except IOError:
-                print("Warning: processing table {0} failed: {1}.".format(tablename, customtables[tablename][1]))
-                continue
-            except:
-                sys.stderr.write("Error: unable to get data for one of the tables, most likely due to wrong path to EVE client.\n")
-                sys.exit()
-        except TypeError:
-            sys.stderr.write("Error: unable to get data for one of the tables, most likely due to wrong path to EVE client.\n")
-            sys.exit()
-        # Get all the data from it
-        get_source_data(srcdata, table)
-        # Notify if there was no data in processed table
-        if len(table.datarows) == 0:
-            print("  Table {0} has no data rows".format(table.name))
+    # Create data miner and run it, pulling all the data from cache
+    dataminer = DataMiner(tables, PATH_EVE, PATH_CACHE, server, options.release)
+    dataminer.run()
 
-    # Compose metadata table; first, read client version
-    config = ConfigParser()
-    config.read(os.path.join(PATH_EVE, "common.ini"))
-    # Convert it to Unicode to make sure columns are detected as text
-    evever = unicode(config.getint("main", "build"))
-    # Create table object itself
-    metatable = Table("metadata")
-    # Add columns to it
-    metatable.addcolumn("fieldName")
-    metatable.addcolumn("fieldValue")
-    # Add data
-    metatable.datarows.add(("version", evever))
-    metatable.datarows.add(("release", options.release))
-    # Append table object to tables dictionary
-    if not metatable.name in tables:
-        tables[metatable.name] = metatable
-    else:
-        print("Warning: unable to add metadata table, table with this name already exists")
-
-    print("Detecting columns data format")
-    for table in tables.itervalues():
-        # Detect types of columns
-        detect_column_types(table)
-        # Max length of data for each column
-        detect_data_length(table)
-        # Detect if columns can be nulls and if they have only unique values
-        detect_notnulls(table)
-        detect_uniques(table)
-
-    print("Detecting primary keys")
-    for table in tables.itervalues():
-        # Detect primary key for each table
-        guess_primarykey(table)
+    # Create preprocessor and find out some metadata for our tables
+    preprocessor = Preprocessor(tables)
+    preprocessor.run()
 
     # Remove the data we don't need
     if options.filter is True:
