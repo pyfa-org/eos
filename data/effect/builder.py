@@ -41,10 +41,13 @@ inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
                  const.opndMissileLaunch, const.opndVrfTgtGrp, const.opndToolTgtSkills,
                  const.opndMine, const.opndDefenderLaunch, const.opndFofLaunch}
+# Values which are considered as 'empty' values
+nulls = {0, None}
 
 class Modifier(object):
     """
     Internal builder object, stores meaningful elements of expression tree temporarily
+    and provides facilities to convert them to ExpressionInfo objects
     """
     def __init__(self):
         # Type of modification
@@ -68,7 +71,7 @@ class Modifier(object):
     def validate(self):
         """Self-validation for modifier objects"""
         # These fields always should be filled
-        if self.targetAttribute is None or self.sourceAttribute is None:
+        if self.targetAttribute in nulls or self.sourceAttribute in nulls:
             return False
         # Other fields are optional, check them using modifier type
         validateMap = {const.opndAddGangGrpMod: self.__valGangGrp,
@@ -102,7 +105,7 @@ class Modifier(object):
         if self.targetLocation is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        if self.operation is None or self.targetGroup is None:
+        if self.operation in nulls or self.targetGroup in nulls:
             return False
         return True
 
@@ -110,7 +113,7 @@ class Modifier(object):
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.targetLocation is not None or self.runTime is not None:
             return False
-        if self.operation is None:
+        if self.operation in nulls:
             return False
         return True
 
@@ -118,7 +121,7 @@ class Modifier(object):
         if self.targetLocation is not None or self.targetGroup is not None or \
         self.runTime is not None:
             return False
-        if self.operation is None or self.targetSkillRq is None:
+        if self.operation in nulls or self.targetSkillRq in nulls:
             return False
         return True
 
@@ -126,7 +129,7 @@ class Modifier(object):
         if self.targetLocation is not None or self.targetGroup is not None or \
         self.runTime is not None:
             return False
-        if self.operation is None or self.targetSkillRq is None:
+        if self.operation in nulls or self.targetSkillRq in nulls:
             return False
         return True
 
@@ -134,7 +137,7 @@ class Modifier(object):
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        if self.operation is None or self.targetLocation is None:
+        if self.operation in nulls or self.targetLocation in nulls:
             return False
         return True
 
@@ -142,8 +145,8 @@ class Modifier(object):
         if self.targetSkillRq is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.operation is None or not self.targetLocation in validLocs or \
-        self.targetGroup is None:
+        if self.operation in nulls or not self.targetLocation in validLocs or \
+        self.targetGroup in nulls:
             return False
         return True
 
@@ -152,7 +155,7 @@ class Modifier(object):
         self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.operation is None or not self.targetLocation in validLocs:
+        if self.operation in nulls or not self.targetLocation in validLocs:
             return False
         return True
 
@@ -160,8 +163,8 @@ class Modifier(object):
         if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.operation is None or not self.targetLocation in validLocs or \
-        self.targetSkillRq is None:
+        if self.operation in nulls or not self.targetLocation in validLocs or \
+        self.targetSkillRq in nulls:
             return False
         return True
 
@@ -169,8 +172,8 @@ class Modifier(object):
         if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip}
-        if self.operation is None or not self.targetLocation in validLocs or \
-        self.targetSkillRq is None:
+        if self.operation in nulls or not self.targetLocation in validLocs or \
+        self.targetSkillRq in nulls:
             return False
         return True
 
@@ -179,7 +182,7 @@ class Modifier(object):
         self.targetSkillRq is not None:
             return False
         validRunTimes = {const.infoPre, const.infoPost}
-        if self.targetLocation is None or not self.runTime in validRunTimes:
+        if self.targetLocation in nulls or not self.runTime in validRunTimes:
             return False
         return True
 
@@ -204,7 +207,7 @@ class Modifier(object):
         # If all conditions were met, then it's actually mirror
         return True
 
-    # Set of conversion functions
+    # Set of conversion methods
     def convertToInfo(self):
         """Convert Modifier object to EffectInfo object"""
         # Create object and fill generic fields
