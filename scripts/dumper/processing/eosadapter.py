@@ -54,6 +54,8 @@ class EosAdapter(object):
         self.strong_data = {}
         # Fill it with manually specified data
         self.__process_manual_strongs()
+        # Automatically clean up broken data
+        self.__cyclic_autocleanup()
         # Print some statistics to know what has been cleaned
         self.__print_stats()
 
@@ -367,221 +369,16 @@ class EosAdapter(object):
                 self.strong_data[tabname][colidx].update(strong_vals)
         return
 
-    def __print_stats(self):
-        """Print statistics about removed data"""
-        # Print some statistics
-        for tabname in sorted(self.removed_data):
-            removed_data = self.removed_data[tabname]
-            # Get number of items removed due to some reason
-            filtered = 0
-            noref = 0
-            brokenref = 0
-            for datarow in removed_data:
-                reason = removed_data[datarow]
-                if reason == const.removal_FILTER:
-                    filtered += 1
-                elif reason == const.removal_NO_REF_TO:
-                    noref += 1
-                elif reason == const.removal_BROKEN_REF:
-                    brokenref += 1
-            # Print anything only if we've done something with table
-            if brokenref > 0 or noref > 0 or filtered > 0:
-                # Calculate total number of data rows we had in table
-                startrowlen = len(self.tables[tabname].datarows) + len(removed_data)
-                # Container for text data
-                rmtypes = []
-                # Also don't print data for removal types which didn't
-                # affect given table
-                if filtered > 0:
-                    plu = "" if filtered == 1 else "s"
-                    perc = 100.0 * filtered / startrowlen
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (removed by data filter)".format(filtered, plu, perc))
-                if brokenref > 0:
-                    plu = "" if brokenref == 1 else "s"
-                    perc = 100.0 * brokenref / startrowlen
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (broken references)".format(brokenref, plu, perc))
-                if noref > 0:
-                    plu = "" if noref == 1 else "s"
-                    perc = 100.0 * noref / startrowlen
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (no incoming references)".format(noref, plu, perc))
-                # Actual line print
-                print("  Table {0} cleaned: {1}".format(tabname, ", ".join(rmtypes)))
-        return
-
-
-    def __database_refactor(self):
-        """Refactor database according to passed specification"""
-
-
-
-        # Now, process flexible filter-based exception definitions
-        # Exception error flag
-        excerrors = False
-        # Changes flag, True for first iteration
-        changed = True
-        # Set with erroneous specifications, used to skip corrupted
-        # ones on 2nd iteration and further
-        errexcspecs = set()
-        # Cycle as long as previous cycle changed the database
-        # We need multiple cycles to make sure re-added data gets its
-        # references back into database too
-        while(changed):
-            # Re-set changes flag
-            changed = False
-            # Cycle through entries in exception definitions
-            for exc in self.exceptspec:
-                # Check if this specification is know to be erroneous
-                if exc in errexcspecs:
-                    # And skip if it is
-                    continue
-                # Run series of checks on each before doing anything,
-                # If we found anything bad just skip definition
-                if len(exc) != 3:
-                    print("  Exception specification malformed")
-                    excerrors = True
-                    errexcspecs.add(exc)
-                    continue
-                eqcond = exc[0]
-                valcond = exc[1]
-                joinspec = exc[2]
-                eqcondsplit = eqcond.split("=")
-                if len(eqcondsplit) != 2:
-                    print("  Exception equality condition malformed")
-                    excerrors = True
-                    errexcspecs.add(exc)
-                    continue
-                valcondsplit = valcond.split("=")
-                if len(valcondsplit) != 2:
-                    print("  Exception value condition malformed")
-                    excerrors = True
-                    errexcspecs.add(exc)
-                    continue
-                # Auxiliary data set, stores potential table.column references from
-                # first two fields of exception specification
-                tabcols = set()
-                exctarget = eqcondsplit[0].strip()
-                tabcols.add(exctarget)
-                excsource = eqcondsplit[1].strip()
-                tabcols.add(excsource)
-                filtertabcol = valcondsplit[0].strip()
-                tabcols.add(filtertabcol)
-                filtervalue = valcondsplit[1].strip()
-                # Check references in auxiliary data set
-                for tabcol in tabcols:
-                    tabcolsplit = tabcol.split(".")
-                    if len(tabcolsplit) != 2:
-                        print("  Table reference in exception definition malformed: {0}".format(tabcol))
-                        errexcspecs.add(exc)
-                        break
-                    tabname = tabcolsplit[0]
-                    colname = tabcolsplit[1]
-                    if not tabname in self.tables:
-                        print("  Unable to find table specified in exception definition: {0}".format(tabname))
-                        errexcspecs.add(exc)
-                        break
-                    if self.tables[tabname].getcolumn(colname) is None:
-                        print("  Unable to find column of table {0} specified in exception definition: {1}".format(tabname, colname))
-                        errexcspecs.add(exc)
-                        break
-                if exc in errexcspecs:
-                    excerrors = True
-                    continue
-                # Start doing actual job; join columns as stated in join statement set
-                success, joinedcols, joinedrows = self.__table_join(self.tables, joinspec)
-                # Bail in case of any errors, as usual
-                if success is not True:
-                    excerrors = True
-                    errexcspecs.add(exc)
-                    continue
-                # Get index of the column by which we're going to filer
-                excfiltabname = filtertabcol.split(".")[0]
-                excfilcolname = filtertabcol.split(".")[1]
-                try:
-                    excfilidx = joinedcols.index(self.tables[excfiltabname].getcolumn(excfilcolname))
-                # Error for case when such column wasn't found in joined table
-                except ValueError:
-                    print("  Unable to find exception filter column {0} in joined table".format(filtertabcol))
-                    excerrors = True
-                    errexcspecs.add(exc)
-                    continue
-                # The same, but for column from which we'll take value
-                excsrctabname = excsource.split(".")[0]
-                excsrccolname = excsource.split(".")[1]
-                try:
-                    excsrcidx = joinedcols.index(self.tables[excsrctabname].getcolumn(excsrccolname))
-                # Error for case when such column wasn't found in joined table
-                except ValueError:
-                    print("  Unable to find exception source data column {0} in joined table".format(excsource))
-                    excerrors = True
-                    errexcspecs.add(exc)
-                    continue
-                # Data storage for values which we'll add to exception dictionary
-                toexcept = set()
-                for row in joinedrows:
-                    # Compare each row value for specified column against
-                    # value mentioned in specification
-                    if row[excfilidx] == filtervalue:
-                        val = row[excsrcidx]
-                        if val is not None:
-                            toexcept.add(val)
-                # Finally, update exceptions list; get exception target column
-                # coordinates in textual form
-                exctgttabname = exctarget.split(".")[0]
-                exctgtcolname = exctarget.split(".")[1]
-                # If nothing was there, un-nothing it
-                if not exctgttabname in exceptions:
-                    exceptions[exctgttabname] = {}
-                # Get index of target column in target table
-                exctgtcolidx = self.tables[exctgttabname].columns.index(self.tables[exctgttabname].getcolumn(exctgtcolname))
-                # Un-nothing column data set for target table too
-                if not exctgtcolidx in exceptions[exctgttabname]:
-                    exceptions[exctgttabname][exctgtcolidx] = set()
-                # And add our new values
-                exceptions[exctgttabname][exctgtcolidx].update(toexcept)
-
-            # Here we'll restore data, as specified in exceptions data structure,
-            # we need to do it each cycle
-            # Check all tables which were filtered by manually
-            # specified filter
-            for tabname in filteredout:
-                # If given table has no exceptions defined, it's okay, just skip it
-                if not tabname in exceptions:
-                    continue
-                # Set-container for rows which we'll put back to table
-                putback = set()
-                # Go through all exception columns for given table
-                for colidx in exceptions[tabname]:
-                    # Find list of data to be excepted
-                    excepted = exceptions[tabname][colidx]
-                    # If we filtered any data which is excepted, add it to set
-                    for datarow in filteredout[tabname]:
-                        if datarow[colidx] in excepted:
-                            putback.add(datarow)
-                # Do anything only if we have something we actually should restore
-                if len(putback) > 0:
-                    # Actually return data to dictionary
-                    self.tables[tabname].datarows.update(putback)
-                    # And remove it from filtered out columns
-                    filteredout[tabname].difference_update(putback)
-                    # Also modify statistics counter to properly reflect it
-                    rmvd_filter[tabname] -= len(putback)
-                    # Set changes flag back
-                    changed = True
-
-        # Final message for this block, if we had any errors
-        if excerrors is True:
-            print("  Please revise exceptions specification")
-
-        ## STAGE 4: automatic removal of data with no references to it or
-        ## broken references
+    def __cyclic_autocleanup(self):
+        """Automatically removed data with broken links or no links to it from database"""
         # Define local auxiliary dictionaries for FK relations
         # 1:1 source-target relation
-        # { source table : { source column : target } }
+        # {source table: {source column: target}}
         src_fk_tgt = {}
         # 1:many target-source relation
-        # { target table : { target column : sources } }
+        # {target table: {target column: sources}}
         tgt_fk_src = {}
-
+        # Go through all tables to fill maps
         for tabname in self.tables:
             table = self.tables[tabname]
             for column in table.columns:
@@ -590,7 +387,7 @@ class EosAdapter(object):
                 fktabname, fkcolname = column.fk.split(".")
                 fktable = self.tables[fktabname]
                 fkcolumn = fktable.getcolumn(fkcolname)
-                # Also store in local structures; source-target map
+                # Fill source-target map
                 if not table.name in src_fk_tgt:
                     src_fk_tgt[table.name] = {}
                 src_fk_tgt[table.name][column.name] = "{0}.{1}".format(fktable.name, fkcolumn.name)
@@ -600,7 +397,6 @@ class EosAdapter(object):
                 if not fkcolumn.name in tgt_fk_src[fktable.name]:
                     tgt_fk_src[fktable.name][fkcolumn.name] = set()
                 tgt_fk_src[fktable.name][fkcolumn.name].add("{0}.{1}".format(table.name, column.name))
-
 
         # Changes flag, set to True for first cycle
         changed = True
@@ -653,9 +449,11 @@ class EosAdapter(object):
                         # And do anything only when we have something there
                         if rmcount > 0:
                             # Actually remove rows
+                            removed_data = self.removed_data[table.name]
+                            for datarow in toremove:
+                                if not datarow in removed_data:
+                                    removed_data[datarow] = const.removal_BROKEN_REF
                             table.datarows.difference_update(toremove)
-                            # Update count of removed rows due to broken references
-                            rmvd_brokenref[table.name] += rmcount
                             # Set changes flag to run one more iteration
                             changed  = True
                 # Get strength status of table
@@ -663,8 +461,8 @@ class EosAdapter(object):
                 # We don't want to process "strong" tables - tables, for which we don't
                 # want to delete data rows even if there're no references to it
                 if tabname in tgt_fk_src and tabstrength is not True:
-                    # Get no reference exceptions for current table
-                    norefexc = exceptions.get(tabname)
+                    # Get strong data info for current table
+                    strongrows = self.strong_data.get(tabname)
                     for colname in tgt_fk_src[tabname]:
                         # Workflow is almost the same with small exceptions
                         tgt = "{0}.{1}".format(tabname, colname)
@@ -677,8 +475,8 @@ class EosAdapter(object):
                         colidx = table.columns.index(table.getcolumn(colname))
                         # Compose set of rows we'll need to remove due to lack of reference
                         toremove = set()
-                        # Follow simple way if we do not have any exceptions
-                        if norefexc is None:
+                        # Follow simple way if we do not have any strong data
+                        if strongrows is None:
                             for datarow in table.datarows:
                                 if datarow[colidx] in norefs:
                                     toremove.add(datarow)
@@ -688,9 +486,9 @@ class EosAdapter(object):
                                 if datarow[colidx] in norefs:
                                     # Assume that we're going to remove this row by default
                                     rm = True
-                                    # Make an additional check for exceptions
-                                    for exccolidx in norefexc:
-                                        if datarow[exccolidx] in norefexc[exccolidx]:
+                                    # Make an additional check for strong data
+                                    for strongcolidx in strongrows:
+                                        if datarow[strongcolidx] in strongrows[strongcolidx]:
                                             # When we find first match, mark row as not being removed
                                             # and break the exceptions loop
                                             rm = False
@@ -702,133 +500,51 @@ class EosAdapter(object):
                         rmcount = len(toremove)
                         # Run actual removal if set is not empty
                         if rmcount > 0:
+                            removed_data = self.removed_data[table.name]
+                            for datarow in toremove:
+                                if not datarow in removed_data:
+                                    removed_data[datarow] = const.removal_NO_REF_TO
                             table.datarows.difference_update(toremove)
-                            # Fill another dictionary for entries removed due to
-                            # absence of references
-                            rmvd_norefto[table.name] += rmcount
                             changed  = True
         return
 
-    def __table_join(self, tables, joinspec):
-        """
-        Join tables according to provided specification
-        """
-        # Auxiliary dictionary, which contains data from several tables keyed
-        # by the column we need
-        # { table name : { key name : set(data rows) } }
-        keyed = {}
-        # Fill small auxiliary set with table.columns we want to have keyed
-        keycolumns = set()
-        # Strip white spaces from specification
-        joinspec = re.sub("[\s]+", "", joinspec)
-        # Go through all join equations
-        for jn in joinspec.split("|"):
-            parts = jn.split("=")
-            # Check if there're actually 2 parts
-            if len(parts) != 2:
-                print("  Malformed join statement")
-                return False, [], set()
-            for part in parts:
-                # Then, check if each part is full reference
-                reference = part.split(".")
-                if len(reference) != 2:
-                    print("  Malformed part of join statement")
-                    return False, [], set()
-                # Also check if such tables actually exist
-                tabname, colname = reference
-                if not tabname in tables:
-                    print("  Join statement refers to non-existing table")
-                    return False, [], set()
-                if tables[tabname].getcolumn(colname) is None:
-                    print("  Join statement refers to non-existing column")
-                    return False, [], set()
-            # We assume that left part of join is already joined, so we'll need
-            # just key on its right part
-            keycolumns.add(parts[1])
-        # Create sub-containers in keyed tables dictionary
-        for keycolumn in keycolumns:
-            tabname, colname = keycolumn.split(".")
-            if not tabname in keyed:
-                keyed[tabname] = {}
-            if not colname in keyed[tabname]:
-                keyed[tabname][colname] = {}
-        # And fill them with data from our tables
-        for tabname in keyed:
-            table = tables[tabname]
-            for keycolname in keyed[tabname]:
-                # Just make reference to our keyed data container
-                keyedata = keyed[tabname][keycolname]
-                # Find index of key column in column sequence of the table
-                keyidx = table.columns.index(table.getcolumn(keycolname))
-                # Go through all data rows of original table
-                for datarow in table.datarows:
-                    keyval = datarow[keyidx]
-                    # Ignore rows with None value, as we won't join on them anyway
-                    if keyval is None:
-                        continue
-                    # Create set with data for each new key
-                    if not keyval in keyedata:
-                        keyedata[keyval] = set()
-                    # Finally, add actual data row to it
-                    keyedata[keyval].add(datarow)
-        # Container for columns of joined table
-        joinedcols = []
-        # Container for joined rows, initialized to None
-        joinedrows = None
-        # Auxiliary data set, to avoid joining on the same table twice
-        joinedtabs = set()
-        # Go through all join equations once again
-        for jn in joinspec.split("|"):
-            # Separate them in left and right part
-            left, right = jn.split("=")
-            # Separate both into table name and column name
-            ltabname, lcolname = left.split(".")
-            rtabname, rcolname = right.split(".")
-            # Check if left part is already included into our data structure
-            if not ltabname in joinedtabs:
-                # It's allowed to be not included only for leftmost join
-                if joinedrows is None:
-                    # Re-initialize data container
-                    joinedrows = set()
-                    # Fill it with data of left table
-                    joinedrows.update(tables[ltabname].datarows)
-                    # Do the same for columns and auxiliary table name store
-                    joinedcols += list(tables[ltabname].columns)
-                    joinedtabs.add(ltabname)
-                # Error time, left part always must be joined
-                else:
-                    print("  All left parts of join statements (except for the leftmost one) must be joined")
-                    return False, [], set()
-            # Check if we didn't join left part already
-            if not rtabname in joinedtabs:
-                # Temporary structure to hold data for current join
-                tmprows = set()
-                # Get position of left column in current custom column structure
-                ljoincolidx = joinedcols.index(tables[ltabname].getcolumn(lcolname))
-                # Cycle through data rows of left table
-                for row in joinedrows:
-                    # Get left join value
-                    joinval = row[ljoincolidx]
-                    # Do anything only if it's not None and there's key with such value
-                    # in right table
-                    if joinval is not None and joinval in keyed[rtabname][rcolname]:
-                        # Get rows which have right join value equal to left join value
-                        rightrows = keyed[rtabname][rcolname][joinval]
-                        # Cycle through them
-                        for rightrow in rightrows:
-                            # Compose new row by dumb data concatenating
-                            newrow = tuple(list(row) + list(rightrow))
-                            # Add new row to temporary set
-                            tmprows.add(newrow)
-                # When we're done, mark right table as joined
-                joinedtabs.add(rtabname)
-                # Concatenate columns too
-                joinedcols += list(tables[rtabname].columns)
-                # And re-assign temporary set to main joined data set
-                joinedrows = tmprows
-            # Right table always must be non-joined
-            else:
-                print("  All right parts of join statements must be not joined")
-                return False, [], set()
-        return True, joinedcols, joinedrows
-
+    def __print_stats(self):
+        """Print statistics about removed data"""
+        # Print some statistics
+        for tabname in sorted(self.removed_data):
+            removed_data = self.removed_data[tabname]
+            # Get number of items removed due to some reason
+            filtered = 0
+            noref = 0
+            brokenref = 0
+            for datarow in removed_data:
+                reason = removed_data[datarow]
+                if reason == const.removal_FILTER:
+                    filtered += 1
+                elif reason == const.removal_NO_REF_TO:
+                    noref += 1
+                elif reason == const.removal_BROKEN_REF:
+                    brokenref += 1
+            # Print anything only if we've done something with table
+            if brokenref > 0 or noref > 0 or filtered > 0:
+                # Calculate total number of data rows we had in table
+                startrowlen = len(self.tables[tabname].datarows) + len(removed_data)
+                # Container for text data
+                rmtypes = []
+                # Also don't print data for removal types which didn't
+                # affect given table
+                if filtered > 0:
+                    plu = "" if filtered == 1 else "s"
+                    perc = 100.0 * filtered / startrowlen
+                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (removed by data filter)".format(filtered, plu, perc))
+                if brokenref > 0:
+                    plu = "" if brokenref == 1 else "s"
+                    perc = 100.0 * brokenref / startrowlen
+                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (broken references)".format(brokenref, plu, perc))
+                if noref > 0:
+                    plu = "" if noref == 1 else "s"
+                    perc = 100.0 * noref / startrowlen
+                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (no incoming references)".format(noref, plu, perc))
+                # Actual line print
+                print("  Table {0} cleaned: {1}".format(tabname, ", ".join(rmtypes)))
+        return
