@@ -40,17 +40,23 @@ class EosAdapter(object):
         # Delete malformed entries in both structures; also, fill actual data
         # with additional flags taken from custom data specification
         self.__synch_dbinfo()
+        # Create data structure for removed data, we need it for proper resulting
+        # statistics and in case if we want to put something back
+        # Format: {table name: {data row: removal reason}}
+        self.removed_data = {}
+        for tabname in self.tables:
+            self.removed_data[tabname] = {}
+        # Filter out data for invtypes table
+        self.__manual_filter_invtypes()
+        # Print some statistics to know what has been cleaned
+        self.__print_stats()
+
         # Old workflow is still kept here
-        self.filterspec = self.__get_filterspec()
-        self.exceptspec = self.__get_exceptspec()
-        self.__database_refactor()
+        #self.exceptspec = self.__get_exceptspec()
+        #self.__database_refactor()
 
     def __get_dbspec(self):
         """Return specification of data Eos needs"""
-        # Data specification, container for tables:
-        # { table name : [ columns, strength ] }
-        # Table specification, container for columns
-        # { column name : [ foreign.key, index, noref exceptions ] }
         dataspec = {}
 
         dataspec["dgmattribs"] = TableSpec({}, False)
@@ -189,12 +195,6 @@ class EosAdapter(object):
 
         return dataspec
 
-    def __get_filterspec(self):
-        # Data filter specification
-        # ( table to clean, with column used as key, join statements, filter )
-        filterspec = (("invtypes.typeID", "invtypes.groupID = invgroups.groupID | invgroups.categoryID = invcategories.categoryID", "invcategories.categoryName(Ship, Module, Charge, Skill, Drone, Implant, Subsystem) | invgroups.groupName(Effect Beacon)"),)
-        return filterspec
-
     def __get_exceptspec(self):
         # Additional exception specification, values from here won't be removed when there're no direct references to them
         # ( reference to keys of table for which we're making exception = values of the key to keep, additional condition, join statements )
@@ -263,7 +263,7 @@ class EosAdapter(object):
                 if fkspec is None:
                     continue
                 # Source data column must be integer
-                if column.datatype != const.INT:
+                if column.datatype != const.type_INT:
                     print("  Non-integer column {0}.{1} has foreign key reference".format(table.name, column.name))
                     specerrors = True
                     continue
@@ -309,36 +309,81 @@ class EosAdapter(object):
         if specerrors is True:
             print("  Please revise data specification")
 
+    def __manual_filter_invtypes(self):
+        """Filter undesired data rows from invtypes table"""
+        # Set with categoryIDs we want to keep
+        valid_categories = {const.category_SHIP, const.category_MODULE, const.category_CHARGE,
+                            const.category_SKILL, const.category_DRONE, const.category_IMPLANT,
+                            const.category_SUBSYSTEM}
+        # Set with groupIDs we want to keep
+        valid_groups = {const.group_EFFECTBEACON}
+        # Get ndices of group and category columns in group table
+        group_table = self.tables["invgroups"]
+        idx_groupid = group_table.columns.index(group_table.getcolumn("groupID"))
+        idx_categoryid = group_table.columns.index(group_table.getcolumn("categoryID"))
+        # Go through table data, filling valid groups set according to valid categories
+        for datarow in group_table.datarows:
+            if datarow[idx_categoryid] in valid_categories:
+                valid_groups.add(datarow[idx_groupid])
+        # Find out rows not in valid groups and mark them as to be removed
+        type_table = self.tables["invtypes"]
+        idx_groupid = type_table.columns.index(type_table.getcolumn("groupID"))
+        toremove = set()
+        for datarow in type_table.datarows:
+            if not datarow[idx_groupid] in valid_groups:
+                toremove.add(datarow)
+        # Move data to our 'trash bin'
+        type_removed = self.removed_data["invtypes"]
+        for datarow in toremove:
+            if not datarow in type_removed:
+                type_removed[datarow] = const.removal_FILTER
+            type_table.datarows.remove(datarow)
+        return
+
+    def __print_stats(self):
+        """Print statistics about removed data"""
+        # Print some statistics
+        for tabname in sorted(self.removed_data):
+            removed_data = self.removed_data[tabname]
+            # Get number of items removed due to some reason
+            filtered = 0
+            noref = 0
+            brokenref = 0
+            for datarow in removed_data:
+                reason = removed_data[datarow]
+                if reason == const.removal_FILTER:
+                    filtered += 1
+                elif reason == const.removal_NO_REF_TO:
+                    noref += 1
+                elif reason == const.removal_BROKEN_REF:
+                    brokenref += 1
+            # Print anything only if we've done something with table
+            if brokenref > 0 or noref > 0 or filtered > 0:
+                # Calculate total number of data rows we had in table
+                startrowlen = len(self.tables[tabname].datarows) + len(removed_data)
+                # Container for text data
+                rmtypes = []
+                # Also don't print data for removal types which didn't
+                # affect given table
+                if filtered > 0:
+                    plu = "" if filtered == 1 else "s"
+                    perc = 100.0 * filtered / startrowlen
+                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (removed by data filter)".format(filtered, plu, perc))
+                if brokenref > 0:
+                    plu = "" if brokenref == 1 else "s"
+                    perc = 100.0 * brokenref / startrowlen
+                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (broken references)".format(brokenref, plu, perc))
+                if noref > 0:
+                    plu = "" if noref == 1 else "s"
+                    perc = 100.0 * noref / startrowlen
+                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (no incoming references)".format(noref, plu, perc))
+                # Actual line print
+                print("  Table {0} cleaned: {1}".format(tabname, ", ".join(rmtypes)))
+        return
+
+
     def __database_refactor(self):
-        """
-        Refactor database according to passed specification
-        """
-        # Gather number of data rows for statistics
-        rowlen = {}
-        for tabname in self.tables:
-            rowlen[tabname] = len(self.tables[tabname].datarows)
-
-        # Dictionaries to track number of removed rows per table
-        rmvd_filter = {}
-        rmvd_brokenref = {}
-        rmvd_norefto = {}
-        # Fill them with zeros for all tables by default
-        for tabname in self.tables:
-            rmvd_filter[tabname] = 0
-            rmvd_brokenref[tabname] = 0
-            rmvd_norefto[tabname] = 0
-
-        ## STAGE 2: remove data according to provided specification
-        # Storage for data which was filtered out
-        # { table : set(data rows) }
-        filteredout = {}
-
-        # Run table data filters
-        for rowfilter in self.filterspec:
-            success = self.__table_filter(self.tables, rowfilter, rmvd_filter, filteredout)
-            # Print some notification if we had errors during its processing
-            if success is False:
-                print("  Data filtering failed, please revise filter specification")
+        """Refactor database according to passed specification"""
 
         ## STAGE 3: exception processing: sometimes we have to leave some
         ## data in the database (protect it from automatic removal), exceptions
@@ -663,32 +708,6 @@ class EosAdapter(object):
                             # absence of references
                             rmvd_norefto[table.name] += rmcount
                             changed  = True
-
-        # Print some statistics
-        for tabname in sorted(self.tables.iterkeys()):
-            # Get number of items removed due to some reason
-            filtered = rmvd_filter[tabname]
-            brokenref = rmvd_brokenref[tabname]
-            noref = rmvd_norefto[tabname]
-            # Print anything only if we've done something with table
-            if brokenref > 0 or noref > 0 or filtered > 0:
-                rmtypes = []
-                # Also don't print data for removal types which didn't
-                # affect given table
-                if filtered > 0:
-                    plu = "" if filtered == 1 else "s"
-                    perc = 100.0 * filtered / rowlen[tabname]
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (removed by data filter)".format(filtered, plu, perc))
-                if brokenref > 0:
-                    plu = "" if brokenref == 1 else "s"
-                    perc = 100.0 * brokenref / rowlen[tabname]
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (broken references)".format(brokenref, plu, perc))
-                if noref > 0:
-                    plu = "" if noref == 1 else "s"
-                    perc = 100.0 * noref / rowlen[tabname]
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (no incoming references)".format(noref, plu, perc))
-                # Actual line print
-                print("  Table {0} cleaned: {1}".format(tabname, ", ".join(rmtypes)))
         return
 
     def __table_filter(self, tables, rmspec, statsdict, filteredout):

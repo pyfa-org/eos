@@ -42,10 +42,10 @@ class Dumper(object):
         c = conn.cursor()
 
         # Data type specification for SQLite
-        datatypes = {const.BOOL: "INTEGER",
-                     const.INT: "INTEGER",
-                     const.FLOAT: "REAL",
-                     const.STR: "TEXT"}
+        datatypes = {const.type_BOOL: "INTEGER",
+                     const.type_INT: "INTEGER",
+                     const.type_FLOAT: "REAL",
+                     const.type_STR: "TEXT"}
 
         # For each table
         for tablename in sorted(self.tables):
@@ -145,10 +145,10 @@ class Dumper(object):
                 colspec.append(u"`{0}`".format(column.name))
                 # Now, detect types
                 # Booleans are straight
-                if column.datatype == const.BOOL:
+                if column.datatype == const.type_BOOL:
                     colspec.append("TINYINT")
                 # Integers are a bit more complex
-                elif column.datatype == const.INT:
+                elif column.datatype == const.type_INT:
                     # Unpack data length first
                     minval, maxval = column.datalen
                     # Use this block for signed integers
@@ -179,10 +179,10 @@ class Dumper(object):
                         # Let MySQL know that integer is unsigned
                         colspec.append("UNSIGNED")
                 # Floats are straight too
-                elif column.datatype == const.FLOAT:
+                elif column.datatype == const.type_FLOAT:
                     colspec.append("DOUBLE")
                 # String is also complex
-                elif column.datatype == const.STR:
+                elif column.datatype == const.type_STR:
                     # Unpack length info
                     maxchars, maxbytes = column.datalen
                     # Varchar can fit max 65535 bytes

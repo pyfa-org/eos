@@ -54,7 +54,7 @@ class Preprocessor(object):
         for column in table.columns:
             colidx = table.columns.index(column)
             # Assume the most limited data type by default
-            datatype = const.BOOL
+            datatype = const.type_BOOL
             # Cycle through data rows
             for datarow in table.datarows:
                 # Get value for our column
@@ -62,23 +62,23 @@ class Preprocessor(object):
                 if value is None:
                     continue
                 # Boolean check
-                if datatype <= const.BOOL:
+                if datatype <= const.type_BOOL:
                     if isinstance(value, bool):
                         continue
                     else:
-                        datatype = const.INT
+                        datatype = const.type_INT
                 # Integer check
-                if datatype <= const.INT:
+                if datatype <= const.type_INT:
                     if isinstance(value, int):
                         continue
                     else:
-                        datatype = const.FLOAT
+                        datatype = const.type_FLOAT
                 # Float check
-                if datatype <= const.FLOAT:
+                if datatype <= const.type_FLOAT:
                     if isinstance(value, float):
                         continue
                     else:
-                        datatype = const.STR
+                        datatype = const.type_STR
                         # It can't be worse than string, so stop cycling
                         break
             # Write down results for current column
@@ -90,11 +90,11 @@ class Preprocessor(object):
         # Iterate through all columns
         for column in table.columns:
             # We do not have any special restrictions on booleans or floats
-            if column.datatype in (const.BOOL, const.FLOAT):
+            if column.datatype in (const.type_BOOL, const.type_FLOAT):
                 continue
             colidx = table.columns.index(column)
             # Integer processing
-            if column.datatype == const.INT:
+            if column.datatype == const.type_INT:
                 # Default min and max values are stored as Nones
                 minval = None
                 maxval = None
@@ -110,7 +110,7 @@ class Preprocessor(object):
                 # Store them in the data length specificator
                 column.datalen = (minval, maxval)
             # String processing
-            elif column.datatype == const.STR:
+            elif column.datatype == const.type_STR:
                 # Start from zero length for both  bytes and characters
                 maxchars = 0
                 maxbytes = 0
@@ -186,7 +186,7 @@ class Preprocessor(object):
         # Check all columns
         for column in table.columns:
             # Take only integers with some data in each row
-            if column.datatype == const.INT and column.notnull is True:
+            if column.datatype == const.type_INT and column.notnull is True:
                 # Assign zero score
                 candidates[column] = 0
         for column in candidates:
