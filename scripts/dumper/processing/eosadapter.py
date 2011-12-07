@@ -23,6 +23,7 @@ import re
 
 import const
 
+# Auxiliary named tuples for use with custom database structure specification
 TableSpec = collections.namedtuple("TableSpec", ("columns", "strong"))
 ColumnSpec = collections.namedtuple("ColumnSpec", ("fk", "index", "strongvals"))
 
@@ -36,6 +37,10 @@ class EosAdapter(object):
     def run(self):
         print("Refactoring database for Eos")
         self.dbspec = self.__get_dbspec()
+        # Delete malformed entries in both structures; also, fill actual data
+        # with additional flags taken from custom data specification
+        self.__synch_dbinfo()
+        # Old workflow is still kept here
         self.filterspec = self.__get_filterspec()
         self.exceptspec = self.__get_exceptspec()
         self.__database_refactor()
@@ -225,14 +230,14 @@ class EosAdapter(object):
         for tabname in sorted(self.dbspec.iterkeys()):
             table = self.tables[tabname]
             actcolnames = set(col.name for col in table.columns)
-            specolnames = set(self.dbspec[tabname][0].iterkeys())
+            specolnames = set(self.dbspec[tabname].columns.iterkeys())
             # Detect non-existing columns
             col404 = specolnames.difference(actcolnames)
             # If we've got such columns
             if len(col404) > 0:
                 # Remove them from specification
                 for col in col404:
-                    del self.dbspec[tabname][0][col]
+                    del self.dbspec[tabname].columns[col]
                 # Tell user about it
                 plu = "" if len(col404) == 1 else "s"
                 col404names = ", ".join(sorted(col404))
@@ -240,7 +245,7 @@ class EosAdapter(object):
                 # Set error flag to True
                 specerrors = True
             # Finally, get rid of unneeded columns in actual data structure
-            toremove = actcolnames.difference(self.dbspec[tabname][0].iterkeys())
+            toremove = actcolnames.difference(self.dbspec[tabname].columns.iterkeys())
             problems = table.removecolumns(toremove)
             # If we had any errors during column  removal, set error flag
             if problems is True:
@@ -253,7 +258,7 @@ class EosAdapter(object):
             table = self.tables[tabname]
             for column in table.columns:
                 # Get FK specification string
-                fkspec = self.dbspec[table.name][0][column.name][0]
+                fkspec = self.dbspec[table.name].columns[column.name].fk
                 # If it's None, ignore current column
                 if fkspec is None:
                     continue
@@ -292,8 +297,8 @@ class EosAdapter(object):
 
         # Set index flags for all appropriate columns
         for tabname in sorted(self.dbspec.iterkeys()):
-            for colname in self.dbspec[tabname][0]:
-                idxize = self.dbspec[tabname][0][colname][1]
+            for colname in self.dbspec[tabname].columns:
+                idxize = self.dbspec[tabname].columns[colname].index
                 if idxize in (True, False):
                     self.tables[tabname].getcolumn(colname).index = idxize
                 # Print error on unexpected values
@@ -308,10 +313,6 @@ class EosAdapter(object):
         """
         Refactor database according to passed specification
         """
-        # Delete malformed entries in both structures; also, fill actual data
-        # with additional flags taken from custom data specification
-        self.__synch_dbinfo()
-
         # Gather number of data rows for statistics
         rowlen = {}
         for tabname in self.tables:
