@@ -308,7 +308,6 @@ class EosAdapter(object):
                 tgt_fk_src[fktable.name][fkcolumn.name].add("{0}.{1}".format(table.name, column.name))
 
         # Set index flags for all appropriate columns
-        indexerrors = set()
         for tabname in sorted(dbspec.iterkeys()):
             for colname in dbspec[tabname][0]:
                 idxize = dbspec[tabname][0][colname][1]
@@ -338,8 +337,8 @@ class EosAdapter(object):
         filteredout = {}
 
         # Run table data filters
-        for filter in filterspec:
-            success = self.__table_filter(tables, filter, rmvd_filter, filteredout)
+        for rowfilter in filterspec:
+            success = self.__table_filter(tables, rowfilter, rmvd_filter, filteredout)
             # Print some notification if we had errors during its processing
             if success is False:
                 print("  Data filtering failed, please revise filter specification")
@@ -693,9 +692,9 @@ class EosAdapter(object):
         # { filter column index : set(acceptable filter values) }
         filters = {}
         # Go through all filters separated by OR sign
-        for filter in filterspec.split("|"):
+        for rowfilter in filterspec.split("|"):
             # Use regexp for matching
-            match = re.search("([\w]+\.[\w]+)\(([\w ]+(,[\w ]+)*)\)", filter)
+            match = re.search("([\w]+\.[\w]+)\(([\w ]+(,[\w ]+)*)\)", rowfilter)
             # If we have some  entry with no regexp match, something must've gone wrong
             if match is None:
                 print("  Malformed filter statement")
@@ -749,10 +748,10 @@ class EosAdapter(object):
         # Go through all rows of joined table
         for row in joinedrows:
             # Check for match against any filter
-            for filter in filters:
+            for rowfilter in filters:
                 # If we find match, note down to keep this row and break
                 # iteration over filters
-                if row[filter] in filters[filter]:
+                if row[rowfilter] in filters[rowfilter]:
                     tokeep.add(row[filtercolidx])
                     break
         # This set will contain rows to remove
