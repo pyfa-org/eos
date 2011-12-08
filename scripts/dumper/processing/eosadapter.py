@@ -312,18 +312,24 @@ class EosAdapter(object):
     def __expression_idzing(self):
         """Convert all references in expression table to attributes, groups and types to IDs"""
         # First, we've got to compose name maps, as expressions can
-        # reference using modified names; do it for attributes
+        # reference using names (sometimes with white space symbols stripped)
+        # Do it for attributes
         attr_name_id = {}
         attr_name_collisions = set()
         attr_table = self.tables["dgmattribs"]
         idx_attrid = attr_table.getcolumnidx("attributeID")
         idx_attrname = attr_table.getcolumnidx("attributeName")
         for datarow in attr_table.datarows:
-            name = re.sub("\s", "", datarow[idx_attrname])
+            name = datarow[idx_attrname]
             if not name in attr_name_id:
                 attr_name_id[name] = datarow[idx_attrid]
             else:
                 attr_name_collisions.add(name)
+            name_stripped = re.sub("\s", "", name)
+            if not name_stripped in attr_name_id:
+                attr_name_id[name_stripped] = datarow[idx_attrid]
+            else:
+                attr_name_collisions.add(name_stripped)
         # For groups
         group_name_id = {}
         group_name_collisions = set()
@@ -331,11 +337,16 @@ class EosAdapter(object):
         idx_groupid = group_table.getcolumnidx("groupID")
         idx_groupname = group_table.getcolumnidx("groupName")
         for datarow in group_table.datarows:
-            name = re.sub("\s", "", datarow[idx_groupname])
+            name = datarow[idx_groupname]
             if not name in group_name_id:
                 group_name_id[name] = datarow[idx_groupid]
             else:
                 group_name_collisions.add(name)
+            name_stripped = re.sub("\s", "", name)
+            if not name_stripped in group_name_id:
+                group_name_id[name_stripped] = datarow[idx_groupid]
+            else:
+                group_name_collisions.add(name_stripped)
         # And for types
         type_name_id = {}
         type_name_collisions = set()
@@ -343,11 +354,16 @@ class EosAdapter(object):
         idx_typeid = type_table.getcolumnidx("typeID")
         idx_typename = type_table.getcolumnidx("typeName")
         for datarow in type_table.datarows:
-            name = re.sub("\s", "", datarow[idx_typename])
+            name = datarow[idx_typename]
             if not name in type_name_id:
                 type_name_id[name] = datarow[idx_typeid]
             else:
                 type_name_collisions.add(name)
+            name_stripped = re.sub("\s", "", name)
+            if not name_stripped in type_name_id:
+                type_name_id[name_stripped] = datarow[idx_typeid]
+            else:
+                type_name_collisions.add(name_stripped)
         # Get column indices for all required columns in expression table
         exp_table = self.tables["dgmexpressions"]
         idx_operand = exp_table.getcolumnidx("operandID")
