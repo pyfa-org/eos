@@ -18,6 +18,8 @@
 #===============================================================================
 
 import collections
+import itertools
+from math import exp
 
 from eos import const
 from abc import ABCMeta
@@ -157,29 +159,44 @@ class MutableAttributeMap(collections.Mapping):
         """
 
         base = self.__holder.type.attributes.get(attrId)
+        keyFunc = lambda registrationInfo: registrationInfo[1].operation
 
         try:
             attributeType = self.__holder.type.attributeTypes[attrId]
             stackable = attributeType.stackable
 
-            register = sorted(self.__attributeRegister[attrId], key=lambda registrationInfo: registrationInfo[1].operation)
+            register = sorted(self.__attributeRegister[attrId], key=keyFunc)
 
             result = base
 
-            penalizedUp = set()
-            penalizedDown = set()
+            penalized = {}
 
             for registrationInfo in register:
                 sourceHolder, info = registrationInfo
                 operation = info.operation
                 value = sourceHolder.attributes[info.sourceAttributeId]
 
+                #Stacking penaltied modifiers get special handling
                 if not stackable and sourceHolder.categoryId not in const.penaltyImmuneCats \
                    and operation in (const.optrPreMul, const.optrPostMul, const.optrPreDiv, const.optrPostDiv):
-                    isMul = operation in (const.optrPreMul, const.optrPostMul)
 
-                    s = penalizedUp if ((isMul and value > 1) or (not isMul and value < 1)) else penalizedDown
-                    s.add(registrationInfo)
+                    # Compute actual modifier
+                    if operation == const.optrPostPercent:
+                        value = value / 100
+                    elif operation in (const.optrPreMul, const.optrPostMul):
+                        value = value - 1
+                    else:
+                        value = (1 / value) - 1
+
+                    subDict = penalized.get(value > 1)
+                    if subDict is None:
+                        penalized[value > 1] = subDict = {}
+
+                    valueSet = subDict.get(operation)
+                    if valueSet is None:
+                        subDict[operation] = valueSet = set()
+
+                    valueSet.add(value)
 
                 elif operation in (const.optrPreAssignment, const.optrPostAssignment):
                     result = value
@@ -193,6 +210,13 @@ class MutableAttributeMap(collections.Mapping):
                     result += value
                 elif operation == const.optrModSub:
                     result -= value
+
+            for k in penalized:
+                subDict = penalized[k]
+                for operation in subDict:
+                    values = sorted(subDict[operation])
+                    for i in range(len(values)):
+                        result *= values[i] * const.penaltyBase ** (i ** 2)
 
             return result
         except:
