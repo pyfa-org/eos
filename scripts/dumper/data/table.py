@@ -77,7 +77,11 @@ class Table(object):
 
     def getcolumnidx(self, name):
         """Get index of column with passed name in given table"""
-        idx = self.columns.index(self.getcolumn(name))
+        col = self.getcolumn(name)
+        if col is not None:
+            idx = self.columns.index(col)
+        else:
+            idx = None
         return idx
 
     def isduplicate(self, other):
