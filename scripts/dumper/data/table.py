@@ -75,6 +75,11 @@ class Table(object):
         # Return error flag
         return problems
 
+    def getcolumnidx(self, name):
+        """Get index of column with passed name in given table"""
+        idx = self.columns.index(self.getcolumn(name))
+        return idx
+
     def isduplicate(self, other):
         """Compare two tables and report if they're duplicates"""
         # Do not consider self as duplicate

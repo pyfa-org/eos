@@ -56,6 +56,8 @@ class EosAdapter(object):
         self.__process_manual_strongs()
         # Automatically clean up broken data
         self.__cyclic_autocleanup()
+        # Put some data back
+        self.__restore_surface_attrrefereces()
         # Print some statistics to know what has been cleaned
         self.__print_stats()
 
@@ -67,7 +69,7 @@ class EosAdapter(object):
         dgmattribs = dataspec["dgmattribs"].columns
         dgmattribs["attributeID"] = ColumnSpec(None, False, None)
         dgmattribs["attributeName"] = ColumnSpec(None, False, {"radius", "mass", "volume", "capacity"})
-        #dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
+        dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
         #dgmattribs["description"] = ColumnSpec(None, False, None)
         dgmattribs["maxAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         #dgmattribs["chargeRechargeTimeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
@@ -378,7 +380,7 @@ class EosAdapter(object):
         # 1:many target-source relation
         # {target table: {target column: sources}}
         tgt_fk_src = {}
-        # Go through all tables to fill maps
+        # Go through all tables to fill maps with proper containers for actual data
         for tabname in self.tables:
             table = self.tables[tabname]
             for column in table.columns:
@@ -506,6 +508,85 @@ class EosAdapter(object):
                                     removed_data[datarow] = const.removal_NO_REF_TO
                             table.datarows.difference_update(toremove)
                             changed  = True
+        return
+
+    def __restore_surface_attrrefereces(self):
+        """
+        Restores target items for attributes targeting types, groups and other attributes. This is
+        useful in cases if some entity is referenced by attribute, and we want to show some basic info
+        about it (e.g. show "Strontium Clatrates" as consumption type instead of just ID, when looking at
+        siege module attributes). Please note that this method takes only such 'surface' references, it
+        doesn't pick up any related data of restored references (e.g. mentioned siege ammo will come
+        without any attributes or effects).
+        """
+        # Containers for attribute IDs which reference corresponding entity
+        attrs_attr = set()
+        attrs_group = set()
+        attrs_type = set()
+        # Map attribute categories onto sets
+        attrcat_entity_map = {const.attributeCategory_DEFATTR: attrs_attr,
+                              const.attributeCategory_DEFGROUP: attrs_group,
+                              const.attributeCategory_DEFTYPE: attrs_type}
+        # Get table and appropriate columns' indices
+        attr_table = self.tables["dgmattribs"]
+        idx_attrid = attr_table.getcolumnidx("attributeID")
+        idx_attrcat = attr_table.getcolumnidx("attributeCategory")
+        # Fill sets with actual attribute IDs which are used to reference that entity
+        for datarow in attr_table.datarows:
+            attrcat = datarow[idx_attrcat]
+            if attrcat in attrcat_entity_map:
+                attrcat_entity_map[attrcat].add(datarow[idx_attrid])
+        # Get indices to work with data in dgmtypeattribs table
+        typeattrs_table = self.tables["dgmtypeattribs"]
+        idx_attrid = typeattrs_table.getcolumnidx("attributeID")
+        idx_value = typeattrs_table.getcolumnidx("value")
+        # Containers for IDs of entities we're going to restore
+        restore_attrs = set()
+        restore_groups = set()
+        restore_types = set()
+        # Cycle through datarows and see if we get attribute ID match
+        for datarow in typeattrs_table.datarows:
+            attrID = datarow[idx_attrid]
+            # If we do, write down ID of entity to corresponding set
+            if attrID in attrs_attr:
+                value = datarow[idx_value]
+                if not value in {0, None}:
+                    restore_attrs.add(int(value))
+            elif attrID in attrs_group:
+                value = datarow[idx_value]
+                if not value in {0, None}:
+                    restore_groups.add(int(value))
+            elif attrID in attrs_type:
+                value = datarow[idx_value]
+                if not value in {0, None}:
+                    restore_types.add(int(value))
+        # Restore attributes
+        torestore = set()
+        idx_attrid = self.tables["dgmattribs"].getcolumnidx("attributeID")
+        for datarow in self.removed_data["dgmattribs"]:
+            if datarow[idx_attrid] in restore_attrs:
+                torestore.add(datarow)
+        self.tables["dgmattribs"].datarows.update(torestore)
+        for datarow in torestore:
+            del self.removed_data["dgmattribs"][datarow]
+        # Restore groups
+        torestore = set()
+        idx_groupid = self.tables["invgroups"].getcolumnidx("groupID")
+        for datarow in self.removed_data["invgroups"]:
+            if datarow[idx_groupid] in restore_groups:
+                torestore.add(datarow)
+        self.tables["invgroups"].datarows.update(torestore)
+        for datarow in torestore:
+            del self.removed_data["invgroups"][datarow]
+        # Restore types
+        torestore = set()
+        idx_typeid = self.tables["invtypes"].getcolumnidx("typeID")
+        for datarow in self.removed_data["invtypes"]:
+            if datarow[idx_typeid] in restore_types:
+                torestore.add(datarow)
+        self.tables["invtypes"].datarows.update(torestore)
+        for datarow in torestore:
+            del self.removed_data["invtypes"][datarow]
         return
 
     def __print_stats(self):

@@ -16,3 +16,6 @@ category_SKILL = 16
 category_DRONE = 18
 category_IMPLANT = 20
 category_SUBSYSTEM = 32
+attributeCategory_DEFATTR = 10  # Attributes' whose value references attribute via ID
+attributeCategory_DEFTYPE = 11  # Attributes' whose value references type via ID
+attributeCategory_DEFGROUP = 12  # Attributes' whose value references group via ID
