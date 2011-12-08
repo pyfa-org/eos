@@ -19,7 +19,6 @@
 #===============================================================================
 
 import collections
-import re
 
 import const
 
@@ -200,14 +199,6 @@ class EosAdapter(object):
         metadata["fieldValue"] = ColumnSpec(None, False, None)
 
         return dataspec
-
-    def __get_exceptspec(self):
-        # Additional exception specification, values from here won't be removed when there're no direct references to them
-        # ( reference to keys of table for which we're making exception = values of the key to keep, additional condition, join statements )
-        exceptspec = (("dgmattribs.attributeID = dgmtypeattribs.value", "eveunits.displayName = attributeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"),
-                      ("invgroups.groupID = dgmtypeattribs.value", "eveunits.displayName = groupID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"),
-                      ("invtypes.typeID = dgmtypeattribs.value", "eveunits.displayName = typeID", "invtypes.typeID = dgmtypeattribs.typeID | dgmtypeattribs.attributeID = dgmattribs.attributeID | dgmattribs.unitID = eveunits.unitID"))
-        return exceptspec
 
     def __synch_dbinfo(self):
         """Synchronize data between data specification and actual database structure"""
