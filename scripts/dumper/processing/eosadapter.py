@@ -519,74 +519,47 @@ class EosAdapter(object):
         doesn't pick up any related data of restored references (e.g. mentioned siege ammo will come
         without any attributes or effects).
         """
-        # Containers for attribute IDs which reference corresponding entity
-        attrs_attr = set()
-        attrs_group = set()
-        attrs_type = set()
-        # Map attribute categories onto sets
-        attrcat_entity_map = {const.attributeCategory_DEFATTR: attrs_attr,
-                              const.attributeCategory_DEFGROUP: attrs_group,
-                              const.attributeCategory_DEFTYPE: attrs_type}
-        # Get table and appropriate columns' indices
-        attr_table = self.tables["dgmattribs"]
-        idx_attrid = attr_table.getcolumnidx("attributeID")
-        idx_attrcat = attr_table.getcolumnidx("attributeCategory")
-        # Fill sets with actual attribute IDs which are used to reference that entity
-        for datarow in attr_table.datarows:
-            attrcat = datarow[idx_attrcat]
-            if attrcat in attrcat_entity_map:
-                attrcat_entity_map[attrcat].add(datarow[idx_attrid])
-        # Get indices to work with data in dgmtypeattribs table
-        typeattrs_table = self.tables["dgmtypeattribs"]
-        idx_attrid = typeattrs_table.getcolumnidx("attributeID")
-        idx_value = typeattrs_table.getcolumnidx("value")
-        # Containers for IDs of entities we're going to restore
-        restore_attrs = set()
-        restore_groups = set()
-        restore_types = set()
-        # Cycle through datarows and see if we get attribute ID match
-        for datarow in typeattrs_table.datarows:
-            attrID = datarow[idx_attrid]
-            # If we do, write down ID of entity to corresponding set
-            if attrID in attrs_attr:
-                value = datarow[idx_value]
-                if not value in {0, None}:
-                    restore_attrs.add(int(value))
-            elif attrID in attrs_group:
-                value = datarow[idx_value]
-                if not value in {0, None}:
-                    restore_groups.add(int(value))
-            elif attrID in attrs_type:
-                value = datarow[idx_value]
-                if not value in {0, None}:
-                    restore_types.add(int(value))
-        # Restore attributes
-        torestore = set()
-        idx_attrid = self.tables["dgmattribs"].getcolumnidx("attributeID")
-        for datarow in self.removed_data["dgmattribs"]:
-            if datarow[idx_attrid] in restore_attrs:
-                torestore.add(datarow)
-        self.tables["dgmattribs"].datarows.update(torestore)
-        for datarow in torestore:
-            del self.removed_data["dgmattribs"][datarow]
-        # Restore groups
-        torestore = set()
-        idx_groupid = self.tables["invgroups"].getcolumnidx("groupID")
-        for datarow in self.removed_data["invgroups"]:
-            if datarow[idx_groupid] in restore_groups:
-                torestore.add(datarow)
-        self.tables["invgroups"].datarows.update(torestore)
-        for datarow in torestore:
-            del self.removed_data["invgroups"][datarow]
-        # Restore types
-        torestore = set()
-        idx_typeid = self.tables["invtypes"].getcolumnidx("typeID")
-        for datarow in self.removed_data["invtypes"]:
-            if datarow[idx_typeid] in restore_types:
-                torestore.add(datarow)
-        self.tables["invtypes"].datarows.update(torestore)
-        for datarow in torestore:
-            del self.removed_data["invtypes"][datarow]
+        # Some high-level access instructions, what to restore
+        restore_datas = {(const.attributeCategory_DEFATTR, "dgmattribs", "attributeID"),
+                         (const.attributeCategory_DEFGROUP, "invgroups", "groupID"),
+                         (const.attributeCategory_DEFTYPE, "invtypes", "typeID")}
+        # Go through each of them
+        for restore_data in restore_datas:
+            # Container for attribute IDs which reference corresponding entity
+            attrs_entity = set()
+            # Get table and appropriate columns' indices
+            attr_table = self.tables["dgmattribs"]
+            idx_attrid = attr_table.getcolumnidx("attributeID")
+            idx_attrcat = attr_table.getcolumnidx("attributeCategory")
+            # Fill sets with actual attribute IDs which are used to reference that entity
+            for datarow in attr_table.datarows:
+                attrcat = datarow[idx_attrcat]
+                if attrcat == restore_data[0]:
+                    attrs_entity.add(datarow[idx_attrid])
+            # Get indices to work with data in dgmtypeattribs table
+            typeattrs_table = self.tables["dgmtypeattribs"]
+            idx_attrid = typeattrs_table.getcolumnidx("attributeID")
+            idx_value = typeattrs_table.getcolumnidx("value")
+            # Container for IDs of entities we're going to restore
+            restore_entities = set()
+            # Cycle through data rows and see if we get attribute ID match
+            for datarow in typeattrs_table.datarows:
+                # If we do, write down ID of entity to corresponding set
+                if datarow[idx_attrid] in attrs_entity:
+                    value = datarow[idx_value]
+                    if not value in {0, None}:
+                        restore_entities.add(int(value))
+            # Restore entities
+            entity_tablename = restore_data[1]
+            entity_idcolname = restore_data[2]
+            torestore = set()
+            idx_entityid = self.tables[entity_tablename].getcolumnidx(entity_idcolname)
+            for datarow in self.removed_data[entity_tablename]:
+                if datarow[idx_entityid] in restore_entities:
+                    torestore.add(datarow)
+            self.tables[entity_tablename].datarows.update(torestore)
+            for datarow in torestore:
+                del self.removed_data[entity_tablename][datarow]
         return
 
     def __print_stats(self):
