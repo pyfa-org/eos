@@ -37,6 +37,12 @@ class EosAdapter(object):
     def run(self):
         """Control database refactoring workflow"""
         print("Refactoring database for Eos")
+        # Before cleaning database according to specification, run attribute
+        # normalization - it will move all attributes to typeattribs table;
+        # if it's done after, we may lack some data required for process
+        self.__normalize_attrs()
+        # Assign database format specification to object for ease of use and
+        # modification on the fly
         self.dbspec = self.__get_dbspec()
         # Delete malformed entries in both structures; also, fill actual data
         # with additional flags taken from custom data specification
@@ -187,10 +193,10 @@ class EosAdapter(object):
         invtypes["groupID"] = ColumnSpec("invgroups.groupID", False, None)
         invtypes["typeName"] = ColumnSpec(None, False, None)
         invtypes["description"] = ColumnSpec(None, False, None)
-        invtypes["radius"] = ColumnSpec(None, False, None)
-        invtypes["mass"] = ColumnSpec(None, False, None)
-        invtypes["volume"] = ColumnSpec(None, False, None)
-        invtypes["capacity"] = ColumnSpec(None, False, None)
+        #invtypes["radius"] = ColumnSpec(None, False, None)
+        #invtypes["mass"] = ColumnSpec(None, False, None)
+        #invtypes["volume"] = ColumnSpec(None, False, None)
+        #invtypes["capacity"] = ColumnSpec(None, False, None)
         invtypes["raceID"] = ColumnSpec(None, False, None)
         invtypes["published"] = ColumnSpec(None, False, None)
         invtypes["marketGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, None)
@@ -202,6 +208,67 @@ class EosAdapter(object):
         metadata["fieldValue"] = ColumnSpec(None, False, None)
 
         return dataspec
+
+    def __normalize_attrs(self):
+        """Moves attributes defined in type table to type-attribs mapping table"""
+        # Map which defines links between types table column names and attrIDs
+        attr_map = {"radius": const.attribute_RADIUS,
+                    "mass": const.attribute_MASS,
+                    "volume": const.attribute_VOLUME,
+                    "capacity": const.attribute_CAPACITY}
+        # First, compose set of PK tuples which are already in target table
+        typeattrs_table = self.tables["dgmtypeattribs"]
+        idx_typeattrs_typeid = typeattrs_table.getcolumnidx("typeID")
+        idx_typeattrs_attrid = typeattrs_table.getcolumnidx("attributeID")
+        idx_typeattrs_value = typeattrs_table.getcolumnidx("value")
+        typeattrs_collen = len(typeattrs_table.columns)
+        existing_data = set()
+        for datarow in typeattrs_table.datarows:
+            existing_data.add((datarow[idx_typeattrs_typeid], datarow[idx_typeattrs_attrid]))
+        # Now, start working with invtypes table
+        types_table = self.tables["invtypes"]
+        idx_types_typeid = types_table.getcolumnidx("typeID")
+        # Define replacement map, as we're going to update values in types table too
+        type_replacements = {}
+        # Flag which keeps track of any collision errors
+        collisions = False
+        # Go through each types table data row
+        for datarow in types_table.datarows:
+            mutablerow = list(datarow)
+            for attrcolname in attr_map:
+                # If such typeID-attributeID combination is already in typeattribs table,
+                # don't do anything
+                if (datarow[idx_types_typeid], attr_map[attrcolname]) in existing_data:
+                    collisions = True
+                    continue
+                idx_types_attr = types_table.getcolumnidx(attrcolname)
+                # If source attribute value is 0 or None, also skip such row
+                attrval = datarow[idx_types_attr]
+                if attrval in {0, None}:
+                    continue
+                # Initialize data row we're going to append to typeattrs table to 0 values
+                typeattr_datarow = list(0 for i in range(typeattrs_collen))
+                # Fill it
+                typeattr_datarow[idx_typeattrs_typeid] = datarow[idx_types_typeid]
+                typeattr_datarow[idx_typeattrs_attrid] = attr_map[attrcolname]
+                typeattr_datarow[idx_typeattrs_value] = attrval
+                # And add it to target table
+                typeattrs_table.datarows.add(tuple(typeattr_datarow))
+                # Nullify data source in mutable row
+                mutablerow[idx_types_attr] = 0.0
+            # When operations on all attributes for given row are done, check if we
+            # have made any changes to our mutable row
+            replacementrow = tuple(mutablerow)
+            if datarow != replacementrow:
+                # If we did, fill in replacement map
+                type_replacements[datarow] = replacementrow
+        # Replace data in types table according to replacement map
+        for datarow in type_replacements:
+            types_table.datarows.remove(datarow)
+            types_table.datarows.add(type_replacements[datarow])
+        if collisions is True:
+            print("  Key collisions detected during attribute normalization")
+        return
 
     def __synch_dbinfo(self):
         """Synchronize data between data specification and actual database structure"""
@@ -347,7 +414,8 @@ class EosAdapter(object):
             nulls = {None, 0}
             for datarow in exp_table.datarows:
                 operand = datarow[idx_operand]
-                # Process attributes
+                # Check if we're dealing with the operand referring entity
+                # we're working with
                 if operand == idz_data[4]:
                     entity = datarow[idx_expentity]
                     val = datarow[idx_expvalue]
