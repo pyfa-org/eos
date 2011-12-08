@@ -41,6 +41,10 @@ class EosAdapter(object):
         # normalization - it will move all attributes to typeattribs table;
         # if it's done after, we may lack some data required for process
         self.__normalize_attrs()
+        # Get map required for partial data restore, which is needed to
+        # be run later, after data cleanup which also removes column required
+        # for that method to function
+        attrid_attrcat_map = self.__restore_surface_attrrefereces_hamster()
         # Assign database format specification to object for ease of use and
         # modification on the fly
         self.dbspec = self.__get_dbspec()
@@ -65,7 +69,7 @@ class EosAdapter(object):
         # Automatically clean up broken data
         self.__cyclic_autocleanup()
         # Put some data back
-        self.__restore_surface_attrrefereces()
+        self.__restore_surface_attrrefereces(attrid_attrcat_map)
         # Print some statistics to know what has been cleaned
         self.__print_stats()
 
@@ -77,7 +81,7 @@ class EosAdapter(object):
         dgmattribs = dataspec["dgmattribs"].columns
         dgmattribs["attributeID"] = ColumnSpec(None, False, None)
         dgmattribs["attributeName"] = ColumnSpec(None, False, {"radius", "mass", "volume", "capacity"})
-        dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
+        #dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
         #dgmattribs["description"] = ColumnSpec(None, False, None)
         dgmattribs["maxAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         #dgmattribs["chargeRechargeTimeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
@@ -628,7 +632,18 @@ class EosAdapter(object):
                             changed  = True
         return
 
-    def __restore_surface_attrrefereces(self):
+    def __restore_surface_attrrefereces_hamster(self):
+        """Hamster some data before it gets removed, it's needed for primary method"""
+        # Format: {attrID: attrCategory}
+        attrid_attrcat_map = {}
+        attr_table = self.tables["dgmattribs"]
+        idx_attrid = attr_table.getcolumnidx("attributeID")
+        idx_attrcat = attr_table.getcolumnidx("attributeCategory")
+        for datarow in attr_table.datarows:
+            attrid_attrcat_map[datarow[idx_attrid]] = datarow[idx_attrcat]
+        return attrid_attrcat_map
+
+    def __restore_surface_attrrefereces(self, attrid_attrcat_map):
         """
         Restores target items for attributes targeting types, groups and other attributes. This is
         useful in cases if some entity is referenced by attribute, and we want to show some basic info
@@ -643,17 +658,16 @@ class EosAdapter(object):
                          (const.attributeCategory_DEFTYPE, "invtypes", "typeID")}
         # Go through each of them
         for restore_data in restore_datas:
-            # Container for attribute IDs which reference corresponding entity
+            # Container for attribute IDs which references corresponding entity
             attrs_entity = set()
             # Get table and appropriate columns' indices
             attr_table = self.tables["dgmattribs"]
             idx_attrid = attr_table.getcolumnidx("attributeID")
-            idx_attrcat = attr_table.getcolumnidx("attributeCategory")
             # Fill sets with actual attribute IDs which are used to reference that entity
             for datarow in attr_table.datarows:
-                attrcat = datarow[idx_attrcat]
-                if attrcat == restore_data[0]:
-                    attrs_entity.add(datarow[idx_attrid])
+                attrid = datarow[idx_attrid]
+                if attrid_attrcat_map[attrid] == restore_data[0]:
+                    attrs_entity.add(attrid)
             # Get indices to work with data in dgmtypeattribs table
             typeattrs_table = self.tables["dgmtypeattribs"]
             idx_attrid = typeattrs_table.getcolumnidx("attributeID")
