@@ -311,109 +311,54 @@ class EosAdapter(object):
 
     def __expression_idzing(self):
         """Convert all references in expression table to attributes, groups and types to IDs"""
-        # First, we've got to compose name maps, as expressions can
-        # reference using names (sometimes with white space symbols stripped)
-        # Do it for attributes
-        attr_name_id = {}
-        attr_name_collisions = set()
-        attr_table = self.tables["dgmattribs"]
-        idx_attrid = attr_table.getcolumnidx("attributeID")
-        idx_attrname = attr_table.getcolumnidx("attributeName")
-        for datarow in attr_table.datarows:
-            name = datarow[idx_attrname]
-            if not name in attr_name_id:
-                attr_name_id[name] = datarow[idx_attrid]
-            else:
-                attr_name_collisions.add(name)
-            name_stripped = re.sub("\s", "", name)
-            if not name_stripped in attr_name_id:
-                attr_name_id[name_stripped] = datarow[idx_attrid]
-            else:
-                attr_name_collisions.add(name_stripped)
-        # For groups
-        group_name_id = {}
-        group_name_collisions = set()
-        group_table = self.tables["invgroups"]
-        idx_groupid = group_table.getcolumnidx("groupID")
-        idx_groupname = group_table.getcolumnidx("groupName")
-        for datarow in group_table.datarows:
-            name = datarow[idx_groupname]
-            if not name in group_name_id:
-                group_name_id[name] = datarow[idx_groupid]
-            else:
-                group_name_collisions.add(name)
-            name_stripped = re.sub("\s", "", name)
-            if not name_stripped in group_name_id:
-                group_name_id[name_stripped] = datarow[idx_groupid]
-            else:
-                group_name_collisions.add(name_stripped)
-        # And for types
-        type_name_id = {}
-        type_name_collisions = set()
-        type_table = self.tables["invtypes"]
-        idx_typeid = type_table.getcolumnidx("typeID")
-        idx_typename = type_table.getcolumnidx("typeName")
-        for datarow in type_table.datarows:
-            name = datarow[idx_typename]
-            if not name in type_name_id:
-                type_name_id[name] = datarow[idx_typeid]
-            else:
-                type_name_collisions.add(name)
-            name_stripped = re.sub("\s", "", name)
-            if not name_stripped in type_name_id:
-                type_name_id[name_stripped] = datarow[idx_typeid]
-            else:
-                type_name_collisions.add(name_stripped)
-        # Get column indices for all required columns in expression table
-        exp_table = self.tables["dgmexpressions"]
-        idx_operand = exp_table.getcolumnidx("operandID")
-        idx_expvalue = exp_table.getcolumnidx("expressionValue")
-        idx_expattr = exp_table.getcolumnidx("expressionAttributeID")
-        idx_expgroup = exp_table.getcolumnidx("expressionGroupID")
-        idx_exptype = exp_table.getcolumnidx("expressionTypeID")
         # Create replacement map which will store old and new data rows
         # Format: {current data row: replacement data row}
         replacement_map = {}
-        # Values which are considered to be empty
-        nulls = {None, 0}
-        for datarow in exp_table.datarows:
-            operand = datarow[idx_operand]
-            # Process attributes
-            if operand == const.operand_DEFATTR:
-                attr = datarow[idx_expattr]
-                val = datarow[idx_expvalue]
-                if attr in nulls and val in attr_name_id:
-                    if val in attr_name_collisions:
-                        print("  Warning: use of colliding attribute name {0} detected, expect errors".format(val))
-                    mutablerow = list(datarow)
-                    mutablerow[idx_expattr] = attr_name_id[val]
-                    mutablerow[idx_expvalue] = None
-                    replacementrow = tuple(mutablerow)
-                    replacement_map[datarow] = replacementrow
-            # Groups
-            elif operand == const.operand_DEFGRP:
-                group = datarow[idx_expgroup]
-                val = datarow[idx_expvalue]
-                if group in nulls and val in group_name_id:
-                    if val in group_name_collisions:
-                        print("  Warning: use of colliding group name {0} detected, expect errors".format(val))
-                    mutablerow = list(datarow)
-                    mutablerow[idx_expgroup] = group_name_id[val]
-                    mutablerow[idx_expvalue] = None
-                    replacementrow = tuple(mutablerow)
-                    replacement_map[datarow] = replacementrow
-            # And types
-            elif operand == const.operand_DEFTYPE:
-                invtype = datarow[idx_exptype]
-                val = datarow[idx_expvalue]
-                if invtype in nulls and val in type_name_id:
-                    if val in type_name_collisions:
-                        print("  Warning: use of colliding type name {0} detected, expect errors".format(val))
-                    mutablerow = list(datarow)
-                    mutablerow[idx_exptype] = type_name_id[val]
-                    mutablerow[idx_expvalue] = None
-                    replacementrow = tuple(mutablerow)
-                    replacement_map[datarow] = replacementrow
+        # Set of entity field names which we're going to use
+        idz_datas = (("dgmattribs", "attributeID", "attributeName", "expressionAttributeID", const.operand_DEFATTR),
+                     ("invgroups", "groupID", "groupName", "expressionGroupID", const.operand_DEFGRP),
+                     ("invtypes", "typeID", "typeName", "expressionTypeID", const.operand_DEFTYPE))
+        for idz_data in idz_datas:
+            # First, we've got to compose name maps, as expressions can
+            # reference using names
+            entity_name_id = {}
+            entity_name_collisions = set()
+            entity_table = self.tables[idz_data[0]]
+            idx_entityid = entity_table.getcolumnidx(idz_data[1])
+            idx_entityname = entity_table.getcolumnidx(idz_data[2])
+            for datarow in entity_table.datarows:
+                name = datarow[idx_entityname]
+                if not name in entity_name_id:
+                    entity_name_id[name] = datarow[idx_entityid]
+                else:
+                    entity_name_collisions.add(name)
+                # Sometimes names with stripped white space symbols are used
+                name_stripped = re.sub("\s", "", name)
+                if not name_stripped in entity_name_id:
+                    entity_name_id[name_stripped] = datarow[idx_entityid]
+                else:
+                    entity_name_collisions.add(name_stripped)
+            # Get column indices for required columns in expression table
+            exp_table = self.tables["dgmexpressions"]
+            idx_operand = exp_table.getcolumnidx("operandID")
+            idx_expvalue = exp_table.getcolumnidx("expressionValue")
+            idx_expentity = exp_table.getcolumnidx(idz_data[3])
+            # Values which are considered to be empty
+            nulls = {None, 0}
+            for datarow in exp_table.datarows:
+                operand = datarow[idx_operand]
+                # Process attributes
+                if operand == idz_data[4]:
+                    entity = datarow[idx_expentity]
+                    val = datarow[idx_expvalue]
+                    if entity in nulls and val in entity_name_id:
+                        if val in entity_name_collisions:
+                            print("  Warning: use of colliding {0} {1} detected, expect errors".format(idz_data[2], val))
+                        mutablerow = list(datarow)
+                        mutablerow[idx_expentity] = entity_name_id[val]
+                        mutablerow[idx_expvalue] = None
+                        replacementrow = tuple(mutablerow)
+                        replacement_map[datarow] = replacementrow
         # Do actual replacements
         for datarow in replacement_map:
             exp_table.datarows.remove(datarow)
