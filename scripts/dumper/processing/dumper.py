@@ -96,7 +96,7 @@ class Dumper(object):
             for pk in reversed(pks):
                 datarows = sorted(datarows, key=lambda row: row[table.columns.index(pk)])
             # Fill the table with actual data
-            statement = u"INSERT INTO {0} VALUES ({1})".format(table.name, ", ".join("?" for column in table.columns))
+            statement = u"INSERT INTO \"{0}\" VALUES ({1})".format(table.name, ", ".join("?" for column in table.columns))
             c.executemany(statement, datarows)
         # Cleanup jobs
         conn.commit()
