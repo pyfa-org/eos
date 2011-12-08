@@ -306,6 +306,11 @@ class EosAdapter(object):
         if specerrors is True:
             print("  Please revise data specification")
 
+#    def __expression_idzing(self):
+#        """Convert all references in expression table to attributes, groups and types to IDs"""
+#        idx_operand =
+#        return
+
     def __manual_filter_invtypes(self):
         """Filter undesired data rows from invtypes table"""
         # Set with categoryIDs we want to keep
@@ -316,15 +321,15 @@ class EosAdapter(object):
         valid_groups = {const.group_EFFECTBEACON}
         # Get ndices of group and category columns in group table
         group_table = self.tables["invgroups"]
-        idx_groupid = group_table.columns.index(group_table.getcolumn("groupID"))
-        idx_categoryid = group_table.columns.index(group_table.getcolumn("categoryID"))
+        idx_groupid = group_table.getcolumnidx("groupID")
+        idx_categoryid = group_table.getcolumnidx("categoryID")
         # Go through table data, filling valid groups set according to valid categories
         for datarow in group_table.datarows:
             if datarow[idx_categoryid] in valid_categories:
                 valid_groups.add(datarow[idx_groupid])
         # Find out rows not in valid groups and mark them as to be removed
         type_table = self.tables["invtypes"]
-        idx_groupid = type_table.columns.index(type_table.getcolumn("groupID"))
+        idx_groupid = type_table.getcolumnidx("groupID")
         toremove = set()
         for datarow in type_table.datarows:
             if not datarow[idx_groupid] in valid_groups:
@@ -353,7 +358,7 @@ class EosAdapter(object):
                 if not tabname in self.strong_data:
                     self.strong_data[tabname] = {}
                 # Get index of column in question
-                colidx = table.columns.index(table.getcolumn(colname))
+                colidx = table.getcolumnidx(colname)
                 # If it's not yet in sub-dictionary, add it as key and corresponding
                 # set as value
                 if not colidx in self.strong_data[tabname]:
@@ -430,7 +435,7 @@ class EosAdapter(object):
                         # Get set of values which represent broken references
                         brokenvals = coldata[src].difference(coldata[tgt])
                         # Get column index for proper data processing
-                        colidx = table.columns.index(table.getcolumn(fkcolname))
+                        colidx = table.getcolumnidx(fkcolname)
                         # Fill set with rows we'll have to remove
                         toremove = set()
                         for datarow in table.datarows:
@@ -465,7 +470,7 @@ class EosAdapter(object):
                             references.update(coldata[src])
                         # Find which values of given column are not referenced
                         norefs = coldata[tgt].difference(references)
-                        colidx = table.columns.index(table.getcolumn(colname))
+                        colidx = table.getcolumnidx(colname)
                         # Compose set of rows we'll need to remove due to lack of reference
                         toremove = set()
                         # Follow simple way if we do not have any strong data

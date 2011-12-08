@@ -197,13 +197,13 @@ class Preprocessor(object):
             # Calculate position score
             # The farther to end of table, the less score
             maxindex = len(table.columns)-1
-            positionscore = float(POSITIONMAX)*(maxindex-colidx)/(maxindex)
+            positionscore = float(POSITIONMAX) * (maxindex - colidx) / (maxindex)
             candidates[column] += positionscore
             # Calculate name score
             # The more name of column looks like table name, the more score
             # ID suffix also adds some points
             namescore = 0
-            idscore = float(NAMEMAX)/10
+            idscore = float(NAMEMAX) / 10
             maxmatchscore = NAMEMAX - idscore
             # If name ends with ID, add some
             if re.search("ID$", column.name):
