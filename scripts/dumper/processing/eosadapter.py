@@ -19,6 +19,7 @@
 #===============================================================================
 
 import collections
+import re
 
 import const
 
@@ -40,6 +41,8 @@ class EosAdapter(object):
         # Delete malformed entries in both structures; also, fill actual data
         # with additional flags taken from custom data specification
         self.__synch_dbinfo()
+        # Transform literal references to IDs in expressions table
+        self.__expression_idzing()
         # Create data structure for removed data, we need it for proper resulting
         # statistics and in case if we want to put something back
         # Format: {table name: {data row: removal reason}}
@@ -306,10 +309,100 @@ class EosAdapter(object):
         if specerrors is True:
             print("  Please revise data specification")
 
-#    def __expression_idzing(self):
-#        """Convert all references in expression table to attributes, groups and types to IDs"""
-#        idx_operand =
-#        return
+    def __expression_idzing(self):
+        """Convert all references in expression table to attributes, groups and types to IDs"""
+        # First, we've got to compose name maps, as expressions can
+        # reference using modified names; do it for attributes
+        attr_name_id = {}
+        attr_name_collisions = set()
+        attr_table = self.tables["dgmattribs"]
+        idx_attrid = attr_table.getcolumnidx("attributeID")
+        idx_attrname = attr_table.getcolumnidx("attributeName")
+        for datarow in attr_table.datarows:
+            name = re.sub("\s", "", datarow[idx_attrname])
+            if not name in attr_name_id:
+                attr_name_id[name] = datarow[idx_attrid]
+            else:
+                attr_name_collisions.add(name)
+        # For groups
+        group_name_id = {}
+        group_name_collisions = set()
+        group_table = self.tables["invgroups"]
+        idx_groupid = group_table.getcolumnidx("groupID")
+        idx_groupname = group_table.getcolumnidx("groupName")
+        for datarow in group_table.datarows:
+            name = re.sub("\s", "", datarow[idx_groupname])
+            if not name in group_name_id:
+                group_name_id[name] = datarow[idx_groupid]
+            else:
+                group_name_collisions.add(name)
+        # And for types
+        type_name_id = {}
+        type_name_collisions = set()
+        type_table = self.tables["invtypes"]
+        idx_typeid = type_table.getcolumnidx("typeID")
+        idx_typename = type_table.getcolumnidx("typeName")
+        for datarow in type_table.datarows:
+            name = re.sub("\s", "", datarow[idx_typename])
+            if not name in type_name_id:
+                type_name_id[name] = datarow[idx_typeid]
+            else:
+                type_name_collisions.add(name)
+        # Get column indices for all required columns in expression table
+        exp_table = self.tables["dgmexpressions"]
+        idx_operand = exp_table.getcolumnidx("operandID")
+        idx_expvalue = exp_table.getcolumnidx("expressionValue")
+        idx_expattr = exp_table.getcolumnidx("expressionAttributeID")
+        idx_expgroup = exp_table.getcolumnidx("expressionGroupID")
+        idx_exptype = exp_table.getcolumnidx("expressionTypeID")
+        # Create replacement map which will store old and new data rows
+        # Format: {current data row: replacement data row}
+        replacement_map = {}
+        # Values which are considered to be empty
+        nulls = {None, 0}
+        for datarow in exp_table.datarows:
+            operand = datarow[idx_operand]
+            # Process attributes
+            if operand == const.operand_DEFATTR:
+                attr = datarow[idx_expattr]
+                val = datarow[idx_expvalue]
+                if attr in nulls and val in attr_name_id:
+                    if val in attr_name_collisions:
+                        print("  Warning: use of colliding attribute name {0} detected, expect errors".format(val))
+                    mutablerow = list(datarow)
+                    mutablerow[idx_expattr] = attr_name_id[val]
+                    mutablerow[idx_expvalue] = None
+                    replacementrow = tuple(mutablerow)
+                    replacement_map[datarow] = replacementrow
+            # Groups
+            elif operand == const.operand_DEFGRP:
+                group = datarow[idx_expgroup]
+                val = datarow[idx_expvalue]
+                if group in nulls and val in group_name_id:
+                    if val in group_name_collisions:
+                        print("  Warning: use of colliding group name {0} detected, expect errors".format(val))
+                    mutablerow = list(datarow)
+                    mutablerow[idx_expgroup] = group_name_id[val]
+                    mutablerow[idx_expvalue] = None
+                    replacementrow = tuple(mutablerow)
+                    replacement_map[datarow] = replacementrow
+            # And types
+            elif operand == const.operand_DEFTYPE:
+                invtype = datarow[idx_exptype]
+                val = datarow[idx_expvalue]
+                if invtype in nulls and val in type_name_id:
+                    if val in type_name_collisions:
+                        print("  Warning: use of colliding type name {0} detected, expect errors".format(val))
+                    mutablerow = list(datarow)
+                    mutablerow[idx_exptype] = type_name_id[val]
+                    mutablerow[idx_expvalue] = None
+                    replacementrow = tuple(mutablerow)
+                    replacement_map[datarow] = replacementrow
+        # Do actual replacements
+        for datarow in replacement_map:
+            exp_table.datarows.remove(datarow)
+            exp_table.datarows.add(replacement_map[datarow])
+        return
 
     def __manual_filter_invtypes(self):
         """Filter undesired data rows from invtypes table"""
