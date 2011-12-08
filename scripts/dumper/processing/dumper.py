@@ -60,7 +60,7 @@ class Dumper(object):
             for column in table.columns:
                 columnspec = []
                 # We need column name in first place
-                columnspec.append(u"\"{0}\"".format(column.name))
+                columnspec.append(u"'{0}'".format(column.name))
                 # Then, data type
                 columnspec.append(datatypes[column.datatype])
                 # If this column is single PK, specify it here
@@ -76,19 +76,19 @@ class Dumper(object):
                 # Add foreign key constraint
                 if column.fk is not None:
                     tabname, colname = column.fk.split(".")
-                    columnspec.append(u"REFERENCES \"{0}\"(\"{1}\")".format(tabname, colname))
+                    columnspec.append(u"REFERENCES '{0}'('{1}')".format(tabname, colname))
                 # Aggregate all data into single string
                 tablecolumns.append(" ".join(columnspec))
             # Specify primary keys for whole table, if there're multiple PKs
             if len(pks) > 1:
-                tablecolumns.append(u"PRIMARY KEY ({0})".format(u", ".join(u"\"{0}\"".format(pk.name) for pk in pks)))
+                tablecolumns.append(u"PRIMARY KEY ({0})".format(u", ".join(u"'{0}'".format(pk.name) for pk in pks)))
             # Create table in the database
             columnspec = u", ".join(tablecolumns)
-            statement = u"CREATE TABLE \"{0}\" ({1})".format(table.name, columnspec)
+            statement = u"CREATE TABLE '{0}' ({1})".format(table.name, columnspec)
             c.execute(statement)
             # Process table indices
             for idxcol in table.getindices():
-                statement = u"CREATE INDEX \"ix_{0}_{1}\" ON \"{0}\" (\"{1}\")".format(table.name, idxcol.name)
+                statement = u"CREATE INDEX 'ix_{0}_{1}' ON '{0}' ('{1}')".format(table.name, idxcol.name)
                 c.execute(statement)
             # Fill it with data
             datarows = table.datarows
@@ -96,7 +96,7 @@ class Dumper(object):
             for pk in reversed(pks):
                 datarows = sorted(datarows, key=lambda row: row[table.columns.index(pk)])
             # Fill the table with actual data
-            statement = u"INSERT INTO \"{0}\" VALUES ({1})".format(table.name, ", ".join("?" for column in table.columns))
+            statement = u"INSERT INTO '{0}' VALUES ({1})".format(table.name, ", ".join("?" for column in table.columns))
             c.executemany(statement, datarows)
         # Cleanup jobs
         conn.commit()
