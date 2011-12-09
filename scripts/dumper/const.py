@@ -1,8 +1,31 @@
+#===============================================================================
+# Copyright (C) 2010-2011 Anton Vorobyov
+#
+# This file is part of Eos.
+#
+# Eos is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Eos is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Eos. If not, see <http://www.gnu.org/licenses/>.
+#===============================================================================
+
 # List of data types, sorted by ability to store data
 type_BOOL = 1
 type_INT = 2
 type_FLOAT = 3
 type_STR = 4
+# List of table types, helper for auto data cleanup
+table_BASESTRONG = 1  # Tables, which define entities, and these entities cannot be removed if nothing references them
+table_BASEWEAK = 2  # Tables, which define entities, and these entities can be safely removed if nothing references them
+table_AUXILIARY = 3  # Tables with auxiliary data, including n:m links between entities and supplementary data
 # List of reasons, stating why some data row was removed
 removal_FILTER = 1  # Removed by explicit filter
 removal_NO_REF_TO = 2  # Removed as nothing references it

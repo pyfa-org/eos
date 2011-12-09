@@ -17,9 +17,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+import cPickle
 import itertools
 import os.path
-import cPickle
 import sys
 from ConfigParser import ConfigParser
 
