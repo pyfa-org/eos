@@ -288,6 +288,7 @@ class DataMiner(object):
         table = Table("trntypes")
         table.addcolumn("type")
         table.addcolumn("languageID")
+        # TODO: ask wtf is it and replace with proper name
         table.addcolumn("spec")
         for entity, langdata in main_types.iteritems():
             for langID, langspec in langdata.iteritems():
@@ -295,7 +296,7 @@ class DataMiner(object):
                 table.datarows.add((entity, langID, langspec_joined))
         self.__add_table(table)
 
-        # Finally, merge our data  tables into single super-table
+        # Finally, merge our data tables with actual texts into single super-table
         main_languages = main["languages"]
         table = Table("trntexts")
         # First, gather list of available languages
@@ -306,7 +307,12 @@ class DataMiner(object):
         textdata = {}
         for langID in languages:
             # Load data for given language key
-            langdata = cPickle.loads(self.eve.readstuff("res:/localization/localization_{0}.pickle".format(langID)))
+            try:
+                langpickle = self.eve.readstuff("res:/localization/localization_{0}.pickle".format(langID))
+            except IndexError:
+                print("  Unable to find data for {0} language, skipping it".format(langID))
+                continue
+            langdata = cPickle.loads(langpickle)
             # Set of checks on each: first, see if top-level
             # dictionary has just 3 entries
             if len(langdata) != 3:
