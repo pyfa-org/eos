@@ -79,127 +79,127 @@ class EosAdapter(object):
 
         dataspec["dgmattribs"] = TableSpec({}, False)
         dgmattribs = dataspec["dgmattribs"].columns
-        dgmattribs["attributeID"] = ColumnSpec(None, False, None)
-        dgmattribs["attributeName"] = ColumnSpec(None, False, None)
-        #dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
-        dgmattribs["maxAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        #dgmattribs["chargeRechargeTimeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmattribs["defaultValue"] = ColumnSpec(None, False, None)
-        dgmattribs["published"] = ColumnSpec(None, False, None)
-        dgmattribs["unitID"] = ColumnSpec("eveunits.unitID", False, None)
-        dgmattribs["stackable"] = ColumnSpec(None, False, None)
-        dgmattribs["highIsGood"] = ColumnSpec(None, False, None)
-        dgmattribs["iconID"] = ColumnSpec("icons.iconID", False, None)
-        dgmattribs["displayNameID"] = ColumnSpec("trntexts.textID", False, None)
+        dgmattribs["attributeID"] = ColumnSpec(None, False, set())
+        dgmattribs["attributeName"] = ColumnSpec(None, False, set())
+        #dgmattribs["attributeCategory"] = ColumnSpec(None, False, set())
+        dgmattribs["maxAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        #dgmattribs["chargeRechargeTimeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmattribs["defaultValue"] = ColumnSpec(None, False, set())
+        dgmattribs["published"] = ColumnSpec(None, False, set())
+        dgmattribs["unitID"] = ColumnSpec("eveunits.unitID", False, set())
+        dgmattribs["stackable"] = ColumnSpec(None, False, set())
+        dgmattribs["highIsGood"] = ColumnSpec(None, False, set())
+        dgmattribs["iconID"] = ColumnSpec("icons.iconID", False, set())
+        dgmattribs["displayNameID"] = ColumnSpec("trntexts.textID", False, set())
 
         dataspec["dgmeffects"] = TableSpec({}, False)
         dgmeffects = dataspec["dgmeffects"].columns
-        dgmeffects["effectID"] = ColumnSpec(None, False, None)
-        dgmeffects["effectName"] = ColumnSpec(None, False, None)
-        dgmeffects["preExpression"] = ColumnSpec("dgmexpressions.expressionID", False, None)
-        dgmeffects["postExpression"] = ColumnSpec("dgmexpressions.expressionID", False, None)
-        dgmeffects["effectCategory"] = ColumnSpec(None, False, None)
-        dgmeffects["isOffensive"] = ColumnSpec(None, False, None)
-        dgmeffects["isAssistance"] = ColumnSpec(None, False, None)
-        dgmeffects["durationAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmeffects["trackingSpeedAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmeffects["dischargeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmeffects["rangeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmeffects["falloffAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmeffects["fittingUsageChanceAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmeffects["iconID"] = ColumnSpec("icons.iconID", False, None)
+        dgmeffects["effectID"] = ColumnSpec(None, False, set())
+        dgmeffects["effectName"] = ColumnSpec(None, False, set())
+        dgmeffects["preExpression"] = ColumnSpec("dgmexpressions.expressionID", False, set())
+        dgmeffects["postExpression"] = ColumnSpec("dgmexpressions.expressionID", False, set())
+        dgmeffects["effectCategory"] = ColumnSpec(None, False, set())
+        dgmeffects["isOffensive"] = ColumnSpec(None, False, set())
+        dgmeffects["isAssistance"] = ColumnSpec(None, False, set())
+        dgmeffects["durationAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmeffects["trackingSpeedAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmeffects["dischargeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmeffects["rangeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmeffects["falloffAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmeffects["fittingUsageChanceAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmeffects["iconID"] = ColumnSpec("icons.iconID", False, set())
 
         dataspec["dgmexpressions"] = TableSpec({}, False)
         dgmexpressions = dataspec["dgmexpressions"].columns
-        dgmexpressions["expressionID"] = ColumnSpec(None, False, None)
-        dgmexpressions["operandID"] = ColumnSpec(None, False, None)
-        dgmexpressions["arg1"] = ColumnSpec("dgmexpressions.expressionID", False, None)
-        dgmexpressions["arg2"] = ColumnSpec("dgmexpressions.expressionID", False, None)
-        dgmexpressions["expressionValue"] = ColumnSpec(None, False, None)
-        dgmexpressions["expressionTypeID"] = ColumnSpec("invtypes.typeID", False, None)
-        dgmexpressions["expressionGroupID"] = ColumnSpec("invgroups.groupID", False, None)
-        dgmexpressions["expressionAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
+        dgmexpressions["expressionID"] = ColumnSpec(None, False, set())
+        dgmexpressions["operandID"] = ColumnSpec(None, False, set())
+        dgmexpressions["arg1"] = ColumnSpec("dgmexpressions.expressionID", False, set())
+        dgmexpressions["arg2"] = ColumnSpec("dgmexpressions.expressionID", False, set())
+        dgmexpressions["expressionValue"] = ColumnSpec(None, False, set())
+        dgmexpressions["expressionTypeID"] = ColumnSpec("invtypes.typeID", False, set())
+        dgmexpressions["expressionGroupID"] = ColumnSpec("invgroups.groupID", False, set())
+        dgmexpressions["expressionAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
 
         dataspec["dgmtypeattribs"] = TableSpec({}, False)
         dgmtypeattribs = dataspec["dgmtypeattribs"].columns
-        dgmtypeattribs["typeID"] = ColumnSpec("invtypes.typeID", False, None)
-        dgmtypeattribs["attributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        dgmtypeattribs["value"] = ColumnSpec(None, False, None)
+        dgmtypeattribs["typeID"] = ColumnSpec("invtypes.typeID", False, set())
+        dgmtypeattribs["attributeID"] = ColumnSpec("dgmattribs.attributeID", False, set())
+        dgmtypeattribs["value"] = ColumnSpec(None, False, set())
 
         dataspec["dgmtypeeffects"] = TableSpec({}, False)
         dgmtypeeffects = dataspec["dgmtypeeffects"].columns
-        dgmtypeeffects["typeID"] = ColumnSpec("invtypes.typeID", False, None)
-        dgmtypeeffects["effectID"] = ColumnSpec("dgmeffects.effectID", False, None)
-        dgmtypeeffects["isDefault"] = ColumnSpec(None, False, None)
+        dgmtypeeffects["typeID"] = ColumnSpec("invtypes.typeID", False, set())
+        dgmtypeeffects["effectID"] = ColumnSpec("dgmeffects.effectID", False, set())
+        dgmtypeeffects["isDefault"] = ColumnSpec(None, False, set())
 
         dataspec["eveunits"] = TableSpec({}, False)
         eveunits = dataspec["eveunits"].columns
-        eveunits["unitID"] = ColumnSpec(None, False, None)
-        eveunits["displayNameID"] = ColumnSpec("trntexts.textID", False, None)
-        eveunits["descriptionID"] = ColumnSpec("trntexts.textID", False, None)
+        eveunits["unitID"] = ColumnSpec(None, False, set())
+        eveunits["displayNameID"] = ColumnSpec("trntexts.textID", False, set())
+        eveunits["descriptionID"] = ColumnSpec("trntexts.textID", False, set())
 
         dataspec["icons"] = TableSpec({}, False)
         icons = dataspec["icons"].columns
-        icons["iconID"] = ColumnSpec(None, False, None)
-        icons["iconFile"] = ColumnSpec(None, False, None)
+        icons["iconID"] = ColumnSpec(None, False, set())
+        icons["iconFile"] = ColumnSpec(None, False, set())
 
         dataspec["invcategories"] = TableSpec({}, False)
         invcategories = dataspec["invcategories"].columns
-        invcategories["categoryID"] = ColumnSpec(None, False, None)
-        invcategories["categoryNameID"] = ColumnSpec("trntexts.textID", False, None)
+        invcategories["categoryID"] = ColumnSpec(None, False, set())
+        invcategories["categoryNameID"] = ColumnSpec("trntexts.textID", False, set())
 
         dataspec["invgroups"] = TableSpec({}, False)
         invgroups = dataspec["invgroups"].columns
-        invgroups["groupID"] = ColumnSpec(None, False, None)
-        invgroups["categoryID"] = ColumnSpec("invcategories.categoryID", False, None)
-        invgroups["fittableNonSingleton"] = ColumnSpec(None, False, None)
-        invgroups["published"] = ColumnSpec(None, False, None)
-        invgroups["iconID"] = ColumnSpec("icons.iconID", False, None)
-        invgroups["groupNameID"] = ColumnSpec("trntexts.textID", False, None)
+        invgroups["groupID"] = ColumnSpec(None, False, set())
+        invgroups["categoryID"] = ColumnSpec("invcategories.categoryID", False, set())
+        invgroups["fittableNonSingleton"] = ColumnSpec(None, False, set())
+        invgroups["published"] = ColumnSpec(None, False, set())
+        invgroups["iconID"] = ColumnSpec("icons.iconID", False, set())
+        invgroups["groupNameID"] = ColumnSpec("trntexts.textID", False, set())
 
         dataspec["invmarketgroups"] = TableSpec({}, False)
         invmarketgroups = dataspec["invmarketgroups"].columns
-        invmarketgroups["parentGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, None)
-        invmarketgroups["marketGroupID"] = ColumnSpec(None, False, None)
-        invmarketgroups["marketGroupName"] = ColumnSpec(None, False, None)
-        #invmarketgroups["description"] = ColumnSpec(None, False, None)
-        invmarketgroups["hasTypes"] = ColumnSpec(None, False, None)
-        invmarketgroups["iconID"] = ColumnSpec("icons.iconID", False, None)
+        invmarketgroups["parentGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, set())
+        invmarketgroups["marketGroupID"] = ColumnSpec(None, False, set())
+        invmarketgroups["marketGroupName"] = ColumnSpec(None, False, set())
+        #invmarketgroups["description"] = ColumnSpec(None, False, set())
+        invmarketgroups["hasTypes"] = ColumnSpec(None, False, set())
+        invmarketgroups["iconID"] = ColumnSpec("icons.iconID", False, set())
 
         dataspec["invmetagroups"] = TableSpec({}, False)
         invmetagroups = dataspec["invmetagroups"].columns
-        invmetagroups["metaGroupID"] = ColumnSpec(None, False, None)
-        invmetagroups["metaGroupNameID"] = ColumnSpec("trntexts.textID", False, None)
+        invmetagroups["metaGroupID"] = ColumnSpec(None, False, set())
+        invmetagroups["metaGroupNameID"] = ColumnSpec("trntexts.textID", False, set())
 
         dataspec["invmetatypes"] = TableSpec({}, False)
         invmetatypes = dataspec["invmetatypes"].columns
-        invmetatypes["typeID"] = ColumnSpec("invtypes.typeID", False, None)
-        invmetatypes["parentTypeID"] = ColumnSpec("invtypes.typeID", False, None)
-        invmetatypes["metaGroupID"] = ColumnSpec("invmetagroups.metaGroupID", False, None)
+        invmetatypes["typeID"] = ColumnSpec("invtypes.typeID", False, set())
+        invmetatypes["parentTypeID"] = ColumnSpec("invtypes.typeID", False, set())
+        invmetatypes["metaGroupID"] = ColumnSpec("invmetagroups.metaGroupID", False, set())
 
         dataspec["invtypes"] = TableSpec({}, True)
         invtypes = dataspec["invtypes"].columns
-        invtypes["typeID"] = ColumnSpec(None, False, None)
-        invtypes["groupID"] = ColumnSpec("invgroups.groupID", False, None)
-        invtypes["raceID"] = ColumnSpec(None, False, None)
-        invtypes["published"] = ColumnSpec(None, False, None)
-        invtypes["marketGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, None)
-        invtypes["iconID"] = ColumnSpec("icons.iconID", False, None)
-        invtypes["typeNameID"] = ColumnSpec("trntexts.textID", False, None)
-        invtypes["descriptionID"] = ColumnSpec("trntexts.textID", False, None)
+        invtypes["typeID"] = ColumnSpec(None, False, set())
+        invtypes["groupID"] = ColumnSpec("invgroups.groupID", False, set())
+        invtypes["raceID"] = ColumnSpec(None, False, set())
+        invtypes["published"] = ColumnSpec(None, False, set())
+        invtypes["marketGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, set())
+        invtypes["iconID"] = ColumnSpec("icons.iconID", False, set())
+        invtypes["typeNameID"] = ColumnSpec("trntexts.textID", False, set())
+        invtypes["descriptionID"] = ColumnSpec("trntexts.textID", False, set())
 
         dataspec["metadata"] = TableSpec({}, False)
         metadata = dataspec["metadata"].columns
-        metadata["fieldName"] = ColumnSpec(None, False, None)
-        metadata["fieldValue"] = ColumnSpec(None, False, None)
+        metadata["fieldName"] = ColumnSpec(None, False, set())
+        metadata["fieldValue"] = ColumnSpec(None, False, set())
 
         dataspec["trntexts"] = TableSpec({}, False)
         trntexts = dataspec["trntexts"].columns
-        trntexts["textID"] = ColumnSpec(None, False, None)
-        trntexts["de"] = ColumnSpec(None, False, None)
-        trntexts["en-us"] = ColumnSpec(None, False, None)
-        trntexts["ja"] = ColumnSpec(None, False, None)
-        trntexts["ru"] = ColumnSpec(None, False, None)
+        trntexts["textID"] = ColumnSpec(None, False, set())
+        trntexts["de"] = ColumnSpec(None, False, set())
+        trntexts["en-us"] = ColumnSpec(None, False, set())
+        trntexts["ja"] = ColumnSpec(None, False, set())
+        trntexts["ru"] = ColumnSpec(None, False, set())
 
         return dataspec
 
@@ -468,7 +468,7 @@ class EosAdapter(object):
                 # Check strong values section
                 strong_vals = self.dbspec[tabname].columns[colname].strongvals
                 # If it's empty, go on
-                if strong_vals is None:
+                if len(strong_vals) == 0:
                     continue
                 # Create sub-dictionary for table if it doesn't have it yet
                 if not tabname in self.strong_data:
