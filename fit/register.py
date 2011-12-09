@@ -76,33 +76,35 @@ class Register():
         Value: set of holders
         """
 
-    def __getMaps(self, holder):
+    def __getAffecteeMap(self, holder):
         location = holder.location
-
         # Keep all maps we need to add all info tuples to here to do it as efficiently as possible
         # These are basicly fillup maps and are iterated through afterwards to fill up the registers
         affecteeMaps = [(location, self.__affecteeLocation), # Location only register
                         ((location, holder.type.groupId), self.__affecteeGroupLocation)] # Location group register
 
+        # Location skill register mapkeys
+        self.__mapSkills(holder, location, affecteeMaps, self.__affecteeSkillLocation)
+        return affecteeMaps
+
+    def __getAffectorMap(self, holder, info):
+        location = info.location
+
         affectorMaps = [(location, self.__affectorSpecificLocation), # Specific location register
                         (location, self.__affectorAllLocation), # all location register
                         ((location, holder.type.groupId), self.__affectorGroupLocation)] #group location register
 
-        # Location skill register mapkeys
-        affecteeSkillLocation = self.__affecteeSkillLocation
-        affectorSkillLocation = self.__affectorSkillLocation
+        self.__mapSkills(holder, location, affectorMaps, self.__affectorSkillLocation)
+        return affectorMaps
 
+    def __mapSkills(self, holder, location, map, register):
         # Add the skills to the affectee/affector fillup maps
         for skillId in holder.type.requiredSkills():
             key = (location, skillId)
-
-            affecteeMaps.append((key, affecteeSkillLocation))
-            affectorMaps.append((key, affectorSkillLocation))
-
-        return (affecteeMaps, affectorMaps)
+            map.append((key, register))
 
     def register(self, holder):
-        affecteeMaps, affectorMaps = self.__getMaps(holder)
+        affecteeMaps = self.__getAffecteeMap(holder)
 
         # Add to affectee registers first
         for key, map in affecteeMaps:
@@ -115,7 +117,7 @@ class Register():
         # Now add to affector register the same way, except we also loop through infos to compose the values
         for info in holder.type.getInfos():
             value = (holder, info)
-            for key, map in affectorMaps:
+            for key, map in self.__getAffectorMap(holder, info):
                 s = map.get(key)
                 if s is None:
                     s = map[key] = set()
@@ -126,14 +128,14 @@ class Register():
         if holder is None:
             return
 
-        affecteeMaps, affectorMaps = self.__getMaps(holder)
+        affecteeMaps = self.__getAffecteeMap(holder)
 
         for key, map in affecteeMaps:
             map[key].remove(holder)
 
         for info in holder.type.getInfos():
             value = (holder, info)
-            for key, map in affectorMaps:
+            for key, map in self.__getAffectorMap(holder, info):
                 map[key].remove(value)
 
     def getAffectors(self, holder):
