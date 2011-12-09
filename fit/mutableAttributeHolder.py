@@ -83,7 +83,6 @@ class MutableAttributeMap(collections.Mapping):
     def __getitem__(self, key):
         val = self.__modifiedAttributes.get(key)
         if val is None:
-            # Should actually run calcs here instead :D
             self.__modifiedAttributes[key] = val = self.__calculate(key)
 
         return val
