@@ -22,14 +22,6 @@ type_BOOL = 1
 type_INT = 2
 type_FLOAT = 3
 type_STR = 4
-# List of table types, helper for auto data cleanup (unused for now)
-table_BASESTRONG = 1  # Tables, which define entities, and these entities cannot be removed if nothing references them
-table_BASEWEAK = 2  # Tables, which define entities, and these entities can be safely removed if nothing references them
-table_AUXILIARY = 3  # Tables with auxiliary data, including n:m links between entities and supplementary data
-# List of reasons, stating why some data row was removed
-removal_FILTER = 1  # Removed by explicit filter
-removal_NO_REF_TO = 2  # Removed as nothing references it
-removal_BROKEN_REF = 3  # Removed as contains broken references
 # In-EVE constants
 group_EFFECTBEACON = 920
 category_SHIP = 6
