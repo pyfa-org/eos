@@ -56,7 +56,7 @@ class JsonDataHandler(DataHandler):
         if type is None:
             # We do str(id) here because json dicts always have strings as key
             data = self.__typeData[str(id)]
-            type = Type(id, data["group"],
+            type = Type(id, data["category"], data["group"],
                         [self.getEffect(effectId) for effectId in data["effects"]],
                         {x : y for x, y in data["attributes"]},
                         {x : self.getAttribute(x) for x, y in data["attributes"]})
