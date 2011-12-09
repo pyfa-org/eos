@@ -48,7 +48,7 @@ class DataMiner(object):
     def run(self):
         """Controls actual data mining workflow"""
         print("Getting data from EVE Client")
-        # Add tables from bulkdata
+        # Add tables from bulkdata and cache
         self.__get_bulkdata()
         # Read localization stuff files
         self.__get_localization()
@@ -286,10 +286,9 @@ class DataMiner(object):
         # Dictionary of dictionaries of lists
         main_types = main["types"]
         table = Table("trntypes")
-        table.addcolumn("type")
+        table.addcolumn("nounType")
         table.addcolumn("languageID")
-        # TODO: ask wtf is it and replace with proper name
-        table.addcolumn("spec")
+        table.addcolumn("nounAttribute")
         for entity, langdata in main_types.iteritems():
             for langID, langspec in langdata.iteritems():
                 langspec_joined = u",".join(langspec)

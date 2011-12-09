@@ -40,6 +40,9 @@ class EosAdapter(object):
         # normalization - it will move all attributes to typeattribs table;
         # if it's done after, we may lack some data required for process
         self.__normalize_attrs()
+        # Transform literal references to IDs in expressions table too,
+        # before required data is removed
+        self.__expression_idzing()
         # Get map required for partial data restore, which is needed to
         # be run later, after data cleanup which also removes column required
         # for that method to function
@@ -50,8 +53,6 @@ class EosAdapter(object):
         # Delete malformed entries in both structures; also, fill actual data
         # with additional flags taken from custom data specification
         self.__synch_dbinfo()
-        # Transform literal references to IDs in expressions table
-        self.__expression_idzing()
         # Create data structure for removed data, we need it for proper resulting
         # statistics and in case if we want to put something back
         # Format: {table name: {data row: removal reason}}
@@ -79,19 +80,17 @@ class EosAdapter(object):
         dataspec["dgmattribs"] = TableSpec({}, False)
         dgmattribs = dataspec["dgmattribs"].columns
         dgmattribs["attributeID"] = ColumnSpec(None, False, None)
-        dgmattribs["attributeName"] = ColumnSpec(None, False, {"radius", "mass", "volume", "capacity"})
+        dgmattribs["attributeName"] = ColumnSpec(None, False, None)
         #dgmattribs["attributeCategory"] = ColumnSpec(None, False, None)
-        #dgmattribs["description"] = ColumnSpec(None, False, None)
         dgmattribs["maxAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         #dgmattribs["chargeRechargeTimeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         dgmattribs["defaultValue"] = ColumnSpec(None, False, None)
         dgmattribs["published"] = ColumnSpec(None, False, None)
-        dgmattribs["displayName"] = ColumnSpec(None, False, None)
         dgmattribs["unitID"] = ColumnSpec("eveunits.unitID", False, None)
         dgmattribs["stackable"] = ColumnSpec(None, False, None)
         dgmattribs["highIsGood"] = ColumnSpec(None, False, None)
-        #dgmattribs["categoryID"] = ColumnSpec(None, False, None)
         dgmattribs["iconID"] = ColumnSpec("icons.iconID", False, None)
+        dgmattribs["displayNameID"] = ColumnSpec("trntexts.textID", False, None)
 
         dataspec["dgmeffects"] = TableSpec({}, False)
         dgmeffects = dataspec["dgmeffects"].columns
@@ -100,7 +99,6 @@ class EosAdapter(object):
         dgmeffects["preExpression"] = ColumnSpec("dgmexpressions.expressionID", False, None)
         dgmeffects["postExpression"] = ColumnSpec("dgmexpressions.expressionID", False, None)
         dgmeffects["effectCategory"] = ColumnSpec(None, False, None)
-        #dgmeffects["description"] = ColumnSpec(None, False, None)
         dgmeffects["isOffensive"] = ColumnSpec(None, False, None)
         dgmeffects["isAssistance"] = ColumnSpec(None, False, None)
         dgmeffects["durationAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
@@ -108,9 +106,6 @@ class EosAdapter(object):
         dgmeffects["dischargeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         dgmeffects["rangeAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         dgmeffects["falloffAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
-        #dgmeffects["published"] = ColumnSpec(None, False, None)
-        dgmeffects["displayName"] = ColumnSpec(None, False, None)
-        #dgmeffects["isWarpSafe"] = ColumnSpec(None, False, None)
         dgmeffects["fittingUsageChanceAttributeID"] = ColumnSpec("dgmattribs.attributeID", False, None)
         dgmeffects["iconID"] = ColumnSpec("icons.iconID", False, None)
 
@@ -140,34 +135,27 @@ class EosAdapter(object):
         dataspec["eveunits"] = TableSpec({}, False)
         eveunits = dataspec["eveunits"].columns
         eveunits["unitID"] = ColumnSpec(None, False, None)
-        #eveunits["unitName"] = ColumnSpec(None, False, None)
-        eveunits["displayName"] = ColumnSpec(None, False, None)
-        #eveunits["description"] = ColumnSpec(None, False, None)
+        eveunits["displayNameID"] = ColumnSpec("trntexts.textID", False, None)
+        eveunits["descriptionID"] = ColumnSpec("trntexts.textID", False, None)
 
         dataspec["icons"] = TableSpec({}, False)
         icons = dataspec["icons"].columns
         icons["iconID"] = ColumnSpec(None, False, None)
         icons["iconFile"] = ColumnSpec(None, False, None)
-        #icons["description"] = ColumnSpec(None, False, None)
-        #icons["iconType"] = ColumnSpec(None, False, None)
 
         dataspec["invcategories"] = TableSpec({}, False)
         invcategories = dataspec["invcategories"].columns
         invcategories["categoryID"] = ColumnSpec(None, False, None)
-        invcategories["categoryName"] = ColumnSpec(None, False, None)
-        #invcategories["description"] = ColumnSpec(None, False, None)
-        #invcategories["published"] = ColumnSpec(None, False, None)
-        #invcategories["iconID"] = ColumnSpec("icons.iconID", False, None)
+        invcategories["categoryNameID"] = ColumnSpec("trntexts.textID", False, None)
 
         dataspec["invgroups"] = TableSpec({}, False)
         invgroups = dataspec["invgroups"].columns
         invgroups["groupID"] = ColumnSpec(None, False, None)
         invgroups["categoryID"] = ColumnSpec("invcategories.categoryID", False, None)
-        invgroups["groupName"] = ColumnSpec(None, False, None)
         invgroups["fittableNonSingleton"] = ColumnSpec(None, False, None)
-        #invgroups["description"] = ColumnSpec(None, False, None)
         invgroups["published"] = ColumnSpec(None, False, None)
         invgroups["iconID"] = ColumnSpec("icons.iconID", False, None)
+        invgroups["groupNameID"] = ColumnSpec("trntexts.textID", False, None)
 
         dataspec["invmarketgroups"] = TableSpec({}, False)
         invmarketgroups = dataspec["invmarketgroups"].columns
@@ -181,8 +169,7 @@ class EosAdapter(object):
         dataspec["invmetagroups"] = TableSpec({}, False)
         invmetagroups = dataspec["invmetagroups"].columns
         invmetagroups["metaGroupID"] = ColumnSpec(None, False, None)
-        invmetagroups["metaGroupName"] = ColumnSpec(None, False, None)
-        #invmetagroups["description"] = ColumnSpec(None, False, None)
+        invmetagroups["metaGroupNameID"] = ColumnSpec("trntexts.textID", False, None)
 
         dataspec["invmetatypes"] = TableSpec({}, False)
         invmetatypes = dataspec["invmetatypes"].columns
@@ -194,21 +181,25 @@ class EosAdapter(object):
         invtypes = dataspec["invtypes"].columns
         invtypes["typeID"] = ColumnSpec(None, False, None)
         invtypes["groupID"] = ColumnSpec("invgroups.groupID", False, None)
-        invtypes["typeName"] = ColumnSpec(None, False, None)
-        invtypes["description"] = ColumnSpec(None, False, None)
-        #invtypes["radius"] = ColumnSpec(None, False, None)
-        #invtypes["mass"] = ColumnSpec(None, False, None)
-        #invtypes["volume"] = ColumnSpec(None, False, None)
-        #invtypes["capacity"] = ColumnSpec(None, False, None)
         invtypes["raceID"] = ColumnSpec(None, False, None)
         invtypes["published"] = ColumnSpec(None, False, None)
         invtypes["marketGroupID"] = ColumnSpec("invmarketgroups.marketGroupID", False, None)
         invtypes["iconID"] = ColumnSpec("icons.iconID", False, None)
+        invtypes["typeNameID"] = ColumnSpec("trntexts.textID", False, None)
+        invtypes["descriptionID"] = ColumnSpec("trntexts.textID", False, None)
 
         dataspec["metadata"] = TableSpec({}, False)
         metadata = dataspec["metadata"].columns
         metadata["fieldName"] = ColumnSpec(None, False, None)
         metadata["fieldValue"] = ColumnSpec(None, False, None)
+
+        dataspec["trntexts"] = TableSpec({}, False)
+        trntexts = dataspec["trntexts"].columns
+        trntexts["textID"] = ColumnSpec(None, False, None)
+        trntexts["de"] = ColumnSpec(None, False, None)
+        trntexts["en-us"] = ColumnSpec(None, False, None)
+        trntexts["ja"] = ColumnSpec(None, False, None)
+        trntexts["ru"] = ColumnSpec(None, False, None)
 
         return dataspec
 
@@ -271,6 +262,63 @@ class EosAdapter(object):
             types_table.datarows.add(type_replacements[datarow])
         if collisions is True:
             print("  Key collisions detected during attribute normalization")
+        return
+
+    def __expression_idzing(self):
+        """Convert all references in expression table to attributes, groups and types to IDs"""
+        # Create replacement map which will store old and new data rows
+        # Format: {current data row: replacement data row}
+        replacement_map = {}
+        # Set of entity field names which we're going to use
+        idz_datas = (("dgmattribs", "attributeID", "attributeName", "expressionAttributeID", const.operand_DEFATTR),
+                     ("invgroups", "groupID", "groupName", "expressionGroupID", const.operand_DEFGRP),
+                     ("invtypes", "typeID", "typeName", "expressionTypeID", const.operand_DEFTYPE))
+        for idz_data in idz_datas:
+            # First, we've got to compose name maps, as expressions can
+            # reference using names
+            entity_name_id = {}
+            entity_name_collisions = set()
+            entity_table = self.tables[idz_data[0]]
+            idx_entityid = entity_table.getcolumnidx(idz_data[1])
+            idx_entityname = entity_table.getcolumnidx(idz_data[2])
+            for datarow in entity_table.datarows:
+                name = datarow[idx_entityname]
+                if not name in entity_name_id:
+                    entity_name_id[name] = datarow[idx_entityid]
+                else:
+                    entity_name_collisions.add(name)
+                # Sometimes names with stripped white space symbols are used
+                name_stripped = re.sub("\s", "", name)
+                if not name_stripped in entity_name_id:
+                    entity_name_id[name_stripped] = datarow[idx_entityid]
+                else:
+                    entity_name_collisions.add(name_stripped)
+            # Get column indices for required columns in expression table
+            exp_table = self.tables["dgmexpressions"]
+            idx_operand = exp_table.getcolumnidx("operandID")
+            idx_expvalue = exp_table.getcolumnidx("expressionValue")
+            idx_expentity = exp_table.getcolumnidx(idz_data[3])
+            # Values which are considered to be empty
+            nulls = {None, 0}
+            for datarow in exp_table.datarows:
+                operand = datarow[idx_operand]
+                # Check if we're dealing with the operand referring entity
+                # we're working with
+                if operand == idz_data[4]:
+                    entity = datarow[idx_expentity]
+                    val = datarow[idx_expvalue]
+                    if entity in nulls and val in entity_name_id:
+                        if val in entity_name_collisions:
+                            print("  Warning: use of colliding {0} {1} detected, expect errors".format(idz_data[2], val))
+                        mutablerow = list(datarow)
+                        mutablerow[idx_expentity] = entity_name_id[val]
+                        mutablerow[idx_expvalue] = None
+                        replacementrow = tuple(mutablerow)
+                        replacement_map[datarow] = replacementrow
+        # Do actual replacements
+        for datarow in replacement_map:
+            exp_table.datarows.remove(datarow)
+            exp_table.datarows.add(replacement_map[datarow])
         return
 
     def __synch_dbinfo(self):
@@ -378,63 +426,6 @@ class EosAdapter(object):
         # Print reminder in case of any errors
         if specerrors is True:
             print("  Please revise data specification")
-
-    def __expression_idzing(self):
-        """Convert all references in expression table to attributes, groups and types to IDs"""
-        # Create replacement map which will store old and new data rows
-        # Format: {current data row: replacement data row}
-        replacement_map = {}
-        # Set of entity field names which we're going to use
-        idz_datas = (("dgmattribs", "attributeID", "attributeName", "expressionAttributeID", const.operand_DEFATTR),
-                     ("invgroups", "groupID", "groupName", "expressionGroupID", const.operand_DEFGRP),
-                     ("invtypes", "typeID", "typeName", "expressionTypeID", const.operand_DEFTYPE))
-        for idz_data in idz_datas:
-            # First, we've got to compose name maps, as expressions can
-            # reference using names
-            entity_name_id = {}
-            entity_name_collisions = set()
-            entity_table = self.tables[idz_data[0]]
-            idx_entityid = entity_table.getcolumnidx(idz_data[1])
-            idx_entityname = entity_table.getcolumnidx(idz_data[2])
-            for datarow in entity_table.datarows:
-                name = datarow[idx_entityname]
-                if not name in entity_name_id:
-                    entity_name_id[name] = datarow[idx_entityid]
-                else:
-                    entity_name_collisions.add(name)
-                # Sometimes names with stripped white space symbols are used
-                name_stripped = re.sub("\s", "", name)
-                if not name_stripped in entity_name_id:
-                    entity_name_id[name_stripped] = datarow[idx_entityid]
-                else:
-                    entity_name_collisions.add(name_stripped)
-            # Get column indices for required columns in expression table
-            exp_table = self.tables["dgmexpressions"]
-            idx_operand = exp_table.getcolumnidx("operandID")
-            idx_expvalue = exp_table.getcolumnidx("expressionValue")
-            idx_expentity = exp_table.getcolumnidx(idz_data[3])
-            # Values which are considered to be empty
-            nulls = {None, 0}
-            for datarow in exp_table.datarows:
-                operand = datarow[idx_operand]
-                # Check if we're dealing with the operand referring entity
-                # we're working with
-                if operand == idz_data[4]:
-                    entity = datarow[idx_expentity]
-                    val = datarow[idx_expvalue]
-                    if entity in nulls and val in entity_name_id:
-                        if val in entity_name_collisions:
-                            print("  Warning: use of colliding {0} {1} detected, expect errors".format(idz_data[2], val))
-                        mutablerow = list(datarow)
-                        mutablerow[idx_expentity] = entity_name_id[val]
-                        mutablerow[idx_expvalue] = None
-                        replacementrow = tuple(mutablerow)
-                        replacement_map[datarow] = replacementrow
-        # Do actual replacements
-        for datarow in replacement_map:
-            exp_table.datarows.remove(datarow)
-            exp_table.datarows.add(replacement_map[datarow])
-        return
 
     def __manual_filter_invtypes(self):
         """Filter undesired data rows from invtypes table"""
