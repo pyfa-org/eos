@@ -19,6 +19,7 @@
 
 import itertools
 import os.path
+import cPickle
 import sys
 from ConfigParser import ConfigParser
 
@@ -46,6 +47,17 @@ class DataMiner(object):
 
     def run(self):
         """Controls actual data mining workflow"""
+        print("Getting data from EVE Client")
+        # Add tables from bulkdata
+        self.__get_bulkdata()
+        # Read localization stuff files
+        self.__get_localization()
+        # Create metadata table
+        self.__add_metadata()
+        return
+
+    def __get_bulkdata(self):
+        """Read bulkdata"""
         # Assign to local variables for ease of use
         eve = self.eve
         cfg = self.cfg
@@ -56,7 +68,6 @@ class DataMiner(object):
                         "invmarketgroups":
                             (eve.RemoteSvc("marketProxy").GetMarketGroups,
                              "market tree data is unavailable; to cache it, open Browse tab of EVE market browser") }
-        print("Getting data from EVE Client")
         for tablename in itertools.chain(cfg.tables, customtables.iterkeys()):
             # Create new table object
             table = Table(tablename)
@@ -77,14 +88,8 @@ class DataMiner(object):
                 sys.exit()
             # Get all the data from it
             self.__get_source_data(srcdata, table)
-            # Notify if there was no data in processed table
-            if len(table.datarows) == 0:
-                print("  Table {0} has no data rows".format(table.name))
-            # Add table to our table map only if there's something in it
-            else:
-                self.tables[tablename] = table
-        # Create metadata table
-        self.__add_metadata()
+            # Add table to our table map
+            self.__add_table(table)
         return
 
     def __get_source_data(self, sourcedata, table):
@@ -192,6 +197,154 @@ class DataMiner(object):
                 datarows.append(datarow)
         return
 
+    def __get_localization(self):
+        """Read localization stuff files"""
+        # Read main localization file and unpickle it
+        main = cPickle.loads(self.eve.readstuff("res:/localization/localization_main.pickle"))
+
+        # Check for added/removed fields
+        known_main_fields = {"maxRevision", "languages", "labels", "mapping", "registration", "types"}
+        main_fields = set(main.iterkeys())
+        removed = known_main_fields.difference(main_fields)
+        if len(removed) > 0:
+            plu = "y" if len(removed) == 1 else "ies"
+            entries = ", ".join(removed)
+            print("  Cannot find entr{0} in main localization file: {1}".format(plu, entries))
+        new = main_fields.difference(known_main_fields)
+        if len(new) > 0:
+            plu = "y" if len(new) == 1 else "ies"
+            entries = ", ".join(new)
+            print("  New entr{0} in main localization file: {1}".format(plu, entries))
+
+        # maxRevision is not processed
+        # Just integer
+        # main_types = main["maxRevision"]
+
+        # Process registration table
+        # Simple dictionary
+        main_registration = main["registration"]
+        table = Table("trntabcols")
+        table.addcolumn("tcID")
+        table.addcolumn("tcName")
+        for tcName, tcID in main_registration.iteritems():
+            table.datarows.add((tcID, tcName))
+        self.__add_table(table)
+
+        # Process mapping table
+        # Dictionary, where keys are tuples with 2 values
+        main_mapping = main["mapping"]
+        table = Table("trnmapping")
+        table.addcolumn("tcID")
+        table.addcolumn("keyID")
+        table.addcolumn("textID")
+        for (tcID, keyID), textID in main_mapping.iteritems():
+            table.datarows.add((tcID, keyID, textID))
+        self.__add_table(table)
+
+        # Process labels table
+        # Keyed data rows, where each row is dictionary itself
+        main_labels = main["labels"]
+        table = Table("trnlabels")
+        # Gather header data (list of column names) and row data
+        # (list of dictionaries-rows)
+        headers = []
+        dictrow_data = []
+        for key, dictrow in main_labels.iteritems():
+            dictrow = main_labels[key]
+            for header in dictrow:
+                if not header in headers:
+                    headers.append(header)
+            dictrow_data.append(dictrow)
+        # Create actual columns according to the data we got
+        for header in headers:
+            table.addcolumn(header)
+        # Form data rows according to our header layout and add them to table
+        for dictrow in dictrow_data:
+            datarow = tuple(dictrow.get(header) for header in headers)
+            table.datarows.add(datarow)
+        self.__add_table(table)
+
+        # Process languages table
+        # Layout is same as in previous table
+        main_languages = main["languages"]
+        table = Table("trnlanguages")
+        headers = []
+        dictrow_data = []
+        for key, dictrow in main_languages.iteritems():
+            for header in dictrow:
+                if not header in headers:
+                    headers.append(header)
+            dictrow_data.append(dictrow)
+        for header in headers:
+            table.addcolumn(header)
+        for dictrow in dictrow_data:
+            datarow = tuple(dictrow.get(header) for header in headers)
+            table.datarows.add(datarow)
+        self.__add_table(table)
+
+        # Process types table
+        # Dictionary of dictionaries of lists
+        main_types = main["types"]
+        table = Table("trntypes")
+        table.addcolumn("type")
+        table.addcolumn("languageID")
+        table.addcolumn("spec")
+        for entity, langdata in main_types.iteritems():
+            for langID, langspec in langdata.iteritems():
+                langspec_joined = u",".join(langspec)
+                table.datarows.add((entity, langID, langspec_joined))
+        self.__add_table(table)
+
+        # Finally, merge our data  tables into single super-table
+        main_languages = main["languages"]
+        table = Table("trntexts")
+        # First, gather list of available languages
+        languages = set()
+        for langID in main_languages:
+            languages.add(main_languages[langID]["languageID"])
+        # Containers for actual table data
+        textdata = {}
+        for langID in languages:
+            # Load data for given language key
+            langdata = cPickle.loads(self.eve.readstuff("res:/localization/localization_{0}.pickle".format(langID)))
+            # Set of checks on each: first, see if top-level
+            # dictionary has just 3 entries
+            if len(langdata) != 3:
+                print("  Unexpected dictionary size for {0} language data".format(langID))
+            if langID != langdata[0]:
+                print("  Language key mismatch for {0}, skipping language".format(langID))
+                continue
+            if langdata[2] != {}:
+                print("  Unexpected value in unknown container for {0} language".format(langID))
+            # Actual string data for given language
+            langtext = langdata[1]
+            for textID, text in langtext.iteritems():
+                # If ID is not available in generic container, create it and empty
+                # dictionary as value (will be data row)
+                if not textID in textdata:
+                    textdata[textID] = {}
+                # Fill our data row
+                textdata[textID][langID] = text
+        # Now, as we finished gathering data, compose header list
+        headers = []
+        for dictrow in textdata.itervalues():
+            for langID in dictrow:
+                if not langID in headers:
+                    headers.append(langID)
+        # Sort headers and prepend ID column name
+        headers.sort()
+        headers.insert(0, "textID")
+        # Add columns to table
+        for header in headers:
+            table.addcolumn(header)
+        # Transform rows to include row ID and add them to table as well
+        for textID, dictrow in textdata.iteritems():
+            dictrow["textID"] = textID
+            datarow = tuple(dictrow.get(header) for header in headers)
+            table.datarows.add(datarow)
+        self.__add_table(table)
+        return
+
     def __add_metadata(self):
         """Adds metadata table to table structure"""
         # Compose metadata table; first, read client version
@@ -208,8 +361,19 @@ class DataMiner(object):
         metatable.datarows.add(("version", evever))
         metatable.datarows.add(("release", self.release))
         # Append table object to tables dictionary
-        if not metatable.name in self.tables:
-            self.tables[metatable.name] = metatable
-        else:
-            print("Warning: unable to add metadata table, table with this name already exists")
+        self.__add_table(metatable)
+        return
+
+    def __add_table(self, table):
+        """Do few checks and add table to our structure"""
+        # Name check to avoid data loss
+        if table.name in self.tables:
+            print("  Warning: unable to add {0} table, table with this name already exists".format(table.name))
+            return
+        # Data check
+        if len(table.datarows) == 0:
+            print("  Warning: skipping table {0} as it doesn't have data rows".format(table.name))
+            return
+        # Add table if both passed
+        self.tables[table.name] = table
         return
