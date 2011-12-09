@@ -43,35 +43,27 @@ class EosAdapter(object):
         # Transform literal references to IDs in expressions table too,
         # before required data is removed
         self.__expression_idzing()
-        # Get map required for partial data restore, which is needed to
-        # be run later, after data cleanup which also removes column required
-        # for that method to function
-        attrid_attrcat_map = self.__restore_surface_attrrefereces_hamster()
         # Assign database format specification to object for ease of use and
         # modification on the fly
         self.dbspec = self.__get_dbspec()
         # Delete malformed entries in both structures; also, fill actual data
         # with additional flags taken from custom data specification
         self.__synch_dbinfo()
-        # Create data structure for removed data, we need it for proper resulting
-        # statistics and in case if we want to put something back
-        # Format: {table name: {data row: removal reason}}
-        self.removed_data = {}
-        for tabname in self.tables:
-            self.removed_data[tabname] = {}
-        # Filter out data for invtypes table
-        self.__manual_filter_invtypes()
         # Container to store signs of so-called strong data, such rows are immune to removal
         # Format: {table name: {column index: {exception values}}
-        self.strong_data = {}
+        strong_data = {}
         # Fill it with manually specified data
-        self.__process_manual_strongs()
+        self.__process_manual_strongs(strong_data)
+        # Mark types we want to keep as strong
+        self.__invtypes_pumping(strong_data)
+        # Create data structure for removed data, we need it for proper resulting
+        # statistics and in case if we want to put something back
+        # Format: {table name: {data rows}}
+        trashed_data = {}
         # Automatically clean up broken data
-        self.__cyclic_autocleanup()
-        # Put some data back
-        self.__restore_surface_attrrefereces(attrid_attrcat_map)
+        self.__autocleanup(strong_data, trashed_data)
         # Print some statistics to know what has been cleaned
-        self.__print_stats()
+        self.__print_stats(trashed_data)
 
     def __get_dbspec(self):
         """Return specification of data Eos needs"""
@@ -427,42 +419,14 @@ class EosAdapter(object):
         if specerrors is True:
             print("  Please revise data specification")
 
-    def __manual_filter_invtypes(self):
-        """Filter undesired data rows from invtypes table"""
-        # Set with categoryIDs we want to keep
-        valid_categories = {const.category_SHIP, const.category_MODULE, const.category_CHARGE,
-                            const.category_SKILL, const.category_DRONE, const.category_IMPLANT,
-                            const.category_SUBSYSTEM}
-        # Set with groupIDs we want to keep
-        valid_groups = {const.group_EFFECTBEACON}
-        # Get ndices of group and category columns in group table
-        group_table = self.tables["invgroups"]
-        idx_groupid = group_table.getcolumnidx("groupID")
-        idx_categoryid = group_table.getcolumnidx("categoryID")
-        # Go through table data, filling valid groups set according to valid categories
-        for datarow in group_table.datarows:
-            if datarow[idx_categoryid] in valid_categories:
-                valid_groups.add(datarow[idx_groupid])
-        # Find out rows not in valid groups and mark them as to be removed
-        type_table = self.tables["invtypes"]
-        idx_groupid = type_table.getcolumnidx("groupID")
-        toremove = set()
-        for datarow in type_table.datarows:
-            if not datarow[idx_groupid] in valid_groups:
-                toremove.add(datarow)
-        # Move data to our 'trash bin'
-        type_removed = self.removed_data["invtypes"]
-        for datarow in toremove:
-            if not datarow in type_removed:
-                type_removed[datarow] = const.removal_FILTER
-            type_table.datarows.remove(datarow)
-        return
-
-    def __process_manual_strongs(self):
+    def __process_manual_strongs(self, strong_data):
         """Add manually specified strong data to internal temporary storage"""
         # Go through all tables in specifications
         for tabname in self.dbspec:
             table = self.tables[tabname]
+            # Container for rows of given table which we're going to
+            # mark as strong
+            rows2pump = set()
             # All their columns
             for colname in self.dbspec[tabname].columns:
                 # Check strong values section
@@ -470,257 +434,106 @@ class EosAdapter(object):
                 # If it's empty, go on
                 if len(strong_vals) == 0:
                     continue
-                # Create sub-dictionary for table if it doesn't have it yet
-                if not tabname in self.strong_data:
-                    self.strong_data[tabname] = {}
                 # Get index of column in question
                 colidx = table.getcolumnidx(colname)
-                # If it's not yet in sub-dictionary, add it as key and corresponding
-                # set as value
-                if not colidx in self.strong_data[tabname]:
-                    self.strong_data[tabname][colidx] = set()
-                # Add values to set
-                self.strong_data[tabname][colidx].update(strong_vals)
+                # Go through data rows and see which match to our criterion
+                for datarow in table.datarows:
+                    # If row matches, add it to strong data set
+                    if datarow[colidx] in strong_vals:
+                        rows2pump.add(datarow)
+            self.__pump_data(table, rows2pump, strong_data)
         return
 
-    def __cyclic_autocleanup(self):
-        """Automatically removed data with broken links or no links to it from database"""
-        # Define local auxiliary dictionaries for FK relations
-        # 1:1 source-target relation
-        # {source table: {source column: target}}
-        src_fk_tgt = {}
-        # 1:many target-source relation
-        # {target table: {target column: sources}}
-        tgt_fk_src = {}
-        # Go through all tables to fill maps with proper containers for actual data
+    def __invtypes_pumping(self, strong_data):
+        """Mark some hardcoded invtypes as strong"""
+        # Set with categoryIDs we want to keep
+        strong_categories = {const.category_SHIP, const.category_MODULE, const.category_CHARGE,
+                             const.category_SKILL, const.category_DRONE, const.category_IMPLANT,
+                             const.category_SUBSYSTEM}
+        # Set with groupIDs we want to keep
+        strong_groups = {const.group_EFFECTBEACON}
+        # Get indices of group and category columns in group table
+        group_table = self.tables["invgroups"]
+        idx_groupid = group_table.getcolumnidx("groupID")
+        idx_categoryid = group_table.getcolumnidx("categoryID")
+        # Go through table data, filling valid groups set according to valid categories
+        for datarow in group_table.datarows:
+            if datarow[idx_categoryid] in strong_categories:
+                strong_groups.add(datarow[idx_groupid])
+        # Get typeIDs of items we're going to pump
+        type_table = self.tables["invtypes"]
+        idx_groupid = type_table.getcolumnidx("groupID")
+        # Set-container for strong types
+        rows2pump = set()
+        for datarow in type_table.datarows:
+            if datarow[idx_groupid] in strong_groups:
+                rows2pump.add(datarow)
+        self.__pump_data(type_table, rows2pump, strong_data)
+        return
+
+    def __autocleanup(self, strong_data, trashed_data):
+        """Define auto cleanup workflow"""
+        # Our first step would be to clean non-strong data
+        self.__kill_weak(strong_data, trashed_data)
+        return
+
+    def __kill_weak(self, strong_data, trashed_data):
+        """Trash all data which isn't marked as strong"""
+        # Go through all tables
         for tabname in self.tables:
             table = self.tables[tabname]
-            for column in table.columns:
-                if column.fk is None:
-                    continue
-                fktabname, fkcolname = column.fk.split(".")
-                fktable = self.tables[fktabname]
-                fkcolumn = fktable.getcolumn(fkcolname)
-                # Fill source-target map
-                if not table.name in src_fk_tgt:
-                    src_fk_tgt[table.name] = {}
-                src_fk_tgt[table.name][column.name] = "{0}.{1}".format(fktable.name, fkcolumn.name)
-                # And target-source
-                if not fktable.name in tgt_fk_src:
-                    tgt_fk_src[fktable.name] = {}
-                if not fkcolumn.name in tgt_fk_src[fktable.name]:
-                    tgt_fk_src[fktable.name][fkcolumn.name] = set()
-                tgt_fk_src[fktable.name][fkcolumn.name].add("{0}.{1}".format(table.name, column.name))
-
-        # Changes flag, set to True for first cycle
-        changed = True
-        # We will cycle if we had any changes on previous cycle, we need to run
-        # additional cycles, because new broken rows may appear after removal of
-        # other rows previous cycle
-        while changed is True:
-            # Re-set changes flag
-            changed = False
-            # Container for column data, we need to have it to re-use gathered data,
-            # but we need to refresh it each cycle
-            # { table.column : set(data) }
-            coldata = {}
-            # Fill it with data, first for columns which are FKs
-            for tabname in src_fk_tgt:
-                for colname in src_fk_tgt[tabname]:
-                    key = "{0}.{1}".format(tabname, colname)
-                    if not key in coldata:
-                        coldata[key] = self.tables[tabname].getcolumndataset(colname)
-            # Then with data for columns which are referenced by other columns
-            for tabname in tgt_fk_src:
-                for colname in tgt_fk_src[tabname]:
-                    key = "{0}.{1}".format(tabname, colname)
-                    if not key in coldata:
-                        coldata[key] = self.tables[tabname].getcolumndataset(colname)
-            # Go through data container and remove zero from every set, as
-            # CCP seem to set zeros in some cases when they should've set None
-            for column in coldata:
-                coldata[column].difference_update({0})
-            # Do actual cleaning
-            for tabname in self.tables:
-                table = self.tables[tabname]
-                # First, rows with broken FK references to other columns
-                if tabname in src_fk_tgt:
-                    for fkcolname in src_fk_tgt[tabname]:
-                        src = "{0}.{1}".format(tabname, fkcolname)
-                        tgt = src_fk_tgt[tabname][fkcolname]
-                        # Get set of values which represent broken references
-                        brokenvals = coldata[src].difference(coldata[tgt])
-                        # Get column index for proper data processing
-                        colidx = table.getcolumnidx(fkcolname)
-                        # Fill set with rows we'll have to remove
-                        toremove = set()
-                        for datarow in table.datarows:
-                            # Add those rows with column value corresponding to broken one
-                            if datarow[colidx] in brokenvals:
-                                toremove.add(datarow)
-                        # Now, get number of rows we'll need to remove
-                        rmcount = len(toremove)
-                        # And do anything only when we have something there
-                        if rmcount > 0:
-                            # Actually remove rows
-                            removed_data = self.removed_data[table.name]
-                            for datarow in toremove:
-                                if not datarow in removed_data:
-                                    removed_data[datarow] = const.removal_BROKEN_REF
-                            table.datarows.difference_update(toremove)
-                            # Set changes flag to run one more iteration
-                            changed  = True
-                # Get strength status of table
-                tabstrength = self.dbspec[tabname][1]
-                # We don't want to process "strong" tables - tables, for which we don't
-                # want to delete data rows even if there're no references to it
-                if tabname in tgt_fk_src and tabstrength is not True:
-                    # Get strong data info for current table
-                    strongrows = self.strong_data.get(tabname)
-                    for colname in tgt_fk_src[tabname]:
-                        # Workflow is almost the same with small exceptions
-                        tgt = "{0}.{1}".format(tabname, colname)
-                        # Get reference values for all FKs referencing to this column
-                        references = set()
-                        for src in tgt_fk_src[tabname][colname]:
-                            references.update(coldata[src])
-                        # Find which values of given column are not referenced
-                        norefs = coldata[tgt].difference(references)
-                        colidx = table.getcolumnidx(colname)
-                        # Compose set of rows we'll need to remove due to lack of reference
-                        toremove = set()
-                        # Follow simple way if we do not have any strong data
-                        if strongrows is None:
-                            for datarow in table.datarows:
-                                if datarow[colidx] in norefs:
-                                    toremove.add(datarow)
-                        # If we have some, take them into consideration
-                        else:
-                            for datarow in table.datarows:
-                                if datarow[colidx] in norefs:
-                                    # Assume that we're going to remove this row by default
-                                    rm = True
-                                    # Make an additional check for strong data
-                                    for strongcolidx in strongrows:
-                                        if datarow[strongcolidx] in strongrows[strongcolidx]:
-                                            # When we find first match, mark row as not being removed
-                                            # and break the exceptions loop
-                                            rm = False
-                                            break
-                                    # Add row to removed set only if it's not suitable for any of our
-                                    # exceptions
-                                    if rm is True:
-                                        toremove.add(datarow)
-                        rmcount = len(toremove)
-                        # Run actual removal if set is not empty
-                        if rmcount > 0:
-                            removed_data = self.removed_data[table.name]
-                            for datarow in toremove:
-                                if not datarow in removed_data:
-                                    removed_data[datarow] = const.removal_NO_REF_TO
-                            table.datarows.difference_update(toremove)
-                            changed  = True
+            rows2trash = set()
+            strongrows = strong_data.get(tabname)
+            # If it doesn't contain strong rows, kill all data
+            if strongrows is None:
+                rows2trash.update(table.datarows)
+            # Else, filter out our strong rows
+            else:
+                rows2trash.update(table.datarows.difference(strongrows))
+            # Finally, trash all data rows we planned
+            self.__trash_data(table, rows2trash, trashed_data)
         return
 
-    def __restore_surface_attrrefereces_hamster(self):
-        """Hamster some data before it gets removed, it's needed for primary method"""
-        # Format: {attrID: attrCategory}
-        attrid_attrcat_map = {}
-        attr_table = self.tables["dgmattribs"]
-        idx_attrid = attr_table.getcolumnidx("attributeID")
-        idx_attrcat = attr_table.getcolumnidx("attributeCategory")
-        for datarow in attr_table.datarows:
-            attrid_attrcat_map[datarow[idx_attrid]] = datarow[idx_attrcat]
-        return attrid_attrcat_map
-
-    def __restore_surface_attrrefereces(self, attrid_attrcat_map):
-        """
-        Restores target items for attributes targeting types, groups and other attributes. This is
-        useful in cases if some entity is referenced by attribute, and we want to show some basic info
-        about it (e.g. show "Strontium Clatrates" as consumption type instead of just ID, when looking at
-        siege module attributes). Please note that this method takes only such 'surface' references, it
-        doesn't pick up any related data of restored references (e.g. mentioned siege ammo will come
-        without any attributes or effects).
-        """
-        # Some high-level access instructions, what to restore
-        restore_datas = {(const.attributeCategory_DEFATTR, "dgmattribs", "attributeID"),
-                         (const.attributeCategory_DEFGROUP, "invgroups", "groupID"),
-                         (const.attributeCategory_DEFTYPE, "invtypes", "typeID")}
-        # Go through each of them
-        for restore_data in restore_datas:
-            # Container for attribute IDs which references corresponding entity
-            attrs_entity = set()
-            # Get table and appropriate columns' indices
-            attr_table = self.tables["dgmattribs"]
-            idx_attrid = attr_table.getcolumnidx("attributeID")
-            # Fill sets with actual attribute IDs which are used to reference that entity
-            for datarow in attr_table.datarows:
-                attrid = datarow[idx_attrid]
-                if attrid_attrcat_map[attrid] == restore_data[0]:
-                    attrs_entity.add(attrid)
-            # Get indices to work with data in dgmtypeattribs table
-            typeattrs_table = self.tables["dgmtypeattribs"]
-            idx_attrid = typeattrs_table.getcolumnidx("attributeID")
-            idx_value = typeattrs_table.getcolumnidx("value")
-            # Container for IDs of entities we're going to restore
-            restore_entities = set()
-            # Cycle through data rows and see if we get attribute ID match
-            for datarow in typeattrs_table.datarows:
-                # If we do, write down ID of entity to corresponding set
-                if datarow[idx_attrid] in attrs_entity:
-                    value = datarow[idx_value]
-                    if not value in {0, None}:
-                        restore_entities.add(int(value))
-            # Restore entities
-            entity_tablename = restore_data[1]
-            entity_idcolname = restore_data[2]
-            torestore = set()
-            idx_entityid = self.tables[entity_tablename].getcolumnidx(entity_idcolname)
-            for datarow in self.removed_data[entity_tablename]:
-                if datarow[idx_entityid] in restore_entities:
-                    torestore.add(datarow)
-            self.tables[entity_tablename].datarows.update(torestore)
-            for datarow in torestore:
-                del self.removed_data[entity_tablename][datarow]
-        return
-
-    def __print_stats(self):
+    def __print_stats(self, trashed_data):
         """Print statistics about removed data"""
         # Print some statistics
-        for tabname in sorted(self.removed_data):
-            removed_data = self.removed_data[tabname]
-            # Get number of items removed due to some reason
-            filtered = 0
-            noref = 0
-            brokenref = 0
-            for datarow in removed_data:
-                reason = removed_data[datarow]
-                if reason == const.removal_FILTER:
-                    filtered += 1
-                elif reason == const.removal_NO_REF_TO:
-                    noref += 1
-                elif reason == const.removal_BROKEN_REF:
-                    brokenref += 1
-            # Print anything only if we've done something with table
-            if brokenref > 0 or noref > 0 or filtered > 0:
-                # Calculate total number of data rows we had in table
-                startrowlen = len(self.tables[tabname].datarows) + len(removed_data)
-                # Container for text data
-                rmtypes = []
-                # Also don't print data for removal types which didn't
-                # affect given table
-                if filtered > 0:
-                    plu = "" if filtered == 1 else "s"
-                    perc = 100.0 * filtered / startrowlen
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (removed by data filter)".format(filtered, plu, perc))
-                if brokenref > 0:
-                    plu = "" if brokenref == 1 else "s"
-                    perc = 100.0 * brokenref / startrowlen
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (broken references)".format(brokenref, plu, perc))
-                if noref > 0:
-                    plu = "" if noref == 1 else "s"
-                    perc = 100.0 * noref / startrowlen
-                    rmtypes.append("{0} row{1} ({2:.1f}%) removed (no incoming references)".format(noref, plu, perc))
-                # Actual line print
-                print("  Table {0} cleaned: {1}".format(tabname, ", ".join(rmtypes)))
+        for tabname in sorted(trashed_data):
+            # Get set with removed data
+            removed_data = trashed_data.get(tabname)
+            removedrows = len(removed_data)
+            # If set is empty, don't do anything
+            if removedrows == 0:
+                continue
+            table = self.tables[tabname]
+            # Calculate total number of data rows we had in table
+            totalrows = len(table.datarows) + removedrows
+            # Print jobs
+            plu = "" if removedrows == 1 else "s"
+            perc = 100.0 * removedrows / totalrows
+            print("  Table {0} cleaned: {1} row{2} ({3:.1f}%) removed".format(tabname, removedrows, plu, perc))
+        return
+
+    def __pump_data(self, table, datarows, strong_data):
+        """Mark data rows as strong"""
+        # Check if we got anything useful, bail if we didn't
+        if len(datarows) == 0:
+            return
+        # Create sub-set for table if it doesn't have it yet
+        if not table.name in strong_data:
+            strong_data[table.name] = set()
+        # Actually add data rows
+        strong_data[table.name].update(datarows)
+        return
+
+    def __trash_data(self, table, datarows, trashed_data):
+        """Mark data as removed"""
+        # If no data was passed, bail - as usual
+        if len(datarows) == 0:
+            return
+        # Create subset if it's not yet there
+        if not table.name in trashed_data:
+            trashed_data[table.name] = set()
+        # Update both trashed data and source data
+        trashed_data[table.name].update(datarows)
+        table.datarows.difference_update(datarows)
         return
