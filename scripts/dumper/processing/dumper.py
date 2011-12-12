@@ -28,8 +28,8 @@ class Dumper(object):
     """
     Handle dumping of data to storage
     """
-    def __init__(self, tables):
-        self.tables = tables
+    def __init__(self, evedb):
+        self.evedb = evedb
 
     def sqlite(self, path):
         """Dump everything we've got into SQLite file"""
@@ -48,16 +48,15 @@ class Dumper(object):
                      const.type_STR: "TEXT"}
 
         # For each table
-        for tablename in sorted(self.tables):
-            table = self.tables[tablename]
+        for table in sorted(self.evedb, key=lambda table: table.name):
             # Skip tables with no data
             if len(table.datarows) == 0:
                 continue
             # First, compose list of PK'ed columns
-            pks = table.getpks()
+            pks = table.get_pks()
             # Now get data regarding each column
             tablecolumns = []
-            for column in table.columns:
+            for column in table:
                 columnspec = []
                 # We need column name in first place
                 columnspec.append(u"'{0}'".format(column.name))
@@ -87,16 +86,16 @@ class Dumper(object):
             statement = u"CREATE TABLE '{0}' ({1})".format(table.name, columnspec)
             c.execute(statement)
             # Process table indices
-            for idxcol in table.getindices():
+            for idxcol in table.get_indices():
                 statement = u"CREATE INDEX 'ix_{0}_{1}' ON '{0}' ('{1}')".format(table.name, idxcol.name)
                 c.execute(statement)
             # Fill it with data
             datarows = table.datarows
             # Sort by PKs
             for pk in reversed(pks):
-                datarows = sorted(datarows, key=lambda row: row[table.columns.index(pk)])
+                datarows = sorted(datarows, key=lambda row: row[table.index(pk)])
             # Fill the table with actual data
-            statement = u"INSERT INTO '{0}' VALUES ({1})".format(table.name, ", ".join("?" for column in table.columns))
+            statement = u"INSERT INTO '{0}' VALUES ({1})".format(table.name, ", ".join("?" for column in table))
             c.executemany(statement, datarows)
         # Cleanup jobs
         conn.commit()
@@ -124,8 +123,7 @@ class Dumper(object):
         # We'll gradually write stuff to file, so open it
         f = codecs.open(path, encoding="utf-8", mode="w")
         # Cycle through tables
-        for tablename in sorted(self.tables):
-            table = self.tables[tablename]
+        for table in sorted(self.evedb, key=lambda table: table.name):
             # Skip tables with no data
             if len(table.datarows) == 0:
                 continue
@@ -138,7 +136,7 @@ class Dumper(object):
             # Container for definition of all columns
             coldefs = []
             # Fill it, going through all of them
-            for column in table.columns:
+            for column in table:
                 # Container for definition of single column
                 colspec = []
                 # First, get the column name into there
@@ -203,12 +201,12 @@ class Dumper(object):
                 # Combine everything regarding current column and add to general column storage
                 coldefs.append(" ".join(colspec))
             # Tuple of primary keys
-            pks = table.getpks()
+            pks = table.get_pks()
             # Add primary key line
             if len(pks) > 0:
                 coldefs.append(u"PRIMARY KEY ({0})".format(u",".join(u"`{0}`".format(c.name) for c in pks)))
             # Same for foreign keys
-            fks = table.getfks()
+            fks = table.get_fks()
             for fkcol in fks:
                 fktabname, fkcolname = fkcol.fk.split(".")
                 coldefs.append(u"FOREIGN KEY (`{0}`) REFERENCES `{1}` (`{2}`)".format(fkcol.name, fktabname, fkcolname))
@@ -219,7 +217,7 @@ class Dumper(object):
             # And write it to file
             f.write(u"{0}\n".format(u"\n".join(tabdefs)))
             # Process table indices
-            for idxcol in table.getindices():
+            for idxcol in table.get_indices():
                 f.write(u"CREATE INDEX `ix_{0}_{1}` ON `{0}` (`{1}`);\n".format(table.name, idxcol.name))
             f.write("\n")
             # We'll start write our data from here, from locking table for writing
@@ -229,7 +227,7 @@ class Dumper(object):
             # Sort by PKs
             datarows = table.datarows
             for pk in reversed(pks):
-                datarows = sorted(datarows, key=lambda row: row[table.columns.index(pk)])
+                datarows = sorted(datarows, key=lambda row: row[table.index(pk)])
             # Insert actual data, cycling through data rows
             for datarow in datarows:
                 # Get all data for a row into single list

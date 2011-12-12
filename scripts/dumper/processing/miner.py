@@ -25,13 +25,11 @@ from ConfigParser import ConfigParser
 
 from reverence import blue
 
-from data import Table
-
 class DataMiner(object):
     """
     Class responsible for getting data out of EVE client
     """
-    def __init__(self, tables, evepath, cachepath, server, release):
+    def __init__(self, evedb, evepath, cachepath, server, release):
         # Will be used by other components in other methods
         self.evepath = evepath
         self.release = release
@@ -43,7 +41,7 @@ class DataMiner(object):
             sys.exit()
         self.cfg = self.eve.getconfigmgr()
         # Set storage container for tables
-        self.tables = tables
+        self.evedb = evedb
 
     def run(self):
         """Controls actual data mining workflow"""
@@ -61,6 +59,7 @@ class DataMiner(object):
         # Assign to local variables for ease of use
         eve = self.eve
         cfg = self.cfg
+        evedb = self.evedb
         # Dictionary with data for custom tables, which are not generally available in cache
         customtables = {"dgmoperands":
                             (eve.RemoteSvc('dogma').GetOperandsForChar,
@@ -70,7 +69,7 @@ class DataMiner(object):
                              "market tree data is unavailable; to cache it, open Browse tab of EVE market browser") }
         for tablename in itertools.chain(cfg.tables, customtables.iterkeys()):
             # Create new table object
-            table = Table(tablename)
+            table = evedb.add_table(tablename)
             # Get source data object from reverence
             try:
                 srcdata = getattr(cfg, tablename)
@@ -79,6 +78,7 @@ class DataMiner(object):
                     srcdata = customtables[tablename][0]()
                 except IOError:
                     print("Warning: processing table {0} failed: {1}.".format(tablename, customtables[tablename][1]))
+                    evedb.remove(table)
                     continue
                 except:
                     sys.stderr.write("Error: unable to get data for one of the tables, most likely due to wrong path to EVE client.\n")
@@ -88,8 +88,10 @@ class DataMiner(object):
                 sys.exit()
             # Get all the data from it
             self.__get_source_data(srcdata, table)
-            # Add table to our table map
-            self.__add_table(table)
+            # If no data was found for this table, remove it
+            if len(table.datarows) == 0:
+                print("  Warning: skipping table {0} as it doesn't have data rows".format(table.name))
+                evedb.remove(table)
         return
 
     def __get_source_data(self, sourcedata, table):
@@ -146,7 +148,7 @@ class DataMiner(object):
                     dictdatarows.append(datarow)
         # Add columns into table object
         for header in headers:
-            table.addcolumn(header)
+            table.add_column(header)
         # Cycle through all the data we got
         for dictdatarow in dictdatarows:
             # Also convert ASCII strings to unicode using CCP's default encoding
@@ -157,7 +159,7 @@ class DataMiner(object):
                 elif isinstance(v, (tuple, list, set)):
                     dictdatarow[k] = u",".join(unicode(entry) for entry in v)
             # Convert it into tuples
-            datarow = tuple(dictdatarow.get(column.name) for column in table.columns)
+            datarow = tuple(dictdatarow.get(column.name) for column in table)
             # And add to the row set
             table.datarows.add(datarow)
         return
@@ -199,6 +201,7 @@ class DataMiner(object):
 
     def __get_localization(self):
         """Read localization stuff files"""
+        evedb = self.evedb
         # Read main localization file and unpickle it
         main = cPickle.loads(self.eve.readstuff("res:/localization/localization_main.pickle"))
 
@@ -223,28 +226,26 @@ class DataMiner(object):
         # Process registration table
         # Simple dictionary
         main_registration = main["registration"]
-        table = Table("trntabcols")
-        table.addcolumn("tcID")
-        table.addcolumn("tcName")
+        table = evedb.add_table("trntabcols")
+        table.add_column("tcID")
+        table.add_column("tcName")
         for tcName, tcID in main_registration.iteritems():
             table.datarows.add((tcID, tcName))
-        self.__add_table(table)
 
         # Process mapping table
         # Dictionary, where keys are tuples with 2 values
         main_mapping = main["mapping"]
-        table = Table("trnmapping")
-        table.addcolumn("tcID")
-        table.addcolumn("keyID")
-        table.addcolumn("textID")
+        table = evedb.add_table("trnmapping")
+        table.add_column("tcID")
+        table.add_column("keyID")
+        table.add_column("textID")
         for (tcID, keyID), textID in main_mapping.iteritems():
             table.datarows.add((tcID, keyID, textID))
-        self.__add_table(table)
 
         # Process labels table
         # Keyed data rows, where each row is dictionary itself
         main_labels = main["labels"]
-        table = Table("trnlabels")
+        table = evedb.add_table("trnlabels")
         # Gather header data (list of column names) and row data
         # (list of dictionaries-rows)
         headers = []
@@ -257,17 +258,16 @@ class DataMiner(object):
             dictrow_data.append(dictrow)
         # Create actual columns according to the data we got
         for header in headers:
-            table.addcolumn(header)
+            table.add_column(header)
         # Form data rows according to our header layout and add them to table
         for dictrow in dictrow_data:
             datarow = tuple(dictrow.get(header) for header in headers)
             table.datarows.add(datarow)
-        self.__add_table(table)
 
         # Process languages table
         # Layout is same as in previous table
         main_languages = main["languages"]
-        table = Table("trnlanguages")
+        table = evedb.add_table("trnlanguages")
         headers = []
         dictrow_data = []
         for key, dictrow in main_languages.iteritems():
@@ -276,28 +276,26 @@ class DataMiner(object):
                     headers.append(header)
             dictrow_data.append(dictrow)
         for header in headers:
-            table.addcolumn(header)
+            table.add_column(header)
         for dictrow in dictrow_data:
             datarow = tuple(dictrow.get(header) for header in headers)
             table.datarows.add(datarow)
-        self.__add_table(table)
 
         # Process types table
         # Dictionary of dictionaries of lists
         main_types = main["types"]
-        table = Table("trntypes")
-        table.addcolumn("nounType")
-        table.addcolumn("languageID")
-        table.addcolumn("nounAttribute")
+        table = evedb.add_table("trntypes")
+        table.add_column("nounType")
+        table.add_column("languageID")
+        table.add_column("nounAttribute")
         for entity, langdata in main_types.iteritems():
             for langID, langspec in langdata.iteritems():
                 langspec_joined = u",".join(langspec)
                 table.datarows.add((entity, langID, langspec_joined))
-        self.__add_table(table)
 
         # Finally, merge our data tables with actual texts into single super-table
         main_languages = main["languages"]
-        table = Table("trntexts")
+        table = evedb.add_table("trntexts")
         # First, gather list of available languages
         languages = set()
         for langID in main_languages:
@@ -341,13 +339,12 @@ class DataMiner(object):
         headers.insert(0, "textID")
         # Add columns to table
         for header in headers:
-            table.addcolumn(header)
+            table.add_column(header)
         # Transform rows to include row ID and add them to table as well
         for textID, dictrow in textdata.iteritems():
             dictrow["textID"] = textID
             datarow = tuple(dictrow.get(header) for header in headers)
             table.datarows.add(datarow)
-        self.__add_table(table)
         return
 
     def __add_metadata(self):
@@ -358,27 +355,11 @@ class DataMiner(object):
         # Convert it to Unicode to make sure columns are detected as text
         evever = unicode(config.getint("main", "build"))
         # Create table object itself
-        metatable = Table("metadata")
+        metatable = self.evedb.add_table("metadata")
         # Add columns to it
-        metatable.addcolumn("fieldName")
-        metatable.addcolumn("fieldValue")
+        metatable.add_column("fieldName")
+        metatable.add_column("fieldValue")
         # Add data
         metatable.datarows.add(("version", evever))
         metatable.datarows.add(("release", self.release))
-        # Append table object to tables dictionary
-        self.__add_table(metatable)
-        return
-
-    def __add_table(self, table):
-        """Do few checks and add table to our structure"""
-        # Name check to avoid data loss
-        if table.name in self.tables:
-            print("  Warning: unable to add {0} table, table with this name already exists".format(table.name))
-            return
-        # Data check
-        if len(table.datarows) == 0:
-            print("  Warning: skipping table {0} as it doesn't have data rows".format(table.name))
-            return
-        # Add table if both passed
-        self.tables[table.name] = table
         return

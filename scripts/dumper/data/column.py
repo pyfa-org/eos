@@ -22,11 +22,18 @@ class Column(object):
     Class-container for column data
     """
     def __init__(self, name):
-        self.name = name
-        self.datatype = None
-        self.datalen = None
-        self.notnull = None
-        self.unique = None
-        self.pk = None
-        self.fk = None
-        self.index = None
+        object.__setattr__(self, "name", name)
+        object.__setattr__(self, "datatype", None)
+        object.__setattr__(self, "datalen", None)
+        object.__setattr__(self, "notnull", None)
+        object.__setattr__(self, "unique", None)
+        object.__setattr__(self, "pk", None)
+        object.__setattr__(self, "fk", None)
+        object.__setattr__(self, "index", None)
+
+    def __setattr__(self, name, value):
+        try:
+            getattr(self, name)
+        except AttributeError:
+            raise ValueError("setting of new attributes prohibited")
+        object.__setattr__(self, name, value)

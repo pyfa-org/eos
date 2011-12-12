@@ -17,4 +17,21 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from .evedb import EveDB
+from data.dictlist import DictList
+from data.table import Table
+
+class EveDB(DictList):
+    """
+    Class-container for multiple tables
+    """
+    def __init__(self):
+        DictList.__init__(self)
+
+    def add_table(self, name):
+        """Add table to container"""
+        new_table = Table(name)
+        try:
+            self.append(new_table)
+        except ValueError:
+            raise ValueError("table with name {0} already exists".format(new_table.name))
+        return new_table

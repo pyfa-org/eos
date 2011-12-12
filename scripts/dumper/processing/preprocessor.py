@@ -28,12 +28,12 @@ class Preprocessor(object):
     """
     Handle preliminary data processing
     """
-    def __init__(self, tables):
-        self.tables = tables
+    def __init__(self, evedb):
+        self.evedb = evedb
 
     def run(self):
         print("Detecting columns data format")
-        for table in self.tables.itervalues():
+        for table in self.evedb:
             # Detect types of columns
             self.__detect_column_types(table)
             # Max length of data for each column
@@ -43,7 +43,7 @@ class Preprocessor(object):
             self.__detect_uniques(table)
 
         print("Detecting primary keys")
-        for table in self.tables.itervalues():
+        for table in self.evedb:
             # Detect primary key for each table
             self.__guess_primarykey(table)
         return
@@ -51,8 +51,8 @@ class Preprocessor(object):
     def __detect_column_types(self, table):
         """Detect data type stored in columns of given table"""
         # Go through all columns of given table
-        for column in table.columns:
-            colidx = table.columns.index(column)
+        for column in table:
+            colidx = table.index(column)
             # Assume the most limited data type by default
             datatype = const.type_BOOL
             # Cycle through data rows
@@ -88,11 +88,11 @@ class Preprocessor(object):
     def __detect_data_length(self, table):
         """Detect length of any given data type for each column"""
         # Iterate through all columns
-        for column in table.columns:
+        for column in table:
             # We do not have any special restrictions on booleans or floats
             if column.datatype in (const.type_BOOL, const.type_FLOAT):
                 continue
-            colidx = table.columns.index(column)
+            colidx = table.index(column)
             # Integer processing
             if column.datatype == const.type_INT:
                 # Default min and max values are stored as Nones
@@ -139,8 +139,8 @@ class Preprocessor(object):
     def __detect_notnulls(self, table):
         """Check if any given column can be null"""
         # Iterate through all columns
-        for column in table.columns:
-            colidx = table.columns.index(column)
+        for column in table:
+            colidx = table.index(column)
             # Assume that column doesn't have null values by default
             notnull = True
             # Iterate through all rows
@@ -156,8 +156,8 @@ class Preprocessor(object):
     def __detect_uniques(self, table):
         """Check if column contains only unique values"""
         # Iterate through all columns
-        for column in table.columns:
-            colidx = table.columns.index(column)
+        for column in table:
+            colidx = table.index(column)
             # Assume that column has unique values by default
             unique = True
             columndata = set()
@@ -184,7 +184,7 @@ class Preprocessor(object):
         NAMEMAX = 200
         SEQUENCE = 200
         # Check all columns
-        for column in table.columns:
+        for column in table:
             # Take only integers with some data in each row
             if column.datatype == const.type_INT and column.notnull is True:
                 # Assign zero score
@@ -193,10 +193,10 @@ class Preprocessor(object):
             # Do not process anything if we don't really need comparison
             if len(candidates) < 2:
                 break
-            colidx = table.columns.index(column)
+            colidx = table.index(column)
             # Calculate position score
             # The farther to end of table, the less score
-            maxindex = len(table.columns)-1
+            maxindex = len(table)-1
             positionscore = float(POSITIONMAX) * (maxindex - colidx) / (maxindex)
             candidates[column] += positionscore
             # Calculate name score
@@ -259,7 +259,7 @@ class Preprocessor(object):
                     canbepk = True
                     for datarow in table.datarows:
                         # Get data for columns present in tested combination
-                        datacomb = tuple(datarow[table.columns.index(column)] for column in combination)
+                        datacomb = tuple(datarow[table.index(column)] for column in combination)
                         # Any duplicate entry is unacceptable
                         if datacomb in data:
                             canbepk = False
@@ -282,7 +282,7 @@ class Preprocessor(object):
         for column in confirmedpks:
             column.pk = True
         # Mark the rest of the columns as non-primary keyed
-        for column in set(table.columns).difference(confirmedpks):
+        for column in set(table).difference(confirmedpks):
             column.pk = False
         return
 

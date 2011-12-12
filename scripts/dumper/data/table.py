@@ -17,106 +17,104 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from data import Column
+from data.column import Column
+from data.dictlist import DictList
 
-class Table(object):
+class Table(DictList):
     """
     Class-container for table data, plus several auxiliary methods
     """
     def __init__(self, name):
+        DictList.__init__(self)
         self.name = name
-        self.columns = []
         self.datarows = set()
 
-    def addcolumn(self, name):
+    def add_column(self, name):
         """Add column to table"""
-        existing = self.getcolumn(name)
-        if existing is None:
-            self.columns.append(Column(name))
-        else:
-            raise ValueError("column with name {0} already exists".format(name))
+        if len(self.datarows) > 0:
+            raise RuntimeError("attempt to add column to table with data detected")
+        new_column = Column(name)
+        try:
+            self.append(new_column)
+        except ValueError:
+            raise ValueError("column with name {0} already exists".format(new_column.name))
+        return new_column
 
-    def getcolumn(self, name):
-        """Get column with requested name"""
-        for column in self.columns:
-            if column.name == name:
-                return column
-        return None
+    def remove(self, column):
+        """Avoid accessing remove method of underlying class directly"""
+        self.remove_columns({column.name})
+        return
 
-    def removecolumns(self, colnames):
+    def remove_columns(self, colnames):
         """Remove columns and all associated data"""
         # Problems flag
         problems = False
         # Gather list of columns to be removed and indices of
         # columns to be kept
-        colstoremove = []
-        indicestokeep = []
-        for column in self.columns:
+        cols2remove = []
+        indices2keep = []
+        for column in self:
             # We don't want to remove PKs, inform about it
             if column.name in colnames and column.pk is True:
                 print("  Primary key {0} of table {1} forcibly passes filter".format(column.name, self.name))
                 # And set error flag
                 problems = True
-            # And actually make sure we don't remove it
             if column.name in colnames and column.pk is not True:
-                colstoremove.append(column)
+                cols2remove.append(column)
             else:
-                indicestokeep.append(self.columns.index(column))
+                indices2keep.append(self.index(column))
         # Remove column objects from list
-        for col in colstoremove:
-            self.columns.remove(col)
+        for column in cols2remove:
+            DictList.remove(self, column)
         # Compose new set of data
         newrows = set()
         for datarow in self.datarows:
-            newrow = tuple(datarow[i] for i in indicestokeep)
+            newrow = tuple(datarow[i] for i in indices2keep)
             newrows.add(newrow)
         # Replace old set with new one
         self.datarows = newrows
         # Return error flag
         return problems
 
-    def getcolumnidx(self, name):
-        """Get index of column with passed name in given table"""
-        col = self.getcolumn(name)
-        if col is not None:
-            idx = self.columns.index(col)
-        else:
-            idx = None
+    def index_byname(self, name):
+        """Return index of column with given name"""
+        column = self[name]
+        idx = self.index(column)
         return idx
 
-    def isduplicate(self, other):
+    def is_duplicate(self, other):
         """Compare two tables and report if they're duplicates"""
         # Do not consider self as duplicate
-        if self == other:
+        if self is other:
             return False
         # Check column names
-        if tuple(c.name for c in self.columns) != tuple(c.name for c in other.columns):
+        if tuple(c.name for c in self) != tuple(c.name for c in other):
             return False
         # Tables with no columns also are not considered as duplicates
-        if len(self.columns) == 0 and len(other.columns) == 0:
+        if len(self) == 0 and len(other) == 0:
             return False
         # Check all data
         if self.datarows != other.datarows:
             return False
         return True
 
-    def getpks(self):
+    def get_pks(self):
         """Get tuple with primary keys of table"""
-        pks = tuple(filter(lambda col: col.pk is True, self.columns))
+        pks = tuple(filter(lambda col: col.pk is True, self))
         return pks
 
-    def getfks(self):
+    def get_fks(self):
         """Get tuple with foreign keys of table"""
-        fks = tuple(filter(lambda col: col.fk is not None, self.columns))
+        fks = tuple(filter(lambda col: col.fk is not None, self))
         return fks
 
-    def getindices(self):
+    def get_indices(self):
         """Get tuple with indexed columns of table"""
-        indices = tuple(filter(lambda col: col.index is True, self.columns))
+        indices = tuple(filter(lambda col: col.index is True, self))
         return indices
 
-    def getcolumndataset(self, name):
+    def get_columndataset(self, name):
         """Get all data from certain column into set"""
-        idx = self.getcolumnidx(name)
+        idx = self.index(self[name])
         dataset = set(dr[idx] for dr in self.datarows)
         return dataset

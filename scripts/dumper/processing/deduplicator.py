@@ -26,8 +26,8 @@ class Deduplicator(object):
     """
     Handle removal of tables with duplicate data
     """
-    def __init__(self, tables):
-        self.tables = tables
+    def __init__(self, evedb):
+        self.evedb = evedb
 
     def run(self):
         print("Removing duplicate tables")
@@ -43,14 +43,14 @@ class Deduplicator(object):
         # Plain set for tables that were marked as duplicates
         dupes = set()
         # Iterate through all possible table combinations with 2 members
-        for combination in itertools.combinations(self.tables.itervalues(), 2):
+        for combination in itertools.combinations(self.evedb, 2):
             table1 = combination[0]
             table2 = combination[1]
             # If both tables were checked already, go to the next combination
             if table1 in dupes and table2 in dupes:
                 continue
             # Check if they possess the same data
-            if table1.isduplicate(table2) is True:
+            if table1.is_duplicate(table2) is True:
                 # If one of tables is already in set, we want to add it to existing group
                 if table1 in dupes or table2 in dupes:
                     # Cycle through groups
@@ -80,7 +80,7 @@ class Deduplicator(object):
             # Get lower-cased table name
             tablename = table.name.lower()
             # Get header primary key header names w/o ID suffix and make it lower-cased
-            pks = list(re.sub("ID$", "", column.name).lower() for column in table.getpks())
+            pks = list(re.sub("ID$", "", column.name).lower() for column in table.get_pks())
             # Dictionary for the slices left after matches
             tablesliced = [tablename,]
             # Storage for matches
@@ -145,5 +145,5 @@ class Deduplicator(object):
         for table in deathgroup:
             if table != winner:
                 print("  Removed table {0} in favor of {1}".format(table.name, winner.name))
-                del self.tables[table.name]
+                self.evedb.remove(table)
         return

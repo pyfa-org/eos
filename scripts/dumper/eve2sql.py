@@ -39,10 +39,10 @@ if __name__ == "__main__":
         sys.stderr.write("This application requires Python 2.7 to run, but {0}.{1} was used\n".format(major, minor))
         sys.exit()
 
-    import collections
     import os.path
     from optparse import OptionParser
 
+    from data import EveDB
     from processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, Dumper
 
     # Parse command line options
@@ -71,30 +71,30 @@ if __name__ == "__main__":
     PATH_CACHE = os.path.expanduser(options.cache)
 
     # Container for tables
-    tables = collections.OrderedDict()
+    evedb = EveDB()
 
     # Create data miner and run it, pulling all the data from cache
-    dataminer = DataMiner(tables, PATH_EVE, PATH_CACHE, server, options.release)
+    dataminer = DataMiner(evedb, PATH_EVE, PATH_CACHE, server, options.release)
     dataminer.run()
 
     # Create preprocessor and find out some metadata for our tables
-    preprocessor = Preprocessor(tables)
+    preprocessor = Preprocessor(evedb)
     preprocessor.run()
 
     # Remove the data we don't need
     if options.filter is True:
         # Manual mode: remove the data we don't need according to specification
-        adapter = EosAdapter(tables)
+        adapter = EosAdapter(evedb)
         adapter.run()
     else:
         # Automatic mode: eve cache contains structures with the same actual data,
         # but differently grouped, so we're going to remove duplicates. This method
         # relies on table names and PK names, thus must be placed after PK detection
-        deduplicator = Deduplicator(tables)
+        deduplicator = Deduplicator(evedb)
         deduplicator.run()
 
     # Create dumper object to write data to actual files
-    dumper = Dumper(tables)
+    dumper = Dumper(evedb)
     if options.sqlite:
         print("Writing SQLite dump")
         dumper.sqlite(os.path.expanduser(options.sqlite))

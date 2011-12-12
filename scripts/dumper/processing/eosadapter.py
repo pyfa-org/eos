@@ -34,8 +34,8 @@ class EosAdapter(object):
     """
     Adapt data to use in Eos before dumping
     """
-    def __init__(self, tables):
-        self.tables = tables
+    def __init__(self, evedb):
+        self.evedb = evedb
 
     def run(self):
         """Control database refactoring workflow"""
@@ -67,7 +67,7 @@ class EosAdapter(object):
         # statistics and in case if we want to put something back
         # Format: {table name: {data rows}}
         trashed_data = {}
-        # Automatically clean up broken data
+        # Automatically clean up data we don't need
         self.__autocleanup(strong_data, trashed_data, attrcat_attrid_map)
         # Print some statistics to know what has been cleaned
         self.__print_stats(trashed_data)
@@ -210,17 +210,17 @@ class EosAdapter(object):
                     "volume": const.attribute_VOLUME,
                     "capacity": const.attribute_CAPACITY}
         # First, compose set of PK tuples which are already in target table
-        typeattrs_table = self.tables["dgmtypeattribs"]
-        idx_typeattrs_typeid = typeattrs_table.getcolumnidx("typeID")
-        idx_typeattrs_attrid = typeattrs_table.getcolumnidx("attributeID")
-        idx_typeattrs_value = typeattrs_table.getcolumnidx("value")
-        typeattrs_collen = len(typeattrs_table.columns)
+        typeattrs_table = self.evedb["dgmtypeattribs"]
+        idx_typeattrs_typeid = typeattrs_table.index_byname("typeID")
+        idx_typeattrs_attrid = typeattrs_table.index_byname("attributeID")
+        idx_typeattrs_value = typeattrs_table.index_byname("value")
+        typeattrs_collen = len(typeattrs_table)
         existing_data = set()
         for datarow in typeattrs_table.datarows:
             existing_data.add((datarow[idx_typeattrs_typeid], datarow[idx_typeattrs_attrid]))
         # Now, start working with invtypes table
-        types_table = self.tables["invtypes"]
-        idx_types_typeid = types_table.getcolumnidx("typeID")
+        types_table = self.evedb["invtypes"]
+        idx_types_typeid = types_table.index_byname("typeID")
         # Define replacement map, as we're going to update values in types table too
         type_replacements = {}
         # Flag which keeps track of any collision errors
@@ -234,7 +234,7 @@ class EosAdapter(object):
                 if (datarow[idx_types_typeid], attr_map[attrcolname]) in existing_data:
                     collisions = True
                     continue
-                idx_types_attr = types_table.getcolumnidx(attrcolname)
+                idx_types_attr = types_table.index_byname(attrcolname)
                 # If source attribute value is 0 or None, also skip such row
                 attrval = datarow[idx_types_attr]
                 if attrval in {0, None}:
@@ -277,9 +277,9 @@ class EosAdapter(object):
             # reference using names
             entity_name_id = {}
             entity_name_collisions = set()
-            entity_table = self.tables[idz_data[0]]
-            idx_entityid = entity_table.getcolumnidx(idz_data[1])
-            idx_entityname = entity_table.getcolumnidx(idz_data[2])
+            entity_table = self.evedb[idz_data[0]]
+            idx_entityid = entity_table.index_byname(idz_data[1])
+            idx_entityname = entity_table.index_byname(idz_data[2])
             for datarow in entity_table.datarows:
                 name = datarow[idx_entityname]
                 if not name in entity_name_id:
@@ -293,10 +293,10 @@ class EosAdapter(object):
                 else:
                     entity_name_collisions.add(name_stripped)
             # Get column indices for required columns in expression table
-            exp_table = self.tables["dgmexpressions"]
-            idx_operand = exp_table.getcolumnidx("operandID")
-            idx_expvalue = exp_table.getcolumnidx("expressionValue")
-            idx_expentity = exp_table.getcolumnidx(idz_data[3])
+            exp_table = self.evedb["dgmexpressions"]
+            idx_operand = exp_table.index_byname("operandID")
+            idx_expvalue = exp_table.index_byname("expressionValue")
+            idx_expentity = exp_table.index_byname(idz_data[3])
             # Values which are considered to be empty
             nulls = {None, 0}
             for datarow in exp_table.datarows:
@@ -322,10 +322,13 @@ class EosAdapter(object):
 
     def __synch_dbinfo(self):
         """Synchronize data between data specification and actual database structure"""
+        evedb = self.evedb
         # Just error flag, used for user's convenience
         specerrors = False
         # Detect non-existing tables
-        tab404 = set(self.dbspec.iterkeys()).difference(self.tables.iterkeys())
+        tabnames_dbspec = set(self.dbspec.iterkeys())
+        tabnames_evedb = set(table.name for table in evedb)
+        tab404 = tabnames_dbspec.difference(tabnames_evedb)
         # If we found any
         if len(tab404) > 0:
             # Remove them from specification container
@@ -338,18 +341,18 @@ class EosAdapter(object):
             # Set error flag to True
             specerrors = True
         # Get set of tables to be removed from actual data and get rid of them
-        toremove = set(self.tables.iterkeys()).difference(set(self.dbspec.iterkeys()))
+        toremove = tabnames_evedb.difference(tabnames_dbspec)
         for tabname in toremove:
-            del self.tables[tabname]
+            evedb.remove(evedb[tabname])
         # Cycle through remaining tables
         # Sort them for alphabetic table name sorting, this is done for pretty-print
         # in case of any errors (doesn't matter otherwise)
         for tabname in sorted(self.dbspec.iterkeys()):
-            table = self.tables[tabname]
-            actcolnames = set(col.name for col in table.columns)
-            specolnames = set(self.dbspec[tabname].columns.iterkeys())
+            table = evedb[tabname]
+            colnames_evedb = set(col.name for col in table)
+            colnames_dbspec = set(self.dbspec[tabname].columns.iterkeys())
             # Detect non-existing columns
-            col404 = specolnames.difference(actcolnames)
+            col404 = colnames_dbspec.difference(colnames_evedb)
             # If we've got such columns
             if len(col404) > 0:
                 # Remove them from specification
@@ -362,8 +365,8 @@ class EosAdapter(object):
                 # Set error flag to True
                 specerrors = True
             # Finally, get rid of unneeded columns in actual data structure
-            toremove = actcolnames.difference(self.dbspec[tabname].columns.iterkeys())
-            problems = table.removecolumns(toremove)
+            toremove = colnames_evedb.difference(colnames_dbspec)
+            problems = table.remove_columns(toremove)
             # If we had any errors during column  removal, set error flag
             if problems is True:
                 specerrors = True
@@ -371,9 +374,8 @@ class EosAdapter(object):
         # Fill foreign key references for all columns according to specification
         # As our data/specification structures are now 'synchronized', we can go
         # through any of them - here we picked data as it's faster and more convenient
-        for tabname in self.tables:
-            table = self.tables[tabname]
-            for column in table.columns:
+        for table in evedb:
+            for column in table:
                 # Get FK specification string
                 fkspec = self.dbspec[table.name].columns[column.name].fk
                 # If it's None, ignore current column
@@ -393,19 +395,20 @@ class EosAdapter(object):
                 fktabname = fkspec[0]
                 fkcolname = fkspec[1]
                 # FK target must exist
-                if not fktabname in self.tables or self.tables[fktabname].getcolumn(fkcolname) is None:
+                tabnames_evedb = set(table.name for table in evedb)
+                if not fktabname in tabnames_evedb or evedb[fktabname].get(fkcolname) is None:
                     print("  Unable to find foreign key target for {0}.{1} ({2}.{3})".format(table.name, column.name, fktabname, fkcolname))
                     specerrors = True
                     continue
-                fktable = self.tables[fktabname]
-                fkcolumn = fktable.getcolumn(fkcolname)
+                fktable = evedb[fktabname]
+                fkcolumn = fktable.get(fkcolname)
                 # FK target must be PK
                 if fkcolumn.pk is not True:
                     print("  Foreign key target for {0}.{1} ({2}.{3}) is not primary key".format(table.name, column.name, fktabname, fkcolname))
                     specerrors = True
                     continue
                 # FK target table must have no other PKs besides targeted
-                if len(fktable.getpks()) != 1:
+                if len(fktable.get_pks()) != 1:
                     print("  Foreign key target for {0}.{1} ({2}.{3}) is not the only primary key in table".format(table.name, column.name, fktabname, fkcolname))
                     specerrors = True
                     continue
@@ -417,7 +420,7 @@ class EosAdapter(object):
             for colname in self.dbspec[tabname].columns:
                 idxize = self.dbspec[tabname].columns[colname].index
                 if idxize in (True, False):
-                    self.tables[tabname].getcolumn(colname).index = idxize
+                    self.evedb[tabname][colname].index = idxize
                 # Print error on unexpected values
                 else:
                     print("  Corrupted index data for {0}.{1}".format(tabname, colname))
@@ -430,7 +433,7 @@ class EosAdapter(object):
         """Add manually specified strong data to internal temporary storage"""
         # Go through all tables in specifications
         for tabname in self.dbspec:
-            table = self.tables[tabname]
+            table = self.evedb[tabname]
             # Container for rows of given table which we're going to
             # mark as strong
             rows2pump = set()
@@ -442,7 +445,7 @@ class EosAdapter(object):
                 if len(strong_vals) == 0:
                     continue
                 # Get index of column in question
-                colidx = table.getcolumnidx(colname)
+                colidx = table.index_byname(colname)
                 # Go through data rows and see which match to our criterion
                 for datarow in table.datarows:
                     # If row matches, add it to strong data set
@@ -460,16 +463,16 @@ class EosAdapter(object):
         # Set with groupIDs we want to keep
         strong_groups = {const.group_EFFECTBEACON}
         # Get indices of group and category columns in group table
-        group_table = self.tables["invgroups"]
-        idx_groupid = group_table.getcolumnidx("groupID")
-        idx_categoryid = group_table.getcolumnidx("categoryID")
+        group_table = self.evedb["invgroups"]
+        idx_groupid = group_table.index_byname("groupID")
+        idx_categoryid = group_table.index_byname("categoryID")
         # Go through table data, filling valid groups set according to valid categories
         for datarow in group_table.datarows:
             if datarow[idx_categoryid] in strong_categories:
                 strong_groups.add(datarow[idx_groupid])
         # Get typeIDs of items we're going to pump
-        type_table = self.tables["invtypes"]
-        idx_groupid = type_table.getcolumnidx("groupID")
+        type_table = self.evedb["invtypes"]
+        idx_groupid = type_table.index_byname("groupID")
         # Set-container for strong types
         rows2pump = set()
         for datarow in type_table.datarows:
@@ -481,7 +484,7 @@ class EosAdapter(object):
     def __metadata_pumping(self, strong_data):
         """Protect metadata table from removal"""
         # Set with categoryIDs we want to keep
-        metadata_table = self.tables["metadata"]
+        metadata_table = self.evedb["metadata"]
         self.__pump_data(metadata_table, metadata_table.datarows, strong_data)
         return
 
@@ -507,10 +510,9 @@ class EosAdapter(object):
     def __kill_weak(self, strong_data, trashed_data):
         """Trash all data which isn't marked as strong"""
         # Go through all tables
-        for tabname in self.tables:
-            table = self.tables[tabname]
+        for table in self.evedb:
             rows2trash = set()
-            strongrows = strong_data.get(tabname)
+            strongrows = strong_data.get(table.name)
             # If it doesn't contain strong rows, kill all data
             if strongrows is None:
                 rows2trash.update(table.datarows)
@@ -525,27 +527,26 @@ class EosAdapter(object):
         """Based on PK and FK data, detects table type"""
         # Create container holding our table type specifications
         type_map = {}
-        for tabname in self.tables:
-            table = self.tables[tabname]
+        for table in self.evedb:
             # We will judge basing on PK number as one of the factos
-            pks = len(table.getpks())
+            pks = len(table.get_pks())
             # If there's no PKs at all or 2+ PKs, then table is auxiliary
             if pks > 1 or pks == 0:
-                type_map[tabname] = table_AUX
+                type_map[table.name] = table_AUX
                 continue
             # Even if there's single PK, but it references something else -
             # it means that table contents contain complementary data, thus table is
             # auxiliary too
-            for column in table.columns:
+            for column in table:
                 if column.pk is True and column.fk is not None:
-                    type_map[tabname] = table_AUX
+                    type_map[table.name] = table_AUX
                     break
             # Additional check to avoid going further, if we already detected
             # type of current table
-            if tabname in type_map:
+            if table.name in type_map:
                 continue
             # Else, type is base
-            type_map[tabname] = table_BASE
+            type_map[table.name] = table_BASE
         return type_map
 
     def __make_fk_links(self):
@@ -557,15 +558,14 @@ class EosAdapter(object):
         # {target table: {target column: {(source table, source column)}}}
         tgt_fk_src = {}
         # Go through all tables to fill map
-        for src_tabname in self.tables:
-            src_table = self.tables[src_tabname]
-            for src_column in src_table.columns:
+        for src_table in self.evedb:
+            for src_column in src_table:
                 # Columns with no FK are no interest for us
                 if src_column.fk is None:
                     continue
                 tgt_tabname, tgt_colname = src_column.fk.split(".")
-                tgt_table = self.tables[tgt_tabname]
-                tgt_column = tgt_table.getcolumn(tgt_colname)
+                tgt_table = self.evedb[tgt_tabname]
+                tgt_column = tgt_table[tgt_colname]
                 # Fill source-target map
                 if not src_table.name in src_fk_tgt:
                     src_fk_tgt[src_table.name] = {}
@@ -603,14 +603,14 @@ class EosAdapter(object):
                 # Get data for target column into single set, but only if it's
                 # not yet there
                 if not tgt_spec in coldata:
-                    tgt_dataset = self.tables[tgt_tabname].getcolumndataset(tgt_colname)
+                    tgt_dataset = self.evedb[tgt_tabname].get_columndataset(tgt_colname)
                     coldata[tgt_spec] = tgt_dataset
         # Now, to the actual restore process
         for src_tabname in src_fk_tgt:
             # Skip all non-auxiliary tables
             if tabletypes[src_tabname] != table_AUX:
                 continue
-            src_table = self.tables[src_tabname]
+            src_table = self.evedb[src_tabname]
             # Container for data we're going to restore
             rows2restore = set()
             # Go through all FK columns of out table
@@ -621,7 +621,7 @@ class EosAdapter(object):
                 if tgt_strength is not True:
                     continue
                 tgt_spec = "{0}.{1}".format(tgt_tabname, tgt_colname)
-                src_colidx = src_table.getcolumnidx(src_colname)
+                src_colidx = src_table.index_byname(src_colname)
                 # For each, check all thrashed data
                 for datarow in trashed_data[src_tabname]:
                     src_val = datarow[src_colidx]
@@ -651,14 +651,14 @@ class EosAdapter(object):
                 # Pick FK target and form full textual specification
                 src_spec = "{0}.{1}".format(src_tabname, src_colname)
                 # Get data for source column into single set
-                src_dataset = self.tables[src_tabname].getcolumndataset(src_colname)
+                src_dataset = self.evedb[src_tabname].get_columndataset(src_colname)
                 # None and zero values are not actual references according to
                 # CCP scheme, so get rid of them
                 src_dataset.difference_update({0, None})
                 coldata[src_spec] = src_dataset
         # Restore broken plain references; go through all target tables and columns
         for tgt_tabname in tgt_fk_src:
-            tgt_table = self.tables[tgt_tabname]
+            tgt_table = self.evedb[tgt_tabname]
             # Set-container for rows to be restored
             rows2restore = set()
             for tgt_colname in tgt_fk_src[tgt_tabname]:
@@ -670,7 +670,7 @@ class EosAdapter(object):
                     src_vals.update(coldata[src_spec])
                 # Finally, go through rows of removed data and mark it as to-be-restored
                 # if match happens
-                tgt_colidx = tgt_table.getcolumnidx(tgt_colname)
+                tgt_colidx = tgt_table.index_byname(tgt_colname)
                 for datarow in trashed_data[tgt_tabname]:
                     tgt_val = datarow[tgt_colidx]
                     if tgt_val in src_vals:
@@ -683,13 +683,13 @@ class EosAdapter(object):
         special_attrval_links = self.__define_attrvalue_relationships(attrcat_attrid_map)
         # Then follow almost the same approach
         for tgt_tabname in special_attrval_links:
-            tgt_table = self.tables[tgt_tabname]
+            tgt_table = self.evedb[tgt_tabname]
             rows2restore = set()
             for tgt_colname in special_attrval_links[tgt_tabname]:
                 # Except for the fact that we already have our data at hand and can use it
                 # without additional gathering
                 src_vals = special_attrval_links[tgt_tabname][tgt_colname]
-                tgt_colidx = tgt_table.getcolumnidx(tgt_colname)
+                tgt_colidx = tgt_table.index_byname(tgt_colname)
                 for datarow in trashed_data[tgt_tabname]:
                     tgt_val = datarow[tgt_colidx]
                     if tgt_val in src_vals:
@@ -704,9 +704,9 @@ class EosAdapter(object):
         """Hamster some data before it gets removed, it's needed for primary method"""
         # Format: {attrCategory: {attrID}}
         attrcat_attrid_map = {}
-        attr_table = self.tables["dgmattribs"]
-        idx_attrid = attr_table.getcolumnidx("attributeID")
-        idx_attrcat = attr_table.getcolumnidx("attributeCategory")
+        attr_table = self.evedb["dgmattribs"]
+        idx_attrid = attr_table.index_byname("attributeID")
+        idx_attrcat = attr_table.index_byname("attributeCategory")
         for datarow in attr_table.datarows:
             attrcat = datarow[idx_attrcat]
             if not attrcat in attrcat_attrid_map:
@@ -724,9 +724,9 @@ class EosAdapter(object):
         # Format: {table name: {column name: values to restore}}
         special_attrval_links = {}
         # Get indices to work with data in dgmtypeattribs table
-        typeattrs_table = self.tables["dgmtypeattribs"]
-        idx_attrid = typeattrs_table.getcolumnidx("attributeID")
-        idx_value = typeattrs_table.getcolumnidx("value")
+        typeattrs_table = self.evedb["dgmtypeattribs"]
+        idx_attrid = typeattrs_table.index_byname("attributeID")
+        idx_value = typeattrs_table.index_byname("value")
         # Some high-level access instructions, what to restore
         conditional_links = {(const.attributeCategory_DEFATTR, "dgmattribs", "attributeID"),
                              (const.attributeCategory_DEFGROUP, "invgroups", "groupID"),
@@ -760,7 +760,7 @@ class EosAdapter(object):
             # If set is empty, don't do anything
             if removedrows == 0:
                 continue
-            table = self.tables[tabname]
+            table = self.evedb[tabname]
             # Calculate total number of data rows we had in table
             totalrows = len(table.datarows) + removedrows
             # Print jobs
