@@ -591,6 +591,9 @@ class EosAdapter(object):
             changed = False
             changed = self.__reanimate_aux_friends(tabletypes, src_fk_tgt, trashed_data, changed)
             changed = self.__reestablish_broken_relationships(src_fk_tgt, tgt_fk_src, trashed_data, attrcat_attrid_map, changed)
+        # Here, we may want to add cyclic (like in previous step):
+        # 1) Removal of entries with still-broken FK relationships (including conditional attribute value references)
+        # 2) Removal of data with no references to it
         return
 
     def __kill_weak(self, strong_data, trashed_data):
