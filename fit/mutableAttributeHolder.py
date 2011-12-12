@@ -83,7 +83,6 @@ class MutableAttributeMap(collections.Mapping):
     def __getitem__(self, key):
         val = self.__modifiedAttributes.get(key)
         if val is None:
-            # Should actually run calcs here instead :D
             self.__modifiedAttributes[key] = val = self.__calculate(key)
 
         return val
@@ -177,8 +176,8 @@ class MutableAttributeMap(collections.Mapping):
                 value = sourceHolder.attributes[info.sourceAttributeId]
 
                 #Stacking penaltied modifiers get special handling
-                if not stackable and sourceHolder.categoryId not in const.penaltyImmuneCats \
-                   and operation in (const.optrPreMul, const.optrPostMul, const.optrPreDiv, const.optrPostDiv):
+                if not stackable and sourceHolder.type.categoryId not in const.penaltyImmuneCats \
+                   and operation in (const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv):
 
                     # Compute actual modifier
                     if operation == const.optrPostPercent:
@@ -194,9 +193,9 @@ class MutableAttributeMap(collections.Mapping):
 
                     valueSet = subDict.get(operation)
                     if valueSet is None:
-                        subDict[operation] = valueSet = set()
+                        subDict[operation] = valueSet = []
 
-                    valueSet.add(value)
+                    valueSet.append(value)
 
                 elif operation in (const.optrPreAssignment, const.optrPostAssignment):
                     result = value
@@ -216,8 +215,8 @@ class MutableAttributeMap(collections.Mapping):
                 for operation in subDict:
                     values = sorted(subDict[operation])
                     for i in range(len(values)):
-                        result *= values[i] * const.penaltyBase ** (i ** 2)
+                        result *= 1 + values[i] * const.penaltyBase ** (i ** 2)
 
             return result
-        except:
+        except KeyError:
             return base

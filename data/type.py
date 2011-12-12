@@ -27,9 +27,12 @@ class Type(object):
     As such, there shouldn't be ANY fit-specific data on it
     """
 
-    def __init__(self, id, groupId, effects, attributes, attributeTypes):
+    def __init__(self, id, categoryId, groupId, effects, attributes, attributeTypes):
         self.id = id
         """The id of the type, typically, this is the one taken from the SDD from CCP. Can be anything if you're defining your own types, as long as its hashable"""
+
+        self.categoryId = categoryId
+        """The categoryId of the type, used for stacking penalty calculations. Should be an int, typically an already existing category"""
 
         self.groupId = groupId
         """The groupID of the type, this is used for filtering purposes in the expressions. Should be an int, you usualy want to use an already existing group if you're defining your own types so effects can apply to it"""

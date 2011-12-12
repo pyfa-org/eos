@@ -52,9 +52,12 @@ for typeRow in conn.execute('SELECT typeID, groupID FROM invtypes'):
     attributes = [(attributeRow["attributeID"], attributeRow["value"])
                     for attributeRow in conn.execute('SELECT attributeID, value FROM dgmtypeattribs WHERE typeID = ?', (typeRow["typeID"],))]
 
+    category = conn.execute('SELECT categoryID FROM invgroups WHERE groupID = ?', (typeRow["groupID"],))
+    category = category.fetchone()["categoryID"]
     types[typeRow["typeID"]] = {'effects': effects,
                                 'attributes': attributes,
-                                'group': typeRow["groupID"]};
+                                'group': typeRow["groupID"],
+                                'category': category};
 
 # Dump them
 with bz2.BZ2File(args.typeDumpPath, 'wb') as f:
