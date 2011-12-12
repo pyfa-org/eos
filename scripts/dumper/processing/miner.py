@@ -89,9 +89,7 @@ class DataMiner(object):
             # Get all the data from it
             self.__get_source_data(srcdata, table)
             # If no data was found for this table, remove it
-            if len(table.datarows) == 0:
-                print("  Warning: skipping table {0} as it doesn't have data rows".format(table.name))
-                evedb.remove(table)
+            self.__check_data_presence(table)
         return
 
     def __get_source_data(self, sourcedata, table):
@@ -231,6 +229,7 @@ class DataMiner(object):
         table.add_column("tcName")
         for tcName, tcID in main_registration.iteritems():
             table.datarows.add((tcID, tcName))
+        self.__check_data_presence(table)
 
         # Process mapping table
         # Dictionary, where keys are tuples with 2 values
@@ -241,6 +240,7 @@ class DataMiner(object):
         table.add_column("textID")
         for (tcID, keyID), textID in main_mapping.iteritems():
             table.datarows.add((tcID, keyID, textID))
+        self.__check_data_presence(table)
 
         # Process labels table
         # Keyed data rows, where each row is dictionary itself
@@ -263,6 +263,7 @@ class DataMiner(object):
         for dictrow in dictrow_data:
             datarow = tuple(dictrow.get(header) for header in headers)
             table.datarows.add(datarow)
+        self.__check_data_presence(table)
 
         # Process languages table
         # Layout is same as in previous table
@@ -280,6 +281,7 @@ class DataMiner(object):
         for dictrow in dictrow_data:
             datarow = tuple(dictrow.get(header) for header in headers)
             table.datarows.add(datarow)
+        self.__check_data_presence(table)
 
         # Process types table
         # Dictionary of dictionaries of lists
@@ -292,16 +294,14 @@ class DataMiner(object):
             for langID, langspec in langdata.iteritems():
                 langspec_joined = u",".join(langspec)
                 table.datarows.add((entity, langID, langspec_joined))
+        self.__check_data_presence(table)
 
-        # Finally, merge our data tables with actual texts into single super-table
+        # Finally, get our data tables with actual texts
         main_languages = main["languages"]
-        table = evedb.add_table("trntexts")
         # First, gather list of available languages
         languages = set()
         for langID in main_languages:
             languages.add(main_languages[langID]["languageID"])
-        # Containers for actual table data
-        textdata = {}
         for langID in languages:
             # Load data for given language key
             try:
@@ -319,32 +319,14 @@ class DataMiner(object):
                 continue
             if langdata[2] != {}:
                 print("  Unexpected value in unknown container for {0} language".format(langID))
-            # Actual string data for given language
+            table = evedb.add_table("trntexts_{0}".format(langID))
+            table.add_column("textID")
+            table.add_column("text")
+            # Actual text data for given language
             langtext = langdata[1]
             for textID, text in langtext.iteritems():
-                # If ID is not available in generic container, create it and empty
-                # dictionary as value (will be data row)
-                if not textID in textdata:
-                    textdata[textID] = {}
-                # Fill our data row
-                textdata[textID][langID] = text
-        # Now, as we finished gathering data, compose header list
-        headers = []
-        for dictrow in textdata.itervalues():
-            for langID in dictrow:
-                if not langID in headers:
-                    headers.append(langID)
-        # Sort headers and prepend ID column name
-        headers.sort()
-        headers.insert(0, "textID")
-        # Add columns to table
-        for header in headers:
-            table.add_column(header)
-        # Transform rows to include row ID and add them to table as well
-        for textID, dictrow in textdata.iteritems():
-            dictrow["textID"] = textID
-            datarow = tuple(dictrow.get(header) for header in headers)
-            table.datarows.add(datarow)
+                table.datarows.add((textID, text))
+            self.__check_data_presence(table)
         return
 
     def __add_metadata(self):
@@ -362,4 +344,11 @@ class DataMiner(object):
         # Add data
         metatable.datarows.add(("version", evever))
         metatable.datarows.add(("release", self.release))
+        return
+
+    def __check_data_presence(self, table):
+        """Check if table actually contains some data, and remove it if it isn't"""
+        if len(table.datarows) == 0:
+            print("  Warning: skipping table {0} as it doesn't have data rows".format(table.name))
+            self.evedb.remove(table)
         return

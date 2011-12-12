@@ -21,6 +21,7 @@ import collections
 import re
 
 import const
+from processing import Preprocessor
 
 # Several local constants, describing type of the table
 table_BASE = 1  # Defines some entity
@@ -47,6 +48,9 @@ class EosAdapter(object):
         # Transform literal references to IDs in expressions table too,
         # before required data is removed
         self.__expression_idzing()
+        # Merge multiple language tables into one, we need this to ease
+        # of data filtering (more straight-forward FK references)
+        self.__combine_translations()
         # Run helper method which will be needed for proper autocleanup
         attrcat_attrid_map = self.__define_attrvalue_relationships_hamster()
         # Assign database format specification to object for ease of use and
@@ -318,6 +322,52 @@ class EosAdapter(object):
         for datarow in replacement_map:
             exp_table.datarows.remove(datarow)
             exp_table.datarows.add(replacement_map[datarow])
+        return
+
+    def __combine_translations(self):
+        """Place translations for all languages into single table"""
+        # Format: {langID: language table}
+        langid_table_map = {}
+        # Go through all tables and pick tables with actual translation data
+        for table in self.evedb:
+            match = re.match("^trntexts_(.+)", table.name)
+            if match is None:
+                continue
+            langID = match.group(1)
+            langid_table_map[langID] = table
+        # Container for unified data
+        # Format: {textID: {langID: text}}
+        dictrows = {}
+        # Fill it with data
+        for langID, table in langid_table_map.iteritems():
+            for textID, text in table.datarows:
+                if not textID in dictrows:
+                    dictrows[textID] = {}
+                dictrows[textID][langID] = text
+            # And remove source tables
+            self.evedb.remove(table)
+        # Compose list of headers for new table
+        headers = []
+        for langID in langid_table_map.iterkeys():
+            if not langID in headers:
+                headers.append(langID)
+        # Sort language IDs alphabetically
+        headers.sort()
+        # And prepend column which will be PK
+        headers.insert(0, "textID")
+        # Create table
+        table = self.evedb.add_table("trntexts")
+        # Fill it with columns
+        for header in headers:
+            table.add_column(header)
+        # And actual data rows
+        for textID, dictrow in dictrows.iteritems():
+            dictrow["textID"] = textID
+            datarow = tuple(dictrow.get(header) for header in headers)
+            table.datarows.add(datarow)
+        # Detect column data for fresh table
+        preproc = Preprocessor(self.evedb)
+        preproc.run_table(table)
         return
 
     def __synch_dbinfo(self):

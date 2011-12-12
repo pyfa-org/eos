@@ -48,6 +48,16 @@ class Preprocessor(object):
             self.__guess_primarykey(table)
         return
 
+    def run_table(self, table):
+        """Handle special requests for any new tables"""
+        # Do the same as run, just for one requested table
+        self.__detect_column_types(table)
+        self.__detect_data_length(table)
+        self.__detect_notnulls(table)
+        self.__detect_uniques(table)
+        self.__guess_primarykey(table)
+        return
+
     def __detect_column_types(self, table):
         """Detect data type stored in columns of given table"""
         # Go through all columns of given table
