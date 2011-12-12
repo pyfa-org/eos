@@ -46,7 +46,7 @@ if __name__ == "__main__":
     from processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, Dumper
 
     # Parse command line options
-    usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE]"
+    usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE] [--eos]"
     parser = OptionParser(usage=usage)
     parser.add_option("-e", "--eve", help="path to eve folder")
     parser.add_option("-c", "--cache", help="path to eve cache folder")
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     parser.add_option("-m", "--mysql", help="path to MySQL dump file, including file name")
     parser.add_option("-s", "--sisi", action="store_true", dest="singularity", help="if you're going to work with Singularity test server data, use this option", default=False)
     parser.add_option("-r", "--release", help="database release number, defaults to 1", default="1")
-    parser.add_option("-f", "--filter", action="store_true", help="enable data filtering for Eos", default=False)
+    parser.add_option("-o", "--eos", action="store_true", help="enable data refactoring for Eos", default=False)
     (options, args) = parser.parse_args()
 
     # Exit if we do not have any of required options
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     dataminer.run()
 
     # Some data processing
-    if options.filter is True:
+    if options.eos is True:
         # Manual mode: refactor database format to make it suitable for eos needs,
         # remove data not needed and detect type of remaining
         print("Refactoring database for Eos")
