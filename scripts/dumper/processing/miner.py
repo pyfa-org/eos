@@ -45,7 +45,6 @@ class DataMiner(object):
 
     def run(self):
         """Controls actual data mining workflow"""
-        print("Getting data from EVE Client")
         # Add tables from bulkdata and cache
         self.__get_bulkdata()
         # Read localization stuff files

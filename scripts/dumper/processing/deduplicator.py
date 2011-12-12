@@ -30,7 +30,6 @@ class Deduplicator(object):
         self.evedb = evedb
 
     def run(self):
-        print("Removing duplicate tables")
         deathgroups = self.__get_deathgroups()
         for deathgroup in deathgroups:
             self.__kill_losers(deathgroup)

@@ -74,22 +74,27 @@ if __name__ == "__main__":
     evedb = EveDB()
 
     # Create data miner and run it, pulling all the data from cache
+    print("Getting data from EVE Client")
     dataminer = DataMiner(evedb, PATH_EVE, PATH_CACHE, server, options.release)
     dataminer.run()
 
-    # Create preprocessor and find out some metadata for our tables
-    preprocessor = Preprocessor(evedb)
-    preprocessor.run()
-
-    # Remove the data we don't need
+    # Some data processing
     if options.filter is True:
-        # Manual mode: remove the data we don't need according to specification
+        # Manual mode: refactor database format to make it suitable for eos needs,
+        # remove data not needed and detect type of remaining
+        print("Refactoring database for Eos")
         adapter = EosAdapter(evedb)
         adapter.run()
     else:
-        # Automatic mode: eve cache contains structures with the same actual data,
+        # Automatic mode
+        # Create preprocessor and find out some metadata for our tables
+        print("Detecting columns data format")
+        preprocessor = Preprocessor(evedb)
+        preprocessor.run()
+        # Eve cache contains structures with the same actual data,
         # but differently grouped, so we're going to remove duplicates. This method
         # relies on table names and PK names, thus must be placed after PK detection
+        print("Removing duplicate tables")
         deduplicator = Deduplicator(evedb)
         deduplicator.run()
 

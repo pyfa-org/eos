@@ -32,7 +32,6 @@ class Preprocessor(object):
         self.evedb = evedb
 
     def run(self):
-        print("Detecting columns data format")
         for table in self.evedb:
             # Detect types of columns
             self.__detect_column_types(table)
@@ -41,21 +40,8 @@ class Preprocessor(object):
             # Detect if columns can be nulls and if they have only unique values
             self.__detect_notnulls(table)
             self.__detect_uniques(table)
-
-        print("Detecting primary keys")
-        for table in self.evedb:
             # Detect primary key for each table
             self.__guess_primarykey(table)
-        return
-
-    def run_table(self, table):
-        """Handle special requests for any new tables"""
-        # Do the same as run, just for one requested table
-        self.__detect_column_types(table)
-        self.__detect_data_length(table)
-        self.__detect_notnulls(table)
-        self.__detect_uniques(table)
-        self.__guess_primarykey(table)
         return
 
     def __detect_column_types(self, table):
