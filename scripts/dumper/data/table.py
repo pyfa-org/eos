@@ -119,6 +119,4 @@ class Table(object):
         """Get all data from certain column into set"""
         idx = self.getcolumnidx(name)
         dataset = set(dr[idx] for dr in self.datarows)
-        # Remove None value from set, if it's there
-        dataset.difference_update({None})
         return dataset
