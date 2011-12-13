@@ -39,7 +39,7 @@ if args.data is None or args.operand is None:
     sys.exit()
 
 # Connect to actual db
-conn = sqlite3.connect(args.data)
+conn = sqlite3.connect(os.path.expanduser(args.data))
 c = conn.cursor()
 
 # Set with IDs of expressions where requested operand is used, and IDs of their parents

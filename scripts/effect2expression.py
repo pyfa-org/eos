@@ -23,6 +23,7 @@ Script which outputs all expressions used by given effect, with details.
 """
 
 import argparse
+import os.path
 import sqlite3
 import sys
 
@@ -38,7 +39,7 @@ if args.data is None or args.effect is None:
     sys.exit()
 
 # Connect to database
-conn = sqlite3.connect(args.data)
+conn = sqlite3.connect(os.path.expanduser(args.data))
 c = conn.cursor()
 
 # Get pre- and post-expressions of given effect
