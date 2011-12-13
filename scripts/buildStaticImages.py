@@ -19,10 +19,13 @@
 #===============================================================================
 
 """
-Rebuild icons for UI needs. Script makes use of imagemagick and shell pipes.
+Rebuild icons for UI needs. Script makes use of imagemagick, so make sure to add its
+"convert" command to your path.
 """
 
+# Size for generic icons
 ICON_SIZE = 16
+# Size for renders which we use for ship icons
 RENDERS_SIZE = 32
 
 import argparse

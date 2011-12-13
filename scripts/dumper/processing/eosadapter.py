@@ -142,7 +142,7 @@ class EosAdapter(object):
 
         dataspec["icons"] = TableSpec({}, False)
         icons = dataspec["icons"].columns
-        icons["iconID"] = ColumnSpec(True, None, False, set())
+        icons["iconID"] = ColumnSpec(True, None, False, {0})
         icons["iconFile"] = ColumnSpec(False, None, False, set())
 
         dataspec["invcategories"] = TableSpec({}, False)
