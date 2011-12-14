@@ -74,6 +74,7 @@ class EosAdapter(object):
         self.__autocleanup(strong_data, trashed_data, attrcat_attrid_map)
         # Print some statistics to know what has been cleaned
         self.__print_stats(trashed_data)
+        return
 
     def __get_dbspec(self):
         """Return specification of data Eos needs"""
@@ -204,6 +205,107 @@ class EosAdapter(object):
         trntexts["ru"] = ColumnSpec(False, None, False, set())
 
         return dataspec
+
+    def run_old(self):
+        """Temporary method to support old database layout"""
+        attrcat_attrid_map = self.__define_attrvalue_relationships_hamster()
+        dataspec = {}
+        dataspec["dgmattribs"] = TableSpec({}, False)
+        dgmattribs = dataspec["dgmattribs"].columns
+        dgmattribs["attributeID"] = ColumnSpec(True, None, False, set())
+        dgmattribs["attributeName"] = ColumnSpec(False, None, False, {"mass", "volume", "capacity", "radius"})
+        dgmattribs["description"] = ColumnSpec(False, None, False, set())
+        dgmattribs["published"] = ColumnSpec(False, None, False, set())
+        dgmattribs["maxAttributeID"] = ColumnSpec(False, "dgmattribs.attributeID", False, set())
+        dgmattribs["displayName"] = ColumnSpec(False, None, False, set())
+        dgmattribs["unitID"] = ColumnSpec(False, "eveunits.unitID", False, set())
+        dgmattribs["highIsGood"] = ColumnSpec(False, None, False, set())
+        dgmattribs["iconID"] = ColumnSpec(False, "icons.iconID", False, set())
+        dataspec["dgmeffects"] = TableSpec({}, False)
+        dgmeffects = dataspec["dgmeffects"].columns
+        dgmeffects["effectID"] = ColumnSpec(True, None, False, set())
+        dgmeffects["effectName"] = ColumnSpec(False, None, False, set())
+        dgmeffects["description"] = ColumnSpec(False, None, False, set())
+        dgmeffects["isOffensive"] = ColumnSpec(False, None, False, set())
+        dgmeffects["isAssistance"] = ColumnSpec(False, None, False, set())
+        dgmeffects["published"] = ColumnSpec(False, None, False, set())
+        dataspec["dgmtypeattribs"] = TableSpec({}, False)
+        dgmtypeattribs = dataspec["dgmtypeattribs"].columns
+        dgmtypeattribs["typeID"] = ColumnSpec(True, "invtypes.typeID", True, set())
+        dgmtypeattribs["attributeID"] = ColumnSpec(True, "dgmattribs.attributeID", False, set())
+        dgmtypeattribs["value"] = ColumnSpec(False, None, False, set())
+        dataspec["dgmtypeeffects"] = TableSpec({}, False)
+        dgmtypeeffects = dataspec["dgmtypeeffects"].columns
+        dgmtypeeffects["typeID"] = ColumnSpec(True, "invtypes.typeID", True, set())
+        dgmtypeeffects["effectID"] = ColumnSpec(True, "dgmeffects.effectID", False, set())
+        dataspec["eveunits"] = TableSpec({}, False)
+        eveunits = dataspec["eveunits"].columns
+        eveunits["unitID"] = ColumnSpec(True, None, False, set())
+        eveunits["unitName"] = ColumnSpec(False, None, False, set())
+        eveunits["displayName"] = ColumnSpec(False, None, False, set())
+        dataspec["icons"] = TableSpec({}, False)
+        icons = dataspec["icons"].columns
+        icons["iconID"] = ColumnSpec(True, None, False, {0})
+        icons["iconFile"] = ColumnSpec(False, None, False, set())
+        icons["description"] = ColumnSpec(False, None, False, set())
+        dataspec["invcategories"] = TableSpec({}, False)
+        invcategories = dataspec["invcategories"].columns
+        invcategories["categoryID"] = ColumnSpec(True, None, False, set())
+        invcategories["categoryName"] = ColumnSpec(False, None, False, set())
+        invcategories["description"] = ColumnSpec(False, None, False, set())
+        invcategories["published"] = ColumnSpec(False, None, False, set())
+        invcategories["iconID"] = ColumnSpec(False, "icons.iconID", False, set())
+        dataspec["invgroups"] = TableSpec({}, False)
+        invgroups = dataspec["invgroups"].columns
+        invgroups["groupID"] = ColumnSpec(True, None, False, set())
+        invgroups["categoryID"] = ColumnSpec(False, "invcategories.categoryID", False, set())
+        invgroups["groupName"] = ColumnSpec(False, None, False, set())
+        invgroups["published"] = ColumnSpec(False, None, False, set())
+        invgroups["iconID"] = ColumnSpec(False, "icons.iconID", False, set())
+        dataspec["invmarketgroups"] = TableSpec({}, False)
+        invmarketgroups = dataspec["invmarketgroups"].columns
+        invmarketgroups["parentGroupID"] = ColumnSpec(False, "invmarketgroups.marketGroupID", False, set())
+        invmarketgroups["marketGroupID"] = ColumnSpec(True, None, False, set())
+        invmarketgroups["marketGroupName"] = ColumnSpec(False, None, False, set())
+        invmarketgroups["description"] = ColumnSpec(False, None, False, set())
+        invmarketgroups["hasTypes"] = ColumnSpec(False, None, False, set())
+        invmarketgroups["iconID"] = ColumnSpec(False, "icons.iconID", False, set())
+        dataspec["invmetagroups"] = TableSpec({}, False)
+        invmetagroups = dataspec["invmetagroups"].columns
+        invmetagroups["metaGroupID"] = ColumnSpec(True, None, False, set())
+        invmetagroups["metaGroupName"] = ColumnSpec(False, None, False, set())
+        dataspec["invmetatypes"] = TableSpec({}, False)
+        invmetatypes = dataspec["invmetatypes"].columns
+        invmetatypes["typeID"] = ColumnSpec(True, "invtypes.typeID", False, set())
+        invmetatypes["parentTypeID"] = ColumnSpec(False, "invtypes.typeID", False, set())
+        invmetatypes["metaGroupID"] = ColumnSpec(False, "invmetagroups.metaGroupID", False, set())
+        dataspec["invtypes"] = TableSpec({}, True)
+        invtypes = dataspec["invtypes"].columns
+        invtypes["typeID"] = ColumnSpec(True, None, False, set())
+        invtypes["groupID"] = ColumnSpec(False, "invgroups.groupID", True, set())
+        invtypes["typeName"] = ColumnSpec(False, None, True, set())
+        invtypes["description"] = ColumnSpec(False, None, False, set())
+        invtypes["mass"] = ColumnSpec(False, None, False, set())
+        invtypes["volume"] = ColumnSpec(False, None, False, set())
+        invtypes["capacity"] = ColumnSpec(False, None, False, set())
+        invtypes["raceID"] = ColumnSpec(False, None, False, set())
+        invtypes["published"] = ColumnSpec(False, None, False, set())
+        invtypes["marketGroupID"] = ColumnSpec(False, "invmarketgroups.marketGroupID", False, set())
+        invtypes["iconID"] = ColumnSpec(False, "icons.iconID", False, set())
+        dataspec["metadata"] = TableSpec({}, False)
+        metadata = dataspec["metadata"].columns
+        metadata["fieldName"] = ColumnSpec(True, None, False, set())
+        metadata["fieldValue"] = ColumnSpec(False, None, False, set())
+        self.dbspec = dataspec
+        self.__synch_dbinfo()
+        strong_data = {}
+        self.__process_manual_strongs(strong_data)
+        self.__invtypes_pumping(strong_data)
+        self.__metadata_pumping(strong_data)
+        trashed_data = {}
+        self.__autocleanup(strong_data, trashed_data, attrcat_attrid_map)
+        self.__print_stats(trashed_data)
+        return
 
     def __normalize_attrs(self):
         """Moves attributes defined in type table to type-attribs mapping table"""

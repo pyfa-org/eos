@@ -55,6 +55,7 @@ if __name__ == "__main__":
     parser.add_option("-s", "--sisi", action="store_true", dest="singularity", help="if you're going to work with Singularity test server data, use this option", default=False)
     parser.add_option("-r", "--release", help="database release number, defaults to 1", default="1")
     parser.add_option("-o", "--eos", action="store_true", help="enable data refactoring for Eos", default=False)
+    parser.add_option("-d", "--eosold", action="store_true", help="enable data refactoring for old Eos", default=False)
     (options, args) = parser.parse_args()
 
     # Exit if we do not have any of required options
@@ -85,6 +86,12 @@ if __name__ == "__main__":
         print("Refactoring database for Eos")
         adapter = EosAdapter(evedb)
         adapter.run()
+    elif options.eosold is True:
+        # Manual mode: refactor database format to make it suitable for eos needs,
+        # remove data not needed and detect type of remaining
+        print("Refactoring database for old Eos")
+        adapter = EosAdapter(evedb)
+        adapter.run_old()
     else:
         # Automatic mode
         # Create preprocessor and find out some metadata for our tables
