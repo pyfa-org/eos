@@ -17,6 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+import copy
+
 from eos import const
 from .info import EffectInfo
 
@@ -40,9 +42,23 @@ inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent,
                  const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
                  const.opndMissileLaunch, const.opndVrfTgtGrp, const.opndToolTgtSkills,
-                 const.opndMine, const.opndDefenderLaunch, const.opndFofLaunch}
+                 const.opndMine, const.opndDefenderLaunch, const.opndFofLaunch,
+                 const.opndUserError}
 # Values which are considered as 'empty' values
 nulls = {0, None}
+
+class ConditionAtom(object):
+    """
+    Stores bit of Info condition metadata
+    """
+    def __init__(self):
+        self.type = None
+        self.operator = None
+        self.arg1 = None
+        self.arg2 = None
+        self.value = None
+        self.carrier = None
+        self.attribute = None
 
 class Modifier(object):
     """
@@ -50,6 +66,8 @@ class Modifier(object):
     and provides facilities to convert them to ExpressionInfo objects
     """
     def __init__(self):
+        # Conditions under which modification can be applied
+        self.conditions = None
         # Type of modification
         self.type = None
         # Source attribute ID
@@ -212,6 +230,7 @@ class Modifier(object):
         """Convert Modifier object to EffectInfo object"""
         # Create object and fill generic fields
         info = EffectInfo()
+        info.conditions = self.conditions
         info.sourceAttributeId = self.sourceAttribute
         info.targetAttributeId = self.targetAttribute
         # Fill remaining fields on per-modifier basis
@@ -330,6 +349,9 @@ class InfoBuilder(object):
         self.activeSet = None
         # Which modifier we're referencing at the moment
         self.activeMod = None
+        # Conditions applied to all expressions found on current
+        # building stage
+        self.conditions = None
 
     def build(self, preExpression, postExpression):
         """
@@ -337,7 +359,7 @@ class InfoBuilder(object):
         """
         self.activeSet = self.preMods
         try:
-            self.__generic(preExpression)
+            self.__generic(preExpression, None)
         except:
             print("Error building pre-expression tree with base {}".format(preExpression.id))
             return set()
@@ -348,7 +370,7 @@ class InfoBuilder(object):
 
         self.activeSet = self.postMods
         try:
-            self.__generic(postExpression)
+            self.__generic(postExpression, None)
         except:
             print("Error building post-expression tree with base {}".format(postExpression.id))
             return set()
@@ -356,11 +378,13 @@ class InfoBuilder(object):
             if mod.validate() is not True:
                 print("Error validating post-modifiers of base {}".format(postExpression.id))
                 return set()
-
         infos = set()
         usedPres = set()
         usedPosts = set()
+
         for preMod in self.preMods:
+            if not preMod.type in durationMods:
+                continue
             for postMod in self.postMods:
                 if postMod in usedPosts:
                     continue
@@ -372,12 +396,17 @@ class InfoBuilder(object):
                     break
 
         for preMod in self.preMods:
+            if not preMod.type in instantMods:
+                continue
             if preMod in usedPres:
                 continue
             info = preMod.convertToInfo()
             infos.add(info)
             usedPres.add(preMod)
+
         for postMod in self.postMods:
+            if not postMod.type in instantMods:
+                continue
             if postMod in usedPosts:
                 continue
             info = postMod.convertToInfo()
@@ -395,45 +424,49 @@ class InfoBuilder(object):
 
         return infos
 
-    # Top-level methods - combining, routing, etc
-    def __generic(self, element):
+    def __generic(self, element, conditions):
         """Generic entry point, used if we expect passed element to be meaningful"""
         # For actual modifications, call method which handles them
         if element.operand in durationMods:
-            self.__makeDurationMod(element)
+            self.__makeDurationMod(element, conditions)
+        elif element.operand in instantMods:
+            self.__makeInstantMod(element, conditions)
         # Do nothing for inactive operands
         elif element.operand in inactiveOpnds:
             pass
-        elif element.operand in instantMods:
-            self.__makeInstantMod(element)
+        elif element.operand == const.opndOr:
+            self.__ifThenElse(element, conditions)
         # Process expressions with other operands using the map
         else:
             genericOpnds = {const.opndSplice: self.__splice,
                             const.opndDefInt: self.__checkIntStub,
                             const.opndDefBool: self.__checkBoolStub}
-            genericOpnds[element.operand](element)
+            genericOpnds[element.operand](element, conditions)
 
-    def __splice(self, element):
+    def __splice(self, element, conditions):
         """Reference two expressions from self"""
-        self.__generic(element.arg1)
-        self.__generic(element.arg2)
+        self.__generic(element.arg1, conditions)
+        self.__generic(element.arg2, conditions)
 
-    def __checkIntStub(self, element):
+    def __checkIntStub(self, element, conditions):
         """Checks if given expression is stub, returning integer 1"""
         value = self.__getInt(element)
         if value != 1:
             raise ValueError("integer stub with value other than 1")
 
-    def __checkBoolStub(self, element):
+    def __checkBoolStub(self, element, conditions):
         """Checks if given expression is stub, returning boolean true"""
         value = self.__getBool(element)
         if value is not True:
             raise ValueError("boolean stub with value other than True")
 
-    def __makeDurationMod(self, element):
+    def __makeDurationMod(self, element, conditions):
         """Make modifier for duration expressions"""
         # Make modifier object and let builder know we're working with it
         self.activeMod = Modifier()
+        # If we're asked to add any conditions, do it
+        if conditions is not None:
+            self.activeMod.conditions = copy.deepcopy(conditions)
         # Write modifier type, which corresponds to top-level operand of modification
         self.activeMod.type = element.operand
         # Request operator and target data, it's always in arg1
@@ -446,10 +479,12 @@ class InfoBuilder(object):
         # exceptions instead of filling old modifier if something goes wrong
         self.activeMod = None
 
-    def __makeInstantMod(self, element):
+    def __makeInstantMod(self, element, conditions):
         """Make modifier for instant expressions"""
         # Workflow is almost the same as for duration modifiers
         self.activeMod = Modifier()
+        if conditions is not None:
+            self.activeMod.conditions = copy.deepcopy(conditions)
         self.activeMod.type = element.operand
         # As our operation is specified by top-level operand, call target router directly
         self.__tgtRouter(element.arg1)
@@ -551,3 +586,63 @@ class InfoBuilder(object):
     def __getBool(self, element):
         """Get integer from value"""
         return bool(element.value)
+
+    # Condition-related methods
+    def __ifThenElse(self, element, conditions):
+        ifThenClause = element.arg1
+        elseClause = element.arg2
+        thenConditionAtom = self.__makeCondition(ifThenClause.arg1)
+        if conditions is None:
+            thenConditions = thenConditionAtom
+        else:
+            thenConditions = ConditionAtom()
+            thenConditions.type = const.condAtomLogic
+            thenConditions.operator = const.condLogicAnd
+            thenConditions.arg1 = conditions
+            thenConditions.arg2 = thenConditionAtom
+        self.__generic(ifThenClause.arg2, thenConditions)
+        invConds = {const.condCompEq: const.condCompNotEq,
+                    const.condCompGreat: const.condCompLessEq,
+                    const.condCompGreatEq: const.condCompLess}
+        elseConditionAtom = copy.deepcopy(thenConditionAtom)
+        elseConditionAtom.operator = invConds[elseConditionAtom.operator]
+        if conditions is None:
+            elseConditions = elseConditionAtom
+        else:
+            elseConditions = ConditionAtom()
+            elseConditions.type = const.condAtomLogic
+            elseConditions.operator = const.condLogicAnd
+            elseConditions.arg1 = conditions
+            elseConditions.arg2 = elseConditionAtom
+        self.__generic(elseClause, elseConditions)
+
+
+    def __makeCondition(self, element):
+        condOpndAtomMap = {const.opndEq: const.condCompEq,
+                           const.opndGreater: const.condCompGreat,
+                           const.opndGreaterEq: const.condCompGreatEq}
+        if element.operand in condOpndAtomMap:
+            conditionTopAtom = ConditionAtom()
+            conditionTopAtom.type = const.condAtomComp
+            conditionTopAtom.operator = condOpndAtomMap[element.operand]
+            conditionTopAtom.arg1 = self.__getAtomCompArg(element.arg1)
+            conditionTopAtom.arg2 = self.__getAtomCompArg(element.arg2)
+            return conditionTopAtom
+        else:
+            raise ValueError("unknown operand in expression passed as condition")
+
+    def __getAtomCompArg(self, element):
+        """Get comparison argument atom tree"""
+        if element.operand == const.opndItmAttrCond:
+            attrAtom = ConditionAtom()
+            attrAtom.type = const.condAtomValRef
+            attrAtom.carrier = self.__getLoc(element.arg1)
+            attrAtom.attribute = self.__getAttr(element.arg2)
+            return attrAtom
+        argValueMap = {const.opndDefInt: self.__getInt}
+        if element.operand in argValueMap:
+            valueAtom = ConditionAtom()
+            valueAtom.type = const.condAtomVal
+            valueAtom.value = argValueMap[element.operand](element)
+            return valueAtom
+        raise ValueError("unknown operand in expression passed as comparison part")

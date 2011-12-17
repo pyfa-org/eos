@@ -26,6 +26,12 @@ class EffectInfo(object):
     but nothing prevents a user from making some of his own and running them onto a fit
     """
     def __init__(self):
+        self.conditions = None
+        """
+        Describes conditions under which modification is applied.
+        Can be None or tree of ConditionAtom objects.
+        """
+
         self.type = None
         """
         Describes type of modification.
