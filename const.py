@@ -83,12 +83,12 @@ opndDefType = 29  # Define a type, integer in expressionTypeID field
 opndEcmBurst = 30  # Special operand, used in ECM Burst effects
 opndOptrTgt = 31  # Joins operator and target (attribute of possibly filtered items) definitions, format: (location->targetAttribute).(operator)
 opndAoeDmg = 32  # Special operand, defines area-of-effect damage for modules like smartbombs and old doomsday
-opndEq = 33  # Check for equality
+opndEq = 33  # Check for equality, used in conditions
 opndGrpAttr = 34  # Joins group and attribute into target definition, format: groupFilter.targetAttribute
-opndItmAttrCond = 35  # Joins target item and its attribute in conditions
+opndItmAttrCond = 35  # Joins target item and its attribute, used in conditions
 opndGetType = 36  # Gets type of item in arg1
-opndGreater = 38  # Check for arg1 being greater than arg2
-opndGreaterEq = 39  # Check for arg1 being greater than or equaal to arg2
+opndGreater = 38  # Check for arg1 being greater than arg2, used in conditions
+opndGreaterEq = 39  # Check for arg1 being greater than or equal to arg2, used in conditions
 opndGenAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
 opndInc = 42  # Increases value of some attribute by the value of another one
 opndMissileLaunch = 44  # Special operand, handles missile launching
@@ -180,26 +180,26 @@ infoPost = 3
 selfTypeID = -1
 
 # Types of condition atoms, which are used to describe some condition
-condAtomLogic = 1  # Logical OR or AND
-condAtomComp = 2  # Comparison of arguments
-condAtomMath = 3  # Some math operation applied onto arguments
-condAtomValRef = 4  # Reference to attribute value
-condAtomVal = 5  # Value is enclosed in atom itself
+atomTypeLogic = 1  # Logical OR or AND
+atomTypeComp = 2  # Comparison of arguments
+atomTypeMath = 3  # Some math operation applied onto arguments
+atomTypeValRef = 4  # Reference to attribute value
+atomTypeVal = 5  # Value is enclosed in atom itself
 
 # Logical operator for condition atoms
-condLogicAnd = 1
-condLogicOr = 2
+atomLogicAnd = 1
+atomLogicOr = 2
 
 # Comparison types for condition atoms
-condCompEq = 1  # ==
-condCompNotEq = 2  # !=
-condCompLess = 3  # <
-condCompLessEq = 4  # <=
-condCompGreat = 5  # >
-condCompGreatEq = 6  # >=
+atomCompEq = 1  # ==
+atomCompNotEq = 2  # !=
+atomCompLess = 3  # <
+atomCompLessEq = 4  # <=
+atomCompGreat = 5  # >
+atomCompGreatEq = 6  # >=
 
 # Math operators for condition atoms
-condMathAdd = 1
-condMathSub = 2
-condMathMult = 3
-condMathDiv = 4
+atomMathAdd = 1
+atomMathSub = 2
+atomMathMult = 3
+atomMathDiv = 4

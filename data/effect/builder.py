@@ -596,34 +596,34 @@ class InfoBuilder(object):
             thenConditions = thenConditionAtom
         else:
             thenConditions = ConditionAtom()
-            thenConditions.type = const.condAtomLogic
-            thenConditions.operator = const.condLogicAnd
+            thenConditions.type = const.atomTypeLogic
+            thenConditions.operator = const.atomLogicAnd
             thenConditions.arg1 = conditions
             thenConditions.arg2 = thenConditionAtom
         self.__generic(ifThenClause.arg2, thenConditions)
-        invConds = {const.condCompEq: const.condCompNotEq,
-                    const.condCompGreat: const.condCompLessEq,
-                    const.condCompGreatEq: const.condCompLess}
+        invConds = {const.atomCompEq: const.atomCompNotEq,
+                    const.atomCompGreat: const.atomCompLessEq,
+                    const.atomCompGreatEq: const.atomCompLess}
         elseConditionAtom = copy.deepcopy(thenConditionAtom)
         elseConditionAtom.operator = invConds[elseConditionAtom.operator]
         if conditions is None:
             elseConditions = elseConditionAtom
         else:
             elseConditions = ConditionAtom()
-            elseConditions.type = const.condAtomLogic
-            elseConditions.operator = const.condLogicAnd
+            elseConditions.type = const.atomTypeLogic
+            elseConditions.operator = const.atomLogicAnd
             elseConditions.arg1 = conditions
             elseConditions.arg2 = elseConditionAtom
         self.__generic(elseClause, elseConditions)
 
 
     def __makeCondition(self, element):
-        condOpndAtomMap = {const.opndEq: const.condCompEq,
-                           const.opndGreater: const.condCompGreat,
-                           const.opndGreaterEq: const.condCompGreatEq}
+        condOpndAtomMap = {const.opndEq: const.atomCompEq,
+                           const.opndGreater: const.atomCompGreat,
+                           const.opndGreaterEq: const.atomCompGreatEq}
         if element.operand in condOpndAtomMap:
             conditionTopAtom = ConditionAtom()
-            conditionTopAtom.type = const.condAtomComp
+            conditionTopAtom.type = const.atomTypeComp
             conditionTopAtom.operator = condOpndAtomMap[element.operand]
             conditionTopAtom.arg1 = self.__getAtomCompArg(element.arg1)
             conditionTopAtom.arg2 = self.__getAtomCompArg(element.arg2)
@@ -635,14 +635,14 @@ class InfoBuilder(object):
         """Get comparison argument atom tree"""
         if element.operand == const.opndItmAttrCond:
             attrAtom = ConditionAtom()
-            attrAtom.type = const.condAtomValRef
+            attrAtom.type = const.atomTypeValRef
             attrAtom.carrier = self.__getLoc(element.arg1)
             attrAtom.attribute = self.__getAttr(element.arg2)
             return attrAtom
         argValueMap = {const.opndDefInt: self.__getInt}
         if element.operand in argValueMap:
             valueAtom = ConditionAtom()
-            valueAtom.type = const.condAtomVal
+            valueAtom.type = const.atomTypeVal
             valueAtom.value = argValueMap[element.operand](element)
             return valueAtom
         raise ValueError("unknown operand in expression passed as comparison part")
