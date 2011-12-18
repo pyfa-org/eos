@@ -132,7 +132,8 @@ class InfoBuilder(object):
         # Do nothing for inactive operands
         elif element.operand in inactiveOpnds:
             pass
-        elif element.operand == const.opndOr:
+        # Detect if-then-else construct
+        elif element.operand == const.opndOr and element.arg1 and element.arg1.operand == const.opndIfThen:
             self.__ifThenElse(element, conditions)
         # Process expressions with other operands using the map
         else:
@@ -294,7 +295,7 @@ class InfoBuilder(object):
         thenClause = element.arg1.arg2
         elseClause = element.arg2
         # Get condition data from if clause
-        newConditions = self.__makeCondition(ifClause)
+        newConditions = self.__makeConditionRouter(ifClause)
         # Combine passed and new conditions into single tree
         currentConditions = self.__appendCondition(conditions, newConditions)
         # Pass copy of conditions to make sure it's not modified there,
@@ -306,24 +307,44 @@ class InfoBuilder(object):
         self.__invertCondition(currentConditions)
         self.__generic(elseClause, deepcopy(currentConditions))
 
-    def __makeCondition(self, element):
+    def __makeConditionRouter(self, element):
         """Create actual condition node in conditions tree"""
+        condRouteMap = {const.opndAnd: self.__makeConditionLogic,
+                        const.opndOr: self.__makeConditionLogic,
+                        const.opndEq: self.__makeConditionComparison,
+                        const.opndGreater: self.__makeConditionComparison,
+                        const.opndGreaterEq: self.__makeConditionComparison}
+        condition = condRouteMap[element.operand](element)
+        return condition
+
+    def __makeConditionLogic(self, element):
+        """Make logic condition node"""
+        atomLogicMap = {const.opndAnd: const.atomLogicAnd,
+                        const.opndOr: const.atomLogicOr}
+        # Create logic node and fill it
+        condLogicAtom = ConditionAtom()
+        condLogicAtom.type = const.atomTypeLogic
+        condLogicAtom.operator = atomLogicMap[element.operand]
+        # Each subnode can be comparison or yet another logical element
+        condLogicAtom.arg1 = self.__makeConditionRouter(element.arg1)
+        condLogicAtom.arg2 = self.__makeConditionRouter(element.arg2)
+        return condLogicAtom
+
+    def __makeConditionComparison(self, element):
+        """Make comparison condition node"""
         # Maps expression operands to atom-specific comparison operations
         atomCompMap = {const.opndEq: const.atomCompEq,
                        const.opndGreater: const.atomCompGreat,
                        const.opndGreaterEq: const.atomCompGreatEq}
-        # Create condition node and fill it with data
-        if element.operand in atomCompMap:
-            conditionTopAtom = ConditionAtom()
-            conditionTopAtom.type = const.atomTypeComp
-            conditionTopAtom.operator = atomCompMap[element.operand]
-            conditionTopAtom.arg1 = self.__conditionPartGetter(element.arg1)
-            conditionTopAtom.arg2 = self.__conditionPartGetter(element.arg2)
-            return conditionTopAtom
-        else:
-            raise ValueError("unknown operand in expression passed as condition")
+        # Create comparison node and fill it with data
+        condCompAtom = ConditionAtom()
+        condCompAtom.type = const.atomTypeComp
+        condCompAtom.operator = atomCompMap[element.operand]
+        condCompAtom.arg1 = self.__conditionPartRouter(element.arg1)
+        condCompAtom.arg2 = self.__conditionPartRouter(element.arg2)
+        return condCompAtom
 
-    def __conditionPartGetter(self, element):
+    def __conditionPartRouter(self, element):
         """Use proper processing method according to passed operand"""
         condPartMap = {const.opndAdd: self.__makeCondPartMath,
                        const.opndSub: self.__makeCondPartMath,
@@ -339,8 +360,10 @@ class InfoBuilder(object):
         conditionMathAtom = ConditionAtom()
         conditionMathAtom.type = const.atomTypeMath
         conditionMathAtom.operator = atomMathMap[element.operand]
-        conditionMathAtom.arg1 = self.__getAtomCompArg(element.arg1)
-        conditionMathAtom.arg2 = self.__getAtomCompArg(element.arg2)
+        # Each math subnode can be other math node, attribute reference or value,
+        # so forward it to router again
+        conditionMathAtom.arg1 = self.__conditionPartRouter(element.arg1)
+        conditionMathAtom.arg2 = self.__conditionPartRouter(element.arg2)
         return conditionMathAtom
 
     def __makeCondPartValRef(self, element):
