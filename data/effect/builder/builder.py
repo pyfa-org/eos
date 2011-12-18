@@ -300,14 +300,10 @@ class InfoBuilder(object):
         # Pass copy of conditions to make sure it's not modified there,
         # we'll need them further
         self.__generic(thenClause, deepcopy(currentConditions))
-        # To get proper condition tree for modifiers contained in else clause, we need
-        # to invert comparison operator of new condition set
-        invConds = {const.atomCompEq: const.atomCompNotEq,
-                    const.atomCompGreat: const.atomCompLessEq,
-                    const.atomCompGreatEq: const.atomCompLess}
-        # As it's written directly to tree which is in combined set too, we do not
-        # need to make combined tree again
-        newConditions.operator = invConds[newConditions.operator]
+        # Negate condition for else clause processing
+        # We do not need to recombine it with conditions passed to our method,
+        # as condition being reverted is part of combined tree
+        self.__invertCondition(currentConditions)
         self.__generic(elseClause, deepcopy(currentConditions))
 
     def __makeCondition(self, element):
@@ -340,6 +336,25 @@ class InfoBuilder(object):
             combined.arg1 = cond1
             combined.arg2 = cond2
         return combined
+
+    def __invertCondition(self, condition):
+        """Get negative condition relatively passed condition"""
+        if condition.type == const.atomTypeLogic:
+            invLogic = {const.atomLogicAnd: const.atomLogicOr}
+            for k, v in invLogic.items():
+                invLogic[v] = k
+            condition.operator = invLogic[condition.operator]
+            self.__invertCondition(condition.arg1)
+            self.__invertCondition(condition.arg2)
+        elif condition.type == const.atomTypeComp:
+            invComps = {const.atomCompEq: const.atomCompNotEq,
+                        const.atomCompGreat: const.atomCompLessEq,
+                        const.atomCompGreatEq: const.atomCompLess}
+            for k, v in invComps.items():
+                invComps[v] = k
+            condition.operator = invComps[condition.operator]
+        else:
+            raise ValueError("only logical and comparison ConditionAtoms can be reverted")
 
     def __getAtomCompArg(self, element):
         """Get comparison argument atom tree"""
