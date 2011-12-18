@@ -180,10 +180,10 @@ class InfoBuilder(object):
         self.__generic(element.arg2, conditions)
 
     def __checkIntStub(self, element, conditions):
-        """Checks if given expression is stub, returning integer 1"""
+        """Checks if given expression is stub, returning integer 0 or 1"""
         value = self.__getInt(element)
-        if value != 1:
-            raise ValueError("integer stub with value other than 1")
+        if not value in (0, 1):
+            raise ValueError("integer stub with unexpected value")
 
     def __checkBoolStub(self, element, conditions):
         """Checks if given expression is stub, returning boolean true"""
