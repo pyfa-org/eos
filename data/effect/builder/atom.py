@@ -63,7 +63,7 @@ class ConditionAtom(object):
         For atomTypeVal, contains pre-stored atom value.
         """
 
-    def printTree(self, indent=""):
+    def __repr__(self, indent=""):
         """Convert atom tree, starting from self, to string"""
         # Scatter logic operator and its arguments into several lines with different
         # indentation level
@@ -71,7 +71,7 @@ class ConditionAtom(object):
             logicLiterals = {const.atomLogicAnd: "and",
                              const.atomLogicOr: "or"}
             newindent = "  {0}".format(indent)
-            result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.arg1.printTree(indent=newindent), self.arg2.printTree(indent=newindent))
+            result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.arg1.__repr__(indent=newindent), self.arg2.__repr__(indent=newindent))
         # Print comparison on the same line with its arguments, just place them in brackets
         elif self.type == const.atomTypeComp:
             compLiterals = {const.atomCompEq: "==",
@@ -81,13 +81,13 @@ class ConditionAtom(object):
                             const.atomCompGreat: ">",
                             const.atomCompGreatEq: ">="}
             newindent = "  {0}".format(indent)
-            result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.arg1.printTree(), self.arg2.printTree())
+            result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.arg1.__repr__(), self.arg2.__repr__())
         # Math operations are printed on the same line with its arguments
         elif self.type == const.atomTypeMath:
             mathLiterals = {const.atomMathAdd: "+",
                             const.atomMathSub: "-"}
             newindent = "  {0}".format(indent)
-            result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.arg1.printTree(), self.arg2.printTree())
+            result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.arg1.__repr__(), self.arg2.__repr__())
         # Tag carrier location with c, its attribute with a
         elif self.type == const.atomTypeValRef:
             result = "c{0}.a{1}".format(self.carrier, self.attribute)
