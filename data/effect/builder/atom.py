@@ -63,6 +63,40 @@ class ConditionAtom(object):
         For atomTypeVal, contains pre-stored atom value.
         """
 
+    def printTree(self, indent=""):
+        """Convert atom tree, starting from self, to string"""
+        # Scatter logic operator and its arguments into several lines with different
+        # indentation level
+        if self.type == const.atomTypeLogic:
+            logicLiterals = {const.atomLogicAnd: "and",
+                             const.atomLogicOr: "or"}
+            newindent = "  {0}".format(indent)
+            result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.arg1.printTree(indent=newindent), self.arg2.printTree(indent=newindent))
+        # Print comparison on the same line with its arguments, just place them in brackets
+        elif self.type == const.atomTypeComp:
+            compLiterals = {const.atomCompEq: "==",
+                            const.atomCompNotEq: "!=",
+                            const.atomCompLess: "<",
+                            const.atomCompLessEq: "<=",
+                            const.atomCompGreat: ">",
+                            const.atomCompGreatEq: ">="}
+            newindent = "  {0}".format(indent)
+            result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.arg1.printTree(), self.arg2.printTree())
+        # Math operations are printed on the same line with its arguments
+        elif self.type == const.atomTypeMath:
+            mathLiterals = {const.atomMathAdd: "+",
+                            const.atomMathSub: "-"}
+            newindent = "  {0}".format(indent)
+            result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.arg1.printTree(), self.arg2.printTree())
+        # Tag carrier location with c, its attribute with a
+        elif self.type == const.atomTypeValRef:
+            result = "c{0}.a{1}".format(self.carrier, self.attribute)
+        # Print hardcoded values with v tag
+        elif self.type == const.atomTypeVal:
+            result = "v{0}".format(self.value)
+        return result
+
+
     def validateTree(self):
         """Validate full condition tree, given we're checking top-level node"""
         # Top-level node can be either logical join or comparison
@@ -70,7 +104,6 @@ class ConditionAtom(object):
         if not self.type in allowedTypes:
             return False
         return self.__validateNode()
-
 
     def __validateNode(self):
         """Validates object fields"""
@@ -142,36 +175,3 @@ class ConditionAtom(object):
         if self.value:
             return False
         return True
-
-    def printTree(self, indent=""):
-        """Convert atom tree, starting from self, to string"""
-        # Scatter logic operator and its arguments into several lines with different
-        # indentation level
-        if self.type == const.atomTypeLogic:
-            logicLiterals = {const.atomLogicAnd: "and",
-                             const.atomLogicOr: "or"}
-            newindent = "  {0}".format(indent)
-            result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.arg1.printTree(indent=newindent), self.arg2.printTree(indent=newindent))
-        # Print comparison on the same line with its arguments, just place them in brackets
-        elif self.type == const.atomTypeComp:
-            compLiterals = {const.atomCompEq: "==",
-                            const.atomCompNotEq: "!=",
-                            const.atomCompLess: "<",
-                            const.atomCompLessEq: "<=",
-                            const.atomCompGreat: ">",
-                            const.atomCompGreatEq: ">="}
-            newindent = "  {0}".format(indent)
-            result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.arg1.printTree(), self.arg2.printTree())
-        # Math operations are printed on the same line with its arguments
-        elif self.type == const.atomTypeMath:
-            mathLiterals = {const.atomMathAdd: "+",
-                            const.atomMathSub: "-"}
-            newindent = "  {0}".format(indent)
-            result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.arg1.printTree(), self.arg2.printTree())
-        # Tag carrier location with c, its attribute with a
-        elif self.type == const.atomTypeValRef:
-            result = "c{0}.a{1}".format(self.carrier, self.attribute)
-        # Print hardcoded values with v tag
-        elif self.type == const.atomTypeVal:
-            result = "v{0}".format(self.value)
-        return result

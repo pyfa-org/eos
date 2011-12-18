@@ -55,6 +55,10 @@ class Modifier(object):
         # These fields always should be filled
         if self.targetAttribute in nulls or self.sourceAttribute in nulls:
             return False
+        # Check condition tree
+        if self.conditions is not None:
+            if self.conditions.validateTree() is not True:
+                return False
         # Other fields are optional, check them using modifier type
         validateMap = {const.opndAddGangGrpMod: self.__valGangGrp,
                        const.opndRmGangGrpMod: self.__valGangGrp,
