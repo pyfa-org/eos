@@ -203,5 +203,3 @@ atomCompGreatEq = 6  # >=
 # Math operators for condition atoms
 atomMathAdd = 1  # +
 atomMathSub = 2  # -
-atomMathMult = 3  # *
-atomMathDiv = 4  # /
