@@ -466,6 +466,7 @@ class InfoBuilder(object):
         self.activeMod = Modifier()
         # If we're asked to add any conditions, do it
         if conditions is not None:
+            # Make sure to copy whole tree as it may be changed after
             self.activeMod.conditions = copy.deepcopy(conditions)
         # Write modifier type, which corresponds to top-level operand of modification
         self.activeMod.type = element.operand
@@ -587,40 +588,37 @@ class InfoBuilder(object):
         """Get integer from value"""
         return bool(element.value)
 
-    # Condition-related methods
     def __ifThenElse(self, element, conditions):
-        ifThenClause = element.arg1
+        """Handle conditional clause"""
+        # Separate passed element into if, then and else clauses,
+        # we'll work separately on them
+        ifClause = element.arg1.arg1
+        thenClause = element.arg1.arg2
         elseClause = element.arg2
-        thenConditionAtom = self.__makeCondition(ifThenClause.arg1)
-        if conditions is None:
-            thenConditions = thenConditionAtom
-        else:
-            thenConditions = ConditionAtom()
-            thenConditions.type = const.atomTypeLogic
-            thenConditions.operator = const.atomLogicAnd
-            thenConditions.arg1 = conditions
-            thenConditions.arg2 = thenConditionAtom
-        self.__generic(ifThenClause.arg2, thenConditions)
+        # Get condition data from if clause
+        newConditions = self.__makeCondition(ifClause)
+        # Combine passed and new conditions into single tree
+        currentConditions = self.__appendCondition(conditions, newConditions)
+        # Pass copy of conditions to make sure it's not modified there,
+        # we'll need them further
+        self.__generic(thenClause, copy.deepcopy(currentConditions))
+        # To get proper condition tree for modifiers contained in else clause, we need
+        # to invert comparison operator of new condition set
         invConds = {const.atomCompEq: const.atomCompNotEq,
                     const.atomCompGreat: const.atomCompLessEq,
                     const.atomCompGreatEq: const.atomCompLess}
-        elseConditionAtom = copy.deepcopy(thenConditionAtom)
-        elseConditionAtom.operator = invConds[elseConditionAtom.operator]
-        if conditions is None:
-            elseConditions = elseConditionAtom
-        else:
-            elseConditions = ConditionAtom()
-            elseConditions.type = const.atomTypeLogic
-            elseConditions.operator = const.atomLogicAnd
-            elseConditions.arg1 = conditions
-            elseConditions.arg2 = elseConditionAtom
-        self.__generic(elseClause, elseConditions)
-
+        # As it's written directly to tree which is in combined set too, we do not
+        # need to make combined tree again
+        newConditions.operator = invConds[newConditions.operator]
+        self.__generic(elseClause, copy.deepcopy(currentConditions))
 
     def __makeCondition(self, element):
+        """Create actual condition node in conditions tree"""
+        # Maps expression operands to atom-specific comparison operations
         condOpndAtomMap = {const.opndEq: const.atomCompEq,
                            const.opndGreater: const.atomCompGreat,
                            const.opndGreaterEq: const.atomCompGreatEq}
+        # Create condition node and fill it with data
         if element.operand in condOpndAtomMap:
             conditionTopAtom = ConditionAtom()
             conditionTopAtom.type = const.atomTypeComp
@@ -631,14 +629,30 @@ class InfoBuilder(object):
         else:
             raise ValueError("unknown operand in expression passed as condition")
 
+    def __appendCondition(self, cond1, cond2):
+        """Combine two passed condition trees into one"""
+        # If any of passed conditions is None, return other one
+        if cond1 is None or cond2 is None:
+            combined = cond1 or cond2
+        # If both exist, combine them using logical and
+        else:
+            combined = ConditionAtom()
+            combined.type = const.atomTypeLogic
+            combined.operator = const.atomLogicAnd
+            combined.arg1 = cond1
+            combined.arg2 = cond2
+        return combined
+
     def __getAtomCompArg(self, element):
         """Get comparison argument atom tree"""
+        # Create atom for location.attribute references
         if element.operand == const.opndItmAttrCond:
             attrAtom = ConditionAtom()
             attrAtom.type = const.atomTypeValRef
             attrAtom.carrier = self.__getLoc(element.arg1)
             attrAtom.attribute = self.__getAttr(element.arg2)
             return attrAtom
+        # Create atom for plain value specifications
         argValueMap = {const.opndDefInt: self.__getInt}
         if element.operand in argValueMap:
             valueAtom = ConditionAtom()
