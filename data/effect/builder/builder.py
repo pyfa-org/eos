@@ -58,7 +58,7 @@ class InfoBuilder(object):
         self.activeSet = self.preMods
         try:
             self.__generic(preExpression, None)
-        except:
+        except Exception:
             print("Error building pre-expression tree with base {}".format(preExpression.id))
             return set()
         for mod in self.preMods:
@@ -339,19 +339,23 @@ class InfoBuilder(object):
 
     def __invertCondition(self, condition):
         """Get negative condition relatively passed condition"""
+        # Process logical operands
         if condition.type == const.atomTypeLogic:
-            invLogic = {const.atomLogicAnd: const.atomLogicOr}
-            for k, v in invLogic.items():
-                invLogic[v] = k
+            invLogic = {const.atomLogicAnd: const.atomLogicOr,
+                        const.atomLogicOr: const.atomLogicAnd}
+            # Replace and with or and vice versa
             condition.operator = invLogic[condition.operator]
+            # Request processing of child atoms
             self.__invertCondition(condition.arg1)
             self.__invertCondition(condition.arg2)
+        # For comparison atoms, just negate the comparison
         elif condition.type == const.atomTypeComp:
             invComps = {const.atomCompEq: const.atomCompNotEq,
+                        const.atomCompNotEq: const.atomCompEq,
                         const.atomCompGreat: const.atomCompLessEq,
-                        const.atomCompGreatEq: const.atomCompLess}
-            for k, v in invComps.items():
-                invComps[v] = k
+                        const.atomCompLessEq: const.atomCompGreat,
+                        const.atomCompGreatEq: const.atomCompLess,
+                        const.atomCompLess: const.atomCompGreatEq}
             condition.operator = invComps[condition.operator]
         else:
             raise ValueError("only logical and comparison ConditionAtoms can be reverted")
