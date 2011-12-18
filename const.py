@@ -183,6 +183,12 @@ infoPost = 3
 # Refers typeID of carrier instead of referring any actual typeID
 selfTypeID = -1
 
+# Effect's expression tree parsing status
+effectInfoNotParsed = 1  # Expression trees were not parsed into infos yet
+effectInfoError = 2  # Errors occurred during expression trees parsing or validation
+effectInfoOkPartial = 3  # Infos were generated, but some of modifications were dropped as unsupported
+effectInfoOkFull = 4  # All modifications were pulled out of expression tree successfully
+
 # Types of condition atoms, which are used to describe some condition
 atomTypeLogic = 1  # Logical OR or AND
 atomTypeComp = 2  # Comparison of arguments

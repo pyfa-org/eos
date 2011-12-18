@@ -17,6 +17,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos import const
 from .builder import InfoBuilder
 
 class Effect(object):
@@ -49,12 +50,15 @@ class Effect(object):
         self.__infos = None
         """Stores EffectInfos which are assigned to given effect"""
 
+        self.infoStatus = const.effectInfoNotParsed
+        """Stores parsing status of info objects"""
+
     @property
     def infos(self):
         """
         Return a set of all infos this effect contains
         """
         if self.__infos is None:
-            self.__infos = InfoBuilder().build(self.preExpression, self.postExpression)
+            self.__infos, self.infoStatus = InfoBuilder().build(self.preExpression, self.postExpression)
         return self.__infos
 

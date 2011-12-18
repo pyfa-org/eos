@@ -50,77 +50,108 @@ class InfoBuilder(object):
         # Conditions applied to all expressions found on current
         # building stage
         self.conditions = None
+        # Effect build status
+        self.effectStatus = None
 
     def build(self, preExpression, postExpression):
         """
         Go through both trees and compose our EffectInfos
         """
+        # Assume we parse effect 100% successfully by defaul
+        self.effectStatus = const.effectInfoOkFull
+        # First, we're going to parse pre-expression tree, so set preMods
+        # as active set
         self.activeSet = self.preMods
         try:
+            # Parse pre-expression tree
             self.__generic(preExpression, None)
-        except Exception:
-            print("Error building pre-expression tree with base {}".format(preExpression.id))
-            return set()
+        # If any unhandled exceptions occur, return empty set and error code
+        except:
+            return set(), const.effectInfoError
+        # Validate modifiers we've got out of pre-expression tree
         for mod in self.preMods:
             if mod.validate() is not True:
-                print("Error validating pre-modifiers of base {}".format(preExpression.id))
-                return set()
+                return set(), const.effectInfoError
 
+        # Do the same for post-expressions
         self.activeSet = self.postMods
         try:
             self.__generic(postExpression, None)
         except:
-            print("Error building post-expression tree with base {}".format(postExpression.id))
-            return set()
+            return set(), const.effectInfoError
         for mod in self.postMods:
             if mod.validate() is not True:
-                print("Error validating post-modifiers of base {}".format(postExpression.id))
-                return set()
-        infos = set()
-        usedPres = set()
-        usedPosts = set()
+                return set(), const.effectInfoError
 
+        # Actual container for info objects
+        infos = set()
+        # Helper containers for modifier->info conversion process
+        # Contains references to already used for generation of infos pre-modifiers
+        usedPres = set()
+        # Same for post-modifiers
+        usedPosts = set()
+        # Container for modifiers which were used for something already,
+        # but still can be used; this includes post-duration-modifiers which
+        # accompany multiple pre-modifiers applied with some condition
+        reusable = set()
+
+        # To get all duration infos, we need two mirror duration modifiers,
+        # modifier which applies and modifier which undos effect; cycle through
+        # pre-modifiers as applying ones
         for preMod in self.preMods:
+            # Skip all non-duration mods, we're not interested in them
             if not preMod.type in durationMods:
                 continue
+            # Cycle through post-modifiers
             for postMod in self.postMods:
-                if postMod in usedPosts:
+                # Skip non-reusable modifiers which we already used
+                if postMod in usedPosts and not postMod in reusable:
                     continue
-                if preMod.isMirror(postMod) is True:
+                # If matching pre- and post-modifiers detected
+                if preMod.isMirrorToPost(postMod) is True:
+                    # Create actual info
                     info = preMod.convertToInfo()
                     infos.add(info)
+                    # Mark used modifiers as used
                     usedPres.add(preMod)
                     usedPosts.add(postMod)
+                    # If pre-modifier has condition on it, mark post-modifier as reusable
+                    if preMod.conditions is not None:
+                        reusable.add(postMod)
+                    # We found  what we've been looking for in this postMod loop, thus bail
                     break
 
+        # Time of instantly-applied modifiers; first, the ones
+        # applied in the beginning of the cycle
         for preMod in self.preMods:
+            # Skip non-instant modifier types
             if not preMod.type in instantMods:
                 continue
-            if preMod in usedPres:
-                continue
+            # Make actual info object
             info = preMod.convertToInfo()
             infos.add(info)
+            # And mark pre-modifier as used
             usedPres.add(preMod)
 
+        # same for instant modifiers, applied in the end of
+        # module cycle
         for postMod in self.postMods:
             if not postMod.type in instantMods:
-                continue
-            if postMod in usedPosts:
                 continue
             info = postMod.convertToInfo()
             infos.add(info)
             usedPosts.add(postMod)
 
-        for preMod in self.preMods:
-            if not preMod in usedPres:
-                print("Warning: unused pre-expression modifier in base {}".format(preExpression.id))
-                break
-        for postMod in self.postMods:
-            if not postMod in usedPosts:
-                print("Warning: unused post-expression modifier in base {}".format(postExpression.id))
-                break
+        # If there're any pre-modifiers which were not used for
+        # info generation, mark current effect as partially parsed
+        if len(self.preMods.difference(usedPres)) > 0:
+            self.effectStatus = const.effectInfoOkPartial
+        # Same for post-modifiers
+        if len(self.postMods.difference(usedPosts)) > 0:
+            self.effectStatus = const.effectInfoOkPartial
 
-        return infos
+        # Finally, handle our infos and parsing status to requestor
+        return infos, self.effectStatus
 
     def __generic(self, element, conditions):
         """Generic entry point, used if we expect passed element to be meaningful"""
@@ -129,9 +160,10 @@ class InfoBuilder(object):
             self.__makeDurationMod(element, conditions)
         elif element.operand in instantMods:
             self.__makeInstantMod(element, conditions)
-        # Do nothing for inactive operands
+        # Mark current effect as partially parsed if it contains
+        # inactive operands
         elif element.operand in inactiveOpnds:
-            pass
+            self.effectStatus = const.effectInfoOkPartial
         # Detect if-then-else construct
         elif element.operand == const.opndOr and element.arg1 and element.arg1.operand == const.opndIfThen:
             self.__ifThenElse(element, conditions)

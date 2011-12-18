@@ -172,8 +172,8 @@ class Modifier(object):
             return False
         return True
 
-    def isMirror(self, other):
-        """For duration modification, return True if one modifier complements another"""
+    def isMirrorToPost(self, other):
+        """For duration modification, return True if passed post-modifier complements self, pre-modifier"""
         # First, check type, it should be duration modification for both,
         # as only they have do-undo pair
         if len({self.type, other.type}.intersection(durationMods)) < 2:
@@ -182,9 +182,14 @@ class Modifier(object):
         if self.type in mirrorDurationMods:
             if other.type != mirrorDurationMods[self.type]:
                 return False
+        # Without appropriate entry in mirror dictionary, consider it as
+        # non-mirror mod
         else:
-            if self.type != mirrorDurationMods[other.type]:
-                return False
+            return False
+        # Passed post-modifier should have no conditions assigned to it; they should be de-applied w/o
+        # any condition, our approach to this assumes it
+        if other.conditions is not None:
+            return False
         # Then, check all other fields of modifier
         if self.sourceAttribute != other.sourceAttribute or self.operation != other.operation or \
         self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or \
