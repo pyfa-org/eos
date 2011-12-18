@@ -309,19 +309,55 @@ class InfoBuilder(object):
     def __makeCondition(self, element):
         """Create actual condition node in conditions tree"""
         # Maps expression operands to atom-specific comparison operations
-        condOpndAtomMap = {const.opndEq: const.atomCompEq,
-                           const.opndGreater: const.atomCompGreat,
-                           const.opndGreaterEq: const.atomCompGreatEq}
+        atomCompMap = {const.opndEq: const.atomCompEq,
+                       const.opndGreater: const.atomCompGreat,
+                       const.opndGreaterEq: const.atomCompGreatEq}
         # Create condition node and fill it with data
-        if element.operand in condOpndAtomMap:
+        if element.operand in atomCompMap:
             conditionTopAtom = ConditionAtom()
             conditionTopAtom.type = const.atomTypeComp
-            conditionTopAtom.operator = condOpndAtomMap[element.operand]
-            conditionTopAtom.arg1 = self.__getAtomCompArg(element.arg1)
-            conditionTopAtom.arg2 = self.__getAtomCompArg(element.arg2)
+            conditionTopAtom.operator = atomCompMap[element.operand]
+            conditionTopAtom.arg1 = self.__conditionPartGetter(element.arg1)
+            conditionTopAtom.arg2 = self.__conditionPartGetter(element.arg2)
             return conditionTopAtom
         else:
             raise ValueError("unknown operand in expression passed as condition")
+
+    def __conditionPartGetter(self, element):
+        """Use proper processing method according to passed operand"""
+        condPartMap = {const.opndAdd: self.__makeCondPartMath,
+                       const.opndSub: self.__makeCondPartMath,
+                       const.opndItmAttrCond: self.__makeCondPartValRef,
+                       const.opndDefInt: self.__makeCondPartVal}
+        condPartAtom = condPartMap[element.operand](element)
+        return condPartAtom
+
+    def __makeCondPartMath(self, element):
+        """Create math condition atom out of expression with mathematical operand"""
+        atomMathMap = {const.opndAdd: const.atomMathAdd,
+                       const.opndSub: const.atomMathSub}
+        conditionMathAtom = ConditionAtom()
+        conditionMathAtom.type = const.atomTypeMath
+        conditionMathAtom.operator = atomMathMap[element.operand]
+        conditionMathAtom.arg1 = self.__getAtomCompArg(element.arg1)
+        conditionMathAtom.arg2 = self.__getAtomCompArg(element.arg2)
+        return conditionMathAtom
+
+    def __makeCondPartValRef(self, element):
+        """Create atom, referring carrier and some attribute on it"""
+        valRefAtom = ConditionAtom()
+        valRefAtom.type = const.atomTypeValRef
+        valRefAtom.carrier = self.__getLoc(element.arg1)
+        valRefAtom.attribute = self.__getAttr(element.arg2)
+        return valRefAtom
+
+    def __makeCondPartVal(self, element):
+        """Create atom, containing some value within it"""
+        argValueMap = {const.opndDefInt: self.__getInt}
+        valueAtom = ConditionAtom()
+        valueAtom.type = const.atomTypeVal
+        valueAtom.value = argValueMap[element.operand](element)
+        return valueAtom
 
     def __appendCondition(self, cond1, cond2):
         """Combine two passed condition trees into one"""
@@ -359,21 +395,3 @@ class InfoBuilder(object):
             condition.operator = invComps[condition.operator]
         else:
             raise ValueError("only logical and comparison ConditionAtoms can be reverted")
-
-    def __getAtomCompArg(self, element):
-        """Get comparison argument atom tree"""
-        # Create atom for location.attribute references
-        if element.operand == const.opndItmAttrCond:
-            attrAtom = ConditionAtom()
-            attrAtom.type = const.atomTypeValRef
-            attrAtom.carrier = self.__getLoc(element.arg1)
-            attrAtom.attribute = self.__getAttr(element.arg2)
-            return attrAtom
-        # Create atom for plain value specifications
-        argValueMap = {const.opndDefInt: self.__getInt}
-        if element.operand in argValueMap:
-            valueAtom = ConditionAtom()
-            valueAtom.type = const.atomTypeVal
-            valueAtom.value = argValueMap[element.operand](element)
-            return valueAtom
-        raise ValueError("unknown operand in expression passed as comparison part")

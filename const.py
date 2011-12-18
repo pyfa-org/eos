@@ -56,6 +56,7 @@ penaltyImmuneCats = {catShip, catCharge, catSkill,
 penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
 # Dogma operands section
+opndAdd = 1  # Add two numbers to return result, used in conditions
 opndAddGangGrpMod = 2  # Applies modification to items of gang-mates, filtered by group, format: [(groupFilter.targetAttribute).(operator)].AGGM(sourceAttribute)
 opndAddGangItmMod = 3  # Applies modification directly to ships gang-mates, format: ((targetAttribute).(operator)).AGIM(sourceAttribute)
 opndAddGangOwnSrqMod = 4  # Applies modification to items of gang-mates, filtered by owner and skill requirement
@@ -111,6 +112,7 @@ opndRmOwnSrqMod = 62  # Undos modification from items belonging to some location
 opndSrqAttr = 64  # Joins skill requirement and attribute into target definition, format: skillRequirement.targetAttribute
 opndAssign = 65  # Direct assignment to one attribute value of another one
 opndShipScan = 66  # Special operand, used to define ship scan
+opndSub = 68  # Subtracts one number from another and returns result, used in conditions
 opndSurveyScan = 69  # Special operand, used to define ore scan
 opndTgtHostile = 70  # Special operand, used in auto-targeting systems
 opndTgtSilent = 71  # Special operand, used in passive targeting systems
