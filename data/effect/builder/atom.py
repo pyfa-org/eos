@@ -23,9 +23,42 @@ class ConditionAtom(object):
     """
     def __init__(self):
         self.type = None
+        """
+        Describes purpose of this atom.
+        Must take any atomType* value from consts.
+        """
+
         self.operator = None
+        """
+        For some atom types, describes which operation should be applied onto its arguments.
+        For atomTypeLogic, holds atomLogic* from const file.
+        For atomTypeComp, holds atomComp* from const file.
+        For atomTypeMath, holds atomMath* from const file.
+        """
+
         self.arg1 = None
+        """
+        For all types besides atomTypeVal, contains reference to child atom.
+        """
+
         self.arg2 = None
+        """
+        For all types besides atomTypeVal, contains reference to child atom.
+        """
+
         self.value = None
+        """
+        For atomTypeVal, contains pre-stored atom value.
+        """
+
         self.carrier = None
+        """
+        For atomTypeValRef, contains reference to some location.
+        """
+
         self.attribute = None
+        """
+        For atomTypeValRef, contains reference to attribute in some location.
+        """
+
+    # TODO: add some self-validation method, like for modifier object
