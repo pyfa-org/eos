@@ -22,6 +22,8 @@ import itertools
 from math import exp
 
 from eos import const
+from eos.fit.condition import ConditionEval
+
 from abc import ABCMeta
 from abc import abstractproperty
 
@@ -122,6 +124,7 @@ class MutableAttributeMap(collections.Mapping):
 
 
     def _registerOne(self, registrationInfo):
+        # Add the registrationInfo affecting us into our register
         _, info = registrationInfo
         s = self.__attributeRegister.get(info.targetAttributeId)
         if s is None:
@@ -129,10 +132,29 @@ class MutableAttributeMap(collections.Mapping):
 
         s.add(registrationInfo)
 
+        # Delete the calculated value for the affected attribute if there is any
+        del self[info.targetAttributeId]
+
+
+    def __delitem__(self, attrId):
+        # Clear the value in our calculated value dict
         try:
-            del self.__modifiedAttributes[info.targetAttributeId]
+            del self.__modifiedAttributes[attrId]
         except:
             pass
+
+        # If we have any dependants, their calculated value needs to be cleared as well
+        # Only specific holders can have dependants
+        holder = self.__holder
+        if holder.specific:
+            for depHolder, depInfo in holder.fit._getDependants(holder.location, attrId):
+                del depHolder.attributes[depInfo.sourceAttributeId]
+
+        fit = holder.fit
+        # We also need to clear things we affect
+        for info in filter(lambda i: i.sourceAttributeId == attrId, holder.type.getInfos()):
+            for affectee in fit._getAffectees((holder, info)):
+                del affectee.attributes[info.targetAttributeId]
 
     def _unregisterAll(self):
         fit = self.__holder.fit
@@ -142,7 +164,7 @@ class MutableAttributeMap(collections.Mapping):
                 affectee.attributes._unregisterOne(registrationInfo)
 
         del self.__attributeRegister[:]
-        del self.__modifiedAttributes[:]
+        del self[:]
 
     def _unregisterOne(self, registrationInfo):
         _, info = registrationInfo
@@ -172,43 +194,44 @@ class MutableAttributeMap(collections.Mapping):
 
             for registrationInfo in register:
                 sourceHolder, info = registrationInfo
-                operation = info.operation
-                value = sourceHolder.attributes[info.sourceAttributeId]
+                if info.conditions is None or ConditionEval(info)(sourceHolder):
+                    operation = info.operation
+                    value = sourceHolder.attributes[info.sourceAttributeId]
 
-                #Stacking penaltied modifiers get special handling
-                if not stackable and sourceHolder.type.categoryId not in const.penaltyImmuneCats \
-                   and operation in (const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv):
+                    #Stacking penaltied modifiers get special handling
+                    if not stackable and sourceHolder.type.categoryId not in const.penaltyImmuneCats \
+                       and operation in (const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv):
 
-                    # Compute actual modifier
-                    if operation == const.optrPostPercent:
-                        value = value / 100
+                        # Compute actual modifier
+                        if operation == const.optrPostPercent:
+                            value = value / 100
+                        elif operation in (const.optrPreMul, const.optrPostMul):
+                            value = value - 1
+                        else:
+                            value = (1 / value) - 1
+
+                        subDict = penalized.get(value > 1)
+                        if subDict is None:
+                            penalized[value > 1] = subDict = {}
+
+                        valueSet = subDict.get(operation)
+                        if valueSet is None:
+                            subDict[operation] = valueSet = []
+
+                        valueSet.append(value)
+
+                    elif operation in (const.optrPreAssignment, const.optrPostAssignment):
+                        result = value
                     elif operation in (const.optrPreMul, const.optrPostMul):
-                        value = value - 1
-                    else:
-                        value = (1 / value) - 1
-
-                    subDict = penalized.get(value > 1)
-                    if subDict is None:
-                        penalized[value > 1] = subDict = {}
-
-                    valueSet = subDict.get(operation)
-                    if valueSet is None:
-                        subDict[operation] = valueSet = []
-
-                    valueSet.append(value)
-
-                elif operation in (const.optrPreAssignment, const.optrPostAssignment):
-                    result = value
-                elif operation in (const.optrPreMul, const.optrPostMul):
-                    result *= value
-                elif operation == const.optrPostPercent:
-                    result *= 1 + value / 100
-                elif operation in (const.optrPreDiv, const.optrPostDiv):
-                    result /= value
-                elif operation == const.optrModAdd:
-                    result += value
-                elif operation == const.optrModSub:
-                    result -= value
+                        result *= value
+                    elif operation == const.optrPostPercent:
+                        result *= 1 + value / 100
+                    elif operation in (const.optrPreDiv, const.optrPostDiv):
+                        result /= value
+                    elif operation == const.optrModAdd:
+                        result += value
+                    elif operation == const.optrModSub:
+                        result -= value
 
             for k in penalized:
                 subDict = penalized[k]

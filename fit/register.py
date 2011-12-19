@@ -76,6 +76,13 @@ class Register():
         Value: set of holders
         """
 
+        self.__dependants = {}
+        """
+        Stores all the dependants per location
+        Key: (locationId, attributeId)
+        Value: set of (sourceHolder, info) tuples
+        """
+
     def __getAffecteeMap(self, holder):
         location = holder.location
         # Keep all maps we need to add all info tuples to here to do it as efficiently as possible
@@ -114,8 +121,10 @@ class Register():
 
             s.add(holder)
 
-        # Now add to affector register the same way, except we also loop through infos to compose the values
+        dependants = self.__dependants
+        # Loop through infos to compose affectors and dependants
         for info in holder.type.getInfos():
+            # Fillup affectors
             value = (holder, info)
             for key, map in self.__getAffectorMap(holder, info):
                 s = map.get(key)
@@ -123,6 +132,18 @@ class Register():
                     s = map[key] = set()
 
                 s.add(value)
+
+
+            # Fillup dependants
+            if info.conditions is not None:
+                for leaf in info.conditions.getLeaves():
+                    if leaf.carrier is not None and leaf.attribute is not None:
+                        key = (leaf.carrier, leaf.attribute)
+                        s = dependants.get(key)
+                        if s is None:
+                            s = dependants[key] = set()
+
+                        s.add((holder, info))
 
     def unregister(self, holder):
         if holder is None:
@@ -179,9 +200,11 @@ class Register():
         # No filterType ==> The location is specificly targetted
         if info.filterType == None:
             if location == const.locShip:
-                s.add(self.__fit.ship)
+                if self.__fit.ship is not None:
+                    s.add(self.__fit.ship)
             elif location == const.locChar:
-                s.add(self.__fit.character)
+                if self.__fit.character is not None:
+                    s.add(self.__fit.character)
             elif location == const.locSpace:
                 raise NotImplementedError("Not implemented until we keep track of drones & missiles")
 
@@ -195,3 +218,8 @@ class Register():
             s.update(self.__affecteeGroupLocation.get((location, info.filterValue)) or ())
 
         return s;
+
+    def getDependants(self, locationId, attrId):
+        """Get all (holder, info) tuples that have a condition on the passed location and the passed attribute"""
+        s = self.__dependants.get((locationId, attrId))
+        return s if s is not None else set()

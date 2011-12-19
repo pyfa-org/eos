@@ -48,7 +48,7 @@ class Fit(object):
         self.__character = character
         self._setHolder(character)
 
-    def __init__(self, ship):
+    def __init__(self, ship=None):
         """
         Constructor: Accepts a Ship
         """
@@ -87,6 +87,10 @@ class Fit(object):
     def _getAffectees(self, registrationInfo):
         """Get the holders that the passed (sourceHolder, info) tuple affects"""
         return self.__register.getAffectees(registrationInfo)
+
+    def _getDependants(self, locationId, attrId):
+        """Get the dependants of the passed location and attribute"""
+        return self.__register.getDependants(locationId, attrId)
 
 class MutableAttributeHolderList(collections.MutableSequence):
     """
