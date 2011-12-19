@@ -19,7 +19,6 @@
 
 import collections
 
-from eos import const
 from .register import Register
 
 class Fit(object):

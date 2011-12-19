@@ -18,8 +18,6 @@
 #===============================================================================
 
 import collections
-import itertools
-from math import exp
 
 from eos import const
 from eos.fit.condition import ConditionEval
