@@ -82,6 +82,11 @@ class MutableAttributeMap(collections.Mapping):
         # The attribute register keeps track of what effects apply to what attribute
         self.__attributeRegister = {}
 
+        # Keeps track of what is currently in calculation.
+        # This is needed if a value in calculation is being fetched during its own calculation
+        # (Usualy because something affecting has a condition on it as well (eg. turretFitted)
+        self.__inCalc = set()
+
     def __getitem__(self, key):
         val = self.__modifiedAttributes.get(key)
         if val is None:
@@ -137,24 +142,22 @@ class MutableAttributeMap(collections.Mapping):
 
 
     def __delitem__(self, attrId):
-        # Clear the value in our calculated value dict
-        try:
+        if attrId in self.__modifiedAttributes:
+            # Clear the value in our calculated value dict
             del self.__modifiedAttributes[attrId]
-        except:
-            pass
 
-        # If we have any dependants, their calculated value needs to be cleared as well
-        # Only specific holders can have dependants
-        holder = self.__holder
-        if holder.specific:
-            for depHolder, depInfo in holder.fit._getDependants(holder.location, attrId):
-                del depHolder.attributes[depInfo.sourceAttributeId]
+            # If we have any dependants, their calculated value needs to be cleared as well
+            # Only specific holders can have dependants
+            holder = self.__holder
+            if holder.specific:
+                for depHolder, depInfo in holder.fit._getDependants(holder.location, attrId):
+                    del depHolder.attributes[depInfo.sourceAttributeId]
 
-        fit = holder.fit
-        # We also need to clear things we affect
-        for info in filter(lambda i: i.sourceAttributeId == attrId, holder.type.getInfos()):
-            for affectee in fit._getAffectees((holder, info)):
-                del affectee.attributes[info.targetAttributeId]
+            fit = holder.fit
+            # We also need to clear things we affect
+            for info in filter(lambda i: i.sourceAttributeId == attrId, holder.type.getInfos()):
+                for affectee in fit._getAffectees((holder, info)):
+                    del affectee.attributes[info.targetAttributeId]
 
     def _unregisterAll(self):
         fit = self.__holder.fit
@@ -179,6 +182,8 @@ class MutableAttributeMap(collections.Mapping):
         if any of the dependencies of this calculation change, this attribute will get invalidated and thus recalculated when its next needed
         """
 
+        self.__inCalc.add(attrId)
+
         base = self.__holder.type.attributes.get(attrId)
         keyFunc = lambda registrationInfo: registrationInfo[1].operation
 
@@ -188,13 +193,16 @@ class MutableAttributeMap(collections.Mapping):
 
             register = sorted(self.__attributeRegister[attrId], key=keyFunc)
 
-            result = base
+            modifiedAttrs = self.__modifiedAttributes
+            result = modifiedAttrs[attrId] = base
 
             penalized = {}
 
+
+
             for registrationInfo in register:
                 sourceHolder, info = registrationInfo
-                if info.conditions is None or ConditionEval(info)(sourceHolder):
+                if info.conditions is None or ConditionEval(info).isValid(sourceHolder):
                     operation = info.operation
                     value = sourceHolder.attributes[info.sourceAttributeId]
 
@@ -221,17 +229,17 @@ class MutableAttributeMap(collections.Mapping):
                         valueSet.append(value)
 
                     elif operation in (const.optrPreAssignment, const.optrPostAssignment):
-                        result = value
+                        result = modifiedAttrs[attrId] = value
                     elif operation in (const.optrPreMul, const.optrPostMul):
-                        result *= value
+                        result = modifiedAttrs[attrId] = result * value
                     elif operation == const.optrPostPercent:
-                        result *= 1 + value / 100
+                        result = modifiedAttrs[attrId] = result * (1 + value / 100)
                     elif operation in (const.optrPreDiv, const.optrPostDiv):
-                        result /= value
+                        result = modifiedAttrs[attrId] = result / value
                     elif operation == const.optrModAdd:
-                        result += value
+                        result = modifiedAttrs[attrId] = result + value
                     elif operation == const.optrModSub:
-                        result -= value
+                        result = modifiedAttrs[attrId] = result - value
 
             for k in penalized:
                 subDict = penalized[k]
@@ -243,3 +251,5 @@ class MutableAttributeMap(collections.Mapping):
             return result
         except KeyError:
             return base
+        finally:
+            self.__inCalc.remove(attrId)
