@@ -65,7 +65,7 @@ class Fit(object):
         if holder is not None:
             # Make sure the module isn't used elsewhere already
             if holder.fit is not None:
-                raise ValueError("Cannot add a module which is already in another fit")
+                raise ValueError("Cannot add a holder which is already in another fit")
 
             holder.fit = self
             self.__register.register(holder)
