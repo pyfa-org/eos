@@ -19,7 +19,7 @@
 
 from eos import const
 
-class ConditionAtom(object):
+class ConditionAtom:
     """
     Stores bit of Info condition metadata
     """

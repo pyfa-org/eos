@@ -21,7 +21,7 @@ import collections
 
 from .register import Register
 
-class Fit(object):
+class Fit:
     """
     Fit object. Each fit is built out of a number of Modules, as well as a Ship.
     This class also contains the logic to apply a single expressionInfo onto itself

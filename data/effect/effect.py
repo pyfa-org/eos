@@ -20,7 +20,7 @@
 from eos import const
 from .builder import InfoBuilder
 
-class Effect(object):
+class Effect:
     """
     Represents a single effect. Effects are the building blocks of types and are what actualy make a type do something.
     In turn, each effect is made out of pre- and a post-expression

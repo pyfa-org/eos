@@ -20,7 +20,7 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
-class DataHandler(object):
+class DataHandler:
     """
     DataHandler abstract baseclass, it handles fetching relevant data from wherever it is stored
     """

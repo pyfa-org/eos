@@ -17,7 +17,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-class Expression(object):
+class Expression:
     """
     Expression class. Each effect is made out of several expressions. Which in turn, can be made out of expressions themselves.
     This class is typically reused by the dataHandler if the same id is requested multiple times.

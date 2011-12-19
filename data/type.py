@@ -19,7 +19,7 @@
 
 from eos import const
 
-class Type(object):
+class Type:
     """
     A type, the basic building blocks of EVE. Everything that can do something is a type.
     Each type is built out of several effects and attributes.

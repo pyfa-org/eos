@@ -33,7 +33,7 @@ inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
                  const.opndMine, const.opndDefenderLaunch, const.opndFofLaunch,
                  const.opndUserError}
 
-class InfoBuilder(object):
+class InfoBuilder:
     """
     EffectInfo is responsible for converting two trees (pre and post) of Expression objects (which
     aren't directly useful to us) into EffectInfo objects which can then be used as needed.

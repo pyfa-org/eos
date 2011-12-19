@@ -17,7 +17,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-class EffectInfo(object):
+class EffectInfo:
     """
     The EffectInfo objects are the actual "Core" of eos,
     they are what eventually applies an effect onto a fit.

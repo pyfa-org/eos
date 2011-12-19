@@ -24,7 +24,7 @@ from ..info import EffectInfo
 # Values which are considered as 'empty' values
 nulls = {0, None}
 
-class Modifier(object):
+class Modifier:
     """
     Internal builder object, stores meaningful elements of expression tree temporarily
     and provides facilities to convert them to ExpressionInfo objects
