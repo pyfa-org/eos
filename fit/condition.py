@@ -17,21 +17,71 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos import const
+
 class ConditionEval:
     """
     This class is used to evaluate the conditions on an info object and see if they are met
     """
-    def __init__(self, holder, info):
+    def __init__(self, info):
         self.info = info
         """The info object to evaluate for"""
 
 
-    def __call__(self, holder):
+    def isValid(self, holder):
         """
-        __call__ method, makes objects of this class directly callable.
-        They take 1 argument: the holder against which to evaluate the condition
+        public isvalid method. Checks if the condition is valid
+        takes 1 argument: the holder against which to evaluate the condition
         """
         if self.info.conditions is None:
             return True
         else:
-            return True
+            return self.__isValid(holder, self.info.conditions)
+
+    def __isValid(self, holder, atom):
+        if atom.type == const.atomTypeLogic:
+            arg1 = self.__isValid(holder, atom.arg1)
+            arg2 = self.__isValid(holder, atom.arg2)
+
+            if atom.operator == const.atomLogicAnd:
+                return arg1 and arg2
+            elif atom.operator == const.atomLogicOr:
+                return arg1 or arg2
+
+        elif atom.type == const.atomTypeComp:
+            arg1 = self.__value(holder, atom.arg1)
+            arg2 = self.__value(holder, atom.arg2)
+
+            if atom.operator == const.atomCompEq:
+                return arg1 == arg2
+            elif atom.operator == const.atomCompNotEq:
+                return arg1 != arg2
+            elif atom.operator == const.atomCompLess:
+                return arg1 < arg2
+            elif atom.operator == const.atomCompLessEq:
+                return arg1 <= arg2
+            elif atom.operator == const.atomCompGreat:
+                return arg1 > arg2
+            elif atom.operator == const.atomCompGreatEq:
+                return arg1 > arg2
+
+    def __value(self, holder, atom):
+        if atom.type == const.atomTypeMath:
+            arg1 = self.__value(holder, atom.arg1)
+            arg2 = self.__value(holder, atom.arg2)
+            if atom.operator == const.atomMathAdd:
+                return arg1 + arg2
+            elif atom.operator == const.atomMathSub:
+                return arg1 - arg2
+
+        elif atom.type == const.atomTypeValRef:
+            if atom.carrier == const.locSelf:
+                target = holder
+            elif atom.carrier == const.locChar:
+                target = holder.fit.character
+            elif atom.carrier == const.locShip:
+                target = holder.fit.ship
+
+            return target.attributes[atom.attribute]
+        elif atom.type == const.atomTypeVal:
+            return atom.value
