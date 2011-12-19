@@ -82,11 +82,6 @@ class MutableAttributeMap(collections.Mapping):
         # The attribute register keeps track of what effects apply to what attribute
         self.__attributeRegister = {}
 
-        # Keeps track of what is currently in calculation.
-        # This is needed if a value in calculation is being fetched during its own calculation
-        # (Usualy because something affecting has a condition on it as well (eg. turretFitted)
-        self.__inCalc = set()
-
     def __getitem__(self, key):
         val = self.__modifiedAttributes.get(key)
         if val is None:
@@ -182,8 +177,8 @@ class MutableAttributeMap(collections.Mapping):
         if any of the dependencies of this calculation change, this attribute will get invalidated and thus recalculated when its next needed
         """
 
-        self.__inCalc.add(attrId)
-
+        # Code note: This method will store intermediate values in the calculated values already
+        # Why ? Because some infos affecting an attribute also have a condition on that same attribute
         base = self.__holder.type.attributes.get(attrId)
         keyFunc = lambda registrationInfo: registrationInfo[1].operation
 
@@ -251,5 +246,3 @@ class MutableAttributeMap(collections.Mapping):
             return result
         except KeyError:
             return base
-        finally:
-            self.__inCalc.remove(attrId)
