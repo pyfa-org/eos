@@ -35,4 +35,3 @@ class Expression(object):
         self.typeId = typeId
         self.groupId = groupId
         self.attributeId = attributeId
-        self.__infos = None
