@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright (C) 2011 Diego Duclos
+# Copyright (C) 2010-2011 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -16,7 +16,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-from .effect import Effect
-from .builder import InfoBuilder
-from .info import EffectInfo

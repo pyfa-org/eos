@@ -22,7 +22,7 @@ import difflib
 import itertools
 import re
 
-import const
+from eve2sql import const
 
 class Preprocessor(object):
     """

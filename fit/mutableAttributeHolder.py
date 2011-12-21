@@ -18,12 +18,11 @@
 #===============================================================================
 
 import collections
-
-from eos import const
-from eos.fit.condition import ConditionEval
-
 from abc import ABCMeta
 from abc import abstractproperty
+
+from eos import const
+from .condition import ConditionEval
 
 RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 

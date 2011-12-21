@@ -42,8 +42,8 @@ if __name__ == "__main__":
     import os.path
     from optparse import OptionParser
 
-    from data import EveDB
-    from processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, Dumper
+    from eve2sql.data import EveDB
+    from eve2sql.processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, Dumper
 
     # Parse command line options
     usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE] [--eos]"

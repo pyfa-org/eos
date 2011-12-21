@@ -17,8 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from data.dictlist import DictList
-from data.table import Table
+from .dictlist import DictList
+from .table import Table
 
 class EveDB(DictList):
     """

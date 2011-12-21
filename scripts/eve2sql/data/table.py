@@ -17,8 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from data.column import Column
-from data.dictlist import DictList
+from .column import Column
+from .dictlist import DictList
 
 class Table(DictList):
     """

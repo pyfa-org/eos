@@ -17,8 +17,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos import const
 from .mutableAttributeHolder import MutableAttributeHolder
-import const
 
 class Ship(MutableAttributeHolder):
     """

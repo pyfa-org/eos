@@ -17,11 +17,12 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from .dataHandler import DataHandler
-import json
 import bz2
+import json
 import weakref
-from ..data import Type, Expression, Effect, Attribute
+
+from eos.data import Type, Expression, Effect, Attribute
+from .dataHandler import DataHandler
 
 class JsonDataHandler(DataHandler):
     """

@@ -20,8 +20,8 @@
 import collections
 import re
 
-import const
-from processing import Preprocessor
+from eve2sql import const
+from .preprocessor import Preprocessor
 
 # Several local constants, describing type of the table
 table_BASE = 1  # Defines some entity

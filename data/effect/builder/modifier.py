@@ -18,8 +18,8 @@
 #===============================================================================
 
 from eos import const
+from eos.data.effect.info import EffectInfo
 from .localData import durationMods, mirrorDurationMods
-from ..info import EffectInfo
 
 # Values which are considered as 'empty' values
 nulls = {0, None}

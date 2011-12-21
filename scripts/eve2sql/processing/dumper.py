@@ -22,7 +22,7 @@ import os.path
 import re
 import sqlite3
 
-import const
+from eve2sql import const
 
 class Dumper(object):
     """
