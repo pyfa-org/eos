@@ -172,6 +172,20 @@ class Modifier:
             return False
         return True
 
+    def isSameMod(self, other):
+        """Return True if both duration modifications actually do the same thing"""
+        # Check if both are duration modifiers
+        if not self.type in durationMods or not other.type in durationMods:
+            return False
+        # Check all modifier fields that make the difference for duration modifiers
+        if self.type != other.type or self.sourceAttribute != other.sourceAttribute or \
+        self.operation != other.operation or self.targetAttribute != other.targetAttribute or \
+        self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or \
+        self.targetSkillRq != other.targetSkillRq:
+            return False
+        # They're the same if above conditions were passed
+        return True
+
     def isMirrorToPost(self, other):
         """For duration modification, return True if passed post-modifier complements self, pre-modifier"""
         # First, check type, it should be duration modification for both,
@@ -183,7 +197,7 @@ class Modifier:
             if other.type != mirrorDurationMods[self.type]:
                 return False
         # Without appropriate entry in mirror dictionary, consider it as
-        # non-mirror mod
+        # non-mirror modifier
         else:
             return False
         # Passed post-modifier should have no conditions assigned to it; they should be de-applied w/o

@@ -18,6 +18,7 @@
 #===============================================================================
 
 from copy import deepcopy
+from itertools import combinations
 
 from eos import const
 from .atom import ConditionAtom
@@ -83,6 +84,11 @@ class InfoBuilder:
             if mod.validate() is not True:
                 return set(), const.effectInfoError
 
+        # Unify multiple modifiers which do the same thing, but under different
+        # conditions, into single modifiers. We need this for pre-modifiers only,
+        # as post-modifiers shouldn't contain conditions by definition
+        self.__builderDurationUnifier(self.preMods)
+
         # Actual container for info objects
         infos = set()
         # Helper containers for modifier->info conversion process
@@ -90,24 +96,20 @@ class InfoBuilder:
         usedPres = set()
         # Same for post-modifiers
         usedPosts = set()
-        # Container for modifiers which were used for something already,
-        # but still can be used; this includes post-duration-modifiers which
-        # accompany multiple pre-modifiers applied with some condition
-        reusable = set()
 
         # To get all duration infos, we need two mirror duration modifiers,
         # modifier which applies and modifier which undos effect; cycle through
-        # pre-modifiers as applying ones
+        # pre-modifiers, which are applying ones
         for preMod in self.preMods:
-            # Skip all non-duration mods, we're not interested in them
+            # Skip all non-duration mods, we're not interested in them for now
             if not preMod.type in durationMods:
                 continue
             # Cycle through post-modifiers
             for postMod in self.postMods:
-                # Skip non-reusable modifiers which we already used
-                if postMod in usedPosts and not postMod in reusable:
+                # Skip modifiers which we already used
+                if postMod in usedPosts:
                     continue
-                # If matching pre- and post-modifiers detected
+                # If matching pre- and post-modifiers were detected
                 if preMod.isMirrorToPost(postMod) is True:
                     # Create actual info
                     info = preMod.convertToInfo()
@@ -115,9 +117,6 @@ class InfoBuilder:
                     # Mark used modifiers as used
                     usedPres.add(preMod)
                     usedPosts.add(postMod)
-                    # If pre-modifier has condition on it, mark post-modifier as reusable
-                    if preMod.conditions is not None:
-                        reusable.add(postMod)
                     # We found  what we've been looking for in this postMod loop, thus bail
                     break
 
@@ -152,6 +151,74 @@ class InfoBuilder:
 
         # Finally, handle our infos and parsing status to requestor
         return infos, self.effectStatus
+
+    def __builderDurationUnifier(self, modifiers):
+        """Unifies similar conditional duration modifiers into single modifier"""
+        # Here we will unify duration modifiers which do the same thing,
+        # just under different conditions, into single modifier; this is done in order
+        # to prevent eos to apply the same modification multiple times.
+        # This list holds sets of grouped modifiers
+        unifying = []
+        # Here we'll add modifiers which are marked for unifying, to avoid checking them
+        # again
+        grouped = set()
+        # Iterate through all combinations of modifiers of 2
+        for mod1, mod2 in combinations(modifiers, 2):
+            # If both modifiers already were assigned to some group, no point
+            # of going further
+            if mod1 in grouped and mod2 in grouped:
+                continue
+            # Skip modifiers which are not the same
+            if mod1.isSameMod(mod2) is not True:
+                continue
+            # If one of the modifiers is already in some modification group, we want to
+            # add it there
+            if mod1 in grouped or mod2 in grouped:
+                # Cycle through unification groups
+                for uniGroup in unifying:
+                    # Find group with modifier
+                    if mod1 in uniGroup or mod2 in uniGroup:
+                        # Add our modifiers there and note that we've used both
+                        uniGroup.add(mod1)
+                        grouped.add(mod1)
+                        uniGroup.add(mod2)
+                        grouped.add(mod2)
+                        break
+            # If they're the same, but none of them was grouped already,
+            # make new group
+            else:
+                unifying.append({mod1, mod2})
+                grouped.update({mod1, mod2})
+        # Go through all groups of modifiers we're going to 'unify'
+        for uniGroup in unifying:
+            # First, remove them from set of modifiers
+            modifiers.difference_update(uniGroup)
+            # We need to put something back, 'unified' modification, initialize
+            # it to None
+            unified = None
+            # If there's modification in group without condition, it means
+            # that modification will be applied in any case; just mark modifier
+            # w/o condition as unified one
+            for mod in uniGroup:
+                if mod.condition is None:
+                    unified = mod
+                    break
+            # If unified is still None, then we've got to combine conditions
+            if unified is None:
+                # Pick random modifier from group, it doesn't matter which one
+                unified = uniGroup.pop()
+                # For all remaining modifiers
+                for mod in uniGroup:
+                    # Join conditions of our chosen modifier and picked remaining
+                    # modifier using logical OR atoms
+                    unifiedCond = ConditionAtom()
+                    unifiedCond.type = const.atomTypeLogic
+                    unifiedCond.operator = const.atomLogicOr
+                    unifiedCond.arg1 = unified.conditions
+                    unifiedCond.arg2 = mod.conditions
+                    unified.conditions = unifiedCond
+            # Finally, add unified modifier to set
+            modifiers.add(unified)
 
     def __generic(self, element, conditions):
         """Generic entry point, used if we expect passed element to be meaningful"""
