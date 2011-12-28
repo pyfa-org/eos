@@ -24,6 +24,7 @@ and all items with these effects.
 """
 
 import argparse
+import os.path
 import sqlite3
 import sys
 
