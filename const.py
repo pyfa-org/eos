@@ -57,9 +57,9 @@ penaltyBase = 1 / math.exp((1 / 2.67) ** 2)
 
 # Dogma operands section
 opndAdd = 1  # Add two numbers to return result, used in conditions
-opndAddGangGrpMod = 2  # Applies modification to items of gang-mates, filtered by group, format: [(groupFilter.targetAttribute).(operator)].AGGM(sourceAttribute)
+opndAddGangGrpMod = 2  # Applies modification to items of gang-mates (not used in any effect), filtered by group, format: [(groupFilter.targetAttribute).(operator)].AGGM(sourceAttribute)
 opndAddGangItmMod = 3  # Applies modification directly to ships gang-mates, format: ((targetAttribute).(operator)).AGIM(sourceAttribute)
-opndAddGangOwnSrqMod = 4  # Applies modification to items of gang-mates, filtered by owner and skill requirement
+opndAddGangOwnSrqMod = 4  # Applies modification to items of gang-mates (not used in any effect), filtered by owner and skill requirement
 opndAddGangSrqMod = 5  # Applies modification to items of gang-mates, filtered by skill requirement, format: (skillRequirement.targetAttribute).(operator)).AGRSM(sourceAttribute))
 opndAddItmMod = 6  # Applies modification directly to some item, format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
 opndAddLocGrpMod = 7  # Applies modification to items belonging to some location, filtered by group, format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
