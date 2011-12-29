@@ -4,18 +4,18 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestItmMod(TestCase):
-    """Test parsing of trees describing direct item modification"""
+class TestLocMod(TestCase):
+    """Test parsing of trees describing modification filtered by location"""
 
     def testBuildSuccess(self):
         eTgt = Expression(1, 24, value="Ship")
-        eTgtAttr = Expression(2, 22, attributeId=9)
+        eTgtAttr = Expression(2, 22, attributeId=1211)
         eOptr = Expression(3, 21, value="PostPercent")
-        eSrcAttr = Expression(4, 22, attributeId=327)
+        eSrcAttr = Expression(4, 22, attributeId=1503)
         eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
         eOptrTgt = Expression(6, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(7, 6, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(8, 58, arg1=eOptrTgt, arg2=eSrcAttr)
+        eAddMod = Expression(7, 8, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(8, 60, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
         self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -25,12 +25,13 @@ class TestItmMod(TestCase):
         self.assertFalse(info.gang, msg="info gang flag must be False")
         expLocation = const.locShip
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
-        self.assertIsNone(info.filterType, msg="info target filter type must be None")
+        expFilterType = const.filterAll
+        self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be all (ID {})".format(expFilterType))
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = const.optrPostPercent
         self.assertEqual(info.operation, expOperation, msg="info operation must be PostPercent (ID {})".format(expOperation))
-        expTgtAttr = 9
+        expTgtAttr = 1211
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcAttr = 327
+        expSrcAttr = 1503
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")

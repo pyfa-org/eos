@@ -4,18 +4,20 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestItmMod(TestCase):
-    """Test parsing of trees describing direct item modification"""
+class TestLocSrqMod(TestCase):
+    """Test parsing of trees describing modification filtered by location and skill requirement"""
 
     def testBuildSuccess(self):
-        eTgt = Expression(1, 24, value="Ship")
-        eTgtAttr = Expression(2, 22, attributeId=9)
-        eOptr = Expression(3, 21, value="PostPercent")
-        eSrcAttr = Expression(4, 22, attributeId=327)
-        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
-        eOptrTgt = Expression(6, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(7, 6, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(8, 58, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtLoc = Expression(1, 24, value="Ship")
+        eTgtSrq = Expression(2, 29, typeId=3307)
+        eTgtAttr = Expression(3, 22, attributeId=54)
+        eOptr = Expression(4, 21, value="PostPercent")
+        eSrcAttr = Expression(5, 22, attributeId=491)
+        eTgtItms = Expression(6, 49, arg1=eTgtLoc, arg2=eTgtSrq)
+        eTgtSpec = Expression(7, 12, arg1=eTgtItms, arg2=eTgtAttr)
+        eOptrTgt = Expression(8, 31, arg1=eOptr, arg2=eTgtSpec)
+        eAddMod = Expression(9, 9, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(10, 61, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
         self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -25,12 +27,14 @@ class TestItmMod(TestCase):
         self.assertFalse(info.gang, msg="info gang flag must be False")
         expLocation = const.locShip
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
-        self.assertIsNone(info.filterType, msg="info target filter type must be None")
-        self.assertIsNone(info.filterValue, msg="info target filter value must be None")
+        expFilterType = const.filterSkill
+        self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
+        expFilterValue = 3307
+        self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be {}".format(expFilterValue))
         expOperation = const.optrPostPercent
         self.assertEqual(info.operation, expOperation, msg="info operation must be PostPercent (ID {})".format(expOperation))
-        expTgtAttr = 9
+        expTgtAttr = 54
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcAttr = 327
+        expSrcAttr = 491
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")
