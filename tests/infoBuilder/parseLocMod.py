@@ -22,8 +22,8 @@ class TestLocMod(TestCase):
         info = infos.pop()
         expType = const.infoDuration
         self.assertEqual(info.type, expType, msg="info type must be duration (ID {})".format(expType))
-        exGang = False
-        self.assertIs(info.gang, exGang, msg="info gang flag must be {}".format(exGang))
+        expGang = False
+        self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = const.locShip
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
         expFilterType = const.filterAll

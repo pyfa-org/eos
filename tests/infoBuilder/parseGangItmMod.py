@@ -21,8 +21,8 @@ class TestGangItmMod(TestCase):
         info = infos.pop()
         expType = const.infoDuration
         self.assertEqual(info.type, expType, msg="info type must be duration (ID {})".format(expType))
-        exGang = True
-        self.assertIs(info.gang, exGang, msg="info gang flag must be {}".format(exGang))
+        expGang = True
+        self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = const.locShip
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
