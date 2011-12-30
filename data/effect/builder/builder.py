@@ -26,13 +26,13 @@ from .modifier import Modifier
 from .localData import durationMods, instantMods
 
 # Operands which are not used in any way in current Eos implementation
-inactiveOpnds = {const.opndEcmBurst, const.opndAoeDmg, const.opndShipScan,
-                 const.opndSurveyScan, const.opndCargoScan, const.opndPowerBooster,
-                 const.opndAoeDecloak, const.opndTgtHostile, const.opndTgtSilent,
-                 const.opndCheatTeleDock, const.opndCheatTeleGate, const.opndAttack,
-                 const.opndMissileLaunch, const.opndVrfTgtGrp, const.opndToolTgtSkills,
-                 const.opndMine, const.opndDefenderLaunch, const.opndFofLaunch,
-                 const.opndUserError}
+inactiveOpnds = {const.opndAttack, const.opndCargoScan, const.opndCheatTeleDock,
+                 const.opndCheatTeleGate, const.opndAoeDecloak, const.opndEcmBurst,
+                 const.opndAoeDmg, const.opndMissileLaunch, const.opndDefenderLaunch,
+                 const.opndFofLaunch, const.opndMine, const.opndPowerBooster,
+                 const.opndShipScan, const.opndSurveyScan, const.opndTgtHostile,
+                 const.opndTgtSilent, const.opndToolTgtSkills, const.opndUserError,
+                 const.opndVrfTgtGrp}
 
 class InfoBuilder:
     """
