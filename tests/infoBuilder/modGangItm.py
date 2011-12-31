@@ -4,7 +4,7 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestGangItmMod(TestCase):
+class TestModGangItm(TestCase):
     """Test parsing of trees describing gang-mates' direct ship modification"""
 
     def testBuildSuccess(self):

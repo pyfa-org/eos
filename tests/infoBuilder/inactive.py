@@ -4,7 +4,7 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestStub(TestCase):
+class TestInactive(TestCase):
     """Test parsing of expressions involving disabled operands"""
 
     def testAttack(self):

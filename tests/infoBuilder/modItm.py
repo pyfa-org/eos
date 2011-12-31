@@ -4,7 +4,7 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestItmMod(TestCase):
+class TestModItm(TestCase):
     """Test parsing of trees describing direct item modification"""
 
     def testBuildSuccess(self):

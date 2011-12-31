@@ -4,7 +4,7 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestLocGrpMod(TestCase):
+class TestModLocGrp(TestCase):
     """Test parsing of trees describing modification filtered by location and group"""
 
     def testBuildSuccess(self):

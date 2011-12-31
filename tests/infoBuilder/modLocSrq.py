@@ -4,7 +4,7 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestLocSrqMod(TestCase):
+class TestModLocSrq(TestCase):
     """Test parsing of trees describing modification filtered by location and skill requirement"""
 
     def testBuildSuccess(self):
