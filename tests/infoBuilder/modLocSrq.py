@@ -39,4 +39,5 @@ class TestModLocSrq(TestCase):
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcAttr = 491
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
-        self.assertIsNone(info.conditions, msg="conditions must be None")
+        self.assertIsNone(info.sourceValue, msg="info source value must be None")
+        self.assertIsNone(info.conditions, msg="info conditions must be None")

@@ -33,7 +33,9 @@ class TestPreModAddAttr(TestCase):
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcAttr = 68
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
-        self.assertIsNone(info.conditions, msg="conditions must be None")
+        self.assertIsNone(info.sourceValue, msg="info source value must be None")
+        self.assertIsNone(info.conditions, msg="info conditions must be None")
+
 
 class TestPreModAddVal(TestCase):
     """Test parsing of trees describing increment by value in the beginning of the cycle"""
@@ -80,7 +82,9 @@ class TestPostModAddAttr(TestCase):
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcAttr = 68
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
-        self.assertIsNone(info.conditions, msg="conditions must be None")
+        self.assertIsNone(info.sourceValue, msg="info source value must be None")
+        self.assertIsNone(info.conditions, msg="info conditions must be None")
+
 
 class TestPostModAddVal(TestCase):
     """Test parsing of trees describing increment by value in the end of the cycle"""

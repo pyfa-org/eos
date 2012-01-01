@@ -83,3 +83,9 @@ class EffectInfo:
         Which source attribute will be used as modification value for the operation.
         Keeps integer which references attribute via ID.
         """
+
+        self.sourceValue = None
+        """
+        The value which is used as modification value for operation.
+        Keeps any value CCP can define in expression (boolean or integer).
+        """
