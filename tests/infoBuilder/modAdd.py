@@ -4,10 +4,10 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestModAdd(TestCase):
-    """Test parsing of trees describing direct attribute increment"""
+class TestPreModAddAttr(TestCase):
+    """Test parsing of trees describing attribute increment in the beginning of the cycle"""
 
-    def testPreBuildSuccess(self):
+    def testBuildSuccess(self):
         eTgt = Expression(1, 24, value="Ship")
         eTgtAttr = Expression(2, 22, attributeId=264)
         eSrcAttr = Expression(3, 22, attributeId=68)
@@ -15,7 +15,8 @@ class TestModAdd(TestCase):
         ePreAdd = Expression(5, 42, arg1=eTgtSpec, arg2=eSrcAttr)
         ePostStub = Expression(6, 27, value="1")
         infos, status = InfoBuilder().build(ePreAdd, ePostStub)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expType = const.infoPre
@@ -34,7 +35,10 @@ class TestModAdd(TestCase):
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")
 
-    def testPostBuildSuccess(self):
+class TestPostModAddAttr(TestCase):
+    """Test parsing of trees describing attribute increment in the end of the cycle"""
+
+    def testBuildSuccess(self):
         # Not a real example, just swapped pre and post from same pre test
         ePreStub = Expression(1, 27, value="1")
         eTgt = Expression(2, 24, value="Ship")
@@ -43,7 +47,8 @@ class TestModAdd(TestCase):
         eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
         ePostAdd = Expression(6, 42, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostAdd)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expType = const.infoPost

@@ -5,7 +5,7 @@ from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
 class TestInactive(TestCase):
-    """Test parsing of expressions involving disabled operands"""
+    """Test parsing of trees involving disabled operands"""
 
     def testAttack(self):
         disabledPre = Expression(1, 13)

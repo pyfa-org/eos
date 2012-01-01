@@ -17,7 +17,8 @@ class TestModItm(TestCase):
         eAddMod = Expression(7, 6, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(8, 58, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expType = const.infoDuration

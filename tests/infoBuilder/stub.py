@@ -4,33 +4,49 @@ from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
-class TestStub(TestCase):
-    """Test parsing of stub expressions"""
+class TestStubInt0(TestCase):
+    """Test parsing of trees describing integer-0 stub"""
 
-    def testInt0BuildSuccess(self):
+    def testBuildSuccess(self):
         preStub = Expression(1, 27, value="0")
         postStub = Expression(2, 27, value="0")
         infos, status = InfoBuilder().build(preStub, postStub)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
-    def testInt1BuildSuccess(self):
+
+class TestStubInt1(TestCase):
+    """Test parsing of trees describing integer-1 stub"""
+
+    def testBuildSuccess(self):
         preStub = Expression(1, 27, value="1")
         postStub = Expression(2, 27, value="1")
         infos, status = InfoBuilder().build(preStub, postStub)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
-    def testBoolTrueBuildSuccess(self):
+
+class TestStubBoolTrue(TestCase):
+    """Test parsing of trees describing boolean-True stub"""
+
+    def tesBuildSuccess(self):
         preStub = Expression(1, 23, value="True")
         postStub = Expression(2, 23, value="True")
         infos, status = InfoBuilder().build(preStub, postStub)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
-    def testDiffBuildSuccess(self):
+
+class TestStubMixed(TestCase):
+    """Test parsing of trees describing mixed form stubs"""
+
+    def testBuildSuccess(self):
         preStub = Expression(1, 23, value="True")
         postStub = Expression(2, 27, value="0")
         infos, status = InfoBuilder().build(preStub, postStub)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")

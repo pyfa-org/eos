@@ -5,7 +5,7 @@ from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
 class TestSplicing(TestCase):
-    """Test parsing of spliced modification expressions"""
+    """Test parsing of trees describing joins of multiple actual modifiers"""
 
     def testBuildSuccess(self):
         eTgtLoc = Expression(1, 24, value="Target")
@@ -35,5 +35,6 @@ class TestSplicing(TestCase):
         eRmSplice1 = Expression(25, 17, arg1=eRmMod1, arg2=eRmMod3)
         eRmSplice2 = Expression(26, 17, arg1=eRmMod2, arg2=eRmSplice1)
         infos, status = InfoBuilder().build(eAddSplice2, eRmSplice2)
-        self.assertEqual(status, const.effectInfoOkFull, msg="expressions must be successfully parsed")
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 3, msg="three infos must be generated")
