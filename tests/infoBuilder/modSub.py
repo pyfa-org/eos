@@ -1,11 +1,11 @@
-from unittest import TestCase
+from unittest import TestCase, expectedFailure
 
 from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
 class TestPreModSubAttr(TestCase):
-    """Test parsing of trees describing attribute decrement in the beginning of the cycle"""
+    """Test parsing of trees describing decrement by attribute in the beginning of the cycle"""
 
     def testBuildSuccess(self):
         eTgt = Expression(1, 24, value="Target")
@@ -35,8 +35,24 @@ class TestPreModSubAttr(TestCase):
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")
 
+class TestPreModSubVal(TestCase):
+    """Test parsing of trees describing decrement by value in the beginning of the cycle"""
+
+    @expectedFailure
+    def testBuildSuccess(self):
+        eTgt = Expression(1, 24, value="Target")
+        eTgtAttr = Expression(2, 22, attributeId=18)
+        eSrcVal = Expression(3, 27, value="7")
+        eTgtSpec = Expression(4, 12, arg1=eTgt, arg2=eTgtAttr)
+        ePreSub = Expression(5, 18, arg1=eTgtSpec, arg2=eSrcVal)
+        ePostStub = Expression(6, 27, value="1")
+        infos, status = InfoBuilder().build(ePreSub, ePostStub)
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+
+
 class TestPostModSubAttr(TestCase):
-    """Test parsing of trees describing attribute decrement in the end of the cycle"""
+    """Test parsing of trees describing decrement by attribute in the end of the cycle"""
 
     def testBuildSuccess(self):
         ePreStub = Expression(1, 27, value="1")
@@ -65,3 +81,18 @@ class TestPostModSubAttr(TestCase):
         expSrcAttr = 84
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")
+
+class TestPostModSubVal(TestCase):
+    """Test parsing of trees describing decrement by value in the end of the cycle"""
+
+    @expectedFailure
+    def testBuildSuccess(self):
+        ePreStub = Expression(1, 27, value="1")
+        eTgt = Expression(2, 24, value="Target")
+        eTgtAttr = Expression(3, 22, attributeId=266)
+        eSrcVal = Expression(4, 27, value="1")
+        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
+        ePostSub = Expression(6, 18, arg1=eTgtSpec, arg2=eSrcVal)
+        infos, status = InfoBuilder().build(ePreStub, ePostSub)
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

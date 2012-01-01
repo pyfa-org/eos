@@ -1,11 +1,11 @@
-from unittest import TestCase
+from unittest import TestCase, expectedFailure
 
 from eos import const
 from eos.data.expression import Expression
 from eos.data.effect.builder import InfoBuilder
 
 class TestPreModAddAttr(TestCase):
-    """Test parsing of trees describing attribute increment in the beginning of the cycle"""
+    """Test parsing of trees describing increment by attribute in the beginning of the cycle"""
 
     def testBuildSuccess(self):
         eTgt = Expression(1, 24, value="Ship")
@@ -35,11 +35,26 @@ class TestPreModAddAttr(TestCase):
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")
 
+class TestPreModAddVal(TestCase):
+    """Test parsing of trees describing increment by value in the beginning of the cycle"""
+
+    @expectedFailure
+    def testBuildSuccess(self):
+        eTgt = Expression(1, 24, value="Ship")
+        eTgtAttr = Expression(2, 22, attributeId=264)
+        eSrcVal = Expression(3, 27, value="200")
+        eTgtSpec = Expression(4, 12, arg1=eTgt, arg2=eTgtAttr)
+        ePreAdd = Expression(5, 42, arg1=eTgtSpec, arg2=eSrcVal)
+        ePostStub = Expression(6, 27, value="1")
+        infos, status = InfoBuilder().build(ePreAdd, ePostStub)
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+
+
 class TestPostModAddAttr(TestCase):
-    """Test parsing of trees describing attribute increment in the end of the cycle"""
+    """Test parsing of trees describing increment by attribute in the end of the cycle"""
 
     def testBuildSuccess(self):
-        # Not a real example, just swapped pre and post from same pre test
         ePreStub = Expression(1, 27, value="1")
         eTgt = Expression(2, 24, value="Ship")
         eTgtAttr = Expression(3, 22, attributeId=264)
@@ -66,3 +81,18 @@ class TestPostModAddAttr(TestCase):
         expSrcAttr = 68
         self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
         self.assertIsNone(info.conditions, msg="conditions must be None")
+
+class TestPostModAddVal(TestCase):
+    """Test parsing of trees describing increment by value in the end of the cycle"""
+
+    @expectedFailure
+    def testBuildSuccess(self):
+        ePreStub = Expression(1, 27, value="1")
+        eTgt = Expression(2, 24, value="Ship")
+        eTgtAttr = Expression(3, 22, attributeId=264)
+        eSrcVal = Expression(4, 27, value="3")
+        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
+        ePostAdd = Expression(6, 42, arg1=eTgtSpec, arg2=eSrcVal)
+        infos, status = InfoBuilder().build(ePreStub, ePostAdd)
+        expStatus = const.effectInfoOkFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
