@@ -314,10 +314,11 @@ class InfoBuilder:
 
     def __srcGetter(self, element):
         """Pick proper source specifying method according to operand"""
-        # For attribute definitions, store
+        # For attribute definitions, store attribute ID as value
         if element.operand == const.opndDefAttr:
             self.activeMod.sourceType = const.srcAttr
             self.activeMod.sourceValue = self.__getAttr(element)
+        # Else, store just direct value
         else:
             valMap = {const.opndDefInt: self.__getInt,
                       const.opndDefBool: self.__getBool}
