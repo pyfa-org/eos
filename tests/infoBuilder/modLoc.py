@@ -34,7 +34,8 @@ class TestModLoc(TestCase):
         self.assertEqual(info.operation, expOperation, msg="info operation must be PostPercent (ID {})".format(expOperation))
         expTgtAttr = 1211
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcAttr = 1503
-        self.assertEqual(info.sourceAttributeId, expSrcAttr, msg="info source attribute ID must be {}".format(expSrcAttr))
-        self.assertIsNone(info.sourceValue, msg="info source value must be None")
+        expSrcType = const.srcAttr
+        self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
+        expSrcVal = 1503
+        self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
         self.assertIsNone(info.conditions, msg="info conditions must be None")

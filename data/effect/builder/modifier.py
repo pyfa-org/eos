@@ -34,8 +34,10 @@ class Modifier:
         self.conditions = None
         # Type of modification
         self.type = None
-        # Source attribute ID
-        self.sourceAttribute = None
+        # Source type, attribute or direct value
+        self.sourceType = None
+        # Source value
+        self.sourceValue = None
         # Operation to be applied on target
         self.operation = None
         # Target attribute ID
@@ -52,8 +54,8 @@ class Modifier:
     # Set of validation methods
     def validate(self):
         """Self-validation for modifier objects"""
-        # These fields always should be filled
-        if self.targetAttribute in nulls or self.sourceAttribute in nulls:
+        # Target always should be filled
+        if self.targetAttribute in nulls:
             return False
         # Check condition tree
         if self.conditions is not None:
@@ -91,7 +93,8 @@ class Modifier:
         if self.targetLocation is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        if self.operation in nulls or self.targetGroup in nulls:
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or self.targetGroup in nulls:
             return False
         return True
 
@@ -99,7 +102,8 @@ class Modifier:
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.targetLocation is not None or self.runTime is not None:
             return False
-        if self.operation in nulls:
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls:
             return False
         return True
 
@@ -107,7 +111,8 @@ class Modifier:
         if self.targetLocation is not None or self.targetGroup is not None or \
         self.runTime is not None:
             return False
-        if self.operation in nulls or self.targetSkillRq in nulls:
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or self.targetSkillRq in nulls:
             return False
         return True
 
@@ -115,7 +120,8 @@ class Modifier:
         if self.targetLocation is not None or self.targetGroup is not None or \
         self.runTime is not None:
             return False
-        if self.operation in nulls or self.targetSkillRq in nulls:
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or self.targetSkillRq in nulls:
             return False
         return True
 
@@ -123,7 +129,8 @@ class Modifier:
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        if self.operation in nulls or self.targetLocation in nulls:
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or self.targetLocation in nulls:
             return False
         return True
 
@@ -131,7 +138,8 @@ class Modifier:
         if self.targetSkillRq is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.operation in nulls or not self.targetLocation in validLocs or \
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or not self.targetLocation in validLocs or \
         self.targetGroup in nulls:
             return False
         return True
@@ -141,7 +149,8 @@ class Modifier:
         self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.operation in nulls or not self.targetLocation in validLocs:
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or not self.targetLocation in validLocs:
             return False
         return True
 
@@ -149,7 +158,8 @@ class Modifier:
         if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.operation in nulls or not self.targetLocation in validLocs or \
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or not self.targetLocation in validLocs or \
         self.targetSkillRq in nulls:
             return False
         return True
@@ -158,7 +168,8 @@ class Modifier:
         if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {const.locChar, const.locShip}
-        if self.operation in nulls or not self.targetLocation in validLocs or \
+        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        self.operation in nulls or not self.targetLocation in validLocs or \
         self.targetSkillRq in nulls:
             return False
         return True
@@ -167,8 +178,13 @@ class Modifier:
         if self.operation is not None or self.targetGroup is not None or \
         self.targetSkillRq is not None:
             return False
+        validSrcTypes = {const.srcAttr, const.srcVal}
         validRunTimes = {const.infoPre, const.infoPost}
-        if self.targetLocation in nulls or not self.runTime in validRunTimes:
+        # We can either refer some non-zero source attribute, or provide source value directly
+        if not self.sourceType in validSrcTypes or not self.runTime in validRunTimes or \
+        (self.sourceType == const.srcAttr and self.sourceValue in nulls) or \
+        (self.sourceType == const.srcVal and self.sourceValue is None) or \
+        self.targetLocation in nulls:
             return False
         return True
 
@@ -178,12 +194,12 @@ class Modifier:
         if not self.type in durationMods or not other.type in durationMods:
             return False
         # Check all modifier fields that make the difference for duration modifiers
-        if self.type != other.type or self.sourceAttribute != other.sourceAttribute or \
-        self.operation != other.operation or self.targetAttribute != other.targetAttribute or \
-        self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or \
-        self.targetSkillRq != other.targetSkillRq:
+        if self.type != other.type or self.sourceType != other.sourceType or \
+        self.sourceValue != other.sourceValue or self.operation != other.operation or \
+        self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or \
+        self.targetGroup != other.targetGroup or self.targetSkillRq != other.targetSkillRq:
             return False
-        # They're the same if above conditions were passed
+        # They're the same if above conditions were passed, other fields irrelevant
         return True
 
     def isMirrorToPost(self, other):
@@ -205,9 +221,10 @@ class Modifier:
         if other.conditions is not None:
             return False
         # Then, check all other fields of modifier
-        if self.sourceAttribute != other.sourceAttribute or self.operation != other.operation or \
-        self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or \
-        self.targetGroup != other.targetGroup or self.targetSkillRq != other.targetSkillRq:
+        if self.sourceType != other.sourceType or self.sourceValue != other.sourceValue or \
+        self.operation != other.operation or self.targetAttribute != other.targetAttribute or \
+        self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or \
+        self.targetSkillRq != other.targetSkillRq:
             return False
         # If all conditions were met, then it's actually mirror
         return True
@@ -218,7 +235,8 @@ class Modifier:
         # Create object and fill generic fields
         info = EffectInfo()
         info.conditions = self.conditions
-        info.sourceAttributeId = self.sourceAttribute
+        info.sourceType = self.sourceType
+        info.sourceValue = self.sourceValue
         info.targetAttributeId = self.targetAttribute
         # Fill remaining fields on per-modifier basis
         conversionMap = {const.opndAddGangGrpMod: self.__convGangGrp,

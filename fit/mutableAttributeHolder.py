@@ -143,11 +143,11 @@ class MutableAttributeMap(collections.Mapping):
             holder = self.__holder
             if holder.specific:
                 for depHolder, depInfo in holder.fit._getDependants(holder.location, attrId):
-                    del depHolder.attributes[depInfo.sourceAttributeId]
+                    del depHolder.attributes[depInfo.sourceValue]
 
             fit = holder.fit
             # We also need to clear things we affect
-            for info in filter(lambda i: i.sourceAttributeId == attrId, holder.type.getInfos()):
+            for info in filter(lambda i: i.sourceValue == attrId, holder.type.getInfos()):
                 for affectee in fit._getAffectees((holder, info)):
                     del affectee.attributes[info.targetAttributeId]
 
@@ -196,7 +196,7 @@ class MutableAttributeMap(collections.Mapping):
                 sourceHolder, info = registrationInfo
                 if info.conditions is None or ConditionEval(info).isValid(sourceHolder):
                     operation = info.operation
-                    value = sourceHolder.attributes[info.sourceAttributeId]
+                    value = sourceHolder.attributes[info.sourceValue]
 
                     #Stacking penaltied modifiers get special handling
                     if not stackable and sourceHolder.type.categoryId not in const.penaltyImmuneCats \

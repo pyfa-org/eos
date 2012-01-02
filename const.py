@@ -180,6 +180,10 @@ infoDuration = 1
 infoPre = 2
 infoPost = 3
 
+# Info source value types
+srcAttr = 1
+srcVal = 2
+
 # Refers typeID of carrier instead of referring any actual typeID
 selfTypeID = -1
 

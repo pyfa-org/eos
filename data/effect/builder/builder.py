@@ -271,7 +271,8 @@ class InfoBuilder:
         # Request operator and target data, it's always in arg1
         self.__optrTgt(element.arg1)
         # Write down source attribute from arg2
-        self.activeMod.sourceAttribute = self.__getAttr(element.arg2)
+        self.activeMod.sourceType = const.srcAttr
+        self.activeMod.sourceValue = self.__getAttr(element.arg2)
         # Append filled modifier to list we're currently working with
         self.activeSet.add(self.activeMod)
         # If something weird happens, clean current modifier to throw
@@ -287,7 +288,7 @@ class InfoBuilder:
         self.activeMod.type = element.operand
         # As our operation is specified by top-level operand, call target router directly
         self.__tgtRouter(element.arg1)
-        self.activeMod.sourceAttribute = self.__getAttr(element.arg2)
+        self.__srcGetter(element.arg2)
         # Set runtime according to active list
         if self.activeSet is self.preMods:
             self.activeMod.runTime = const.infoPre
@@ -310,6 +311,19 @@ class InfoBuilder:
                        const.opndSrqAttr: self.__tgtSrqAttr,
                        const.opndItmAttr: self.__tgtItmAttr}
         tgtRouteMap[element.operand](element)
+
+    def __srcGetter(self, element):
+        """Pick proper source specifying method according to operand"""
+        # For attribute definitions, store
+        if element.operand == const.opndDefAttr:
+            self.activeMod.sourceType = const.srcAttr
+            self.activeMod.sourceValue = self.__getAttr(element)
+        else:
+            valMap = {const.opndDefInt: self.__getInt,
+                      const.opndDefBool: self.__getBool}
+            self.activeMod.sourceType = const.srcVal
+            self.activeMod.sourceValue = valMap[element.operand](element)
+
 
     def __tgtAttr(self, element):
         """Get target attribute and store it"""

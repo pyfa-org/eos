@@ -68,8 +68,8 @@ class EffectInfo:
         """
         Which operation should be applied.
         Can have optrPreAssignment, optrPreMul, optrPreDiv, optrModAdd, optrModSub, optrPostMul,
-        optrPostDiv, optrPostPercent, optrPostAssignment, optrIncr, optrDecr or optrAssign from
-        consts file.
+        optrPostDiv, optrPostPercent, optrPostAssignment, optrIncr, optrDecr or optrAssign value
+        from consts file.
         """
 
         self.targetAttributeId = None
@@ -78,14 +78,15 @@ class EffectInfo:
         Keeps integer which references attribute via ID.
         """
 
-        self.sourceAttributeId = None
+        self.sourceType = None
         """
-        Which source attribute will be used as modification value for the operation.
-        Keeps integer which references attribute via ID.
+        sourceValue type.
+        Can have srcAttr or srcVal from consts file.
         """
 
         self.sourceValue = None
         """
         The value which is used as modification value for operation.
-        Keeps any value CCP can define in expression (boolean or integer).
+        Keeps reference to attribute or any value CCP can define in expression
+        (boolean or integer).
         """
