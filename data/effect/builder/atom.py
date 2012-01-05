@@ -183,6 +183,6 @@ class ConditionAtom:
         if self.arg1 is not None or self.arg2 is not None or \
         self.carrier is not None or self.attribute is not None:
             return False
-        if self.value:
+        if self.value is None:
             return False
         return True
