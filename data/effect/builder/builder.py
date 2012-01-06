@@ -1,5 +1,6 @@
 #===============================================================================
 # Copyright (C) 2011 Diego Duclos
+# Copyright (C) 2011-2012 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -415,9 +416,9 @@ class InfoBuilder:
         # Pass copy of conditions to make sure it's not modified there,
         # we'll need them further
         self.__generic(thenClause, deepcopy(currentConditions))
-        # Negate condition for else clause processing
+        # Invert condition for else clause processing
         # We do not need to recombine it with conditions passed to our method,
-        # as condition being reverted is part of combined tree
+        # as condition being inverted is part of combined tree
         self.__invertCondition(newConditions)
         self.__generic(elseClause, deepcopy(currentConditions))
 
