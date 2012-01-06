@@ -418,7 +418,7 @@ class InfoBuilder:
         # Negate condition for else clause processing
         # We do not need to recombine it with conditions passed to our method,
         # as condition being reverted is part of combined tree
-        self.__invertCondition(currentConditions)
+        self.__invertCondition(newConditions)
         self.__generic(elseClause, deepcopy(currentConditions))
 
     def __makeConditionRouter(self, element):
