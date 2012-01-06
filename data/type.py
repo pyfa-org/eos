@@ -55,7 +55,7 @@ class Type:
             if req is not None:
                 reqs.add(int(req))
 
-        return reqs;
+        return reqs
 
     def getInfos(self):
         """
@@ -65,4 +65,4 @@ class Type:
         for e in self.effects:
             infos.update(e.infos)
 
-        return infos;
+        return infos

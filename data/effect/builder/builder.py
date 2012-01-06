@@ -201,7 +201,7 @@ class InfoBuilder:
             # that modification will be applied in any case; just mark modifier
             # w/o condition as unified one
             for mod in uniGroup:
-                if mod.condition is None:
+                if mod.conditions is None:
                     unified = mod
                     break
             # If unified is still None, then we've got to combine conditions
