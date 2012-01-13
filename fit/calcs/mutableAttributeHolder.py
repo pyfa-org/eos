@@ -23,6 +23,7 @@ from abc import abstractproperty
 from collections import Mapping
 
 from eos import const
+from .affector import Affector
 from .condition import ConditionEval
 
 
@@ -105,9 +106,9 @@ class MutableAttributeMap(Mapping):
 
 
         for info in holder.invType.getInfos():
-            registrationInfo = (holder, info)
-            for affectee in fit._getAffectees(registrationInfo):
-                affectee.attributes._registerOne(registrationInfo)
+            affector = Affector(sourceHolder=holder, info=info)
+            for affectee in fit._getAffectees(affector):
+                affectee.attributes._registerOne(affector)
 
 
     def _registerOne(self, registrationInfo):
@@ -135,15 +136,16 @@ class MutableAttributeMap(Mapping):
             fit = holder.fit
             # We also need to clear things we affect
             for info in filter(lambda i: i.sourceValue == attrId, holder.invType.getInfos()):
-                for affectee in fit._getAffectees((holder, info)):
+                affector = Affector(sourceHolder=holder, info=info)
+                for affectee in fit._getAffectees(affector):
                     del affectee.attributes[info.targetAttributeId]
 
     def _unregisterAll(self):
         fit = self.__holder.fit
         for info in self.__holder.invType.getInfos():
-            registrationInfo = (self, info)
-            for affectee in fit._getAffectees(registrationInfo):
-                affectee.attributes._unregisterOne(registrationInfo)
+            affector = Affector(sourceHolder=self, info=info)
+            for affectee in fit._getAffectees(affector):
+                affectee.attributes._unregisterOne(affector)
 
         del self.__attributeRegister[:]
         del self[:]

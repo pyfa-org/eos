@@ -56,7 +56,10 @@ class Register():
         self.__affectorHolder = {}
 
     def __getAffecteeMaps(self, targetHolder):
-        """Gather all affectee map data into (key, map) tuples for further use"""
+        """
+        Helper for affectee register/unregister methods, provides (key, map)
+        list to use according to passed holder
+        """
         location = targetHolder.location
         # Container which temporarily holds (key, map) tuples
         affecteeMaps = []
@@ -68,27 +71,11 @@ class Register():
             affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
         return affecteeMaps
 
-    def __convertLocationForFilters(self, sourceHolder, targetLocation):
-        """Converts location self-reference to real location, like character or ship"""
-        # First off, check passed location against list of valid locations
-        allowedLocations = (const.locChar, const.locShip, const.locSpace, const.locSelf)
-        if not targetLocation in allowedLocations:
-            raise RuntimeError("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
-        # Reference to self is sparingly used on ship effects, so we must convert
-        # it to real location
-        elif targetLocation == const.locSelf:
-            if sourceHolder is self.__fit.ship:
-                return const.locShip
-            elif sourceHolder is self.__fit.character:
-                return const.locChar
-            else:
-                raise RuntimeError("reference to self on unexpected holder during processing of massive filtered modification")
-        # Just return untouched location for all other valid cases
-        else:
-            return targetLocation
-
     def __getAffectorMap(self, affector):
-        """Get map to which affector should be added, and key to use with it"""
+        """
+        Helper for affector register/unregister methods, provides key and
+        map to use according to passed affector
+        """
         sourceHolder, info = affector
         # For each filter type, define affector map and key to use
         if info.filterType is None:
@@ -111,20 +98,50 @@ class Register():
         # is converted into appropriate real location
         elif info.filterType == const.filterAll:
             affectorMap = self.__affectorLocation
-            location = self.__convertLocationForFilters(sourceHolder, info.location)
+            location = self.__contextizeLocation(sourceHolder, info.location)
             key = location
         elif info.filterType == const.filterGroup:
             affectorMap = self.__affectorLocationGroup
-            location = self.__convertLocationForFilters(sourceHolder, info.location)
+            location = self.__contextizeLocation(sourceHolder, info.location)
             key = (location, info.filterValue)
         elif info.filterType == const.filterSkill:
             affectorMap = self.__affectorLocationSkill
-            location = self.__convertLocationForFilters(sourceHolder, info.location)
-            key = (location, info.filterValue)
+            location = self.__contextizeLocation(sourceHolder, info.location)
+            skill = self.__contextizeTypeId(affector)
+            key = (location, skill)
         return affectorMap, key
 
+    def __contextizeLocation(self, sourceHolder, targetLocation):
+        """
+        Converts location self-reference to real location, like character or ship,
+        used only in modifications of multiple filtered holders
+        """
+        # First off, check passed location against list of valid locations
+        allowedLocations = (const.locChar, const.locShip, const.locSpace, const.locSelf)
+        if not targetLocation in allowedLocations:
+            raise RuntimeError("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
+        # Reference to self is sparingly used on ship effects, so we must convert
+        # it to real location
+        elif targetLocation == const.locSelf:
+            if sourceHolder is self.__fit.ship:
+                return const.locShip
+            elif sourceHolder is self.__fit.character:
+                return const.locChar
+            else:
+                raise RuntimeError("reference to self on unexpected holder during processing of massive filtered modification")
+        # Just return untouched location for all other valid cases
+        else:
+            return targetLocation
+
+    def __contextizeTypeId(self, affector):
+        """Convert typeID self-reference into real typeID"""
+        skillId = affector.info.filterValue
+        if skillId == const.selfTypeID:
+            skillId = affector.sourceHolder.invType.id
+        return skillId
+
     def registerAffectee(self, targetHolder):
-        """Register newcomer in all affectee maps"""
+        """Add passed holder to register's affectee maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map; also, make sure to initialize set if it's not there
             value = affecteeMap.get(key)
@@ -133,14 +150,14 @@ class Register():
             value.add(targetHolder)
 
     def unregisterAffectee(self, targetHolder):
-        """Remove holder from affectee maps"""
+        """Remove passed holder from register's affectee maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # For affectee maps, item we're going to remove always should be there,
             # so we're not doing any additional checks
             affecteeMap[key].remove(targetHolder)
 
     def registerAffector(self, affector):
-        """Handle adding affector to proper affector map"""
+        """Add passed affector to register's affector maps"""
         info = affector.info
         # Register keeps track of only local duration modifiers
         if info.type != const.infoDuration or info.gang is not False:
@@ -153,7 +170,7 @@ class Register():
         value.add((affector))
 
     def unregisterAffector(self, affector):
-        """Remove affector from register"""
+        """Remove affector from register's affector maps"""
         info = affector.info
         if info.type != const.infoDuration or info.gang is not False:
             return
@@ -191,22 +208,23 @@ class Register():
         # For filtered modifications, pick appropriate dictionary and get set
         # with target holders
         elif info.filterType == const.filterAll:
-            key = self.__convertLocationForFilters(sourceHolder, info.location)
+            key = self.__contextizeLocation(sourceHolder, info.location)
             target = self.__affecteeLocation.get(key, set())
         elif info.filterType == const.filterGroup:
-            location = self.__convertLocationForFilters(sourceHolder, info.location)
+            location = self.__contextizeLocation(sourceHolder, info.location)
             key = (location, info.filterValue)
             target = self.__affecteeLocationGroup.get(key, set())
         elif info.filterType == const.filterSkill:
-            location = self.__convertLocationForFilters(sourceHolder, info.location)
-            key = (location, info.filterValue)
+            location = self.__contextizeLocation(sourceHolder, info.location)
+            skill = self.__contextizeTypeId(affector)
+            key = (location, skill)
             target = self.__affecteeLocationSkill.get(key, set())
         # Add our set to affectees
         affectees.update(target)
         return affectees
 
     def getAffectors(self, targetHolder):
-        """Get all affectors, which influence given holder"""
+        """Get all affectors, which influence passed holder"""
         affectors = set()
         # Add all affectors which directly affect it
         affectors.update(self.__affectorHolder.get(targetHolder, set()))
