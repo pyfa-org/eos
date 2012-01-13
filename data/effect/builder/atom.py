@@ -97,18 +97,6 @@ class ConditionAtom:
             result = "v{0}".format(self.value)
         return result
 
-    def getLeaves(self):
-        """
-        Returns all "leaf" nodes of the condition tree, those are the val and valRef atoms
-        """
-        if self.type in (const.atomTypeVal, const.atomTypeValRef):
-            return {self}
-        else:
-            s = set()
-            s.update(self.arg1.getLeaves())
-            s.update(self.arg2.getLeaves())
-            return s
-
     def validateTree(self):
         """Validate full condition tree, given we're checking top-level node"""
         # Top-level node can be either logical join or comparison

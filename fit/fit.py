@@ -69,14 +69,18 @@ class Fit:
                 raise ValueError("Cannot add a holder which is already in another fit")
 
             holder.fit = self
-            self.__register.register(holder)
+            self.__register.registerAffectee(holder)
+            for info in holder.invType.getInfos():
+                self.__register.registerAffector((holder, info))
             holder._register()
 
 
     def _unsetHolder(self, holder):
         if holder is not None:
             assert(holder.fit == self)
-            self.__register.unregister(holder)
+            self.__register.unregisterAffectee(holder)
+            for info in holder.invType.getInfos():
+                self.__register.unregisterAffector((holder, info))
             holder.fit = None
             holder._unregister()
 
@@ -87,10 +91,6 @@ class Fit:
     def _getAffectees(self, registrationInfo):
         """Get the holders that the passed (sourceHolder, info) tuple affects"""
         return self.__register.getAffectees(registrationInfo)
-
-    def _getDependants(self, locationId, attrId):
-        """Get the dependants of the passed location and attribute"""
-        return self.__register.getDependants(locationId, attrId)
 
 class MutableAttributeHolderList(collections.MutableSequence):
     """

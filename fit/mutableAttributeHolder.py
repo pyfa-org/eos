@@ -38,27 +38,17 @@ class MutableAttributeHolder:
     def location(self):
         ...
 
-    @abstractproperty
-    def specific(self):
-        ...
+    def __init__(self, invType):
+        """ Constructor. Accepts invType"""
 
-    def __init__(self, type):
-        """
-        Constructor. Accepts a Type
-        """
+        # Which fit this holder is bound to
         self.fit = None
-        """
-        Which fit this holder is bound to
-        """
-        self.type = type
-        """
-        Which type this holder wraps
-        """
 
+        # Which invType this holder wraps
+        self.invType = invType
+
+        # Special dictionary subclass that holds modified attributes and data related to their calculation
         self.attributes = MutableAttributeMap(self)
-        """
-        Special dictionary subclass that holds modified attributes and data related to their calculation
-        """
 
     def _register(self):
         """Registers this holder, called when a holder is added to a fit"""
@@ -91,14 +81,14 @@ class MutableAttributeMap(collections.Mapping):
         return len(self.keys())
 
     def __contains__(self, key):
-        return key in self.__modifiedAttributes or key in self.__holder.type.attributes
+        return key in self.__modifiedAttributes or key in self.__holder.invType.attributes
 
     def __iter__(self):
         for k in self.keys():
             yield k
 
     def keys(self):
-        return set(self.__modifiedAttributes.keys()).intersection(self.__holder.type.attributes.keys())
+        return set(self.__modifiedAttributes.keys()).intersection(self.__holder.invType.attributes.keys())
 
     def _registerAll(self):
         """
@@ -115,7 +105,7 @@ class MutableAttributeMap(collections.Mapping):
             self._registerOne(registrationInfo)
 
 
-        for info in holder.type.getInfos():
+        for info in holder.invType.getInfos():
             registrationInfo = (holder, info)
             for affectee in fit._getAffectees(registrationInfo):
                 affectee.attributes._registerOne(registrationInfo)
@@ -142,19 +132,16 @@ class MutableAttributeMap(collections.Mapping):
             # If we have any dependants, their calculated value needs to be cleared as well
             # Only specific holders can have dependants
             holder = self.__holder
-            if holder.specific:
-                for depHolder, depInfo in holder.fit._getDependants(holder.location, attrId):
-                    del depHolder.attributes[depInfo.sourceValue]
 
             fit = holder.fit
             # We also need to clear things we affect
-            for info in filter(lambda i: i.sourceValue == attrId, holder.type.getInfos()):
+            for info in filter(lambda i: i.sourceValue == attrId, holder.invType.getInfos()):
                 for affectee in fit._getAffectees((holder, info)):
                     del affectee.attributes[info.targetAttributeId]
 
     def _unregisterAll(self):
         fit = self.__holder.fit
-        for info in self.__holder.type.getInfos():
+        for info in self.__holder.invType.getInfos():
             registrationInfo = (self, info)
             for affectee in fit._getAffectees(registrationInfo):
                 affectee.attributes._unregisterOne(registrationInfo)
@@ -177,11 +164,11 @@ class MutableAttributeMap(collections.Mapping):
 
         # Code note: This method will store intermediate values in the calculated values already
         # Why ? Because some infos affecting an attribute also have a condition on that same attribute
-        base = self.__holder.type.attributes.get(attrId)
+        base = self.__holder.invType.attributes.get(attrId)
         keyFunc = lambda registrationInfo: registrationInfo[1].operation
 
         try:
-            attributeType = self.__holder.type.attributeTypes[attrId]
+            attributeType = self.__holder.invType.attributeTypes[attrId]
             stackable = attributeType.stackable
 
             register = sorted(self.__attributeRegister[attrId], key=keyFunc)
@@ -200,7 +187,7 @@ class MutableAttributeMap(collections.Mapping):
                     value = sourceHolder.attributes[info.sourceValue]
 
                     #Stacking penaltied modifiers get special handling
-                    if not stackable and sourceHolder.type.categoryId not in const.penaltyImmuneCats \
+                    if not stackable and sourceHolder.invType.categoryId not in const.penaltyImmuneCats \
                        and operation in (const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv):
 
                         # Compute actual modifier

@@ -24,19 +24,13 @@ from .mutableAttributeHolder import MutableAttributeHolder
 class Drone(MutableAttributeHolder):
     """
     Drone class. This class is a fit-specific wrapper around a Type. It keeps track of all the fit-specific information of it.
-    As this class is fit specific, the same drone shouldn't be added onto more then one fit at the same time.
+    As this class is fit specific, the same drone shouldn't be added onto more than one fit at the same time.
     """
 
     @property
     def location(self):
         return const.locSpace
 
-    @property
-    def specific(self):
-        return False
-
-    def __init__(self, type):
-        """
-        Constructor. Accepts a Type
-        """
-        super().__init__(type)
+    def __init__(self, invType):
+        """Constructor. Accepts invType"""
+        super().__init__(invType)
