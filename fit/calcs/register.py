@@ -27,32 +27,32 @@ class Register():
         # The fit we're keeping track of things for
         self.__fit = fit
 
-        # Keep track of items belonging to certain location
+        # Keep track of holders belonging to certain location
         # Format: location: set(targetHolders)
         self.__affecteeLocation = {}
 
-        # Keep track of items belonging to certain location and group
+        # Keep track of holders belonging to certain location and group
         # Format: (location, group): set(targetHolders)
         self.__affecteeLocationGroup = {}
 
-        # Keep track of items belonging to certain location and having certain skill requirement
+        # Keep track of holders belonging to certain location and having certain skill requirement
         # Format: (location, skill): set(targetHolders)
         self.__affecteeLocationSkill = {}
 
-        # Keep track of infos influencing all items belonging to certain location
-        # Format: location: set((sourceHolder, info))
+        # Keep track of affectors influencing all holders belonging to certain location
+        # Format: location: set(affectors)
         self.__affectorLocation = {}
 
-        # Keep track of infos influencing items belonging to certain location and group
-        # Format: (location, group): set((sourceHolder, info))
+        # Keep track of affectors influencing holders belonging to certain location and group
+        # Format: (location, group): set(affectors)
         self.__affectorLocationGroup = {}
 
-        # Keep track of infos influencing items belonging to certain location and having certain skill requirement
-        # Format: (location, skill): set((sourceHolder, info))
+        # Keep track of affectors influencing holders belonging to certain location and having certain skill requirement
+        # Format: (location, skill): set(affectors)
         self.__affectorLocationSkill = {}
 
-        # Keep track of infos influencing single items
-        # Format: targetHolder: set((sourceHolder, info))
+        # Keep track of affectors influencing holders directly
+        # Format: targetHolder: set(affectors)
         self.__affectorHolder = {}
 
     def __getAffecteeMaps(self, targetHolder):
@@ -69,7 +69,7 @@ class Register():
         return affecteeMaps
 
     def __convertLocationForFilters(self, sourceHolder, targetLocation):
-        """Converts self-reference to container location, like character or ship"""
+        """Converts location self-reference to real location, like character or ship"""
         # First off, check passed location against list of valid locations
         allowedLocations = (const.locChar, const.locShip, const.locSpace, const.locSelf)
         if not targetLocation in allowedLocations:
@@ -141,7 +141,7 @@ class Register():
 
     def registerAffector(self, affector):
         """Handle adding affector to proper affector map"""
-        _, info = affector
+        info = affector.info
         # Register keeps track of only local duration modifiers
         if info.type != const.infoDuration or info.gang is not False:
             return
@@ -154,7 +154,7 @@ class Register():
 
     def unregisterAffector(self, affector):
         """Remove affector from register"""
-        _, info = affector
+        info = affector.info
         if info.type != const.infoDuration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
@@ -206,7 +206,7 @@ class Register():
         return affectees
 
     def getAffectors(self, targetHolder):
-        """Get all (sourceHolder, info) tuples, aka affectors, which influence given holder"""
+        """Get all affectors, which influence given holder"""
         affectors = set()
         # Add all affectors which directly affect it
         affectors.update(self.__affectorHolder.get(targetHolder, set()))

@@ -18,5 +18,6 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from .affector import Affector
 from .mutableAttributeHolder import MutableAttributeHolder
 from .register import Register
