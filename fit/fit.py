@@ -18,9 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-import collections
+from collections import MutableSequence
 
-from .register import Register
+from .calcs import Register
 
 class Fit:
     """
@@ -92,7 +92,7 @@ class Fit:
         """Get the holders that the passed (sourceHolder, info) tuple affects"""
         return self.__register.getAffectees(registrationInfo)
 
-class MutableAttributeHolderList(collections.MutableSequence):
+class MutableAttributeHolderList(MutableSequence):
     """
     Class implementing the MutableSequence ABC intended to hold a list of MutableAttributeHolders (typically: modules, drones, etc.).
     It makes sure the module knows its been added onto the fit, and makes sure a module is only in one single fit

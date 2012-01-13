@@ -18,19 +18,5 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
-from .calcs import MutableAttributeHolder
-
-class Module(MutableAttributeHolder):
-    """
-    Module class. This class is a fit-specific wrapper around a Type. It keeps track of all the fit-specific information of it.
-    As this class is fit specific, the same module shouldn't be added onto more than one fit at the same time.
-    """
-
-    @property
-    def location(self):
-        return const.locShip
-
-    def __init__(self, invType):
-        """Constructor. Accepts invType"""
-        super().__init__(invType)
+from .mutableAttributeHolder import MutableAttributeHolder
+from .register import Register

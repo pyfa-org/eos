@@ -19,7 +19,7 @@
 #===============================================================================
 
 from eos import const
-from .mutableAttributeHolder import MutableAttributeHolder
+from .calcs import MutableAttributeHolder
 
 class Drone(MutableAttributeHolder):
     """

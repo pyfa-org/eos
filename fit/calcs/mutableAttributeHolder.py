@@ -18,14 +18,13 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-import collections
 from abc import ABCMeta
 from abc import abstractproperty
+from collections import Mapping
 
 from eos import const
 from .condition import ConditionEval
 
-RegistrationInfo = collections.namedtuple("RegistrationInfo", ("sourceHolder", "info"))
 
 class MutableAttributeHolder:
     """
@@ -58,7 +57,7 @@ class MutableAttributeHolder:
         """Unregisters this holder, called when a holder is removed from a fit"""
         self.attributes._unregisterAll()
 
-class MutableAttributeMap(collections.Mapping):
+class MutableAttributeMap(Mapping):
     """
     MutableAttributeMap class, this class is what actually keeps track of modified attribute values and who modified what so undo can work as expected.
     """

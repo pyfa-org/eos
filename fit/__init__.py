@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from .character import Character
 from .fit import Fit
 from .module import Module
 from .ship import Ship
-from .character import Character

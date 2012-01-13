@@ -19,7 +19,7 @@
 #===============================================================================
 
 from eos import const
-from .mutableAttributeHolder import MutableAttributeHolder
+from .calcs import MutableAttributeHolder
 
 class Character(MutableAttributeHolder):
     """
@@ -37,8 +37,8 @@ class Character(MutableAttributeHolder):
     def specific(self):
         return True
 
-    def __init__(self, type):
+    def __init__(self, invType):
         """
         Constructor. Accepts a Type
         """
-        super().__init__(type)
+        super().__init__(invType)
