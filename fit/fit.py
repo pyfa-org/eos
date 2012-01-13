@@ -74,6 +74,7 @@ class Fit:
 
     def _unsetHolder(self, holder):
         assert(holder.fit == self)
+        holder.attributes._damageDependantsOnHolder()
         self.__register.unregisterAffectee(holder)
         for info in holder.invType.getInfos():
             affector = Affector(sourceHolder=holder, info=info)
