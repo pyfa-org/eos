@@ -26,8 +26,17 @@ from .calcs import Register
 class Fit:
     """
     Fit object. Each fit is built out of a number of Modules, as well as a Ship.
-    This class also contains the logic to apply a single expressionInfo onto itself
     """
+
+    def __init__(self):
+        # Variables used by properties
+        self.__ship = None
+        self.__character = None
+        # Register-helper for partial recalculations
+        self.__register = Register(self)
+
+        # Public stuff
+        self.modules = MutableAttributeHolderList(self)
 
     @property
     def ship(self):
@@ -35,7 +44,8 @@ class Fit:
 
     @ship.setter
     def ship(self, ship):
-        self._unsetHolder(self.__ship)
+        if self.__ship is not None:
+            self._unsetHolder(self.__ship)
         self.__ship = ship
         self._setHolder(ship)
 
@@ -45,55 +55,38 @@ class Fit:
 
     @character.setter
     def character(self, character):
-        self._unsetHolder(self.__character)
+        if self.__character is not None:
+            self._unsetHolder(self.__character)
         self.__character = character
         self._setHolder(character)
 
-    def __init__(self, ship=None):
-        """
-        Constructor: Accepts a Ship
-        """
-        # Vars used by properties
-        self.__ship = None
-        self.__character = None
-
-        self.__register = Register(self)
-
-        # Public stuff
-        self.modules = MutableAttributeHolderList(self)
-        self.ship = ship
-
     def _setHolder(self, holder):
-        if holder is not None:
-            # Make sure the module isn't used elsewhere already
-            if holder.fit is not None:
-                raise ValueError("Cannot add a holder which is already in another fit")
+        # Make sure the holder isn't used already
+        if holder.fit is not None:
+            raise ValueError("Cannot add a holder which is already in another fit")
 
-            holder.fit = self
-            self.__register.registerAffectee(holder)
-            for info in holder.invType.getInfos():
-                affector = Affector(sourceHolder=holder, info=info)
-                self.__register.registerAffector(affector)
-            holder._register()
-
+        holder.fit = self
+        self.__register.registerAffectee(holder)
+        for info in holder.invType.getInfos():
+            affector = Affector(sourceHolder=holder, info=info)
+            self.__register.registerAffector(affector)
+        holder.attributes._damageDependantsOnHolder()
 
     def _unsetHolder(self, holder):
-        if holder is not None:
-            assert(holder.fit == self)
-            self.__register.unregisterAffectee(holder)
-            for info in holder.invType.getInfos():
-                affector = Affector(sourceHolder=holder, info=info)
-                self.__register.unregisterAffector(affector)
-            holder.fit = None
-            holder._unregister()
+        assert(holder.fit == self)
+        self.__register.unregisterAffectee(holder)
+        for info in holder.invType.getInfos():
+            affector = Affector(sourceHolder=holder, info=info)
+            self.__register.unregisterAffector(affector)
+        holder.fit = None
 
     def _getAffectors(self, holder):
-        """Get a set of (sourceHolder, info) tuples affecting the passed holder"""
+        """Get set of affectors affecting passed holder"""
         return self.__register.getAffectors(holder)
 
-    def _getAffectees(self, registrationInfo):
-        """Get the holders that the passed (sourceHolder, info) tuple affects"""
-        return self.__register.getAffectees(registrationInfo)
+    def _getAffectees(self, affector):
+        """Get holders that the passed affector affects"""
+        return self.__register.getAffectees(affector)
 
 class MutableAttributeHolderList(MutableSequence):
     """

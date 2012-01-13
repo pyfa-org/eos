@@ -21,7 +21,10 @@
 from eos import const
 
 class Register():
-    """Keep track of fit-specific holder data"""
+    """
+    Keep track of links between fit's local holders, which is required for efficient
+    partial attribute recalculation
+    """
 
     def __init__(self, fit):
         # The fit we're keeping track of things for
@@ -107,7 +110,7 @@ class Register():
         elif info.filterType == const.filterSkill:
             affectorMap = self.__affectorLocationSkill
             location = self.__contextizeLocation(sourceHolder, info.location)
-            skill = self.__contextizeTypeId(affector)
+            skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
         return affectorMap, key
 
@@ -133,7 +136,7 @@ class Register():
         else:
             return targetLocation
 
-    def __contextizeTypeId(self, affector):
+    def __contextizeSkillrqId(self, affector):
         """Convert typeID self-reference into real typeID"""
         skillId = affector.info.filterValue
         if skillId == const.selfTypeID:
@@ -216,7 +219,7 @@ class Register():
             target = self.__affecteeLocationGroup.get(key, set())
         elif info.filterType == const.filterSkill:
             location = self.__contextizeLocation(sourceHolder, info.location)
-            skill = self.__contextizeTypeId(affector)
+            skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
             target = self.__affecteeLocationSkill.get(key, set())
         # Add our set to affectees
