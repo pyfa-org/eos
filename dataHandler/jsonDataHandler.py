@@ -22,7 +22,7 @@ import bz2
 import json
 import weakref
 
-from eos.data import Type, Expression, Effect, Attribute
+from eos.data import InvType, Expression, Effect, Attribute
 from .dataHandler import DataHandler
 
 class JsonDataHandler(DataHandler):
@@ -58,7 +58,7 @@ class JsonDataHandler(DataHandler):
         if type is None:
             # We do str(id) here because json dicts always have strings as key
             data = self.__typeData[str(id)]
-            type = Type(id, data["category"], data["group"],
+            type = InvType(id, data["category"], data["group"],
                         [self.getEffect(effectId) for effectId in data["effects"]],
                         {x : y for x, y in data["attributes"]},
                         {x : self.getAttribute(x) for x, y in data["attributes"]})

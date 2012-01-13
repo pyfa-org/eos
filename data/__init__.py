@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from .type import Type
+from .invType import InvType
 from .expression import Expression
 from .effect import Effect
 from .attribute import Attribute
