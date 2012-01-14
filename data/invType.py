@@ -56,13 +56,3 @@ class InvType:
                 reqs.add(int(req))
 
         return reqs
-
-    def getInfos(self):
-        """
-        Return a set of all infos this type contains
-        """
-        infos = set()
-        for e in self.effects:
-            infos.update(e.infos)
-
-        return infos

@@ -67,8 +67,7 @@ class Fit:
 
         holder.fit = self
         self.__register.registerAffectee(holder)
-        for info in holder.invType.getInfos():
-            affector = Affector(sourceHolder=holder, info=info)
+        for affector in holder.getAffectors():
             self.__register.registerAffector(affector)
         holder._damageDependantsAll()
 
@@ -76,8 +75,7 @@ class Fit:
         assert(holder.fit == self)
         holder._damageDependantsAll()
         self.__register.unregisterAffectee(holder)
-        for info in holder.invType.getInfos():
-            affector = Affector(sourceHolder=holder, info=info)
+        for affector in holder.getAffectors():
             self.__register.unregisterAffector(affector)
         holder.fit = None
 
