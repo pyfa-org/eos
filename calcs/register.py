@@ -157,7 +157,7 @@ class Register():
         return skillId
 
     def registerAffectee(self, targetHolder):
-        """Add passed holder to register's affectee maps"""
+        """Add passed holder to register's maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map; also, make sure to initialize set if it's not there
             try:
@@ -165,7 +165,7 @@ class Register():
             except KeyError:
                 value = affecteeMap[key] = set()
             value.add(targetHolder)
-        # Check if we have other (charge's module/module's charge) location holder,
+        # Check if we have other location (charge's module/module's charge) holder,
         # also check if our holder which is being registered should be affected by it
         # We do this step in affectee registration because it should occur only once,
         # when holder is added to the fit
@@ -179,11 +179,11 @@ class Register():
             except KeyError:
                 targetHolderDirectAffectors = self.__affectorHolder[targetHolder] = set()
             targetHolderDirectAffectors.update(affectorsToEnable)
-            # And remove from disabled other affectors dictionary altogether
+            # And remove from disabled other affectors from dictionary altogether
             del self.__disabledOtherAffectors[otherHolder]
 
     def unregisterAffectee(self, targetHolder):
-        """Remove passed holder from register's affectee maps"""
+        """Remove passed holder from register's maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # For affectee maps, item we're going to remove always should be there,
             # so we're not doing any additional checks
@@ -218,7 +218,7 @@ class Register():
 
     def registerAffector(self, affector):
         """Add passed affector to register's affector maps"""
-        sourceHolder, info = affector
+        info = affector.info
         # Register keeps track of only local duration modifiers
         if info.type != const.infoDuration or info.gang is not False:
             return
