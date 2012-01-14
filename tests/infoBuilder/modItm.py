@@ -50,9 +50,9 @@ class TestModItm(TestCase):
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = const.optrPostPercent
-        self.assertEqual(info.operation, expOperation, msg="info operation must be PostPercent (ID {})".format(expOperation))
+        self.assertEqual(info.operator, expOperation, msg="info operator must be PostPercent (ID {})".format(expOperation))
         expTgtAttr = 9
-        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = const.srcAttr
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 327

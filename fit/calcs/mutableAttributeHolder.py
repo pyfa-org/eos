@@ -68,7 +68,7 @@ class MutableAttributeHolder:
             # Gp through all holders targeted by info
             for targetHolder in self.fit._getAffectees(affector):
                 # And remove target attribute
-                del targetHolder.attributes[info.targetAttributeId]
+                del targetHolder.attributes[info.targetAttribute]
 
     def _damageDependantsAll(self):
         """Clear calculated attribute values relying on anything assigned to holder"""
@@ -76,10 +76,10 @@ class MutableAttributeHolder:
             # Go through all holders targeted by info
             for targetHolder in self.fit._getAffectees(affector):
                 # And remove target attribute
-                del targetHolder.attributes[affector.info.targetAttributeId]
+                del targetHolder.attributes[affector.info.targetAttribute]
 
 class MutableAttributeMap(Mapping):
-    """MutableAttributeMap class."""
+    """Store, process and provide access to modified attribute values"""
 
     def __init__(self, holder):
         self.__holder = holder
@@ -129,55 +129,55 @@ class MutableAttributeMap(Mapping):
         # Attribute metadata
         attrMeta = holder.invType.attributeTypes[attrKey]
         # Container for non-penalized modifiers
-        # Format: operation: set(values)
+        # Format: operator: set(values)
         normalMods = {}
         # Container for penalized modifiers
-        # Format: operation: set(values)
+        # Format: operator: set(values)
         penalizedMods = {}
         # Now, go through all affectors affecting ourr holder
         for affector in holder.fit._getAffectors(holder):
             sourceHolder, info = affector
             # Skip affectors who do not target attribute being calculated
-            if info.targetAttributeId != attrKey:
+            if info.targetAttribute != attrKey:
                 continue
-            operation = info.operation
+            operator = info.operator
             # If source value is attribute reference
             if info.sourceType == const.srcAttr:
                 # Get its value
                 modValue = sourceHolder.attributes[info.sourceValue]
                 # And decide if it should be stacking penalized or not, based on stackable property,
-                # source item category and operation
+                # source item category and operator
                 penalize = not attrMeta.stackable and sourceHolder.invType.categoryId not in const.penaltyImmuneCats \
-                and operation in {const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv}
+                and operator in {const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv}
             # For value modifications, just use stored in info value and avoid its penalization
             else:
                 modValue = info.sourceValue
                 penalize = False
             # Normalize addition/subtraction, so it's always
             # acts as addition
-            if operation == const.optrModSub:
+            if operator == const.optrModSub:
                 modValue = -modValue
             # Normalize multiplicative modifiers, converting them into form of
             # multiplier
-            elif operation in {const.optrPreDiv, const.optrPostDiv}:
+            elif operator in {const.optrPreDiv, const.optrPostDiv}:
                 modValue = 1 / modValue
-            elif operation == const.optrPostPercent:
+            elif operator == const.optrPostPercent:
                 modValue = modValue / 100 + 1
             # Add value to appropriate dictionary
             if penalize is True:
                 try:
-                    modList = penalizedMods[operation]
+                    modList = penalizedMods[operator]
                 except KeyError:
-                    modList = penalizedMods[operation] = []
+                    modList = penalizedMods[operator] = []
             else:
                 try:
-                    modList = normalMods[operation]
+                    modList = normalMods[operator]
                 except KeyError:
-                    modList = normalMods[operation] = []
+                    modList = normalMods[operator] = []
             modList.append(modValue)
         # When data gathering was finished, process penalized modifiers
-        # They are penalized on per-operation basis
-        for operation, modList in penalizedMods.items():
+        # They are penalized on per-operator basis
+        for operator, modList in penalizedMods.items():
             # Gather positive modifiers into one chain, negative
             # into another
             chainPositive = []
@@ -196,20 +196,20 @@ class MutableAttributeMap(Mapping):
             # Get final penalized factor and store it into normal dictionary
             penalizedValue = self.__penalizeChain(chainPositive) * self.__penalizeChain(chainNegative)
             try:
-                modList = normalMods[operation]
+                modList = normalMods[operator]
             except KeyError:
-                modList = normalMods[operation] = []
+                modList = normalMods[operator] = []
             modList.append(penalizedValue)
-        # Calculate result of normal dictionary, according to operation order
-        for operation in sorted(normalMods):
-            modList = normalMods[operation]
+        # Calculate result of normal dictionary, according to operator order
+        for operator in sorted(normalMods):
+            modList = normalMods[operator]
             # Pick best modifier for assignments, based on highIsGood value
-            if operation in (const.optrPreAssignment, const.optrPostAssignment):
+            if operator in (const.optrPreAssignment, const.optrPostAssignment):
                 result = max(modList) if attrMeta.highIsGood is True else min(modList)
-            elif operation in (const.optrModAdd, const.optrModSub):
+            elif operator in (const.optrModAdd, const.optrModSub):
                 for modVal in modList:
                     result += modVal
-            elif operation in (const.optrPreMul, const.optrPreDiv, const.optrPostMul,
+            elif operator in (const.optrPreMul, const.optrPreDiv, const.optrPostMul,
                                const.optrPostDiv, const.optrPostPercent):
                 for modVal in modList:
                     result *= modVal

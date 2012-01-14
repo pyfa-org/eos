@@ -48,9 +48,9 @@ class TestPreModAddAttr(TestCase):
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = const.optrIncr
-        self.assertEqual(info.operation, expOperation, msg="info operation must be Increment (ID {})".format(expOperation))
+        self.assertEqual(info.operator, expOperation, msg="info operator must be Increment (ID {})".format(expOperation))
         expTgtAttr = 264
-        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = const.srcAttr
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 68
@@ -82,9 +82,9 @@ class TestPreModAddVal(TestCase):
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = const.optrIncr
-        self.assertEqual(info.operation, expOperation, msg="info operation must be Increment (ID {})".format(expOperation))
+        self.assertEqual(info.operator, expOperation, msg="info operator must be Increment (ID {})".format(expOperation))
         expTgtAttr = 264
-        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = const.srcVal
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 200
@@ -116,9 +116,9 @@ class TestPostModAddAttr(TestCase):
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = const.optrIncr
-        self.assertEqual(info.operation, expOperation, msg="info operation must be Increment (ID {})".format(expOperation))
+        self.assertEqual(info.operator, expOperation, msg="info operator must be Increment (ID {})".format(expOperation))
         expTgtAttr = 264
-        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = const.srcAttr
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 68
@@ -150,9 +150,9 @@ class TestPostModAddVal(TestCase):
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = const.optrIncr
-        self.assertEqual(info.operation, expOperation, msg="info operation must be Increment (ID {})".format(expOperation))
+        self.assertEqual(info.operator, expOperation, msg="info operator must be Increment (ID {})".format(expOperation))
         expTgtAttr = 264
-        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = const.srcVal
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 3

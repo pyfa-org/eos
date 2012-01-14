@@ -58,11 +58,11 @@ class EffectInfo:
         # Can have optrPreAssignment, optrPreMul, optrPreDiv, optrModAdd, optrModSub, optrPostMul,
         # optrPostDiv, optrPostPercent, optrPostAssignment, optrIncr, optrDecr or optrAssign value
         # from consts file.
-        self.operation = None
+        self.operator = None
 
         # Which attribute will be affected by the operation on the target.
         # Keeps integer which references attribute via ID.
-        self.targetAttributeId = None
+        self.targetAttribute = None
 
         # sourceValue type.
         # Can have srcAttr or srcVal from consts file.

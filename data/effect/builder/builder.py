@@ -287,7 +287,7 @@ class InfoBuilder:
         if conditions is not None:
             self.activeMod.conditions = deepcopy(conditions)
         self.activeMod.type = element.operand
-        # As our operation is specified by top-level operand, call target router directly
+        # As our operator is specified by top-level operand, call target router directly
         self.__tgtRouter(element.arg1)
         self.__srcGetter(element.arg2)
         # Set runtime according to active list
@@ -301,7 +301,7 @@ class InfoBuilder:
     def __optrTgt(self, element):
         """Join operator and target definition"""
         # Operation is always in arg1
-        self.activeMod.operation = self.__getOptr(element.arg1)
+        self.activeMod.operator = self.__getOptr(element.arg1)
         # Handling of arg2 depends on its operand
         self.__tgtRouter(element.arg2)
 
@@ -447,7 +447,7 @@ class InfoBuilder:
 
     def __makeConditionComparison(self, element):
         """Make comparison condition node"""
-        # Maps expression operands to atom-specific comparison operations
+        # Maps expression operands to atom-specific comparison operators
         atomCompMap = {const.opndEq: const.atomCompEq,
                        const.opndGreater: const.atomCompGreat,
                        const.opndGreaterEq: const.atomCompGreatEq}
