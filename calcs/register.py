@@ -107,7 +107,7 @@ class Register():
                 # When no reference available, it means that e.g. charge may be
                 # unavailable for now; use disabled affectors map for these
                 else:
-                    affectorMap = self.__disabledAffectors
+                    affectorMap = self.__disabledOtherAffectors
                     key = sourceHolder
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))

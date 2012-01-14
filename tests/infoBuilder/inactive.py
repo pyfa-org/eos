@@ -21,8 +21,8 @@
 from unittest import TestCase
 
 from eos import const
-from eos.data.expression import Expression
-from eos.data.effect.builder import InfoBuilder
+from eos.data import Expression
+from eos.data.effect import InfoBuilder
 
 class TestInactive(TestCase):
     """Test parsing of trees involving disabled operands"""

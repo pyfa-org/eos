@@ -21,8 +21,8 @@
 from unittest import TestCase
 
 from eos import const
-from eos.data.expression import Expression
-from eos.data.effect.builder import InfoBuilder
+from eos.data import Expression
+from eos.data.effect import InfoBuilder
 
 class TestStubInt0(TestCase):
     """Test parsing of trees describing integer-0 stub"""
