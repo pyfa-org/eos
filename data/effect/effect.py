@@ -30,35 +30,32 @@ class Effect:
     """
 
     def __init__(self, id, preExpression, postExpression, isOffensive, isAssistance):
+        # The unique ID of an effect. Can be anything, as long as its unique,
+        # typically, the IDs CCP assigned to them in the SDD are used
         self.id = id
-        """The unique ID of an effect. Can be anything, as long as its unique, typically, the IDs CCP assigned to them in the SDD are used"""
 
+        # PreExpression of the effect. A preExpression is the expression
+        # that gets run when the module is activated
         self.preExpression = preExpression
-        """PreExpression of the effect. A preExpression is the expression that gets run when the module is activated"""
 
+        # PostExpression of the effect. A postExpression gets run when the module gets disabled.
         self.postExpression = postExpression
-        """
-        PostExpression of the effect. A postExpression gets run when the module gets disabled.
-        We do not use them for our undo implementation, however, some modules that do their stuff at end of run need these (like armor reps)
-        """
 
+        # Whether the module is offensive (e.g. guns)
         self.isOffensive = isOffensive
-        """Whether the module is offensive (e.g. guns)"""
 
+        # Whether the module is helpful (e.g. Remote reps)
         self.isAssistance = isAssistance
-        """Whether the module is helpful (e.g. Remote reps)"""
 
+        # Stores EffectInfos which are assigned to given effect
         self.__infos = None
-        """Stores EffectInfos which are assigned to given effect"""
 
+        # Stores parsing status of info objects
         self.infoStatus = const.effectInfoNotParsed
-        """Stores parsing status of info objects"""
 
     @property
     def infos(self):
-        """
-        Return a set of all infos this effect contains
-        """
+        """Return a set of all infos this effect contains"""
         if self.__infos is None:
             self.__infos, self.infoStatus = InfoBuilder().build(self.preExpression, self.postExpression)
         return self.__infos

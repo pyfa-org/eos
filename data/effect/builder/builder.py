@@ -56,9 +56,7 @@ class InfoBuilder:
         self.effectStatus = None
 
     def build(self, preExpression, postExpression):
-        """
-        Go through both trees and compose our EffectInfos
-        """
+        """Go through both trees and compose our EffectInfos"""
         # Assume we parse effect 100% successfully by defaul
         self.effectStatus = const.effectInfoOkFull
         # First, we're going to parse pre-expression tree, so set preMods

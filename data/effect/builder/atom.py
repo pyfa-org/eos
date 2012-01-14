@@ -21,48 +21,33 @@
 from eos import const
 
 class ConditionAtom:
-    """
-    Stores bit of Info condition metadata
-    """
+    """Stores bit of Info condition metadata"""
+
     def __init__(self):
+        # Describes purpose of this atom.
+        # Must take any atomType* value from const file.
         self.type = None
-        """
-        Describes purpose of this atom.
-        Must take any atomType* value from consts.
-        """
 
+        # For some atom types, describes which operator should be applied onto its arguments.
+        # For atomTypeLogic, holds atomLogic* from const file.
+        # For atomTypeComp, holds atomComp* from const file.
+        # For atomTypeMath, holds atomMath* from const file.
         self.operator = None
-        """
-        For some atom types, describes which operator should be applied onto its arguments.
-        For atomTypeLogic, holds atomLogic* from const file.
-        For atomTypeComp, holds atomComp* from const file.
-        For atomTypeMath, holds atomMath* from const file.
-        """
 
+        # For all types besides atomTypeVal, contains reference to child atom.
         self.arg1 = None
-        """
-        For all types besides atomTypeVal, contains reference to child atom.
-        """
 
+        # For all types besides atomTypeVal, contains reference to child atom.
         self.arg2 = None
-        """
-        For all types besides atomTypeVal, contains reference to child atom.
-        """
 
+        # For atomTypeValRef, contains reference to some location.
         self.carrier = None
-        """
-        For atomTypeValRef, contains reference to some location.
-        """
 
+        # For atomTypeValRef, contains reference to attribute in some location.
         self.attribute = None
-        """
-        For atomTypeValRef, contains reference to attribute in some location.
-        """
 
+        # For atomTypeVal, contains pre-stored atom value.
         self.value = None
-        """
-        For atomTypeVal, contains pre-stored atom value.
-        """
 
     def __repr__(self, indent=""):
         """Convert atom tree, starting from self, to string"""
