@@ -29,23 +29,30 @@ class InvType:
     """
 
     def __init__(self, id, categoryId, groupId, effects, attributes, attributeMeta):
+        # The id of the type, typically, this is the one taken from the SDD from CCP.
+        # Can be anything if you're defining your own types, as long as its hashable
         self.id = id
-        """The id of the type, typically, this is the one taken from the SDD from CCP. Can be anything if you're defining your own types, as long as its hashable"""
 
+        # The categoryId of the type, used for stacking penalty calculations. Should be
+        # integer, typically an already existing category
         self.categoryId = categoryId
-        """The categoryId of the type, used for stacking penalty calculations. Should be an int, typically an already existing category"""
 
+        # The groupID of the type, this is used for filtering purposes in the expressions.
+        # Should be integer, you usually want to use an already existing group if you're defining
+        # your own types so effects can apply to it
         self.groupId = groupId
-        """The groupID of the type, this is used for filtering purposes in the expressions. Should be an int, you usually want to use an already existing group if you're defining your own types so effects can apply to it"""
 
+        # Set of effects this type has, these will be ran when
+        # module using this type gets added onto a fit
         self.effects = effects
-        """List of effects this type has, these will be ran when a module using this type gets added onto a fit"""
 
+        # The attributes of this type, these are used by the effects
+        # to apply their bonuses onto when they're ran
         self.attributes = attributes
-        """The attributes of this type, these are used by the effects to apply their bonuses onto when they're ran"""
 
+        # The attributeMeta of this type, it contains some important
+        # calculation information used by the calculation process
         self.attributeMeta = attributeMeta
-        """The attributeMeta of this type, it contains some important calculation information used by the calculation process"""
 
     def requiredSkills(self):
         attributes = self.attributes

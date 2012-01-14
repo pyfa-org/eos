@@ -58,12 +58,12 @@ class MutableAttributeHolder:
                 affectors.add(affector)
         return affectors
 
-    def _damageDependantsOnAttr(self, attr):
+    def _damageDependantsOnAttr(self, attrId):
         """Clear calculated attribute values relying on value of passed attribute"""
         for affector in self.generateAffectors():
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attr or info.sourceType != const.srcAttr:
+            if info.sourceValue != attrId or info.sourceType != const.srcAttr:
                 continue
             # Gp through all holders targeted by info
             for targetHolder in self.fit._getAffectees(affector):
@@ -87,19 +87,19 @@ class MutableAttributeMap(Mapping):
         # Format: attributeID: value
         self.__modifiedAttributes = {}
 
-    def __getitem__(self, key):
+    def __getitem__(self, attrId):
         try:
-            val = self.__modifiedAttributes[key]
+            val = self.__modifiedAttributes[attrId]
         except KeyError:
-            val = self.__modifiedAttributes[key] = self.__calculate(key)
-            self.__holder._damageDependantsOnAttr(key)
+            val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
+            self.__holder._damageDependantsOnAttr(attrId)
         return val
 
     def __len__(self):
         return len(self.keys())
 
-    def __contains__(self, key):
-        result = key in self.__modifiedAttributes or key in self.__holder.invType.attributes
+    def __contains__(self, attrId):
+        result = attrId in self.__modifiedAttributes or attrId in self.__holder.invType.attributes
         return result
 
     def __iter__(self):
@@ -110,24 +110,24 @@ class MutableAttributeMap(Mapping):
         keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.invType.attributes.keys())
         return keys
 
-    def __delitem__(self, key):
-        if key in self.__modifiedAttributes:
+    def __delitem__(self, attrId):
+        if attrId in self.__modifiedAttributes:
             # Clear the value in our calculated attributes dict
-            del self.__modifiedAttributes[key]
+            del self.__modifiedAttributes[attrId]
             # And make sure all other attributes relying on it
             # are cleared too
-            self.__holder._damageDependantsOnAttr(key)
+            self.__holder._damageDependantsOnAttr(attrId)
 
-    def __calculate(self, attrKey):
+    def __calculate(self, attrId):
         """
         Run calculations to find the actual value of attribute with ID equal to attrID.
         All other attribute values are assumed to be final (if they're not, this method will be called on them)
         """
         holder =  self.__holder
         # Base attribute value which we'll use for modification
-        result = holder.invType.attributes.get(attrKey)
+        result = holder.invType.attributes.get(attrId)
         # Attribute metadata
-        attrMeta = holder.invType.attributeMeta[attrKey]
+        attrMeta = holder.invType.attributeMeta[attrId]
         # Container for non-penalized modifiers
         # Format: operator: set(values)
         normalMods = {}
@@ -138,7 +138,7 @@ class MutableAttributeMap(Mapping):
         for affector in holder.fit._getAffectors(holder):
             sourceHolder, info = affector
             # Skip affectors who do not target attribute being calculated
-            if info.targetAttribute != attrKey:
+            if info.targetAttribute != attrId:
                 continue
             operator = info.operator
             # If source value is attribute reference
