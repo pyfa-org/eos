@@ -20,7 +20,6 @@
 
 from collections import MutableSequence
 
-from .calcs import Affector
 from .calcs import Register
 
 class Fit:
@@ -67,15 +66,15 @@ class Fit:
 
         holder.fit = self
         self.__register.registerAffectee(holder)
-        for affector in holder.getAffectors():
+        for affector in holder.generateAffectors():
             self.__register.registerAffector(affector)
         holder._damageDependantsAll()
 
     def _unsetHolder(self, holder):
-        assert(holder.fit == self)
+        assert(holder.fit is self)
         holder._damageDependantsAll()
         self.__register.unregisterAffectee(holder)
-        for affector in holder.getAffectors():
+        for affector in holder.generateAffectors():
             self.__register.unregisterAffector(affector)
         holder.fit = None
 
