@@ -23,9 +23,6 @@ from collections import MutableSequence
 from eos.calcs import Register
 
 class Fit:
-    """
-    Fit object. Each fit is built out of a number of Modules, as well as a Ship.
-    """
 
     def __init__(self):
         # Variables used by properties
@@ -62,7 +59,7 @@ class Fit:
         """Handle adding of holder to fit"""
         # Make sure the holder isn't used already
         if holder.fit is not None:
-            raise ValueError("Cannot add a holder which is already in another fit")
+            raise ValueError("cannot add holder which is already in some fit")
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
@@ -105,7 +102,7 @@ class MutableAttributeHolderList(MutableSequence):
 
     def __setitem__(self, index, holder):
         existing = self.__list.get(index)
-        if(existing != None):
+        if existing is not None:
             self.fit._unsetHolder(existing)
 
         self.__list.__setitem__(index, holder)

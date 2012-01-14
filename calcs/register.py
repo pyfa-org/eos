@@ -58,6 +58,11 @@ class Register():
         # Format: targetHolder: set(affectors)
         self.__affectorHolder = {}
 
+        # Keep track of affectors which influence locOther, but are disabled
+        # as other location is not available
+        # Format: sourceHolder: set(affectors)
+        self.__disabledOtherAffectors = {}
+
     def __getAffecteeMaps(self, targetHolder):
         """
         Helper for affectee register/unregister methods, provides (key, map)
@@ -93,8 +98,17 @@ class Register():
                 key = self.__fit.ship
             elif info.location == const.locTgt:
                 raise RuntimeError("target is not supported location for direct item modification")
+            # When other location is referenced, it means direct reference to module's charge
+            # or to charge's module-container
             elif info.location == const.locOther:
-                raise RuntimeError("other is not supported location for direct item modification")
+                otherHolder = getattr(sourceHolder, "other", None)
+                if otherHolder is not None:
+                    key = otherHolder
+                # When no reference available, it means that e.g. charge may be
+                # unavailable for now; use disabled affectors map for these
+                else:
+                    affectorMap = self.__disabledAffectors
+                    key = sourceHolder
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For massive modifications, compose key, making sure reference to self
@@ -119,13 +133,9 @@ class Register():
         Converts location self-reference to real location, like character or ship,
         used only in modifications of multiple filtered holders
         """
-        # First off, check passed location against list of valid locations
-        allowedLocations = (const.locChar, const.locShip, const.locSpace, const.locSelf)
-        if not targetLocation in allowedLocations:
-            raise RuntimeError("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
         # Reference to self is sparingly used on ship effects, so we must convert
         # it to real location
-        elif targetLocation == const.locSelf:
+        if targetLocation == const.locSelf:
             if sourceHolder is self.__fit.ship:
                 return const.locShip
             elif sourceHolder is self.__fit.character:
@@ -133,8 +143,11 @@ class Register():
             else:
                 raise RuntimeError("reference to self on unexpected holder during processing of massive filtered modification")
         # Just return untouched location for all other valid cases
-        else:
+        elif targetLocation in (const.locChar, const.locShip, const.locSpace):
             return targetLocation
+        # Raise error if location is invalid
+        else:
+            raise RuntimeError("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
 
     def __contextizeSkillrqId(self, affector):
         """Convert typeID self-reference into real typeID"""
@@ -147,28 +160,73 @@ class Register():
         """Add passed holder to register's affectee maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map; also, make sure to initialize set if it's not there
-            value = affecteeMap.get(key)
-            if value is None:
+            try:
+                value = affecteeMap[key]
+            except KeyError:
                 value = affecteeMap[key] = set()
             value.add(targetHolder)
+        # Check if we have other (charge's module/module's charge) location holder,
+        # also check if our holder which is being registered should be affected by it
+        # We do this step in affectee registration because it should occur only once,
+        # when holder is added to the fit
+        otherHolder = getattr(targetHolder, "other", None)
+        if otherHolder is not None and otherHolder in self.__disabledOtherAffectors:
+            # Get all disabled affectors which should influence our targetHolder
+            affectorsToEnable = self.__disabledOtherAffectors[otherHolder]
+            # Move all of them to direct modification dictionary
+            try:
+                targetHolderDirectAffectors = self.__affectorHolder[targetHolder]
+            except KeyError:
+                targetHolderDirectAffectors = self.__affectorHolder[targetHolder] = set()
+            targetHolderDirectAffectors.update(affectorsToEnable)
+            # And remove from disabled other affectors dictionary altogether
+            del self.__disabledOtherAffectors[otherHolder]
 
     def unregisterAffectee(self, targetHolder):
         """Remove passed holder from register's affectee maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # For affectee maps, item we're going to remove always should be there,
             # so we're not doing any additional checks
-            affecteeMap[key].remove(targetHolder)
+            value = affecteeMap[key]
+            value.remove(targetHolder)
+            # Remove items with empty sets from dictionaries
+            if len(value) == 0:
+                del affecteeMap[key]
+        # Like we do in registration, we have to do similar things, but in reverse
+        # way: check if holder being unregistered was influenced by affector belonging
+        # to otherHolder via locOther location. If it was affected, we should move
+        # such affector to disabledOtherAffectors so it can be re-used in future
+        otherHolder = getattr(targetHolder, "other", None)
+        if otherHolder is not None:
+            affectorsToDisable = set()
+            # Go through all affectors influencing holder being unregistered
+            for affector in self.__affectorHolder.get(targetHolder, set()):
+                # If affector originates from other holder, mark it as
+                # to-be-disabled
+                if affector.sourceHolder is otherHolder:
+                    affectorsToDisable.add(affector)
+            if len(affectorsToDisable) > 0:
+                try:
+                    disabledOtherAffectors = self.__disabledOtherAffectors[targetHolder]
+                except KeyError:
+                    disabledOtherAffectors = self.__disabledOtherAffectors[targetHolder] = set()
+                disabledOtherAffectors.update(affectorsToDisable)
+                value = self.__affectorHolder[targetHolder]
+                value.difference_update(affectorsToDisable)
+                if len(value) == 0:
+                    del self.__affectorHolder[targetHolder]
 
     def registerAffector(self, affector):
         """Add passed affector to register's affector maps"""
-        info = affector.info
+        sourceHolder, info = affector
         # Register keeps track of only local duration modifiers
         if info.type != const.infoDuration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
         # Actually add data to map
-        value = affectorMap.get(key)
-        if value is None:
+        try:
+            value = affectorMap[key]
+        except KeyError:
             value = affectorMap[key] = set()
         value.add((affector))
 
@@ -189,6 +247,10 @@ class Register():
                 value.remove(affector)
             except KeyError:
                 pass
+            # When no entries in set remain, clean up to
+            # not stockpile garbage
+            if len(value) == 0:
+                del affectorMap[key]
 
     def getAffectees(self, affector):
         """Get all holders influenced by passed affector"""
@@ -205,7 +267,11 @@ class Register():
             elif info.location == const.locTgt:
                 raise RuntimeError("target is not supported location for direct item modification")
             elif info.location == const.locOther:
-                raise RuntimeError("other is not supported location for direct item modification")
+                otherHolder = getattr(sourceHolder, "other", None)
+                if otherHolder is not None:
+                    target = {otherHolder}
+                else:
+                    target = None
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For filtered modifications, pick appropriate dictionary and get set
@@ -223,7 +289,8 @@ class Register():
             key = (location, skill)
             target = self.__affecteeLocationSkill.get(key, set())
         # Add our set to affectees
-        affectees.update(target)
+        if target is not None:
+            affectees.update(target)
         return affectees
 
     def getAffectors(self, targetHolder):

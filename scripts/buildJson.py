@@ -31,7 +31,7 @@ import sqlite3
 import json
 import bz2
 
-parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs two bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.")
+parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs four bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.")
 parser.add_argument("dbPath", type=str, help="The path to the sqlite cache dump")
 parser.add_argument("-e", "--typedump", type=str, dest="typeDumpPath", default="types.json.bz2")
 parser.add_argument("-x", "--expressiondump", type=str, dest="expressionDumpPath", default="expressions.json.bz2")

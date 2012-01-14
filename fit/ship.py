@@ -21,16 +21,10 @@
 from eos.calcs import MutableAttributeHolder
 
 class Ship(MutableAttributeHolder):
-    """
-    Ship class. This class is fit-specific wrapper around a type, just like the Module class is.
-    However, it provides helpers and calculations for when the type in question is a ship.
-    As this class is fit specific, the same module shouldn't be added onto more than one fit at the same time.
-    """
 
     @property
     def location(self):
         return None
 
     def __init__(self, invType):
-        """Constructor. Accepts invType"""
         super().__init__(invType)

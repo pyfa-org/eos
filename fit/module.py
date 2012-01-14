@@ -22,15 +22,31 @@ from eos import const
 from eos.calcs import MutableAttributeHolder
 
 class Module(MutableAttributeHolder):
-    """
-    Module class. This class is a fit-specific wrapper around a Type. It keeps track of all the fit-specific information of it.
-    As this class is fit specific, the same module shouldn't be added onto more than one fit at the same time.
-    """
 
     @property
     def location(self):
         return const.locShip
 
     def __init__(self, invType):
-        """Constructor. Accepts invType"""
         super().__init__(invType)
+        self.__charge = None
+
+    @property
+    def charge(self):
+        return self.__charge
+
+    @charge.setter
+    def charge(self, newCharge):
+        oldCharge = self.charge
+        if oldCharge is not None:
+            self.fit._unsetHolder(oldCharge)
+            self.__charge = None
+            oldCharge.container = None
+        if newCharge is not None:
+            newCharge.container = self
+            self.__charge = newCharge
+            self.fit._setHolder(newCharge)
+
+    @property
+    def other(self):
+        return self.charge

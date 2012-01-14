@@ -19,6 +19,7 @@
 #===============================================================================
 
 from .character import Character
+from .charge import Charge
 from .fit import Fit
 from .module import Module
 from .ship import Ship
