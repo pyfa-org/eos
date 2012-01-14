@@ -35,9 +35,8 @@ class TestModuleAffectsCharge(TestCase):
         fit.ship = ship
 
         attrCharge = Attribute(1, 1, 0)
-        chargeType = InvType(2, None, None, {}, {attrCharge.id: 50}, {attrCharge.id: attrCharge})
-        charge1 = Charge(chargeType)
-        charge2 = Charge(chargeType)
+        charge1 = Charge(InvType(2, None, None, {}, {attrCharge.id: 50}, {attrCharge.id: attrCharge}))
+        charge2 = Charge(InvType(3, None, None, {}, {attrCharge.id: 200}, {attrCharge.id: attrCharge}))
 
         attrMod = Attribute(2, 1, 0)
         info = EffectInfo()
@@ -49,7 +48,7 @@ class TestModuleAffectsCharge(TestCase):
         info.sourceValue = attrMod.id
         modEffect = Effect(1, None, None, 0, 0)
         modEffect._Effect__infos = {info}
-        module = Module(InvType(3, None, None, {modEffect}, {attrMod.id: 20}, {attrMod.id: attrMod}))
+        module = Module(InvType(4, None, None, {modEffect}, {attrMod.id: 20}, {attrMod.id: attrMod}))
         fit.modules.append(module)
 
         # First, check if delayed modifier is applied properly
@@ -61,4 +60,5 @@ class TestModuleAffectsCharge(TestCase):
         # to become enabled once again for other charge
         module.charge = None
         module.charge = charge2
+        expVal = 240
         self.assertAlmostEqual(charge2.attributes[attrCharge.id], expVal)
