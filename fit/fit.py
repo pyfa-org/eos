@@ -73,6 +73,10 @@ class Fit:
     def _unsetHolder(self, holder):
         """Handle removal of holder from fit"""
         assert(holder.fit is self)
+        # If there's charge in target holder, unset it first
+        charge = getattr(holder, "charge", None)
+        if charge is not None:
+            self._unsetHolder(charge)
         # When links in register are still alive, damage all attributes
         # influenced by holder
         holder._damageDependantsAll()
