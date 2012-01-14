@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from .calcs import MutableAttributeHolder
+from eos.calcs import MutableAttributeHolder
 
 class Ship(MutableAttributeHolder):
     """

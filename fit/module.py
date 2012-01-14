@@ -19,7 +19,7 @@
 #===============================================================================
 
 from eos import const
-from .calcs import MutableAttributeHolder
+from eos.calcs import MutableAttributeHolder
 
 class Module(MutableAttributeHolder):
     """

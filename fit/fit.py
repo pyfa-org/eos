@@ -20,7 +20,7 @@
 
 from collections import MutableSequence
 
-from .calcs import Register
+from eos.calcs import Register
 
 class Fit:
     """
