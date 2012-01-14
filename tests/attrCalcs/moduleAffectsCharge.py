@@ -35,7 +35,9 @@ class TestModuleAffectsCharge(TestCase):
         fit.ship = ship
 
         attrCharge = Attribute(1, 1, 0)
-        charge = Charge(InvType(2, None, None, {}, {attrCharge.id: 50}, {attrCharge.id: attrCharge}))
+        chargeType = InvType(2, None, None, {}, {attrCharge.id: 50}, {attrCharge.id: attrCharge})
+        charge1 = Charge(chargeType)
+        charge2 = Charge(chargeType)
 
         attrMod = Attribute(2, 1, 0)
         info = EffectInfo()
@@ -51,12 +53,12 @@ class TestModuleAffectsCharge(TestCase):
         fit.modules.append(module)
 
         # First, check if delayed modifier is applied properly
-        module.charge = charge
+        module.charge = charge1
         expVal = 60
-        self.assertAlmostEqual(charge.attributes[attrCharge.id], expVal)
+        self.assertAlmostEqual(charge1.attributes[attrCharge.id], expVal)
 
         # Then, check if after removal of modifier it's disabled properly,
-        # to become enabled once again
+        # to become enabled once again for other charge
         module.charge = None
-        module.charge = charge
-        self.assertAlmostEqual(charge.attributes[attrCharge.id], expVal)
+        module.charge = charge2
+        self.assertAlmostEqual(charge2.attributes[attrCharge.id], expVal)

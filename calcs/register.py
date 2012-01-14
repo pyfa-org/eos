@@ -207,9 +207,9 @@ class Register():
                     affectorsToDisable.add(affector)
             if len(affectorsToDisable) > 0:
                 try:
-                    disabledOtherAffectors = self.__disabledOtherAffectors[targetHolder]
+                    disabledOtherAffectors = self.__disabledOtherAffectors[otherHolder]
                 except KeyError:
-                    disabledOtherAffectors = self.__disabledOtherAffectors[targetHolder] = set()
+                    disabledOtherAffectors = self.__disabledOtherAffectors[otherHolder] = set()
                 disabledOtherAffectors.update(affectorsToDisable)
                 value = self.__affectorHolder[targetHolder]
                 value.difference_update(affectorsToDisable)
