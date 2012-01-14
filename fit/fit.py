@@ -33,7 +33,6 @@ class Fit:
         self.__character = None
         # Register-helper for partial recalculations
         self.__register = Register(self)
-
         # Public stuff
         self.modules = MutableAttributeHolderList(self)
 
@@ -60,22 +59,31 @@ class Fit:
         self._setHolder(character)
 
     def _setHolder(self, holder):
+        """Handle adding of holder to fit"""
         # Make sure the holder isn't used already
         if holder.fit is not None:
             raise ValueError("Cannot add a holder which is already in another fit")
-
+        # Assign fit to holder first
         holder.fit = self
+        # Only after add it to register
         self.__register.registerAffectee(holder)
         for affector in holder.generateAffectors():
             self.__register.registerAffector(affector)
+        # When register operations are complete, we can damage
+        # all influenced by holder attributes
         holder._damageDependantsAll()
 
     def _unsetHolder(self, holder):
+        """Handle removal of holder from fit"""
         assert(holder.fit is self)
+        # When links in register are still alive, damage all attributes
+        # influenced by holder
         holder._damageDependantsAll()
+        # Remove links from register
         self.__register.unregisterAffectee(holder)
         for affector in holder.generateAffectors():
             self.__register.unregisterAffector(affector)
+        # And finally, unset fit
         holder.fit = None
 
     def _getAffectors(self, holder):
@@ -93,7 +101,7 @@ class MutableAttributeHolderList(MutableSequence):
     """
     def __init__(self, fit):
         self.__fit = fit
-        self.__list = [] # List used for storage internally
+        self.__list = []  # List used for storage internally
 
     def __setitem__(self, index, holder):
         existing = self.__list.get(index)

@@ -18,7 +18,6 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
 from .calcs import MutableAttributeHolder
 
 class Character(MutableAttributeHolder):
@@ -31,11 +30,7 @@ class Character(MutableAttributeHolder):
 
     @property
     def location(self):
-        return const.locChar
-
-    @property
-    def specific(self):
-        return True
+        return None
 
     def __init__(self, invType):
         """
