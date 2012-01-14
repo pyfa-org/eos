@@ -137,6 +137,9 @@ class MutableAttributeMap(Mapping):
         # Now, go through all affectors affecting ourr holder
         for affector in holder.fit._getAffectors(holder):
             sourceHolder, info = affector
+            # Skip affectors who do not target attribute being calculated
+            if info.targetAttributeId != attrKey:
+                continue
             operation = info.operation
             # If source value is attribute reference
             if info.sourceType == const.srcAttr:
@@ -197,10 +200,10 @@ class MutableAttributeMap(Mapping):
             except KeyError:
                 modList = normalMods[operation] = []
             modList.append(penalizedValue)
-
-        # Calculate result of normal dictionary
+        # Calculate result of normal dictionary, according to operation order
         for operation in sorted(normalMods):
             modList = normalMods[operation]
+            # Pick best modifier for assignments, based on highIsGood value
             if operation in (const.optrPreAssignment, const.optrPostAssignment):
                 result = max(modList) if attrMeta.highIsGood is True else min(modList)
             elif operation in (const.optrModAdd, const.optrModSub):
@@ -210,15 +213,16 @@ class MutableAttributeMap(Mapping):
                                const.optrPostDiv, const.optrPostPercent):
                 for modVal in modList:
                     result *= modVal
-
         return result
 
     def __penalizeChain(self, chain):
         """Calculate stacking penalty chain"""
+        # Base final multiplier on 1
         result = 1
         for position, modifier in enumerate(chain):
+            # Ignore 12th modifier and further as non-significant
             if position > 10:
                 break
+            # Apply stacking penalty based on modifier position
             result *= 1 + modifier * const.penaltyBase ** (position ** 2)
-        result -= 1
         return result
