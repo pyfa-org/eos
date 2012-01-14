@@ -54,13 +54,13 @@ class EffectInfo:
         # For filterSkill has some integer, referencing type via ID, or -1 to reference type of carrier.
         self.filterValue = None
 
-        # Which operation should be applied.
+        # Which operator should be applied.
         # Can have optrPreAssignment, optrPreMul, optrPreDiv, optrModAdd, optrModSub, optrPostMul,
         # optrPostDiv, optrPostPercent, optrPostAssignment, optrIncr, optrDecr or optrAssign value
         # from consts file.
         self.operator = None
 
-        # Which attribute will be affected by the operation on the target.
+        # Which attribute will be affected by the operator on the target.
         # Keeps integer which references attribute via ID.
         self.targetAttribute = None
 

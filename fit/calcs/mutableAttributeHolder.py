@@ -127,7 +127,7 @@ class MutableAttributeMap(Mapping):
         # Base attribute value which we'll use for modification
         result = holder.invType.attributes.get(attrKey)
         # Attribute metadata
-        attrMeta = holder.invType.attributeTypes[attrKey]
+        attrMeta = holder.invType.attributeMeta[attrKey]
         # Container for non-penalized modifiers
         # Format: operator: set(values)
         normalMods = {}

@@ -33,7 +33,7 @@ class ConditionAtom:
 
         self.operator = None
         """
-        For some atom types, describes which operation should be applied onto its arguments.
+        For some atom types, describes which operator should be applied onto its arguments.
         For atomTypeLogic, holds atomLogic* from const file.
         For atomTypeComp, holds atomComp* from const file.
         For atomTypeMath, holds atomMath* from const file.

@@ -28,7 +28,7 @@ class InvType:
     As such, there shouldn't be ANY fit-specific data on it
     """
 
-    def __init__(self, id, categoryId, groupId, effects, attributes, attributeTypes):
+    def __init__(self, id, categoryId, groupId, effects, attributes, attributeMeta):
         self.id = id
         """The id of the type, typically, this is the one taken from the SDD from CCP. Can be anything if you're defining your own types, as long as its hashable"""
 
@@ -36,16 +36,16 @@ class InvType:
         """The categoryId of the type, used for stacking penalty calculations. Should be an int, typically an already existing category"""
 
         self.groupId = groupId
-        """The groupID of the type, this is used for filtering purposes in the expressions. Should be an int, you usualy want to use an already existing group if you're defining your own types so effects can apply to it"""
+        """The groupID of the type, this is used for filtering purposes in the expressions. Should be an int, you usually want to use an already existing group if you're defining your own types so effects can apply to it"""
 
         self.effects = effects
         """List of effects this type has, these will be ran when a module using this type gets added onto a fit"""
 
         self.attributes = attributes
-        """The attributes of this type, these are used by the effects to apply their bonusses onto when they're ran"""
+        """The attributes of this type, these are used by the effects to apply their bonuses onto when they're ran"""
 
-        self.attributeTypes = attributeTypes
-        """The attributeTypes of this type, they contain some important calculation information used by the calculation process"""
+        self.attributeMeta = attributeMeta
+        """The attributeMeta of this type, it contains some important calculation information used by the calculation process"""
 
     def requiredSkills(self):
         attributes = self.attributes
