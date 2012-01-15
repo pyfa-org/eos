@@ -157,8 +157,8 @@ class Register():
             skillId = affector.sourceHolder.invType.id
         return skillId
 
-    def registerAffectee(self, targetHolder):
-        """Add passed holder to register's maps"""
+    def registerHolderAsTarget(self, targetHolder):
+        """Add passed target holder to register's maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map; also, make sure to initialize set if it's not there
             try:
@@ -183,8 +183,8 @@ class Register():
             # And remove from disabled other affectors from dictionary altogether
             del self.__disabledOtherAffectors[otherHolder]
 
-    def unregisterAffectee(self, targetHolder):
-        """Remove passed holder from register's maps"""
+    def unregisterHolderAsTarget(self, targetHolder):
+        """Remove passed target holder from register's maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # For affectee maps, item we're going to remove always should be there,
             # so we're not doing any additional checks
@@ -202,11 +202,14 @@ class Register():
             affectorsToDisable = set()
             # Go through all affectors influencing holder being unregistered
             for affector in self.__affectorHolder.get(targetHolder, set()):
-                # If affector originates from other holder, mark it as
+                # If affector originates from otherHolder, mark it as
                 # to-be-disabled
                 if affector.sourceHolder is otherHolder:
                     affectorsToDisable.add(affector)
+            # Do nothing if we have no such affectors
             if len(affectorsToDisable) > 0:
+                # If we have, move them from map to map, with proper creation and
+                # cleanup jobs
                 try:
                     disabledOtherAffectors = self.__disabledOtherAffectors[otherHolder]
                 except KeyError:

@@ -63,7 +63,7 @@ class Fit:
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
-        self.__register.registerAffectee(holder)
+        self.__register.registerHolderAsTarget(holder)
         for affector in holder.generateAffectors():
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
@@ -81,7 +81,7 @@ class Fit:
         # influenced by holder
         holder._damageDependantsAll()
         # Remove links from register
-        self.__register.unregisterAffectee(holder)
+        self.__register.unregisterHolderAsTarget(holder)
         for affector in holder.generateAffectors():
             self.__register.unregisterAffector(affector)
         # And finally, unset fit
