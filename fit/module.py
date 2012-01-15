@@ -39,13 +39,13 @@ class Module(MutableAttributeHolder):
     def charge(self, newCharge):
         oldCharge = self.charge
         if oldCharge is not None:
-            self.fit._unsetHolder(oldCharge)
+            self.fit._unsetHolder(oldCharge, disableDirect=const.locOther)
             self.__charge = None
             oldCharge.container = None
         if newCharge is not None:
             newCharge.container = self
             self.__charge = newCharge
-            self.fit._setHolder(newCharge)
+            self.fit._setHolder(newCharge, enableDirect=const.locOther)
 
     @property
     def other(self):

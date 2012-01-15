@@ -20,6 +20,7 @@
 
 from collections import MutableSequence
 
+from eos import const
 from eos.calcs import Register
 
 class Fit:
@@ -43,9 +44,9 @@ class Fit:
     @ship.setter
     def ship(self, ship):
         if self.__ship is not None:
-            self._unsetHolder(self.__ship)
+            self._unsetHolder(self.__ship, disableDirect=const.locShip)
         self.__ship = ship
-        self._setHolder(ship)
+        self._setHolder(ship, enableDirect=const.locShip)
 
     @property
     def character(self):
@@ -54,11 +55,11 @@ class Fit:
     @character.setter
     def character(self, character):
         if self.__character is not None:
-            self._unsetHolder(self.__character)
+            self._unsetHolder(self.__character, disableDirect=const.locChar)
         self.__character = character
-        self._setHolder(character)
+        self._setHolder(character, enableDirect=const.locChar)
 
-    def _setHolder(self, holder):
+    def _setHolder(self, holder, **kwargs):
         """Handle adding of holder to fit"""
         # Make sure the holder isn't used already
         if holder.fit is not None:
@@ -66,14 +67,14 @@ class Fit:
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
-        self.__register.registerHolderAsTarget(holder)
+        self.__register.registerAffectee(holder, **kwargs)
         for affector in holder.generateAffectors():
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
         # all influenced by holder attributes
         holder._damageDependantsAll()
 
-    def _unsetHolder(self, holder):
+    def _unsetHolder(self, holder, **kwargs):
         """Handle removal of holder from fit"""
         assert(holder.fit is self)
         # If there's charge in target holder, unset it first
@@ -84,7 +85,7 @@ class Fit:
         # influenced by holder
         holder._damageDependantsAll()
         # Remove links from register
-        self.__register.unregisterHolderAsTarget(holder)
+        self.__register.unregisterAffectee(holder, **kwargs)
         for affector in holder.generateAffectors():
             self.__register.unregisterAffector(affector)
         # And finally, unset fit

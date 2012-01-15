@@ -20,6 +20,36 @@
 
 from eos import const
 
+class DataSetMap(dict):
+    """
+    Dictionary-like class, with couple of methods which make it easier to
+    use it as set storage
+    """
+
+    def addData(self, key, data):
+        """Adds data set to dictionary with proper creation jobs"""
+        try:
+            value = self[key]
+        except KeyError:
+            value = self[key] = set()
+        value.update(data)
+
+    def rmData(self, key, data):
+        """Remove data set from dictionary with proper cleanup jobs"""
+        try:
+            value = self[key]
+        except KeyError:
+            return
+        else:
+            value.difference_update(data)
+            if len(value) == 0:
+                del self[key]
+
+    def getData(self, key):
+        """Get data set with safe fallback"""
+        data = self.get(key, set())
+        return data
+
 class Register():
     """
     Keep track of links between fit's local holders, which is required for efficient
@@ -32,36 +62,36 @@ class Register():
 
         # Keep track of holders belonging to certain location
         # Format: location: set(targetHolders)
-        self.__affecteeLocation = {}
+        self.__affecteeLocation = DataSetMap()
 
         # Keep track of holders belonging to certain location and group
         # Format: (location, group): set(targetHolders)
-        self.__affecteeLocationGroup = {}
+        self.__affecteeLocationGroup = DataSetMap()
 
         # Keep track of holders belonging to certain location and having certain skill requirement
         # Format: (location, skill): set(targetHolders)
-        self.__affecteeLocationSkill = {}
+        self.__affecteeLocationSkill = DataSetMap()
 
         # Keep track of affectors influencing all holders belonging to certain location
         # Format: location: set(affectors)
-        self.__affectorLocation = {}
+        self.__affectorLocation = DataSetMap()
 
         # Keep track of affectors influencing holders belonging to certain location and group
         # Format: (location, group): set(affectors)
-        self.__affectorLocationGroup = {}
+        self.__affectorLocationGroup = DataSetMap()
 
         # Keep track of affectors influencing holders belonging to certain location and having certain skill requirement
         # Format: (location, skill): set(affectors)
-        self.__affectorLocationSkill = {}
+        self.__affectorLocationSkill = DataSetMap()
 
         # Keep track of affectors influencing holders directly
         # Format: targetHolder: set(affectors)
-        self.__affectorHolder = {}
+        self.__activeDirectAffectors = DataSetMap()
 
         # Keep track of affectors which influence locOther, but are disabled
-        # as other location is not available
+        # as their target location is not available
         # Format: sourceHolder: set(affectors)
-        self.__disabledOtherAffectors = {}
+        self.__disabledDirectAffectors = DataSetMap()
 
     def __getAffecteeMaps(self, targetHolder):
         """
@@ -90,13 +120,25 @@ class Register():
         if info.filterType is None:
             # For single item modifications, we need to properly pick
             # target holder (it's key) based on location
-            affectorMap = self.__affectorHolder
             if info.location == const.locSelf:
+                affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
             elif info.location == const.locChar:
-                key = self.__fit.character
+                char = self.__fit.character
+                if char is not None:
+                    affectorMap = self.__activeDirectAffectors
+                    key = char
+                else:
+                    affectorMap = self.__disabledDirectAffectors
+                    key = sourceHolder
             elif info.location == const.locShip:
-                key = self.__fit.ship
+                ship = self.__fit.ship
+                if ship is not None:
+                    affectorMap = self.__activeDirectAffectors
+                    key = ship
+                else:
+                    affectorMap = self.__disabledDirectAffectors
+                    key = sourceHolder
             elif info.location == const.locTgt:
                 raise RuntimeError("target is not supported location for direct item modification")
             # When other location is referenced, it means direct reference to module's charge
@@ -104,11 +146,12 @@ class Register():
             elif info.location == const.locOther:
                 otherHolder = getattr(sourceHolder, "other", None)
                 if otherHolder is not None:
+                    affectorMap = self.__activeDirectAffectors
                     key = otherHolder
                 # When no reference available, it means that e.g. charge may be
                 # unavailable for now; use disabled affectors map for these
                 else:
-                    affectorMap = self.__disabledOtherAffectors
+                    affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
@@ -157,68 +200,113 @@ class Register():
             skillId = affector.sourceHolder.invType.id
         return skillId
 
-    def registerHolderAsTarget(self, targetHolder):
+    def __enableDirectSpec(self, targetHolder, targetLocation):
+        """Enable temporarily disabled affectors, targeting specific location"""
+        affectorsToEnable = set()
+        # Cycle through all disabled direct affectors
+        for affectorSet in self.__disabledDirectAffectors.values():
+            for affector in affectorSet:
+                info = affector.info
+                # Mark affector as to-be-enabled only when it specifically
+                # targets passed target location, and not holders assigned
+                # to it
+                if info.location == targetLocation and info.filterType is None:
+                    affectorsToEnable.add(affector)
+        # Bail if we have nothing to do
+        if len(affectorsToEnable) == 0:
+            return
+        # Move all of them to direct modification dictionary
+        self.__activeDirectAffectors.addData(targetHolder, affectorsToEnable)
+        for affector in affectorsToEnable:
+            self.__disabledDirectAffectors.rmData(affector.sourceHolder, {affector})
+
+    def __disableDirectSpec(self, targetHolder):
+        """Disable affectors, targeting specific location"""
+        affectorsToDisable = set()
+        # Check all affectors, targeting passed holder
+        for affector in self.__activeDirectAffectors.getData(targetHolder):
+            # Mark them as to-be-disabled only if they originate from
+            # other holder, else they should be removed with passed holder
+            if affector.sourceHolder is not targetHolder:
+                affectorsToDisable.add(affector)
+        if len(affectorsToDisable) == 0:
+            return
+        # Move data from map to map
+        for affector in affectorsToDisable:
+            self.__disabledDirectAffectors.addData(affector.sourceHolder, {affector})
+        self.__activeDirectAffectors.rmData(targetHolder, affectorsToDisable)
+
+    def __enableDirectOther(self, targetHolder):
+        """Enable temporarily disabled affectors, targeting "other" location"""
+        otherHolder = getattr(targetHolder, "other", None)
+        # If passed holder doesn't have other location (charge's module
+        # or module's charge), do nothing
+        if otherHolder is None:
+            return
+        # Get all disabled affectors which should influence our targetHolder
+        affectorsToEnable = set()
+        for affector in self.__disabledDirectAffectors.getData(otherHolder):
+            info = affector.info
+            if info.location == const.locOther and info.filterType is None:
+                affectorsToEnable.add(affector)
+        # Bail if we have nothing to do
+        if len(affectorsToEnable) == 0:
+            return
+        # Move all of them to direct modification dictionary
+        self.__activeDirectAffectors.addData(targetHolder, affectorsToEnable)
+        self.__disabledDirectAffectors.rmData(otherHolder, affectorsToEnable)
+
+    def __disableDirectOther(self, targetHolder):
+        """Disabled affectors, targeting "other" location"""
+        otherHolder = getattr(targetHolder, "other", None)
+        if otherHolder is None:
+            return
+        affectorsToDisable = set()
+        # Go through all affectors influencing holder being unregistered
+        for affector in self.__activeDirectAffectors.getData(targetHolder):
+            # If affector originates from otherHolder, mark it as
+            # to-be-disabled
+            if affector.sourceHolder is otherHolder:
+                affectorsToDisable.add(affector)
+        # Do nothing if we have no such affectors
+        if len(affectorsToDisable) == 0:
+            return
+        # If we have, move them from map to map
+        self.__disabledDirectAffectors.addData(otherHolder, affectorsToDisable)
+        self.__activeDirectAffectors.rmData(targetHolder, affectorsToDisable)
+
+    def registerAffectee(self, targetHolder, enableDirect=None):
         """Add passed target holder to register's maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
-            # Add data to map; also, make sure to initialize set if it's not there
-            try:
-                value = affecteeMap[key]
-            except KeyError:
-                value = affecteeMap[key] = set()
-            value.add(targetHolder)
-        # Check if we have other location (charge's module/module's charge) holder,
-        # also check if our holder which is being registered should be affected by it
-        # We do this step in affectee registration because it should occur only once,
-        # when holder is added to the fit
-        otherHolder = getattr(targetHolder, "other", None)
-        if otherHolder is not None and otherHolder in self.__disabledOtherAffectors:
-            # Get all disabled affectors which should influence our targetHolder
-            affectorsToEnable = self.__disabledOtherAffectors[otherHolder]
-            # Move all of them to direct modification dictionary
-            try:
-                targetHolderDirectAffectors = self.__affectorHolder[targetHolder]
-            except KeyError:
-                targetHolderDirectAffectors = self.__affectorHolder[targetHolder] = set()
-            targetHolderDirectAffectors.update(affectorsToEnable)
-            # And remove from disabled other affectors from dictionary altogether
-            del self.__disabledOtherAffectors[otherHolder]
+            # Add data to map
+            affecteeMap.addData(key, {targetHolder})
+        # Check if we have affectors which should directly influence passed holder,
+        # but are disabled
+        directEnablers = {const.locShip: (self.__enableDirectSpec, (targetHolder, const.locShip), {}),
+                          const.locChar: (self.__enableDirectSpec, (targetHolder, const.locChar), {}),
+                          const.locOther: (self.__enableDirectOther, (targetHolder,), {})}
+        try:
+            method, args, kwargs = directEnablers[enableDirect]
+        except KeyError:
+            pass
+        else:
+            method(*args, **kwargs)
 
-    def unregisterHolderAsTarget(self, targetHolder):
+    def unregisterAffectee(self, targetHolder, disableDirect=None):
         """Remove passed target holder from register's maps"""
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
-            # For affectee maps, item we're going to remove always should be there,
-            # so we're not doing any additional checks
-            value = affecteeMap[key]
-            value.remove(targetHolder)
-            # Remove items with empty sets from dictionaries
-            if len(value) == 0:
-                del affecteeMap[key]
-        # Like we do in registration, we have to do similar things, but in reverse
-        # way: check if holder being unregistered was influenced by affector belonging
-        # to otherHolder via locOther location. If it was affected, we should move
-        # such affector to disabledOtherAffectors so it can be re-used in future
-        otherHolder = getattr(targetHolder, "other", None)
-        if otherHolder is not None:
-            affectorsToDisable = set()
-            # Go through all affectors influencing holder being unregistered
-            for affector in self.__affectorHolder.get(targetHolder, set()):
-                # If affector originates from otherHolder, mark it as
-                # to-be-disabled
-                if affector.sourceHolder is otherHolder:
-                    affectorsToDisable.add(affector)
-            # Do nothing if we have no such affectors
-            if len(affectorsToDisable) > 0:
-                # If we have, move them from map to map, with proper creation and
-                # cleanup jobs
-                try:
-                    disabledOtherAffectors = self.__disabledOtherAffectors[otherHolder]
-                except KeyError:
-                    disabledOtherAffectors = self.__disabledOtherAffectors[otherHolder] = set()
-                disabledOtherAffectors.update(affectorsToDisable)
-                value = self.__affectorHolder[targetHolder]
-                value.difference_update(affectorsToDisable)
-                if len(value) == 0:
-                    del self.__affectorHolder[targetHolder]
+            affecteeMap.rmData(key, {targetHolder})
+        # When removing holder from register, make sure to move modifiers which
+        # originate from other holders and directly affect it to disabled map
+        directEnablers = {const.locShip: (self.__disableDirectSpec, (targetHolder,), {}),
+                          const.locChar: (self.__disableDirectSpec, (targetHolder,), {}),
+                          const.locOther: (self.__disableDirectOther, (targetHolder,), {})}
+        try:
+            method, args, kwargs = directEnablers[disableDirect]
+        except KeyError:
+            pass
+        else:
+            method(*args, **kwargs)
 
     def registerAffector(self, affector):
         """Add passed affector to register's affector maps"""
@@ -228,11 +316,7 @@ class Register():
             return
         affectorMap, key = self.__getAffectorMap(affector)
         # Actually add data to map
-        try:
-            value = affectorMap[key]
-        except KeyError:
-            value = affectorMap[key] = set()
-        value.add((affector))
+        affectorMap.addData(key, {affector})
 
     def unregisterAffector(self, affector):
         """Remove affector from register's affector maps"""
@@ -240,21 +324,7 @@ class Register():
         if info.type != const.infoDuration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
-        # As affector addition can be conditional, we're not guaranteed that
-        # affector is there, so we have to make full set of checks on removal
-        # attempt
-        value = affectorMap.get(key)
-        # Do nothing if value doesn't contain set
-        if value is not None:
-            # Do not raise exception when there's no our affector in set
-            try:
-                value.remove(affector)
-            except KeyError:
-                pass
-            # When no entries in set remain, clean up to
-            # not stockpile garbage
-            if len(value) == 0:
-                del affectorMap[key]
+        affectorMap.rmData(key, {affector})
 
     def getAffectees(self, affector):
         """Get all holders influenced by passed affector"""
@@ -281,16 +351,16 @@ class Register():
         # with target holders
         elif info.filterType == const.filterAll:
             key = self.__contextizeLocation(sourceHolder, info.location)
-            target = self.__affecteeLocation.get(key, set())
+            target = self.__affecteeLocation.getData(key)
         elif info.filterType == const.filterGroup:
             location = self.__contextizeLocation(sourceHolder, info.location)
             key = (location, info.filterValue)
-            target = self.__affecteeLocationGroup.get(key, set())
+            target = self.__affecteeLocationGroup.getData(key)
         elif info.filterType == const.filterSkill:
             location = self.__contextizeLocation(sourceHolder, info.location)
             skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
-            target = self.__affecteeLocationSkill.get(key, set())
+            target = self.__affecteeLocationSkill.getData(key)
         # Add our set to affectees
         if target is not None:
             affectees.update(target)
@@ -300,14 +370,14 @@ class Register():
         """Get all affectors, which influence passed holder"""
         affectors = set()
         # Add all affectors which directly affect it
-        affectors.update(self.__affectorHolder.get(targetHolder, set()))
+        affectors.update(self.__activeDirectAffectors.getData(targetHolder))
         # Then all affectors which affect location of passed holder
         location = targetHolder.location
-        affectors.update(self.__affectorLocation.get(location, set()))
+        affectors.update(self.__affectorLocation.getData(location))
         # All affectors which affect location and group of passed holder
         group = targetHolder.invType.groupId
-        affectors.update(self.__affectorLocationGroup.get((location, group), set()))
+        affectors.update(self.__affectorLocationGroup.getData((location, group)))
         # Same, but for location & skill requirement of passed holder
         for skill in targetHolder.invType.requiredSkills():
-            affectors.update(self.__affectorLocationSkill.get((location, skill), set()))
+            affectors.update(self.__affectorLocationSkill.getData((location, skill)))
         return affectors
