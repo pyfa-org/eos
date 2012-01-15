@@ -265,17 +265,16 @@ class Register():
             if info.location == const.locSelf:
                 target = {sourceHolder}
             elif info.location == const.locChar:
-                target = {self.__fit.character}
+                char = self.__fit.character
+                target = {char} if char is not None else None
             elif info.location == const.locShip:
-                target = {self.__fit.ship}
+                ship = self.__fit.ship
+                target = {ship} if ship is not None else None
             elif info.location == const.locTgt:
                 raise RuntimeError("target is not supported location for direct item modification")
             elif info.location == const.locOther:
                 otherHolder = getattr(sourceHolder, "other", None)
-                if otherHolder is not None:
-                    target = {otherHolder}
-                else:
-                    target = None
+                target = {otherHolder} if otherHolder is not None else None
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For filtered modifications, pick appropriate dictionary and get set

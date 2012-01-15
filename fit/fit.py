@@ -32,6 +32,9 @@ class Fit:
         self.__register = Register(self)
         # Public stuff
         self.modules = MutableAttributeHolderList(self)
+        self.skills = MutableAttributeHolderList(self)
+        self.implants = MutableAttributeHolderList(self)
+        self.boosters = MutableAttributeHolderList(self)
 
     @property
     def ship(self):
