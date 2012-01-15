@@ -68,15 +68,16 @@ class Register():
         Helper for affectee register/unregister methods, provides (key, map)
         list to use according to passed holder
         """
-        location = targetHolder.location
         # Container which temporarily holds (key, map) tuples
         affecteeMaps = []
-        affecteeMaps.append((location, self.__affecteeLocation))
-        group = targetHolder.invType.groupId
-        if group is not None:
-            affecteeMaps.append(((location, group), self.__affecteeLocationGroup))
-        for skill in targetHolder.invType.requiredSkills():
-            affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
+        location = targetHolder.location
+        if location is not None:
+            affecteeMaps.append((location, self.__affecteeLocation))
+            group = targetHolder.invType.groupId
+            if group is not None:
+                affecteeMaps.append(((location, group), self.__affecteeLocationGroup))
+            for skill in targetHolder.invType.requiredSkills():
+                affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
         return affecteeMaps
 
     def __getAffectorMap(self, affector):
