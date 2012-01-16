@@ -19,7 +19,7 @@
 #===============================================================================
 
 from eos import const
-from eos.data.effect.info import EffectInfo
+from eos.calc.info.info import EffectInfo
 from .localData import durationMods, mirrorDurationMods
 
 # Values which are considered as 'empty' values

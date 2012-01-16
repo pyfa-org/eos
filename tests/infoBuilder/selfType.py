@@ -21,8 +21,8 @@
 from unittest import TestCase
 
 from eos import const
-from eos.data import Expression
-from eos.data.effect import InfoBuilder
+from eos.eve.expression import Expression
+from eos.calc.info.builder.builder import InfoBuilder
 
 class TestSelfType(TestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""

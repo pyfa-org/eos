@@ -21,8 +21,8 @@
 from unittest import TestCase
 
 from eos import const
-from eos.data import Expression
-from eos.data.effect import InfoBuilder
+from eos.eve.expression import Expression
+from eos.calc.info.builder.builder import InfoBuilder
 
 class TestModGangSrq(TestCase):
     """Test parsing of trees describing gang-mates' ship modules modification filtered by skill requirement"""

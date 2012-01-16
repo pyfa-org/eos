@@ -19,7 +19,11 @@
 #===============================================================================
 
 from eos import const
-from eos.fit import Fit, Character, Ship, Module, Charge
+from eos.fit.fit import Fit
+from eos.fit.character import Character
+from eos.fit.ship import Ship
+from eos.fit.module import Module
+from eos.fit.charge import Charge
 
 class Eos:
     def __init__(self, dataHandler):

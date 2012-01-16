@@ -18,11 +18,15 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-import bz2
-import json
+
+from bz2 import BZ2File
+from json import loads
 from weakref import WeakValueDictionary
 
-from eos.data import InvType, Expression, Effect, Attribute
+from eos.eve.invType import InvType
+from eos.eve.expression import Expression
+from eos.eve.effect import Effect
+from eos.eve.attribute import Attribute
 from .dataHandler import DataHandler
 
 class JsonDataHandler(DataHandler):
@@ -34,14 +38,14 @@ class JsonDataHandler(DataHandler):
     """
     def __init__(self, typesPath, expressionsPath, effectsPath, attributesPath, encoding='utf-8'):
         # Read JSON into data storage
-        with bz2.BZ2File(typesPath, 'r') as f:
-            self.__typeData = json.loads(f.read().decode('utf-8'))
-        with bz2.BZ2File(expressionsPath, 'r') as f:
-            self.__expressionData = json.loads(f.read().decode('utf-8'))
-        with bz2.BZ2File(effectsPath, 'r') as f:
-            self.__effectData = json.loads(f.read().decode('utf-8'))
-        with bz2.BZ2File(attributesPath, 'r') as f:
-            self.__attributeData = json.loads(f.read().decode('utf-8'))
+        with BZ2File(typesPath, 'r') as f:
+            self.__typeData = loads(f.read().decode('utf-8'))
+        with BZ2File(expressionsPath, 'r') as f:
+            self.__expressionData = loads(f.read().decode('utf-8'))
+        with BZ2File(effectsPath, 'r') as f:
+            self.__effectData = loads(f.read().decode('utf-8'))
+        with BZ2File(attributesPath, 'r') as f:
+            self.__attributeData = loads(f.read().decode('utf-8'))
 
         # Weakref cache for objects composed out of data from storage
         self.__typesCache = WeakValueDictionary()

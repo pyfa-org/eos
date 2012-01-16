@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos.calcs import MutableAttributeHolder
+from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Character(MutableAttributeHolder):
     """

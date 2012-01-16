@@ -17,9 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-from .character import Character
-from .charge import Charge
-from .fit import Fit
-from .module import Module
-from .ship import Ship

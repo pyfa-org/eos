@@ -21,7 +21,7 @@
 from collections import MutableSequence
 
 from eos import const
-from eos.calcs import Register
+from eos.calc.register import Register
 
 class Fit:
 

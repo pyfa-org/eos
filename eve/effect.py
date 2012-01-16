@@ -19,7 +19,7 @@
 #===============================================================================
 
 from eos import const
-from .builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder
 
 class Effect:
     """
