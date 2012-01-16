@@ -28,12 +28,12 @@ class TestPreModSubAttr(TestCase):
     """Test parsing of trees describing decrement by attribute in the beginning of the cycle"""
 
     def testBuildSuccess(self):
-        eTgt = Expression(1, 24, value="Target")
-        eTgtAttr = Expression(2, 22, attributeId=18)
-        eSrcAttr = Expression(3, 22, attributeId=97)
-        eTgtSpec = Expression(4, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePreSub = Expression(5, 18, arg1=eTgtSpec, arg2=eSrcAttr)
-        ePostStub = Expression(6, 27, value="1")
+        eTgt = Expression(24, value="Target")
+        eTgtAttr = Expression(22, attributeId=18)
+        eSrcAttr = Expression(22, attributeId=97)
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
+        ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreSub, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -62,12 +62,12 @@ class TestPreModSubVal(TestCase):
     """Test parsing of trees describing decrement by value in the beginning of the cycle"""
 
     def testBuildSuccess(self):
-        eTgt = Expression(1, 24, value="Target")
-        eTgtAttr = Expression(2, 22, attributeId=18)
-        eSrcVal = Expression(3, 27, value="7")
-        eTgtSpec = Expression(4, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePreSub = Expression(5, 18, arg1=eTgtSpec, arg2=eSrcVal)
-        ePostStub = Expression(6, 27, value="1")
+        eTgt = Expression(24, value="Target")
+        eTgtAttr = Expression(22, attributeId=18)
+        eSrcVal = Expression(27, value="7")
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
+        ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreSub, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -96,12 +96,12 @@ class TestPostModSubAttr(TestCase):
     """Test parsing of trees describing decrement by attribute in the end of the cycle"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(1, 27, value="1")
-        eTgt = Expression(2, 24, value="Target")
-        eTgtAttr = Expression(3, 22, attributeId=266)
-        eSrcAttr = Expression(4, 22, attributeId=84)
-        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePostSub = Expression(6, 18, arg1=eTgtSpec, arg2=eSrcAttr)
+        ePreStub = Expression(27, value="1")
+        eTgt = Expression(24, value="Target")
+        eTgtAttr = Expression(22, attributeId=266)
+        eSrcAttr = Expression(22, attributeId=84)
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostSub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -130,12 +130,12 @@ class TestPostModSubVal(TestCase):
     """Test parsing of trees describing decrement by value in the end of the cycle"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(1, 27, value="1")
-        eTgt = Expression(2, 24, value="Target")
-        eTgtAttr = Expression(3, 22, attributeId=266)
-        eSrcVal = Expression(4, 27, value="1")
-        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePostSub = Expression(6, 18, arg1=eTgtSpec, arg2=eSrcVal)
+        ePreStub = Expression(27, value="1")
+        eTgt = Expression(24, value="Target")
+        eTgtAttr = Expression(22, attributeId=266)
+        eSrcVal = Expression(27, value="1")
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
         infos, status = InfoBuilder().build(ePreStub, ePostSub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

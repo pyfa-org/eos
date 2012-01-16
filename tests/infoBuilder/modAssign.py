@@ -29,12 +29,12 @@ class TestPreModAssignAttr(TestCase):
 
     def testBuildSuccess(self):
         # Manually composed example, CCP doesn't use such combination
-        eTgt = Expression(1, 24, value="Char")
-        eTgtAttr = Expression(2, 22, attributeId=166)
-        eSrcAttr = Expression(3, 22, attributeId=177)
-        eTgtSpec = Expression(4, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePreAssign = Expression(5, 65, arg1=eTgtSpec, arg2=eSrcAttr)
-        ePostStub = Expression(6, 27, value="1")
+        eTgt = Expression(24, value="Char")
+        eTgtAttr = Expression(22, attributeId=166)
+        eSrcAttr = Expression(22, attributeId=177)
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
+        ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreAssign, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -63,12 +63,12 @@ class TestPreModAssignVal(TestCase):
     """Test parsing of trees describing assignments by value applied in the beginning of the cycle"""
 
     def testBuildSuccess(self):
-        eTgt = Expression(1, 24, value="Self")
-        eTgtAttr = Expression(2, 22, attributeId=2)
-        eSrcVal = Expression(3, 27, value="1")
-        eTgtSpec = Expression(4, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePreAssign = Expression(5, 65, arg1=eTgtSpec, arg2=eSrcVal)
-        ePostStub = Expression(6, 27, value="1")
+        eTgt = Expression(24, value="Self")
+        eTgtAttr = Expression(22, attributeId=2)
+        eSrcVal = Expression(27, value="1")
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
+        ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreAssign, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -98,12 +98,12 @@ class TestPostModAssignAttr(TestCase):
 
     def testBuildSuccess(self):
         # Manually composed example, CCP doesn't use such combination
-        ePreStub = Expression(1, 27, value="1")
-        eTgt = Expression(2, 24, value="Char")
-        eTgtAttr = Expression(3, 22, attributeId=166)
-        eSrcAttr = Expression(4, 22, attributeId=177)
-        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePostAssign = Expression(6, 65, arg1=eTgtSpec, arg2=eSrcAttr)
+        ePreStub = Expression(27, value="1")
+        eTgt = Expression(24, value="Char")
+        eTgtAttr = Expression(22, attributeId=166)
+        eSrcAttr = Expression(22, attributeId=177)
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostAssign)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -132,12 +132,12 @@ class TestPostModAssignVal(TestCase):
     """Test parsing of trees describing assignments by value applied in the end of the cycle"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(1, 27, value="1")
-        eTgt = Expression(2, 24, value="Self")
-        eTgtAttr = Expression(3, 22, attributeId=2)
-        eSrcVal = Expression(4, 27, value="0")
-        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
-        ePostAssign = Expression(6, 65, arg1=eTgtSpec, arg2=eSrcVal)
+        ePreStub = Expression(27, value="1")
+        eTgt = Expression(24, value="Self")
+        eTgtAttr = Expression(22, attributeId=2)
+        eSrcVal = Expression(27, value="0")
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
         infos, status = InfoBuilder().build(ePreStub, ePostAssign)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

@@ -28,14 +28,14 @@ class TestModGangSrq(TestCase):
     """Test parsing of trees describing gang-mates' ship modules modification filtered by skill requirement"""
 
     def testBuildSuccess(self):
-        eTgtSrq = Expression(1, 29, typeId=3435)
-        eTgtAttr = Expression(2, 22, attributeId=54)
-        eOptr = Expression(3, 21, value="PostPercent")
-        eSrcAttr = Expression(4, 22, attributeId=833)
-        eTgtSpec = Expression(5, 64, arg1=eTgtSrq, arg2=eTgtAttr)
-        eOptrTgt = Expression(6, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(7, 5, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(8, 57, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtSrq = Expression(29, typeId=3435)
+        eTgtAttr = Expression(22, attributeId=54)
+        eOptr = Expression(21, value="PostPercent")
+        eSrcAttr = Expression(22, attributeId=833)
+        eTgtSpec = Expression(64, arg1=eTgtSrq, arg2=eTgtAttr)
+        eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
+        eAddMod = Expression(5, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(57, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

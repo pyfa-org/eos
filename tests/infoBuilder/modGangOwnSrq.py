@@ -29,14 +29,14 @@ class TestModGangOwnSrq(TestCase):
 
     def testBuildSuccess(self):
         # Manually composed example, as CCP doesn't use this modification type in any effect
-        eTgtSrq = Expression(1, 29, typeId=3326)
-        eTgtAttr = Expression(2, 22, attributeId=654)
-        eOptr = Expression(3, 21, value="PostMul")
-        eSrcAttr = Expression(4, 22, attributeId=848)
-        eTgtSpec = Expression(5, 64, arg1=eTgtSrq, arg2=eTgtAttr)
-        eOptrTgt = Expression(6, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(7, 4, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(8, 56, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtSrq = Expression(29, typeId=3326)
+        eTgtAttr = Expression(22, attributeId=654)
+        eOptr = Expression(21, value="PostMul")
+        eSrcAttr = Expression(22, attributeId=848)
+        eTgtSpec = Expression(64, arg1=eTgtSrq, arg2=eTgtAttr)
+        eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
+        eAddMod = Expression(4, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(56, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

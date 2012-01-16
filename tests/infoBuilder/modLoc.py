@@ -28,14 +28,14 @@ class TestModLoc(TestCase):
     """Test parsing of trees describing modification filtered by location"""
 
     def testBuildSuccess(self):
-        eTgt = Expression(1, 24, value="Ship")
-        eTgtAttr = Expression(2, 22, attributeId=1211)
-        eOptr = Expression(3, 21, value="PostPercent")
-        eSrcAttr = Expression(4, 22, attributeId=1503)
-        eTgtSpec = Expression(5, 12, arg1=eTgt, arg2=eTgtAttr)
-        eOptrTgt = Expression(6, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(7, 8, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(8, 60, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgt = Expression(24, value="Ship")
+        eTgtAttr = Expression(22, attributeId=1211)
+        eOptr = Expression(21, value="PostPercent")
+        eSrcAttr = Expression(22, attributeId=1503)
+        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
+        eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
+        eAddMod = Expression(8, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(60, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

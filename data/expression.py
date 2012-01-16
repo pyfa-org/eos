@@ -27,19 +27,18 @@ class Expression:
 
     def __init__(self, operand, value=None, arg1=None, arg2=None,
                  typeId=None, groupId=None, attributeId=None):
-        # Operand of expression, the primary field which describes
-        # the actual effect of it, integer
+        # Operand of expression, field which each expression must have.
+        # Describes actual effect of expression
         self.operand = operand
 
-        # Value of expression, depending on operand, contains string or
-        # integer (in form of string)
+        # Value of expression, contains string or integer (in form of string)
         self.value = value
 
         # Arg attributes contain references to child expressions
         self.arg1 = arg1
         self.arg2 = arg2
 
-        # References to type/group/attribute via ID
+        # References to type/group/attribute via integer ID
         self.typeId = typeId
         self.groupId = groupId
         self.attributeId = attributeId

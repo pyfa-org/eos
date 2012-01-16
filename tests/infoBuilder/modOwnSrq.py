@@ -28,16 +28,16 @@ class TestModOwnSrq(TestCase):
     """Test parsing of trees describing modification filtered by owner and skill requirement"""
 
     def testBuildSuccess(self):
-        eTgtOwn = Expression(1, 24, value="Char")
-        eTgtSrq = Expression(2, 29, typeId=3412)
-        eTgtAttr = Expression(3, 22, attributeId=1372)
-        eOptr = Expression(4, 21, value="PostPercent")
-        eSrcAttr = Expression(5, 22, attributeId=1156)
-        eTgtItms = Expression(6, 49, arg1=eTgtOwn, arg2=eTgtSrq)
-        eTgtSpec = Expression(7, 12, arg1=eTgtItms, arg2=eTgtAttr)
-        eOptrTgt = Expression(8, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(9, 11, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(10, 62, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtOwn = Expression(24, value="Char")
+        eTgtSrq = Expression(29, typeId=3412)
+        eTgtAttr = Expression(22, attributeId=1372)
+        eOptr = Expression(21, value="PostPercent")
+        eSrcAttr = Expression(22, attributeId=1156)
+        eTgtItms = Expression(49, arg1=eTgtOwn, arg2=eTgtSrq)
+        eTgtSpec = Expression(12, arg1=eTgtItms, arg2=eTgtAttr)
+        eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
+        eAddMod = Expression(11, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(62, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))

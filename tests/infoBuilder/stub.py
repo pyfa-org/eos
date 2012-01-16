@@ -28,8 +28,8 @@ class TestStubInt0(TestCase):
     """Test parsing of trees describing integer-0 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(1, 27, value="0")
-        ePostStub = Expression(2, 27, value="0")
+        ePreStub = Expression(27, value="0")
+        ePostStub = Expression(27, value="0")
         infos, status = InfoBuilder().build(ePreStub, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -40,8 +40,8 @@ class TestStubInt1(TestCase):
     """Test parsing of trees describing integer-1 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(1, 27, value="1")
-        ePostStub = Expression(2, 27, value="1")
+        ePreStub = Expression(27, value="1")
+        ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreStub, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -52,8 +52,8 @@ class TestStubBoolTrue(TestCase):
     """Test parsing of trees describing boolean-True stub"""
 
     def tesBuildSuccess(self):
-        ePreStub = Expression(1, 23, value="True")
-        ePostStub = Expression(2, 23, value="True")
+        ePreStub = Expression(23, value="True")
+        ePostStub = Expression(23, value="True")
         infos, status = InfoBuilder().build(ePreStub, ePostStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
@@ -64,8 +64,8 @@ class TestStubMixed(TestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def testBuildSuccess(self):
-        preStub = Expression(1, 23, value="True")
-        postStub = Expression(2, 27, value="0")
+        preStub = Expression(23, value="True")
+        postStub = Expression(27, value="0")
         infos, status = InfoBuilder().build(preStub, postStub)
         expStatus = const.effectInfoOkFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
