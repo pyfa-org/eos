@@ -56,12 +56,11 @@ class JsonDataHandler(DataHandler):
     def getType(self, id):
         if not id:
             return None
-
         invType = self.__typesCache.get(id)
         if invType is None:
-            # We do str(id) here because JSON dictionaries
+            # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
-            data = self.__typeData[str(id)]
+            data = self.__typeData[str(int(id))]
             invType = InvType(id, data["category"], data["group"],
                               {self.getEffect(effectId) for effectId in data["effects"]},
                               {x: y for x, y in data["attributes"]})
@@ -73,7 +72,7 @@ class JsonDataHandler(DataHandler):
             return None
         attribute = self.__attributesCache.get(id)
         if attribute is None:
-            data = self.__attributeData[str(id)]
+            data = self.__attributeData[str(int(id))]
             attribute = Attribute(id, data["highIsGood"], data["stackable"])
             self.__attributesCache[id] = attribute
         return attribute
@@ -83,7 +82,7 @@ class JsonDataHandler(DataHandler):
             return None
         expression = self.__expressionsCache.get(id)
         if expression is None:
-            data = self.__expressionData[str(id)]
+            data = self.__expressionData[str(int(id))]
             expression = Expression(data["operand"], data["value"],
                                     self.getExpression(data["arg1"]), self.getExpression(data["arg2"]),
                                     data["typeID"], data["groupID"], data["attributeID"])
@@ -95,7 +94,7 @@ class JsonDataHandler(DataHandler):
             return None
         effect = self.__effectsCache.get(id)
         if effect is None:
-            data = self.__effectData[str(id)]
+            data = self.__effectData[str(int(id))]
             effect = Effect(id, self.getExpression(data["preExpression"]),
                             self.getExpression(data["postExpression"]),
                             data["isOffensive"], data["isAssistance"])
