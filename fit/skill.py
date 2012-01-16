@@ -29,3 +29,12 @@ class Skill(MutableAttributeHolder):
 
     def __init__(self, invType):
         super().__init__(invType)
+
+    @property
+    def level(self):
+        level = self.attributes[const.attrSkillLevel]
+        return level
+
+    @level.setter
+    def level(self, value):
+        self.attributes[const.attrSkillLevel] = value

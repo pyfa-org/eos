@@ -27,6 +27,7 @@ attrSkillRq3 = 184
 attrSkillRq1Lvl = 277
 attrSkillRq2Lvl = 278
 attrSkillRq3Lvl = 279
+attrSkillLevel = 280
 attrSkillRq4 = 1285
 attrSkillRq4Lvl = 1286
 attrSkillRq5Lvl = 1287

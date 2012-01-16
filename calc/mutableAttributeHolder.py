@@ -118,6 +118,14 @@ class MutableAttributeMap(Mapping):
             # are cleared too
             self.__holder._damageDependantsOnAttr(attrId)
 
+    def __setitem__(self, attrId, value):
+        # This method is added to allow direct skill level changes
+        if attrId != const.attrSkillLevel:
+            raise RuntimeError("changing any attribute besides skillLevel is prohibited")
+        # Write value and clear all attributes relying on it
+        self.__modifiedAttributes[attrId] = value
+        self.__holder._damageDependantsOnAttr(attrId)
+
     def __calculate(self, attrId):
         """
         Run calculations to find the actual value of attribute with ID equal to attrID.
