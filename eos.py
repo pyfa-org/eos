@@ -26,7 +26,7 @@ class Eos:
         self.__dataHandler = dataHandler
 
     def makeFit(self):
-        fit = Fit()
+        fit = Fit(self.__dataHandler)
         return fit
 
     def makeCharacter(self):

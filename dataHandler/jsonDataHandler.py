@@ -59,8 +59,7 @@ class JsonDataHandler(DataHandler):
             data = self.__typeData[str(id)]
             invType = InvType(id, data["category"], data["group"],
                               {self.getEffect(effectId) for effectId in data["effects"]},
-                              {x: y for x, y in data["attributes"]},
-                              {x: self.getAttribute(x) for x, y in data["attributes"]})
+                              {x: y for x, y in data["attributes"]})
             self.__typesCache[id] = invType
         return invType
 

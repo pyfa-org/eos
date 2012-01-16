@@ -28,7 +28,7 @@ class InvType:
     As such, there shouldn't be ANY fit-specific data on it
     """
 
-    def __init__(self, id, categoryId, groupId, effects, attributes, attributeMeta):
+    def __init__(self, id, categoryId, groupId, effects, attributes):
         # The id of the type, typically, this is the one taken from the SDD from CCP.
         # Can be anything if you're defining your own types, as long as it's hashable
         self.id = id
@@ -51,10 +51,6 @@ class InvType:
         # to apply their bonuses onto when they're ran
         # Format: {attributeId: attributeValue}
         self.attributes = attributes
-
-        # The attributeMeta of this type, it contains some important
-        # calculation information used by the calculation process
-        self.attributeMeta = attributeMeta
 
     def requiredSkills(self):
         attributes = self.attributes
