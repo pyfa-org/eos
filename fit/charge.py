@@ -22,7 +22,7 @@ from eos import const
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Charge(MutableAttributeHolder):
-    """Charge's instances represent ammo - crystals, probes, bombs"""
+    """Represent ammo - crystals, probes, bombs, etc"""
 
     def __init__(self, invType):
         super().__init__(invType)

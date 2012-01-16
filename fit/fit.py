@@ -36,8 +36,8 @@ class Fit:
         # objects when requesting them by ID
         self._attrMetaGetter = attrMetaGetter
         # Item lists
-        self.modules = MutableAttributeHolderList(self)
         self.skills = MutableAttributeHolderList(self)
+        self.modules = MutableAttributeHolderList(self)
         self.implants = MutableAttributeHolderList(self)
         self.boosters = MutableAttributeHolderList(self)
 

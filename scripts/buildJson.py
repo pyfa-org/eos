@@ -20,7 +20,7 @@
 
 """
 buildJson.py script.
-This script takes a sqlite cache dump as input and outputs two bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.
+This script takes a sqlite cache dump as input and outputs several JSON files as bz2 archive.
 """
 
 import time

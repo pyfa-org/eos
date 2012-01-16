@@ -18,16 +18,15 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos import const
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
-class Character(MutableAttributeHolder):
-    """Represents a character. Must be holder, as EVE tracks some attributes on it."""
+class Subsystem(MutableAttributeHolder):
+    """Represents t3 ship's subsystem with all its special properties"""
 
     def __init__(self, invType):
         super().__init__(invType)
 
     @property
     def _location(self):
-        # As character is self-sufficient entity,
-        # it's not assigned to anything
-        return None
+        return const.locShip
