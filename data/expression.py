@@ -20,19 +20,26 @@
 
 class Expression:
     """
-    Expression class. Each effect is made out of several expressions. Which in turn, can be made out of expressions themselves.
-    This class is typically reused by the dataHandler if the same id is requested multiple times.
-    As such, there shouldn't be ANY fit-specific data on it.
-    All info in this object is taken straight from EVE's cache.
+    Each effect, besides few metadata fields, contains two references to expressions
+    (roots of expression tree), which actually describe how effect should affect other items.
+    This class must stay immutable, once instantiated.
     """
 
-    def __init__(self, id, operand, value=None, arg1=None, arg2=None,
+    def __init__(self, operand, value=None, arg1=None, arg2=None,
                  typeId=None, groupId=None, attributeId=None):
-        self.id = id
+        # Operand of expression, the primary field which describes
+        # the actual effect of it, integer
         self.operand = operand
+
+        # Value of expression, depending on operand, contains string or
+        # integer (in form of string)
         self.value = value
+
+        # Arg attributes contain references to child expressions
         self.arg1 = arg1
         self.arg2 = arg2
+
+        # References to type/group/attribute via ID
         self.typeId = typeId
         self.groupId = groupId
         self.attributeId = attributeId

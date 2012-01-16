@@ -55,7 +55,8 @@ class JsonDataHandler(DataHandler):
 
         invType = self.__typesCache.get(id)
         if invType is None:
-            # We do str(id) here because json dicts always have strings as key
+            # We do str(id) here because JSON dictionaries
+            # always have strings as key
             data = self.__typeData[str(id)]
             invType = InvType(id, data["category"], data["group"],
                               {self.getEffect(effectId) for effectId in data["effects"]},
@@ -79,7 +80,7 @@ class JsonDataHandler(DataHandler):
         expression = self.__expressionsCache.get(id)
         if expression is None:
             data = self.__expressionData[str(id)]
-            expression = Expression(id, data["operand"], data["value"],
+            expression = Expression(data["operand"], data["value"],
                                     self.getExpression(data["arg1"]), self.getExpression(data["arg2"]),
                                     data["typeID"], data["groupID"], data["attributeID"])
             self.__expressionsCache[id] = expression

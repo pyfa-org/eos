@@ -22,33 +22,28 @@ from eos import const
 
 class InvType:
     """
-    A type, the basic building blocks of EVE. Everything that can do something is a type.
-    Each type is built out of several effects and attributes.
-    This class is typically reused by the dataHandler if the same id is requested multiple times.
-    As such, there shouldn't be ANY fit-specific data on it
+    InvType represents any EVE item. All characters, ships, incursion system-wide effects
+    are actually items.
+    Please note that this class, once instantiated, should stay immutable - multiple other classes
+    are built on top of such instances; thus, it shouldn't contain any fit-specific data
     """
 
     def __init__(self, id, categoryId, groupId, effects, attributes):
-        # The id of the type, typically, this is the one taken from the SDD from CCP.
-        # Can be anything if you're defining your own types, as long as it's hashable
+        # The ID of the type, integer
         self.id = id
 
-        # The categoryId of the type, used for stacking penalty calculations. Should be
-        # integer, typically an already existing category
+        # The category ID of the type, integer
         self.categoryId = categoryId
 
-        # The groupID of the type, this is used for filtering purposes in the expressions.
-        # Should be integer, you usually want to use an already existing group if you're defining
-        # your own types so effects can apply to it
+        # The groupID of the type, integer
         self.groupId = groupId
 
-        # Set of effects this type has, these will be ran when
-        # module using this type gets added onto a fit
-        # Format: set(effects)
+        # Set of effects this type has, they describe modifications
+        # which this invType applies
         self.effects = effects
 
-        # The attributes of this type, these are used by the effects
-        # to apply their bonuses onto when they're ran
+        # The attributes of this type, used as base for calculation of modified
+        # attributes, thus they should stay immutable
         # Format: {attributeId: attributeValue}
         self.attributes = attributes
 
@@ -56,11 +51,11 @@ class InvType:
         self.__requiredSkills = None
 
     def requiredSkills(self):
+        """Detect IDs of required skills based on invType's attributes"""
         if self.__requiredSkills is None:
-            attributes = self.attributes
             self.__requiredSkills = set()
-            for v in const.attrSkillRqMap:
-                req = attributes.get(v)
-                if req is not None:
-                    self.__requiredSkills.add(int(req))
+            for srqAttrId in const.attrSkillRqMap:
+                srq = self.attributes.get(srqAttrId)
+                if srq is not None:
+                    self.__requiredSkills.add(int(srq))
         return self.__requiredSkills
