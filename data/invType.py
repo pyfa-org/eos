@@ -52,12 +52,15 @@ class InvType:
         # Format: {attributeId: attributeValue}
         self.attributes = attributes
 
-    def requiredSkills(self):
-        attributes = self.attributes
-        reqs = set()
-        for v in const.attrSkillRqMap:
-            req = attributes.get(v)
-            if req is not None:
-                reqs.add(int(req))
+        # Stores required skill IDs as set once calculated
+        self.__requiredSkills = None
 
-        return reqs
+    def requiredSkills(self):
+        if self.__requiredSkills is None:
+            attributes = self.attributes
+            self.__requiredSkills = set()
+            for v in const.attrSkillRqMap:
+                req = attributes.get(v)
+                if req is not None:
+                    self.__requiredSkills.add(int(req))
+        return self.__requiredSkills
