@@ -30,7 +30,7 @@ class InvType:
 
     def __init__(self, id, categoryId, groupId, effects, attributes, attributeMeta):
         # The id of the type, typically, this is the one taken from the SDD from CCP.
-        # Can be anything if you're defining your own types, as long as its hashable
+        # Can be anything if you're defining your own types, as long as it's hashable
         self.id = id
 
         # The categoryId of the type, used for stacking penalty calculations. Should be
@@ -44,10 +44,12 @@ class InvType:
 
         # Set of effects this type has, these will be ran when
         # module using this type gets added onto a fit
+        # Format: set(effects)
         self.effects = effects
 
         # The attributes of this type, these are used by the effects
         # to apply their bonuses onto when they're ran
+        # Format: {attributeId: attributeValue}
         self.attributes = attributes
 
         # The attributeMeta of this type, it contains some important

@@ -18,31 +18,33 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from abc import ABCMeta
-from abc import abstractmethod
+from eos import const
+from eos.fit import Fit, Character, Ship, Module, Charge
 
-class DataHandler:
-    """
-    DataHandler abstract baseclass, it handles fetching relevant data from wherever it is stored
-    """
-    __metaclass__ = ABCMeta
+class Eos:
+    def __init__(self, dataHandler):
+        self.__dataHandler = dataHandler
 
-    @abstractmethod
-    def getType(self, id):
-        """Return the type with the passed id"""
-        ...
+    def makeFit(self):
+        fit = Fit()
+        return fit
 
-    @abstractmethod
-    def getAttribute(self, id):
-        """Return the attribute with the passed id"""
-        ...
+    def makeCharacter(self):
+        characterType = self.__dataHandler.getType(const.typeCharacterAmarr)
+        character = Character(characterType)
+        return character
 
-    @abstractmethod
-    def getEffect(self, id):
-        """Return the effect with the passed id"""
-        ...
+    def makeShip(self, typeId):
+        shipType = self.__dataHandler.getType(typeId)
+        ship = Ship(shipType)
+        return ship
 
-    @abstractmethod
-    def getExpression(self, id):
-        """Return the expression with the passed id"""
-        ...
+    def makeModule(self, typeId):
+        moduleType = self.__dataHandler.getType(typeId)
+        module = Module(moduleType)
+        return module
+
+    def makeCharge(self, typeId):
+        chargeType = self.__dataHandler.getType(typeId)
+        charge = Charge(chargeType)
+        return charge

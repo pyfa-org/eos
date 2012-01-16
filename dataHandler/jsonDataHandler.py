@@ -33,23 +33,21 @@ class JsonDataHandler(DataHandler):
     Data is assumed to be encoded as UTF-8
     """
     def __init__(self, typesPath, expressionsPath, effectsPath, attributesPath, encoding='utf-8'):
-        # Weakref cache for objects taken from JSON
+        # Read JSON into data storage
+        with bz2.BZ2File(typesPath, 'r') as f:
+            self.__typeData = json.loads(f.read().decode('utf-8'))
+        with bz2.BZ2File(expressionsPath, 'r') as f:
+            self.__expressionData = json.loads(f.read().decode('utf-8'))
+        with bz2.BZ2File(effectsPath, 'r') as f:
+            self.__effectData = json.loads(f.read().decode('utf-8'))
+        with bz2.BZ2File(attributesPath, 'r') as f:
+            self.__attributeData = json.loads(f.read().decode('utf-8'))
+
+        # Weakref cache for objects composed out of data from storage
         self.__typesCache = WeakValueDictionary()
         self.__expressionsCache = WeakValueDictionary()
         self.__effectsCache = WeakValueDictionary()
         self.__attributesCache = WeakValueDictionary()
-
-        with bz2.BZ2File(typesPath, 'r') as f:
-            self.__typeData = json.loads(f.read().decode('utf-8'))
-
-        with bz2.BZ2File(expressionsPath, 'r') as f:
-            self.__expressionData = json.loads(f.read().decode('utf-8'))
-
-        with bz2.BZ2File(effectsPath, 'r') as f:
-            self.__effectData = json.loads(f.read().decode('utf-8'))
-
-        with bz2.BZ2File(attributesPath, 'r') as f:
-            self.__attributeData = json.loads(f.read().decode('utf-8'))
 
     def getType(self, id):
         if not id:
@@ -65,6 +63,16 @@ class JsonDataHandler(DataHandler):
                               {x: self.getAttribute(x) for x, y in data["attributes"]})
             self.__typesCache[id] = invType
         return invType
+
+    def getAttribute(self, id):
+        if not id:
+            return None
+        attribute = self.__attributesCache.get(id)
+        if attribute is None:
+            data = self.__attributeData[str(id)]
+            attribute = Attribute(id, data["highIsGood"], data["stackable"])
+            self.__attributesCache[id] = attribute
+        return attribute
 
     def getExpression(self, id):
         if not id:
@@ -90,13 +98,3 @@ class JsonDataHandler(DataHandler):
             self.__effectsCache[id] = effect
 
         return effect
-
-    def getAttribute(self, id):
-        if not id:
-            return None
-        attribute = self.__attributesCache.get(id)
-        if attribute is None:
-            data = self.__attributeData[str(id)]
-            attribute = Attribute(id, data["highIsGood"], data["stackable"])
-            self.__attributesCache[id] = attribute
-        return attribute

@@ -42,6 +42,9 @@ attrSkillRqMap = {attrSkillRq1: attrSkillRq1Lvl,
                   attrSkillRq5: attrSkillRq5Lvl,
                   attrSkillRq6: attrSkillRq6Lvl}
 
+# Items / types
+typeCharacterAmarr = 1373
+
 # Item categories
 catShip = 6
 catCharge = 8
