@@ -22,23 +22,22 @@ class Expression:
     """
     Each effect, besides few metadata fields, contains two references to expressions
     (roots of expression tree), which actually describe how effect should affect other items.
-    This class must stay immutable, once instantiated.
     """
 
     def __init__(self, operand, value=None, arg1=None, arg2=None,
                  typeId=None, groupId=None, attributeId=None):
         # Operand of expression, field which each expression must have.
         # Describes actual effect of expression
-        self.operand = operand
+        self.operand = int(operand) if operand is not None else None
 
         # Value of expression, contains string or integer (in form of string)
-        self.value = value
+        self.value = str(value) if value is not None else None
 
         # Arg attributes contain references to child expressions
         self.arg1 = arg1
         self.arg2 = arg2
 
         # References to type/group/attribute via integer ID
-        self.typeId = typeId
-        self.groupId = groupId
-        self.attributeId = attributeId
+        self.typeId = int(typeId) if typeId is not None else None
+        self.groupId = int(groupId) if groupId is not None else None
+        self.attributeId = int(attributeId) if attributeId is not None else None

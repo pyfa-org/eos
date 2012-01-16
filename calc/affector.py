@@ -20,5 +20,7 @@
 
 from collections import namedtuple
 
-# Taken out to special file, as it's used in various places
+# Each affector must have 2 components - carrier holder (source data
+# for changes and unique identifier) and info 9which describes whom and
+# how to modify), this tuple represents it
 Affector = namedtuple("Affector", ("sourceHolder", "info"))

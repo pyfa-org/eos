@@ -24,19 +24,17 @@ class InvType:
     """
     InvType represents any EVE item. All characters, ships, incursion system-wide effects
     are actually items.
-    Please note that this class, once instantiated, should stay immutable - multiple other classes
-    are built on top of such instances; thus, it shouldn't contain any fit-specific data
     """
 
     def __init__(self, id, categoryId, groupId, effects, attributes):
-        # The ID of the type, integer
-        self.id = id
+        # The ID of the type
+        self.id = int(id) if id is not None else None
 
         # The category ID of the type, integer
-        self.categoryId = categoryId
+        self.categoryId = int(categoryId) if categoryId is not None else None
 
         # The groupID of the type, integer
-        self.groupId = groupId
+        self.groupId = int(groupId) if groupId is not None else None
 
         # Set of effects this type has, they describe modifications
         # which this invType applies

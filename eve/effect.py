@@ -23,16 +23,13 @@ from eos.calc.info.builder.builder import InfoBuilder
 
 class Effect:
     """
-    Represents a single effect. Effects are the building blocks of types and are what actualy make a type do something.
-    In turn, each effect is made out of pre- and a post-expression
-    This class is typically reused by the dataHandler if the same id is requested multiple times.
-    As such, there shouldn't be ANY fit-specific data on it
+    Represents a single effect. Effects are the building blocks which describe what its carrier
+    does with other items.
     """
 
     def __init__(self, id, preExpression, postExpression, isOffensive, isAssistance):
-        # The unique ID of an effect. Can be anything, as long as its unique,
-        # typically, the IDs CCP assigned to them in the SDD are used
-        self.id = id
+        # The unique ID of an effect
+        self.id = int(id) if id is not None else None
 
         # PreExpression of the effect. A preExpression is the expression
         # that gets run when the module is activated
@@ -42,10 +39,10 @@ class Effect:
         self.postExpression = postExpression
 
         # Whether the module is offensive (e.g. guns)
-        self.isOffensive = isOffensive
+        self.isOffensive = bool(isOffensive) if isOffensive is not None else None
 
         # Whether the module is helpful (e.g. Remote reps)
-        self.isAssistance = isAssistance
+        self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # Stores EffectInfos which are assigned to given effect
         self.__infos = None

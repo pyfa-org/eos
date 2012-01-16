@@ -19,7 +19,16 @@
 #===============================================================================
 
 class Attribute:
+    """Class-holder for attribute metadata"""
+
     def __init__(self, id, highIsGood, stackable):
-        self.id = id
-        self.highIsGood = highIsGood
-        self.stackable = stackable
+        # Just ID of attribute, integer
+        self.id = int(id) if id is not None else None
+
+        # Boolean describing if it's good when attribute is high or not,
+        # used in calculation process
+        self.highIsGood = bool(highIsGood) if highIsGood is not None else None
+
+        # Boolean which defines if attribute can be stacking penalized (False)
+        # or not (True)
+        self.stackable = bool(stackable) if stackable is not None else None

@@ -37,7 +37,7 @@ inactiveOpnds = {const.opndAttack, const.opndCargoScan, const.opndCheatTeleDock,
 
 class InfoBuilder:
     """
-    EffectInfo is responsible for converting two trees (pre and post) of Expression objects (which
+    Class is responsible for converting two trees (pre and post) of Expression objects (which
     aren't directly useful to us) into EffectInfo objects which can then be used as needed.
     """
     def __init__(self):
