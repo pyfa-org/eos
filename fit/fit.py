@@ -25,14 +25,15 @@ from eos.calc.register import Register
 
 class Fit:
 
-    def __init__(self, dataHandler):
+    def __init__(self, attrMetaGetter):
         # Variables used by properties
         self.__ship = None
         self.__character = None
         # Register-helper for partial recalculations
         self.__register = Register(self)
-        # Data handler which is used by some of classes assigned to fit
-        self._dataHandler = dataHandler
+        # Attribute metadata getter, which returns Attribute
+        # objects when requesting them by ID
+        self._attrMetaGetter = attrMetaGetter
         # Public stuff
         self.modules = MutableAttributeHolderList(self)
         self.skills = MutableAttributeHolderList(self)

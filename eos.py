@@ -30,7 +30,7 @@ class Eos:
         self.__dataHandler = dataHandler
 
     def makeFit(self):
-        fit = Fit(self.__dataHandler)
+        fit = Fit(self.__dataHandler.getAttribute)
         return fit
 
     def makeCharacter(self):
