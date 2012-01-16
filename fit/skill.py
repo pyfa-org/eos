@@ -23,12 +23,12 @@ from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Skill(MutableAttributeHolder):
 
-    @property
-    def location(self):
-        return const.locChar
-
     def __init__(self, invType):
         super().__init__(invType)
+
+    @property
+    def _location(self):
+        return const.locChar
 
     @property
     def level(self):

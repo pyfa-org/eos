@@ -34,7 +34,7 @@ class MutableAttributeHolder:
     __metaclass__ = ABCMeta
 
     @abstractproperty
-    def location(self):
+    def _location(self):
         ...
 
     def __init__(self, invType):

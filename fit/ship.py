@@ -22,9 +22,12 @@ from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Ship(MutableAttributeHolder):
 
-    @property
-    def location(self):
-        return None
-
     def __init__(self, invType):
         super().__init__(invType)
+
+    @property
+    def _location(self):
+        # Ship is self-sufficient entity with regard to
+        # location too (not assigned to anything besides
+        # fit), thus its location is None
+        return None

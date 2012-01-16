@@ -22,14 +22,19 @@ from eos import const
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Module(MutableAttributeHolder):
-
-    @property
-    def location(self):
-        return const.locShip
+    """Represents single module"""
 
     def __init__(self, invType):
         super().__init__(invType)
         self.__charge = None
+
+    @property
+    def _location(self):
+        return const.locShip
+
+    @property
+    def _other(self):
+        return self.charge
 
     @property
     def charge(self):
@@ -46,7 +51,3 @@ class Module(MutableAttributeHolder):
             newCharge.container = self
             self.__charge = newCharge
             self.fit._setHolder(newCharge, enableDirect=const.locOther)
-
-    @property
-    def other(self):
-        return self.charge

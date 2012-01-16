@@ -22,10 +22,7 @@ from eos import const
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Charge(MutableAttributeHolder):
-
-    @property
-    def location(self):
-        return const.locSpace
+    """Charge's instances represent ammo - crystals, probes, bombs"""
 
     def __init__(self, invType):
         super().__init__(invType)
@@ -34,5 +31,9 @@ class Charge(MutableAttributeHolder):
         self.container = None
 
     @property
-    def other(self):
+    def _location(self):
+        return const.locSpace
+
+    @property
+    def _other(self):
         return self.container

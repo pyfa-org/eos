@@ -24,6 +24,7 @@ from eos import const
 from eos.calc.register import Register
 
 class Fit:
+    """Fit holds all fit items and facilities to calculate their attributes"""
 
     def __init__(self, attrMetaGetter):
         # Variables used by properties
@@ -34,7 +35,7 @@ class Fit:
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._attrMetaGetter = attrMetaGetter
-        # Public stuff
+        # Item lists
         self.modules = MutableAttributeHolderList(self)
         self.skills = MutableAttributeHolderList(self)
         self.implants = MutableAttributeHolderList(self)

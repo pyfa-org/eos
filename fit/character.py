@@ -21,19 +21,13 @@
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Character(MutableAttributeHolder):
-    """
-    Character class. This class represents a character.
-    While it might feel counter-intuitive to track attributes on a character, some are tracked here.
-    Examples: Intellect, Charisma, etc. Less obvious examples: maxGangModules, maxLockedTargets, maxActiveDrones
-    Remember this class is fit-specific, don't put a single one onto two fits.
-    """
-
-    @property
-    def location(self):
-        return None
+    """Represents a character. Must be holder, as EVE tracks some attributes on character."""
 
     def __init__(self, invType):
-        """
-        Constructor. Accepts a Type
-        """
         super().__init__(invType)
+
+    @property
+    def _location(self):
+        # As character is self-sufficient entity,
+        # it's not assigned to anything
+        return None

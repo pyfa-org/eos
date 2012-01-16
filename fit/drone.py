@@ -22,10 +22,11 @@ from eos import const
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Drone(MutableAttributeHolder):
-
-    @property
-    def location(self):
-        return const.locSpace
+    """Class represents single drone"""
 
     def __init__(self, invType):
         super().__init__(invType)
+
+    @property
+    def _location(self):
+        return const.locSpace
