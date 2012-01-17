@@ -83,7 +83,7 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self.__register.registerAffectee(holder, **kwargs)
-        for affector in holder.generateAffectors():
+        for affector in holder._generateAffectors():
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
         # all influenced by holder attributes
@@ -95,13 +95,13 @@ class Fit:
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            self._removeHolder(charge)
+            holder.charge = None
         # When links in register are still alive, damage all attributes
         # influenced by holder
         holder._damageDependantsAll()
         # Remove links from register
         self.__register.unregisterAffectee(holder, **kwargs)
-        for affector in holder.generateAffectors():
+        for affector in holder._generateAffectors():
             self.__register.unregisterAffector(affector)
         # And finally, unset fit
         holder.fit = None
