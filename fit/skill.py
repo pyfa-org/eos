@@ -18,7 +18,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.const import Attribute
+from eos.calc.info.info import InfoLocation
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Skill(MutableAttributeHolder):
@@ -28,13 +29,13 @@ class Skill(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return const.locChar
+        return InfoLocation.character
 
     @property
     def level(self):
-        level = self.attributes[const.attrSkillLevel]
+        level = self.attributes[Attribute.skillLevel]
         return level
 
     @level.setter
     def level(self, value):
-        self.attributes[const.attrSkillLevel] = value
+        self.attributes[Attribute.skillLevel] = value

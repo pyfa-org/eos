@@ -20,9 +20,9 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.calc.info.info import InfoType, InfoLocation, InfoOperator, InfoSourceType
 
 class TestPreModAssignAttr(TestCase):
     """Test parsing of trees describing assignments by attribute applied in the beginning of the cycle"""
@@ -36,23 +36,23 @@ class TestPreModAssignAttr(TestCase):
         ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
         ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreAssign, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPre
+        expType = InfoType.pre
         self.assertEqual(info.type, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locChar
+        expLocation = InfoLocation.character
         self.assertEqual(info.location, expLocation, msg="info target location must be char (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrAssign
+        expOperation = InfoOperator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 166
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcAttr
+        expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 177
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -70,23 +70,23 @@ class TestPreModAssignVal(TestCase):
         ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
         ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreAssign, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPre
+        expType = InfoType.pre
         self.assertEqual(info.type, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locSelf
+        expLocation = InfoLocation.carrier
         self.assertEqual(info.location, expLocation, msg="info target location must be self (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrAssign
+        expOperation = InfoOperator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 2
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcVal
+        expSrcType = InfoSourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 1
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -105,23 +105,23 @@ class TestPostModAssignAttr(TestCase):
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostAssign)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPost
+        expType = InfoType.post
         self.assertEqual(info.type, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locChar
+        expLocation = InfoLocation.character
         self.assertEqual(info.location, expLocation, msg="info target location must be char (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrAssign
+        expOperation = InfoOperator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 166
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcAttr
+        expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 177
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -139,23 +139,23 @@ class TestPostModAssignVal(TestCase):
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
         infos, status = InfoBuilder().build(ePreStub, ePostAssign)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPost
+        expType = InfoType.post
         self.assertEqual(info.type, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locSelf
+        expLocation = InfoLocation.carrier
         self.assertEqual(info.location, expLocation, msg="info target location must be self (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrAssign
+        expOperation = InfoOperator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 2
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcVal
+        expSrcType = InfoSourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 0
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))

@@ -20,9 +20,8 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
 class TestInactive(TestCase):
     """Test parsing of trees involving disabled operands"""
@@ -31,7 +30,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(13)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -39,7 +38,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(14)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -47,7 +46,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(15)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -55,7 +54,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(16)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -63,7 +62,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(19)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -71,7 +70,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(30)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -79,7 +78,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(32)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -87,7 +86,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(44)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -95,7 +94,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(45)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -103,7 +102,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(47)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -111,7 +110,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(50)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -119,7 +118,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(53)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -127,7 +126,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(66)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -135,7 +134,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(69)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -143,7 +142,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(70)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -151,7 +150,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(71)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -159,7 +158,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(72)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -167,7 +166,7 @@ class TestInactive(TestCase):
         disabledPre = Expression(73)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -175,6 +174,6 @@ class TestInactive(TestCase):
         disabledPre = Expression(74)
         stubPost = Expression(27, value="1")
         infos, status = InfoBuilder().build(disabledPre, stubPost)
-        expStatus = const.effectInfoOkPartial
+        expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")

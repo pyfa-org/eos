@@ -54,7 +54,7 @@ for typeRow in conn.execute("SELECT typeID, groupID FROM invtypes"):
     # Tuple with (attributeID, attributeValue) tuples assigned to type
     statement = "SELECT attributeID, value FROM dgmtypeattribs WHERE typeID = ?"
     typeAttrs = tuple((attrRow["attributeID"], attrRow["value"]) for attrRow in conn.execute(statement, (typeRow["typeID"],)))
-    types[typeRow["typeID"]] = (typeRow["groupID"], grpRow["categoryID"], typeEffects, typeAttrs)
+    types[typeRow["typeID"]] = (typeRow["groupID"], grpRow["categoryID"], grpRow["fittableNonSingleton"], typeEffects, typeAttrs)
 with bz2.BZ2File(args.types, "wb") as f:
     f.write(json.dumps(types).encode("utf-8"))
 

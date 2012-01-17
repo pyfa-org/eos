@@ -18,7 +18,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.const import Attribute
+
 
 class InvType:
     """
@@ -26,7 +27,7 @@ class InvType:
     are actually items.
     """
 
-    def __init__(self, typeId, groupId=None, categoryId=None, attributes={}, effects=set()):
+    def __init__(self, typeId, groupId=None, categoryId=None, fittableNonSingleton=None, attributes={}, effects=set()):
         # The ID of the type
         self.id = int(typeId) if typeId is not None else None
 
@@ -35,6 +36,10 @@ class InvType:
 
         # The category ID of the type, integer
         self.categoryId = int(categoryId) if categoryId is not None else None
+
+        # Defines if multiple items can be added to fit without packaging.
+        # We use it to see if charge can be loaded into anything or not.
+        self.fittableNonSingleton = bool(fittableNonSingleton) if fittableNonSingleton is not None else None
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
@@ -52,7 +57,7 @@ class InvType:
         """Detect IDs of required skills based on invType's attributes"""
         if self.__requiredSkills is None:
             self.__requiredSkills = set()
-            for srqAttrId in const.attrSkillRqMap:
+            for srqAttrId in Attribute.skillRqMap:
                 srq = self.attributes.get(srqAttrId)
                 if srq is not None:
                     self.__requiredSkills.add(int(srq))

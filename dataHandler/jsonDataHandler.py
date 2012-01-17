@@ -64,8 +64,8 @@ class JsonDataHandler(DataHandler):
             # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
             data = self.__typeData[str(int(typeId))]
-            groupId, catId, effectIds, attrIds = data
-            invType = InvType(typeId, groupId=groupId, categoryId=catId,
+            groupId, catId, fittableNS, effectIds, attrIds = data
+            invType = InvType(typeId, groupId=groupId, categoryId=catId, fittableNonSingleton=fittableNS,
                               attributes={attrId: attrVal for attrId, attrVal in attrIds},
                               effects={self.getEffect(effectId) for effectId in effectIds})
             self.__typesCache[typeId] = invType

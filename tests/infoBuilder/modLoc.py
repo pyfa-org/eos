@@ -20,9 +20,9 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.calc.info.info import InfoType, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 
 class TestModLoc(TestCase):
     """Test parsing of trees describing modification filtered by location"""
@@ -37,24 +37,24 @@ class TestModLoc(TestCase):
         eAddMod = Expression(8, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(60, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoDuration
+        expType = InfoType.duration
         self.assertEqual(info.type, expType, msg="info type must be duration (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locShip
+        expLocation = InfoLocation.ship
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
-        expFilterType = const.filterAll
+        expFilterType = InfoFilterType.all
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be all (ID {})".format(expFilterType))
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrPostPercent
+        expOperation = InfoOperator.postPercent
         self.assertEqual(info.operator, expOperation, msg="info operator must be PostPercent (ID {})".format(expOperation))
         expTgtAttr = 1211
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcAttr
+        expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 1503
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))

@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.calc.info.info import InfoLocation
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Booster(MutableAttributeHolder):
@@ -29,4 +29,4 @@ class Booster(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return const.locChar
+        return InfoLocation.character

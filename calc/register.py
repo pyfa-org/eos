@@ -18,7 +18,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.const import Type
+from eos.calc.info.info import InfoType, InfoLocation, InfoFilterType
 
 class DataSetMap(dict):
     """
@@ -120,10 +121,10 @@ class Register():
         if info.filterType is None:
             # For single item modifications, we need to properly pick
             # target holder (it's key) based on location
-            if info.location == const.locSelf:
+            if info.location == InfoLocation.carrier:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
-            elif info.location == const.locChar:
+            elif info.location == InfoLocation.character:
                 char = self.__fit.character
                 if char is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -131,7 +132,7 @@ class Register():
                 else:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
-            elif info.location == const.locShip:
+            elif info.location == InfoLocation.ship:
                 ship = self.__fit.ship
                 if ship is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -139,11 +140,11 @@ class Register():
                 else:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
-            elif info.location == const.locTgt:
+            elif info.location == InfoLocation.target:
                 raise RuntimeError("target is not supported location for direct item modification")
             # When other location is referenced, it means direct reference to module's charge
             # or to charge's module-container
-            elif info.location == const.locOther:
+            elif info.location == InfoLocation.other:
                 otherHolder = getattr(sourceHolder, "_other", None)
                 if otherHolder is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -157,15 +158,15 @@ class Register():
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For massive modifications, compose key, making sure reference to self
         # is converted into appropriate real location
-        elif info.filterType == const.filterAll:
+        elif info.filterType == InfoFilterType.all:
             affectorMap = self.__affectorLocation
             location = self.__contextizeLocation(sourceHolder, info.location)
             key = location
-        elif info.filterType == const.filterGroup:
+        elif info.filterType == InfoFilterType.group:
             affectorMap = self.__affectorLocationGroup
             location = self.__contextizeLocation(sourceHolder, info.location)
             key = (location, info.filterValue)
-        elif info.filterType == const.filterSkill:
+        elif info.filterType == InfoFilterType.skill:
             affectorMap = self.__affectorLocationSkill
             location = self.__contextizeLocation(sourceHolder, info.location)
             skill = self.__contextizeSkillrqId(affector)
@@ -179,15 +180,15 @@ class Register():
         """
         # Reference to self is sparingly used on ship effects, so we must convert
         # it to real location
-        if targetLocation == const.locSelf:
+        if targetLocation == InfoLocation.carrier:
             if sourceHolder is self.__fit.ship:
-                return const.locShip
+                return InfoLocation.ship
             elif sourceHolder is self.__fit.character:
-                return const.locChar
+                return InfoLocation.character
             else:
                 raise RuntimeError("reference to self on unexpected holder during processing of massive filtered modification")
         # Just return untouched location for all other valid cases
-        elif targetLocation in (const.locChar, const.locShip, const.locSpace):
+        elif targetLocation in (InfoLocation.character, InfoLocation.ship, InfoLocation.space):
             return targetLocation
         # Raise error if location is invalid
         else:
@@ -196,7 +197,7 @@ class Register():
     def __contextizeSkillrqId(self, affector):
         """Convert typeID self-reference into real typeID"""
         skillId = affector.info.filterValue
-        if skillId == const.selfTypeID:
+        if skillId == Type.carrier:
             skillId = affector.sourceHolder.invType.id
         return skillId
 
@@ -247,7 +248,7 @@ class Register():
         affectorsToEnable = set()
         for affector in self.__disabledDirectAffectors.getData(otherHolder):
             info = affector.info
-            if info.location == const.locOther and info.filterType is None:
+            if info.location == InfoLocation.other and info.filterType is None:
                 affectorsToEnable.add(affector)
         # Bail if we have nothing to do
         if len(affectorsToEnable) == 0:
@@ -282,9 +283,9 @@ class Register():
             affecteeMap.addData(key, {targetHolder})
         # Check if we have affectors which should directly influence passed holder,
         # but are disabled
-        directEnablers = {const.locShip: (self.__enableDirectSpec, (targetHolder, const.locShip), {}),
-                          const.locChar: (self.__enableDirectSpec, (targetHolder, const.locChar), {}),
-                          const.locOther: (self.__enableDirectOther, (targetHolder,), {})}
+        directEnablers = {InfoLocation.ship: (self.__enableDirectSpec, (targetHolder, InfoLocation.ship), {}),
+                          InfoLocation.character: (self.__enableDirectSpec, (targetHolder, InfoLocation.character), {}),
+                          InfoLocation.other: (self.__enableDirectOther, (targetHolder,), {})}
         try:
             method, args, kwargs = directEnablers[enableDirect]
         except KeyError:
@@ -298,9 +299,9 @@ class Register():
             affecteeMap.rmData(key, {targetHolder})
         # When removing holder from register, make sure to move modifiers which
         # originate from other holders and directly affect it to disabled map
-        directEnablers = {const.locShip: (self.__disableDirectSpec, (targetHolder,), {}),
-                          const.locChar: (self.__disableDirectSpec, (targetHolder,), {}),
-                          const.locOther: (self.__disableDirectOther, (targetHolder,), {})}
+        directEnablers = {InfoLocation.ship: (self.__disableDirectSpec, (targetHolder,), {}),
+                          InfoLocation.character: (self.__disableDirectSpec, (targetHolder,), {}),
+                          InfoLocation.other: (self.__disableDirectOther, (targetHolder,), {})}
         try:
             method, args, kwargs = directEnablers[disableDirect]
         except KeyError:
@@ -312,7 +313,7 @@ class Register():
         """Add passed affector to register's affector maps"""
         info = affector.info
         # Register keeps track of only local duration modifiers
-        if info.type != const.infoDuration or info.gang is not False:
+        if info.type != InfoType.duration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
         # Actually add data to map
@@ -321,7 +322,7 @@ class Register():
     def unregisterAffector(self, affector):
         """Remove affector from register's affector maps"""
         info = affector.info
-        if info.type != const.infoDuration or info.gang is not False:
+        if info.type != InfoType.duration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
         affectorMap.rmData(key, {affector})
@@ -332,31 +333,31 @@ class Register():
         affectees = set()
         # For direct modification, make set out of single target location
         if info.filterType is None:
-            if info.location == const.locSelf:
+            if info.location == InfoLocation.carrier:
                 target = {sourceHolder}
-            elif info.location == const.locChar:
+            elif info.location == InfoLocation.character:
                 char = self.__fit.character
                 target = {char} if char is not None else None
-            elif info.location == const.locShip:
+            elif info.location == InfoLocation.ship:
                 ship = self.__fit.ship
                 target = {ship} if ship is not None else None
-            elif info.location == const.locTgt:
+            elif info.location == InfoLocation.target:
                 raise RuntimeError("target is not supported location for direct item modification")
-            elif info.location == const.locOther:
+            elif info.location == InfoLocation.other:
                 otherHolder = getattr(sourceHolder, "_other", None)
                 target = {otherHolder} if otherHolder is not None else None
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For filtered modifications, pick appropriate dictionary and get set
         # with target holders
-        elif info.filterType == const.filterAll:
+        elif info.filterType == InfoFilterType.all:
             key = self.__contextizeLocation(sourceHolder, info.location)
             target = self.__affecteeLocation.getData(key)
-        elif info.filterType == const.filterGroup:
+        elif info.filterType == InfoFilterType.group:
             location = self.__contextizeLocation(sourceHolder, info.location)
             key = (location, info.filterValue)
             target = self.__affecteeLocationGroup.getData(key)
-        elif info.filterType == const.filterSkill:
+        elif info.filterType == InfoFilterType.skill:
             location = self.__contextizeLocation(sourceHolder, info.location)
             skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)

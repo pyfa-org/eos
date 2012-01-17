@@ -20,9 +20,10 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.const import Type
+from eos.calc.info.info import InfoFilterType
 
 class TestSelfType(TestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
@@ -40,11 +41,11 @@ class TestSelfType(TestCase):
         eAddMod = Expression(11, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(62, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expFilterType = const.filterSkill
+        expFilterType = InfoFilterType.skill
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
-        expFilterValue = const.selfTypeID
+        expFilterValue = Type.carrier
         self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be reference to typeID of self {}".format(expFilterValue))

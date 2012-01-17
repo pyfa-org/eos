@@ -20,8 +20,9 @@
 
 from collections import MutableSequence
 
-from eos import const
+from eos.calc.info.info import InfoLocation
 from eos.calc.register import Register
+
 
 class Fit:
     """Fit holds all fit items and facilities to calculate their attributes"""
@@ -48,9 +49,9 @@ class Fit:
     @ship.setter
     def ship(self, ship):
         if self.__ship is not None:
-            self._unsetHolder(self.__ship, disableDirect=const.locShip)
+            self._unsetHolder(self.__ship, disableDirect=InfoLocation.ship)
         self.__ship = ship
-        self._setHolder(ship, enableDirect=const.locShip)
+        self._setHolder(ship, enableDirect=InfoLocation.ship)
 
     @property
     def character(self):
@@ -59,9 +60,9 @@ class Fit:
     @character.setter
     def character(self, character):
         if self.__character is not None:
-            self._unsetHolder(self.__character, disableDirect=const.locChar)
+            self._unsetHolder(self.__character, disableDirect=InfoLocation.character)
         self.__character = character
-        self._setHolder(character, enableDirect=const.locChar)
+        self._setHolder(character, enableDirect=InfoLocation.character)
 
     def _setHolder(self, holder, **kwargs):
         """Handle adding of holder to fit"""
@@ -102,6 +103,7 @@ class Fit:
     def _getAffectees(self, affector):
         """Get holders that the passed affector affects"""
         return self.__register.getAffectees(affector)
+
 
 class MutableAttributeHolderList(MutableSequence):
     """

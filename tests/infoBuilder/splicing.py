@@ -20,9 +20,8 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
 class TestSplicing(TestCase):
     """Test parsing of trees describing joins of multiple actual modifiers"""
@@ -55,6 +54,6 @@ class TestSplicing(TestCase):
         eRmSplice1 = Expression(17, arg1=eRmMod1, arg2=eRmMod3)
         eRmSplice2 = Expression(17, arg1=eRmMod2, arg2=eRmSplice1)
         infos, status = InfoBuilder().build(eAddSplice2, eRmSplice2)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 3, msg="three infos must be generated")

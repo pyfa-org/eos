@@ -18,9 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
-from eos.calc.info.info import EffectInfo
-from .localData import durationMods, mirrorDurationMods
+from eos.const import Operand
+from eos.calc.info.info import Info, InfoType, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from .builderData import durationMods, mirrorDurationMods
 
 # Values which are considered as 'empty' values
 nulls = {0, None}
@@ -63,27 +63,27 @@ class Modifier:
             if self.conditions.validateTree() is not True:
                 return False
         # Other fields are optional, check them using modifier type
-        validateMap = {const.opndAddGangGrpMod: self.__valGangGrp,
-                       const.opndRmGangGrpMod: self.__valGangGrp,
-                       const.opndAddGangItmMod: self.__valGangItm,
-                       const.opndRmGangItmMod: self.__valGangItm,
-                       const.opndAddGangOwnSrqMod: self.__valGangOwnSrq,
-                       const.opndRmGangOwnSrqMod: self.__valGangOwnSrq,
-                       const.opndAddGangSrqMod: self.__valGangSrq,
-                       const.opndRmGangSrqMod: self.__valGangSrq,
-                       const.opndAddItmMod: self.__valItm,
-                       const.opndRmItmMod: self.__valItm,
-                       const.opndAddLocGrpMod: self.__valLocGrp,
-                       const.opndRmLocGrpMod: self.__valLocGrp,
-                       const.opndAddLocMod: self.__valLoc,
-                       const.opndRmLocMod: self.__valLoc,
-                       const.opndAddLocSrqMod: self.__valLocSrq,
-                       const.opndRmLocSrqMod: self.__valLocSrq,
-                       const.opndAddOwnSrqMod: self.__valOwnSrq,
-                       const.opndRmOwnSrqMod: self.__valOwnSrq,
-                       const.opndAssign: self.__valInstant,
-                       const.opndInc: self.__valInstant,
-                       const.opndDec: self.__valInstant}
+        validateMap = {Operand.addGangGrpMod: self.__valGangGrp,
+                       Operand.rmGangGrpMod: self.__valGangGrp,
+                       Operand.addGangItmMod: self.__valGangItm,
+                       Operand.rmGangItmMod: self.__valGangItm,
+                       Operand.addGangOwnSrqMod: self.__valGangOwnSrq,
+                       Operand.rmGangOwnSrqMod: self.__valGangOwnSrq,
+                       Operand.addGangSrqMod: self.__valGangSrq,
+                       Operand.rmGangSrqMod: self.__valGangSrq,
+                       Operand.addItmMod: self.__valItm,
+                       Operand.rmItmMod: self.__valItm,
+                       Operand.addLocGrpMod: self.__valLocGrp,
+                       Operand.rmLocGrpMod: self.__valLocGrp,
+                       Operand.addLocMod: self.__valLoc,
+                       Operand.rmLocMod: self.__valLoc,
+                       Operand.addLocSrqMod: self.__valLocSrq,
+                       Operand.rmLocSrqMod: self.__valLocSrq,
+                       Operand.addOwnSrqMod: self.__valOwnSrq,
+                       Operand.rmOwnSrqMod: self.__valOwnSrq,
+                       Operand.assign: self.__valInstant,
+                       Operand.inc: self.__valInstant,
+                       Operand.dec: self.__valInstant}
         try:
             method = validateMap[self.type]
         except KeyError:
@@ -94,7 +94,7 @@ class Modifier:
         if self.targetLocation is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or self.targetGroup in nulls:
             return False
         return True
@@ -103,7 +103,7 @@ class Modifier:
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.targetLocation is not None or self.runTime is not None:
             return False
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls:
             return False
         return True
@@ -112,7 +112,7 @@ class Modifier:
         if self.targetLocation is not None or self.targetGroup is not None or \
         self.runTime is not None:
             return False
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or self.targetSkillRq in nulls:
             return False
         return True
@@ -121,7 +121,7 @@ class Modifier:
         if self.targetLocation is not None or self.targetGroup is not None or \
         self.runTime is not None:
             return False
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or self.targetSkillRq in nulls:
             return False
         return True
@@ -130,7 +130,7 @@ class Modifier:
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or self.targetLocation in nulls:
             return False
         return True
@@ -138,8 +138,8 @@ class Modifier:
     def __valLocGrp(self):
         if self.targetSkillRq is not None or self.runTime is not None:
             return False
-        validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.carrier}
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs or \
         self.targetGroup in nulls:
             return False
@@ -149,8 +149,8 @@ class Modifier:
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.carrier}
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs:
             return False
         return True
@@ -158,8 +158,8 @@ class Modifier:
     def __valLocSrq(self):
         if self.targetGroup is not None or self.runTime is not None:
             return False
-        validLocs = {const.locChar, const.locShip, const.locTgt, const.locSelf}
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.carrier}
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs or \
         self.targetSkillRq in nulls:
             return False
@@ -168,8 +168,8 @@ class Modifier:
     def __valOwnSrq(self):
         if self.targetGroup is not None or self.runTime is not None:
             return False
-        validLocs = {const.locChar, const.locShip}
-        if self.sourceType != const.srcAttr or self.sourceValue in nulls or \
+        validLocs = {InfoLocation.character, InfoLocation.ship}
+        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs or \
         self.targetSkillRq in nulls:
             return False
@@ -179,12 +179,12 @@ class Modifier:
         if self.operator is not None or self.targetGroup is not None or \
         self.targetSkillRq is not None:
             return False
-        validSrcTypes = {const.srcAttr, const.srcVal}
-        validRunTimes = {const.infoPre, const.infoPost}
+        validSrcTypes = {InfoSourceType.attribute, InfoSourceType.value}
+        validRunTimes = {InfoType.pre, InfoType.post}
         # We can either refer some non-zero source attribute, or provide source value directly
         if not self.sourceType in validSrcTypes or not self.runTime in validRunTimes or \
-        (self.sourceType == const.srcAttr and self.sourceValue in nulls) or \
-        (self.sourceType == const.srcVal and self.sourceValue is None) or \
+        (self.sourceType == InfoSourceType.attribute and self.sourceValue in nulls) or \
+        (self.sourceType == InfoSourceType.value and self.sourceValue is None) or \
         self.targetLocation in nulls:
             return False
         return True
@@ -234,109 +234,109 @@ class Modifier:
     def convertToInfo(self):
         """Convert Modifier object to EffectInfo object"""
         # Create object and fill generic fields
-        info = EffectInfo()
+        info = Info()
         info.conditions = self.conditions
         info.sourceType = self.sourceType
         info.sourceValue = self.sourceValue
         info.targetAttribute = self.targetAttribute
         # Fill remaining fields on per-modifier basis
-        conversionMap = {const.opndAddGangGrpMod: self.__convGangGrp,
-                         const.opndRmGangGrpMod: self.__convGangGrp,
-                         const.opndAddGangItmMod: self.__convGangItm,
-                         const.opndRmGangItmMod: self.__convGangItm,
-                         const.opndAddGangOwnSrqMod: self.__convGangOwnSrq,
-                         const.opndRmGangOwnSrqMod: self.__convGangOwnSrq,
-                         const.opndAddGangSrqMod: self.__convGangSrq,
-                         const.opndRmGangSrqMod: self.__convGangSrq,
-                         const.opndAddItmMod: self.__convItm,
-                         const.opndRmItmMod: self.__convItm,
-                         const.opndAddLocGrpMod: self.__convLocGrp,
-                         const.opndRmLocGrpMod: self.__convLocGrp,
-                         const.opndAddLocMod: self.__convLoc,
-                         const.opndRmLocMod: self.__convLoc,
-                         const.opndAddLocSrqMod: self.__convLocSrq,
-                         const.opndRmLocSrqMod: self.__convLocSrq,
-                         const.opndAddOwnSrqMod: self.__convOwnSrq,
-                         const.opndRmOwnSrqMod: self.__convOwnSrq,
-                         const.opndAssign: self.__convAssign,
-                         const.opndInc: self.__convInc,
-                         const.opndDec: self.__convDec}
+        conversionMap = {Operand.addGangGrpMod: self.__convGangGrp,
+                         Operand.rmGangGrpMod: self.__convGangGrp,
+                         Operand.addGangItmMod: self.__convGangItm,
+                         Operand.rmGangItmMod: self.__convGangItm,
+                         Operand.addGangOwnSrqMod: self.__convGangOwnSrq,
+                         Operand.rmGangOwnSrqMod: self.__convGangOwnSrq,
+                         Operand.addGangSrqMod: self.__convGangSrq,
+                         Operand.rmGangSrqMod: self.__convGangSrq,
+                         Operand.addItmMod: self.__convItm,
+                         Operand.rmItmMod: self.__convItm,
+                         Operand.addLocGrpMod: self.__convLocGrp,
+                         Operand.rmLocGrpMod: self.__convLocGrp,
+                         Operand.addLocMod: self.__convLoc,
+                         Operand.rmLocMod: self.__convLoc,
+                         Operand.addLocSrqMod: self.__convLocSrq,
+                         Operand.rmLocSrqMod: self.__convLocSrq,
+                         Operand.addOwnSrqMod: self.__convOwnSrq,
+                         Operand.rmOwnSrqMod: self.__convOwnSrq,
+                         Operand.assign: self.__convAssign,
+                         Operand.inc: self.__convInc,
+                         Operand.dec: self.__convDec}
         conversionMap[self.type](info)
         return info
 
     def __convGangGrp(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.gang = True
         info.operator = self.operator
-        info.location = const.locShip
-        info.filterType = const.filterGroup
+        info.location = InfoLocation.ship
+        info.filterType = InfoFilterType.group
         info.filterValue = self.targetGroup
 
     def __convGangItm(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.gang = True
         info.operator = self.operator
-        info.location = const.locShip
+        info.location = InfoLocation.ship
 
     def __convGangOwnSrq(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.gang = True
         info.operator = self.operator
-        info.location = const.locSpace
-        info.filterType = const.filterSkill
+        info.location = InfoLocation.space
+        info.filterType = InfoFilterType.skill
         info.filterValue = self.targetSkillRq
 
     def __convGangSrq(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.gang = True
         info.operator = self.operator
-        info.location = const.locShip
-        info.filterType = const.filterSkill
+        info.location = InfoLocation.ship
+        info.filterType = InfoFilterType.skill
         info.filterValue = self.targetSkillRq
 
     def __convItm(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.operator = self.operator
         info.location = self.targetLocation
 
     def __convLocGrp(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.operator = self.operator
         info.location = self.targetLocation
-        info.filterType = const.filterGroup
+        info.filterType = InfoFilterType.group
         info.filterValue = self.targetGroup
 
     def __convLoc(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.operator = self.operator
         info.location = self.targetLocation
-        info.filterType = const.filterAll
+        info.filterType = InfoFilterType.all
 
     def __convLocSrq(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.operator = self.operator
         info.location = self.targetLocation
-        info.filterType = const.filterSkill
+        info.filterType = InfoFilterType.skill
         info.filterValue = self.targetSkillRq
 
     def __convOwnSrq(self, info):
-        info.type = const.infoDuration
+        info.type = InfoType.duration
         info.operator = self.operator
-        info.location = const.locSpace
-        info.filterType = const.filterSkill
+        info.location = InfoLocation.space
+        info.filterType = InfoFilterType.skill
         info.filterValue = self.targetSkillRq
 
     def __convAssign(self, info):
         info.type = self.runTime
-        info.operator = const.optrAssign
+        info.operator = InfoOperator.assignment
         info.location = self.targetLocation
 
     def __convInc(self, info):
         info.type = self.runTime
-        info.operator = const.optrIncr
+        info.operator = InfoOperator.increment
         info.location = self.targetLocation
 
     def __convDec(self, info):
         info.type = self.runTime
-        info.operator = const.optrDecr
+        info.operator = InfoOperator.decrement
         info.location = self.targetLocation

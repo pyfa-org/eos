@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.calc.info.info import InfoLocation
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Module(MutableAttributeHolder):
@@ -30,7 +30,7 @@ class Module(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return const.locShip
+        return InfoLocation.ship
 
     @property
     def _other(self):
@@ -44,10 +44,10 @@ class Module(MutableAttributeHolder):
     def charge(self, newCharge):
         oldCharge = self.charge
         if oldCharge is not None:
-            self.fit._unsetHolder(oldCharge, disableDirect=const.locOther)
+            self.fit._unsetHolder(oldCharge, disableDirect=InfoLocation.other)
             self.__charge = None
             oldCharge.container = None
         if newCharge is not None:
             newCharge.container = self
             self.__charge = newCharge
-            self.fit._setHolder(newCharge, enableDirect=const.locOther)
+            self.fit._setHolder(newCharge, enableDirect=InfoLocation.other)

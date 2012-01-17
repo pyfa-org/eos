@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.calc.info.info import InfoLocation
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
 
 class Charge(MutableAttributeHolder):
@@ -32,7 +32,7 @@ class Charge(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return const.locSpace
+        return InfoLocation.space
 
     @property
     def _other(self):

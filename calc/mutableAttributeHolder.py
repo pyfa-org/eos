@@ -21,9 +21,15 @@
 from abc import ABCMeta
 from abc import abstractproperty
 from collections import Mapping
+from math import exp
 
-from eos import const
+from eos.const import Category, Attribute
+from eos.calc.info.info import InfoOperator, InfoSourceType
 from .affector import Affector
+
+
+# Stacking penalty base constant
+penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
 
 class MutableAttributeHolder:
@@ -63,7 +69,7 @@ class MutableAttributeHolder:
         for affector in self.generateAffectors():
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attrId or info.sourceType != const.srcAttr:
+            if info.sourceValue != attrId or info.sourceType != InfoSourceType.attribute:
                 continue
             # Gp through all holders targeted by info
             for targetHolder in self.fit._getAffectees(affector):
@@ -77,6 +83,7 @@ class MutableAttributeHolder:
             for targetHolder in self.fit._getAffectees(affector):
                 # And remove target attribute
                 del targetHolder.attributes[affector.info.targetAttribute]
+
 
 class MutableAttributeMap(Mapping):
     """Store, process and provide access to modified attribute values"""
@@ -120,7 +127,7 @@ class MutableAttributeMap(Mapping):
 
     def __setitem__(self, attrId, value):
         # This method is added to allow direct skill level changes
-        if attrId != const.attrSkillLevel:
+        if attrId != Attribute.skillLevel:
             raise RuntimeError("changing any attribute besides skillLevel is prohibited")
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
@@ -150,26 +157,28 @@ class MutableAttributeMap(Mapping):
                 continue
             operator = info.operator
             # If source value is attribute reference
-            if info.sourceType == const.srcAttr:
+            if info.sourceType == InfoSourceType.attribute:
                 # Get its value
                 modValue = sourceHolder.attributes[info.sourceValue]
                 # And decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
-                penalize = not attrMeta.stackable and sourceHolder.invType.categoryId not in const.penaltyImmuneCats \
-                and operator in {const.optrPreMul, const.optrPostMul, const.optrPostPercent, const.optrPreDiv, const.optrPostDiv}
+                penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
+                penalizableOperators = {InfoOperator.preMul, InfoOperator.postMul, InfoOperator.postPercent, InfoOperator.preDiv, InfoOperator.postDiv}
+                penalize = not attrMeta.stackable and sourceHolder.invType.categoryId not in penaltyImmuneCategories \
+                and operator in penalizableOperators
             # For value modifications, just use stored in info value and avoid its penalization
             else:
                 modValue = info.sourceValue
                 penalize = False
             # Normalize addition/subtraction, so it's always
             # acts as addition
-            if operator == const.optrModSub:
+            if operator == InfoOperator.modSub:
                 modValue = -modValue
             # Normalize multiplicative modifiers, converting them into form of
             # multiplier
-            elif operator in {const.optrPreDiv, const.optrPostDiv}:
+            elif operator in {InfoOperator.preDiv, InfoOperator.postDiv}:
                 modValue = 1 / modValue
-            elif operator == const.optrPostPercent:
+            elif operator == InfoOperator.postPercent:
                 modValue = modValue / 100 + 1
             # Add value to appropriate dictionary
             if penalize is True:
@@ -212,13 +221,13 @@ class MutableAttributeMap(Mapping):
         for operator in sorted(normalMods):
             modList = normalMods[operator]
             # Pick best modifier for assignments, based on highIsGood value
-            if operator in (const.optrPreAssignment, const.optrPostAssignment):
+            if operator in (InfoOperator.preAssignment, InfoOperator.postAssignment):
                 result = max(modList) if attrMeta.highIsGood is True else min(modList)
-            elif operator in (const.optrModAdd, const.optrModSub):
+            elif operator in (InfoOperator.modAdd, InfoOperator.modSub):
                 for modVal in modList:
                     result += modVal
-            elif operator in (const.optrPreMul, const.optrPreDiv, const.optrPostMul,
-                               const.optrPostDiv, const.optrPostPercent):
+            elif operator in (InfoOperator.preMul, InfoOperator.preDiv, InfoOperator.postMul,
+                               InfoOperator.postDiv, InfoOperator.postPercent):
                 for modVal in modList:
                     result *= modVal
         return result
@@ -232,5 +241,5 @@ class MutableAttributeMap(Mapping):
             if position > 10:
                 break
             # Apply stacking penalty based on modifier position
-            result *= 1 + modifier * const.penaltyBase ** (position ** 2)
+            result *= 1 + modifier * penaltyBase ** (position ** 2)
         return result

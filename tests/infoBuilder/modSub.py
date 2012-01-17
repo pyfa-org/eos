@@ -20,9 +20,9 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.calc.info.info import InfoType, InfoLocation, InfoOperator, InfoSourceType
 
 class TestPreModSubAttr(TestCase):
     """Test parsing of trees describing decrement by attribute in the beginning of the cycle"""
@@ -35,23 +35,23 @@ class TestPreModSubAttr(TestCase):
         ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
         ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreSub, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPre
+        expType = InfoType.pre
         self.assertEqual(info.type, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locTgt
+        expLocation = InfoLocation.target
         self.assertEqual(info.location, expLocation, msg="info target location must be target (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrDecr
+        expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decreement (ID {})".format(expOperation))
         expTgtAttr = 18
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcAttr
+        expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 97
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -69,23 +69,23 @@ class TestPreModSubVal(TestCase):
         ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
         ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreSub, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPre
+        expType = InfoType.pre
         self.assertEqual(info.type, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locTgt
+        expLocation = InfoLocation.target
         self.assertEqual(info.location, expLocation, msg="info target location must be target (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrDecr
+        expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decrement (ID {})".format(expOperation))
         expTgtAttr = 18
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcVal
+        expSrcType = InfoSourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 7
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -103,23 +103,23 @@ class TestPostModSubAttr(TestCase):
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostSub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPost
+        expType = InfoType.post
         self.assertEqual(info.type, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locTgt
+        expLocation = InfoLocation.target
         self.assertEqual(info.location, expLocation, msg="info target location must be target (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrDecr
+        expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decreement (ID {})".format(expOperation))
         expTgtAttr = 266
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcAttr
+        expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 84
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -137,23 +137,23 @@ class TestPostModSubVal(TestCase):
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
         infos, status = InfoBuilder().build(ePreStub, ePostSub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = const.infoPost
+        expType = InfoType.post
         self.assertEqual(info.type, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
-        expLocation = const.locTgt
+        expLocation = InfoLocation.target
         self.assertEqual(info.location, expLocation, msg="info target location must be target (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = const.optrDecr
+        expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decrement (ID {})".format(expOperation))
         expTgtAttr = 266
         self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = const.srcVal
+        expSrcType = InfoSourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 1
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))

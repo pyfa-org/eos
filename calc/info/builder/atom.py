@@ -18,9 +18,39 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
 
-class ConditionAtom:
+class AtomType:
+    """Condition atom type ID holder"""
+    logic = 1  # Logical OR or AND
+    comparison = 2  # Comparison of arguments
+    math = 3  # Some math operation applied onto arguments
+    valueReference = 4  # Reference to attribute value
+    value = 5  # Value is enclosed in atom itself
+
+
+class AtomLogicOperator:
+    """Condition atom logical operator ID holder"""
+    and_ = 1  # Logical and
+    or_ = 2  # Logical or
+
+
+class AtomComparisonOperator:
+    """Condition atom comparison operator ID holder"""
+    equal = 1  # ==
+    notEqual = 2  # !=
+    less = 3  # <
+    lessOrEqual = 4  # <=
+    greater = 5  # >
+    greaterOrEqual = 6  # >=
+
+
+class AtomMathOperator:
+    """Condition atom math operator ID holder"""
+    add = 1  # +
+    subtract = 2  # -
+
+
+class Atom:
     """Stores bit of Info condition metadata"""
 
     def __init__(self):
@@ -53,50 +83,50 @@ class ConditionAtom:
         """Convert atom tree, starting from self, to string"""
         # Scatter logic operator and its arguments into several lines with different
         # indentation level
-        if self.type == const.atomTypeLogic:
-            logicLiterals = {const.atomLogicAnd: "and",
-                             const.atomLogicOr: "or"}
+        if self.type == AtomType.logic:
+            logicLiterals = {AtomLogicOperator.and_: "and",
+                             AtomLogicOperator.or_: "or"}
             newindent = "  {0}".format(indent)
             result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.arg1.__repr__(indent=newindent), self.arg2.__repr__(indent=newindent))
         # Print comparison on the same line with its arguments, just place them in brackets
-        elif self.type == const.atomTypeComp:
-            compLiterals = {const.atomCompEq: "==",
-                            const.atomCompNotEq: "!=",
-                            const.atomCompLess: "<",
-                            const.atomCompLessEq: "<=",
-                            const.atomCompGreat: ">",
-                            const.atomCompGreatEq: ">="}
+        elif self.type == AtomType.comparison:
+            compLiterals = {AtomComparisonOperator.equal: "==",
+                            AtomComparisonOperator.notEqual: "!=",
+                            AtomComparisonOperator.less: "<",
+                            AtomComparisonOperator.lessOrEqual: "<=",
+                            AtomComparisonOperator.greater: ">",
+                            AtomComparisonOperator.greaterOrEqual: ">="}
             newindent = "  {0}".format(indent)
             result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.arg1.__repr__(), self.arg2.__repr__())
         # Math operations are printed on the same line with its arguments
-        elif self.type == const.atomTypeMath:
-            mathLiterals = {const.atomMathAdd: "+",
-                            const.atomMathSub: "-"}
+        elif self.type == AtomType.math:
+            mathLiterals = {AtomMathOperator.add: "+",
+                            AtomMathOperator.subtract: "-"}
             newindent = "  {0}".format(indent)
             result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.arg1.__repr__(), self.arg2.__repr__())
         # Tag carrier location with c, its attribute with a
-        elif self.type == const.atomTypeValRef:
+        elif self.type == AtomType.valueReference:
             result = "c{0}.a{1}".format(self.carrier, self.attribute)
         # Print hardcoded values with v tag
-        elif self.type == const.atomTypeVal:
+        elif self.type == AtomType.value:
             result = "v{0}".format(self.value)
         return result
 
     def validateTree(self):
         """Validate full condition tree, given we're checking top-level node"""
         # Top-level node can be either logical join or comparison
-        allowedTypes = {const.atomTypeLogic, const.atomTypeComp}
+        allowedTypes = {AtomType.logic, AtomType.comparison}
         if not self.type in allowedTypes:
             return False
         return self.__validateNode()
 
     def __validateNode(self):
         """Validates object fields"""
-        validationRouter = {const.atomTypeLogic: self.__valLogic,
-                            const.atomTypeComp: self.__valComp,
-                            const.atomTypeMath: self.__valMath,
-                            const.atomTypeValRef: self.__valValRef,
-                            const.atomTypeVal: self.__valVal}
+        validationRouter = {AtomType.logic: self.__valLogic,
+                            AtomType.comparison: self.__valComp,
+                            AtomType.math: self.__valMath,
+                            AtomType.valueReference: self.__valValRef,
+                            AtomType.value: self.__valVal}
         try:
             method = validationRouter[self.type]
         except KeyError:
@@ -107,9 +137,9 @@ class ConditionAtom:
         if self.carrier is not None or self.attribute is not None or \
         self.value is not None:
             return False
-        allowedSubtypes = {const.atomTypeLogic, const.atomTypeComp}
+        allowedSubtypes = {AtomType.logic, AtomType.comparison}
         try:
-            if not self.arg1.type in allowedSubtypes or not self.arg1.type in allowedSubtypes:
+            if not self.arg1.type in allowedSubtypes or not self.arg2.type in allowedSubtypes:
                 return False
         except AttributeError:
             return False
@@ -121,9 +151,9 @@ class ConditionAtom:
         if self.carrier is not None or self.attribute is not None or \
         self.value is not None:
             return False
-        allowedSubtypes = {const.atomTypeMath, const.atomTypeValRef, const.atomTypeVal}
+        allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
         try:
-            if not self.arg1.type in allowedSubtypes or not self.arg1.type in allowedSubtypes:
+            if not self.arg1.type in allowedSubtypes or not self.arg2.type in allowedSubtypes:
                 return False
         except AttributeError:
             return False
@@ -135,9 +165,9 @@ class ConditionAtom:
         if self.carrier is not None or self.attribute is not None or \
         self.value is not None:
             return False
-        allowedSubtypes = {const.atomTypeMath, const.atomTypeValRef, const.atomTypeVal}
+        allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
         try:
-            if not self.arg1.type in allowedSubtypes or not self.arg1.type in allowedSubtypes:
+            if not self.arg1.type in allowedSubtypes or not self.arg2.type in allowedSubtypes:
                 return False
         except AttributeError:
             return False

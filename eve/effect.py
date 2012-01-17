@@ -18,8 +18,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+
 
 class Effect:
     """
@@ -48,7 +48,7 @@ class Effect:
         self.__infos = None
 
         # Stores parsing status of info objects
-        self.infoStatus = const.effectInfoNotParsed
+        self.infoStatus = InfoBuildStatus.notParsed
 
     @property
     def infos(self):

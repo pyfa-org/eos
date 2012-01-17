@@ -20,9 +20,8 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
 class TestStubInt0(TestCase):
     """Test parsing of trees describing integer-0 stub"""
@@ -31,7 +30,7 @@ class TestStubInt0(TestCase):
         ePreStub = Expression(27, value="0")
         ePostStub = Expression(27, value="0")
         infos, status = InfoBuilder().build(ePreStub, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -43,7 +42,7 @@ class TestStubInt1(TestCase):
         ePreStub = Expression(27, value="1")
         ePostStub = Expression(27, value="1")
         infos, status = InfoBuilder().build(ePreStub, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -55,7 +54,7 @@ class TestStubBoolTrue(TestCase):
         ePreStub = Expression(23, value="True")
         ePostStub = Expression(23, value="True")
         infos, status = InfoBuilder().build(ePreStub, ePostStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
@@ -67,6 +66,6 @@ class TestStubMixed(TestCase):
         preStub = Expression(23, value="True")
         postStub = Expression(27, value="0")
         infos, status = InfoBuilder().build(preStub, postStub)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")

@@ -18,20 +18,20 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.const import Operand
 
 # Mirror duration modifications, top-level operands
-mirrorDurationMods = {const.opndAddGangGrpMod: const.opndRmGangGrpMod,
-                      const.opndAddGangItmMod: const.opndRmGangItmMod,
-                      const.opndAddGangOwnSrqMod: const.opndRmGangOwnSrqMod,
-                      const.opndAddGangSrqMod: const.opndRmGangSrqMod,
-                      const.opndAddItmMod: const.opndRmItmMod,
-                      const.opndAddLocGrpMod: const.opndRmLocGrpMod,
-                      const.opndAddLocMod: const.opndRmLocMod,
-                      const.opndAddLocSrqMod: const.opndRmLocSrqMod,
-                      const.opndAddOwnSrqMod: const.opndRmOwnSrqMod}
+mirrorDurationMods = {Operand.addGangGrpMod: Operand.rmGangGrpMod,
+                      Operand.addGangItmMod: Operand.rmGangItmMod,
+                      Operand.addGangOwnSrqMod: Operand.rmGangOwnSrqMod,
+                      Operand.addGangSrqMod: Operand.rmGangSrqMod,
+                      Operand.addItmMod: Operand.rmItmMod,
+                      Operand.addLocGrpMod: Operand.rmLocGrpMod,
+                      Operand.addLocMod: Operand.rmLocMod,
+                      Operand.addLocSrqMod: Operand.rmLocSrqMod,
+                      Operand.addOwnSrqMod: Operand.rmOwnSrqMod}
 # Plain duration modifications list
 durationMods = set(mirrorDurationMods.keys()).union(set(mirrorDurationMods.values()))
 
 # List of instant modification operands
-instantMods = {const.opndAssign, const.opndInc, const.opndDec}
+instantMods = {Operand.assign, Operand.inc, Operand.dec}

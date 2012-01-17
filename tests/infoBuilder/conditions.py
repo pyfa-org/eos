@@ -20,9 +20,10 @@
 
 from unittest import TestCase
 
-from eos import const
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder
+from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.calc.info.info import InfoLocation
+from eos.calc.info.builder.atom import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 
 class TestCondition(TestCase):
     """Test parsing of trees describing conditions"""
@@ -57,35 +58,35 @@ class TestCondition(TestCase):
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
         infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         self.assertIsNotNone(info.conditions, msg="info conditions must be not None")
 
         currentAtom = info.conditions
-        expAtomType = const.atomTypeLogic
+        expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
-        expAtomOptr = const.atomLogicOr
+        expAtomOptr = AtomLogicOperator.or_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical or (ID {})".format(expAtomOptr))
 
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeLogic
+        expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
-        expAtomOptr = const.atomLogicAnd
+        expAtomOptr = AtomLogicOperator.and_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical and (ID {})".format(expAtomOptr))
 
         # Check logic atom children types
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg1.arg1
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg1.arg2
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
     def testComparison(self):
@@ -100,25 +101,25 @@ class TestCondition(TestCase):
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
         infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         self.assertIsNotNone(info.conditions, msg="info conditions must be not None")
 
         currentAtom = info.conditions
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
-        expAtomOptr = const.atomCompGreatEq
+        expAtomOptr = AtomComparisonOperator.greaterOrEqual
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be greater than or equal (ID {})".format(expAtomOptr))
 
         # Check children types
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeValRef
+        expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeVal
+        expAtomType = AtomType.value
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value (ID {})".format(expAtomType))
 
     def testMath(self):
@@ -139,43 +140,43 @@ class TestCondition(TestCase):
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
         infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         self.assertIsNotNone(info.conditions, msg="info conditions must be not None")
 
         currentAtom = info.conditions
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeMath
+        expAtomType = AtomType.math
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be math (ID {})".format(expAtomType))
-        expAtomOptr = const.atomMathSub
+        expAtomOptr = AtomMathOperator.subtract
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be subtraction (ID {})".format(expAtomOptr))
 
         currentAtom = info.conditions.arg1.arg1
-        expAtomType = const.atomTypeMath
+        expAtomType = AtomType.math
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be math (ID {})".format(expAtomType))
-        expAtomOptr = const.atomMathAdd
+        expAtomOptr = AtomMathOperator.add
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be addition (ID {})".format(expAtomOptr))
 
         # Check math children types
         currentAtom = info.conditions.arg1.arg1.arg1
-        expAtomType = const.atomTypeValRef
+        expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg1.arg1.arg2
-        expAtomType = const.atomTypeVal
+        expAtomType = AtomType.value
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg1.arg2
-        expAtomType = const.atomTypeValRef
+        expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeValRef
+        expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
     def testTerminals(self):
@@ -190,26 +191,26 @@ class TestCondition(TestCase):
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
         infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         self.assertIsNotNone(info.conditions, msg="info conditions must be not None")
 
         currentAtom = info.conditions
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeValRef
+        expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
-        expAtomCarrier = const.locSelf
+        expAtomCarrier = InfoLocation.carrier
         self.assertEqual(currentAtom.carrier, expAtomCarrier, msg="atom carrier must be self (ID {})".format(expAtomCarrier))
         expAtomAttr = 87
         self.assertEqual(currentAtom.attribute, expAtomAttr, msg="atom attribute ID must be {}".format(expAtomAttr))
 
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeVal
+        expAtomType = AtomType.value
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value (ID {})".format(expAtomType))
         expAtomValue = -50
         self.assertEqual(currentAtom.value, expAtomValue, msg="atom value must be {}".format(expAtomValue))
@@ -233,7 +234,7 @@ class TestCondition(TestCase):
         eIfElse2 = Expression(52, arg1=eIfThen2, arg2=eStub)
 
         infos, status = InfoBuilder().build(eIfElse2, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -241,18 +242,18 @@ class TestCondition(TestCase):
 
         # Nested ifs are joined using logical and
         currentAtom = info.conditions
-        expAtomType = const.atomTypeLogic
+        expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
-        expAtomOptr = const.atomLogicAnd
+        expAtomOptr = AtomLogicOperator.and_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical and (ID {})".format(expAtomOptr))
 
         # Check children types
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
     def testInversion(self):
@@ -280,7 +281,7 @@ class TestCondition(TestCase):
         eIfElse2 = Expression(52, arg1=eIfThen2, arg2=eStub)
 
         infos, status = InfoBuilder().build(eIfElse2, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -289,38 +290,38 @@ class TestCondition(TestCase):
         # We have nested conditions, logical and generated by them
         # is not affected by inversion in this case, as it's above inversion
         currentAtom = info.conditions
-        expAtomType = const.atomTypeLogic
+        expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
-        expAtomOptr = const.atomLogicAnd
+        expAtomOptr = AtomLogicOperator.and_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical and (ID {})".format(expAtomOptr))
 
         # Affected: and -> or
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeLogic
+        expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
-        expAtomOptr = const.atomLogicOr
+        expAtomOptr = AtomLogicOperator.or_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical or (ID {})".format(expAtomOptr))
 
         # Affected: == -> !=
         currentAtom = info.conditions.arg2.arg1
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
-        expAtomOptr = const.atomCompNotEq
+        expAtomOptr = AtomComparisonOperator.notEqual
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be not equal (ID {})".format(expAtomOptr))
 
         # Affected: >= -> <
         currentAtom = info.conditions.arg2.arg2
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
-        expAtomOptr = const.atomCompLess
+        expAtomOptr = AtomComparisonOperator.less
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be less (ID {})".format(expAtomOptr))
 
         # This atom is also on more upper level that inverted if-then-else clause to which
         # belongs our modifier, so it shouldn't be affected too
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
-        expAtomOptr = const.atomCompGreat
+        expAtomOptr = AtomComparisonOperator.greater
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be greater than (ID {})".format(expAtomOptr))
 
     def testUnification(self):
@@ -341,7 +342,7 @@ class TestCondition(TestCase):
         eSplicedIfs = Expression(17, arg1=eIfElse1, arg2=eIfElse2)
 
         infos, status = InfoBuilder().build(eSplicedIfs, self.eRmMod)
-        expStatus = const.effectInfoOkFull
+        expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -349,15 +350,15 @@ class TestCondition(TestCase):
 
         # Conditions of similar modifiers are combined using logical or
         currentAtom = info.conditions
-        expAtomType = const.atomTypeLogic
+        expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
-        expAtomOptr = const.atomLogicOr
+        expAtomOptr = AtomLogicOperator.or_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical or (ID {})".format(expAtomOptr))
 
         currentAtom = info.conditions.arg1
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
         currentAtom = info.conditions.arg2
-        expAtomType = const.atomTypeComp
+        expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))

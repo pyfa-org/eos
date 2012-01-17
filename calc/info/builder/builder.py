@@ -21,19 +21,30 @@
 from copy import deepcopy
 from itertools import combinations
 
-from eos import const
-from .atom import ConditionAtom
+from eos.const import Type, Operand
+from eos.calc.info.info import InfoType, InfoLocation, InfoOperator, InfoSourceType
+from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
+from .builderData import durationMods, instantMods
 from .modifier import Modifier
-from .localData import durationMods, instantMods
+
 
 # Operands which are not used in any way in current Eos implementation
-inactiveOpnds = {const.opndAttack, const.opndCargoScan, const.opndCheatTeleDock,
-                 const.opndCheatTeleGate, const.opndAoeDecloak, const.opndEcmBurst,
-                 const.opndAoeDmg, const.opndMissileLaunch, const.opndDefenderLaunch,
-                 const.opndFofLaunch, const.opndMine, const.opndPowerBooster,
-                 const.opndShipScan, const.opndSurveyScan, const.opndTgtHostile,
-                 const.opndTgtSilent, const.opndToolTgtSkills, const.opndUserError,
-                 const.opndVrfTgtGrp}
+inactiveOpnds = {Operand.attack, Operand.cargoScan, Operand.cheatTeleDock,
+                 Operand.cheatTeleGate, Operand.aoeDecloak, Operand.ecmBurst,
+                 Operand.aoeDmg, Operand.missileLaunch, Operand.defenderLaunch,
+                 Operand.fofLaunch, Operand.mine, Operand.powerBooster,
+                 Operand.shipScan, Operand.surveyScan, Operand.tgtHostile,
+                 Operand.tgtSilent, Operand.toolTgtSkills, Operand.userError,
+                 Operand.vrfTgtGrp}
+
+
+class InfoBuildStatus:
+    """Effect info building status ID holder"""
+    notParsed = 1  # Expression trees were not parsed into infos yet
+    error = 2  # Errors occurred during expression trees parsing or validation
+    okPartial = 3  # Infos were generated, but some of modifications were dropped as unsupported
+    okFull = 4  # All modifications were pulled out of expression tree successfully
+
 
 class InfoBuilder:
     """
@@ -57,8 +68,8 @@ class InfoBuilder:
 
     def build(self, preExpression, postExpression):
         """Go through both trees and compose our EffectInfos"""
-        # Assume we parse effect 100% successfully by defaul
-        self.effectStatus = const.effectInfoOkFull
+        # Assume we parse effect 100% successfully by default
+        self.effectStatus = InfoBuildStatus.okFull
         # First, we're going to parse pre-expression tree, so set preMods
         # as active set
         self.activeSet = self.preMods
@@ -67,21 +78,21 @@ class InfoBuilder:
             self.__generic(preExpression, None)
         # If any unhandled exceptions occur, return empty set and error code
         except:
-            return set(), const.effectInfoError
+            return set(), InfoBuildStatus.error
         # Validate modifiers we've got out of pre-expression tree
         for mod in self.preMods:
             if mod.validate() is not True:
-                return set(), const.effectInfoError
+                return set(), InfoBuildStatus.error
 
         # Do the same for post-expressions
         self.activeSet = self.postMods
         try:
             self.__generic(postExpression, None)
         except:
-            return set(), const.effectInfoError
+            return set(), InfoBuildStatus.error
         for mod in self.postMods:
             if mod.validate() is not True:
-                return set(), const.effectInfoError
+                return set(), InfoBuildStatus.error
 
         # Unify multiple modifiers which do the same thing, but under different
         # conditions, into single modifiers. We need this for pre-modifiers only,
@@ -143,10 +154,10 @@ class InfoBuilder:
         # If there're any pre-modifiers which were not used for
         # info generation, mark current effect as partially parsed
         if len(self.preMods.difference(usedPres)) > 0:
-            self.effectStatus = const.effectInfoOkPartial
+            self.effectStatus = InfoBuildStatus.okPartial
         # Same for post-modifiers
         if len(self.postMods.difference(usedPosts)) > 0:
-            self.effectStatus = const.effectInfoOkPartial
+            self.effectStatus = InfoBuildStatus.okPartial
 
         # Finally, handle our infos and parsing status to requestor
         return infos, self.effectStatus
@@ -210,9 +221,9 @@ class InfoBuilder:
                 for mod in uniGroup:
                     # Join conditions of our chosen modifier and picked remaining
                     # modifier using logical OR atoms
-                    unifiedCond = ConditionAtom()
-                    unifiedCond.type = const.atomTypeLogic
-                    unifiedCond.operator = const.atomLogicOr
+                    unifiedCond = Atom()
+                    unifiedCond.type = AtomType.logic
+                    unifiedCond.operator = AtomLogicOperator.or_
                     unifiedCond.arg1 = unified.conditions
                     unifiedCond.arg2 = mod.conditions
                     unified.conditions = unifiedCond
@@ -229,15 +240,15 @@ class InfoBuilder:
         # Mark current effect as partially parsed if it contains
         # inactive operands
         elif element.operand in inactiveOpnds:
-            self.effectStatus = const.effectInfoOkPartial
+            self.effectStatus = InfoBuildStatus.okPartial
         # Detect if-then-else construct
-        elif element.operand == const.opndOr and element.arg1 and element.arg1.operand == const.opndIfThen:
+        elif element.operand == Operand.or_ and element.arg1 and element.arg1.operand == Operand.ifThen:
             self.__ifThenElse(element, conditions)
         # Process expressions with other operands using the map
         else:
-            genericOpnds = {const.opndSplice: self.__splice,
-                            const.opndDefInt: self.__checkIntStub,
-                            const.opndDefBool: self.__checkBoolStub}
+            genericOpnds = {Operand.splice: self.__splice,
+                            Operand.defInt: self.__checkIntStub,
+                            Operand.defBool: self.__checkBoolStub}
             genericOpnds[element.operand](element, conditions)
 
     def __splice(self, element, conditions):
@@ -270,7 +281,7 @@ class InfoBuilder:
         # Request operator and target data, it's always in arg1
         self.__optrTgt(element.arg1)
         # Write down source attribute from arg2
-        self.activeMod.sourceType = const.srcAttr
+        self.activeMod.sourceType = InfoSourceType.attribute
         self.activeMod.sourceValue = self.__getAttr(element.arg2)
         # Append filled modifier to list we're currently working with
         self.activeSet.add(self.activeMod)
@@ -290,9 +301,9 @@ class InfoBuilder:
         self.__srcGetter(element.arg2)
         # Set runtime according to active list
         if self.activeSet is self.preMods:
-            self.activeMod.runTime = const.infoPre
+            self.activeMod.runTime = InfoType.pre
         elif self.activeSet is self.postMods:
-            self.activeMod.runTime = const.infoPost
+            self.activeMod.runTime = InfoType.post
         self.activeSet.add(self.activeMod)
         self.activeMod = None
 
@@ -305,23 +316,23 @@ class InfoBuilder:
 
     def __tgtRouter(self, element):
         """Pick proper target specifying method according to operand"""
-        tgtRouteMap = {const.opndGenAttr: self.__tgtAttr,
-                       const.opndGrpAttr: self.__tgtGrpAttr,
-                       const.opndSrqAttr: self.__tgtSrqAttr,
-                       const.opndItmAttr: self.__tgtItmAttr}
+        tgtRouteMap = {Operand.genAttr: self.__tgtAttr,
+                       Operand.grpAttr: self.__tgtGrpAttr,
+                       Operand.srqAttr: self.__tgtSrqAttr,
+                       Operand.itmAttr: self.__tgtItmAttr}
         tgtRouteMap[element.operand](element)
 
     def __srcGetter(self, element):
         """Pick proper source specifying method according to operand"""
         # For attribute definitions, store attribute ID as value
-        if element.operand == const.opndDefAttr:
-            self.activeMod.sourceType = const.srcAttr
+        if element.operand == Operand.defAttr:
+            self.activeMod.sourceType = InfoSourceType.attribute
             self.activeMod.sourceValue = self.__getAttr(element)
         # Else, store just direct value
         else:
-            valMap = {const.opndDefInt: self.__getInt,
-                      const.opndDefBool: self.__getBool}
-            self.activeMod.sourceType = const.srcVal
+            valMap = {Operand.defInt: self.__getInt,
+                      Operand.defBool: self.__getBool}
+            self.activeMod.sourceType = InfoSourceType.value
             self.activeMod.sourceValue = valMap[element.operand](element)
 
 
@@ -342,9 +353,9 @@ class InfoBuilder:
     def __tgtItmAttr(self, element):
         """Join target item specification and target attribute"""
         # Item specification format depends on operand of arg1
-        itmGetterMap = {const.opndDefLoc: self.__tgtLoc,
-                        const.opndLocGrp: self.__tgtLocGrp,
-                        const.opndLocSrq: self.__tgtLocSrq}
+        itmGetterMap = {Operand.defLoc: self.__tgtLoc,
+                        Operand.locGrp: self.__tgtLocGrp,
+                        Operand.locSrq: self.__tgtLocSrq}
         itmGetterMap[element.arg1.operand](element.arg1)
         # Target attribute is always specified in arg2
         self.activeMod.targetAttribute = self.__getAttr(element.arg2)
@@ -365,11 +376,11 @@ class InfoBuilder:
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
-        return const.optrConvMap[element.value]
+        return InfoOperator.eve2eos(element.value)
 
     def __getLoc(self, element):
         """Define location"""
-        return const.locConvMap[element.value]
+        return InfoLocation.eve2eos(element.value)
 
     def __getAttr(self, element):
         """Reference attribute via ID"""
@@ -382,11 +393,11 @@ class InfoBuilder:
     def __getType(self, element):
         """Reference type via ID"""
         # Type getter function has special handling
-        if element.operand == const.opndGetType:
+        if element.operand == Operand.getType:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
-            if self.__getLoc(element.arg1) == const.locSelf:
-                return const.selfTypeID
+            if self.__getLoc(element.arg1) == InfoLocation.carrier:
+                return Type.carrier
             else:
                 raise ValueError("unexpected location referenced in type getter")
         else:
@@ -422,21 +433,21 @@ class InfoBuilder:
 
     def __makeConditionRouter(self, element):
         """Create actual condition node in conditions tree"""
-        condRouteMap = {const.opndAnd: self.__makeConditionLogic,
-                        const.opndOr: self.__makeConditionLogic,
-                        const.opndEq: self.__makeConditionComparison,
-                        const.opndGreater: self.__makeConditionComparison,
-                        const.opndGreaterEq: self.__makeConditionComparison}
+        condRouteMap = {Operand.and_: self.__makeConditionLogic,
+                        Operand.or_: self.__makeConditionLogic,
+                        Operand.eq: self.__makeConditionComparison,
+                        Operand.greater: self.__makeConditionComparison,
+                        Operand.greaterEq: self.__makeConditionComparison}
         condition = condRouteMap[element.operand](element)
         return condition
 
     def __makeConditionLogic(self, element):
         """Make logic condition node"""
-        atomLogicMap = {const.opndAnd: const.atomLogicAnd,
-                        const.opndOr: const.atomLogicOr}
+        atomLogicMap = {Operand.and_: AtomLogicOperator.and_,
+                        Operand.or_: AtomLogicOperator.or_}
         # Create logic node and fill it
-        condLogicAtom = ConditionAtom()
-        condLogicAtom.type = const.atomTypeLogic
+        condLogicAtom = Atom()
+        condLogicAtom.type = AtomType.logic
         condLogicAtom.operator = atomLogicMap[element.operand]
         # Each subnode can be comparison or yet another logical element
         condLogicAtom.arg1 = self.__makeConditionRouter(element.arg1)
@@ -446,12 +457,12 @@ class InfoBuilder:
     def __makeConditionComparison(self, element):
         """Make comparison condition node"""
         # Maps expression operands to atom-specific comparison operators
-        atomCompMap = {const.opndEq: const.atomCompEq,
-                       const.opndGreater: const.atomCompGreat,
-                       const.opndGreaterEq: const.atomCompGreatEq}
+        atomCompMap = {Operand.eq: AtomComparisonOperator.equal,
+                       Operand.greater: AtomComparisonOperator.greater,
+                       Operand.greaterEq: AtomComparisonOperator.greaterOrEqual}
         # Create comparison node and fill it with data
-        condCompAtom = ConditionAtom()
-        condCompAtom.type = const.atomTypeComp
+        condCompAtom = Atom()
+        condCompAtom.type = AtomType.comparison
         condCompAtom.operator = atomCompMap[element.operand]
         condCompAtom.arg1 = self.__conditionPartRouter(element.arg1)
         condCompAtom.arg2 = self.__conditionPartRouter(element.arg2)
@@ -459,19 +470,19 @@ class InfoBuilder:
 
     def __conditionPartRouter(self, element):
         """Use proper processing method according to passed operand"""
-        condPartMap = {const.opndAdd: self.__makeCondPartMath,
-                       const.opndSub: self.__makeCondPartMath,
-                       const.opndItmAttrCond: self.__makeCondPartValRef,
-                       const.opndDefInt: self.__makeCondPartVal}
+        condPartMap = {Operand.add: self.__makeCondPartMath,
+                       Operand.sub: self.__makeCondPartMath,
+                       Operand.itmAttrCond: self.__makeCondPartValRef,
+                       Operand.defInt: self.__makeCondPartVal}
         condPartAtom = condPartMap[element.operand](element)
         return condPartAtom
 
     def __makeCondPartMath(self, element):
         """Create math condition atom out of expression with mathematical operand"""
-        atomMathMap = {const.opndAdd: const.atomMathAdd,
-                       const.opndSub: const.atomMathSub}
-        conditionMathAtom = ConditionAtom()
-        conditionMathAtom.type = const.atomTypeMath
+        atomMathMap = {Operand.add: AtomMathOperator.add,
+                       Operand.sub: AtomMathOperator.subtract}
+        conditionMathAtom = Atom()
+        conditionMathAtom.type = AtomType.math
         conditionMathAtom.operator = atomMathMap[element.operand]
         # Each math subnode can be other math node, attribute reference or value,
         # so forward it to router again
@@ -481,17 +492,17 @@ class InfoBuilder:
 
     def __makeCondPartValRef(self, element):
         """Create atom, referring carrier and some attribute on it"""
-        valRefAtom = ConditionAtom()
-        valRefAtom.type = const.atomTypeValRef
+        valRefAtom = Atom()
+        valRefAtom.type = AtomType.valueReference
         valRefAtom.carrier = self.__getLoc(element.arg1)
         valRefAtom.attribute = self.__getAttr(element.arg2)
         return valRefAtom
 
     def __makeCondPartVal(self, element):
         """Create atom, containing some value within it"""
-        argValueMap = {const.opndDefInt: self.__getInt}
-        valueAtom = ConditionAtom()
-        valueAtom.type = const.atomTypeVal
+        argValueMap = {Operand.defInt: self.__getInt}
+        valueAtom = Atom()
+        valueAtom.type = AtomType.value
         valueAtom.value = argValueMap[element.operand](element)
         return valueAtom
 
@@ -502,9 +513,9 @@ class InfoBuilder:
             combined = cond1 or cond2
         # If both exist, combine them using logical and
         else:
-            combined = ConditionAtom()
-            combined.type = const.atomTypeLogic
-            combined.operator = const.atomLogicAnd
+            combined = Atom()
+            combined.type = AtomType.logic
+            combined.operator = AtomLogicOperator.and_
             combined.arg1 = cond1
             combined.arg2 = cond2
         return combined
@@ -512,22 +523,22 @@ class InfoBuilder:
     def __invertCondition(self, condition):
         """Get negative condition relatively passed condition"""
         # Process logical operands
-        if condition.type == const.atomTypeLogic:
-            invLogic = {const.atomLogicAnd: const.atomLogicOr,
-                        const.atomLogicOr: const.atomLogicAnd}
+        if condition.type == AtomType.logic:
+            invLogic = {AtomLogicOperator.and_: AtomLogicOperator.or_,
+                        AtomLogicOperator.or_: AtomLogicOperator.and_}
             # Replace and with or and vice versa
             condition.operator = invLogic[condition.operator]
             # Request processing of child atoms
             self.__invertCondition(condition.arg1)
             self.__invertCondition(condition.arg2)
         # For comparison atoms, just negate the comparison
-        elif condition.type == const.atomTypeComp:
-            invComps = {const.atomCompEq: const.atomCompNotEq,
-                        const.atomCompNotEq: const.atomCompEq,
-                        const.atomCompGreat: const.atomCompLessEq,
-                        const.atomCompLessEq: const.atomCompGreat,
-                        const.atomCompGreatEq: const.atomCompLess,
-                        const.atomCompLess: const.atomCompGreatEq}
+        elif condition.type == AtomType.comparison:
+            invComps = {AtomComparisonOperator.equal: AtomComparisonOperator.notEqual,
+                        AtomComparisonOperator.notEqual: AtomComparisonOperator.equal,
+                        AtomComparisonOperator.greater: AtomComparisonOperator.lessOrEqual,
+                        AtomComparisonOperator.lessOrEqual: AtomComparisonOperator.greater,
+                        AtomComparisonOperator.greaterOrEqual: AtomComparisonOperator.less,
+                        AtomComparisonOperator.less: AtomComparisonOperator.greaterOrEqual}
             condition.operator = invComps[condition.operator]
         else:
             raise ValueError("only logical and comparison ConditionAtoms can be reverted")
