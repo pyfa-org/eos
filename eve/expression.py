@@ -24,7 +24,7 @@ class Expression:
     (roots of expression tree), which actually describe how effect should affect other items.
     """
 
-    def __init__(self, operand, value=None, arg1=None, arg2=None,
+    def __init__(self, operand, arg1=None, arg2=None, value=None,
                  typeId=None, groupId=None, attributeId=None):
         # Operand of expression, field which each expression must have.
         # Describes actual effect of expression

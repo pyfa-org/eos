@@ -27,76 +27,59 @@ import time
 start = time.clock()
 
 import argparse
-import sqlite3
-import json
 import bz2
+import json
+import sqlite3
 
-parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs four bz2 compressed json files. One for eve staticdata (invtypes, invtypeattribs, invtypeeffects) and another for expression data.")
+parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs several JSON files as bz2 archive.")
 parser.add_argument("dbPath", type=str, help="The path to the sqlite cache dump")
-parser.add_argument("-e", "--typedump", type=str, dest="typeDumpPath", default="types.json.bz2")
-parser.add_argument("-x", "--expressiondump", type=str, dest="expressionDumpPath", default="expressions.json.bz2")
-parser.add_argument("-f", "--effectDump", type=str, dest="effectDumpPath", default="effects.json.bz2")
-parser.add_argument("-a", "--attributeDump", type=str, dest="attributeDumpPath", default="attributes.json.bz2")
+parser.add_argument("-e", "--types", type=str, dest="types", default="types.json.bz2")
+parser.add_argument("-a", "--attributes", type=str, dest="attributes", default="attributes.json.bz2")
+parser.add_argument("-f", "--effects", type=str, dest="effects", default="effects.json.bz2")
+parser.add_argument("-x", "--expressions", type=str, dest="expressions", default="expressions.json.bz2")
 args = parser.parse_args()
 
 conn = sqlite3.connect(args.dbPath, detect_types=sqlite3.PARSE_COLNAMES | sqlite3.PARSE_DECLTYPES)
 conn.row_factory = sqlite3.Row
 
-
-# read in types
-types = {}
-
 print("dumping types")
-for typeRow in conn.execute('SELECT typeID, groupID FROM invtypes'):
-    effects = [effectRow["effectID"] for effectRow in conn.execute('SELECT effectID FROM dgmtypeeffects WHERE typeID = ?', (typeRow["typeID"],))]
-    attributes = [(attributeRow["attributeID"], attributeRow["value"])
-                    for attributeRow in conn.execute('SELECT attributeID, value FROM dgmtypeattribs WHERE typeID = ?', (typeRow["typeID"],))]
-
-    category = conn.execute('SELECT categoryID FROM invgroups WHERE groupID = ?', (typeRow["groupID"],))
-    category = category.fetchone()["categoryID"]
-    types[typeRow["typeID"]] = {'effects': effects,
-                                'attributes': attributes,
-                                'group': typeRow["groupID"],
-                                'category': category};
-
-# Dump them
-with bz2.BZ2File(args.typeDumpPath, 'wb') as f:
-    f.write(json.dumps(types).encode('utf-8'))
-
-print("dumping expressions")
-# read in expressions
-expressions = {}
-for row in conn.execute('SELECT * FROM dgmexpressions'):
-    expressions[row["expressionID"]] = {'operand': row["operandID"],
-                                        'value': row["expressionValue"],
-                                        'typeID': row["expressionTypeID"],
-                                        'groupID': row["expressionGroupID"],
-                                        'attributeID': row["expressionAttributeID"],
-                                        'arg1': row["arg1"],
-                                        'arg2': row["arg2"]}
-
-with bz2.BZ2File(args.expressionDumpPath, 'wb') as f:
-    f.write(json.dumps(expressions).encode('utf-8'))
-
-print("dumping effects")
-
-effects = {}
-for row in conn.execute('SELECT * FROM dgmeffects'):
-    effects[row["effectID"]] = {'preExpression' : row["preExpression"],
-                                'postExpression' : row["postExpression"],
-                                'isOffensive': bool(row["isOffensive"]),
-                                'isAssistance' : bool(row["isAssistance"])}
-
-with bz2.BZ2File(args.effectDumpPath, 'wb') as f:
-    f.write(json.dumps(effects).encode('utf-8'))
+types = {}
+for typeRow in conn.execute("SELECT typeID, groupID FROM invtypes"):
+    statement = "SELECT categoryID, fittableNonSingleton FROM invgroups WHERE groupID = ?"
+    grpRow = conn.execute(statement, (typeRow["groupID"],)).fetchone()
+    # Tuple with effectIDs assigned to type
+    statement = "SELECT effectID FROM dgmtypeeffects WHERE typeID = ?"
+    typeEffects = tuple(effectRow["effectID"] for effectRow in conn.execute(statement, (typeRow["typeID"],)))
+    # Tuple with (attributeID, attributeValue) tuples assigned to type
+    statement = "SELECT attributeID, value FROM dgmtypeattribs WHERE typeID = ?"
+    typeAttrs = tuple((attrRow["attributeID"], attrRow["value"]) for attrRow in conn.execute(statement, (typeRow["typeID"],)))
+    types[typeRow["typeID"]] = (typeRow["groupID"], grpRow["categoryID"], typeEffects, typeAttrs)
+with bz2.BZ2File(args.types, "wb") as f:
+    f.write(json.dumps(types).encode("utf-8"))
 
 print("dumping attributes")
 attributes = {}
-for row in conn.execute('SELECT * FROM dgmattribs'):
-    attributes[row["attributeID"]] = {'highIsGood': bool(row["highIsGood"]),
-                                      'stackable': bool(row["stackable"])}
+for row in conn.execute("SELECT attributeID, highIsGood, stackable FROM dgmattribs"):
+    attributes[row["attributeID"]] = (row["highIsGood"], row["stackable"])
+with bz2.BZ2File(args.attributes, "wb") as f:
+    f.write(json.dumps(attributes).encode("utf-8"))
 
-with bz2.BZ2File(args.attributeDumpPath, 'wb') as f:
-    f.write(json.dumps(attributes).encode('utf-8'))
+print("dumping effects")
+effects = {}
+for row in conn.execute("SELECT effectID, isOffensive, isAssistance, preExpression, postExpression FROM dgmeffects"):
+    effects[row["effectID"]] = (row["isOffensive"], row["isAssistance"],
+                                row["preExpression"], row["postExpression"])
+with bz2.BZ2File(args.effects, "wb") as f:
+    f.write(json.dumps(effects).encode("utf-8"))
 
-print("dumping done in " + str(time.clock() - start))
+print("dumping expressions")
+expressions = {}
+statement = "SELECT expressionID, operandID, arg1, arg2, expressionValue, expressionTypeID, expressionGroupID, expressionAttributeID FROM dgmexpressions"
+for row in conn.execute(statement):
+    expressions[row["expressionID"]] = (row["operandID"], row["arg1"], row["arg2"],
+                                        row["expressionValue"],row["expressionTypeID"],
+                                        row["expressionGroupID"], row["expressionAttributeID"])
+with bz2.BZ2File(args.expressions, "wb") as f:
+    f.write(json.dumps(expressions).encode("utf-8"))
+
+print("dumping done in {}".format(round(time.clock()-start, 2)))

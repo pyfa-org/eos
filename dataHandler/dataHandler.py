@@ -28,21 +28,21 @@ class DataHandler:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def getType(self, id):
+    def getType(self, typeId):
         """Return the type with the passed id"""
         ...
 
     @abstractmethod
-    def getAttribute(self, id):
+    def getAttribute(self, attrId):
         """Return the attribute with the passed id"""
         ...
 
     @abstractmethod
-    def getEffect(self, id):
+    def getEffect(self, effectId):
         """Return the effect with the passed id"""
         ...
 
     @abstractmethod
-    def getExpression(self, id):
+    def getExpression(self, expId):
         """Return the expression with the passed id"""
         ...

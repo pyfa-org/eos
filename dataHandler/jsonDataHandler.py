@@ -29,6 +29,8 @@ from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
 from .dataHandler import DataHandler
 
+nulls = {0, None}
+
 class JsonDataHandler(DataHandler):
     """
     JSON based dataHandler, this dataHandler will load eve staticdata and expression data into memory at instanciation from json files.
@@ -36,68 +38,76 @@ class JsonDataHandler(DataHandler):
     By default, files are assumed to be ./eos/data/eve.json.bz2 and ./eos/data/expressions.json.bz2
     Data is assumed to be encoded as UTF-8
     """
-    def __init__(self, typesPath, expressionsPath, effectsPath, attributesPath, encoding='utf-8'):
+    def __init__(self, typesPath, attributesPath, effectsPath, expressionsPath, encoding="utf-8"):
         # Read JSON into data storage
-        with BZ2File(typesPath, 'r') as f:
-            self.__typeData = loads(f.read().decode('utf-8'))
-        with BZ2File(expressionsPath, 'r') as f:
-            self.__expressionData = loads(f.read().decode('utf-8'))
-        with BZ2File(effectsPath, 'r') as f:
-            self.__effectData = loads(f.read().decode('utf-8'))
-        with BZ2File(attributesPath, 'r') as f:
-            self.__attributeData = loads(f.read().decode('utf-8'))
+        with BZ2File(typesPath, "r") as f:
+            self.__typeData = loads(f.read().decode(encoding))
+        with BZ2File(attributesPath, "r") as f:
+            self.__attributeData = loads(f.read().decode(encoding))
+        with BZ2File(effectsPath, "r") as f:
+            self.__effectData = loads(f.read().decode(encoding))
+        with BZ2File(expressionsPath, "r") as f:
+            self.__expressionData = loads(f.read().decode(encoding))
 
         # Weakref cache for objects composed out of data from storage
         self.__typesCache = WeakValueDictionary()
-        self.__expressionsCache = WeakValueDictionary()
-        self.__effectsCache = WeakValueDictionary()
         self.__attributesCache = WeakValueDictionary()
+        self.__effectsCache = WeakValueDictionary()
+        self.__expressionsCache = WeakValueDictionary()
 
-    def getType(self, id):
-        if not id:
+    def getType(self, typeId):
+        if typeId in nulls:
             return None
-        invType = self.__typesCache.get(id)
-        if invType is None:
+        try:
+            invType = self.__typesCache[typeId]
+        except KeyError:
             # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
-            data = self.__typeData[str(int(id))]
-            invType = InvType(id, data["category"], data["group"],
-                              {self.getEffect(effectId) for effectId in data["effects"]},
-                              {x: y for x, y in data["attributes"]})
-            self.__typesCache[id] = invType
+            data = self.__typeData[str(int(typeId))]
+            groupId, catId, effectIds, attrIds = data
+            invType = InvType(typeId, catId, groupId,
+                              {self.getEffect(effectId) for effectId in effectIds},
+                              {attrId: attrVal for attrId, attrVal in attrIds})
+            self.__typesCache[typeId] = invType
         return invType
 
-    def getAttribute(self, id):
-        if not id:
+    def getAttribute(self, attrId):
+        if attrId in nulls:
             return None
-        attribute = self.__attributesCache.get(id)
-        if attribute is None:
-            data = self.__attributeData[str(int(id))]
-            attribute = Attribute(id, data["highIsGood"], data["stackable"])
-            self.__attributesCache[id] = attribute
+        try:
+            attribute = self.__attributesCache[attrId]
+        except KeyError:
+            data = self.__attributeData[str(int(attrId))]
+            highIsGood, stackable = data
+            attribute = Attribute(attrId, highIsGood, stackable)
+            self.__attributesCache[attrId] = attribute
         return attribute
 
-    def getExpression(self, id):
-        if not id:
+    def getEffect(self, effectId):
+        if effectId in nulls:
             return None
-        expression = self.__expressionsCache.get(id)
-        if expression is None:
-            data = self.__expressionData[str(int(id))]
-            expression = Expression(data["operand"], data["value"],
-                                    self.getExpression(data["arg1"]), self.getExpression(data["arg2"]),
-                                    data["typeID"], data["groupID"], data["attributeID"])
-            self.__expressionsCache[id] = expression
-        return expression
-
-    def getEffect(self, id):
-        if not id:
-            return None
-        effect = self.__effectsCache.get(id)
-        if effect is None:
-            data = self.__effectData[str(int(id))]
-            effect = Effect(id, self.getExpression(data["preExpression"]),
-                            self.getExpression(data["postExpression"]),
-                            data["isOffensive"], data["isAssistance"])
-            self.__effectsCache[id] = effect
+        try:
+            effect = self.__effectsCache[effectId]
+        except KeyError:
+            data = self.__effectData[str(int(effectId))]
+            isOffence, isAssist, preExpId, postExpId = data
+            effect = Effect(effectId, self.getExpression(preExpId),
+                            self.getExpression(postExpId),
+                            isOffence, isAssist)
+            self.__effectsCache[effectId] = effect
 
         return effect
+
+    def getExpression(self, expId):
+        if expId in nulls:
+            return None
+        try:
+            expression = self.__expressionsCache[expId]
+        except KeyError:
+            data = self.__expressionData[str(int(expId))]
+            opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
+            expression = Expression(opndId, arg1=self.getExpression(arg1Id),
+                                    arg2=self.getExpression(arg2Id), value=eVal,
+                                    typeId=eTypeId, groupId=eGrpId, attributeId=eAttrId)
+            self.__expressionsCache[expId] = expression
+        return expression

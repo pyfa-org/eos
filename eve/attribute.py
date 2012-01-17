@@ -21,9 +21,9 @@
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self, id, highIsGood, stackable):
+    def __init__(self, attrId, highIsGood=None, stackable=None):
         # Just ID of attribute, integer
-        self.id = int(id) if id is not None else None
+        self.id = int(attrId) if attrId is not None else None
 
         # Boolean describing if it's good when attribute is high or not,
         # used in calculation process
