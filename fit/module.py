@@ -30,12 +30,10 @@ class Module(MutableAttributeHolder):
         super().__init__(invType)
         self.__charge = None
 
-    @property
-    def _location(self):
+    def _getLocation(self):
         return InfoLocation.ship
 
-    @property
-    def _other(self):
+    def _getOther(self):
         """Purely service property, used in fit registry"""
         return self.charge
 
@@ -60,7 +58,6 @@ class Module(MutableAttributeHolder):
             self.__charge = newCharge
             self.fit._addHolder(newCharge, enableDirect=InfoLocation.other)
 
-    @property
     def trackingSpeed(self):
         tsAttrId = self.invType._trackingSpeedAttributeId
         if tsAttrId is not None:
@@ -69,7 +66,6 @@ class Module(MutableAttributeHolder):
             tracking = None
         return tracking
 
-    @property
     def optimalRange(self):
         orAttrId = self.invType._rangeAttributeId
         if orAttrId is not None:
@@ -78,7 +74,6 @@ class Module(MutableAttributeHolder):
             optimal = None
         return optimal
 
-    @property
     def falloffRange(self):
         frAttrId = self.invType._falloffAttributeId
         if frAttrId is not None:

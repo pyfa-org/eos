@@ -104,7 +104,7 @@ class Register():
         """
         # Container which temporarily holds (key, map) tuples
         affecteeMaps = []
-        location = targetHolder._location
+        location = targetHolder._getLocation()
         if location is not None:
             affecteeMaps.append((location, self.__affecteeLocation))
             group = targetHolder.invType.groupId
@@ -148,7 +148,10 @@ class Register():
             # When other location is referenced, it means direct reference to module's charge
             # or to charge's module-container
             elif info.location == InfoLocation.other:
-                otherHolder = getattr(sourceHolder, "_other", None)
+                try:
+                    otherHolder = sourceHolder._getOther()
+                except AttributeError:
+                    otherHolder = None
                 if otherHolder is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = otherHolder
@@ -242,7 +245,10 @@ class Register():
 
     def __enableDirectOther(self, targetHolder):
         """Enable temporarily disabled affectors, targeting "other" location"""
-        otherHolder = getattr(targetHolder, "_other", None)
+        try:
+            otherHolder = targetHolder._getOther()
+        except AttributeError:
+            otherHolder = None
         # If passed holder doesn't have other location (charge's module
         # or module's charge), do nothing
         if otherHolder is None:
@@ -262,7 +268,10 @@ class Register():
 
     def __disableDirectOther(self, targetHolder):
         """Disabled affectors, targeting "other" location"""
-        otherHolder = getattr(targetHolder, "_other", None)
+        try:
+            otherHolder = targetHolder._getOther()
+        except AttributeError:
+            otherHolder = None
         if otherHolder is None:
             return
         affectorsToDisable = set()
@@ -347,7 +356,10 @@ class Register():
             elif info.location == InfoLocation.target:
                 raise RuntimeError("target is not supported location for direct item modification")
             elif info.location == InfoLocation.other:
-                otherHolder = getattr(sourceHolder, "_other", None)
+                try:
+                    otherHolder = sourceHolder._getOther()
+                except AttributeError:
+                    otherHolder = None
                 target = {otherHolder} if otherHolder is not None else None
             else:
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
@@ -376,7 +388,7 @@ class Register():
         # Add all affectors which directly affect it
         affectors.update(self.__activeDirectAffectors.getData(targetHolder))
         # Then all affectors which affect location of passed holder
-        location = targetHolder._location
+        location = targetHolder._getLocation()
         affectors.update(self.__affectorLocation.getData(location))
         # All affectors which affect location and group of passed holder
         group = targetHolder.invType.groupId

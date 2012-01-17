@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-
+from eos.const import nulls
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
 
@@ -51,10 +51,8 @@ class Effect:
         # Stores parsing status of info objects
         self.infoStatus = InfoBuildStatus.notParsed
 
-    @property
-    def infos(self):
+    def getInfos(self):
         """Return a set of all infos this effect contains"""
         if self.__infos is None:
             self.__infos, self.infoStatus = InfoBuilder().build(self.preExpression, self.postExpression)
         return self.__infos
-

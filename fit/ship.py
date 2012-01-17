@@ -27,8 +27,7 @@ class Ship(MutableAttributeHolder):
     def __init__(self, invType):
         super().__init__(invType)
 
-    @property
-    def _location(self):
+    def _getLocation(self):
         # Ship is self-sufficient entity with regard to
         # location too (not assigned to anything besides
         # fit), thus its location is None

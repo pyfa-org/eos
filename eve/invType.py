@@ -32,7 +32,7 @@ class InvType:
                  rangeAttributeId=None, falloffAttributeId=None, trackingSpeedAttributeId=None, fittableNonSingleton=None,
                  attributes={}, effects=set()):
         # The ID of the type
-        self.id = int(typeId) if not typeId in nulls else None
+        self.id = int(typeId) if typeId is not None else None
 
         # The groupID of the type, integer
         self.groupId = int(groupId) if not groupId in nulls else None

@@ -19,6 +19,9 @@
 #===============================================================================
 
 
+from eos.const import nulls
+
+
 class Expression:
     """
     Each effect, besides few metadata fields, contains two references to expressions
@@ -39,6 +42,6 @@ class Expression:
         self.arg2 = arg2
 
         # References to type/group/attribute via integer ID
-        self.typeId = int(typeId) if typeId is not None else None
-        self.groupId = int(groupId) if groupId is not None else None
-        self.attributeId = int(attributeId) if attributeId is not None else None
+        self.typeId = int(typeId) if not typeId in nulls else None
+        self.groupId = int(groupId) if not groupId in nulls else None
+        self.attributeId = int(attributeId) if not attributeId in nulls else None
