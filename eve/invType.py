@@ -26,24 +26,24 @@ class InvType:
     are actually items.
     """
 
-    def __init__(self, id, categoryId, groupId, effects, attributes):
+    def __init__(self, typeId, groupId=None, categoryId=None, attributes={}, effects=set()):
         # The ID of the type
-        self.id = int(id) if id is not None else None
-
-        # The category ID of the type, integer
-        self.categoryId = int(categoryId) if categoryId is not None else None
+        self.id = int(typeId) if typeId is not None else None
 
         # The groupID of the type, integer
         self.groupId = int(groupId) if groupId is not None else None
 
-        # Set of effects this type has, they describe modifications
-        # which this invType applies
-        self.effects = effects
+        # The category ID of the type, integer
+        self.categoryId = int(categoryId) if categoryId is not None else None
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
         # Format: {attributeId: attributeValue}
         self.attributes = attributes
+
+        # Set of effects this type has, they describe modifications
+        # which this invType applies
+        self.effects = effects
 
         # Stores required skill IDs as set once calculated
         self.__requiredSkills = None

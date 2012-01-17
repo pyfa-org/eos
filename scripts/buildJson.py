@@ -45,6 +45,7 @@ conn.row_factory = sqlite3.Row
 print("dumping types")
 types = {}
 for typeRow in conn.execute("SELECT typeID, groupID FROM invtypes"):
+    # Store some group data on items too
     statement = "SELECT categoryID, fittableNonSingleton FROM invgroups WHERE groupID = ?"
     grpRow = conn.execute(statement, (typeRow["groupID"],)).fetchone()
     # Tuple with effectIDs assigned to type

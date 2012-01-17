@@ -27,9 +27,15 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, id, preExpression, postExpression, isOffensive, isAssistance):
+    def __init__(self, effectId, isOffensive=None, isAssistance=None, preExpression=None, postExpression=None):
         # The unique ID of an effect
-        self.id = int(id) if id is not None else None
+        self.id = int(effectId) if effectId is not None else None
+
+        # Whether the module is offensive (e.g. guns)
+        self.isOffensive = bool(isOffensive) if isOffensive is not None else None
+
+        # Whether the module is helpful (e.g. Remote reps)
+        self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # PreExpression of the effect. A preExpression is the expression
         # that gets run when the module is activated
@@ -37,12 +43,6 @@ class Effect:
 
         # PostExpression of the effect. A postExpression gets run when the module gets disabled.
         self.postExpression = postExpression
-
-        # Whether the module is offensive (e.g. guns)
-        self.isOffensive = bool(isOffensive) if isOffensive is not None else None
-
-        # Whether the module is helpful (e.g. Remote reps)
-        self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # Stores EffectInfos which are assigned to given effect
         self.__infos = None

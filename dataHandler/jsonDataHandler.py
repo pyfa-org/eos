@@ -65,9 +65,9 @@ class JsonDataHandler(DataHandler):
             # always have strings as key
             data = self.__typeData[str(int(typeId))]
             groupId, catId, effectIds, attrIds = data
-            invType = InvType(typeId, catId, groupId,
-                              {self.getEffect(effectId) for effectId in effectIds},
-                              {attrId: attrVal for attrId, attrVal in attrIds})
+            invType = InvType(typeId, groupId=groupId, categoryId=catId,
+                              attributes={attrId: attrVal for attrId, attrVal in attrIds},
+                              effects={self.getEffect(effectId) for effectId in effectIds})
             self.__typesCache[typeId] = invType
         return invType
 
@@ -79,7 +79,7 @@ class JsonDataHandler(DataHandler):
         except KeyError:
             data = self.__attributeData[str(int(attrId))]
             highIsGood, stackable = data
-            attribute = Attribute(attrId, highIsGood, stackable)
+            attribute = Attribute(attrId, highIsGood=highIsGood, stackable=stackable)
             self.__attributesCache[attrId] = attribute
         return attribute
 
@@ -91,9 +91,9 @@ class JsonDataHandler(DataHandler):
         except KeyError:
             data = self.__effectData[str(int(effectId))]
             isOffence, isAssist, preExpId, postExpId = data
-            effect = Effect(effectId, self.getExpression(preExpId),
-                            self.getExpression(postExpId),
-                            isOffence, isAssist)
+            effect = Effect(effectId, isOffensive=isOffence, isAssistance=isAssist,
+                            preExpression=self.getExpression(preExpId),
+                            postExpression=self.getExpression(postExpId))
             self.__effectsCache[effectId] = effect
 
         return effect
