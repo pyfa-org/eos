@@ -18,8 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.calc.info.info import InfoLocation
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
+
 
 class Subsystem(MutableAttributeHolder):
     """Represents t3 ship's subsystem with all its special properties"""

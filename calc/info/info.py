@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-class InfoType:
+class InfoRunTime:
     """Info modification type ID holder"""
     duration = 1
     pre = 2
@@ -28,7 +28,7 @@ class InfoType:
 
 class InfoLocation:
     """Location ID holder"""
-    carrier = 1  # Target self, i.e. carrier of modification source
+    self_ = 1  # Target self, i.e. carrier of modification source
     character = 2  # Target character
     ship = 3  # Target ship
     target = 4  # Target currently locked and selected ship as target
@@ -40,7 +40,7 @@ class InfoLocation:
     def eve2eos(cls, name):
         """Convert CCP's location name to ID"""
         # Format: {location name: location ID}
-        conversionMap = {"Self": cls.carrier,
+        conversionMap = {"Self": cls.self_,
                          "Char": cls.character,
                          "Ship": cls.ship,
                          "Target": cls.target,
@@ -117,7 +117,7 @@ class Info:
 
         # Describes type of modification.
         # Can have infoDuration, infoPre or infoPost value from consts file.
-        self.type = None
+        self.runTime = None
 
         # Flag identifying local/gang change.
         # Can be either True or False.

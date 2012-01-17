@@ -18,8 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.const import Type
-from eos.calc.info.info import InfoType, InfoLocation, InfoFilterType
+from eos.calc.info.info import InfoRunTime, InfoLocation, InfoFilterType
+
 
 class DataSetMap(dict):
     """
@@ -50,6 +52,7 @@ class DataSetMap(dict):
         """Get data set with safe fallback"""
         data = self.get(key, set())
         return data
+
 
 class Register():
     """
@@ -121,7 +124,7 @@ class Register():
         if info.filterType is None:
             # For single item modifications, we need to properly pick
             # target holder (it's key) based on location
-            if info.location == InfoLocation.carrier:
+            if info.location == InfoLocation.self_:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
             elif info.location == InfoLocation.character:
@@ -180,7 +183,7 @@ class Register():
         """
         # Reference to self is sparingly used on ship effects, so we must convert
         # it to real location
-        if targetLocation == InfoLocation.carrier:
+        if targetLocation == InfoLocation.self_:
             if sourceHolder is self.__fit.ship:
                 return InfoLocation.ship
             elif sourceHolder is self.__fit.character:
@@ -197,7 +200,7 @@ class Register():
     def __contextizeSkillrqId(self, affector):
         """Convert typeID self-reference into real typeID"""
         skillId = affector.info.filterValue
-        if skillId == Type.carrier:
+        if skillId == Type.self_:
             skillId = affector.sourceHolder.invType.id
         return skillId
 
@@ -313,7 +316,7 @@ class Register():
         """Add passed affector to register's affector maps"""
         info = affector.info
         # Register keeps track of only local duration modifiers
-        if info.type != InfoType.duration or info.gang is not False:
+        if info.runTime != InfoRunTime.duration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
         # Actually add data to map
@@ -322,7 +325,7 @@ class Register():
     def unregisterAffector(self, affector):
         """Remove affector from register's affector maps"""
         info = affector.info
-        if info.type != InfoType.duration or info.gang is not False:
+        if info.runTime != InfoRunTime.duration or info.gang is not False:
             return
         affectorMap, key = self.__getAffectorMap(affector)
         affectorMap.rmData(key, {affector})
@@ -333,7 +336,7 @@ class Register():
         affectees = set()
         # For direct modification, make set out of single target location
         if info.filterType is None:
-            if info.location == InfoLocation.carrier:
+            if info.location == InfoLocation.self_:
                 target = {sourceHolder}
             elif info.location == InfoLocation.character:
                 char = self.__fit.character

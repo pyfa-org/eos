@@ -44,7 +44,7 @@ class Attribute:
 
 class Type:
     """Item ID holder"""
-    carrier = -1  # Eos-specific type, used in infos, refers carrier of info
+    self_ = -1  # Eos-specific type, used in infos, refers carrier of info
     characterAmarr = 1373
 
 class Category:

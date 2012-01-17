@@ -18,6 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 class Expression:
     """
     Each effect, besides few metadata fields, contains two references to expressions

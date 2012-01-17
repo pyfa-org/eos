@@ -18,12 +18,15 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.const import Operand
-from eos.calc.info.info import Info, InfoType, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 from .builderData import durationMods, mirrorDurationMods
+
 
 # Values which are considered as 'empty' values
 nulls = {0, None}
+
 
 class Modifier:
     """
@@ -138,7 +141,7 @@ class Modifier:
     def __valLocGrp(self):
         if self.targetSkillRq is not None or self.runTime is not None:
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.carrier}
+        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
         if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs or \
         self.targetGroup in nulls:
@@ -149,7 +152,7 @@ class Modifier:
         if self.targetGroup is not None or self.targetSkillRq is not None or \
         self.runTime is not None:
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.carrier}
+        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
         if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs:
             return False
@@ -158,7 +161,7 @@ class Modifier:
     def __valLocSrq(self):
         if self.targetGroup is not None or self.runTime is not None:
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.carrier}
+        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
         if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
         self.operator in nulls or not self.targetLocation in validLocs or \
         self.targetSkillRq in nulls:
@@ -180,7 +183,7 @@ class Modifier:
         self.targetSkillRq is not None:
             return False
         validSrcTypes = {InfoSourceType.attribute, InfoSourceType.value}
-        validRunTimes = {InfoType.pre, InfoType.post}
+        validRunTimes = {InfoRunTime.pre, InfoRunTime.post}
         # We can either refer some non-zero source attribute, or provide source value directly
         if not self.sourceType in validSrcTypes or not self.runTime in validRunTimes or \
         (self.sourceType == InfoSourceType.attribute and self.sourceValue in nulls) or \
@@ -265,7 +268,7 @@ class Modifier:
         return info
 
     def __convGangGrp(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.ship
@@ -273,13 +276,13 @@ class Modifier:
         info.filterValue = self.targetGroup
 
     def __convGangItm(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.ship
 
     def __convGangOwnSrq(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.space
@@ -287,7 +290,7 @@ class Modifier:
         info.filterValue = self.targetSkillRq
 
     def __convGangSrq(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.ship
@@ -295,48 +298,48 @@ class Modifier:
         info.filterValue = self.targetSkillRq
 
     def __convItm(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.operator = self.operator
         info.location = self.targetLocation
 
     def __convLocGrp(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.group
         info.filterValue = self.targetGroup
 
     def __convLoc(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.all
 
     def __convLocSrq(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.skill
         info.filterValue = self.targetSkillRq
 
     def __convOwnSrq(self, info):
-        info.type = InfoType.duration
+        info.runTime = InfoRunTime.duration
         info.operator = self.operator
         info.location = InfoLocation.space
         info.filterType = InfoFilterType.skill
         info.filterValue = self.targetSkillRq
 
     def __convAssign(self, info):
-        info.type = self.runTime
+        info.runTime = self.runTime
         info.operator = InfoOperator.assignment
         info.location = self.targetLocation
 
     def __convInc(self, info):
-        info.type = self.runTime
+        info.runTime = self.runTime
         info.operator = InfoOperator.increment
         info.location = self.targetLocation
 
     def __convDec(self, info):
-        info.type = self.runTime
+        info.runTime = self.runTime
         info.operator = InfoOperator.decrement
         info.location = self.targetLocation

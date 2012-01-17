@@ -18,6 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
 

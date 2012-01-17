@@ -23,6 +23,7 @@ from unittest import TestCase
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
+
 class TestSplicing(TestCase):
     """Test parsing of trees describing joins of multiple actual modifiers"""
 

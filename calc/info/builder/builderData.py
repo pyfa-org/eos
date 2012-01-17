@@ -18,7 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.const import Operand
+
 
 # Mirror duration modifications, top-level operands
 mirrorDurationMods = {Operand.addGangGrpMod: Operand.rmGangGrpMod,

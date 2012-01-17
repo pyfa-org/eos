@@ -18,6 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 class Attribute:
     """Class-holder for attribute metadata"""
 

@@ -18,10 +18,12 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+
 
 class TestInactive(TestCase):
     """Test parsing of trees involving disabled operands"""

@@ -25,6 +25,7 @@ from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 from eos.const import Type
 from eos.calc.info.info import InfoFilterType
 
+
 class TestSelfType(TestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
@@ -47,5 +48,5 @@ class TestSelfType(TestCase):
         info = infos.pop()
         expFilterType = InfoFilterType.skill
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
-        expFilterValue = Type.carrier
+        expFilterValue = Type.self_
         self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be reference to typeID of self {}".format(expFilterValue))

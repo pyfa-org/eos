@@ -23,6 +23,7 @@ from unittest import TestCase
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 
+
 class TestStubInt0(TestCase):
     """Test parsing of trees describing integer-0 stub"""
 

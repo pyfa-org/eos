@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos import const
+from eos.const import Type
 from eos.fit.fit import Fit
 from eos.fit.character import Character
 from eos.fit.ship import Ship
@@ -34,7 +34,7 @@ class Eos:
         return fit
 
     def makeCharacter(self):
-        characterType = self.__dataHandler.getType(const.typeCharacterAmarr)
+        characterType = self.__dataHandler.getType(Type.characterAmarr)
         character = Character(characterType)
         return character
 

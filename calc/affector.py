@@ -18,7 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from collections import namedtuple
+
 
 # Each affector must have 2 components - carrier holder (source data
 # for changes and unique identifier) and info (which describes whom and

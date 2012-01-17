@@ -18,11 +18,13 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
-from eos.calc.info.info import InfoType, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+
 
 class TestModItm(TestCase):
     """Test parsing of trees describing direct item modification"""
@@ -41,8 +43,8 @@ class TestModItm(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoType.duration
-        self.assertEqual(info.type, expType, msg="info type must be duration (ID {})".format(expType))
+        expType = InfoRunTime.duration
+        self.assertEqual(info.runTime, expType, msg="info type must be duration (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = InfoLocation.ship

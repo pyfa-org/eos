@@ -29,7 +29,9 @@ from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
 from .dataHandler import DataHandler
 
+
 nulls = {0, None}
+
 
 class JsonDataHandler(DataHandler):
     """

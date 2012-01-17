@@ -18,7 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.calc.mutableAttributeHolder import MutableAttributeHolder
+
 
 class Character(MutableAttributeHolder):
     """Represents a character. Must be holder, as EVE tracks some attributes on it."""

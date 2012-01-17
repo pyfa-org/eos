@@ -18,11 +18,12 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from copy import deepcopy
 from itertools import combinations
 
 from eos.const import Type, Operand
-from eos.calc.info.info import InfoType, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from .builderData import durationMods, instantMods
 from .modifier import Modifier
@@ -301,9 +302,9 @@ class InfoBuilder:
         self.__srcGetter(element.arg2)
         # Set runtime according to active list
         if self.activeSet is self.preMods:
-            self.activeMod.runTime = InfoType.pre
+            self.activeMod.runTime = InfoRunTime.pre
         elif self.activeSet is self.postMods:
-            self.activeMod.runTime = InfoType.post
+            self.activeMod.runTime = InfoRunTime.post
         self.activeSet.add(self.activeMod)
         self.activeMod = None
 
@@ -396,8 +397,8 @@ class InfoBuilder:
         if element.operand == Operand.getType:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
-            if self.__getLoc(element.arg1) == InfoLocation.carrier:
-                return Type.carrier
+            if self.__getLoc(element.arg1) == InfoLocation.self_:
+                return Type.self_
             else:
                 raise ValueError("unexpected location referenced in type getter")
         else:

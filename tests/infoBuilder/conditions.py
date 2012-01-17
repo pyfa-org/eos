@@ -18,12 +18,14 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
 from eos.calc.info.info import InfoLocation
 from eos.calc.info.builder.atom import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
+
 
 class TestCondition(TestCase):
     """Test parsing of trees describing conditions"""
@@ -204,7 +206,7 @@ class TestCondition(TestCase):
         currentAtom = info.conditions.arg1
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
-        expAtomCarrier = InfoLocation.carrier
+        expAtomCarrier = InfoLocation.self_
         self.assertEqual(currentAtom.carrier, expAtomCarrier, msg="atom carrier must be self (ID {})".format(expAtomCarrier))
         expAtomAttr = 87
         self.assertEqual(currentAtom.attribute, expAtomAttr, msg="atom attribute ID must be {}".format(expAtomAttr))

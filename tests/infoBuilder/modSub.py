@@ -18,11 +18,13 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
-from eos.calc.info.info import InfoType, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+
 
 class TestPreModSubAttr(TestCase):
     """Test parsing of trees describing decrement by attribute in the beginning of the cycle"""
@@ -39,8 +41,8 @@ class TestPreModSubAttr(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoType.pre
-        self.assertEqual(info.type, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
+        expType = InfoRunTime.pre
+        self.assertEqual(info.runTime, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = InfoLocation.target
@@ -73,8 +75,8 @@ class TestPreModSubVal(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoType.pre
-        self.assertEqual(info.type, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
+        expType = InfoRunTime.pre
+        self.assertEqual(info.runTime, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = InfoLocation.target
@@ -107,8 +109,8 @@ class TestPostModSubAttr(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoType.post
-        self.assertEqual(info.type, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
+        expType = InfoRunTime.post
+        self.assertEqual(info.runTime, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = InfoLocation.target
@@ -141,8 +143,8 @@ class TestPostModSubVal(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoType.post
-        self.assertEqual(info.type, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
+        expType = InfoRunTime.post
+        self.assertEqual(info.runTime, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expGang = False
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = InfoLocation.target
