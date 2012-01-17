@@ -165,8 +165,8 @@ class MutableAttributeMap(Mapping):
                 # source item category and operator
                 penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
                 penalizableOperators = {InfoOperator.preMul, InfoOperator.postMul, InfoOperator.postPercent, InfoOperator.preDiv, InfoOperator.postDiv}
-                penalize = not attrMeta.stackable and sourceHolder.invType.categoryId not in penaltyImmuneCategories \
-                and operator in penalizableOperators
+                penalize = (not attrMeta.stackable and sourceHolder.invType.categoryId not in penaltyImmuneCategories
+                            and operator in penalizableOperators)
             # For value modifications, just use stored in info value and avoid its penalization
             else:
                 modValue = info.sourceValue

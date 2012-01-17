@@ -94,47 +94,47 @@ class Modifier:
         return method()
 
     def __valGangGrp(self):
-        if self.targetLocation is not None or self.targetSkillRq is not None or \
-        self.runTime is not None:
+        if (self.targetLocation is not None or self.targetSkillRq is not None or
+            self.runTime is not None):
             return False
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or self.targetGroup in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or self.targetGroup in nulls):
             return False
         return True
 
     def __valGangItm(self):
-        if self.targetGroup is not None or self.targetSkillRq is not None or \
-        self.targetLocation is not None or self.runTime is not None:
+        if (self.targetGroup is not None or self.targetSkillRq is not None or
+            self.targetLocation is not None or self.runTime is not None):
             return False
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls):
             return False
         return True
 
     def __valGangOwnSrq(self):
-        if self.targetLocation is not None or self.targetGroup is not None or \
-        self.runTime is not None:
+        if (self.targetLocation is not None or self.targetGroup is not None or
+            self.runTime is not None):
             return False
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or self.targetSkillRq in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or self.targetSkillRq in nulls):
             return False
         return True
 
     def __valGangSrq(self):
-        if self.targetLocation is not None or self.targetGroup is not None or \
-        self.runTime is not None:
+        if (self.targetLocation is not None or self.targetGroup is not None or
+            self.runTime is not None):
             return False
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or self.targetSkillRq in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or self.targetSkillRq in nulls):
             return False
         return True
 
     def __valItm(self):
-        if self.targetGroup is not None or self.targetSkillRq is not None or \
-        self.runTime is not None:
+        if (self.targetGroup is not None or self.targetSkillRq is not None or
+            self.runTime is not None):
             return False
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or self.targetLocation in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or self.targetLocation in nulls):
             return False
         return True
 
@@ -142,19 +142,19 @@ class Modifier:
         if self.targetSkillRq is not None or self.runTime is not None:
             return False
         validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or not self.targetLocation in validLocs or \
-        self.targetGroup in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or not self.targetLocation in validLocs or
+            self.targetGroup in nulls):
             return False
         return True
 
     def __valLoc(self):
-        if self.targetGroup is not None or self.targetSkillRq is not None or \
-        self.runTime is not None:
+        if (self.targetGroup is not None or self.targetSkillRq is not None or
+            self.runTime is not None):
             return False
         validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or not self.targetLocation in validLocs:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or not self.targetLocation in validLocs):
             return False
         return True
 
@@ -162,9 +162,9 @@ class Modifier:
         if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or not self.targetLocation in validLocs or \
-        self.targetSkillRq in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or not self.targetLocation in validLocs or
+            self.targetSkillRq in nulls):
             return False
         return True
 
@@ -172,23 +172,23 @@ class Modifier:
         if self.targetGroup is not None or self.runTime is not None:
             return False
         validLocs = {InfoLocation.character, InfoLocation.ship}
-        if self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or \
-        self.operator in nulls or not self.targetLocation in validLocs or \
-        self.targetSkillRq in nulls:
+        if (self.sourceType != InfoSourceType.attribute or self.sourceValue in nulls or
+            self.operator in nulls or not self.targetLocation in validLocs or
+            self.targetSkillRq in nulls):
             return False
         return True
 
     def __valInstant(self):
-        if self.operator is not None or self.targetGroup is not None or \
-        self.targetSkillRq is not None:
+        if (self.operator is not None or self.targetGroup is not None or
+            self.targetSkillRq is not None):
             return False
         validSrcTypes = {InfoSourceType.attribute, InfoSourceType.value}
         validRunTimes = {InfoRunTime.pre, InfoRunTime.post}
         # We can either refer some non-zero source attribute, or provide source value directly
-        if not self.sourceType in validSrcTypes or not self.runTime in validRunTimes or \
-        (self.sourceType == InfoSourceType.attribute and self.sourceValue in nulls) or \
-        (self.sourceType == InfoSourceType.value and self.sourceValue is None) or \
-        self.targetLocation in nulls:
+        if (not self.sourceType in validSrcTypes or not self.runTime in validRunTimes or
+            (self.sourceType == InfoSourceType.attribute and self.sourceValue in nulls) or
+            (self.sourceType == InfoSourceType.value and self.sourceValue is None) or
+            self.targetLocation in nulls):
             return False
         return True
 
@@ -198,10 +198,10 @@ class Modifier:
         if not self.type in durationMods or not other.type in durationMods:
             return False
         # Check all modifier fields that make the difference for duration modifiers
-        if self.type != other.type or self.sourceType != other.sourceType or \
-        self.sourceValue != other.sourceValue or self.operator != other.operator or \
-        self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or \
-        self.targetGroup != other.targetGroup or self.targetSkillRq != other.targetSkillRq:
+        if (self.type != other.type or self.sourceType != other.sourceType or
+            self.sourceValue != other.sourceValue or self.operator != other.operator or
+            self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or
+            self.targetGroup != other.targetGroup or self.targetSkillRq != other.targetSkillRq):
             return False
         # They're the same if above conditions were passed, other fields irrelevant
         return True
@@ -225,10 +225,10 @@ class Modifier:
         if other.conditions is not None:
             return False
         # Then, check all other fields of modifier
-        if self.sourceType != other.sourceType or self.sourceValue != other.sourceValue or \
-        self.operator != other.operator or self.targetAttribute != other.targetAttribute or \
-        self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or \
-        self.targetSkillRq != other.targetSkillRq:
+        if (self.sourceType != other.sourceType or self.sourceValue != other.sourceValue or
+            self.operator != other.operator or self.targetAttribute != other.targetAttribute or
+            self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or
+            self.targetSkillRq != other.targetSkillRq):
             return False
         # If all conditions were met, then it's actually mirror
         return True

@@ -134,8 +134,8 @@ class Atom:
         return method()
 
     def __valLogic(self):
-        if self.carrier is not None or self.attribute is not None or \
-        self.value is not None:
+        if (self.carrier is not None or self.attribute is not None or
+            self.value is not None):
             return False
         allowedSubtypes = {AtomType.logic, AtomType.comparison}
         try:
@@ -148,8 +148,8 @@ class Atom:
         return True
 
     def __valComp(self):
-        if self.carrier is not None or self.attribute is not None or \
-        self.value is not None:
+        if (self.carrier is not None or self.attribute is not None or
+            self.value is not None):
             return False
         allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
         try:
@@ -162,8 +162,8 @@ class Atom:
         return True
 
     def __valMath(self):
-        if self.carrier is not None or self.attribute is not None or \
-        self.value is not None:
+        if (self.carrier is not None or self.attribute is not None or
+            self.value is not None):
             return False
         allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
         try:
@@ -176,16 +176,16 @@ class Atom:
         return True
 
     def __valValRef(self):
-        if self.arg1 is not None or self.arg2 is not None or \
-        self.value is not None:
+        if (self.arg1 is not None or self.arg2 is not None or
+            self.value is not None):
             return False
         if self.carrier is None or self.attribute is None:
             return False
         return True
 
     def __valVal(self):
-        if self.arg1 is not None or self.arg2 is not None or \
-        self.carrier is not None or self.attribute is not None:
+        if (self.arg1 is not None or self.arg2 is not None or
+            self.carrier is not None or self.attribute is not None):
             return False
         if self.value is None:
             return False
