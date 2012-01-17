@@ -18,36 +18,45 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
-from eos import const
-from eos.data import Attribute
-from eos.data import InvType
-from eos.data import Effect
-from eos.data.effect import EffectInfo
-from eos.fit import Fit, Ship, Character
+from eos.eve.attribute import Attribute
+from eos.eve.invType import InvType
+from eos.eve.effect import Effect
+from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.fit import Fit
+from eos.fit.ship import Ship
+from eos.fit.character import Character
+
 
 class TestCharAffectsShip(TestCase):
 
     def testAttrCalc(self):
-        fit = Fit()
 
-        attrShip = Attribute(1, 1, 0)
-        ship1 = Ship(InvType(1, None, None, {}, {attrShip.id: 100}, {attrShip.id: attrShip}))
-        ship2 = Ship(InvType(2, None, None, {}, {attrShip.id: 20}, {attrShip.id: attrShip}))
+        def attrMetaGetter(attrId):
+            attrs = {1: Attribute(1, highIsGood=1, stackable=1),
+                     2: Attribute(2, highIsGood=1, stackable=1)}
+            return attrs[attrId]
 
+        attrShip = attrMetaGetter(1)
+        attrChar = attrMetaGetter(2)
 
-        attrChar = Attribute(2, 1, 0)
-        info = EffectInfo()
-        info.type = const.infoDuration
-        info.location = const.locShip
-        info.operator = const.optrPostPercent
+        fit = Fit(attrMetaGetter)
+
+        ship1 = Ship(InvType(1, attributes={attrShip.id: 100}))
+        ship2 = Ship(InvType(2, attributes={attrShip.id: 20}))
+
+        info = Info()
+        info.runTime = InfoRunTime.duration
+        info.location = InfoLocation.ship
+        info.operator = InfoOperator.postPercent
         info.targetAttribute = attrShip.id
-        info.sourceType = const.srcAttr
+        info.sourceType = InfoSourceType.attribute
         info.sourceValue = attrChar.id
-        modEffect = Effect(1, None, None, 0, 0)
+        modEffect = Effect(1)
         modEffect._Effect__infos = {info}
-        char = Character(InvType(3, None, None, {modEffect}, {attrChar.id: 40}, {attrChar.id: attrChar}))
+        char = Character(InvType(3, effects={modEffect}, attributes={attrChar.id: 40}))
         fit.character = char
 
         fit.ship = ship1

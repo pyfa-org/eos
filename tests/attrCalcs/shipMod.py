@@ -18,34 +18,42 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
-from eos import const
-from eos.data import Attribute
-from eos.data import InvType
-from eos.data import Effect
-from eos.data.effect import EffectInfo
-from eos.fit import Fit, Ship, Module
+from eos.eve.attribute import Attribute
+from eos.eve.invType import InvType
+from eos.eve.effect import Effect
+from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.fit import Fit
+from eos.fit.ship import Ship
+from eos.fit.module import Module
+from eos.fit.charge import Charge
+
 
 class TestShipMod(TestCase):
     """This is just experimental test case to see how they should be written"""
 
     def testJust(self):
-        shipTgtAttr = Attribute(1, 1, 0)
-        ship = Ship(InvType(1, 0, 0, {}, {1: 100}, {1: shipTgtAttr}))
-        modSrcAttr = Attribute(2, 1, 0)
-        modEffect = Effect(1, 0, 0, 0, 0)
-        info = EffectInfo()
-        info.type = const.infoDuration
-        info.location = const.locShip
-        info.operator = const.optrPostPercent
-        info.targetAttribute = 1
-        info.sourceType = const.srcAttr
-        info.sourceValue = 2
-        modEffect.infoStatus = const.effectInfoOkFull
+        def attrMetaGetter(attrId):
+            attrs = {1: Attribute(1, highIsGood=1, stackable=1),
+                     2: Attribute(2, highIsGood=1, stackable=1)}
+            return attrs[attrId]
+
+        shipTgtAttr = attrMetaGetter(1)
+        ship = Ship(InvType(1, attributes={1: 100}))
+        modSrcAttr = attrMetaGetter(2)
+        modEffect = Effect(1)
+        info = Info()
+        info.runTime = InfoRunTime.duration
+        info.location = InfoLocation.ship
+        info.operator = InfoOperator.postPercent
+        info.targetAttribute = shipTgtAttr.id
+        info.sourceType = InfoSourceType.attribute
+        info.sourceValue = modSrcAttr.id
         modEffect._Effect__infos = {info}
-        module = Module(InvType(2, 0, 0, {modEffect}, {2: 20}, {2: modSrcAttr}))
-        fit = Fit()
+        module = Module(InvType(2, effects={modEffect}, attributes={2: 20}))
+        fit = Fit(attrMetaGetter)
         fit.ship = ship
         fit.modules.append(module)
         expVal = 120

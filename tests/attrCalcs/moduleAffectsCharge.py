@@ -18,37 +18,47 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
-from eos import const
-from eos.data import Attribute
-from eos.data import InvType
-from eos.data import Effect
-from eos.data.effect import EffectInfo
-from eos.fit import Fit, Ship, Module, Charge
+from eos.eve.attribute import Attribute
+from eos.eve.invType import InvType
+from eos.eve.effect import Effect
+from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.fit import Fit
+from eos.fit.ship import Ship
+from eos.fit.module import Module
+from eos.fit.charge import Charge
+
 
 class TestModuleAffectsCharge(TestCase):
 
     def testAttrCalc(self):
-        fit = Fit()
-        ship = Ship(InvType(1, None, None, {}, {}, {}))
+
+        def attrMetaGetter(attrId):
+            attrs = {1: Attribute(1, highIsGood=1, stackable=1),
+                     2: Attribute(2, highIsGood=1, stackable=1)}
+            return attrs[attrId]
+
+        fit = Fit(attrMetaGetter)
+        ship = Ship(InvType(1))
         fit.ship = ship
 
-        attrCharge = Attribute(1, 1, 0)
-        charge1 = Charge(InvType(2, None, None, {}, {attrCharge.id: 50}, {attrCharge.id: attrCharge}))
-        charge2 = Charge(InvType(3, None, None, {}, {attrCharge.id: 200}, {attrCharge.id: attrCharge}))
+        attrCharge = attrMetaGetter(1)
+        charge1 = Charge(InvType(2, attributes={attrCharge.id: 50}))
+        charge2 = Charge(InvType(3, attributes={attrCharge.id: 200}))
 
-        attrMod = Attribute(2, 1, 0)
-        info = EffectInfo()
-        info.type = const.infoDuration
-        info.location = const.locOther
-        info.operator = const.optrPostPercent
+        attrMod = attrMetaGetter(2)
+        info = Info()
+        info.runTime = InfoRunTime.duration
+        info.location = InfoLocation.other
+        info.operator = InfoOperator.postPercent
         info.targetAttribute = attrCharge.id
-        info.sourceType = const.srcAttr
+        info.sourceType = InfoSourceType.attribute
         info.sourceValue = attrMod.id
         modEffect = Effect(1, None, None, 0, 0)
         modEffect._Effect__infos = {info}
-        module = Module(InvType(4, None, None, {modEffect}, {attrMod.id: 20}, {attrMod.id: attrMod}))
+        module = Module(InvType(4, effects={modEffect}, attributes={attrMod.id: 20}))
         fit.modules.append(module)
 
         # First, check if delayed modifier is applied properly
