@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Attribute
+from eos.const import nulls, Attribute
 
 
 class InvType:
@@ -28,19 +28,37 @@ class InvType:
     are actually items.
     """
 
-    def __init__(self, typeId, groupId=None, categoryId=None, fittableNonSingleton=None, attributes={}, effects=set()):
+    def __init__(self, typeId, groupId=None, categoryId=None, durationAttributeId=None, dischargeAttributeId=None,
+                 rangeAttributeId=None, falloffAttributeId=None, trackingSpeedAttributeId=None, fittableNonSingleton=None,
+                 attributes={}, effects=set()):
         # The ID of the type
-        self.id = int(typeId) if typeId is not None else None
+        self.id = int(typeId) if not typeId in nulls else None
 
         # The groupID of the type, integer
-        self.groupId = int(groupId) if groupId is not None else None
+        self.groupId = int(groupId) if not groupId in nulls else None
 
         # The category ID of the type, integer
-        self.categoryId = int(categoryId) if categoryId is not None else None
+        self.categoryId = int(categoryId) if not categoryId in nulls else None
 
-        # Defines if multiple items can be added to fit without packaging.
+        # Defines cycle time
+        self._durationAttributeId = int(durationAttributeId) if not durationAttributeId in nulls else None
+
+        # Defines attribute, whose value will be used to drain ship's
+        # capacitor each cycle
+        self._dischargeAttributeId = int(dischargeAttributeId) if not dischargeAttributeId in nulls else None
+
+        # Attribute with this ID defines optimal range of item
+        self._rangeAttributeId = int(rangeAttributeId) if not rangeAttributeId in nulls else None
+
+        # Defines falloff attribute
+        self._falloffAttributeId = int(falloffAttributeId) if not falloffAttributeId in nulls else None
+
+        # Defines tracking speed attribute
+        self._trackingSpeedAttributeId = int(trackingSpeedAttributeId) if not trackingSpeedAttributeId in nulls else None
+
+        # Defines if multiple items of this type can be added to fit without packaging.
         # We use it to see if charge can be loaded into anything or not.
-        self.fittableNonSingleton = bool(fittableNonSingleton) if fittableNonSingleton is not None else None
+        self._fittableNonSingleton = bool(fittableNonSingleton) if fittableNonSingleton is not None else None
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable

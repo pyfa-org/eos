@@ -18,6 +18,12 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
+# When some EVE's database row refers another,
+# these values are considered as absence of reference
+nulls = {0, None}
+
+
 class Attribute:
     """Attribute ID holder"""
     skillRq1 = 182

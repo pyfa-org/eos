@@ -19,13 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Operand
+from eos.const import nulls, Operand
 from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 from .builderData import durationMods, mirrorDurationMods
-
-
-# Values which are considered as 'empty' values
-nulls = {0, None}
 
 
 class Modifier:

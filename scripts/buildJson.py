@@ -45,31 +45,53 @@ conn.row_factory = sqlite3.Row
 print("dumping types")
 types = {}
 for typeRow in conn.execute("SELECT typeID, groupID FROM invtypes"):
-    # Store some group data on items too
+    # Store some group data on items
     statement = "SELECT categoryID, fittableNonSingleton FROM invgroups WHERE groupID = ?"
     grpRow = conn.execute(statement, (typeRow["groupID"],)).fetchone()
     # Tuple with effectIDs assigned to type
     statement = "SELECT effectID FROM dgmtypeeffects WHERE typeID = ?"
     typeEffects = tuple(effectRow["effectID"] for effectRow in conn.execute(statement, (typeRow["typeID"],)))
+    # Move some of the effect data to item too
+    statement = "SELECT de.durationAttributeID, de.dischargeAttributeID, de.rangeAttributeID, de.falloffAttributeID, de.trackingSpeedAttributeID FROM dgmeffects AS de INNER JOIN dgmtypeeffects AS dte ON de.effectID = dte.effectID WHERE dte.isDefault = 1 AND dte.typeID = ?"
+    defaultEffectRow = conn.execute(statement, (typeRow["typeID"],)).fetchone()
+    if defaultEffectRow is None:
+        # If item doesn't have default effect, assign zeros to these values
+        defaultEffectRow = {"durationAttributeID": 0,
+                            "dischargeAttributeID": 0,
+                            "rangeAttributeID": 0,
+                            "falloffAttributeID": 0,
+                            "trackingSpeedAttributeID": 0}
     # Tuple with (attributeID, attributeValue) tuples assigned to type
     statement = "SELECT attributeID, value FROM dgmtypeattribs WHERE typeID = ?"
     typeAttrs = tuple((attrRow["attributeID"], attrRow["value"]) for attrRow in conn.execute(statement, (typeRow["typeID"],)))
-    types[typeRow["typeID"]] = (typeRow["groupID"], grpRow["categoryID"], grpRow["fittableNonSingleton"], typeEffects, typeAttrs)
+    types[typeRow["typeID"]] = (typeRow["groupID"],
+                                grpRow["categoryID"],
+                                defaultEffectRow["durationAttributeID"],
+                                defaultEffectRow["dischargeAttributeID"],
+                                defaultEffectRow["rangeAttributeID"],
+                                defaultEffectRow["falloffAttributeID"],
+                                defaultEffectRow["trackingSpeedAttributeID"],
+                                grpRow["fittableNonSingleton"],
+                                typeEffects,
+                                typeAttrs)
 with bz2.BZ2File(args.types, "wb") as f:
     f.write(json.dumps(types).encode("utf-8"))
 
 print("dumping attributes")
 attributes = {}
 for row in conn.execute("SELECT attributeID, highIsGood, stackable FROM dgmattribs"):
-    attributes[row["attributeID"]] = (row["highIsGood"], row["stackable"])
+    attributes[row["attributeID"]] = (row["highIsGood"],
+                                      row["stackable"])
 with bz2.BZ2File(args.attributes, "wb") as f:
     f.write(json.dumps(attributes).encode("utf-8"))
 
 print("dumping effects")
 effects = {}
 for row in conn.execute("SELECT effectID, isOffensive, isAssistance, preExpression, postExpression FROM dgmeffects"):
-    effects[row["effectID"]] = (row["isOffensive"], row["isAssistance"],
-                                row["preExpression"], row["postExpression"])
+    effects[row["effectID"]] = (row["isOffensive"],
+                                row["isAssistance"],
+                                row["preExpression"],
+                                row["postExpression"])
 with bz2.BZ2File(args.effects, "wb") as f:
     f.write(json.dumps(effects).encode("utf-8"))
 
@@ -77,9 +99,13 @@ print("dumping expressions")
 expressions = {}
 statement = "SELECT expressionID, operandID, arg1, arg2, expressionValue, expressionTypeID, expressionGroupID, expressionAttributeID FROM dgmexpressions"
 for row in conn.execute(statement):
-    expressions[row["expressionID"]] = (row["operandID"], row["arg1"], row["arg2"],
-                                        row["expressionValue"],row["expressionTypeID"],
-                                        row["expressionGroupID"], row["expressionAttributeID"])
+    expressions[row["expressionID"]] = (row["operandID"],
+                                        row["arg1"],
+                                        row["arg2"],
+                                        row["expressionValue"],
+                                        row["expressionTypeID"],
+                                        row["expressionGroupID"],
+                                        row["expressionAttributeID"])
 with bz2.BZ2File(args.expressions, "wb") as f:
     f.write(json.dumps(expressions).encode("utf-8"))
 
