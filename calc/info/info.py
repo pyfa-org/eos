@@ -116,7 +116,7 @@ class Info:
         self.conditions = None
 
         # Describes type of modification.
-        # Can have infoDuration, infoPre or infoPost value from consts file.
+        # Can have InfoRunTime class' attribute value.
         self.runTime = None
 
         # Flag identifying local/gang change.
@@ -124,23 +124,21 @@ class Info:
         self.gang = False
 
         # Target location to change.
-        # Can have locSelf, locChar, locShip, locTgt, locOther, locArea or locSpace values from consts file.
+        # Can have InfoLocation class' attribute value.
         self.location = None
 
-        # The filterType of the modification.
-        # Can have filterAll, filterSkill or filterGroup value from consts file, or None.
+        # The filter type of the modification.
+        # Can have InfoFilterType class' attribute value.
         self.filterType = None
 
         # The filter value of the modification.
-        # For filterAll must be None.
-        # For filterGroup has some integer, referencing group via ID.
-        # For filterSkill has some integer, referencing type via ID, or -1 to reference type of carrier.
+        # For InfoFilterType.all must be None.
+        # For InfoFilterType.group has some integer, referencing group via ID.
+        # For InfoFilterType.skill has some integer, referencing type via ID, or const.Type.self_ to reference type of carrier.
         self.filterValue = None
 
         # Which operator should be applied.
-        # Can have optrPreAssignment, optrPreMul, optrPreDiv, optrModAdd, optrModSub, optrPostMul,
-        # optrPostDiv, optrPostPercent, optrPostAssignment, optrIncr, optrDecr or optrAssign value
-        # from consts file.
+        # Can have InfoOperator class' attribute value.
         self.operator = None
 
         # Which attribute will be affected by the operator on the target.
@@ -148,7 +146,7 @@ class Info:
         self.targetAttribute = None
 
         # sourceValue type.
-        # Can have srcAttr or srcVal from consts file.
+        # Can have InfoSourceType class' attribute value.
         self.sourceType = None
 
         # The value which is used as modification value for operation.

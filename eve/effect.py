@@ -32,10 +32,10 @@ class Effect:
         # The unique ID of an effect
         self.id = int(effectId) if effectId is not None else None
 
-        # Whether the module is offensive (e.g. guns)
+        # Whether the effect is offensive (e.g. guns)
         self.isOffensive = bool(isOffensive) if isOffensive is not None else None
 
-        # Whether the module is helpful (e.g. Remote reps)
+        # Whether the effect is helpful (e.g. remote repairers)
         self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # PreExpression of the effect. A preExpression is the expression

@@ -29,7 +29,7 @@ from eos.calc.info.info import InfoOperator, InfoSourceType
 from .affector import Affector
 
 
-# Stacking penalty base constant
+# Stacking penalty base constant, used in attribute calculations
 penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
 
@@ -46,13 +46,10 @@ class MutableAttributeHolder:
 
     def __init__(self, invType):
         """ Constructor. Accepts invType"""
-
         # Which fit this holder is bound to
         self.fit = None
-
         # Which invType this holder wraps
         self.invType = invType
-
         # Special dictionary subclass that holds modified attributes and data related to their calculation
         self.attributes = MutableAttributeMap(self)
 
