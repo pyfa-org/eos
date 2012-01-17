@@ -45,27 +45,36 @@ class Fit:
 
     @property
     def ship(self):
+        """Get ship holder of fit"""
         return self.__ship
 
     @ship.setter
     def ship(self, ship):
+        """Set ship holder of fit"""
+        # Make sure to properly process ship re-set in register. Optional argument
+        # is passed to make sure that all direct modifications which were applied to
+        # previous ship will also apply to new one
         if self.__ship is not None:
-            self._unsetHolder(self.__ship, disableDirect=InfoLocation.ship)
+            self._removeHolder(self.__ship, disableDirect=InfoLocation.ship)
         self.__ship = ship
-        self._setHolder(ship, enableDirect=InfoLocation.ship)
+        self._addHolder(ship, enableDirect=InfoLocation.ship)
 
     @property
     def character(self):
+        """Get character holder of fit"""
         return self.__character
 
     @character.setter
     def character(self, character):
+        """Set character holder of fit"""
+        # Like with ship, to re-apply effects directed to old ship, we need to pass
+        # this optional argument
         if self.__character is not None:
-            self._unsetHolder(self.__character, disableDirect=InfoLocation.character)
+            self._removeHolder(self.__character, disableDirect=InfoLocation.character)
         self.__character = character
-        self._setHolder(character, enableDirect=InfoLocation.character)
+        self._addHolder(character, enableDirect=InfoLocation.character)
 
-    def _setHolder(self, holder, **kwargs):
+    def _addHolder(self, holder, **kwargs):
         """Handle adding of holder to fit"""
         # Make sure the holder isn't used already
         if holder.fit is not None:
@@ -80,13 +89,13 @@ class Fit:
         # all influenced by holder attributes
         holder._damageDependantsAll()
 
-    def _unsetHolder(self, holder, **kwargs):
+    def _removeHolder(self, holder, **kwargs):
         """Handle removal of holder from fit"""
         assert(holder.fit is self)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            self._unsetHolder(charge)
+            self._removeHolder(charge)
         # When links in register are still alive, damage all attributes
         # influenced by holder
         holder._damageDependantsAll()
@@ -102,7 +111,7 @@ class Fit:
         return self.__register.getAffectors(holder)
 
     def _getAffectees(self, affector):
-        """Get holders that the passed affector affects"""
+        """Get holders are affected by passed affector"""
         return self.__register.getAffectees(affector)
 
 
@@ -118,13 +127,13 @@ class MutableAttributeHolderList(MutableSequence):
     def __setitem__(self, index, holder):
         existing = self.__list.get(index)
         if existing is not None:
-            self.fit._unsetHolder(existing)
+            self.fit._removeHolder(existing)
 
         self.__list.__setitem__(index, holder)
-        self.__fit._setHolder(holder)
+        self.__fit._addHolder(holder)
 
     def __delitem__(self, index):
-        self.__fit._unsetHolder(self.__list[index])
+        self.__fit._removeHolder(self.__list[index])
         return self.__list.__delitem__(index)
 
     def __getitem__(self, index):
@@ -135,4 +144,4 @@ class MutableAttributeHolderList(MutableSequence):
 
     def insert(self, index, holder):
         self.__list.insert(index, holder)
-        self.__fit._setHolder(holder)
+        self.__fit._addHolder(holder)

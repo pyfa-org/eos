@@ -38,4 +38,5 @@ class Charge(MutableAttributeHolder):
 
     @property
     def _other(self):
+        """Purely service property, used in fit registry"""
         return self.container

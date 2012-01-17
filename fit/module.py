@@ -36,20 +36,53 @@ class Module(MutableAttributeHolder):
 
     @property
     def _other(self):
+        """Purely service property, used in fit registry"""
         return self.charge
 
     @property
     def charge(self):
+        """Get charge holder of module"""
         return self.__charge
 
     @charge.setter
     def charge(self, newCharge):
+        """Set charge holder of module"""
+        # Way of processing it is exactly the same as with fit's ship or
+        # character: unset old charge, and set new one, making sure that all
+        # modifiers are reapplied by passing special location keyword argument
         oldCharge = self.charge
         if oldCharge is not None:
-            self.fit._unsetHolder(oldCharge, disableDirect=InfoLocation.other)
+            self.fit._removeHolder(oldCharge, disableDirect=InfoLocation.other)
             self.__charge = None
             oldCharge.container = None
         if newCharge is not None:
             newCharge.container = self
             self.__charge = newCharge
-            self.fit._setHolder(newCharge, enableDirect=InfoLocation.other)
+            self.fit._addHolder(newCharge, enableDirect=InfoLocation.other)
+
+    @property
+    def trackingSpeed(self):
+        tsAttrId = self.invType._trackingSpeedAttributeId
+        if tsAttrId is not None:
+            tracking = self.attributes[tsAttrId]
+        else:
+            tracking = None
+        return tracking
+
+    @property
+    def optimalRange(self):
+        orAttrId = self.invType._rangeAttributeId
+        if orAttrId is not None:
+            optimal = self.attributes[orAttrId]
+        else:
+            optimal = None
+        return optimal
+
+    @property
+    def falloffRange(self):
+        frAttrId = self.invType._falloffAttributeId
+        if frAttrId is not None:
+            falloff = self.attributes[frAttrId]
+        else:
+            falloff = None
+        return falloff
