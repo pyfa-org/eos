@@ -28,7 +28,6 @@ from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoOperator, In
 from eos.fit.fit import Fit
 from eos.fit.ship import Ship
 from eos.fit.module import Module
-from eos.fit.charge import Charge
 
 
 class TestShipMod(TestCase):

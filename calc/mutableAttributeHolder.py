@@ -24,7 +24,7 @@ from abc import abstractmethod
 from collections import Mapping
 from math import exp
 
-from eos.const import Category, Attribute
+from eos.const import Category, Attribute, EffectCategory
 from eos.calc.info.info import InfoOperator, InfoSourceType
 from .affector import Affector
 

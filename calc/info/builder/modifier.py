@@ -309,7 +309,7 @@ class Modifier:
         info.runTime = InfoRunTime.duration
         info.operator = self.operator
         info.location = self.targetLocation
-        info.filterType = InfoFilterType.all
+        info.filterType = InfoFilterType.all_
 
     def __convLocSrq(self, info):
         info.runTime = InfoRunTime.duration

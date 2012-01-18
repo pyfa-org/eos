@@ -61,6 +61,17 @@ class Category:
     implant = 20
     subsystem = 32
 
+class EffectCategory:
+    """Effect category ID holder"""
+    passive = 0  # Applied when item is just present in fit - implants, skills, offlined modules
+    active = 1  # Applied only when module is activated
+    target = 2  # Applied onto selected target
+    area = 3  # No effects with this category, so actual impact is unknown
+    online = 4  # Applied when module at least onlined
+    overload = 5  # Applied only when module is overloaded
+    dungeon = 6  # Dungeon effects, several effects exist in this category, but not assigned to any item
+    system = 7  # System-wide effects, like WH and incursion
+
 class Operand:
     """Expression operand ID holder"""
     add = 1  # Add two numbers to return result, used in conditions

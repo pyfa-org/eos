@@ -164,7 +164,7 @@ class Register():
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For massive modifications, compose key, making sure reference to self
         # is converted into appropriate real location
-        elif info.filterType == InfoFilterType.all:
+        elif info.filterType == InfoFilterType.all_:
             affectorMap = self.__affectorLocation
             location = self.__contextizeLocation(sourceHolder, info.location)
             key = location
@@ -365,7 +365,7 @@ class Register():
                 raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
         # For filtered modifications, pick appropriate dictionary and get set
         # with target holders
-        elif info.filterType == InfoFilterType.all:
+        elif info.filterType == InfoFilterType.all_:
             key = self.__contextizeLocation(sourceHolder, info.location)
             target = self.__affecteeLocation.getData(key)
         elif info.filterType == InfoFilterType.group:

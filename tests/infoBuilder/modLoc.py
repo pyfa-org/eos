@@ -48,7 +48,7 @@ class TestModLoc(TestCase):
         self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
         expLocation = InfoLocation.ship
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
-        expFilterType = InfoFilterType.all
+        expFilterType = InfoFilterType.all_
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be all (ID {})".format(expFilterType))
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
         expOperation = InfoOperator.postPercent

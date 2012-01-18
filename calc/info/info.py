@@ -52,7 +52,7 @@ class InfoLocation:
 
 class InfoFilterType:
     """Info filter type ID holder"""
-    all = 1  # Affects all items in target location
+    all_ = 1  # Affects all items in target location
     group = 2  # Affects items in target location with additional filter by group
     skill = 3  # Affects items in target location with additional filter by skill requirement
 
