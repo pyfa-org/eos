@@ -69,7 +69,12 @@ class InfoBuilder:
 
     def build(self, preExpression, postExpression, effectCategoryId):
         """Go through both trees and compose our EffectInfos"""
-        # Assume we parse effect 100% successfully by default
+        # Attempt to get context which we'll assign to infos later
+        infoContext = InfoContext.eve2eos(effectCategoryId)
+        # And if it's none, return error right away
+        if infoContext is None:
+            return set(), InfoBuildStatus.error
+        # Else, assume we parse effect 100% successfully by default
         self.effectStatus = InfoBuildStatus.okFull
         # First, we're going to parse pre-expression tree, so set preMods
         # as active set
@@ -160,9 +165,7 @@ class InfoBuilder:
         if len(self.postMods.difference(usedPosts)) > 0:
             self.effectStatus = InfoBuildStatus.okPartial
 
-        # Fill context field for all infos, depending on effect's
-        # category
-        infoContext = InfoContext.eve2eos(effectCategoryId)
+        # Fill context field for all infos
         for info in infos:
             info.context = infoContext
 

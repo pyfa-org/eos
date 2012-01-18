@@ -28,7 +28,8 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, effectId, effectCategoryId=None, isOffensive=None, isAssistance=None, preExpression=None, postExpression=None):
+    def __init__(self, effectId, effectCategoryId=None, isOffensive=None, isAssistance=None,
+                 preExpression=None, postExpression=None):
         # The unique ID of an effect
         self.id = int(effectId) if effectId is not None else None
 

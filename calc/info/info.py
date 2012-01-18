@@ -40,7 +40,10 @@ class InfoContext:
                          EffectCategory.online: cls.online,
                          EffectCategory.overload: cls.overload,
                          EffectCategory.system: cls.projected}
-        result = conversionMap[effCatId]
+        try:
+            result = conversionMap[effCatId]
+        except KeyError:
+            result = None
         return result
 
 class InfoRunTime:
