@@ -19,6 +19,30 @@
 #===============================================================================
 
 
+from eos.const import EffectCategory
+
+
+class InfoContext:
+    """Info context ID holder"""
+    passive = 1  # Applied regardless of carrier holder's state
+    online = 2  # Applied when carrier holder is at least in online state (i.e., in active and overloaded too)
+    active = 3  # Applied when carrier holder is at least online
+    overload = 4  # Applied only when carrier holder is overloaded
+    projected = 5  # Applied when holder is activated on some target
+
+    @classmethod
+    def eve2eos(cls, effCatId):
+        """Convert CCP's effect category ID name to info context ID"""
+        # Format: {effect category ID: state ID}
+        conversionMap = {EffectCategory.passive: cls.passive,
+                         EffectCategory.active: cls.active,
+                         EffectCategory.target: cls.projected,
+                         EffectCategory.online: cls.online,
+                         EffectCategory.overload: cls.overload,
+                         EffectCategory.system: cls.projected}
+        result = conversionMap[effCatId]
+        return result
+
 class InfoRunTime:
     """Info modification type ID holder"""
     duration = 1
@@ -114,6 +138,9 @@ class Info:
         # Describes conditions under which modification is applied.
         # Can be None or tree of ConditionAtom objects.
         self.conditions = None
+
+        # Info is applied only when its holder exists in certain context
+        self.context = None
 
         # Describes type of modification.
         # Can have InfoRunTime class' attribute value.

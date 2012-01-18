@@ -23,7 +23,7 @@ from copy import deepcopy
 from itertools import combinations
 
 from eos.const import Type, Operand
-from eos.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from .builderData import durationMods, instantMods
 from .modifier import Modifier
@@ -67,7 +67,7 @@ class InfoBuilder:
         # Effect build status
         self.effectStatus = None
 
-    def build(self, preExpression, postExpression):
+    def build(self, preExpression, postExpression, effectCategoryId):
         """Go through both trees and compose our EffectInfos"""
         # Assume we parse effect 100% successfully by default
         self.effectStatus = InfoBuildStatus.okFull
@@ -159,6 +159,12 @@ class InfoBuilder:
         # Same for post-modifiers
         if len(self.postMods.difference(usedPosts)) > 0:
             self.effectStatus = InfoBuildStatus.okPartial
+
+        # Fill context field for all infos, depending on effect's
+        # category
+        infoContext = InfoContext.eve2eos(effectCategoryId)
+        for info in infos:
+            info.context = infoContext
 
         # Finally, handle our infos and parsing status to requestor
         return infos, self.effectStatus

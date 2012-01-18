@@ -32,6 +32,12 @@ from .affector import Affector
 # Stacking penalty base constant, used in attribute calculations
 penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
+class State:
+    offline = 1
+    online = 2
+    active = 3
+    overload = 4
+
 
 class MutableAttributeHolder:
     """
