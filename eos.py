@@ -24,6 +24,7 @@ from eos.fit.character import Character
 from eos.fit.ship import Ship
 from eos.fit.module import Module
 from eos.fit.charge import Charge
+from eos.fit.drone import Drone
 
 class Eos:
     def __init__(self, dataHandler):
@@ -52,3 +53,8 @@ class Eos:
         chargeType = self.__dataHandler.getType(typeId)
         charge = Charge(chargeType)
         return charge
+
+    def makeDrone(self, typeId):
+        droneType = self.__dataHandler.getType(typeId)
+        drone = Drone(droneType)
+        return drone

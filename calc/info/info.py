@@ -46,6 +46,7 @@ class InfoContext:
             result = None
         return result
 
+
 class InfoRunTime:
     """Info modification type ID holder"""
     duration = 1
@@ -73,7 +74,10 @@ class InfoLocation:
                          "Target": cls.target,
                          "Other": cls.other,
                          "Area": cls.area}
-        result = conversionMap[name]
+        try:
+            result = conversionMap[name]
+        except KeyError:
+            result = None
         return result
 
 
@@ -118,7 +122,10 @@ class InfoOperator:
                          "PostDiv": cls.postDiv,
                          "PostPercent": cls.postPercent,
                          "PostAssignment": cls.postAssignment}
-        result = conversionMap[name]
+        try:
+            result = conversionMap[name]
+        except KeyError:
+            result = None
         return result
 
 

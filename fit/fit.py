@@ -23,6 +23,7 @@ from collections import MutableSequence
 
 from eos.calc.info.info import InfoLocation
 from eos.calc.register import Register
+from eos.calc.state import State
 
 
 class Fit:
@@ -40,6 +41,7 @@ class Fit:
         # Item lists
         self.skills = MutableAttributeHolderList(self)
         self.modules = MutableAttributeHolderList(self)
+        self.drones = MutableAttributeHolderList(self)
         self.implants = MutableAttributeHolderList(self)
         self.boosters = MutableAttributeHolderList(self)
 
@@ -83,11 +85,13 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self.__register.registerAffectee(holder, **kwargs)
-        for affector in holder._generateAffectors():
+        enabledContexts = State._contextDifference(None, holder.state)
+        enabledAffectors = holder._generateAffectors(contexts=enabledContexts)
+        for affector in enabledAffectors:
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
         # all influenced by holder attributes
-        holder._damageDependantsAll()
+        holder._damageAffectorsDependants(enabledAffectors)
 
     def _removeHolder(self, holder, **kwargs):
         """Handle removal of holder from fit"""
@@ -96,15 +100,32 @@ class Fit:
         charge = getattr(holder, "charge", None)
         if charge is not None:
             holder.charge = None
+        disabledContexts = State._contextDifference(None, holder.state)
+        disabledAffectors = holder._generateAffectors(contexts=disabledContexts)
         # When links in register are still alive, damage all attributes
         # influenced by holder
-        holder._damageDependantsAll()
+        holder._damageAffectorsDependants(disabledAffectors)
         # Remove links from register
         self.__register.unregisterAffectee(holder, **kwargs)
-        for affector in holder._generateAffectors():
+        for affector in disabledAffectors:
             self.__register.unregisterAffector(affector)
         # And finally, unset fit
         holder.fit = None
+
+    def _stateSwitch(self, holder, newState):
+        oldState = holder.state
+        contextDiff = State._contextDifference(oldState, newState)
+        affectorDiff = holder._generateAffectors(contexts=contextDiff)
+        # We're turning something on
+        if newState > oldState:
+            for affector in affectorDiff:
+                self.__register.registerAffector(affector)
+            holder._damageAffectorsDependants(affectorDiff)
+        # We're turning something off
+        else:
+            holder._damageAffectorsDependants(affectorDiff)
+            for affector in affectorDiff:
+                self.__register.unregisterAffector(affector)
 
     def _getAffectors(self, holder):
         """Get set of affectors affecting passed holder"""

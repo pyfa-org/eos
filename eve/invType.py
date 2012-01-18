@@ -20,6 +20,8 @@
 
 
 from eos.const import nulls, Attribute
+from eos.calc.state import State
+from eos.calc.info.info import InfoContext
 
 
 class InvType:
@@ -72,6 +74,9 @@ class InvType:
         # Stores required skill IDs as set once calculated
         self.__requiredSkills = None
 
+        # Caches results of max allowed state as integer ID
+        self.__maxState = None
+
     def requiredSkills(self):
         """Detect IDs of required skills based on invType's attributes"""
         if self.__requiredSkills is None:
@@ -81,3 +86,30 @@ class InvType:
                 if srq is not None:
                     self.__requiredSkills.add(int(srq))
         return self.__requiredSkills
+
+    def getInfos(self, startContext=None, endContext=None):
+        """Get all infos spawned by effects"""
+        infos = set()
+        for effect in self.effects:
+            for info in effect.getInfos():
+                infos.add(info)
+        return infos
+
+    def getMaxState(self):
+        """Return highest state ID this type is allowed to take"""
+        if self.__maxState is None:
+            # All types can be at least offline,
+            # even when they have no effects
+            maxState = State.offline
+            # We need to iterate through effects of type instead of infos because
+            # effect doesn't necessarily generate info, but we need data from all
+            # effects to reliably detect max state
+            for effect in self.effects:
+                # Convert effect category to info context, context into
+                # holder state
+                context = InfoContext.eve2eos(effect.categoryId)
+                effectState = State._context2state(context)
+                if effectState is not None:
+                    maxState = max(maxState, effectState)
+            self.__maxState = maxState
+        return self.__maxState
