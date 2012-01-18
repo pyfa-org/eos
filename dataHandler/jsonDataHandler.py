@@ -102,7 +102,7 @@ class JsonDataHandler(DataHandler):
             data = self.__effectData[str(int(effectId))]
             effCategoryId, isOffence, isAssist, preExpId, postExpId = data
             effect = Effect(effectId,
-                            effCategoryId,
+                            effectCategoryId=effCategoryId,
                             isOffensive=isOffence,
                             isAssistance=isAssist,
                             preExpression=self.getExpression(preExpId),

@@ -59,7 +59,7 @@ class TestCondition(TestCase):
         eElseStub = Expression(27, value="1")
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
-        infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
+        infos, status = InfoBuilder().build(eIfElse, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -102,7 +102,7 @@ class TestCondition(TestCase):
         eElseStub = Expression(27, value="1")
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
-        infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
+        infos, status = InfoBuilder().build(eIfElse, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -141,7 +141,7 @@ class TestCondition(TestCase):
         eElseStub = Expression(27, value="1")
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
-        infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
+        infos, status = InfoBuilder().build(eIfElse, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -192,7 +192,7 @@ class TestCondition(TestCase):
         eElseStub = Expression(27, value="1")
         eIfElse = Expression(52, arg1=eIfThen, arg2=eElseStub)
 
-        infos, status = InfoBuilder().build(eIfElse, self.eRmMod)
+        infos, status = InfoBuilder().build(eIfElse, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -235,7 +235,7 @@ class TestCondition(TestCase):
         eIfThen2 = Expression(41, arg1=eComp2, arg2=eSplicedCondStub)
         eIfElse2 = Expression(52, arg1=eIfThen2, arg2=eStub)
 
-        infos, status = InfoBuilder().build(eIfElse2, self.eRmMod)
+        infos, status = InfoBuilder().build(eIfElse2, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -282,7 +282,7 @@ class TestCondition(TestCase):
         eIfThen2 = Expression(41, arg1=eComp3, arg2=eSplicedCondStub)
         eIfElse2 = Expression(52, arg1=eIfThen2, arg2=eStub)
 
-        infos, status = InfoBuilder().build(eIfElse2, self.eRmMod)
+        infos, status = InfoBuilder().build(eIfElse2, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -343,7 +343,7 @@ class TestCondition(TestCase):
         eIfElse2 = Expression(52, arg1=eIfThen2, arg2=eStub)
         eSplicedIfs = Expression(17, arg1=eIfElse1, arg2=eIfElse2)
 
-        infos, status = InfoBuilder().build(eSplicedIfs, self.eRmMod)
+        infos, status = InfoBuilder().build(eSplicedIfs, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")

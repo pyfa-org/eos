@@ -37,7 +37,7 @@ class TestModLoc(TestCase):
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(8, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(60, arg1=eOptrTgt, arg2=eSrcAttr)
-        infos, status = InfoBuilder().build(eAddMod, eRmMod)
+        infos, status = InfoBuilder().build(eAddMod, eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")

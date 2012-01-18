@@ -30,7 +30,7 @@ class TestStubInt0(TestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(27, value="0")
         ePostStub = Expression(27, value="0")
-        infos, status = InfoBuilder().build(ePreStub, ePostStub)
+        infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -42,7 +42,7 @@ class TestStubInt1(TestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(27, value="1")
         ePostStub = Expression(27, value="1")
-        infos, status = InfoBuilder().build(ePreStub, ePostStub)
+        infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -54,7 +54,7 @@ class TestStubBoolTrue(TestCase):
     def tesBuildSuccess(self):
         ePreStub = Expression(23, value="True")
         ePostStub = Expression(23, value="True")
-        infos, status = InfoBuilder().build(ePreStub, ePostStub)
+        infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -66,7 +66,7 @@ class TestStubMixed(TestCase):
     def testBuildSuccess(self):
         preStub = Expression(23, value="True")
         postStub = Expression(27, value="0")
-        infos, status = InfoBuilder().build(preStub, postStub)
+        infos, status = InfoBuilder().build(preStub, postStub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")

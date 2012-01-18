@@ -31,7 +31,7 @@ class TestInactive(TestCase):
     def testAttack(self):
         disabledPre = Expression(13)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -39,7 +39,7 @@ class TestInactive(TestCase):
     def testCargoScan(self):
         disabledPre = Expression(14)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -47,7 +47,7 @@ class TestInactive(TestCase):
     def testCheatTeleDock(self):
         disabledPre = Expression(15)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -55,7 +55,7 @@ class TestInactive(TestCase):
     def testCheatTeleGate(self):
         disabledPre = Expression(16)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -63,7 +63,7 @@ class TestInactive(TestCase):
     def testAoeDecloak(self):
         disabledPre = Expression(19)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -71,7 +71,7 @@ class TestInactive(TestCase):
     def testEcmBurst(self):
         disabledPre = Expression(30)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -79,7 +79,7 @@ class TestInactive(TestCase):
     def testAoeDmg(self):
         disabledPre = Expression(32)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -87,7 +87,7 @@ class TestInactive(TestCase):
     def testMissileLaunch(self):
         disabledPre = Expression(44)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -95,7 +95,7 @@ class TestInactive(TestCase):
     def testDefenderLaunch(self):
         disabledPre = Expression(45)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -103,7 +103,7 @@ class TestInactive(TestCase):
     def testFofLaunch(self):
         disabledPre = Expression(47)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -111,7 +111,7 @@ class TestInactive(TestCase):
     def testMine(self):
         disabledPre = Expression(50)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -119,7 +119,7 @@ class TestInactive(TestCase):
     def testPowerBooster(self):
         disabledPre = Expression(53)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -127,7 +127,7 @@ class TestInactive(TestCase):
     def testShipScan(self):
         disabledPre = Expression(66)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -135,7 +135,7 @@ class TestInactive(TestCase):
     def testSurveyScan(self):
         disabledPre = Expression(69)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -143,7 +143,7 @@ class TestInactive(TestCase):
     def testTgtHostile(self):
         disabledPre = Expression(70)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -151,7 +151,7 @@ class TestInactive(TestCase):
     def testTgtSilent(self):
         disabledPre = Expression(71)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -159,7 +159,7 @@ class TestInactive(TestCase):
     def testToolTgtSkills(self):
         disabledPre = Expression(72)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -167,7 +167,7 @@ class TestInactive(TestCase):
     def testUserError(self):
         disabledPre = Expression(73)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
@@ -175,7 +175,7 @@ class TestInactive(TestCase):
     def testVrfTgtGrp(self):
         disabledPre = Expression(74)
         stubPost = Expression(27, value="1")
-        infos, status = InfoBuilder().build(disabledPre, stubPost)
+        infos, status = InfoBuilder().build(disabledPre, stubPost, 0)
         expStatus = InfoBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")

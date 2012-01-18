@@ -36,7 +36,7 @@ class TestPreModSubAttr(TestCase):
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
         ePostStub = Expression(27, value="1")
-        infos, status = InfoBuilder().build(ePreSub, ePostStub)
+        infos, status = InfoBuilder().build(ePreSub, ePostStub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -70,7 +70,7 @@ class TestPreModSubVal(TestCase):
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
         ePostStub = Expression(27, value="1")
-        infos, status = InfoBuilder().build(ePreSub, ePostStub)
+        infos, status = InfoBuilder().build(ePreSub, ePostStub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -104,7 +104,7 @@ class TestPostModSubAttr(TestCase):
         eSrcAttr = Expression(22, attributeId=84)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
-        infos, status = InfoBuilder().build(ePreStub, ePostSub)
+        infos, status = InfoBuilder().build(ePreStub, ePostSub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
@@ -138,7 +138,7 @@ class TestPostModSubVal(TestCase):
         eSrcVal = Expression(27, value="1")
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
-        infos, status = InfoBuilder().build(ePreStub, ePostSub)
+        infos, status = InfoBuilder().build(ePreStub, ePostSub, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")

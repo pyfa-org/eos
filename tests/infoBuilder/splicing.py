@@ -54,7 +54,7 @@ class TestSplicing(TestCase):
         eAddSplice2 = Expression(17, arg1=eAddMod2, arg2=eAddSplice1)
         eRmSplice1 = Expression(17, arg1=eRmMod1, arg2=eRmMod3)
         eRmSplice2 = Expression(17, arg1=eRmMod2, arg2=eRmSplice1)
-        infos, status = InfoBuilder().build(eAddSplice2, eRmSplice2)
+        infos, status = InfoBuilder().build(eAddSplice2, eRmSplice2, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 3, msg="three infos must be generated")
