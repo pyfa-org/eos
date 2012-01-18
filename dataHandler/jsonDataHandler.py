@@ -87,7 +87,9 @@ class JsonDataHandler(DataHandler):
         except KeyError:
             data = self.__attributeData[str(int(attrId))]
             highIsGood, stackable = data
-            attribute = Attribute(attrId, highIsGood=highIsGood, stackable=stackable)
+            attribute = Attribute(attrId,
+                                  highIsGood=highIsGood,
+                                  stackable=stackable)
             self.__attributesCache[attrId] = attribute
         return attribute
 
@@ -98,8 +100,11 @@ class JsonDataHandler(DataHandler):
             effect = self.__effectsCache[effectId]
         except KeyError:
             data = self.__effectData[str(int(effectId))]
-            isOffence, isAssist, preExpId, postExpId = data
-            effect = Effect(effectId, isOffensive=isOffence, isAssistance=isAssist,
+            effCategoryId, isOffence, isAssist, preExpId, postExpId = data
+            effect = Effect(effectId,
+                            effCategoryId,
+                            isOffensive=isOffence,
+                            isAssistance=isAssist,
                             preExpression=self.getExpression(preExpId),
                             postExpression=self.getExpression(postExpId))
             self.__effectsCache[effectId] = effect

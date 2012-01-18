@@ -87,8 +87,9 @@ with bz2.BZ2File(args.attributes, "wb") as f:
 
 print("dumping effects")
 effects = {}
-for row in conn.execute("SELECT effectID, isOffensive, isAssistance, preExpression, postExpression FROM dgmeffects"):
-    effects[row["effectID"]] = (row["isOffensive"],
+for row in conn.execute("SELECT effectID, effectCategory, isOffensive, isAssistance, preExpression, postExpression FROM dgmeffects"):
+    effects[row["effectID"]] = (row["effectCategory"],
+                                row["isOffensive"],
                                 row["isAssistance"],
                                 row["preExpression"],
                                 row["postExpression"])
