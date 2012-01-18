@@ -21,7 +21,7 @@
 
 from eos.const import Attribute
 from eos.calc.info.info import InfoLocation
-from eos.calc.mutableAttributeHolder import MutableAttributeHolder
+from eos.calc.holder import MutableAttributeHolder
 
 
 class Skill(MutableAttributeHolder):

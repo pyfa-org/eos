@@ -34,9 +34,9 @@ class TestCondition(TestCase):
         # Create some modifier which makes sense for builder, we'll use it instead
         # of stub to test conditions which are assigned to it
         eTgt = Expression(24, value="Ship")
-        eTgtAttr = Expression(22, attributeId=15)
+        eTgtAttr = Expression(22, expressionAttributeId=15)
         eOptr = Expression(21, value="ModAdd")
-        eSrcAttr = Expression(22, attributeId=30)
+        eSrcAttr = Expression(22, expressionAttributeId=30)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
         self.eAddMod = Expression(6, arg1=eOptrTgt, arg2=eSrcAttr)
@@ -45,7 +45,7 @@ class TestCondition(TestCase):
     def testLogic(self):
         # Make a tree so we can focus on logic testing
         eTgtShip = Expression(24, value="Ship")
-        eAttr = Expression(22, attributeId=11)
+        eAttr = Expression(22, expressionAttributeId=11)
         eVal1 = Expression(27, value="0")
         eVal2 = Expression(27, value="100")
         eVal3 = Expression(27, value="-1")
@@ -94,7 +94,7 @@ class TestCondition(TestCase):
     def testComparison(self):
         # Make tree so we can test basic comparison
         eTgtShip = Expression(24, value="Ship")
-        eAttr = Expression(22, attributeId=11)
+        eAttr = Expression(22, expressionAttributeId=11)
         eVal = Expression(27, value="100")
         eTgtSpec = Expression(35, arg1=eTgtShip, arg2=eAttr)
         eComparison = Expression(39, arg1=eTgtSpec, arg2=eVal)
@@ -127,9 +127,9 @@ class TestCondition(TestCase):
     def testMath(self):
         # Create a tree so we can check math atoms and their child types
         eTgtShip = Expression(24, value="Ship")
-        eAttr1 = Expression(22, attributeId=11)
-        eAttr2 = Expression(2, attributeId=49)
-        eAttr3 = Expression(22, attributeId=5)
+        eAttr1 = Expression(22, expressionAttributeId=11)
+        eAttr2 = Expression(2, expressionAttributeId=49)
+        eAttr3 = Expression(22, expressionAttributeId=5)
         eVal = Expression(27, value="53")
         eTgtSpec1 = Expression(35, arg1=eTgtShip, arg2=eAttr1)
         eTgtSpec2 = Expression(35, arg1=eTgtShip, arg2=eAttr2)
@@ -184,7 +184,7 @@ class TestCondition(TestCase):
     def testTerminals(self):
         # Here we'll check value and attribute reference terminals
         eTgtSelf = Expression(24, value="Self")
-        eAttr = Expression(22, attributeId=87)
+        eAttr = Expression(22, expressionAttributeId=87)
         eVal = Expression(27, value="-50")
         eTgtSpec = Expression(35, arg1=eTgtSelf, arg2=eAttr)
         eComparison = Expression(39, arg1=eTgtSpec, arg2=eVal)
@@ -220,8 +220,8 @@ class TestCondition(TestCase):
     def testNested(self):
         # Tree which has two if-then-else blocks
         eTgtShip = Expression(24, value="Ship")
-        eAttr1 = Expression(22, attributeId=11)
-        eAttr2 = Expression(22, attributeId=76)
+        eAttr1 = Expression(22, expressionAttributeId=11)
+        eAttr2 = Expression(22, expressionAttributeId=76)
         eVal1 = Expression(27, value="5")
         eVal2 = Expression(27, value="25")
         eStub = Expression(27, value="1")
@@ -262,9 +262,9 @@ class TestCondition(TestCase):
         # As each info object has its own copy of conditions, for infos located
         # in else clauses some conditions are inverted, here we test it
         eTgtShip = Expression(24, value="Ship")
-        eAttr1 = Expression(22, attributeId=11)
-        eAttr2 = Expression(22, attributeId=76)
-        eAttr3 = Expression(22, attributeId=53)
+        eAttr1 = Expression(22, expressionAttributeId=11)
+        eAttr2 = Expression(22, expressionAttributeId=76)
+        eAttr3 = Expression(22, expressionAttributeId=53)
         eVal1 = Expression(27, value="5")
         eVal2 = Expression(27, value="25")
         eVal3 = Expression(27, value="125")
@@ -330,7 +330,7 @@ class TestCondition(TestCase):
         # If we have 2 similar duration modifiers with different conditions,
         # they should be combined into one by builder
         eTgtShip = Expression(24, value="Ship")
-        eAttr = Expression(22, attributeId=175)
+        eAttr = Expression(22, expressionAttributeId=175)
         eVal1 = Expression(27, value="8")
         eVal2 = Expression(27, value="56")
         eStub = Expression(27, value="1")

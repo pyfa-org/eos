@@ -31,10 +31,10 @@ class TestModLocGrp(TestCase):
 
     def testBuildSuccess(self):
         eTgtLoc = Expression(24, value="Ship")
-        eTgtGrp = Expression(26, groupId=46)
-        eTgtAttr = Expression(22, attributeId=6)
+        eTgtGrp = Expression(26, expressionGroupId=46)
+        eTgtAttr = Expression(22, expressionAttributeId=6)
         eOptr = Expression(21, value="PostPercent")
-        eSrcAttr = Expression(22, attributeId=1576)
+        eSrcAttr = Expression(22, expressionAttributeId=1576)
         eTgtItms = Expression(48, arg1=eTgtLoc, arg2=eTgtGrp)
         eTgtSpec = Expression(12, arg1=eTgtItms, arg2=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)

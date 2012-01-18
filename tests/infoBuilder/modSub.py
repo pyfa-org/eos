@@ -31,8 +31,8 @@ class TestPreModSubAttr(TestCase):
 
     def testBuildSuccess(self):
         eTgt = Expression(24, value="Target")
-        eTgtAttr = Expression(22, attributeId=18)
-        eSrcAttr = Expression(22, attributeId=97)
+        eTgtAttr = Expression(22, expressionAttributeId=18)
+        eSrcAttr = Expression(22, expressionAttributeId=97)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
         ePostStub = Expression(27, value="1")
@@ -65,7 +65,7 @@ class TestPreModSubVal(TestCase):
 
     def testBuildSuccess(self):
         eTgt = Expression(24, value="Target")
-        eTgtAttr = Expression(22, attributeId=18)
+        eTgtAttr = Expression(22, expressionAttributeId=18)
         eSrcVal = Expression(27, value="7")
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePreSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)
@@ -100,8 +100,8 @@ class TestPostModSubAttr(TestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(27, value="1")
         eTgt = Expression(24, value="Target")
-        eTgtAttr = Expression(22, attributeId=266)
-        eSrcAttr = Expression(22, attributeId=84)
+        eTgtAttr = Expression(22, expressionAttributeId=266)
+        eSrcAttr = Expression(22, expressionAttributeId=84)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostSub, 0)
@@ -134,7 +134,7 @@ class TestPostModSubVal(TestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(27, value="1")
         eTgt = Expression(24, value="Target")
-        eTgtAttr = Expression(22, attributeId=266)
+        eTgtAttr = Expression(22, expressionAttributeId=266)
         eSrcVal = Expression(27, value="1")
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostSub = Expression(18, arg1=eTgtSpec, arg2=eSrcVal)

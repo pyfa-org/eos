@@ -23,7 +23,10 @@ from eos.calc.info.info import InfoContext
 
 
 class State:
-    """Holds IDs of states all holders can take"""
+    """
+    Holds IDs of states all holders can take, and serves as glue between
+    info contexts and holder states
+    """
     offline = 1
     online = 2
     active = 3

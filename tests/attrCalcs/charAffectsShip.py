@@ -24,7 +24,7 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.invType import InvType
 from eos.eve.effect import Effect
-from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from eos.fit.fit import Fit
 from eos.fit.ship import Ship
 from eos.fit.character import Character
@@ -48,13 +48,14 @@ class TestCharAffectsShip(TestCase):
         ship2 = Ship(InvType(2, attributes={attrShip.id: 20}))
 
         info = Info()
+        info.requiredContext = InfoContext.passive
         info.runTime = InfoRunTime.duration
         info.location = InfoLocation.ship
         info.operator = InfoOperator.postPercent
         info.targetAttribute = attrShip.id
         info.sourceType = InfoSourceType.attribute
         info.sourceValue = attrChar.id
-        modEffect = Effect(1)
+        modEffect = Effect(1, categoryId=0)
         modEffect._Effect__infos = {info}
         char = Character(InvType(3, effects={modEffect}, attributes={attrChar.id: 40}))
         fit.character = char

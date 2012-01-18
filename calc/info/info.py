@@ -23,7 +23,7 @@ from eos.const import EffectCategory
 
 
 class InfoContext:
-    """Info context ID holder"""
+    """Info required context ID holder"""
     passive = 1  # Applied regardless of carrier holder's state
     online = 2  # Applied when carrier holder is at least in online state (i.e., in active and overloaded too)
     active = 3  # Applied when carrier holder is at least online
@@ -146,44 +146,45 @@ class Info:
 
     def __init__(self):
         # Describes conditions under which modification is applied.
-        # Can be None or tree of ConditionAtom objects.
+        # Can be None or tree of condition Atom objects.
         self.conditions = None
 
         # Info is applied only when its holder exists in certain context
-        self.context = None
+        # Must be InfoContext class' attribute value.
+        self.requiredContext = None
 
         # Describes type of modification.
-        # Can have InfoRunTime class' attribute value.
+        # Must be InfoRunTime class' attribute value.
         self.runTime = None
 
         # Flag identifying local/gang change.
-        # Can be either True or False.
+        # Must be either True or False.
         self.gang = False
 
         # Target location to change.
-        # Can have InfoLocation class' attribute value.
+        # Must be InfoLocation class' attribute value.
         self.location = None
 
         # The filter type of the modification.
-        # Can have InfoFilterType class' attribute value.
+        # Must be InfoFilterType class' attribute value.
         self.filterType = None
 
         # The filter value of the modification.
         # For InfoFilterType.all must be None.
-        # For InfoFilterType.group has some integer, referencing group via ID.
-        # For InfoFilterType.skill has some integer, referencing type via ID, or const.Type.self_ to reference type of carrier.
+        # For InfoFilterType.group must be some integer, referencing group via ID.
+        # For InfoFilterType.skill must be some integer, referencing type via ID, or const.Type.self_ to reference type of carrier.
         self.filterValue = None
 
         # Which operator should be applied.
-        # Can have InfoOperator class' attribute value.
+        # Must be InfoOperator class' attribute value.
         self.operator = None
 
         # Which attribute will be affected by the operator on the target.
-        # Keeps integer which references attribute via ID.
+        # Must be integer which references attribute via ID.
         self.targetAttribute = None
 
         # sourceValue type.
-        # Can have InfoSourceType class' attribute value.
+        # Must be InfoSourceType class' attribute value.
         self.sourceType = None
 
         # The value which is used as modification value for operation.

@@ -31,10 +31,10 @@ class TestModGangGrp(TestCase):
 
     def testBuildSuccess(self):
         # Manually composed example, as CCP doesn't use this modification type in any effect
-        eTgtGrp = Expression(26, groupId=80)
-        eTgtAttr = Expression(22, attributeId=158)
+        eTgtGrp = Expression(26, expressionGroupId=80)
+        eTgtAttr = Expression(22, expressionAttributeId=158)
         eOptr = Expression(21, value="PostPercent")
-        eSrcAttr = Expression(22, attributeId=349)
+        eSrcAttr = Expression(22, expressionAttributeId=349)
         eTgtSpec = Expression(34, arg1=eTgtGrp, arg2=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(2, arg1=eOptrTgt, arg2=eSrcAttr)

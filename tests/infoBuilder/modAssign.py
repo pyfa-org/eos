@@ -32,8 +32,8 @@ class TestPreModAssignAttr(TestCase):
     def testBuildSuccess(self):
         # Manually composed example, CCP doesn't use such combination
         eTgt = Expression(24, value="Char")
-        eTgtAttr = Expression(22, attributeId=166)
-        eSrcAttr = Expression(22, attributeId=177)
+        eTgtAttr = Expression(22, expressionAttributeId=166)
+        eSrcAttr = Expression(22, expressionAttributeId=177)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
         ePostStub = Expression(27, value="1")
@@ -66,7 +66,7 @@ class TestPreModAssignVal(TestCase):
 
     def testBuildSuccess(self):
         eTgt = Expression(24, value="Self")
-        eTgtAttr = Expression(22, attributeId=2)
+        eTgtAttr = Expression(22, expressionAttributeId=2)
         eSrcVal = Expression(27, value="1")
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
@@ -102,8 +102,8 @@ class TestPostModAssignAttr(TestCase):
         # Manually composed example, CCP doesn't use such combination
         ePreStub = Expression(27, value="1")
         eTgt = Expression(24, value="Char")
-        eTgtAttr = Expression(22, attributeId=166)
-        eSrcAttr = Expression(22, attributeId=177)
+        eTgtAttr = Expression(22, expressionAttributeId=166)
+        eSrcAttr = Expression(22, expressionAttributeId=177)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(ePreStub, ePostAssign, 0)
@@ -136,7 +136,7 @@ class TestPostModAssignVal(TestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(27, value="1")
         eTgt = Expression(24, value="Self")
-        eTgtAttr = Expression(22, attributeId=2)
+        eTgtAttr = Expression(22, expressionAttributeId=2)
         eSrcVal = Expression(27, value="0")
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)

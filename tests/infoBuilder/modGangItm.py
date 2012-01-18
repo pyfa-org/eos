@@ -30,9 +30,9 @@ class TestModGangItm(TestCase):
     """Test parsing of trees describing gang-mates' direct ship modification"""
 
     def testBuildSuccess(self):
-        eTgtAttr = Expression(22, attributeId=70)
+        eTgtAttr = Expression(22, expressionAttributeId=70)
         eOptr = Expression(21, value="PostPercent")
-        eSrcAttr = Expression(22, attributeId=151)
+        eSrcAttr = Expression(22, expressionAttributeId=151)
         eTgtSpec = Expression(40, arg1=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(3, arg1=eOptrTgt, arg2=eSrcAttr)

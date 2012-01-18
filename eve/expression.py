@@ -28,11 +28,11 @@ class Expression:
     (roots of expression tree), which actually describe how effect should affect other items.
     """
 
-    def __init__(self, operand, arg1=None, arg2=None, value=None,
-                 typeId=None, groupId=None, attributeId=None):
+    def __init__(self, operandId, arg1=None, arg2=None, value=None,
+                 expressionTypeId=None, expressionGroupId=None, expressionAttributeId=None):
         # Operand of expression, field which each expression must have.
         # Describes actual effect of expression
-        self.operand = int(operand) if operand is not None else None
+        self.operandId = int(operandId) if operandId is not None else None
 
         # Value of expression, contains string or integer (in form of string)
         self.value = str(value) if value is not None else None
@@ -42,6 +42,6 @@ class Expression:
         self.arg2 = arg2
 
         # References to type/group/attribute via integer ID
-        self.typeId = int(typeId) if not typeId in nulls else None
-        self.groupId = int(groupId) if not groupId in nulls else None
-        self.attributeId = int(attributeId) if not attributeId in nulls else None
+        self.expressionTypeId = int(expressionTypeId) if not expressionTypeId in nulls else None
+        self.expressionGroupId = int(expressionGroupId) if not expressionGroupId in nulls else None
+        self.expressionAttributeId = int(expressionAttributeId) if not expressionAttributeId in nulls else None

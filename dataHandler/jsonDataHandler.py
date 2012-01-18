@@ -102,7 +102,7 @@ class JsonDataHandler(DataHandler):
             data = self.__effectData[str(int(effectId))]
             effCategoryId, isOffence, isAssist, preExpId, postExpId = data
             effect = Effect(effectId,
-                            effectCategoryId=effCategoryId,
+                            categoryId=effCategoryId,
                             isOffensive=isOffence,
                             isAssistance=isAssist,
                             preExpression=self.getExpression(preExpId),
@@ -119,8 +119,12 @@ class JsonDataHandler(DataHandler):
         except KeyError:
             data = self.__expressionData[str(int(expId))]
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
-            expression = Expression(opndId, arg1=self.getExpression(arg1Id),
-                                    arg2=self.getExpression(arg2Id), value=eVal,
-                                    typeId=eTypeId, groupId=eGrpId, attributeId=eAttrId)
+            expression = Expression(opndId,
+                                    arg1=self.getExpression(arg1Id),
+                                    arg2=self.getExpression(arg2Id),
+                                    value=eVal,
+                                    expressionTypeId=eTypeId,
+                                    expressionGroupId=eGrpId,
+                                    expressionAttributeId=eAttrId)
             self.__expressionsCache[expId] = expression
         return expression

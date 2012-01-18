@@ -167,7 +167,7 @@ class InfoBuilder:
 
         # Fill context field for all infos
         for info in infos:
-            info.context = infoContext
+            info.requiredContext = infoContext
 
         # Finally, handle our infos and parsing status to requestor
         return infos, self.effectStatus
@@ -243,23 +243,23 @@ class InfoBuilder:
     def __generic(self, element, conditions):
         """Generic entry point, used if we expect passed element to be meaningful"""
         # For actual modifications, call method which handles them
-        if element.operand in durationMods:
+        if element.operandId in durationMods:
             self.__makeDurationMod(element, conditions)
-        elif element.operand in instantMods:
+        elif element.operandId in instantMods:
             self.__makeInstantMod(element, conditions)
         # Mark current effect as partially parsed if it contains
         # inactive operands
-        elif element.operand in inactiveOpnds:
+        elif element.operandId in inactiveOpnds:
             self.effectStatus = InfoBuildStatus.okPartial
         # Detect if-then-else construct
-        elif element.operand == Operand.or_ and element.arg1 and element.arg1.operand == Operand.ifThen:
+        elif element.operandId == Operand.or_ and element.arg1 and element.arg1.operandId == Operand.ifThen:
             self.__ifThenElse(element, conditions)
         # Process expressions with other operands using the map
         else:
             genericOpnds = {Operand.splice: self.__splice,
                             Operand.defInt: self.__checkIntStub,
                             Operand.defBool: self.__checkBoolStub}
-            genericOpnds[element.operand](element, conditions)
+            genericOpnds[element.operandId](element, conditions)
 
     def __splice(self, element, conditions):
         """Reference two expressions from self"""
@@ -287,7 +287,7 @@ class InfoBuilder:
             # Make sure to copy whole tree as it may be changed after
             self.activeMod.conditions = deepcopy(conditions)
         # Write modifier type, which corresponds to top-level operand of modification
-        self.activeMod.type = element.operand
+        self.activeMod.type = element.operandId
         # Request operator and target data, it's always in arg1
         self.__optrTgt(element.arg1)
         # Write down source attribute from arg2
@@ -305,7 +305,7 @@ class InfoBuilder:
         self.activeMod = Modifier()
         if conditions is not None:
             self.activeMod.conditions = deepcopy(conditions)
-        self.activeMod.type = element.operand
+        self.activeMod.type = element.operandId
         # As our operator is specified by top-level operand, call target router directly
         self.__tgtRouter(element.arg1)
         self.__srcGetter(element.arg2)
@@ -330,12 +330,12 @@ class InfoBuilder:
                        Operand.grpAttr: self.__tgtGrpAttr,
                        Operand.srqAttr: self.__tgtSrqAttr,
                        Operand.itmAttr: self.__tgtItmAttr}
-        tgtRouteMap[element.operand](element)
+        tgtRouteMap[element.operandId](element)
 
     def __srcGetter(self, element):
         """Pick proper source specifying method according to operand"""
         # For attribute definitions, store attribute ID as value
-        if element.operand == Operand.defAttr:
+        if element.operandId == Operand.defAttr:
             self.activeMod.sourceType = InfoSourceType.attribute
             self.activeMod.sourceValue = self.__getAttr(element)
         # Else, store just direct value
@@ -343,7 +343,7 @@ class InfoBuilder:
             valMap = {Operand.defInt: self.__getInt,
                       Operand.defBool: self.__getBool}
             self.activeMod.sourceType = InfoSourceType.value
-            self.activeMod.sourceValue = valMap[element.operand](element)
+            self.activeMod.sourceValue = valMap[element.operandId](element)
 
 
     def __tgtAttr(self, element):
@@ -366,7 +366,7 @@ class InfoBuilder:
         itmGetterMap = {Operand.defLoc: self.__tgtLoc,
                         Operand.locGrp: self.__tgtLocGrp,
                         Operand.locSrq: self.__tgtLocSrq}
-        itmGetterMap[element.arg1.operand](element.arg1)
+        itmGetterMap[element.arg1.operandId](element.arg1)
         # Target attribute is always specified in arg2
         self.activeMod.targetAttribute = self.__getAttr(element.arg2)
 
@@ -394,16 +394,16 @@ class InfoBuilder:
 
     def __getAttr(self, element):
         """Reference attribute via ID"""
-        return element.attributeId
+        return element.expressionAttributeId
 
     def __getGrp(self, element):
         """Reference group via ID"""
-        return element.groupId
+        return element.expressionGroupId
 
     def __getType(self, element):
         """Reference type via ID"""
         # Type getter function has special handling
-        if element.operand == Operand.getType:
+        if element.operandId == Operand.getType:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
             if self.__getLoc(element.arg1) == InfoLocation.self_:
@@ -411,7 +411,7 @@ class InfoBuilder:
             else:
                 raise ValueError("unexpected location referenced in type getter")
         else:
-            return element.typeId
+            return element.expressionTypeId
 
     def __getInt(self, element):
         """Get integer from value"""
@@ -448,7 +448,7 @@ class InfoBuilder:
                         Operand.eq: self.__makeConditionComparison,
                         Operand.greater: self.__makeConditionComparison,
                         Operand.greaterEq: self.__makeConditionComparison}
-        condition = condRouteMap[element.operand](element)
+        condition = condRouteMap[element.operandId](element)
         return condition
 
     def __makeConditionLogic(self, element):
@@ -458,7 +458,7 @@ class InfoBuilder:
         # Create logic node and fill it
         condLogicAtom = Atom()
         condLogicAtom.type = AtomType.logic
-        condLogicAtom.operator = atomLogicMap[element.operand]
+        condLogicAtom.operator = atomLogicMap[element.operandId]
         # Each subnode can be comparison or yet another logical element
         condLogicAtom.arg1 = self.__makeConditionRouter(element.arg1)
         condLogicAtom.arg2 = self.__makeConditionRouter(element.arg2)
@@ -473,7 +473,7 @@ class InfoBuilder:
         # Create comparison node and fill it with data
         condCompAtom = Atom()
         condCompAtom.type = AtomType.comparison
-        condCompAtom.operator = atomCompMap[element.operand]
+        condCompAtom.operator = atomCompMap[element.operandId]
         condCompAtom.arg1 = self.__conditionPartRouter(element.arg1)
         condCompAtom.arg2 = self.__conditionPartRouter(element.arg2)
         return condCompAtom
@@ -484,7 +484,7 @@ class InfoBuilder:
                        Operand.sub: self.__makeCondPartMath,
                        Operand.itmAttrCond: self.__makeCondPartValRef,
                        Operand.defInt: self.__makeCondPartVal}
-        condPartAtom = condPartMap[element.operand](element)
+        condPartAtom = condPartMap[element.operandId](element)
         return condPartAtom
 
     def __makeCondPartMath(self, element):
@@ -493,7 +493,7 @@ class InfoBuilder:
                        Operand.sub: AtomMathOperator.subtract}
         conditionMathAtom = Atom()
         conditionMathAtom.type = AtomType.math
-        conditionMathAtom.operator = atomMathMap[element.operand]
+        conditionMathAtom.operator = atomMathMap[element.operandId]
         # Each math subnode can be other math node, attribute reference or value,
         # so forward it to router again
         conditionMathAtom.arg1 = self.__conditionPartRouter(element.arg1)
@@ -513,7 +513,7 @@ class InfoBuilder:
         argValueMap = {Operand.defInt: self.__getInt}
         valueAtom = Atom()
         valueAtom.type = AtomType.value
-        valueAtom.value = argValueMap[element.operand](element)
+        valueAtom.value = argValueMap[element.operandId](element)
         return valueAtom
 
     def __appendCondition(self, cond1, cond2):

@@ -19,113 +19,25 @@
 #===============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
 from collections import Mapping
 from math import exp
 
 from eos.const import Category, Attribute
 from eos.calc.info.info import InfoOperator, InfoSourceType
-from .affector import Affector
-from .state import State
 
 
 # Stacking penalty base constant, used in attribute calculations
 penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
 
-class MutableAttributeHolder(metaclass=ABCMeta):
-    """
-    Base attribute holder class inherited by all classes that need to keep track of modified attributes.
-    This class holds a MutableAttributeMap to keep track of changes.
-    """
-
-    @abstractmethod
-    def _getLocation(self):
-        """
-        Private method which each class must implement, used in
-        calculation process
-        """
-        ...
-
-    def __init__(self, invType):
-        # Which fit this holder is bound to
-        self.fit = None
-        # Which invType this holder wraps
-        self.invType = invType
-        # Special dictionary subclass that holds modified attributes and data related to their calculation
-        self.attributes = MutableAttributeMap(self)
-        # Keeps current state of the holder
-        self.__state = State.offline
-
-    def _generateAffectors(self, contexts=None):
-        """
-        Get all affectors spawned by holder.
-
-        Keyword arguments:
-        contexts -- filter results by affector.info.context, which should be in this
-        passed iterable; if None, no filtering occurs (default None)
-
-        Return value:
-        set with Affector objects
-        """
-        affectors = set()
-        # Special handling for no filters - to avoid checking condition
-        # on each cycle
-        if contexts is None:
-            for info in self.invType.getInfos():
-                affector = Affector(self, info)
-                affectors.add(affector)
-        else:
-            for info in self.invType.getInfos():
-                if info.context in contexts:
-                    affector = Affector(self, info)
-                    affectors.add(affector)
-        return affectors
-
-    @property
-    def state(self):
-        return self.__state
-
-    @state.setter
-    def state(self, newState):
-        if newState > self.invType.getMaxState():
-            raise RuntimeError("invalid state")
-        oldState = self.state
-        if newState == oldState:
-            return
-        if self.fit is not None:
-            self.fit._stateSwitch(self, newState)
-        self.__state = newState
-
-    def _damageDependantsOnAttr(self, attrId):
-        """Clear calculated attribute values relying on value of passed attribute"""
-        for affector in self._generateAffectors():
-            info = affector.info
-            # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attrId or info.sourceType != InfoSourceType.attribute:
-                continue
-            # Gp through all holders targeted by info
-            for targetHolder in self.fit._getAffectees(affector):
-                # And remove target attribute
-                del targetHolder.attributes[info.targetAttribute]
-
-    def _damageAffectorsDependants(self, affectors):
-        """Clear calculated attribute values relying on anything assigned to holder"""
-        for affector in affectors:
-            # Go through all holders targeted by info
-            for targetHolder in self.fit._getAffectees(affector):
-                # And remove target attribute
-                del targetHolder.attributes[affector.info.targetAttribute]
-
-
 class MutableAttributeMap(Mapping):
-    """Store, process and provide access to modified attribute values"""
+    """Calculate, store and provide access to modified attribute values"""
 
     def __init__(self, holder):
+        # Reference to holder for internal needs
         self.__holder = holder
         # Actual container of calculated attributes
-        # Format: attributeID: value
+        # Format: {attributeID: value}
         self.__modifiedAttributes = {}
 
     def __getitem__(self, attrId):
@@ -133,7 +45,7 @@ class MutableAttributeMap(Mapping):
             val = self.__modifiedAttributes[attrId]
         except KeyError:
             val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
-            self.__holder._damageDependantsOnAttr(attrId)
+            self.__holder._clearAttributeDependants(attrId)
         return val
 
     def __len__(self):
@@ -157,7 +69,7 @@ class MutableAttributeMap(Mapping):
             del self.__modifiedAttributes[attrId]
             # And make sure all other attributes relying on it
             # are cleared too
-            self.__holder._damageDependantsOnAttr(attrId)
+            self.__holder._clearAttributeDependants(attrId)
 
     def __setitem__(self, attrId, value):
         # This method is added to allow direct skill level changes
@@ -165,12 +77,14 @@ class MutableAttributeMap(Mapping):
             raise RuntimeError("changing any attribute besides skillLevel is prohibited")
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
-        self.__holder._damageDependantsOnAttr(attrId)
+        self.__holder._clearAttributeDependants(attrId)
 
     def __calculate(self, attrId):
         """
-        Run calculations to find the actual value of attribute with ID equal to attrID.
-        All other attribute values are assumed to be final (if they're not, this method will be called on them)
+        Run calculations to find the actual value of attribute.
+
+        Positional arguments:
+        attrId -- ID of attribute which will be calculated.
         """
         holder =  self.__holder
         # Base attribute value which we'll use for modification

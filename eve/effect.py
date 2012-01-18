@@ -28,14 +28,14 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, effectId, effectCategoryId=None, isOffensive=None, isAssistance=None,
+    def __init__(self, id_, categoryId=None, isOffensive=None, isAssistance=None,
                  preExpression=None, postExpression=None):
         # The unique ID of an effect
-        self.id = int(effectId) if effectId is not None else None
+        self.id = int(id_) if id_ is not None else None
 
         # Effect category actually describes type of effect, which determines
         # when it is applied - always, when item is active, overloaded, etc.
-        self.categoryId = int(effectCategoryId) if effectCategoryId is not None else None
+        self.categoryId = int(categoryId) if categoryId is not None else None
 
         # Whether the effect is offensive (e.g. guns)
         self.isOffensive = bool(isOffensive) if isOffensive is not None else None

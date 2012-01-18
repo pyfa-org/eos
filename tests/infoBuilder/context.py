@@ -31,9 +31,9 @@ class TestContext(TestCase):
     def setUp(self):
         # Some random modifier, which makes sense for builder
         eTgt = Expression(24, value="Ship")
-        eTgtAttr = Expression(22, attributeId=15)
+        eTgtAttr = Expression(22, expressionAttributeId=15)
         eOptr = Expression(21, value="ModAdd")
-        eSrcAttr = Expression(22, attributeId=30)
+        eSrcAttr = Expression(22, expressionAttributeId=30)
         eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
         self.eAddMod = Expression(6, arg1=eOptrTgt, arg2=eSrcAttr)
@@ -46,7 +46,7 @@ class TestContext(TestCase):
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expContext = InfoContext.passive
-        self.assertEqual(info.context, expContext, msg="info context must be passive (ID {})".format(expContext))
+        self.assertEqual(info.requiredContext, expContext, msg="info context must be passive (ID {})".format(expContext))
 
     def testActive(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 1)
@@ -55,7 +55,7 @@ class TestContext(TestCase):
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expContext = InfoContext.active
-        self.assertEqual(info.context, expContext, msg="info context must be active (ID {})".format(expContext))
+        self.assertEqual(info.requiredContext, expContext, msg="info context must be active (ID {})".format(expContext))
 
     def testTarget(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 2)
@@ -64,7 +64,7 @@ class TestContext(TestCase):
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expContext = InfoContext.projected
-        self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
+        self.assertEqual(info.requiredContext, expContext, msg="info context must be projected (ID {})".format(expContext))
 
     def testArea(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 3)
@@ -79,7 +79,7 @@ class TestContext(TestCase):
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expContext = InfoContext.online
-        self.assertEqual(info.context, expContext, msg="info context must be online (ID {})".format(expContext))
+        self.assertEqual(info.requiredContext, expContext, msg="info context must be online (ID {})".format(expContext))
 
     def testOverload(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 5)
@@ -88,7 +88,7 @@ class TestContext(TestCase):
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expContext = InfoContext.overload
-        self.assertEqual(info.context, expContext, msg="info context must be overload (ID {})".format(expContext))
+        self.assertEqual(info.requiredContext, expContext, msg="info context must be overload (ID {})".format(expContext))
 
     def testDungeon(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 6)
@@ -103,4 +103,4 @@ class TestContext(TestCase):
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expContext = InfoContext.projected
-        self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
+        self.assertEqual(info.requiredContext, expContext, msg="info context must be projected (ID {})".format(expContext))

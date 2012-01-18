@@ -24,7 +24,7 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.invType import InvType
 from eos.eve.effect import Effect
-from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from eos.fit.fit import Fit
 from eos.fit.ship import Ship
 from eos.fit.module import Module
@@ -44,6 +44,7 @@ class TestShipMod(TestCase):
         modSrcAttr = attrMetaGetter(2)
         modEffect = Effect(1)
         info = Info()
+        info.requiredContext = InfoContext.passive
         info.runTime = InfoRunTime.duration
         info.location = InfoLocation.ship
         info.operator = InfoOperator.postPercent

@@ -20,7 +20,7 @@
 
 
 from eos.calc.info.info import InfoLocation
-from eos.calc.mutableAttributeHolder import MutableAttributeHolder
+from eos.calc.holder import MutableAttributeHolder
 
 
 class Implant(MutableAttributeHolder):

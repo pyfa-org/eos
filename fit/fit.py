@@ -91,7 +91,7 @@ class Fit:
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
         # all influenced by holder attributes
-        holder._damageAffectorsDependants(enabledAffectors)
+        holder._clearAffectorDependants(enabledAffectors)
 
     def _removeHolder(self, holder, **kwargs):
         """Handle removal of holder from fit"""
@@ -104,7 +104,7 @@ class Fit:
         disabledAffectors = holder._generateAffectors(contexts=disabledContexts)
         # When links in register are still alive, damage all attributes
         # influenced by holder
-        holder._damageAffectorsDependants(disabledAffectors)
+        holder._clearAffectorDependants(disabledAffectors)
         # Remove links from register
         self.__register.unregisterAffectee(holder, **kwargs)
         for affector in disabledAffectors:
@@ -120,10 +120,10 @@ class Fit:
         if newState > oldState:
             for affector in affectorDiff:
                 self.__register.registerAffector(affector)
-            holder._damageAffectorsDependants(affectorDiff)
+            holder._clearAffectorDependants(affectorDiff)
         # We're turning something off
         else:
-            holder._damageAffectorsDependants(affectorDiff)
+            holder._clearAffectorDependants(affectorDiff)
             for affector in affectorDiff:
                 self.__register.unregisterAffector(affector)
 

@@ -31,10 +31,10 @@ class TestModGangOwnSrq(TestCase):
 
     def testBuildSuccess(self):
         # Manually composed example, as CCP doesn't use this modification type in any effect
-        eTgtSrq = Expression(29, typeId=3326)
-        eTgtAttr = Expression(22, attributeId=654)
+        eTgtSrq = Expression(29, expressionTypeId=3326)
+        eTgtAttr = Expression(22, expressionAttributeId=654)
         eOptr = Expression(21, value="PostMul")
-        eSrcAttr = Expression(22, attributeId=848)
+        eSrcAttr = Expression(22, expressionAttributeId=848)
         eTgtSpec = Expression(64, arg1=eTgtSrq, arg2=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(4, arg1=eOptrTgt, arg2=eSrcAttr)
