@@ -42,8 +42,9 @@ class State:
 
         Return value:
         ID of state, corresponding to passed context, or None if
-        no corresponding context was found
+        no corresponding state was found
         """
+        # Format: {info context ID: state ID}
         conversionMap = {InfoContext.passive: cls.offline,
                          InfoContext.online: cls.online,
                          InfoContext.active: cls.active,

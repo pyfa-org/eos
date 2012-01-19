@@ -144,7 +144,7 @@ class Fit:
             # Gp through all holders targeted by info
             for targetHolder in self._getAffectees(affector):
                 # And remove target attribute
-                del targetHolder.attributes[info.targetAttribute]
+                del targetHolder.attributes[info.targetAttributeId]
 
     def _clearAffectorDependents(self, affectors):
         """Clear calculated attribute values relying on anything assigned to holder"""
@@ -152,7 +152,7 @@ class Fit:
             # Go through all holders targeted by info
             for targetHolder in self._getAffectees(affector):
                 # And remove target attribute
-                del targetHolder.attributes[affector.info.targetAttribute]
+                del targetHolder.attributes[affector.info.targetAttributeId]
 
     def _getAffectors(self, holder):
         """Get set of affectors affecting passed holder"""

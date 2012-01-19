@@ -70,7 +70,7 @@ class InfoBuilder:
     def build(self, preExpression, postExpression, effectCategoryId):
         """Go through both trees and compose our EffectInfos"""
         # Attempt to get context which we'll assign to infos later
-        infoContext = InfoContext.eve2eos(effectCategoryId)
+        infoContext = InfoContext.effectCategory2context(effectCategoryId)
         # And if it's none, return error right away
         if infoContext is None:
             return set(), InfoBuildStatus.error
@@ -348,17 +348,17 @@ class InfoBuilder:
 
     def __tgtAttr(self, element):
         """Get target attribute and store it"""
-        self.activeMod.targetAttribute = self.__getAttr(element.arg1)
+        self.activeMod.targetAttributeId = self.__getAttr(element.arg1)
 
     def __tgtSrqAttr(self, element):
         """Join target skill requirement and target attribute"""
         self.activeMod.targetSkillRq = self.__getType(element.arg1)
-        self.activeMod.targetAttribute = self.__getAttr(element.arg2)
+        self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtGrpAttr(self, element):
         """Join target group and target attribute"""
         self.activeMod.targetGroup = self.__getGrp(element.arg1)
-        self.activeMod.targetAttribute = self.__getAttr(element.arg2)
+        self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtItmAttr(self, element):
         """Join target item specification and target attribute"""
@@ -368,7 +368,7 @@ class InfoBuilder:
                         Operand.locSrq: self.__tgtLocSrq}
         itmGetterMap[element.arg1.operandId](element.arg1)
         # Target attribute is always specified in arg2
-        self.activeMod.targetAttribute = self.__getAttr(element.arg2)
+        self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtLoc(self, element):
         """Get target location and store it"""
@@ -386,11 +386,11 @@ class InfoBuilder:
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
-        return InfoOperator.eve2eos(element.value)
+        return InfoOperator.expressionValue2operator(element.value)
 
     def __getLoc(self, element):
         """Define location"""
-        return InfoLocation.eve2eos(element.value)
+        return InfoLocation.expressionValue2location(element.value)
 
     def __getAttr(self, element):
         """Reference attribute via ID"""

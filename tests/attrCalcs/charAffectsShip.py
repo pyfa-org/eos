@@ -50,9 +50,10 @@ class TestCharAffectsShip(TestCase):
         info = Info()
         info.requiredContext = InfoContext.passive
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.location = InfoLocation.ship
         info.operator = InfoOperator.postPercent
-        info.targetAttribute = attrShip.id
+        info.targetAttributeId = attrShip.id
         info.sourceType = InfoSourceType.attribute
         info.sourceValue = attrChar.id
         modEffect = Effect(1, categoryId=0)

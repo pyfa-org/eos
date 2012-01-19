@@ -52,9 +52,10 @@ class TestModuleAffectsCharge(TestCase):
         info = Info()
         info.requiredContext = InfoContext.passive
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.location = InfoLocation.other
         info.operator = InfoOperator.postPercent
-        info.targetAttribute = attrCharge.id
+        info.targetAttributeId = attrCharge.id
         info.sourceType = InfoSourceType.attribute
         info.sourceValue = attrMod.id
         modEffect = Effect(1, None, None, 0, 0)

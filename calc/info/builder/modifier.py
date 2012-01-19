@@ -41,7 +41,7 @@ class Modifier:
         # Operation to be applied on target
         self.operator = None
         # Target attribute ID
-        self.targetAttribute = None
+        self.targetAttributeId = None
         # Target location for modification
         self.targetLocation = None
         # Target group ID of items
@@ -55,7 +55,7 @@ class Modifier:
     def validate(self):
         """Self-validation for modifier objects"""
         # Target always should be filled
-        if self.targetAttribute in nulls:
+        if self.targetAttributeId in nulls:
             return False
         # Check condition tree
         if self.conditions is not None:
@@ -196,7 +196,7 @@ class Modifier:
         # Check all modifier fields that make the difference for duration modifiers
         if (self.type != other.type or self.sourceType != other.sourceType or
             self.sourceValue != other.sourceValue or self.operator != other.operator or
-            self.targetAttribute != other.targetAttribute or self.targetLocation != other.targetLocation or
+            self.targetAttributeId != other.targetAttributeId or self.targetLocation != other.targetLocation or
             self.targetGroup != other.targetGroup or self.targetSkillRq != other.targetSkillRq):
             return False
         # They're the same if above conditions were passed, other fields irrelevant
@@ -222,7 +222,7 @@ class Modifier:
             return False
         # Then, check all other fields of modifier
         if (self.sourceType != other.sourceType or self.sourceValue != other.sourceValue or
-            self.operator != other.operator or self.targetAttribute != other.targetAttribute or
+            self.operator != other.operator or self.targetAttributeId != other.targetAttributeId or
             self.targetLocation != other.targetLocation or self.targetGroup != other.targetGroup or
             self.targetSkillRq != other.targetSkillRq):
             return False
@@ -237,7 +237,7 @@ class Modifier:
         info.conditions = self.conditions
         info.sourceType = self.sourceType
         info.sourceValue = self.sourceValue
-        info.targetAttribute = self.targetAttribute
+        info.targetAttributeId = self.targetAttributeId
         # Fill remaining fields on per-modifier basis
         conversionMap = {Operand.addGangGrpMod: self.__convGangGrp,
                          Operand.rmGangGrpMod: self.__convGangGrp,
@@ -295,11 +295,13 @@ class Modifier:
 
     def __convItm(self, info):
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
 
     def __convLocGrp(self, info):
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.group
@@ -307,12 +309,14 @@ class Modifier:
 
     def __convLoc(self, info):
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.all_
 
     def __convLocSrq(self, info):
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.skill
@@ -320,6 +324,7 @@ class Modifier:
 
     def __convOwnSrq(self, info):
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.operator = self.operator
         info.location = InfoLocation.space
         info.filterType = InfoFilterType.skill
@@ -327,15 +332,18 @@ class Modifier:
 
     def __convAssign(self, info):
         info.runTime = self.runTime
+        info.gang = False
         info.operator = InfoOperator.assignment
         info.location = self.targetLocation
 
     def __convInc(self, info):
         info.runTime = self.runTime
+        info.gang = False
         info.operator = InfoOperator.increment
         info.location = self.targetLocation
 
     def __convDec(self, info):
         info.runTime = self.runTime
+        info.gang = False
         info.operator = InfoOperator.decrement
         info.location = self.targetLocation

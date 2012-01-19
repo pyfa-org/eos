@@ -46,9 +46,10 @@ class TestShipMod(TestCase):
         info = Info()
         info.requiredContext = InfoContext.passive
         info.runTime = InfoRunTime.duration
+        info.gang = False
         info.location = InfoLocation.ship
         info.operator = InfoOperator.postPercent
-        info.targetAttribute = shipTgtAttr.id
+        info.targetAttributeId = shipTgtAttr.id
         info.sourceType = InfoSourceType.attribute
         info.sourceValue = modSrcAttr.id
         modEffect._Effect__infos = {info}

@@ -107,7 +107,7 @@ class Type:
             for effect in self.effects:
                 # Convert effect category to info context, context into
                 # holder state
-                context = InfoContext.eve2eos(effect.categoryId)
+                context = InfoContext.effectCategory2context(effect.categoryId)
                 effectState = State._context2state(context)
                 if effectState is not None:
                     maxState = max(maxState, effectState)

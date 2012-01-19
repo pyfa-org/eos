@@ -31,16 +31,10 @@ class MutableAttributeHolder(metaclass=ABCMeta):
     """
     Base attribute holder class inherited by all classes that
     need to keep track of modified attributes.
-    This class holds a MutableAttributeMap to keep track of changes.
-    """
 
-    @abstractmethod
-    def _getLocation(self):
-        """
-        Private method which each class must implement, used in
-        calculation process
-        """
-        ...
+    Positional arguments:
+    type_ -- type (item), on which this holder is based
+    """
 
     def __init__(self, type_):
         # Which fit this holder is bound to
@@ -52,19 +46,48 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # Keeps current state of the holder
         self.__state = State.offline
 
+    @property
+    def state(self):
+        return self.__state
+
+    @state.setter
+    def state(self, newState):
+        # First, check if holder's item can have this
+        # state at all
+        if newState > self.item.getMaxState():
+            raise RuntimeError("invalid state")
+        oldState = self.state
+        if newState == oldState:
+            return
+        # When holder is assigned to some fit, ask fit
+        # to perform fit-specific state switch of our
+        # holder
+        if self.fit is not None:
+            self.fit._stateSwitch(self, newState)
+        self.__state = newState
+
+    @abstractmethod
+    def _getLocation(self):
+        """
+        Service method which each class must implement, used in
+        calculation process
+        """
+        ...
+
     def _generateAffectors(self, contexts=None):
         """
         Get all affectors spawned by holder.
 
         Keyword arguments:
-        contexts -- filter results by affector.info.requiredContext, which should be
-        in this passed iterable; if None, no filtering occurs (default None)
+        contexts -- filter results by affector's required context,
+        which should be in this passed iterable; if None, no
+        filtering occurs (default None)
 
         Return value:
-        set with Affector objects
+        Set with Affector objects
         """
         affectors = set()
-        # Special handling for no filters - to avoid checking condition
+        # Special handling for no filter - to avoid checking condition
         # on each cycle
         if contexts is None:
             for info in self.item.getInfos():
@@ -76,18 +99,3 @@ class MutableAttributeHolder(metaclass=ABCMeta):
                     affector = Affector(self, info)
                     affectors.add(affector)
         return affectors
-
-    @property
-    def state(self):
-        return self.__state
-
-    @state.setter
-    def state(self, newState):
-        if newState > self.item.getMaxState():
-            raise RuntimeError("invalid state")
-        oldState = self.state
-        if newState == oldState:
-            return
-        if self.fit is not None:
-            self.fit._stateSwitch(self, newState)
-        self.__state = newState

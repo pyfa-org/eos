@@ -112,7 +112,7 @@ class MutableAttributeMap(Mapping):
         for affector in holder.fit._getAffectors(holder):
             sourceHolder, info = affector
             # Skip affectors who do not target attribute being calculated
-            if info.targetAttribute != attrId:
+            if info.targetAttributeId != attrId:
                 continue
             operator = info.operator
             # If source value is attribute reference

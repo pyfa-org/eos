@@ -52,7 +52,7 @@ class TestPreModSubAttr(TestCase):
         expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decreement (ID {})".format(expOperation))
         expTgtAttr = 18
-        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 97
@@ -86,7 +86,7 @@ class TestPreModSubVal(TestCase):
         expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decrement (ID {})".format(expOperation))
         expTgtAttr = 18
-        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = InfoSourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 7
@@ -120,7 +120,7 @@ class TestPostModSubAttr(TestCase):
         expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decreement (ID {})".format(expOperation))
         expTgtAttr = 266
-        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = InfoSourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 84
@@ -154,7 +154,7 @@ class TestPostModSubVal(TestCase):
         expOperation = InfoOperator.decrement
         self.assertEqual(info.operator, expOperation, msg="info operator must be Decrement (ID {})".format(expOperation))
         expTgtAttr = 266
-        self.assertEqual(info.targetAttribute, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
+        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
         expSrcType = InfoSourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 1
