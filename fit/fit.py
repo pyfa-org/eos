@@ -27,7 +27,13 @@ from eos.calc.state import State
 
 
 class Fit:
-    """Fit holds all fit items and facilities to calculate their attributes"""
+    """
+    Fit holds all fit items and facilities to calculate their attributes.
+
+    Positional arguments:
+    attrMetaGetter -- getter for attribute metadata, which should return
+    eve.Attribute object when ran with attribute ID passed to it
+    """
 
     def __init__(self, attrMetaGetter):
         # Variables used by properties
@@ -75,7 +81,15 @@ class Fit:
         self._addHolder(self.__character, enableDirect=InfoLocation.character)
 
     def _addHolder(self, holder, **kwargs):
-        """Handle adding of holder to fit"""
+        """
+        Handle adding of holder to fit
+
+        Positional arguments:
+        holder -- holder to be added
+
+        Keyword arguments:
+        Passed to one of internal registration methods
+        """
         # Don't do anything if None was passed as holder
         if holder is None:
             return
@@ -99,7 +113,15 @@ class Fit:
             self._addHolder(charge, enableDirect=InfoLocation.other)
 
     def _removeHolder(self, holder, **kwargs):
-        """Handle removal of holder from fit"""
+        """
+        Handle removal of holder from fit
+
+        Positional arguments:
+        holder -- holder to be removed
+
+        Keyword arguments:
+        Passed to one of internal unregistration methods
+        """
         if holder is None:
             return
         assert(holder.fit is self)
@@ -120,22 +142,37 @@ class Fit:
         holder.fit = None
 
     def _stateSwitch(self, holder, newState):
+        """
+        Handle holder state switch in fit's context.
+
+        Positional arguments:
+        holder -- holder which has its state changed
+        newState -- state which holder is taking
+        """
         oldState = holder.state
+        # Get set of affectors which we will need to register or
+        # unregister
         contextDiff = State._contextDifference(oldState, newState)
         affectorDiff = holder._generateAffectors(contexts=contextDiff)
-        # We're turning something on
+        # Register them, if we're turning something on
         if newState > oldState:
             for affector in affectorDiff:
                 self.__register.registerAffector(affector)
             self._clearAffectorDependents(affectorDiff)
-        # We're turning something off
+        # Unregister, if we're turning something off
         else:
             self._clearAffectorDependents(affectorDiff)
             for affector in affectorDiff:
                 self.__register.unregisterAffector(affector)
 
     def _clearHolderAttributeDependents(self, holder, attrId):
-        """Clear calculated attribute values relying on value of passed attribute"""
+        """
+        Clear calculated attributes relying on passed attribute.
+
+        Positional arguments:
+        holder -- holder, which carries attribute in question
+        attrId -- ID of attribute
+        """
         for affector in holder._generateAffectors():
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source
@@ -147,7 +184,12 @@ class Fit:
                 del targetHolder.attributes[info.targetAttributeId]
 
     def _clearAffectorDependents(self, affectors):
-        """Clear calculated attribute values relying on anything assigned to holder"""
+        """
+        Clear calculated attributes relying on affectors.
+
+        Positional arguments:
+        affectors -- iterable with affectors in question
+        """
         for affector in affectors:
             # Go through all holders targeted by info
             for targetHolder in self._getAffectees(affector):
@@ -155,22 +197,42 @@ class Fit:
                 del targetHolder.attributes[affector.info.targetAttributeId]
 
     def _getAffectors(self, holder):
-        """Get set of affectors affecting passed holder"""
+        """
+        Get affectors, influencing passed holder.
+
+        Positional arguments:
+        holder -- holder, for which we're getting affectors
+
+        Return value:
+        Set with Affector objects
+        """
         return self.__register.getAffectors(holder)
 
     def _getAffectees(self, affector):
-        """Get holders are affected by passed affector"""
+        """
+        Get affectees being influenced by affector.
+
+        Positional arguments:
+        affector -- affector, for which we're getting affectees
+
+        Return value:
+        Set with holders
+        """
         return self.__register.getAffectees(affector)
 
 
 class MutableAttributeHolderList(MutableSequence):
     """
-    Class implementing the MutableSequence ABC intended to hold a list of MutableAttributeHolders (typically: modules, drones, etc.).
-    It makes sure the module knows its been added onto the fit, and makes sure a module is only in one single fit
+    Intended to hold a list of holders (typically, one instance
+    per high-level type: modules, drones, etc.). It makes sure
+    added/removed holders are registered/unregistered properly.
+
+    Positional arguments:
+    fit -- fit, to which list is assigned
     """
     def __init__(self, fit):
         self.__fit = fit
-        self.__list = []  # List used for storage internally
+        self.__list = []  # Plain list used for storage internally
 
     def __setitem__(self, index, holder):
         existing = self.__list.get(index)
