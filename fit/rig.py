@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Rig(MutableAttributeHolder):
-    """Represents rig with all its special properties"""
+    """
+    Represents rig with all its special properties.
+
+    Positional arguments:
+    type_ -- type (item), on which rig is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

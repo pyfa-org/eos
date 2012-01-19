@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Module(MutableAttributeHolder):
-    """Represents single module"""
+    """
+    Represents single module.
+
+    Positional arguments:
+    type_ -- type (item), on which module is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

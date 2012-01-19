@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Implant(MutableAttributeHolder):
-    """Represents single implant with all its special properties"""
+    """
+    Represents single implant with all its special properties.
+
+    Positional arguments:
+    type_ -- type (item), on which implant is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

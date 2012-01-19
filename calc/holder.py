@@ -48,10 +48,12 @@ class MutableAttributeHolder(metaclass=ABCMeta):
 
     @property
     def state(self):
+        """Get state of holder"""
         return self.__state
 
     @state.setter
     def state(self, newState):
+        """Set state of holder"""
         # First, check if holder's item can have this
         # state at all
         if newState > self.item.getMaxState():

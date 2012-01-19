@@ -23,7 +23,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Character(MutableAttributeHolder):
-    """Represents a character. Must be holder, as EVE tracks some attributes on it."""
+    """
+    Represents a character. Must be holder, as EVE tracks some attributes on it.
+
+    Positional arguments:
+    type_ -- type (item), on which character is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

@@ -23,6 +23,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Ship(MutableAttributeHolder):
+    """
+    Represents ship with all its special properties.
+
+    Positional arguments:
+    type_ -- type (item), on which ship is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

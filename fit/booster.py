@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Booster(MutableAttributeHolder):
-    """Represents booster with all its special properties"""
+    """
+    Represents booster with all its special properties
+
+    Positional arguments:
+    type_ -- type (item), on which booster is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

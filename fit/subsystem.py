@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Subsystem(MutableAttributeHolder):
-    """Represents t3 ship's subsystem with all its special properties"""
+    """
+    Represents t3 ship's subsystem with all its special properties.
+
+    Positional arguments:
+    type_ -- type (item), on which subsystem is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

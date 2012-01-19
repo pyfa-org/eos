@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Charge(MutableAttributeHolder):
-    """Represent ammo - crystals, probes, bombs, etc"""
+    """
+    Represents ammo - crystals, probes, bombs, etc.
+
+    Positional arguments:
+    type_ -- type (item), on which charge is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

@@ -25,6 +25,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Skill(MutableAttributeHolder):
+    """
+    Represents skill with all its special properties.
+
+    Positional arguments:
+    type_ -- type (item), on which skill is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)

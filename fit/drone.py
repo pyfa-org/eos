@@ -24,7 +24,12 @@ from eos.calc.holder import MutableAttributeHolder
 
 
 class Drone(MutableAttributeHolder):
-    """Class represents single drone"""
+    """
+    Class represents single drone.
+
+    Positional arguments:
+    type_ -- type (item), on which drone is based
+    """
 
     def __init__(self, type_):
         super().__init__(type_)
