@@ -24,9 +24,9 @@ from eos.calc.state import State
 from eos.calc.info.info import InfoContext
 
 
-class InvType:
+class Type:
     """
-    InvType represents any EVE item. All characters, ships, incursion system-wide effects
+    Type represents any EVE item. All characters, ships, incursion system-wide effects
     are actually items.
     """
 
@@ -68,7 +68,7 @@ class InvType:
         self.attributes = attributes
 
         # Set of effects this type has, they describe modifications
-        # which this invType applies
+        # which this type applies
         self.effects = effects
 
         # Stores required skill IDs as set once calculated
@@ -78,7 +78,7 @@ class InvType:
         self.__maxState = None
 
     def requiredSkills(self):
-        """Detect IDs of required skills based on invType's attributes"""
+        """Detect IDs of required skills based on type's attributes"""
         if self.__requiredSkills is None:
             self.__requiredSkills = set()
             for srqAttrId in Attribute.skillRqMap:

@@ -26,8 +26,8 @@ from eos.calc.holder import MutableAttributeHolder
 class Module(MutableAttributeHolder):
     """Represents single module"""
 
-    def __init__(self, invType):
-        super().__init__(invType)
+    def __init__(self, type_):
+        super().__init__(type_)
         self.__charge = None
 
     def _getLocation(self):
@@ -59,7 +59,7 @@ class Module(MutableAttributeHolder):
             self.fit._addHolder(newCharge, enableDirect=InfoLocation.other)
 
     def trackingSpeed(self):
-        tsAttrId = self.invType._trackingSpeedAttributeId
+        tsAttrId = self.item._trackingSpeedAttributeId
         if tsAttrId is not None:
             tracking = self.attributes[tsAttrId]
         else:
@@ -67,7 +67,7 @@ class Module(MutableAttributeHolder):
         return tracking
 
     def optimalRange(self):
-        orAttrId = self.invType._rangeAttributeId
+        orAttrId = self.item._rangeAttributeId
         if orAttrId is not None:
             optimal = self.attributes[orAttrId]
         else:
@@ -75,7 +75,7 @@ class Module(MutableAttributeHolder):
         return optimal
 
     def falloffRange(self):
-        frAttrId = self.invType._falloffAttributeId
+        frAttrId = self.item._falloffAttributeId
         if frAttrId is not None:
             falloff = self.attributes[frAttrId]
         else:

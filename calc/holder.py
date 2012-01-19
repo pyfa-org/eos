@@ -29,7 +29,8 @@ from .state import State
 
 class MutableAttributeHolder(metaclass=ABCMeta):
     """
-    Base attribute holder class inherited by all classes that need to keep track of modified attributes.
+    Base attribute holder class inherited by all classes that
+    need to keep track of modified attributes.
     This class holds a MutableAttributeMap to keep track of changes.
     """
 
@@ -41,11 +42,11 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         """
         ...
 
-    def __init__(self, invType):
+    def __init__(self, type_):
         # Which fit this holder is bound to
         self.fit = None
-        # Which invType this holder wraps
-        self.invType = invType
+        # Which type this holder wraps
+        self.item = type_
         # Special dictionary subclass that holds modified attributes and data related to their calculation
         self.attributes = MutableAttributeMap(self)
         # Keeps current state of the holder
@@ -66,11 +67,11 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # Special handling for no filters - to avoid checking condition
         # on each cycle
         if contexts is None:
-            for info in self.invType.getInfos():
+            for info in self.item.getInfos():
                 affector = Affector(self, info)
                 affectors.add(affector)
         else:
-            for info in self.invType.getInfos():
+            for info in self.item.getInfos():
                 if info.requiredContext in contexts:
                     affector = Affector(self, info)
                     affectors.add(affector)
@@ -82,7 +83,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
 
     @state.setter
     def state(self, newState):
-        if newState > self.invType.getMaxState():
+        if newState > self.item.getMaxState():
             raise RuntimeError("invalid state")
         oldState = self.state
         if newState == oldState:

@@ -24,7 +24,7 @@ from json import loads
 from weakref import WeakValueDictionary
 
 from eos.const import nulls
-from eos.eve.invType import InvType
+from eos.eve.type import Type
 from eos.eve.expression import Expression
 from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
@@ -59,25 +59,25 @@ class JsonDataHandler(DataHandler):
         if typeId in nulls:
             return None
         try:
-            invType = self.__typesCache[typeId]
+            type_ = self.__typesCache[typeId]
         except KeyError:
             # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
             data = self.__typeData[str(int(typeId))]
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
-            invType = InvType(typeId,
-                              groupId=groupId,
-                              categoryId=catId,
-                              durationAttributeId=duration,
-                              dischargeAttributeId=discharge,
-                              rangeAttributeId=optimal,
-                              falloffAttributeId=falloff,
-                              trackingSpeedAttributeId=tracking,
-                              fittableNonSingleton=fittable,
-                              attributes={attrId: attrVal for attrId, attrVal in attrIds},
-                              effects={self.getEffect(effectId) for effectId in effectIds})
-            self.__typesCache[typeId] = invType
-        return invType
+            type_ = Type(typeId,
+                         groupId=groupId,
+                         categoryId=catId,
+                         durationAttributeId=duration,
+                         dischargeAttributeId=discharge,
+                         rangeAttributeId=optimal,
+                         falloffAttributeId=falloff,
+                         trackingSpeedAttributeId=tracking,
+                         fittableNonSingleton=fittable,
+                         attributes={attrId: attrVal for attrId, attrVal in attrIds},
+                         effects={self.getEffect(effectId) for effectId in effectIds})
+            self.__typesCache[typeId] = type_
+        return type_
 
     def getAttribute(self, attrId):
         if attrId in nulls:

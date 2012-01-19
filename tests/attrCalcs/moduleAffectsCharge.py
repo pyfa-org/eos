@@ -22,7 +22,7 @@
 from unittest import TestCase
 
 from eos.eve.attribute import Attribute
-from eos.eve.invType import InvType
+from eos.eve.type import Type
 from eos.eve.effect import Effect
 from eos.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from eos.fit.fit import Fit
@@ -41,12 +41,12 @@ class TestModuleAffectsCharge(TestCase):
             return attrs[attrId]
 
         fit = Fit(attrMetaGetter)
-        ship = Ship(InvType(1))
+        ship = Ship(Type(1))
         fit.ship = ship
 
         attrCharge = attrMetaGetter(1)
-        charge1 = Charge(InvType(2, attributes={attrCharge.id: 50}))
-        charge2 = Charge(InvType(3, attributes={attrCharge.id: 200}))
+        charge1 = Charge(Type(2, attributes={attrCharge.id: 50}))
+        charge2 = Charge(Type(3, attributes={attrCharge.id: 200}))
 
         attrMod = attrMetaGetter(2)
         info = Info()
@@ -59,7 +59,7 @@ class TestModuleAffectsCharge(TestCase):
         info.sourceValue = attrMod.id
         modEffect = Effect(1, None, None, 0, 0)
         modEffect._Effect__infos = {info}
-        module = Module(InvType(4, effects={modEffect}, attributes={attrMod.id: 20}))
+        module = Module(Type(4, effects={modEffect}, attributes={attrMod.id: 20}))
         fit.modules.append(module)
 
         # First, check if delayed modifier is applied properly

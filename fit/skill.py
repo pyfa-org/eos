@@ -26,8 +26,8 @@ from eos.calc.holder import MutableAttributeHolder
 
 class Skill(MutableAttributeHolder):
 
-    def __init__(self, invType):
-        super().__init__(invType)
+    def __init__(self, type_):
+        super().__init__(type_)
 
     def _getLocation(self):
         return InfoLocation.character

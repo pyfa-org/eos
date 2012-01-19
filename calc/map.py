@@ -57,7 +57,7 @@ class MutableAttributeMap(Mapping):
         return len(self.keys())
 
     def __contains__(self, attrId):
-        result = attrId in self.__modifiedAttributes or attrId in self.__holder.invType.attributes
+        result = attrId in self.__modifiedAttributes or attrId in self.__holder.item.attributes
         return result
 
     def __iter__(self):
@@ -65,7 +65,7 @@ class MutableAttributeMap(Mapping):
             yield k
 
     def keys(self):
-        keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.invType.attributes.keys())
+        keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
         return keys
 
     def __delitem__(self, attrId):
@@ -99,7 +99,7 @@ class MutableAttributeMap(Mapping):
         """
         holder =  self.__holder
         # Base attribute value which we'll use for modification
-        result = holder.invType.attributes.get(attrId)
+        result = holder.item.attributes.get(attrId)
         # Attribute metadata
         attrMeta = holder.fit._attrMetaGetter(attrId)
         # Container for non-penalized modifiers
@@ -123,7 +123,7 @@ class MutableAttributeMap(Mapping):
                 # source item category and operator
                 penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
                 penalizableOperators = {InfoOperator.preMul, InfoOperator.postMul, InfoOperator.postPercent, InfoOperator.preDiv, InfoOperator.postDiv}
-                penalize = (not attrMeta.stackable and sourceHolder.invType.categoryId not in penaltyImmuneCategories
+                penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
                             and operator in penalizableOperators)
             # For value modifications, just use stored in info value and avoid its penalization
             else:

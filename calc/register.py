@@ -138,10 +138,10 @@ class Register():
         location = targetHolder._getLocation()
         if location is not None:
             affecteeMaps.append((location, self.__affecteeLocation))
-            group = targetHolder.invType.groupId
+            group = targetHolder.item.groupId
             if group is not None:
                 affecteeMaps.append(((location, group), self.__affecteeLocationGroup))
-            for skill in targetHolder.invType.requiredSkills():
+            for skill in targetHolder.item.requiredSkills():
                 affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
         return affecteeMaps
 
@@ -258,7 +258,7 @@ class Register():
         """
         skillId = affector.info.filterValue
         if skillId == Type.self_:
-            skillId = affector.sourceHolder.invType.id
+            skillId = affector.sourceHolder.item.id
         return skillId
 
     def __enableDirectSpec(self, targetHolder, targetLocation):
@@ -524,9 +524,9 @@ class Register():
         location = targetHolder._getLocation()
         affectors.update(self.__affectorLocation.getData(location))
         # All affectors which affect location and group of passed holder
-        group = targetHolder.invType.groupId
+        group = targetHolder.item.groupId
         affectors.update(self.__affectorLocationGroup.getData((location, group)))
         # Same, but for location & skill requirement of passed holder
-        for skill in targetHolder.invType.requiredSkills():
+        for skill in targetHolder.item.requiredSkills():
             affectors.update(self.__affectorLocationSkill.getData((location, skill)))
         return affectors

@@ -22,7 +22,7 @@
 from unittest import TestCase
 
 from eos.eve.attribute import Attribute
-from eos.eve.invType import InvType
+from eos.eve.type import Type
 from eos.eve.effect import Effect
 from eos.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from eos.fit.fit import Fit
@@ -40,7 +40,7 @@ class TestShipMod(TestCase):
             return attrs[attrId]
 
         shipTgtAttr = attrMetaGetter(1)
-        ship = Ship(InvType(1, attributes={1: 100}))
+        ship = Ship(Type(1, attributes={1: 100}))
         modSrcAttr = attrMetaGetter(2)
         modEffect = Effect(1)
         info = Info()
@@ -52,7 +52,7 @@ class TestShipMod(TestCase):
         info.sourceType = InfoSourceType.attribute
         info.sourceValue = modSrcAttr.id
         modEffect._Effect__infos = {info}
-        module = Module(InvType(2, effects={modEffect}, attributes={2: 20}))
+        module = Module(Type(2, effects={modEffect}, attributes={2: 20}))
         fit = Fit(attrMetaGetter)
         fit.ship = ship
         fit.modules.append(module)

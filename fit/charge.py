@@ -26,8 +26,8 @@ from eos.calc.holder import MutableAttributeHolder
 class Charge(MutableAttributeHolder):
     """Represent ammo - crystals, probes, bombs, etc"""
 
-    def __init__(self, invType):
-        super().__init__(invType)
+    def __init__(self, type_):
+        super().__init__(type_)
         # Holder-container, into which our charge holder is
         # "loaded"
         self.container = None
