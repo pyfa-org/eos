@@ -21,7 +21,7 @@
 
 from collections import MutableSequence
 
-from eos.calc.info.info import InfoLocation
+from eos.calc.info.info import InfoLocation, InfoSourceType
 from eos.calc.register import Register
 from eos.calc.state import State
 
@@ -56,10 +56,9 @@ class Fit:
         # Make sure to properly process ship re-set in register. Optional argument
         # is passed to make sure that all direct modifications which were applied to
         # previous ship will also apply to new one
-        if self.__ship is not None:
-            self._removeHolder(self.__ship, disableDirect=InfoLocation.ship)
+        self._removeHolder(self.__ship, disableDirect=InfoLocation.ship)
         self.__ship = ship
-        self._addHolder(ship, enableDirect=InfoLocation.ship)
+        self._addHolder(self.__ship, enableDirect=InfoLocation.ship)
 
     @property
     def character(self):
@@ -71,13 +70,15 @@ class Fit:
         """Set character holder of fit"""
         # Like with ship, to re-apply effects directed to old ship, we need to pass
         # this optional argument
-        if self.__character is not None:
-            self._removeHolder(self.__character, disableDirect=InfoLocation.character)
+        self._removeHolder(self.__character, disableDirect=InfoLocation.character)
         self.__character = character
-        self._addHolder(character, enableDirect=InfoLocation.character)
+        self._addHolder(self.__character, enableDirect=InfoLocation.character)
 
     def _addHolder(self, holder, **kwargs):
         """Handle adding of holder to fit"""
+        # Don't do anything if None was passed as holder
+        if holder is None:
+            return
         # Make sure the holder isn't used already
         if holder.fit is not None:
             raise ValueError("cannot add holder which is already in some fit")
@@ -91,20 +92,26 @@ class Fit:
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
         # all influenced by holder attributes
-        holder._clearAffectorDependants(enabledAffectors)
+        self._clearAffectorDependents(enabledAffectors)
+        # If holder had charge, register it too
+        charge = getattr(holder, "charge", None)
+        if charge is not None:
+            self._addHolder(charge, enableDirect=InfoLocation.other)
 
     def _removeHolder(self, holder, **kwargs):
         """Handle removal of holder from fit"""
+        if holder is None:
+            return
         assert(holder.fit is self)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            holder.charge = None
+            self._removeHolder(charge, disableDirect=InfoLocation.other)
         disabledContexts = State._contextDifference(None, holder.state)
         disabledAffectors = holder._generateAffectors(contexts=disabledContexts)
         # When links in register are still alive, damage all attributes
         # influenced by holder
-        holder._clearAffectorDependants(disabledAffectors)
+        self._clearAffectorDependents(disabledAffectors)
         # Remove links from register
         self.__register.unregisterAffectee(holder, **kwargs)
         for affector in disabledAffectors:
@@ -120,12 +127,32 @@ class Fit:
         if newState > oldState:
             for affector in affectorDiff:
                 self.__register.registerAffector(affector)
-            holder._clearAffectorDependants(affectorDiff)
+            self._clearAffectorDependents(affectorDiff)
         # We're turning something off
         else:
-            holder._clearAffectorDependants(affectorDiff)
+            self._clearAffectorDependents(affectorDiff)
             for affector in affectorDiff:
                 self.__register.unregisterAffector(affector)
+
+    def _clearHolderAttributeDependents(self, holder, attrId):
+        """Clear calculated attribute values relying on value of passed attribute"""
+        for affector in holder._generateAffectors():
+            info = affector.info
+            # Skip affectors which do not use attribute being damaged as source
+            if info.sourceValue != attrId or info.sourceType != InfoSourceType.attribute:
+                continue
+            # Gp through all holders targeted by info
+            for targetHolder in self._getAffectees(affector):
+                # And remove target attribute
+                del targetHolder.attributes[info.targetAttribute]
+
+    def _clearAffectorDependents(self, affectors):
+        """Clear calculated attribute values relying on anything assigned to holder"""
+        for affector in affectors:
+            # Go through all holders targeted by info
+            for targetHolder in self._getAffectees(affector):
+                # And remove target attribute
+                del targetHolder.attributes[affector.info.targetAttribute]
 
     def _getAffectors(self, holder):
         """Get set of affectors affecting passed holder"""

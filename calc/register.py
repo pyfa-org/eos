@@ -25,12 +25,19 @@ from eos.calc.info.info import InfoRunTime, InfoLocation, InfoFilterType
 
 class DataSetMap(dict):
     """
-    Dictionary-like class, with couple of methods which make it easier to
-    use it as set storage
+    Dictionary-like class, with couple of additional methods which
+    make it easier to use it, given that its values are sets with data
     """
 
     def addData(self, key, data):
-        """Adds data set to dictionary with proper creation jobs"""
+        """
+        Add data set to dictionary, with proper creation jobs
+        if necessary
+
+        Positional arguments:
+        key -- key to access dictionary value (data set)
+        data -- set with data to add to value
+        """
         try:
             value = self[key]
         except KeyError:
@@ -38,7 +45,14 @@ class DataSetMap(dict):
         value.update(data)
 
     def rmData(self, key, data):
-        """Remove data set from dictionary with proper cleanup jobs"""
+        """
+        Remove data set from dictionary, with proper cleanup
+        jobs if necessary
+
+        Positional arguments:
+        key -- key to access dictionary value (data set)
+        data -- set with data to remove from value
+        """
         try:
             value = self[key]
         except KeyError:
@@ -49,7 +63,15 @@ class DataSetMap(dict):
                 del self[key]
 
     def getData(self, key):
-        """Get data set with safe fallback"""
+        """
+        Get data set with safe fallback
+
+        Positional arguments:
+        key -- key to access dictionary value (data set)
+
+        Return value:
+        set with data
+        """
         data = self.get(key, set())
         return data
 
@@ -58,6 +80,9 @@ class Register():
     """
     Keep track of links between fit's local holders, which is required for efficient
     partial attribute recalculation
+
+    Positional arguments:
+    fit -- Fit object to which register is assigned
     """
 
     def __init__(self, fit):
@@ -99,8 +124,14 @@ class Register():
 
     def __getAffecteeMaps(self, targetHolder):
         """
-        Helper for affectee register/unregister methods, provides (key, map)
-        list to use according to passed holder
+        Helper for affectee register/unregister methods
+
+        Positional arguments:
+        targetHolder -- holder, for which affectee maps are requested
+
+        Return value:
+        List of (key, affecteeMap) tuples, where key should be used to access
+        data set (appropriate to passed targetHolder) in affecteeMap
         """
         # Container which temporarily holds (key, map) tuples
         affecteeMaps = []
@@ -116,8 +147,14 @@ class Register():
 
     def __getAffectorMap(self, affector):
         """
-        Helper for affector register/unregister methods, provides key and
-        map to use according to passed affector
+        Helper for affector register/unregister methods
+
+        Positional arguments:
+        affector -- affector, for which affector map are requested
+
+        Return value:
+        (key, affectorMap) tuple, where key should be used to access
+        data set (appropriate to passed affector) in affectorMap
         """
         sourceHolder, info = affector
         # For each filter type, define affector map and key to use
@@ -166,24 +203,33 @@ class Register():
         # is converted into appropriate real location
         elif info.filterType == InfoFilterType.all_:
             affectorMap = self.__affectorLocation
-            location = self.__contextizeLocation(sourceHolder, info.location)
+            location = self.__contextizeLocation(affector)
             key = location
         elif info.filterType == InfoFilterType.group:
             affectorMap = self.__affectorLocationGroup
-            location = self.__contextizeLocation(sourceHolder, info.location)
+            location = self.__contextizeLocation(affector)
             key = (location, info.filterValue)
         elif info.filterType == InfoFilterType.skill:
             affectorMap = self.__affectorLocationSkill
-            location = self.__contextizeLocation(sourceHolder, info.location)
+            location = self.__contextizeLocation(affector)
             skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
-        return affectorMap, key
+        return key, affectorMap
 
-    def __contextizeLocation(self, sourceHolder, targetLocation):
+    def __contextizeLocation(self, affector):
         """
-        Converts location self-reference to real location, like character or ship,
-        used only in modifications of multiple filtered holders
+        Convert location self-reference to real location, like character or ship.
+        Used only in modifications of multiple filtered holders, direct modifications
+        are processed out of the context of this method.
+
+        Positional arguments:
+        affector -- affector, whose info references location in question
+
+        Return value:
+        Real contextized location
         """
+        sourceHolder = affector.sourceHolder
+        targetLocation = affector.info.location
         # Reference to self is sparingly used on ship effects, so we must convert
         # it to real location
         if targetLocation == InfoLocation.self_:
@@ -201,14 +247,29 @@ class Register():
             raise RuntimeError("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
 
     def __contextizeSkillrqId(self, affector):
-        """Convert typeID self-reference into real typeID"""
+        """
+        Convert typeID self-reference into real typeID.
+
+        Positional arguments:
+        affector -- affector, whose info references some type via ID
+
+        Return value:
+        Real typeID, taken from affector's holder carrier
+        """
         skillId = affector.info.filterValue
         if skillId == Type.self_:
             skillId = affector.sourceHolder.invType.id
         return skillId
 
     def __enableDirectSpec(self, targetHolder, targetLocation):
-        """Enable temporarily disabled affectors, targeting specific location"""
+        """
+        Enable temporarily disabled affectors, directly targeting holder in
+        specific location
+
+        Positional arguments:
+        targetHolder -- holder which is being registered
+        targetLocation -- location, to which holder is being registered
+        """
         affectorsToEnable = set()
         # Cycle through all disabled direct affectors
         for affectorSet in self.__disabledDirectAffectors.values():
@@ -228,7 +289,12 @@ class Register():
             self.__disabledDirectAffectors.rmData(affector.sourceHolder, {affector})
 
     def __disableDirectSpec(self, targetHolder):
-        """Disable affectors, targeting specific location"""
+        """
+        Disable affectors, directly targeting holder in specific location
+
+        Positional arguments:
+        targetHolder -- holder which is being unregistered
+        """
         affectorsToDisable = set()
         # Check all affectors, targeting passed holder
         for affector in self.__activeDirectAffectors.getData(targetHolder):
@@ -244,7 +310,13 @@ class Register():
         self.__activeDirectAffectors.rmData(targetHolder, affectorsToDisable)
 
     def __enableDirectOther(self, targetHolder):
-        """Enable temporarily disabled affectors, targeting "other" location"""
+        """
+        Enable temporarily disabled affectors, directly targeting passed holder,
+        originating from holder in "other" location
+
+        Positional arguments:
+        targetHolder -- holder which is being registered
+        """
         try:
             otherHolder = targetHolder._getOther()
         except AttributeError:
@@ -267,7 +339,13 @@ class Register():
         self.__disabledDirectAffectors.rmData(otherHolder, affectorsToEnable)
 
     def __disableDirectOther(self, targetHolder):
-        """Disabled affectors, targeting "other" location"""
+        """
+        Disable affectors, directly targeting passed holder, originating from
+        holder in "other" location
+
+        Positional arguments:
+        targetHolder -- holder which is being unregistered
+        """
         try:
             otherHolder = targetHolder._getOther()
         except AttributeError:
@@ -289,7 +367,20 @@ class Register():
         self.__activeDirectAffectors.rmData(targetHolder, affectorsToDisable)
 
     def registerAffectee(self, targetHolder, enableDirect=None):
-        """Add passed target holder to register's maps"""
+        """
+        Add passed target holder to register's maps, so it can be affected by
+        other holders properly
+
+        Positional arguments:
+        targetHolder -- holder to register
+
+        Keyword arguments:
+        enableDirect -- when some location specification is passed, register
+        checks if there're any modifications which should directly apply to
+        holder in that location (or, in case with "other" location, originate
+        from holder in that location and apply to passed targetHolder) and
+        enables them (default None)
+        """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map
             affecteeMap.addData(key, {targetHolder})
@@ -306,7 +397,20 @@ class Register():
             method(*args, **kwargs)
 
     def unregisterAffectee(self, targetHolder, disableDirect=None):
-        """Remove passed target holder from register's maps"""
+        """
+        Remove passed target holder from register's maps, so holders affecting
+        it "know" that its modification is no longer needed
+
+        Positional arguments:
+        targetHolder -- holder to unregister
+
+        Keyword arguments:
+        disableDirect -- when some location specification is passed, register
+        checks if there're any modifications which are directly applied to
+        holder in that location (or, in case with "other" location, originate
+        from holder in that location and apply to passed targetHolder) and
+        disables them (default None)
+        """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             affecteeMap.rmData(key, {targetHolder})
         # When removing holder from register, make sure to move modifiers which
@@ -322,25 +426,42 @@ class Register():
             method(*args, **kwargs)
 
     def registerAffector(self, affector):
-        """Add passed affector to register's affector maps"""
+        """
+        Add passed affector to register's affector maps, so that new holders
+        added to fit know that they should be affected by it
+
+        Positional arguments:
+        affector -- affector to register
+        """
         info = affector.info
         # Register keeps track of only local duration modifiers
         if info.runTime != InfoRunTime.duration or info.gang is not False:
             return
-        affectorMap, key = self.__getAffectorMap(affector)
+        key, affectorMap = self.__getAffectorMap(affector)
         # Actually add data to map
         affectorMap.addData(key, {affector})
 
     def unregisterAffector(self, affector):
-        """Remove affector from register's affector maps"""
+        """
+        Remove passed affector from register's affector maps, so that
+        holders-affectees "know" that they're no longer affected by it
+
+        Positional arguments:
+        affector -- affector to unregister
+        """
         info = affector.info
         if info.runTime != InfoRunTime.duration or info.gang is not False:
             return
-        affectorMap, key = self.__getAffectorMap(affector)
+        key, affectorMap = self.__getAffectorMap(affector)
         affectorMap.rmData(key, {affector})
 
     def getAffectees(self, affector):
-        """Get all holders influenced by passed affector"""
+        """
+        Get all holders influenced by passed affector
+
+        Positional arguments:
+        affector -- affector, for which we're seeking for affected holders
+        """
         sourceHolder, info = affector
         affectees = set()
         # For direct modification, make set out of single target location
@@ -366,14 +487,14 @@ class Register():
         # For filtered modifications, pick appropriate dictionary and get set
         # with target holders
         elif info.filterType == InfoFilterType.all_:
-            key = self.__contextizeLocation(sourceHolder, info.location)
+            key = self.__contextizeLocation(affector)
             target = self.__affecteeLocation.getData(key)
         elif info.filterType == InfoFilterType.group:
-            location = self.__contextizeLocation(sourceHolder, info.location)
+            location = self.__contextizeLocation(affector)
             key = (location, info.filterValue)
             target = self.__affecteeLocationGroup.getData(key)
         elif info.filterType == InfoFilterType.skill:
-            location = self.__contextizeLocation(sourceHolder, info.location)
+            location = self.__contextizeLocation(affector)
             skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
             target = self.__affecteeLocationSkill.getData(key)
@@ -383,7 +504,13 @@ class Register():
         return affectees
 
     def getAffectors(self, targetHolder):
-        """Get all affectors, which influence passed holder"""
+        """
+        Get all affectors, which influence passed holder
+
+        Positional arguments:
+        targetHolder -- holder, for which we're seeking for affecting it
+        affectors
+        """
         affectors = set()
         # Add all affectors which directly affect it
         affectors.update(self.__activeDirectAffectors.getData(targetHolder))

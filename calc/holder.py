@@ -22,7 +22,6 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
-from eos.calc.info.info import InfoSourceType
 from .affector import Affector
 from .map import MutableAttributeMap
 from .state import State
@@ -91,23 +90,3 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         if self.fit is not None:
             self.fit._stateSwitch(self, newState)
         self.__state = newState
-
-    def _clearAttributeDependants(self, attrId):
-        """Clear calculated attribute values relying on value of passed attribute"""
-        for affector in self._generateAffectors():
-            info = affector.info
-            # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attrId or info.sourceType != InfoSourceType.attribute:
-                continue
-            # Gp through all holders targeted by info
-            for targetHolder in self.fit._getAffectees(affector):
-                # And remove target attribute
-                del targetHolder.attributes[info.targetAttribute]
-
-    def _clearAffectorDependants(self, affectors):
-        """Clear calculated attribute values relying on anything assigned to holder"""
-        for affector in affectors:
-            # Go through all holders targeted by info
-            for targetHolder in self.fit._getAffectees(affector):
-                # And remove target attribute
-                del targetHolder.attributes[affector.info.targetAttribute]

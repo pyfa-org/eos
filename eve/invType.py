@@ -87,7 +87,7 @@ class InvType:
                     self.__requiredSkills.add(int(srq))
         return self.__requiredSkills
 
-    def getInfos(self, startContext=None, endContext=None):
+    def getInfos(self):
         """Get all infos spawned by effects"""
         infos = set()
         for effect in self.effects:
