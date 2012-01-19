@@ -31,7 +31,12 @@ penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
 
 class MutableAttributeMap(Mapping):
-    """Calculate, store and provide access to modified attribute values"""
+    """
+    Calculate, store and provide access to modified attribute values.
+
+    Positional arguments:
+    holder -- holder, to which this map is assigned
+    """
 
     def __init__(self, holder):
         # Reference to holder for internal needs
@@ -87,7 +92,10 @@ class MutableAttributeMap(Mapping):
         Run calculations to find the actual value of attribute.
 
         Positional arguments:
-        attrId -- ID of attribute which will be calculated.
+        attrId -- ID of attribute to be calculated
+
+        Return value:
+        Calculated attribute value
         """
         holder =  self.__holder
         # Base attribute value which we'll use for modification
@@ -146,23 +154,7 @@ class MutableAttributeMap(Mapping):
         # When data gathering was finished, process penalized modifiers
         # They are penalized on per-operator basis
         for operator, modList in penalizedMods.items():
-            # Gather positive modifiers into one chain, negative
-            # into another
-            chainPositive = []
-            chainNegative = []
-            for modVal in modList:
-                # Transform value into form of multiplier - 1 for ease of
-                # stacking chain calculation
-                modVal -= 1
-                if modVal >= 0:
-                    chainPositive.append(modVal)
-                else:
-                    chainNegative.append(modVal)
-            # Strongest modifiers always go first
-            chainPositive.sort(reverse=True)
-            chainNegative.sort()
-            # Get final penalized factor and store it into normal dictionary
-            penalizedValue = self.__penalizeChain(chainPositive) * self.__penalizeChain(chainNegative)
+            penalizedValue = self.__penalizeValues(modList)
             try:
                 modList = normalMods[operator]
             except KeyError:
@@ -183,14 +175,42 @@ class MutableAttributeMap(Mapping):
                     result *= modVal
         return result
 
-    def __penalizeChain(self, chain):
-        """Calculate stacking penalty chain"""
+    def __penalizeValues(self, modList):
+        """
+        Calculate aggregated factor of passed factors, taking into
+        consideration stacking penalty.
+
+        Positional argument:
+        modList -- list of factors
+
+        Return value:
+        Final aggregated factor of passed modList
+        """
+        # Gather positive modifiers into one chain, negative
+        # into another
+        chainPositive = []
+        chainNegative = []
+        for modVal in modList:
+            # Transform value into form of multiplier - 1 for ease of
+            # stacking chain calculation
+            modVal -= 1
+            if modVal >= 0:
+                chainPositive.append(modVal)
+            else:
+                chainNegative.append(modVal)
+        # Strongest modifiers always go first
+        chainPositive.sort(reverse=True)
+        chainNegative.sort()
         # Base final multiplier on 1
-        result = 1
-        for position, modifier in enumerate(chain):
-            # Ignore 12th modifier and further as non-significant
-            if position > 10:
-                break
-            # Apply stacking penalty based on modifier position
-            result *= 1 + modifier * penaltyBase ** (position ** 2)
-        return result
+        listResult = 1
+        for chain in (chainPositive, chainNegative):
+            # Same for intermediate per-chain result
+            chainResult = 1
+            for position, modifier in enumerate(chain):
+                # Ignore 12th modifier and further as non-significant
+                if position > 10:
+                    break
+                # Apply stacking penalty based on modifier position
+                chainResult *= 1 + modifier * penaltyBase ** (position ** 2)
+            listResult *= chainResult
+        return listResult

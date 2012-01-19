@@ -26,13 +26,13 @@ from eos.calc.info.info import InfoRunTime, InfoLocation, InfoFilterType
 class DataSetMap(dict):
     """
     Dictionary-like class, with couple of additional methods which
-    make it easier to use it, given that its values are sets with data
+    make it easier to use it, given that its values are sets with data.
     """
 
     def addData(self, key, data):
         """
         Add data set to dictionary, with proper creation jobs
-        if necessary
+        if necessary.
 
         Positional arguments:
         key -- key to access dictionary value (data set)
@@ -47,7 +47,7 @@ class DataSetMap(dict):
     def rmData(self, key, data):
         """
         Remove data set from dictionary, with proper cleanup
-        jobs if necessary
+        jobs if necessary.
 
         Positional arguments:
         key -- key to access dictionary value (data set)
@@ -64,7 +64,7 @@ class DataSetMap(dict):
 
     def getData(self, key):
         """
-        Get data set with safe fallback
+        Get data set with safe fallback.
 
         Positional arguments:
         key -- key to access dictionary value (data set)
@@ -79,7 +79,7 @@ class DataSetMap(dict):
 class Register():
     """
     Keep track of links between fit's local holders, which is required for efficient
-    partial attribute recalculation
+    partial attribute recalculation.
 
     Positional arguments:
     fit -- Fit object to which register is assigned
@@ -124,7 +124,7 @@ class Register():
 
     def __getAffecteeMaps(self, targetHolder):
         """
-        Helper for affectee register/unregister methods
+        Helper for affectee register/unregister methods.
 
         Positional arguments:
         targetHolder -- holder, for which affectee maps are requested
@@ -147,7 +147,7 @@ class Register():
 
     def __getAffectorMap(self, affector):
         """
-        Helper for affector register/unregister methods
+        Helper for affector register/unregister methods.
 
         Positional arguments:
         affector -- affector, for which affector map are requested
@@ -264,7 +264,7 @@ class Register():
     def __enableDirectSpec(self, targetHolder, targetLocation):
         """
         Enable temporarily disabled affectors, directly targeting holder in
-        specific location
+        specific location.
 
         Positional arguments:
         targetHolder -- holder which is being registered
@@ -290,7 +290,7 @@ class Register():
 
     def __disableDirectSpec(self, targetHolder):
         """
-        Disable affectors, directly targeting holder in specific location
+        Disable affectors, directly targeting holder in specific location.
 
         Positional arguments:
         targetHolder -- holder which is being unregistered
@@ -312,7 +312,7 @@ class Register():
     def __enableDirectOther(self, targetHolder):
         """
         Enable temporarily disabled affectors, directly targeting passed holder,
-        originating from holder in "other" location
+        originating from holder in "other" location.
 
         Positional arguments:
         targetHolder -- holder which is being registered
@@ -341,7 +341,7 @@ class Register():
     def __disableDirectOther(self, targetHolder):
         """
         Disable affectors, directly targeting passed holder, originating from
-        holder in "other" location
+        holder in "other" location.
 
         Positional arguments:
         targetHolder -- holder which is being unregistered
@@ -369,7 +369,7 @@ class Register():
     def registerAffectee(self, targetHolder, enableDirect=None):
         """
         Add passed target holder to register's maps, so it can be affected by
-        other holders properly
+        other holders properly.
 
         Positional arguments:
         targetHolder -- holder to register
@@ -399,7 +399,7 @@ class Register():
     def unregisterAffectee(self, targetHolder, disableDirect=None):
         """
         Remove passed target holder from register's maps, so holders affecting
-        it "know" that its modification is no longer needed
+        it "know" that its modification is no longer needed.
 
         Positional arguments:
         targetHolder -- holder to unregister
@@ -428,7 +428,7 @@ class Register():
     def registerAffector(self, affector):
         """
         Add passed affector to register's affector maps, so that new holders
-        added to fit know that they should be affected by it
+        added to fit know that they should be affected by it.
 
         Positional arguments:
         affector -- affector to register
@@ -444,7 +444,7 @@ class Register():
     def unregisterAffector(self, affector):
         """
         Remove passed affector from register's affector maps, so that
-        holders-affectees "know" that they're no longer affected by it
+        holders-affectees "know" that they're no longer affected by it.
 
         Positional arguments:
         affector -- affector to unregister
@@ -457,10 +457,13 @@ class Register():
 
     def getAffectees(self, affector):
         """
-        Get all holders influenced by passed affector
+        Get all holders influenced by passed affector.
 
         Positional arguments:
-        affector -- affector, for which we're seeking for affected holders
+        affector -- affector, for which we're seeking for affectees
+
+        Return value:
+        Set with holders, being influenced by affector
         """
         sourceHolder, info = affector
         affectees = set()
@@ -505,11 +508,14 @@ class Register():
 
     def getAffectors(self, targetHolder):
         """
-        Get all affectors, which influence passed holder
+        Get all affectors, which influence passed holder.
 
         Positional arguments:
         targetHolder -- holder, for which we're seeking for affecting it
         affectors
+
+        Return value:
+        Set with affectors, incluencing targetHolder
         """
         affectors = set()
         # Add all affectors which directly affect it

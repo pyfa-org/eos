@@ -25,7 +25,7 @@ from eos.calc.info.info import InfoContext
 class State:
     """
     Holds IDs of states all holders can take, and serves as glue between
-    info contexts and holder states
+    info contexts and holder states.
     """
     offline = 1
     online = 2
@@ -34,7 +34,16 @@ class State:
 
     @classmethod
     def _context2state(cls, context):
-        """Converts info context ID to corresponding state ID"""
+        """
+        Convert info context into state.
+
+        Positional arguments:
+        context -- ID of context to convert
+
+        Return value:
+        ID of state, corresponding to passed context, or None if
+        no corresponding context was found
+        """
         conversionMap = {InfoContext.passive: cls.offline,
                          InfoContext.online: cls.online,
                          InfoContext.active: cls.active,
@@ -47,7 +56,17 @@ class State:
 
     @classmethod
     def _contextDifference(cls, state1, state2):
-        """Get contexts, affectors.infos with which should be (un)registered to perform passed state switch"""
+        """
+        Get context difference between two states.
+
+        Positional arguments:
+        state1 -- ID of first state to compare, can be None
+        state2 -- ID of second state to compare, can be None
+
+        Return value:
+        Set with context IDs, which need to be enabled/disabled to perform
+        state switch
+        """
         # If both passed state are the same, then
         # active contexts shouldn't differ too
         if state1 == state2:
