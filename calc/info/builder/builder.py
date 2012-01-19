@@ -50,16 +50,16 @@ class InfoBuildStatus:
 class InfoBuilder:
     """
     Class is responsible for converting two trees (pre and post) of Expression objects (which
-    aren't directly useful to us) into EffectInfo objects which can then be used as needed.
+    aren't directly useful to us) into Info objects which can then be used as needed.
     """
     def __init__(self):
-        # Modifiers we got out of preExpression
+        # Storage for modifiers we got out of preExpression
         self.preMods = set()
-        # Modifiers we got out of postExpression
+        # Storage for modifiers we got out of postExpression
         self.postMods = set()
         # Which modifier list we're using at the moment
         self.activeSet = None
-        # Which modifier we're referencing at the moment
+        # Which modifier we're referring at the moment
         self.activeMod = None
         # Conditions applied to all expressions found on current
         # building stage
@@ -68,7 +68,18 @@ class InfoBuilder:
         self.effectStatus = None
 
     def build(self, preExpression, postExpression, effectCategoryId):
-        """Go through both trees and compose our EffectInfos"""
+        """
+        Generate Info objects out of passed data.
+
+        Positional arguments:
+        preExpression -- root node of preExpression
+        postExpression -- root node of postExpression
+        effectCategoryId -- effect category ID for which we're making infos
+
+        Return value:
+        Tuple (set with Info objects, build status), where build status
+        is InfoLocation class' attribute value.
+        """
         # Attempt to get context which we'll assign to infos later
         infoContext = InfoContext.effectCategory2context(effectCategoryId)
         # And if it's none, return error right away
@@ -234,8 +245,8 @@ class InfoBuilder:
                     unifiedCond = Atom()
                     unifiedCond.type = AtomType.logic
                     unifiedCond.operator = AtomLogicOperator.or_
-                    unifiedCond.arg1 = unified.conditions
-                    unifiedCond.arg2 = mod.conditions
+                    unifiedCond.child1 = unified.conditions
+                    unifiedCond.child2 = mod.conditions
                     unified.conditions = unifiedCond
             # Finally, add unified modifier to set
             modifiers.add(unified)
@@ -352,12 +363,12 @@ class InfoBuilder:
 
     def __tgtSrqAttr(self, element):
         """Join target skill requirement and target attribute"""
-        self.activeMod.targetSkillRq = self.__getType(element.arg1)
+        self.activeMod.targetSkillRequirementId = self.__getType(element.arg1)
         self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtGrpAttr(self, element):
         """Join target group and target attribute"""
-        self.activeMod.targetGroup = self.__getGrp(element.arg1)
+        self.activeMod.targetGroupId = self.__getGrp(element.arg1)
         self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtItmAttr(self, element):
@@ -377,12 +388,12 @@ class InfoBuilder:
     def __tgtLocGrp(self, element):
         """Join target location filter and group filter"""
         self.activeMod.targetLocation = self.__getLoc(element.arg1)
-        self.activeMod.targetGroup = self.__getGrp(element.arg2)
+        self.activeMod.targetGroupId = self.__getGrp(element.arg2)
 
     def __tgtLocSrq(self, element):
         """Join target location filter and skill requirement filter"""
         self.activeMod.targetLocation = self.__getLoc(element.arg1)
-        self.activeMod.targetSkillRq = self.__getType(element.arg2)
+        self.activeMod.targetSkillRequirementId = self.__getType(element.arg2)
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
@@ -460,8 +471,8 @@ class InfoBuilder:
         condLogicAtom.type = AtomType.logic
         condLogicAtom.operator = atomLogicMap[element.operandId]
         # Each subnode can be comparison or yet another logical element
-        condLogicAtom.arg1 = self.__makeConditionRouter(element.arg1)
-        condLogicAtom.arg2 = self.__makeConditionRouter(element.arg2)
+        condLogicAtom.child1 = self.__makeConditionRouter(element.arg1)
+        condLogicAtom.child2 = self.__makeConditionRouter(element.arg2)
         return condLogicAtom
 
     def __makeConditionComparison(self, element):
@@ -474,8 +485,8 @@ class InfoBuilder:
         condCompAtom = Atom()
         condCompAtom.type = AtomType.comparison
         condCompAtom.operator = atomCompMap[element.operandId]
-        condCompAtom.arg1 = self.__conditionPartRouter(element.arg1)
-        condCompAtom.arg2 = self.__conditionPartRouter(element.arg2)
+        condCompAtom.child1 = self.__conditionPartRouter(element.arg1)
+        condCompAtom.child2 = self.__conditionPartRouter(element.arg2)
         return condCompAtom
 
     def __conditionPartRouter(self, element):
@@ -496,8 +507,8 @@ class InfoBuilder:
         conditionMathAtom.operator = atomMathMap[element.operandId]
         # Each math subnode can be other math node, attribute reference or value,
         # so forward it to router again
-        conditionMathAtom.arg1 = self.__conditionPartRouter(element.arg1)
-        conditionMathAtom.arg2 = self.__conditionPartRouter(element.arg2)
+        conditionMathAtom.child1 = self.__conditionPartRouter(element.arg1)
+        conditionMathAtom.child2 = self.__conditionPartRouter(element.arg2)
         return conditionMathAtom
 
     def __makeCondPartValRef(self, element):
@@ -526,8 +537,8 @@ class InfoBuilder:
             combined = Atom()
             combined.type = AtomType.logic
             combined.operator = AtomLogicOperator.and_
-            combined.arg1 = cond1
-            combined.arg2 = cond2
+            combined.child1 = cond1
+            combined.child2 = cond2
         return combined
 
     def __invertCondition(self, condition):
@@ -539,8 +550,8 @@ class InfoBuilder:
             # Replace and with or and vice versa
             condition.operator = invLogic[condition.operator]
             # Request processing of child atoms
-            self.__invertCondition(condition.arg1)
-            self.__invertCondition(condition.arg2)
+            self.__invertCondition(condition.child1)
+            self.__invertCondition(condition.child2)
         # For comparison atoms, just negate the comparison
         elif condition.type == AtomType.comparison:
             invComps = {AtomComparisonOperator.equal: AtomComparisonOperator.notEqual,

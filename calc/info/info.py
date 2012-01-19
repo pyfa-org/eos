@@ -174,39 +174,38 @@ class Info:
 
     def __init__(self):
         # Conditions under which modification is applied,
-        # can take None or tree of condition Atom objects
+        # must be None or tree of condition Atom objects.
         self.conditions = None
         # Info can be applied only when its holder exists in certain
-        # context, must be InfoContext class' attribute value
+        # context, must be InfoContext class' attribute value.
         self.requiredContext = None
         # Time context in which modification is applied, must
-        # be InfoRunTime class' attribute value
+        # be InfoRunTime class' attribute value.
         self.runTime = None
-        # Boolean flag, identifying local/gang change
+        # Boolean flag, identifying local/gang change.
         self.gang = None
         # Target location to change, must be InfoLocation class'
-        # attribute value
+        # attribute value.
         self.location = None
         # Filter type of the modification, must be None or
-        # InfoFilterType class' attribute value
+        # InfoFilterType class' attribute value.
         self.filterType = None
         # Filter value of the modification:
         # For filterType.all or filterType.None must be None;
-        # For filterType.group must be some integer,  referencing group via ID;
-        # For filterType.skill must be some integer, referencing type via ID,
-        # or const.Type.self_ to reference type of info carrier
+        # For filterType.group must be some integer, referring group via ID;
+        # For filterType.skill must be some integer, referring type via ID,
+        # or const.Type.self_ to reference type of info carrier.
         self.filterValue = None
         # Which operation should be applied during modification,
-        # must be InfoOperator class' attribute value
+        # must be InfoOperator class' attribute value.
         self.operator = None
-        # which attribute will be affected by operator on the target,
-        # must be integer which references attribute via ID
+        # Which attribute will be affected by operator on the target,
+        # must be integer which refers attribute via ID.
         self.targetAttributeId = None
         # SourceValue type, must be InfoSourceType class'
-        # attribute value
+        # attribute value.
         self.sourceType = None
-        # Value which is used as modification value for
-        # operation:
-        # For sourceType.attribute must be integer which references attribute via ID;
-        # For sourceType.value must be any value CCP can define in expression, integer or value
+        # Value which is used as modification value for operation:
+        # For sourceType.attribute must be integer which refers attribute via ID;
+        # For sourceType.value must be any value CCP can define in expression, integer or value.
         self.sourceValue = None

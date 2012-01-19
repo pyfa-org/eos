@@ -23,6 +23,7 @@ from eos.const import Operand
 
 
 # Mirror duration modifications, top-level operands
+# Format: {addition operand: removal operand}
 mirrorDurationMods = {Operand.addGangGrpMod: Operand.rmGangGrpMod,
                       Operand.addGangItmMod: Operand.rmGangItmMod,
                       Operand.addGangOwnSrqMod: Operand.rmGangOwnSrqMod,
@@ -32,8 +33,8 @@ mirrorDurationMods = {Operand.addGangGrpMod: Operand.rmGangGrpMod,
                       Operand.addLocMod: Operand.rmLocMod,
                       Operand.addLocSrqMod: Operand.rmLocSrqMod,
                       Operand.addOwnSrqMod: Operand.rmOwnSrqMod}
-# Plain duration modifications list
+# Plain duration modifications set
 durationMods = set(mirrorDurationMods.keys()).union(set(mirrorDurationMods.values()))
 
-# List of instant modification operands
+# Set of instant modification operands
 instantMods = {Operand.assign, Operand.inc, Operand.dec}

@@ -109,7 +109,7 @@ class Operand:
     getType = 36  # Gets type of item in arg1
     greater = 38  # Check for arg1 being greater than arg2, used in conditions
     greaterEq = 39  # Check for arg1 being greater than or equal to arg2, used in conditions
-    genAttr = 40  # Generic attribute reference, doesn't join anything, just references attribute definition
+    genAttr = 40  # Generic attribute reference, doesn't join anything, just refers attribute definition
     ifThen = 41  # If-then construct
     inc = 42  # Increases value of some attribute by the value of another one
     missileLaunch = 44  # Special operand, handles missile launching

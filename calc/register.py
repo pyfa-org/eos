@@ -223,7 +223,7 @@ class Register():
         are processed out of the context of this method.
 
         Positional arguments:
-        affector -- affector, whose info references location in question
+        affector -- affector, whose info refers location in question
 
         Return value:
         Real contextized location
@@ -251,7 +251,7 @@ class Register():
         Convert typeID self-reference into real typeID.
 
         Positional arguments:
-        affector -- affector, whose info references some type via ID
+        affector -- affector, whose info refers some type via ID
 
         Return value:
         Real typeID, taken from affector's holder carrier

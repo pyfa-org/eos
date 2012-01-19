@@ -72,22 +72,22 @@ class TestCondition(TestCase):
         expAtomOptr = AtomLogicOperator.or_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical or (ID {})".format(expAtomOptr))
 
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
         expAtomOptr = AtomLogicOperator.and_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical and (ID {})".format(expAtomOptr))
 
         # Check logic atom children types
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg1.arg1
+        currentAtom = info.conditions.child1.child1
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg1.arg2
+        currentAtom = info.conditions.child1.child2
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
@@ -116,11 +116,11 @@ class TestCondition(TestCase):
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be greater than or equal (ID {})".format(expAtomOptr))
 
         # Check children types
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.value
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value (ID {})".format(expAtomType))
 
@@ -152,32 +152,32 @@ class TestCondition(TestCase):
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.math
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be math (ID {})".format(expAtomType))
         expAtomOptr = AtomMathOperator.subtract
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be subtraction (ID {})".format(expAtomOptr))
 
-        currentAtom = info.conditions.arg1.arg1
+        currentAtom = info.conditions.child1.child1
         expAtomType = AtomType.math
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be math (ID {})".format(expAtomType))
         expAtomOptr = AtomMathOperator.add
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be addition (ID {})".format(expAtomOptr))
 
         # Check math children types
-        currentAtom = info.conditions.arg1.arg1.arg1
+        currentAtom = info.conditions.child1.child1.child1
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg1.arg1.arg2
+        currentAtom = info.conditions.child1.child1.child2
         expAtomType = AtomType.value
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg1.arg2
+        currentAtom = info.conditions.child1.child2
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
 
@@ -203,7 +203,7 @@ class TestCondition(TestCase):
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
         expAtomCarrier = InfoLocation.self_
@@ -211,7 +211,7 @@ class TestCondition(TestCase):
         expAtomAttr = 87
         self.assertEqual(currentAtom.attribute, expAtomAttr, msg="atom attribute ID must be {}".format(expAtomAttr))
 
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.value
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value (ID {})".format(expAtomType))
         expAtomValue = -50
@@ -250,11 +250,11 @@ class TestCondition(TestCase):
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical and (ID {})".format(expAtomOptr))
 
         # Check children types
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
@@ -298,21 +298,21 @@ class TestCondition(TestCase):
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical and (ID {})".format(expAtomOptr))
 
         # Affected: and -> or
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.logic
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be logic (ID {})".format(expAtomType))
         expAtomOptr = AtomLogicOperator.or_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical or (ID {})".format(expAtomOptr))
 
         # Affected: == -> !=
-        currentAtom = info.conditions.arg2.arg1
+        currentAtom = info.conditions.child2.child1
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
         expAtomOptr = AtomComparisonOperator.notEqual
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be not equal (ID {})".format(expAtomOptr))
 
         # Affected: >= -> <
-        currentAtom = info.conditions.arg2.arg2
+        currentAtom = info.conditions.child2.child2
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
         expAtomOptr = AtomComparisonOperator.less
@@ -320,7 +320,7 @@ class TestCondition(TestCase):
 
         # This atom is also on more upper level that inverted if-then-else clause to which
         # belongs our modifier, so it shouldn't be affected too
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
         expAtomOptr = AtomComparisonOperator.greater
@@ -357,10 +357,10 @@ class TestCondition(TestCase):
         expAtomOptr = AtomLogicOperator.or_
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be logical or (ID {})".format(expAtomOptr))
 
-        currentAtom = info.conditions.arg1
+        currentAtom = info.conditions.child1
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
 
-        currentAtom = info.conditions.arg2
+        currentAtom = info.conditions.child2
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
