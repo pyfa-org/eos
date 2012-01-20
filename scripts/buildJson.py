@@ -79,18 +79,22 @@ with bz2.BZ2File(args.types, "wb") as f:
 
 print("dumping attributes")
 attributes = {}
-for row in conn.execute("SELECT attributeID, highIsGood, stackable FROM dgmattribs"):
-    attributes[row["attributeID"]] = (row["highIsGood"],
+for row in conn.execute("SELECT attributeID, maxAttributeID, defaultValue, highIsGood, stackable FROM dgmattribs"):
+    attributes[row["attributeID"]] = (row["maxAttributeID"],
+                                      row["defaultValue"],
+                                      row["highIsGood"],
                                       row["stackable"])
 with bz2.BZ2File(args.attributes, "wb") as f:
     f.write(json.dumps(attributes).encode("utf-8"))
 
 print("dumping effects")
 effects = {}
-for row in conn.execute("SELECT effectID, effectCategory, isOffensive, isAssistance, preExpression, postExpression FROM dgmeffects"):
+statement = "SELECT effectID, effectCategory, isOffensive, isAssistance, fittingUsageChanceAttributeID, preExpression, postExpression FROM dgmeffects"
+for row in conn.execute(statement):
     effects[row["effectID"]] = (row["effectCategory"],
                                 row["isOffensive"],
                                 row["isAssistance"],
+                                row["fittingUsageChanceAttributeID"],
                                 row["preExpression"],
                                 row["postExpression"])
 with bz2.BZ2File(args.effects, "wb") as f:

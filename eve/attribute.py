@@ -18,13 +18,23 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos.const import nulls
 
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self, id_, highIsGood=None, stackable=None):
+    def __init__(self, id_, maxAttributeId=None, defaultValue=None,
+                 highIsGood=None, stackable=None):
         # Just ID of attribute, integer
         self.id = int(id_) if id_ is not None else None
+
+        # When value of this attribute is calculated on any item, it cannot
+        # be bigger than defaultValue of attribute referenced here
+        self.maxAttributeId = int(maxAttributeId) if not maxAttributeId in nulls else None
+
+        # Default value of this attribute, used when base attribute value
+        # is not available on item during calculation process
+        self.defaultValue = float(defaultValue) if defaultValue is not None else None
 
         # Boolean describing if it's good when attribute is high or not,
         # used in calculation process
