@@ -48,7 +48,7 @@ class InfoContext:
                          EffectCategory.target: cls.projected,
                          EffectCategory.online: cls.online,
                          EffectCategory.overload: cls.overload,
-                         EffectCategory.system: cls.projected}
+                         EffectCategory.system: cls.passive}
         try:
             result = conversionMap[effectCategoryId]
         except KeyError:

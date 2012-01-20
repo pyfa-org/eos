@@ -50,6 +50,7 @@ class Fit:
         self.drones = MutableAttributeHolderList(self)
         self.implants = MutableAttributeHolderList(self)
         self.boosters = MutableAttributeHolderList(self)
+        self.systemWide = MutableAttributeHolderList(self)
 
     @property
     def ship(self):
