@@ -20,8 +20,7 @@
 
 
 from eos.const import nulls, Attribute
-from eos.calc.state import State
-from eos.calc.info.info import InfoContext
+from eos.calc.info.info import InfoState
 
 
 class Type:
@@ -115,15 +114,14 @@ class Type:
         if self.__maxState is None:
             # All types can be at least offline,
             # even when they have no effects
-            maxState = State.offline
+            maxState = InfoState.offline
             # We need to iterate through effects of type instead of infos because
             # effect doesn't necessarily generate info, but we need data from all
             # effects to reliably detect max state
             for effect in self.effects:
                 # Convert effect category to info context, context into
                 # holder state
-                context = InfoContext.effectCategory2context(effect.categoryId)
-                effectState = State._context2state(context)
+                effectState = InfoState._effectCategoryToState(effect.categoryId)
                 if effectState is not None:
                     maxState = max(maxState, effectState)
             self.__maxState = maxState

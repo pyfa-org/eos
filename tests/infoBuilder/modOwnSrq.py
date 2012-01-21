@@ -23,13 +23,13 @@ from unittest import TestCase
 
 from eos.eve.expression import Expression
 from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
-from eos.calc.info.info import InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.calc.info.info import InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 
 
 class TestModOwnSrq(TestCase):
     """Test parsing of trees describing modification filtered by owner and skill requirement"""
 
-    def testBuildSuccess(self):
+    def setUp(self):
         eTgtOwn = Expression(24, value="Char")
         eTgtSrq = Expression(29, expressionTypeId=3412)
         eTgtAttr = Expression(22, expressionAttributeId=1372)
@@ -38,17 +38,19 @@ class TestModOwnSrq(TestCase):
         eTgtItms = Expression(49, arg1=eTgtOwn, arg2=eTgtSrq)
         eTgtSpec = Expression(12, arg1=eTgtItms, arg2=eTgtAttr)
         eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(11, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(62, arg1=eOptrTgt, arg2=eSrcAttr)
-        infos, status = InfoBuilder().build(eAddMod, eRmMod, 0)
+        self.eAddMod = Expression(11, arg1=eOptrTgt, arg2=eSrcAttr)
+        self.eRmMod = Expression(62, arg1=eOptrTgt, arg2=eSrcAttr)
+
+    def testGenericBuildSuccess(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
         expStatus = InfoBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expType = InfoRunTime.duration
         self.assertEqual(info.runTime, expType, msg="info type must be duration (ID {})".format(expType))
-        expGang = False
-        self.assertIs(info.gang, expGang, msg="info gang flag must be {}".format(expGang))
+        expContext = InfoContext.local
+        self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
         expLocation = InfoLocation.space
         self.assertEqual(info.location, expLocation, msg="info target location must be space (ID {})".format(expLocation))
         expFilterType = InfoFilterType.skill
@@ -64,3 +66,81 @@ class TestModOwnSrq(TestCase):
         expSrcVal = 1156
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
         self.assertIsNone(info.conditions, msg="info conditions must be None")
+
+    def testEffCategoryPassive(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
+        expStatus = InfoBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        expState = InfoState.offline
+        self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
+        expContext = InfoContext.local
+        self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
+
+    def testEffCategoryActive(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 1)
+        expStatus = InfoBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        expState = InfoState.active
+        self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
+        expContext = InfoContext.local
+        self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
+
+    def testEffCategoryTarget(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 2)
+        expStatus = InfoBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        expState = InfoState.active
+        self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
+        expContext = InfoContext.projected
+        self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
+
+    def testEffCategoryArea(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 3)
+        expStatus = InfoBuildStatus.error
+        self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+
+    def testEffCategoryOnline(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 4)
+        expStatus = InfoBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        expState = InfoState.online
+        self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
+        expContext = InfoContext.local
+        self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
+
+    def testEffCategoryOverload(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 5)
+        expStatus = InfoBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        expState = InfoState.overload
+        self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
+        expContext = InfoContext.local
+        self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
+
+    def testEffCategoryDungeon(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 6)
+        expStatus = InfoBuildStatus.error
+        self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+
+    def testEffCategorySystem(self):
+        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 7)
+        expStatus = InfoBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        expState = InfoState.offline
+        self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
+        expContext = InfoContext.local
+        self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))

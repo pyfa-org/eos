@@ -19,9 +19,25 @@
 #===============================================================================
 
 
-from eos.const import nulls, Operand
-from eos.calc.info.info import Info, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
-from .builderData import durationMods, mirrorDurationMods
+from eos.const import nulls, Operand, EffectCategory
+from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from .operandData import operandData, OperandType
+
+
+# Convert effect category and operand gang/local modification
+# to state and context
+# Format: {(effect category, gang flag): (state, context)}
+stateData = {(EffectCategory.passive, False): (InfoState.offline, InfoContext.local),
+             (EffectCategory.passive, True): (InfoState.offline, InfoContext.gang),
+             (EffectCategory.active, False): (InfoState.active, InfoContext.local),
+             (EffectCategory.active, True): (InfoState.active, InfoContext.gang),
+             (EffectCategory.target, False): (InfoState.active, InfoContext.projected),
+             (EffectCategory.online, False): (InfoState.online, InfoContext.local),
+             (EffectCategory.online, True): (InfoState.online, InfoContext.gang),
+             (EffectCategory.overload, False): (InfoState.overload, InfoContext.local),
+             (EffectCategory.overload, True): (InfoState.overload, InfoContext.gang),
+             (EffectCategory.system, False): (InfoState.offline, InfoContext.local),
+             (EffectCategory.system, True): (InfoState.offline, InfoContext.gang)}
 
 
 class Modifier:
@@ -38,6 +54,9 @@ class Modifier:
         # only those which describe some operation applied onto item
         # (belonging to either durationMods orinstantMods sets).
         self.type = None
+        # Keeps category ID of effect from whose expressions it
+        # was generated
+        self.effectCategoryId = None
         # Describes when modification should be applied, for instant
         # modifications only:
         # For modifier types, belonging to instant, must be
@@ -92,6 +111,16 @@ class Modifier:
         if self.conditions is not None:
             if self.conditions.validateTree() is not True:
                 return False
+        # It should be possible to convert gang flag and effect
+        # category ID into state and context
+        try:
+            operandMeta = operandData[self.type]
+        except KeyError:
+            gangFlag = None
+        else:
+            gangFlag = operandMeta.gang
+        if not (self.effectCategoryId, gangFlag) in stateData:
+            return False
         # Other fields are optional, check them using modifier type
         validateMap = {Operand.addGangGrpMod: self.__validateGangGrp,
                        Operand.rmGangGrpMod: self.__validateGangGrp,
@@ -232,13 +261,21 @@ class Modifier:
         attributes are the same, else False
         """
         # Check if both are duration modifiers
-        if not self.type in durationMods or not other.type in durationMods:
-            return False
+        for modifier in {self, other}:
+            try:
+                modData = operandData[modifier.type]
+            except KeyError:
+                modType = None
+            else:
+                modType = modData.type
+            if modType != OperandType.duration:
+                return False
         # Check all modifier fields that make the difference for duration modifiers
-        if (self.type != other.type or self.sourceType != other.sourceType or
-            self.sourceValue != other.sourceValue or self.operator != other.operator or
-            self.targetAttributeId != other.targetAttributeId or self.targetLocation != other.targetLocation or
-            self.targetGroupId != other.targetGroupId or self.targetSkillRequirementId != other.targetSkillRequirementId):
+        if (self.type != other.type or self.effectCategoryId != other.effectCategoryId or
+            self.sourceType != other.sourceType or self.sourceValue != other.sourceValue or
+            self.operator != other.operator or self.targetAttributeId != other.targetAttributeId or
+            self.targetLocation != other.targetLocation or self.targetGroupId != other.targetGroupId or
+            self.targetSkillRequirementId != other.targetSkillRequirementId):
             return False
         # They're the same if above conditions were passed, other fields irrelevant
         return True
@@ -257,25 +294,33 @@ class Modifier:
         """
         # First, check type, it should be duration modification for both,
         # as only they have do-undo pair
-        if len({self.type, other.type}.intersection(durationMods)) < 2:
-            return False
-        # After, check actual mirror type according to map
-        if self.type in mirrorDurationMods:
-            if other.type != mirrorDurationMods[self.type]:
+        for modifier in {self, other}:
+            try:
+                modData = operandData[modifier.type]
+            except KeyError:
+                modType = None
+            else:
+                modType = modData.type
+            if modType != OperandType.duration:
                 return False
-        # Without appropriate entry in mirror dictionary, consider it as
-        # non-mirror modifier
+        # After, check actual mirror
+        try:
+            modData = operandData[self.type]
+        except KeyError:
+            modMirror = None
         else:
+            modMirror = modData.mirror
+        if modMirror != other.type:
             return False
         # Passed post-modifier should have no conditions assigned to it; they should be de-applied w/o
         # any condition, our approach to this assumes it
         if other.conditions is not None:
             return False
         # Then, check all other fields of modifier
-        if (self.sourceType != other.sourceType or self.sourceValue != other.sourceValue or
-            self.operator != other.operator or self.targetAttributeId != other.targetAttributeId or
-            self.targetLocation != other.targetLocation or self.targetGroupId != other.targetGroupId or
-            self.targetSkillRequirementId != other.targetSkillRequirementId):
+        if (self.effectCategoryId != other.effectCategoryId or self.sourceType != other.sourceType or
+            self.sourceValue != other.sourceValue or self.operator != other.operator or
+            self.targetAttributeId != other.targetAttributeId or self.targetLocation != other.targetLocation
+            or self.targetGroupId != other.targetGroupId or self.targetSkillRequirementId != other.targetSkillRequirementId):
             return False
         # If all conditions were met, then it's actually mirror
         return True
@@ -295,6 +340,7 @@ class Modifier:
         info.sourceType = self.sourceType
         info.sourceValue = self.sourceValue
         info.targetAttributeId = self.targetAttributeId
+        info.state, info.context = stateData[(self.effectCategoryId, operandData[self.type].gang)]
         # Fill remaining fields on per-modifier basis
         conversionMap = {Operand.addGangGrpMod: self.__convertGangGrp,
                          Operand.rmGangGrpMod: self.__convertGangGrp,
@@ -323,7 +369,6 @@ class Modifier:
     # Block with conversion methods, called depending on modifier type
     def __convertGangGrp(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.ship
         info.filterType = InfoFilterType.group
@@ -331,13 +376,11 @@ class Modifier:
 
     def __convertGangItm(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.ship
 
     def __convertGangOwnSrq(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.space
         info.filterType = InfoFilterType.skill
@@ -345,7 +388,6 @@ class Modifier:
 
     def __convertGangSrq(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = True
         info.operator = self.operator
         info.location = InfoLocation.ship
         info.filterType = InfoFilterType.skill
@@ -353,13 +395,11 @@ class Modifier:
 
     def __convertItm(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
 
     def __convertLocGrp(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.group
@@ -367,14 +407,12 @@ class Modifier:
 
     def __convertLoc(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.all_
 
     def __convertLocSrq(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = False
         info.operator = self.operator
         info.location = self.targetLocation
         info.filterType = InfoFilterType.skill
@@ -382,7 +420,6 @@ class Modifier:
 
     def __convertOwnSrq(self, info):
         info.runTime = InfoRunTime.duration
-        info.gang = False
         info.operator = self.operator
         info.location = InfoLocation.space
         info.filterType = InfoFilterType.skill
@@ -390,18 +427,15 @@ class Modifier:
 
     def __convertAssign(self, info):
         info.runTime = self.runTime
-        info.gang = False
         info.operator = InfoOperator.assignment
         info.location = self.targetLocation
 
     def __convertInc(self, info):
         info.runTime = self.runTime
-        info.gang = False
         info.operator = InfoOperator.increment
         info.location = self.targetLocation
 
     def __convertDec(self, info):
         info.runTime = self.runTime
-        info.gang = False
         info.operator = InfoOperator.decrement
         info.location = self.targetLocation

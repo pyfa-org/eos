@@ -18,42 +18,81 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-
 from eos.const import EffectCategory
 
-
-class InfoContext:
-    """Info required context ID holder"""
-    passive = 1  # Applied regardless of carrier holder's state
+class InfoState:
+    """Info required state ID holder"""
+    offline = 1  # Applied regardless of carrier holder's state
     online = 2  # Applied when carrier holder is at least in online state (i.e., in active and overloaded too)
     active = 3  # Applied when carrier holder is at least online
     overload = 4  # Applied only when carrier holder is overloaded
-    projected = 5  # Applied when holder is activated on some target
 
     @classmethod
-    def effectCategory2context(cls, effectCategoryId):
+    def _effectCategoryToState(cls, effectCategoryId):
         """
-        Convert effect category to info context.
+        Convert effect category to state.
 
         Positional arguments:
-        effectCategoryId -- ID of effect category to convert
+        effectCategoryId -- effect category ID
 
         Return value:
-        ID of info context, corresponding to passed effect
-        category, or None if no corresponding context was found
+        ID of state, which corresponds to passed effect category,
+        or None if no corresponding state was found
         """
         # Format: {effect category ID: state ID}
-        conversionMap = {EffectCategory.passive: cls.passive,
+        conversionMap = {EffectCategory.passive: cls.offline,
                          EffectCategory.active: cls.active,
-                         EffectCategory.target: cls.projected,
+                         EffectCategory.target: cls.active,
                          EffectCategory.online: cls.online,
                          EffectCategory.overload: cls.overload,
-                         EffectCategory.system: cls.passive}
+                         EffectCategory.system: cls.offline}
         try:
             result = conversionMap[effectCategoryId]
         except KeyError:
             result = None
         return result
+
+    @classmethod
+    def _stateDifference(cls, state1, state2):
+        """
+        Get difference between two states (states which need to be
+        toggled to get from one state to another).
+
+        Positional arguments:
+        state1 -- ID of first state to compare, can be None
+        state2 -- ID of second state to compare, can be None
+
+        Return value:
+        Set with state IDs, which need to be enabled/disabled to perform
+        state switch
+        """
+        # If both passed state are the same, no state
+        # switch needed
+        if state1 == state2:
+            return set()
+        # Container which keeps all state IDs
+        allStates = {cls.offline, cls.online,
+                     cls.active, cls.overload}
+        # Get all states you need to trigger to get from
+        # no state to given state
+        states1 = set(filter(lambda state: state <= state1, allStates)) if state1 is not None else None
+        states2 = set(filter(lambda state: state <= state2, allStates)) if state2 is not None else None
+        # If one of passed states was None (if both were none, empty set should've been
+        # returned already), return other states set
+        if states1 is None or states2 is None:
+            result = states1 or states2
+        # If both states were not None, get all states which are present
+        # in one set but not in another
+        else:
+            result = states1.symmetric_difference(states2)
+        return result
+
+
+class InfoContext:
+    """Info required context ID holder"""
+    local = 1  # Applied to fit-local holders
+    gang = 2  # Applied to gang-mates
+    projected = 3  # Applied only when holder is projected onto some ship/fit
 
 
 class InfoRunTime:
@@ -74,7 +113,7 @@ class InfoLocation:
     space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
     @classmethod
-    def expressionValue2location(cls, expressionValue):
+    def expressionValueToLocation(cls, expressionValue):
         """
         Convert expression value to location.
 
@@ -129,7 +168,7 @@ class InfoOperator:
     assignment = 12
 
     @classmethod
-    def expressionValue2operator(cls, expressionValue):
+    def expressionValueToOperator(cls, expressionValue):
         """
         Convert expression value to operator.
 
@@ -176,14 +215,15 @@ class Info:
         # Conditions under which modification is applied,
         # must be None or tree of condition Atom objects.
         self.conditions = None
-        # Info can be applied only when its holder exists in certain
-        # context, must be InfoContext class' attribute value.
-        self.requiredContext = None
+        # Info can be applied only when its holder is in
+        # this or greater state, must be State class'
+        # attribute value.
+        self.state = None
+        # Boolean flag, identifying local/gang change.
+        self.context = None
         # Time context in which modification is applied, must
         # be InfoRunTime class' attribute value.
         self.runTime = None
-        # Boolean flag, identifying local/gang change.
-        self.gang = None
         # Target location to change, must be InfoLocation class'
         # attribute value.
         self.location = None

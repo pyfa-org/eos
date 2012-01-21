@@ -23,8 +23,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from .affector import Affector
+from .info.info import InfoState
 from .map import MutableAttributeMap
-from .state import State
 
 
 class MutableAttributeHolder(metaclass=ABCMeta):
@@ -44,7 +44,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # Special dictionary subclass that holds modified attributes and data related to their calculation
         self.attributes = MutableAttributeMap(self)
         # Keeps current state of the holder
-        self.__state = State.offline
+        self.__state = InfoState.offline
 
     @property
     def state(self):
@@ -76,28 +76,27 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         """
         ...
 
-    def _generateAffectors(self, contexts=None):
+    def _generateAffectors(self, stateFilter=None, contextFilter=None):
         """
         Get all affectors spawned by holder.
 
         Keyword arguments:
-        contexts -- filter results by affector's required context,
-        which should be in this passed iterable; if None, no
-        filtering occurs (default None)
+        stateFilter -- filter results by affector's required state,
+        which should be in this iterable; if None, no filtering
+        occurs (default None)
+        contextFilter -- filter results by affector's required state,
+        which should be in this iterable; if None, no filtering
+        occurs (default None)
 
         Return value:
-        Set with Affector objects
+        Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        # Special handling for no filter - to avoid checking condition
-        # on each cycle
-        if contexts is None:
-            for info in self.item.getInfos():
-                affector = Affector(self, info)
-                affectors.add(affector)
-        else:
-            for info in self.item.getInfos():
-                if info.requiredContext in contexts:
-                    affector = Affector(self, info)
-                    affectors.add(affector)
+        for info in self.item.getInfos():
+            if stateFilter is not None and not info.state in stateFilter:
+                continue
+            if contextFilter is not None and not info.context in contextFilter:
+                continue
+            affector = Affector(self, info)
+            affectors.add(affector)
         return affectors

@@ -21,9 +21,8 @@
 
 from collections import MutableSequence
 
-from eos.calc.info.info import InfoLocation, InfoSourceType
+from eos.calc.info.info import InfoState, InfoContext, InfoLocation, InfoSourceType
 from eos.calc.register import Register
-from eos.calc.state import State
 
 
 class Fit:
@@ -101,8 +100,9 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self.__register.registerAffectee(holder, **kwargs)
-        enabledContexts = State._contextDifference(None, holder.state)
-        enabledAffectors = holder._generateAffectors(contexts=enabledContexts)
+        enabledStates = InfoState._stateDifference(None, holder.state)
+        processedContexts = {InfoContext.local}
+        enabledAffectors = holder._generateAffectors(stateFilter=enabledStates, contextFilter=processedContexts)
         for affector in enabledAffectors:
             self.__register.registerAffector(affector)
         # When register operations are complete, we can damage
@@ -130,8 +130,9 @@ class Fit:
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._removeHolder(charge, disableDirect=InfoLocation.other)
-        disabledContexts = State._contextDifference(None, holder.state)
-        disabledAffectors = holder._generateAffectors(contexts=disabledContexts)
+        disabledStates = InfoState._stateDifference(None, holder.state)
+        processedContexts = {InfoContext.local}
+        disabledAffectors = holder._generateAffectors(stateFilter=disabledStates, contextFilter=processedContexts)
         # When links in register are still alive, damage all attributes
         # influenced by holder
         self._clearAffectorDependents(disabledAffectors)
@@ -153,8 +154,9 @@ class Fit:
         oldState = holder.state
         # Get set of affectors which we will need to register or
         # unregister
-        contextDiff = State._contextDifference(oldState, newState)
-        affectorDiff = holder._generateAffectors(contexts=contextDiff)
+        stateDifference = InfoState._stateDifference(oldState, newState)
+        processedContexts = {InfoContext.local}
+        affectorDiff = holder._generateAffectors(stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on
         if newState > oldState:
             for affector in affectorDiff:

@@ -435,7 +435,7 @@ class Register():
         """
         info = affector.info
         # Register keeps track of only local duration modifiers
-        if info.runTime != InfoRunTime.duration or info.gang is not False:
+        if info.runTime != InfoRunTime.duration:
             return
         key, affectorMap = self.__getAffectorMap(affector)
         # Actually add data to map
@@ -450,7 +450,7 @@ class Register():
         affector -- affector to unregister
         """
         info = affector.info
-        if info.runTime != InfoRunTime.duration or info.gang is not False:
+        if info.runTime != InfoRunTime.duration:
             return
         key, affectorMap = self.__getAffectorMap(affector)
         affectorMap.rmData(key, {affector})

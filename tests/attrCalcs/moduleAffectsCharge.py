@@ -24,7 +24,7 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.eve.effect import Effect
-from eos.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from eos.fit.fit import Fit
 from eos.fit.ship import Ship
 from eos.fit.module import Module
@@ -50,7 +50,8 @@ class TestModuleAffectsCharge(TestCase):
 
         attrMod = attrMetaGetter(2)
         info = Info()
-        info.requiredContext = InfoContext.passive
+        info.state = InfoState.offline
+        info.context = InfoContext.local
         info.runTime = InfoRunTime.duration
         info.gang = False
         info.location = InfoLocation.other

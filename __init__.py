@@ -19,4 +19,4 @@
 #===============================================================================
 
 from .eos import Eos
-from .calc.state import State
+from .calc.info.info import InfoState as State

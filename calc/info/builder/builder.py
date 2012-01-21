@@ -23,20 +23,10 @@ from copy import deepcopy
 from itertools import combinations
 
 from eos.const import Type, Operand
-from eos.calc.info.info import InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
-from .builderData import durationMods, instantMods
+from .operandData import operandData, OperandType
 from .modifier import Modifier
-
-
-# Operands which are not used in any way in current Eos implementation
-inactiveOpnds = {Operand.attack, Operand.cargoScan, Operand.cheatTeleDock,
-                 Operand.cheatTeleGate, Operand.aoeDecloak, Operand.ecmBurst,
-                 Operand.aoeDmg, Operand.missileLaunch, Operand.defenderLaunch,
-                 Operand.fofLaunch, Operand.mine, Operand.powerBooster,
-                 Operand.shipScan, Operand.surveyScan, Operand.tgtHostile,
-                 Operand.tgtSilent, Operand.toolTgtSkills, Operand.userError,
-                 Operand.vrfTgtGrp}
 
 
 class InfoBuildStatus:
@@ -80,11 +70,6 @@ class InfoBuilder:
         Tuple (set with Info objects, build status), where build status
         is InfoLocation class' attribute value.
         """
-        # Attempt to get context which we'll assign to infos later
-        infoContext = InfoContext.effectCategory2context(effectCategoryId)
-        # And if it's none, return error right away
-        if infoContext is None:
-            return set(), InfoBuildStatus.error
         # Else, assume we parse effect 100% successfully by default
         self.effectStatus = InfoBuildStatus.okFull
         # First, we're going to parse pre-expression tree, so set preMods
@@ -98,6 +83,7 @@ class InfoBuilder:
             return set(), InfoBuildStatus.error
         # Validate modifiers we've got out of pre-expression tree
         for mod in self.preMods:
+            mod.effectCategoryId = effectCategoryId
             if mod.validate() is not True:
                 return set(), InfoBuildStatus.error
 
@@ -108,6 +94,7 @@ class InfoBuilder:
         except:
             return set(), InfoBuildStatus.error
         for mod in self.postMods:
+            mod.effectCategoryId = effectCategoryId
             if mod.validate() is not True:
                 return set(), InfoBuildStatus.error
 
@@ -129,7 +116,13 @@ class InfoBuilder:
         # pre-modifiers, which are applying ones
         for preMod in self.preMods:
             # Skip all non-duration mods, we're not interested in them for now
-            if not preMod.type in durationMods:
+            try:
+                modData = operandData[preMod.type]
+            except KeyError:
+                modType = None
+            else:
+                modType = modData.type
+            if modType != OperandType.duration:
                 continue
             # Cycle through post-modifiers
             for postMod in self.postMods:
@@ -151,7 +144,13 @@ class InfoBuilder:
         # applied in the beginning of the cycle
         for preMod in self.preMods:
             # Skip non-instant modifier types
-            if not preMod.type in instantMods:
+            try:
+                modData = operandData[preMod.type]
+            except KeyError:
+                modType = None
+            else:
+                modType = modData.type
+            if modType != OperandType.instant:
                 continue
             # Make actual info object
             info = preMod.convertToInfo()
@@ -159,10 +158,16 @@ class InfoBuilder:
             # And mark pre-modifier as used
             usedPres.add(preMod)
 
-        # same for instant modifiers, applied in the end of
+        # Same for instant modifiers, applied in the end of
         # module cycle
         for postMod in self.postMods:
-            if not postMod.type in instantMods:
+            try:
+                modData = operandData[postMod.type]
+            except KeyError:
+                modType = None
+            else:
+                modType = modData.type
+            if modType != OperandType.instant:
                 continue
             info = postMod.convertToInfo()
             infos.add(info)
@@ -175,10 +180,6 @@ class InfoBuilder:
         # Same for post-modifiers
         if len(self.postMods.difference(usedPosts)) > 0:
             self.effectStatus = InfoBuildStatus.okPartial
-
-        # Fill context field for all infos
-        for info in infos:
-            info.requiredContext = infoContext
 
         # Finally, handle our infos and parsing status to requestor
         return infos, self.effectStatus
@@ -253,14 +254,20 @@ class InfoBuilder:
 
     def __generic(self, element, conditions):
         """Generic entry point, used if we expect passed element to be meaningful"""
+        try:
+            operandMeta = operandData[element.operandId]
+        except KeyError:
+            operandType = None
+        else:
+            operandType = operandMeta.type
         # For actual modifications, call method which handles them
-        if element.operandId in durationMods:
+        if operandType == OperandType.duration:
             self.__makeDurationMod(element, conditions)
-        elif element.operandId in instantMods:
+        elif operandType == OperandType.instant:
             self.__makeInstantMod(element, conditions)
         # Mark current effect as partially parsed if it contains
         # inactive operands
-        elif element.operandId in inactiveOpnds:
+        elif operandType == OperandType.inactive:
             self.effectStatus = InfoBuildStatus.okPartial
         # Detect if-then-else construct
         elif element.operandId == Operand.or_ and element.arg1 and element.arg1.operandId == Operand.ifThen:
@@ -397,11 +404,11 @@ class InfoBuilder:
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
-        return InfoOperator.expressionValue2operator(element.value)
+        return InfoOperator.expressionValueToOperator(element.value)
 
     def __getLoc(self, element):
         """Define location"""
-        return InfoLocation.expressionValue2location(element.value)
+        return InfoLocation.expressionValueToLocation(element.value)
 
     def __getAttr(self, element):
         """Reference attribute via ID"""
