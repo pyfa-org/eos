@@ -29,6 +29,10 @@ from .operandData import operandData, OperandType
 from .modifier import Modifier
 
 
+class ModifierBuilderException(Exception):
+    pass
+
+
 class ModifierBuilder:
     """
     Class is responsible for converting two trees (pre and post) of Expression objects (which
@@ -172,7 +176,11 @@ class ModifierBuilder:
             genericOpnds = {Operand.splice: self.__splice,
                             Operand.defInt: self.__checkIntStub,
                             Operand.defBool: self.__checkBoolStub}
-            genericOpnds[element.operandId](element, conditions)
+            try:
+                method = genericOpnds[element.operandId]
+            except KeyError:
+                raise ModifierBuilderException("unknown operand has been passed to __generic")
+            method(element, conditions)
 
     def __splice(self, element, conditions):
         """Reference two expressions from self"""
@@ -182,14 +190,14 @@ class ModifierBuilder:
     def __checkIntStub(self, element, conditions):
         """Checks if given expression is stub, returning integer 0 or 1"""
         value = self.__getInt(element)
-        if not value in (0, 1):
-            raise ValueError("integer stub with unexpected value")
+        if not value in {0, 1}:
+            raise ModifierBuilderException("integer stub with unexpected value")
 
     def __checkBoolStub(self, element, conditions):
         """Checks if given expression is stub, returning boolean true"""
         value = self.__getBool(element)
         if value is not True:
-            raise ValueError("boolean stub with value other than True")
+            raise ModifierBuilderException("boolean stub with value other than True")
 
     def __makeDurationMod(self, element, conditions):
         """Make modifier for duration expressions"""
@@ -319,7 +327,7 @@ class ModifierBuilder:
             if self.__getLoc(element.arg1) == InfoLocation.self_:
                 return Type.self_
             else:
-                raise ValueError("unexpected location referenced in type getter")
+                raise ModifierBuilderException("unexpected location referenced in type getter")
         else:
             return element.expressionTypeId
 
@@ -461,4 +469,4 @@ class ModifierBuilder:
                         AtomComparisonOperator.less: AtomComparisonOperator.greaterOrEqual}
             condition.operator = invComps[condition.operator]
         else:
-            raise ValueError("only logical and comparison ConditionAtoms can be reverted")
+            raise ModifierBuilderException("only logical and comparison ConditionAtoms can be reverted")

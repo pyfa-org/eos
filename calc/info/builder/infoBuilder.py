@@ -21,7 +21,7 @@
 
 from eos.const import Operand, EffectCategory
 from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
-from .modifierBuilder import ModifierBuilder
+from .modifierBuilder import ModifierBuilder, ModifierBuilderException
 from .operandData import operandData, OperandType
 
 
@@ -70,22 +70,28 @@ class InfoBuilder:
         """
         # By default, assume that our build is 100% successful
         buildStatus = InfoBuildStatus.okFull
-        # Make instance of modifier builder and get modifiers out
-        # of both trees
+        # Containers for our data
+        preMods = set()
+        postMods = set()
+        # Make instance of modifier builder
         modBuilder = ModifierBuilder()
-        try:
-            preMods, skippedData = modBuilder.build(preExpression, InfoRunTime.pre, effectCategoryId)
-        except:
-            return set(), InfoBuildStatus.error
-        # If any skipped data was encountered, change build status
-        if skippedData is True:
-            buildStatus = InfoBuildStatus.okPartial
-        try:
-            postMods, skippedData = modBuilder.build(postExpression, InfoRunTime.post, effectCategoryId)
-        except:
-            return set(), InfoBuildStatus.error
-        if skippedData is True:
-            buildStatus = InfoBuildStatus.okPartial
+        # Get modifiers out of both trees
+        for tree, runTime, modSet in ((preExpression, InfoRunTime.pre, preMods),
+                                      (postExpression, InfoRunTime.post, postMods)):
+            try:
+                modifiers, skippedData = modBuilder.build(tree, runTime, effectCategoryId)
+            # If any errors occurred, return empty set and error status
+            except ModifierBuilderException:
+                return set(), InfoBuildStatus.error
+            except:
+                print("unexpected exception occurred when parsing expression tree {}".format(preExpression.id))
+                return set(), InfoBuildStatus.error
+            else:
+                # Update set with modifiers we've just got
+                modSet.update(modifiers)
+                # If any skipped data was encountered, change build status
+                if skippedData is True:
+                    buildStatus = InfoBuildStatus.okPartial
         # Check modifiers we've got for validity
         for modSet in (preMods, postMods):
             for modifier in modSet:
@@ -136,45 +142,28 @@ class InfoBuilder:
                     # We found  what we've been looking for in this postMod loop, thus bail
                     break
 
-        # Time of instantly-applied modifiers; first, the ones
-        # applied in the beginning of the cycle
-        for preMod in preMods:
-            # Skip non-instant modifier types
-            try:
-                modData = operandData[preMod.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.instant:
-                continue
-            # Make actual info object
-            info = self.convertToInfo(preMod)
-            infos.add(info)
-            # And mark pre-modifier as used
-            usedPres.add(preMod)
+        # Time of instantly-applied modifiers: the ones which
+        # are applied just in the beginning and in the end of cycle
+        for modSet, usedMods in ((preMods, usedPres), (postMods, usedPosts)):
+            for modifier in modSet:
+                # Skip non-instant modifier types
+                try:
+                    modData = operandData[modifier.type]
+                except KeyError:
+                    modType = None
+                else:
+                    modType = modData.type
+                if modType != OperandType.instant:
+                    continue
+                # Make actual info object
+                info = self.convertToInfo(modifier)
+                infos.add(info)
+                # And mark modifier as used
+                usedMods.add(modifier)
 
-        # Same for instant modifiers, applied in the end of
-        # module cycle
-        for postMod in postMods:
-            try:
-                modData = operandData[postMod.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.instant:
-                continue
-            info = self.convertToInfo(postMod)
-            infos.add(info)
-            usedPosts.add(postMod)
-
-        # If there're any pre-modifiers which were not used for
+        # If there're any modifiers which were not used for
         # info generation, mark current effect as partially parsed
-        if len(preMods.difference(usedPres)) > 0:
-            buildStatus = InfoBuildStatus.okPartial
-        # Same for post-modifiers
-        if len(postMods.difference(usedPosts)) > 0:
+        if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
             buildStatus = InfoBuildStatus.okPartial
 
         return infos, buildStatus
