@@ -84,7 +84,9 @@ class InfoBuilder:
             except ModifierBuilderException:
                 return set(), InfoBuildStatus.error
             except:
-                print("unexpected exception occurred when parsing expression tree {}".format(preExpression.id))
+                # TODO: This is temporary debugging print, should be moved to logging
+                # module when its format is defined
+                print("unexpected exception occurred when parsing expression tree {}".format(tree.id))
                 return set(), InfoBuildStatus.error
             else:
                 # Update set with modifiers we've just got
