@@ -24,17 +24,19 @@ from collections import namedtuple
 from eos.const import Operand
 
 
+# Named tuple for ease of access of operand metadata, where:
+# type -- OperandType class' attribute value
+# gang -- boolean, indicating if it is local or gang modifier
+# mirror -- contains ID of operand which is "mirror"
+OperandMeta = namedtuple("OperandMeta", ("type", "gang", "mirror"))
+
+
 class OperandType:
     """Modifier operand type ID holder"""
     duration = 1
     instant = 2
     inactive = 3
 
-# Named tuple for ease of access of operand metadata, where:
-# type -- OperandType class' attribute value
-# gang -- boolean, indicating if it is local or gang modifier
-# mirror -- contains ID of operand which is "mirror"
-OperandMeta = namedtuple("OperandMeta", ("type", "gang", "mirror"))
 
 # Map which holds data auxiliary for builder
 # Format: {operand: OperandMeta}
