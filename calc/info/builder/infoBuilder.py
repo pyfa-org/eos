@@ -73,11 +73,17 @@ class InfoBuilder:
         # Make instance of modifier builder and get modifiers out
         # of both trees
         modBuilder = ModifierBuilder()
-        preMods, skippedData = modBuilder.build(preExpression, InfoRunTime.pre, effectCategoryId)
+        try:
+            preMods, skippedData = modBuilder.build(preExpression, InfoRunTime.pre, effectCategoryId)
+        except:
+            return set(), InfoBuildStatus.error
         # If any skipped data was encountered, change build status
         if skippedData is True:
             buildStatus = InfoBuildStatus.okPartial
-        postMods, skippedData = modBuilder.build(postExpression, InfoRunTime.post, effectCategoryId)
+        try:
+            postMods, skippedData = modBuilder.build(postExpression, InfoRunTime.post, effectCategoryId)
+        except:
+            return set(), InfoBuildStatus.error
         if skippedData is True:
             buildStatus = InfoBuildStatus.okPartial
         # Check modifiers we've got for validity
