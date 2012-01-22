@@ -18,7 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.const import EffectCategory
+
 
 class InfoState:
     """Info required state ID holder"""

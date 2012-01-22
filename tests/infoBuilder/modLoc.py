@@ -18,10 +18,11 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from unittest import TestCase
 
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
 from eos.calc.info.info import InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 
 

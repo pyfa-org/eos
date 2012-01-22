@@ -22,7 +22,7 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
-from eos.calc.info.builder.builder import InfoBuilder, InfoBuildStatus
+from eos.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
 from eos.calc.info.info import InfoState, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 
 

@@ -29,162 +29,57 @@ from .operandData import operandData, OperandType
 from .modifier import Modifier
 
 
-class InfoBuildStatus:
-    """Effect info building status ID holder"""
-    notParsed = 1  # Expression trees were not parsed into infos yet
-    error = 2  # Errors occurred during expression trees parsing or validation
-    okPartial = 3  # Infos were generated, but some of modifications were dropped as unsupported
-    okFull = 4  # All modifications were pulled out of expression tree successfully
-
-
-class InfoBuilder:
+class ModifierBuilder:
     """
     Class is responsible for converting two trees (pre and post) of Expression objects (which
-    aren't directly useful to us) into Info objects which can then be used as needed.
+    aren't directly useful to us) into Modifier objects.
     """
-    def __init__(self):
-        # Storage for modifiers we got out of preExpression
-        self.preMods = set()
-        # Storage for modifiers we got out of postExpression
-        self.postMods = set()
-        # Which modifier list we're using at the moment
-        self.activeSet = None
-        # Which modifier we're referring at the moment
-        self.activeMod = None
+
+    def build(self, expressionTree, treeRunTime, effectCategoryId):
+        """
+        Generate Modifier objects out of passed data.
+
+        Positional arguments:
+        expressionTree -- root expression of expression tree
+        treeRunTime -- is it pre- or post-expression tree, used
+        to define type of instant modifiers, must be InfoRunTime.pre
+        or InfoRunTime.post
+        effectCategoryId -- effect category ID of effect, whose
+        expression Tree we're going to parse
+
+        Return value:
+        Tuple (set with Modifier objects, skipped data flag), where
+        skipped data flag indicates that we have encountered inactive
+        operands
+        """
+        # Flag which indicates, did we have data which we
+        # are skipping or not
+        self.skippedData = False
+        # Set with already generated modifiers
+        self.modifiers = set()
+        # Variable keeping type of tree we're parsing (pre
+        # or post)
+        self.treeRunTime = treeRunTime
+        # Which modifier we're building, used during build
+        # process for convenience
+        self.activeModifier = None
         # Conditions applied to all expressions found on current
         # building stage
         self.conditions = None
-        # Effect build status
-        self.effectStatus = None
-
-    def build(self, preExpression, postExpression, effectCategoryId):
-        """
-        Generate Info objects out of passed data.
-
-        Positional arguments:
-        preExpression -- root node of preExpression
-        postExpression -- root node of postExpression
-        effectCategoryId -- effect category ID for which we're making infos
-
-        Return value:
-        Tuple (set with Info objects, build status), where build status
-        is InfoLocation class' attribute value.
-        """
-        # Else, assume we parse effect 100% successfully by default
-        self.effectStatus = InfoBuildStatus.okFull
-        # First, we're going to parse pre-expression tree, so set preMods
-        # as active set
-        self.activeSet = self.preMods
-        try:
-            # Parse pre-expression tree
-            self.__generic(preExpression, None)
-        # If any unhandled exceptions occur, return empty set and error code
-        except:
-            return set(), InfoBuildStatus.error
-        # Validate modifiers we've got out of pre-expression tree
-        for mod in self.preMods:
-            mod.effectCategoryId = effectCategoryId
-            if mod.validate() is not True:
-                return set(), InfoBuildStatus.error
-
-        # Do the same for post-expressions
-        self.activeSet = self.postMods
-        try:
-            self.__generic(postExpression, None)
-        except:
-            return set(), InfoBuildStatus.error
-        for mod in self.postMods:
-            mod.effectCategoryId = effectCategoryId
-            if mod.validate() is not True:
-                return set(), InfoBuildStatus.error
-
+        # Run parsing process
+        self.__generic(expressionTree, None)
         # Unify multiple modifiers which do the same thing, but under different
         # conditions, into single modifiers. We need this for pre-modifiers only,
-        # as post-modifiers shouldn't contain conditions by definition
-        self.__builderDurationUnifier(self.preMods)
+        # as post-modifiers shouldn't contain conditions by definition, if they
+        # do - they will be invalidated later
+        if treeRunTime == InfoRunTime.pre:
+            self.__builderDurationUnifier()
+        # Set effectCategoryId attribute for all modifiers
+        for modifier in self.modifiers:
+            modifier.effectCategoryId = effectCategoryId
+        return self.modifiers, self.skippedData
 
-        # Actual container for info objects
-        infos = set()
-        # Helper containers for modifier->info conversion process
-        # Contains references to already used for generation of infos pre-modifiers
-        usedPres = set()
-        # Same for post-modifiers
-        usedPosts = set()
-
-        # To get all duration infos, we need two mirror duration modifiers,
-        # modifier which applies and modifier which undos effect; cycle through
-        # pre-modifiers, which are applying ones
-        for preMod in self.preMods:
-            # Skip all non-duration mods, we're not interested in them for now
-            try:
-                modData = operandData[preMod.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.duration:
-                continue
-            # Cycle through post-modifiers
-            for postMod in self.postMods:
-                # Skip modifiers which we already used
-                if postMod in usedPosts:
-                    continue
-                # If matching pre- and post-modifiers were detected
-                if preMod.isMirrorToPost(postMod) is True:
-                    # Create actual info
-                    info = preMod.convertToInfo()
-                    infos.add(info)
-                    # Mark used modifiers as used
-                    usedPres.add(preMod)
-                    usedPosts.add(postMod)
-                    # We found  what we've been looking for in this postMod loop, thus bail
-                    break
-
-        # Time of instantly-applied modifiers; first, the ones
-        # applied in the beginning of the cycle
-        for preMod in self.preMods:
-            # Skip non-instant modifier types
-            try:
-                modData = operandData[preMod.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.instant:
-                continue
-            # Make actual info object
-            info = preMod.convertToInfo()
-            infos.add(info)
-            # And mark pre-modifier as used
-            usedPres.add(preMod)
-
-        # Same for instant modifiers, applied in the end of
-        # module cycle
-        for postMod in self.postMods:
-            try:
-                modData = operandData[postMod.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.instant:
-                continue
-            info = postMod.convertToInfo()
-            infos.add(info)
-            usedPosts.add(postMod)
-
-        # If there're any pre-modifiers which were not used for
-        # info generation, mark current effect as partially parsed
-        if len(self.preMods.difference(usedPres)) > 0:
-            self.effectStatus = InfoBuildStatus.okPartial
-        # Same for post-modifiers
-        if len(self.postMods.difference(usedPosts)) > 0:
-            self.effectStatus = InfoBuildStatus.okPartial
-
-        # Finally, handle our infos and parsing status to requestor
-        return infos, self.effectStatus
-
-    def __builderDurationUnifier(self, modifiers):
+    def __builderDurationUnifier(self):
         """Unifies similar conditional duration modifiers into single modifier"""
         # Here we will unify duration modifiers which do the same thing,
         # just under different conditions, into single modifier; this is done in order
@@ -195,13 +90,13 @@ class InfoBuilder:
         # again
         grouped = set()
         # Iterate through all combinations of modifiers of 2
-        for mod1, mod2 in combinations(modifiers, 2):
+        for mod1, mod2 in combinations(self.modifiers, 2):
             # If both modifiers already were assigned to some group, no point
             # of going further
             if mod1 in grouped and mod2 in grouped:
                 continue
             # Skip modifiers which are not the same
-            if mod1.isSameMod(mod2) is not True:
+            if Modifier.isSameMod(mod1, mod2) is not True:
                 continue
             # If one of the modifiers is already in some modification group, we want to
             # add it there
@@ -224,7 +119,7 @@ class InfoBuilder:
         # Go through all groups of modifiers we're going to 'unify'
         for uniGroup in unifying:
             # First, remove them from set of modifiers
-            modifiers.difference_update(uniGroup)
+            self.modifiers.difference_update(uniGroup)
             # We need to put something back, 'unified' modification, initialize
             # it to None
             unified = None
@@ -250,7 +145,7 @@ class InfoBuilder:
                     unifiedCond.child2 = mod.conditions
                     unified.conditions = unifiedCond
             # Finally, add unified modifier to set
-            modifiers.add(unified)
+            self.modifiers.add(unified)
 
     def __generic(self, element, conditions):
         """Generic entry point, used if we expect passed element to be meaningful"""
@@ -268,7 +163,7 @@ class InfoBuilder:
         # Mark current effect as partially parsed if it contains
         # inactive operands
         elif operandType == OperandType.inactive:
-            self.effectStatus = InfoBuildStatus.okPartial
+            self.skippedData = True
         # Detect if-then-else construct
         elif element.operandId == Operand.or_ and element.arg1 and element.arg1.operandId == Operand.ifThen:
             self.__ifThenElse(element, conditions)
@@ -299,46 +194,44 @@ class InfoBuilder:
     def __makeDurationMod(self, element, conditions):
         """Make modifier for duration expressions"""
         # Make modifier object and let builder know we're working with it
-        self.activeMod = Modifier()
+        self.activeModifier = Modifier()
         # If we're asked to add any conditions, do it
         if conditions is not None:
             # Make sure to copy whole tree as it may be changed after
-            self.activeMod.conditions = deepcopy(conditions)
+            self.activeModifier.conditions = deepcopy(conditions)
         # Write modifier type, which corresponds to top-level operand of modification
-        self.activeMod.type = element.operandId
+        self.activeModifier.type = element.operandId
         # Request operator and target data, it's always in arg1
         self.__optrTgt(element.arg1)
         # Write down source attribute from arg2
-        self.activeMod.sourceType = InfoSourceType.attribute
-        self.activeMod.sourceValue = self.__getAttr(element.arg2)
+        self.activeModifier.sourceType = InfoSourceType.attribute
+        self.activeModifier.sourceValue = self.__getAttr(element.arg2)
         # Append filled modifier to list we're currently working with
-        self.activeSet.add(self.activeMod)
+        self.modifiers.add(self.activeModifier)
         # If something weird happens, clean current modifier to throw
         # exceptions instead of filling old modifier if something goes wrong
-        self.activeMod = None
+        self.activeModifier = None
 
     def __makeInstantMod(self, element, conditions):
         """Make modifier for instant expressions"""
         # Workflow is almost the same as for duration modifiers
-        self.activeMod = Modifier()
+        self.activeModifier = Modifier()
         if conditions is not None:
-            self.activeMod.conditions = deepcopy(conditions)
-        self.activeMod.type = element.operandId
+            self.activeModifier.conditions = deepcopy(conditions)
+        self.activeModifier.type = element.operandId
         # As our operator is specified by top-level operand, call target router directly
         self.__tgtRouter(element.arg1)
         self.__srcGetter(element.arg2)
-        # Set runtime according to active list
-        if self.activeSet is self.preMods:
-            self.activeMod.runTime = InfoRunTime.pre
-        elif self.activeSet is self.postMods:
-            self.activeMod.runTime = InfoRunTime.post
-        self.activeSet.add(self.activeMod)
-        self.activeMod = None
+        # Set runtime of modifier according to data
+        # passed to builder
+        self.activeModifier.runTime = self.treeRunTime
+        self.modifiers.add(self.activeModifier)
+        self.activeModifier = None
 
     def __optrTgt(self, element):
         """Join operator and target definition"""
         # Operation is always in arg1
-        self.activeMod.operator = self.__getOptr(element.arg1)
+        self.activeModifier.operator = self.__getOptr(element.arg1)
         # Handling of arg2 depends on its operand
         self.__tgtRouter(element.arg2)
 
@@ -354,29 +247,28 @@ class InfoBuilder:
         """Pick proper source specifying method according to operand"""
         # For attribute definitions, store attribute ID as value
         if element.operandId == Operand.defAttr:
-            self.activeMod.sourceType = InfoSourceType.attribute
-            self.activeMod.sourceValue = self.__getAttr(element)
+            self.activeModifier.sourceType = InfoSourceType.attribute
+            self.activeModifier.sourceValue = self.__getAttr(element)
         # Else, store just direct value
         else:
             valMap = {Operand.defInt: self.__getInt,
                       Operand.defBool: self.__getBool}
-            self.activeMod.sourceType = InfoSourceType.value
-            self.activeMod.sourceValue = valMap[element.operandId](element)
-
+            self.activeModifier.sourceType = InfoSourceType.value
+            self.activeModifier.sourceValue = valMap[element.operandId](element)
 
     def __tgtAttr(self, element):
         """Get target attribute and store it"""
-        self.activeMod.targetAttributeId = self.__getAttr(element.arg1)
+        self.activeModifier.targetAttributeId = self.__getAttr(element.arg1)
 
     def __tgtSrqAttr(self, element):
         """Join target skill requirement and target attribute"""
-        self.activeMod.targetSkillRequirementId = self.__getType(element.arg1)
-        self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
+        self.activeModifier.targetSkillRequirementId = self.__getType(element.arg1)
+        self.activeModifier.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtGrpAttr(self, element):
         """Join target group and target attribute"""
-        self.activeMod.targetGroupId = self.__getGrp(element.arg1)
-        self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
+        self.activeModifier.targetGroupId = self.__getGrp(element.arg1)
+        self.activeModifier.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtItmAttr(self, element):
         """Join target item specification and target attribute"""
@@ -386,21 +278,21 @@ class InfoBuilder:
                         Operand.locSrq: self.__tgtLocSrq}
         itmGetterMap[element.arg1.operandId](element.arg1)
         # Target attribute is always specified in arg2
-        self.activeMod.targetAttributeId = self.__getAttr(element.arg2)
+        self.activeModifier.targetAttributeId = self.__getAttr(element.arg2)
 
     def __tgtLoc(self, element):
         """Get target location and store it"""
-        self.activeMod.targetLocation = self.__getLoc(element)
+        self.activeModifier.targetLocation = self.__getLoc(element)
 
     def __tgtLocGrp(self, element):
         """Join target location filter and group filter"""
-        self.activeMod.targetLocation = self.__getLoc(element.arg1)
-        self.activeMod.targetGroupId = self.__getGrp(element.arg2)
+        self.activeModifier.targetLocation = self.__getLoc(element.arg1)
+        self.activeModifier.targetGroupId = self.__getGrp(element.arg2)
 
     def __tgtLocSrq(self, element):
         """Join target location filter and skill requirement filter"""
-        self.activeMod.targetLocation = self.__getLoc(element.arg1)
-        self.activeMod.targetSkillRequirementId = self.__getType(element.arg2)
+        self.activeModifier.targetLocation = self.__getLoc(element.arg1)
+        self.activeModifier.targetSkillRequirementId = self.__getType(element.arg2)
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
