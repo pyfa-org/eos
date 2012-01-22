@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import nulls, Attribute
+from eos.const import nulls, Attribute, EffectCategory
 from eos.calc.info.info import InfoState
 
 
@@ -76,6 +76,9 @@ class Type:
         # Caches results of max allowed state as integer ID
         self.__maxState = None
 
+        # Cache targeted flag
+        self.__targeted = None
+
     def requiredSkills(self):
         """
         Get skill requirements.
@@ -109,20 +112,45 @@ class Type:
         Get highest state this type is allowed to take.
 
         Return value:
-        State class' attribute value, representing highest state.
+        State class' attribute value, representing highest state
         """
         if self.__maxState is None:
-            # All types can be at least offline,
-            # even when they have no effects
-            maxState = InfoState.offline
-            # We need to iterate through effects of type instead of infos because
-            # effect doesn't necessarily generate info, but we need data from all
-            # effects to reliably detect max state
-            for effect in self.effects:
-                # Convert effect category to info context, context into
-                # holder state
-                effectState = InfoState._effectCategoryToState(effect.categoryId)
-                if effectState is not None:
-                    maxState = max(maxState, effectState)
-            self.__maxState = maxState
+            self.__maxState, self.__targeted = self.__getEffectData()
         return self.__maxState
+
+    def isTargeted(self):
+        """
+        Report if type is targeted or not. Targeted types cannot be
+        activated w/o target selection.
+
+        Return value:
+        Boolean targeted flag
+        """
+        if self.__targeted is None:
+            self.__maxState, self.__targeted = self.__getEffectData()
+        return self.__targeted
+
+    def __getEffectData(self):
+        """
+        Get type-specific data from effect set.
+
+        Return value:
+        Tuple (maxState, targeted flag)
+        """
+        # All types can be at least offline,
+        # even when they have no effects
+        maxState = InfoState.offline
+        # Assume type is not targeted by default
+        targeted = False
+        # We need to iterate through effects of type instead of infos because
+        # effect doesn't necessarily generate info, but we need data from all
+        # effects to reliably detect max state and projected flag
+        for effect in self.effects:
+            # Convert effect category to state
+            effectState = InfoState._effectCategoryToState(effect.categoryId)
+            if effectState is not None:
+                maxState = max(maxState, effectState)
+            # If any of effects is targeted, then type is targeted
+            if effect.categoryId == EffectCategory.target:
+                targeted = True
+        return maxState, targeted
