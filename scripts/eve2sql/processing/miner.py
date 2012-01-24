@@ -321,7 +321,8 @@ class DataMiner(object):
             table.add_column("text")
             # Actual text data for given language
             langtext = langdata[1]
-            for textID, text in langtext.iteritems():
+            for textID, textdata in langtext.iteritems():
+                text, _, _ = textdata
                 table.datarows.add((textID, text))
             self.__check_data_presence(table)
         return
