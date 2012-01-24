@@ -106,12 +106,6 @@ class DataMiner(object):
             # Use list itself if such data is unavailable
             except AttributeError:
                 headers = headobj
-            # For CIndexedRowsets, do some additional things
-            else:
-                # Reverse keys and values (it's in dbrow : key format)
-                sourcedata = dict(zip(sourcedata.itervalues(),sourcedata.iterkeys()))
-                # And raise error to go to recursive data seek
-                raise AttributeError
         # Try something else (for structures like IndexedRowLists)
         except AttributeError:
             headers = []
