@@ -144,7 +144,7 @@ class Type:
         targeted = False
         # We need to iterate through effects of type instead of infos because
         # effect doesn't necessarily generate info, but we need data from all
-        # effects to reliably detect max state and projected flag
+        # effects to reliably detect max state and targeted flag
         for effect in self.effects:
             # Convert effect category to state
             effectState = InfoState._effectCategoryToState(effect.categoryId)

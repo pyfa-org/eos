@@ -311,13 +311,11 @@ class DataMiner(object):
             langdata = cPickle.loads(langpickle)
             # Set of checks on each: first, see if top-level
             # dictionary has just 3 entries
-            if len(langdata) != 3:
+            if len(langdata) != 2:
                 print("  Unexpected dictionary size for {0} language data".format(langID))
             if langID != langdata[0]:
                 print("  Language key mismatch for {0}, skipping language".format(langID))
                 continue
-            if langdata[2] != {}:
-                print("  Unexpected value in unknown container for {0} language".format(langID))
             table = evedb.add_table("trntexts_{0}".format(langID))
             table.add_column("textID")
             table.add_column("text")
