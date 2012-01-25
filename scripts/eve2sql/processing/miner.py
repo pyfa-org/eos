@@ -99,43 +99,66 @@ class DataMiner(object):
         # IndexRowset, CIndexedRowset and FilterRowset)
         try:
             headobj = sourcedata.header
-            # Sometimes header data represents itself row descriptor
-            # (for CIndexedRowset), get actual list
+            # Sometimes header data represents itself row descriptor,
+            # get actual list (CIndexedRowset)
             try:
                 headers = headobj.Keys()
             # Use list itself if such data is unavailable
+            # (IndexRowset, FilterRowset)
             except AttributeError:
                 headers = headobj
-        # Try something else (for structures like IndexedRowLists)
+        # Try something else (plain dictionary, IndexedRowList)
         except AttributeError:
             headers = []
-            # IndexedRowLists structure may differ from table to table,
+            # Structure may differ from table to table,
             # run recursion on it
             self.__recursive_data_seek(sourcedata, headers, dictdatarows)
         # We got our headers, now get the data
         else:
-            # Try to use efficient getter right away, should work for IndexRowset
+            # Try to use efficient getter right away, which returns
+            # us data rows as plain lists, according to order of
+            # passed headers (IndexRowset)
             try:
-                sourcedatalines = sourcedata.Select(*headers)
-            # Other method for FilterRowsets
+                datalists = sourcedata.Select(*headers)
+            # If no efficient getter is available, we're going to mess
+            # directly with DBRows (FilterRowset, CIndexedRowset)
             except AttributeError:
                 # Iterate through their keys
                 for key in sourcedata.iterkeys():
-                    # Grab row sets
-                    rowset = sourcedata[key]
-                    rowsetdatalines = rowset.Select(*headers)
-                    # And process each data row
-                    for dataline in rowsetdatalines:
-                        datarow = {}
-                        for i in range(len(headers)):
-                            datarow[headers[i]] = dataline[i]
-                        dictdatarows.append(datarow)
+                    value = sourcedata[key]
+                    # Sometimes, efficient getter is available
+                    # one level below (FilterRowset)
+                    try:
+                        datalists = value.Select(*headers)
+                    # Some objects do not have Select method
+                    # (CIndexedRowset)
+                    except AttributeError:
+                        # Values can be different, detect it
+                        try:
+                            value.header
+                        # If no header data is available, then we're
+                        # dealing with single DBRow
+                        except AttributeError:
+                            datarow = dict((header, value[header]) for header in headers)
+                            dictdatarows.append(datarow)
+                        # Else, it's CRowset
+                        else:
+                            for dbrow in value:
+                                datarow = dict((header, dbrow[header]) for header in headers)
+                                dictdatarows.append(datarow)
+                    else:
+                        # And process each data row
+                        for datalist in datalists:
+                            datarow = {}
+                            for i in range(len(headers)):
+                                datarow[headers[i]] = datalist[i]
+                            dictdatarows.append(datarow)
             # Process data returned by getter
             else:
-                for dataline in sourcedatalines:
+                for datalist in datalists:
                     datarow = {}
                     for i in range(len(headers)):
-                        datarow[headers[i]] = dataline[i]
+                        datarow[headers[i]] = datalist[i]
                     dictdatarows.append(datarow)
         # Add columns into table object
         for header in headers:
