@@ -22,6 +22,7 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
+from eos.exception import TargetException
 from .affector import Affector
 from .info.info import InfoState
 from .map import MutableAttributeMap
@@ -81,8 +82,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         if self.item.isTargeted() is True:
             self.__target = newTarget
         else:
-            # TODO: add real exception at some point here
-            print("attempt to project non-projectable item detected")
+            raise TargetException("attempt to project holder with non-projectable item")
 
     def trackingSpeed(self):
         """Get tracking speed of holder"""
