@@ -107,7 +107,8 @@ class DataMiner(object):
             # (IndexRowset, FilterRowset)
             except AttributeError:
                 headers = headobj
-        # Try something else (plain dictionary, IndexedRowList)
+        # Try something else, if no header attribute
+        # available (plain dictionary, IndexedRowList)
         except AttributeError:
             headers = []
             # Structure may differ from table to table,
@@ -147,18 +148,16 @@ class DataMiner(object):
                                 datarow = dict((header, dbrow[header]) for header in headers)
                                 dictdatarows.append(datarow)
                     else:
-                        # And process each data row
+                        # After getting data, process each data list
+                        headerrange = range(len(headers))
                         for datalist in datalists:
-                            datarow = {}
-                            for i in range(len(headers)):
-                                datarow[headers[i]] = datalist[i]
+                            datarow = dict((headers[i], datalist[i]) for i in headerrange)
                             dictdatarows.append(datarow)
             # Process data returned by getter
             else:
+                headerrange = range(len(headers))
                 for datalist in datalists:
-                    datarow = {}
-                    for i in range(len(headers)):
-                        datarow[headers[i]] = datalist[i]
+                    datarow = dict((headers[i], datalist[i]) for i in headerrange)
                     dictdatarows.append(datarow)
         # Add columns into table object
         for header in headers:
