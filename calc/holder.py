@@ -45,6 +45,8 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         self.attributes = MutableAttributeMap(self)
         # Keeps current state of the holder
         self.__state = InfoState.offline
+        # Keeps current target of holder
+        self.__target = None
 
     @property
     def state(self):
@@ -67,6 +69,47 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         if self.fit is not None:
             self.fit._stateSwitch(self, newState)
         self.__state = newState
+
+    @property
+    def target(self):
+        """Get target, onto which holder is applied"""
+        return self.__target
+
+    @target.setter
+    def target(self, newTarget):
+        """Project holder onto target"""
+        if self.item.isTargeted() is True:
+            self.__target = newTarget
+        else:
+            # TODO: add real exception at some point here
+            print("attempt to project non-projectable item detected")
+
+    def trackingSpeed(self):
+        """Get tracking speed of holder"""
+        tsAttrId = self.item._trackingSpeedAttributeId
+        if tsAttrId is not None:
+            tracking = self.attributes[tsAttrId]
+        else:
+            tracking = None
+        return tracking
+
+    def optimalRange(self):
+        """Get optimal range of holder"""
+        orAttrId = self.item._rangeAttributeId
+        if orAttrId is not None:
+            optimal = self.attributes[orAttrId]
+        else:
+            optimal = None
+        return optimal
+
+    def falloffRange(self):
+        """Get falloff range of holder"""
+        frAttrId = self.item._falloffAttributeId
+        if frAttrId is not None:
+            falloff = self.attributes[frAttrId]
+        else:
+            falloff = None
+        return falloff
 
     @abstractmethod
     def _getLocation(self):

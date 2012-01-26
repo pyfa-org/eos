@@ -62,27 +62,3 @@ class Module(MutableAttributeHolder):
             newCharge.container = self
             self.__charge = newCharge
             self.fit._addHolder(newCharge, enableDirect=InfoLocation.other)
-
-    def trackingSpeed(self):
-        tsAttrId = self.item._trackingSpeedAttributeId
-        if tsAttrId is not None:
-            tracking = self.attributes[tsAttrId]
-        else:
-            tracking = None
-        return tracking
-
-    def optimalRange(self):
-        orAttrId = self.item._rangeAttributeId
-        if orAttrId is not None:
-            optimal = self.attributes[orAttrId]
-        else:
-            optimal = None
-        return optimal
-
-    def falloffRange(self):
-        frAttrId = self.item._falloffAttributeId
-        if frAttrId is not None:
-            falloff = self.attributes[frAttrId]
-        else:
-            falloff = None
-        return falloff
