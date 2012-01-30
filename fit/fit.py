@@ -42,12 +42,17 @@ class Fit:
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._attrMetaGetter = attrMetaGetter
-        # Item lists
+        # Character-related holder containers
         self.skills = HolderContainer(self)
-        self.modules = HolderContainer(self)
-        self.drones = HolderContainer(self)
         self.implants = SlotHolderContainer(self, Attribute.implantness)
         self.boosters = SlotHolderContainer(self, Attribute.boosterness)
+        # Ship-related containers
+        self.subsystems = SlotHolderContainer(self, Attribute.subsystemSlot)
+        self.modulesHigh = HolderContainer(self)
+        self.modulesMed = HolderContainer(self)
+        self.modulesLow = HolderContainer(self)
+        self.drones = HolderContainer(self)
+        # Celestial container
         self.systemWide = HolderContainer(self)
 
     @property

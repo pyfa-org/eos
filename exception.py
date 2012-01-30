@@ -29,15 +29,15 @@ class TargetException(EosException):
     pass
 
 
-class SlotHolderStoreException(EosException):
+class ItemFittingException(EosException):
     """
-    Subclassed by eos-specific exceptions which occur during work
-    with slot-based holder storage
+    Not used directly, subclassed by more specific exceptions
+    which specify exact reason why item cannot be fit.
     """
     pass
 
 
-class NoSlotAttributeException(SlotHolderStoreException):
+class NoSlotAttributeException(ItemFittingException):
     """
     Raised on attempt to add holder to slot-based container, if holder's
     item doesn't have attribute which is used as slot index.
@@ -45,9 +45,9 @@ class NoSlotAttributeException(SlotHolderStoreException):
     pass
 
 
-class SlotOccupiedException(SlotHolderStoreException):
+class SlotOccupiedException(ItemFittingException):
     """
     Raised on attempt to add holder to slot-based container, if slot
-    to which holder should be added is already occupied by another holder
+    to which holder should be added is already occupied by another holder.
     """
     pass
