@@ -37,9 +37,11 @@ class Charge(MutableAttributeHolder):
         # "loaded"
         self.container = None
 
-    def _getLocation(self):
+    @property
+    def _location(self):
         return InfoLocation.space
 
-    def _getOther(self):
+    @property
+    def _other(self):
         """Purely service method, used in fit registry"""
         return self.container

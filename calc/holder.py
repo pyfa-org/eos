@@ -59,7 +59,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         """Set state of holder"""
         # First, check if holder's item can have this
         # state at all
-        if newState > self.item.getMaxState():
+        if newState > self.item.maxState:
             raise RuntimeError("invalid state")
         oldState = self.state
         if newState == oldState:
@@ -79,7 +79,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
     @target.setter
     def target(self, newTarget):
         """Project holder onto target"""
-        if self.item.isTargeted() is True:
+        if self.item.isTargeted is True:
             self.__target = newTarget
         else:
             raise TargetException("attempt to project holder with non-projectable item")
@@ -114,8 +114,9 @@ class MutableAttributeHolder(metaclass=ABCMeta):
             falloff = None
         return falloff
 
+    @property
     @abstractmethod
-    def _getLocation(self):
+    def _location(self):
         """
         Service method which each class must implement, used in
         calculation process
@@ -138,7 +139,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        for info in self.item.getInfos():
+        for info in self.item.infos:
             if stateFilter is not None and not info.state in stateFilter:
                 continue
             if contextFilter is not None and not info.context in contextFilter:

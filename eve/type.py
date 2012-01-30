@@ -79,6 +79,7 @@ class Type:
         # Cache targeted flag
         self.__targeted = None
 
+    @property
     def requiredSkills(self):
         """
         Get skill requirements.
@@ -94,7 +95,8 @@ class Type:
                     self.__requiredSkills.add(int(srq))
         return self.__requiredSkills
 
-    def getInfos(self):
+    @property
+    def infos(self):
         """
         Get all infos spawned by effects.
 
@@ -103,11 +105,12 @@ class Type:
         """
         infos = set()
         for effect in self.effects:
-            for info in effect.getInfos():
+            for info in effect.infos:
                 infos.add(info)
         return infos
 
-    def getMaxState(self):
+    @property
+    def maxState(self):
         """
         Get highest state this type is allowed to take.
 
@@ -118,6 +121,7 @@ class Type:
             self.__maxState, self.__targeted = self.__getEffectData()
         return self.__maxState
 
+    @property
     def isTargeted(self):
         """
         Report if type is targeted or not. Targeted types cannot be

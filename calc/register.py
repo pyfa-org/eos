@@ -135,13 +135,13 @@ class Register():
         """
         # Container which temporarily holds (key, map) tuples
         affecteeMaps = []
-        location = targetHolder._getLocation()
+        location = targetHolder._location
         if location is not None:
             affecteeMaps.append((location, self.__affecteeLocation))
             group = targetHolder.item.groupId
             if group is not None:
                 affecteeMaps.append(((location, group), self.__affecteeLocationGroup))
-            for skill in targetHolder.item.requiredSkills():
+            for skill in targetHolder.item.requiredSkills:
                 affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
         return affecteeMaps
 
@@ -186,7 +186,7 @@ class Register():
             # or to charge's module-container
             elif info.location == InfoLocation.other:
                 try:
-                    otherHolder = sourceHolder._getOther()
+                    otherHolder = sourceHolder._other
                 except AttributeError:
                     otherHolder = None
                 if otherHolder is not None:
@@ -318,7 +318,7 @@ class Register():
         targetHolder -- holder which is being registered
         """
         try:
-            otherHolder = targetHolder._getOther()
+            otherHolder = targetHolder._other
         except AttributeError:
             otherHolder = None
         # If passed holder doesn't have other location (charge's module
@@ -347,7 +347,7 @@ class Register():
         targetHolder -- holder which is being unregistered
         """
         try:
-            otherHolder = targetHolder._getOther()
+            otherHolder = targetHolder._other
         except AttributeError:
             otherHolder = None
         if otherHolder is None:
@@ -481,7 +481,7 @@ class Register():
                 raise RuntimeError("target is not supported location for direct item modification")
             elif info.location == InfoLocation.other:
                 try:
-                    otherHolder = sourceHolder._getOther()
+                    otherHolder = sourceHolder._other
                 except AttributeError:
                     otherHolder = None
                 target = {otherHolder} if otherHolder is not None else None
@@ -521,12 +521,12 @@ class Register():
         # Add all affectors which directly affect it
         affectors.update(self.__activeDirectAffectors.getData(targetHolder))
         # Then all affectors which affect location of passed holder
-        location = targetHolder._getLocation()
+        location = targetHolder._location
         affectors.update(self.__affectorLocation.getData(location))
         # All affectors which affect location and group of passed holder
         group = targetHolder.item.groupId
         affectors.update(self.__affectorLocationGroup.getData((location, group)))
         # Same, but for location & skill requirement of passed holder
-        for skill in targetHolder.item.requiredSkills():
+        for skill in targetHolder.item.requiredSkills:
             affectors.update(self.__affectorLocationSkill.getData((location, skill)))
         return affectors

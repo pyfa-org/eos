@@ -35,7 +35,8 @@ class Skill(MutableAttributeHolder):
     def __init__(self, type_):
         super().__init__(type_)
 
-    def _getLocation(self):
+    @property
+    def _location(self):
         return InfoLocation.character
 
     @property

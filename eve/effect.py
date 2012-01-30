@@ -56,7 +56,8 @@ class Effect:
         # Stores parsing status of info objects
         self.infoStatus = InfoBuildStatus.notParsed
 
-    def getInfos(self):
+    @property
+    def infos(self):
         """
         Get infos of effect.
 

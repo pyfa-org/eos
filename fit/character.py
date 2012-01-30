@@ -33,7 +33,8 @@ class Character(MutableAttributeHolder):
     def __init__(self, type_):
         super().__init__(type_)
 
-    def _getLocation(self):
+    @property
+    def _location(self):
         # As character is self-sufficient entity,
         # it's not assigned to anything
         return None

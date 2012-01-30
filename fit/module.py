@@ -35,10 +35,12 @@ class Module(MutableAttributeHolder):
         super().__init__(type_)
         self.__charge = None
 
-    def _getLocation(self):
+    @property
+    def _location(self):
         return InfoLocation.ship
 
-    def _getOther(self):
+    @property
+    def _other(self):
         """Purely service property, used in fit registry"""
         return self.charge
 
