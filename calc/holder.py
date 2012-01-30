@@ -84,6 +84,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         else:
             raise TargetException("attempt to project holder with non-projectable item")
 
+    @property
     def trackingSpeed(self):
         """Get tracking speed of holder"""
         tsAttrId = self.item._trackingSpeedAttributeId
@@ -93,6 +94,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
             tracking = None
         return tracking
 
+    @property
     def optimalRange(self):
         """Get optimal range of holder"""
         orAttrId = self.item._rangeAttributeId
@@ -102,6 +104,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
             optimal = None
         return optimal
 
+    @property
     def falloffRange(self):
         """Get falloff range of holder"""
         frAttrId = self.item._falloffAttributeId
