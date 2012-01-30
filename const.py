@@ -33,12 +33,15 @@ class Attribute:
     skillRq2Lvl = 278
     skillRq3Lvl = 279
     skillLevel = 280
+    implantness = 331
+    boosterness = 1087
     skillRq4 = 1285
     skillRq4Lvl = 1286
     skillRq5Lvl = 1287
     skillRq6Lvl = 1288
     skillRq5 = 1289
     skillRq6 = 1290
+    subSystemSlot = 1366
     # Dictionary which holds skill requirement attribute IDs
     # and their corresponding level attribute IDs
     skillRqMap = {skillRq1: skillRq1Lvl,

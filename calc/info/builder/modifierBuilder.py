@@ -30,6 +30,10 @@ from .modifier import Modifier
 
 
 class ModifierBuilderException(Exception):
+    """
+    Exception of this type is raised when builder encounters some
+    'known' error and want to notify builder caller
+    """
     pass
 
 

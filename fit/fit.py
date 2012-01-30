@@ -18,9 +18,8 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-
-from collections import MutableSequence
-
+from eos.const import Attribute
+from eos.exception import NoSlotAttributeException, SlotOccupiedException
 from eos.calc.info.info import InfoState, InfoContext, InfoLocation, InfoSourceType
 from eos.calc.register import Register
 
@@ -44,12 +43,12 @@ class Fit:
         # objects when requesting them by ID
         self._attrMetaGetter = attrMetaGetter
         # Item lists
-        self.skills = MutableAttributeHolderList(self)
-        self.modules = MutableAttributeHolderList(self)
-        self.drones = MutableAttributeHolderList(self)
-        self.implants = MutableAttributeHolderList(self)
-        self.boosters = MutableAttributeHolderList(self)
-        self.systemWide = MutableAttributeHolderList(self)
+        self.skills = HolderContainer(self)
+        self.modules = HolderContainer(self)
+        self.drones = HolderContainer(self)
+        self.implants = SlotHolderContainer(self, Attribute.implantness)
+        self.boosters = SlotHolderContainer(self, Attribute.boosterness)
+        self.systemWide = HolderContainer(self)
 
     @property
     def ship(self):
@@ -224,10 +223,10 @@ class Fit:
         return self.__register.getAffectees(affector)
 
 
-class MutableAttributeHolderList(MutableSequence):
+class HolderContainer:
     """
-    Intended to hold a list of holders (typically, one instance
-    per high-level type: modules, drones, etc.). It makes sure
+    Keep holders in plain list-like form, one instance per suitable
+    for list high-level type: modules, drones, etc. It makes sure
     added/removed holders are registered/unregistered properly.
 
     Positional arguments:
@@ -235,26 +234,123 @@ class MutableAttributeHolderList(MutableSequence):
     """
     def __init__(self, fit):
         self.__fit = fit
-        self.__list = []  # Plain list used for storage internally
+        self.__list = []
 
-    def __setitem__(self, index, holder):
-        existing = self.__list.get(index)
-        if existing is not None:
-            self.fit._removeHolder(existing)
+    def append(self, holder):
+        """
+        Add holder to the end of the list.
 
-        self.__list.__setitem__(index, holder)
+        Positional arguments:
+        holder -- holder to add
+        """
+        self.__list.append(holder)
         self.__fit._addHolder(holder)
 
-    def __delitem__(self, index):
-        self.__fit._removeHolder(self.__list[index])
-        return self.__list.__delitem__(index)
+    def remove(self, holder):
+        """
+        Remove holder to from the list.
 
-    def __getitem__(self, index):
-        return self.__list.__getitem__(index)
+        Positional arguments:
+        holder -- holder to remove
+
+        Possible exceptions:
+        ValueError -- raised when no matching holder
+        is found in list
+        """
+        self.__list.remove(holder)
+        self.__fit._removeHolder(holder)
+
+    def insert(self, index, holder):
+        """
+        Insert holder to given position in list.
+
+        Positional arguments:
+        index -- position to which holder should be inserted,
+        if it's out of range, holder is appended to end of list
+        holder -- holder to insert
+        """
+        self.__list.insert(index, holder)
+        self.__fit._addHolder(holder)
 
     def __len__(self):
         return self.__list.__len__()
 
-    def insert(self, index, holder):
-        self.__list.insert(index, holder)
+    def __iter__(self):
+        return (item for item in self.__list)
+
+class SlotHolderContainer:
+    """
+    Keep holders in slot-based list form, one instance per suitable
+    for list high-level type: implants, subsystems, etc. It makes sure
+    added/removed holders are registered/unregistered properly and do not
+    overlap according to slot they're taking.
+
+    Positional arguments:
+    fit -- fit, to which list is assigned
+    slotAttrId -- ID of attribute which describes slot to which this item
+    is fit (ID of implantness for implants, for example)
+    """
+    def __init__(self, fit, slotAttrId):
+        self.__fit = fit
+        self.__slotAttrId = slotAttrId
+        self.__dict = {}
+
+    def add(self, holder):
+        """
+        Add holder to dictionary.
+
+        Positional arguments:
+        holder -- holder to add
+
+        Possible exceptions:
+        eos.exceptions.NoSlotAttributeException -- raised when passed holder
+        doesn't contain slot specificator
+        eos.exceptions.SlotOccupiedException -- raised when slot into which
+        holder should be installed is already occupied
+        """
+        holderItemAttrs = holder.item.attributes
+        try:
+            slot = holderItemAttrs[self.__slotAttrId]
+        except KeyError:
+            raise NoSlotAttributeException("item of passed holder doesn't contain slot specification")
+        if slot in self.__dict:
+            raise SlotOccupiedException("slot which passed holder is going to take is already occupied")
+        self.__dict[slot] = holder
         self.__fit._addHolder(holder)
+
+    def remove(self, holder):
+        """
+        Remove holder from dictionary.
+
+        Positional arguments:
+        holder -- holder to remove
+
+        Possible exceptions:
+        ValueError -- raised when passed holder can't be found in
+        dictionary
+        """
+        holderItemAttrs = holder.item.attributes
+        try:
+            slot = holderItemAttrs[self.__slotAttrId]
+        # Holders w/o slots can't be placed into such container,
+        # thus we can be sure that there's no such holder in whole dict
+        except KeyError:
+            raise ValueError("no such holder")
+        # If slot isn't found in dict, it means there can't be such item
+        # too
+        if not slot in self.__dict:
+            raise ValueError("no such holder")
+        # If holder occupied target slot isn't our holder, it means we
+        # raise the same exception again
+        if self.__dict[slot] is not holder:
+            raise ValueError("no such holder")
+        # Finally, remove holder
+        del self.__dict[slot]
+        self.__fit._removeHolder(holder)
+
+    def __len__(self):
+        return self.__dict.__len__()
+
+    def __iter__(self):
+        # Sort stuff by slot ID
+        return (self.__dict[key] for key in sorted(self.__dict))
