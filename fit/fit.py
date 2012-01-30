@@ -311,8 +311,8 @@ class SlotHolderContainer:
         holderItemAttrs = holder.item.attributes
         try:
             slot = holderItemAttrs[self.__slotAttrId]
-        except KeyError:
-            raise NoSlotAttributeException("item of passed holder doesn't contain slot specification")
+        except KeyError as e:
+            raise NoSlotAttributeException("item of passed holder doesn't contain slot specification") from e
         if slot in self.__dict:
             raise SlotOccupiedException("slot which passed holder is going to take is already occupied")
         self.__dict[slot] = holder
@@ -334,8 +334,8 @@ class SlotHolderContainer:
             slot = holderItemAttrs[self.__slotAttrId]
         # Holders w/o slots can't be placed into such container,
         # thus we can be sure that there's no such holder in whole dict
-        except KeyError:
-            raise ValueError("no such holder")
+        except KeyError as e:
+            raise ValueError("no such holder") from e
         # If slot isn't found in dict, it means there can't be such item
         # too
         if not slot in self.__dict:

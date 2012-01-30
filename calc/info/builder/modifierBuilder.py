@@ -182,8 +182,8 @@ class ModifierBuilder:
                             Operand.defBool: self.__checkBoolStub}
             try:
                 method = genericOpnds[element.operandId]
-            except KeyError:
-                raise ModifierBuilderException("unknown operand has been passed to __generic")
+            except KeyError as e:
+                raise ModifierBuilderException("unknown operand has been passed to __generic") from e
             method(element, conditions)
 
     def __splice(self, element, conditions):
