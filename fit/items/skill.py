@@ -19,16 +19,17 @@
 #===============================================================================
 
 
-from eos.calc.info.info import InfoLocation
-from eos.calc.holder import MutableAttributeHolder
+from eos.const import Attribute
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.holder import MutableAttributeHolder
 
 
-class Rig(MutableAttributeHolder):
+class Skill(MutableAttributeHolder):
     """
-    Represents rig with all its special properties.
+    Represents skill with all its special properties.
 
     Positional arguments:
-    type_ -- type (item), on which rig is based
+    type_ -- type (item), on which skill is based
     """
 
     def __init__(self, type_):
@@ -36,4 +37,13 @@ class Rig(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.ship
+        return InfoLocation.character
+
+    @property
+    def level(self):
+        level = self.attributes[Attribute.skillLevel]
+        return level
+
+    @level.setter
+    def level(self, value):
+        self.attributes[Attribute.skillLevel] = value

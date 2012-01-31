@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.calc.info.info import InfoLocation
-from eos.calc.holder import MutableAttributeHolder
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.holder import MutableAttributeHolder
 
 
-class Subsystem(MutableAttributeHolder):
+class Drone(MutableAttributeHolder):
     """
-    Represents t3 ship's subsystem with all its special properties.
+    Class represents single drone.
 
     Positional arguments:
-    type_ -- type (item), on which subsystem is based
+    type_ -- type (item), on which drone is based
     """
 
     def __init__(self, type_):
@@ -36,4 +36,4 @@ class Subsystem(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.ship
+        return InfoLocation.space

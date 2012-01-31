@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.calc.info.info import InfoLocation
-from eos.calc.holder import MutableAttributeHolder
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.holder import MutableAttributeHolder
 
 
-class Implant(MutableAttributeHolder):
+class Rig(MutableAttributeHolder):
     """
-    Represents single implant with all its special properties.
+    Represents rig with all its special properties.
 
     Positional arguments:
-    type_ -- type (item), on which implant is based
+    type_ -- type (item), on which rig is based
     """
 
     def __init__(self, type_):
@@ -36,4 +36,4 @@ class Implant(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.character
+        return InfoLocation.ship

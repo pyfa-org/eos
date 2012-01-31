@@ -22,9 +22,9 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
-from eos.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.calc.info.info import InfoLocation
-from eos.calc.info.builder.atom import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.info.builder.atom import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 
 
 class TestCondition(TestCase):

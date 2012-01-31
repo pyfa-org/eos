@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.calc.info.info import InfoLocation
-from eos.calc.holder import MutableAttributeHolder
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.holder import MutableAttributeHolder
 
 
 class Module(MutableAttributeHolder):

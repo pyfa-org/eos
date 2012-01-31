@@ -20,7 +20,7 @@
 
 
 from eos.const import Type
-from eos.calc.info.info import InfoRunTime, InfoLocation, InfoFilterType
+from .info.info import InfoRunTime, InfoLocation, InfoFilterType
 
 
 class DataSetMap(dict):

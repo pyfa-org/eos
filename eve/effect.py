@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
 
 
 class Effect:

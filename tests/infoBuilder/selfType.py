@@ -22,9 +22,9 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
-from eos.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
 from eos.const import Type
-from eos.calc.info.info import InfoFilterType
+from eos.fit.calc.info.info import InfoFilterType
 
 
 class TestSelfType(TestCase):

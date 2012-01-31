@@ -20,7 +20,7 @@
 
 
 from eos.const import Operand, EffectCategory
-from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
 from .operandData import operandData, OperandType
 

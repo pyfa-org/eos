@@ -20,8 +20,8 @@
 
 from eos.const import Attribute
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
-from eos.calc.info.info import InfoState, InfoContext, InfoLocation, InfoSourceType
-from eos.calc.register import Register
+from .calc.info.info import InfoState, InfoContext, InfoLocation, InfoSourceType
+from .calc.register import Register
 
 
 class Fit:

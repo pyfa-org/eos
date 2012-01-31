@@ -20,7 +20,7 @@
 
 
 from eos.const import nulls, Attribute, Effect, EffectCategory
-from eos.calc.info.info import InfoState
+from eos.fit.calc.info.info import InfoState
 
 
 class Slot:

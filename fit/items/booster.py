@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.calc.info.info import InfoLocation
-from eos.calc.holder import MutableAttributeHolder
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.holder import MutableAttributeHolder
 
 
-class Drone(MutableAttributeHolder):
+class Booster(MutableAttributeHolder):
     """
-    Class represents single drone.
+    Represents booster with all its special properties
 
     Positional arguments:
-    type_ -- type (item), on which drone is based
+    type_ -- type (item), on which booster is based
     """
 
     def __init__(self, type_):
@@ -36,4 +36,4 @@ class Drone(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.space
+        return InfoLocation.character

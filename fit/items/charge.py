@@ -19,31 +19,29 @@
 #===============================================================================
 
 
-from eos.const import Attribute
-from eos.calc.info.info import InfoLocation
-from eos.calc.holder import MutableAttributeHolder
+from eos.fit.calc.info.info import InfoLocation
+from eos.fit.calc.holder import MutableAttributeHolder
 
 
-class Skill(MutableAttributeHolder):
+class Charge(MutableAttributeHolder):
     """
-    Represents skill with all its special properties.
+    Represents ammo - crystals, probes, bombs, etc.
 
     Positional arguments:
-    type_ -- type (item), on which skill is based
+    type_ -- type (item), on which charge is based
     """
 
     def __init__(self, type_):
         super().__init__(type_)
+        # Holder-container, into which our charge holder is
+        # "loaded"
+        self.container = None
 
     @property
     def _location(self):
-        return InfoLocation.character
+        return InfoLocation.space
 
     @property
-    def level(self):
-        level = self.attributes[Attribute.skillLevel]
-        return level
-
-    @level.setter
-    def level(self, value):
-        self.attributes[Attribute.skillLevel] = value
+    def _other(self):
+        """Purely service method, used in fit registry"""
+        return self.container

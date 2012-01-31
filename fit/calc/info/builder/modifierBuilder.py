@@ -23,7 +23,7 @@ from copy import deepcopy
 from itertools import combinations
 
 from eos.const import Type, Operand
-from eos.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from .operandData import operandData, OperandType
 from .modifier import Modifier

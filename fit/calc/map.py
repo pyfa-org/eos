@@ -23,7 +23,7 @@ from collections import Mapping
 from math import exp
 
 from eos.const import Category, Attribute
-from eos.calc.info.info import InfoOperator, InfoSourceType
+from .info.info import InfoOperator, InfoSourceType
 
 
 # Stacking penalty base constant, used in attribute calculations
