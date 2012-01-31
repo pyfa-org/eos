@@ -28,29 +28,3 @@ class Location:
     other = 5  # If used from charge, targets charge's container, is used from container, targets its charge
     area = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
     space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
-
-    @classmethod
-    def expressionValueToLocation(cls, expressionValue):
-        """
-        Convert expression value to location.
-
-        Positional arguments:
-        expressionValue -- value of expression, which is supposed
-        to be textual location identifier
-
-        Return value:
-        ID of location, corresponding to passed textual location
-        specifier, or None if no corresponding location was found
-        """
-        # Format: {location name: location ID}
-        conversionMap = {"Self": cls.self_,
-                         "Char": cls.character,
-                         "Ship": cls.ship,
-                         "Target": cls.target,
-                         "Other": cls.other,
-                         "Area": cls.area}
-        try:
-            result = conversionMap[expressionValue]
-        except KeyError:
-            result = None
-        return result

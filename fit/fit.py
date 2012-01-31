@@ -106,7 +106,7 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self.__register.registerAffectee(holder, **kwargs)
-        enabledStates = State._stateDifference(None, holder.state)
+        enabledStates = self.__getStateDifference(None, holder.state)
         processedContexts = {InfoContext.local}
         enabledAffectors = holder._generateAffectors(stateFilter=enabledStates, contextFilter=processedContexts)
         for affector in enabledAffectors:
@@ -136,7 +136,7 @@ class Fit:
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._removeHolder(charge, disableDirect=Location.other)
-        disabledStates = State._stateDifference(None, holder.state)
+        disabledStates = self.__getStateDifference(None, holder.state)
         processedContexts = {InfoContext.local}
         disabledAffectors = holder._generateAffectors(stateFilter=disabledStates, contextFilter=processedContexts)
         # When links in register are still alive, damage all attributes
@@ -160,7 +160,7 @@ class Fit:
         oldState = holder.state
         # Get set of affectors which we will need to register or
         # unregister
-        stateDifference = State._stateDifference(oldState, newState)
+        stateDifference = self.__getStateDifference(oldState, newState)
         processedContexts = {InfoContext.local}
         affectorDiff = holder._generateAffectors(stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on
@@ -173,6 +173,40 @@ class Fit:
             self._clearAffectorDependents(affectorDiff)
             for affector in affectorDiff:
                 self.__register.unregisterAffector(affector)
+
+    def __getStateDifference(self, state1, state2):
+        """
+        Get difference between two states (states which need to be
+        toggled to get from one state to another).
+
+        Positional arguments:
+        state1 -- ID of first state to compare, can be None
+        state2 -- ID of second state to compare, can be None
+
+        Return value:
+        Set with state IDs, which need to be enabled/disabled to perform
+        state switch
+        """
+        # If both passed states are the same, no state
+        # switch needed
+        if state1 == state2:
+            return set()
+        # Container which keeps all state IDs
+        allStates = {State.offline, State.online,
+                     State.active, State.overload}
+        # Get all states you need to trigger to get from
+        # no state to given state
+        states1 = set(filter(lambda state: state <= state1, allStates)) if state1 is not None else None
+        states2 = set(filter(lambda state: state <= state2, allStates)) if state2 is not None else None
+        # If one of passed states was None (if both were none, empty set should've been
+        # returned already), return other states set
+        if states1 is None or states2 is None:
+            result = states1 or states2
+        # If both states were not None, get all states which are present
+        # in one set but not in another
+        else:
+            result = states1.symmetric_difference(states2)
+        return result
 
     def _clearHolderAttributeDependents(self, holder, attrId):
         """

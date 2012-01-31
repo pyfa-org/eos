@@ -19,9 +19,6 @@
 #===============================================================================
 
 
-from eos.const import Effect
-
-
 class Slot:
     """Slot type ID holder"""
     moduleHigh = 1
@@ -31,29 +28,3 @@ class Slot:
     subsystem = 5
     turret = 6
     launcher = 7
-
-    @classmethod
-    def _effectToSlot(cls, effectId):
-        """
-        Convert effect to slot item uses.
-
-        Positional arguments:
-        effectId -- effect ID
-
-        Return value:
-        ID of slot, which corresponds to passed effect,
-        or None if no corresponding slot was found
-        """
-        # Format: {effect ID: slot ID}
-        conversionMap = {Effect.loPower: Slot.moduleLow,
-                         Effect.hiPower: Slot.moduleHigh,
-                         Effect.medPower: Slot.moduleMed,
-                         Effect.launcherFitted: Slot.launcher,
-                         Effect.turretFitted: Slot.turret,
-                         Effect.rigSlot: Slot.rig,
-                         Effect.subSystem: Slot.subsystem}
-        try:
-            result = conversionMap[effectId]
-        except KeyError:
-            result = None
-        return result

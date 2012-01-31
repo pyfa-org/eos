@@ -313,7 +313,15 @@ class ModifierBuilder:
 
     def __getLoc(self, element):
         """Define location"""
-        return Location.expressionValueToLocation(element.value)
+        # Format: {location name: location ID}
+        conversionMap = {"Self": Location.self_,
+                         "Char": Location.character,
+                         "Ship": Location.ship,
+                         "Target": Location.target,
+                         "Other": Location.other,
+                         "Area": Location.area}
+        location = conversionMap[element.value]
+        return location
 
     def __getAttr(self, element):
         """Reference attribute via ID"""

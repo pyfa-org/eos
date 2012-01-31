@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import nulls, Attribute, EffectCategory
+from eos.const import nulls, Attribute, Effect, EffectCategory
 from eos.fit.aux.slot import Slot
 from eos.fit.aux.state import State
 
@@ -129,9 +129,15 @@ class Type:
             maxState = State.offline
             for effect in self.effects:
                 # Convert effect category to state
-                effectState = State._effectCategoryToState(effect.categoryId)
-                if effectState is not None:
-                    maxState = max(maxState, effectState)
+                # Format: {effect category ID: state ID}
+                conversionMap = {EffectCategory.passive: State.offline,
+                                 EffectCategory.active: State.active,
+                                 EffectCategory.target: State.active,
+                                 EffectCategory.online: State.online,
+                                 EffectCategory.overload: State.overload,
+                                 EffectCategory.system: State.offline}
+                state = conversionMap[effect.categoryId]
+                maxState = max(maxState, state)
             self.__maxState = maxState
         return self.__maxState
 
@@ -167,8 +173,20 @@ class Type:
             slots = set()
             for effect in self.effects:
                 # Convert effect ID to slot type item takes
-                slot = Slot._effectToSlot(effect.Id)
-                if slot is not None:
+                # Format: {effect ID: slot ID}
+                conversionMap = {Effect.loPower: Slot.moduleLow,
+                                 Effect.hiPower: Slot.moduleHigh,
+                                 Effect.medPower: Slot.moduleMed,
+                                 Effect.launcherFitted: Slot.launcher,
+                                 Effect.turretFitted: Slot.turret,
+                                 Effect.rigSlot: Slot.rig,
+                                 Effect.subSystem: Slot.subsystem}
+                try:
+                    slot = conversionMap[effect.Id]
+                # Silently skip effect if it's not in map
+                except KeyError:
+                    pass
+                else:
                     slots.add(slot)
             self.__slots = slots
         return self.__slots
