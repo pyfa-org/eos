@@ -106,3 +106,7 @@ class SourceType:
     """Source value type ID holder"""
     attribute = 1  # Source value is reference to attribute via ID, whose value should be used for modification
     value = 2  # Source value is actual value for modification
+
+class Type:
+    """Eos-specific type declarations"""
+    self_ = -1  # Refers carrier of info, special type ID, thus it must not overlap with any real type ID

@@ -22,8 +22,8 @@
 from copy import deepcopy
 from itertools import combinations
 
-from eos.const import Location, RunTime, Operator, SourceType
-from eos.eve.const import Type, Operand
+from eos.const import Location, RunTime, Operator, SourceType, Type
+from eos.eve.const import Operand
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from .operandData import operandData, OperandType
 from .modifier import Modifier

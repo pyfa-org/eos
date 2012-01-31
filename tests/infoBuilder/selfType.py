@@ -22,8 +22,7 @@
 from unittest import TestCase
 
 
-from eos.const import FilterType
-from eos.eve.const import Type
+from eos.const import FilterType, Type
 from eos.eve.expression import Expression
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
 

@@ -19,8 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, RunTime, FilterType
-from eos.eve.const import Type
+from eos.const import Location, RunTime, FilterType, Type
 
 
 class DataSetMap(dict):

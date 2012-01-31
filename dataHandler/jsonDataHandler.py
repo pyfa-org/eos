@@ -23,7 +23,7 @@ from bz2 import BZ2File
 from json import loads
 from weakref import WeakValueDictionary
 
-from eos.const import nulls
+from eos.eve.const import nulls
 from eos.eve.type import Type
 from eos.eve.expression import Expression
 from eos.eve.effect import Effect
