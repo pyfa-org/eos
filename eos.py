@@ -18,7 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos.const import Type
+from eos.eve.const import Type
 from eos.fit.fit import Fit
 from eos.fit.items.character import Character
 from eos.fit.items.ship import Ship

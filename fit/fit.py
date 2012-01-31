@@ -18,11 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-from eos.const import Attribute
+
+from eos.const import State, Location, Context, SourceType
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
-from .aux.location import Location
-from .aux.state import State
-from .calc.info.info import InfoContext, InfoSourceType
+from eos.eve.const import Attribute
 from .calc.register import Register
 
 
@@ -107,7 +106,7 @@ class Fit:
         # Only after add it to register
         self.__register.registerAffectee(holder, **kwargs)
         enabledStates = self.__getStateDifference(None, holder.state)
-        processedContexts = {InfoContext.local}
+        processedContexts = {Context.local}
         enabledAffectors = holder._generateAffectors(stateFilter=enabledStates, contextFilter=processedContexts)
         for affector in enabledAffectors:
             self.__register.registerAffector(affector)
@@ -137,7 +136,7 @@ class Fit:
         if charge is not None:
             self._removeHolder(charge, disableDirect=Location.other)
         disabledStates = self.__getStateDifference(None, holder.state)
-        processedContexts = {InfoContext.local}
+        processedContexts = {Context.local}
         disabledAffectors = holder._generateAffectors(stateFilter=disabledStates, contextFilter=processedContexts)
         # When links in register are still alive, damage all attributes
         # influenced by holder
@@ -161,7 +160,7 @@ class Fit:
         # Get set of affectors which we will need to register or
         # unregister
         stateDifference = self.__getStateDifference(oldState, newState)
-        processedContexts = {InfoContext.local}
+        processedContexts = {Context.local}
         affectorDiff = holder._generateAffectors(stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on
         if newState > oldState:
@@ -219,7 +218,7 @@ class Fit:
         for affector in holder._generateAffectors():
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attrId or info.sourceType != InfoSourceType.attribute:
+            if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
                 continue
             # Gp through all holders targeted by info
             for targetHolder in self._getAffectees(affector):

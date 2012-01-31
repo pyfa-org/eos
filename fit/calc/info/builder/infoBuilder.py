@@ -19,10 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Operand, EffectCategory
-from eos.fit.aux.location import Location
-from eos.fit.aux.state import State
-from eos.fit.calc.info.info import Info, InfoContext, InfoRunTime, InfoFilterType, InfoOperator, InfoSourceType
+from eos.const import Location, State, Context, RunTime, FilterType, Operator, SourceType
+from eos.eve.const import Operand, EffectCategory
+from eos.fit.calc.info.info import Info
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
 from .operandData import operandData, OperandType
 
@@ -30,17 +29,17 @@ from .operandData import operandData, OperandType
 # Dictionary which assists conversion of effect category
 # and operand gang/local modification to state and context
 # Format: {(effect category, gang flag): (state, context)}
-stateData = {(EffectCategory.passive, False): (State.offline, InfoContext.local),
-             (EffectCategory.passive, True): (State.offline, InfoContext.gang),
-             (EffectCategory.active, False): (State.active, InfoContext.local),
-             (EffectCategory.active, True): (State.active, InfoContext.gang),
-             (EffectCategory.target, False): (State.active, InfoContext.projected),
-             (EffectCategory.online, False): (State.online, InfoContext.local),
-             (EffectCategory.online, True): (State.online, InfoContext.gang),
-             (EffectCategory.overload, False): (State.overload, InfoContext.local),
-             (EffectCategory.overload, True): (State.overload, InfoContext.gang),
-             (EffectCategory.system, False): (State.offline, InfoContext.local),
-             (EffectCategory.system, True): (State.offline, InfoContext.gang)}
+stateData = {(EffectCategory.passive, False): (State.offline, Context.local),
+             (EffectCategory.passive, True): (State.offline, Context.gang),
+             (EffectCategory.active, False): (State.active, Context.local),
+             (EffectCategory.active, True): (State.active, Context.gang),
+             (EffectCategory.target, False): (State.active, Context.projected),
+             (EffectCategory.online, False): (State.online, Context.local),
+             (EffectCategory.online, True): (State.online, Context.gang),
+             (EffectCategory.overload, False): (State.overload, Context.local),
+             (EffectCategory.overload, True): (State.overload, Context.gang),
+             (EffectCategory.system, False): (State.offline, Context.local),
+             (EffectCategory.system, True): (State.offline, Context.gang)}
 
 
 class InfoBuildStatus:
@@ -78,8 +77,8 @@ class InfoBuilder:
         # Make instance of modifier builder
         modBuilder = ModifierBuilder()
         # Get modifiers out of both trees
-        for tree, runTime, modSet in ((preExpression, InfoRunTime.pre, preMods),
-                                      (postExpression, InfoRunTime.post, postMods)):
+        for tree, runTime, modSet in ((preExpression, RunTime.pre, preMods),
+                                      (postExpression, RunTime.post, postMods)):
             try:
                 modifiers, skippedData = modBuilder.build(tree, runTime, effectCategoryId)
             # If any errors occurred, return empty set and error status
@@ -234,7 +233,7 @@ class InfoBuilder:
         if (modifier.targetLocation is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or modifier.targetGroupId is None):
             return False
         return True
@@ -243,7 +242,7 @@ class InfoBuilder:
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.targetLocation is not None or modifier.runTime is not None):
             return False
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None):
             return False
         return True
@@ -252,7 +251,7 @@ class InfoBuilder:
         if (modifier.targetLocation is not None or modifier.targetGroupId is not None or
             modifier.runTime is not None):
             return False
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or modifier.targetSkillRequirementId is None):
             return False
         return True
@@ -261,7 +260,7 @@ class InfoBuilder:
         if (modifier.targetLocation is not None or modifier.targetGroupId is not None or
             modifier.runTime is not None):
             return False
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or modifier.targetSkillRequirementId is None):
             return False
         return True
@@ -270,7 +269,7 @@ class InfoBuilder:
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or modifier.targetLocation is None):
             return False
         return True
@@ -279,7 +278,7 @@ class InfoBuilder:
         if modifier.targetSkillRequirementId is not None or modifier.runTime is not None:
             return False
         validLocs = {Location.character, Location.ship, Location.target, Location.self_}
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetGroupId is None):
             return False
@@ -290,7 +289,7 @@ class InfoBuilder:
             modifier.runTime is not None):
             return False
         validLocs = {Location.character, Location.ship, Location.target, Location.self_}
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs):
             return False
         return True
@@ -299,7 +298,7 @@ class InfoBuilder:
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
         validLocs = {Location.character, Location.ship, Location.target, Location.self_}
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetSkillRequirementId is None):
             return False
@@ -309,7 +308,7 @@ class InfoBuilder:
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
         validLocs = {Location.character, Location.ship}
-        if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
+        if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetSkillRequirementId is None):
             return False
@@ -319,12 +318,12 @@ class InfoBuilder:
         if (modifier.operator is not None or modifier.targetGroupId is not None or
             modifier.targetSkillRequirementId is not None):
             return False
-        validSrcTypes = {InfoSourceType.attribute, InfoSourceType.value}
-        validRunTimes = {InfoRunTime.pre, InfoRunTime.post}
+        validSrcTypes = {SourceType.attribute, SourceType.value}
+        validRunTimes = {RunTime.pre, RunTime.post}
         # We can either refer some non-zero source attribute, or provide source value directly
         if (not modifier.sourceType in validSrcTypes or not modifier.runTime in validRunTimes or
-            (modifier.sourceType == InfoSourceType.attribute and modifier.sourceValue is None) or
-            (modifier.sourceType == InfoSourceType.value and modifier.sourceValue is None) or
+            (modifier.sourceType == SourceType.attribute and modifier.sourceValue is None) or
+            (modifier.sourceType == SourceType.value and modifier.sourceValue is None) or
             modifier.targetLocation is None):
             return False
         return True
@@ -412,74 +411,74 @@ class InfoBuilder:
 
     # Block with conversion methods, called depending on modifier type
     def __convertGangGrp(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.ship
-        info.filterType = InfoFilterType.group
+        info.filterType = FilterType.group
         info.filterValue = modifier.targetGroupId
 
     def __convertGangItm(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.ship
 
     def __convertGangOwnSrq(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.space
-        info.filterType = InfoFilterType.skill
+        info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
     def __convertGangSrq(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.ship
-        info.filterType = InfoFilterType.skill
+        info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
     def __convertItm(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
 
     def __convertLocGrp(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
-        info.filterType = InfoFilterType.group
+        info.filterType = FilterType.group
         info.filterValue = modifier.targetGroupId
 
     def __convertLoc(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
-        info.filterType = InfoFilterType.all_
+        info.filterType = FilterType.all_
 
     def __convertLocSrq(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
-        info.filterType = InfoFilterType.skill
+        info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
     def __convertOwnSrq(self, modifier, info):
-        info.runTime = InfoRunTime.duration
+        info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.space
-        info.filterType = InfoFilterType.skill
+        info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
     def __convertAssign(self, modifier, info):
         info.runTime = modifier.runTime
-        info.operator = InfoOperator.assignment
+        info.operator = Operator.assignment
         info.location = modifier.targetLocation
 
     def __convertInc(self, modifier, info):
         info.runTime = modifier.runTime
-        info.operator = InfoOperator.increment
+        info.operator = Operator.increment
         info.location = modifier.targetLocation
 
     def __convertDec(self, modifier, info):
         info.runTime = modifier.runTime
-        info.operator = InfoOperator.decrement
+        info.operator = Operator.decrement
         info.location = modifier.targetLocation

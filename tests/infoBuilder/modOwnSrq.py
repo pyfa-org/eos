@@ -21,11 +21,9 @@
 
 from unittest import TestCase
 
+from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.expression import Expression
-from eos.fit.aux.location import Location
-from eos.fit.aux.state import State
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoFilterType, InfoOperator, InfoSourceType
 
 
 class TestModOwnSrq(TestCase):
@@ -49,21 +47,21 @@ class TestModOwnSrq(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoRunTime.duration
+        expType = RunTime.duration
         self.assertEqual(info.runTime, expType, msg="info type must be duration (ID {})".format(expType))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
         expLocation = Location.space
         self.assertEqual(info.location, expLocation, msg="info target location must be space (ID {})".format(expLocation))
-        expFilterType = InfoFilterType.skill
+        expFilterType = FilterType.skill
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
         expFilterValue = 3412
         self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be {}".format(expFilterValue))
-        expOperation = InfoOperator.postPercent
+        expOperation = Operator.postPercent
         self.assertEqual(info.operator, expOperation, msg="info operator must be PostPercent (ID {})".format(expOperation))
         expTgtAttr = 1372
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = InfoSourceType.attribute
+        expSrcType = SourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 1156
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -77,7 +75,7 @@ class TestModOwnSrq(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryActive(self):
@@ -88,7 +86,7 @@ class TestModOwnSrq(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryTarget(self):
@@ -99,7 +97,7 @@ class TestModOwnSrq(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.projected
+        expContext = Context.projected
         self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
 
     def testEffCategoryArea(self):
@@ -116,7 +114,7 @@ class TestModOwnSrq(TestCase):
         info = infos.pop()
         expState = State.online
         self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryOverload(self):
@@ -127,7 +125,7 @@ class TestModOwnSrq(TestCase):
         info = infos.pop()
         expState = State.overload
         self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryDungeon(self):
@@ -144,5 +142,5 @@ class TestModOwnSrq(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))

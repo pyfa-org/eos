@@ -19,9 +19,8 @@
 #===============================================================================
 
 
-from eos.const import nulls, Attribute, Effect, EffectCategory
-from eos.fit.aux.slot import Slot
-from eos.fit.aux.state import State
+from .const import nulls, Attribute, Effect, EffectCategory
+from eos.const import Slot, State
 
 
 class Type:

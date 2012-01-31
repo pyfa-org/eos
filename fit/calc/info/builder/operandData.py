@@ -21,7 +21,7 @@
 
 from collections import namedtuple
 
-from eos.const import Operand
+from eos.eve.const import Operand
 
 
 # Named tuple for ease of access of operand metadata, where:

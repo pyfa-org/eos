@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import nulls
+from .const import nulls
 
 
 class Attribute:

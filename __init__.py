@@ -19,4 +19,4 @@
 #===============================================================================
 
 from .eos import Eos
-from .fit.aux.state import State
+from .const import State

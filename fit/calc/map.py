@@ -22,8 +22,8 @@
 from collections import Mapping
 from math import exp
 
-from eos.const import Category, Attribute
-from .info.info import InfoOperator, InfoSourceType
+from eos.const import Operator, SourceType
+from eos.eve.const import Category, Attribute
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -116,13 +116,13 @@ class MutableAttributeMap(Mapping):
                 continue
             operator = info.operator
             # If source value is attribute reference
-            if info.sourceType == InfoSourceType.attribute:
+            if info.sourceType == SourceType.attribute:
                 # Get its value
                 modValue = sourceHolder.attributes[info.sourceValue]
                 # And decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
                 penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
-                penalizableOperators = {InfoOperator.preMul, InfoOperator.postMul, InfoOperator.postPercent, InfoOperator.preDiv, InfoOperator.postDiv}
+                penalizableOperators = {Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv}
                 penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
                             and operator in penalizableOperators)
             # For value modifications, just use stored in info value and avoid its penalization
@@ -131,13 +131,13 @@ class MutableAttributeMap(Mapping):
                 penalize = False
             # Normalize addition/subtraction, so it's always
             # acts as addition
-            if operator == InfoOperator.modSub:
+            if operator == Operator.modSub:
                 modValue = -modValue
             # Normalize multiplicative modifiers, converting them into form of
             # multiplier
-            elif operator in {InfoOperator.preDiv, InfoOperator.postDiv}:
+            elif operator in {Operator.preDiv, Operator.postDiv}:
                 modValue = 1 / modValue
-            elif operator == InfoOperator.postPercent:
+            elif operator == Operator.postPercent:
                 modValue = modValue / 100 + 1
             # Add value to appropriate dictionary
             if penalize is True:
@@ -164,13 +164,13 @@ class MutableAttributeMap(Mapping):
         for operator in sorted(normalMods):
             modList = normalMods[operator]
             # Pick best modifier for assignments, based on highIsGood value
-            if operator in (InfoOperator.preAssignment, InfoOperator.postAssignment):
+            if operator in (Operator.preAssignment, Operator.postAssignment):
                 result = max(modList) if attrMeta.highIsGood is True else min(modList)
-            elif operator in (InfoOperator.modAdd, InfoOperator.modSub):
+            elif operator in (Operator.modAdd, Operator.modSub):
                 for modVal in modList:
                     result += modVal
-            elif operator in (InfoOperator.preMul, InfoOperator.preDiv, InfoOperator.postMul,
-                               InfoOperator.postDiv, InfoOperator.postPercent):
+            elif operator in (Operator.preMul, Operator.preDiv, Operator.postMul,
+                              Operator.postDiv, Operator.postPercent):
                 for modVal in modList:
                     result *= modVal
         return result

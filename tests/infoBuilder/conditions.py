@@ -21,8 +21,8 @@
 
 from unittest import TestCase
 
+from eos.const import Location
 from eos.eve.expression import Expression
-from eos.fit.aux.location import Location
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
 from eos.fit.calc.info.builder.atom import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 

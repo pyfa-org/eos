@@ -22,9 +22,8 @@
 from copy import deepcopy
 from itertools import combinations
 
-from eos.const import Type, Operand
-from eos.fit.aux.location import Location
-from eos.fit.calc.info.info import InfoRunTime, InfoOperator, InfoSourceType
+from eos.const import Location, RunTime, Operator, SourceType
+from eos.eve.const import Type, Operand
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from .operandData import operandData, OperandType
 from .modifier import Modifier
@@ -51,8 +50,8 @@ class ModifierBuilder:
         Positional arguments:
         expressionTree -- root expression of expression tree
         treeRunTime -- is it pre- or post-expression tree, used
-        to define type of instant modifiers, must be InfoRunTime.pre
-        or InfoRunTime.post
+        to define type of instant modifiers, must be RunTime.pre
+        or RunTime.post
         effectCategoryId -- effect category ID of effect, whose
         expression Tree we're going to parse
 
@@ -81,7 +80,7 @@ class ModifierBuilder:
         # conditions, into single modifiers. We need this for pre-modifiers only,
         # as post-modifiers shouldn't contain conditions by definition, if they
         # do - they will be invalidated later
-        if treeRunTime == InfoRunTime.pre:
+        if treeRunTime == RunTime.pre:
             self.__builderDurationUnifier()
         # Set effectCategoryId attribute for all modifiers
         for modifier in self.modifiers:
@@ -217,7 +216,7 @@ class ModifierBuilder:
         # Request operator and target data, it's always in arg1
         self.__optrTgt(element.arg1)
         # Write down source attribute from arg2
-        self.activeModifier.sourceType = InfoSourceType.attribute
+        self.activeModifier.sourceType = SourceType.attribute
         self.activeModifier.sourceValue = self.__getAttr(element.arg2)
         # Append filled modifier to list we're currently working with
         self.modifiers.add(self.activeModifier)
@@ -260,13 +259,13 @@ class ModifierBuilder:
         """Pick proper source specifying method according to operand"""
         # For attribute definitions, store attribute ID as value
         if element.operandId == Operand.defAttr:
-            self.activeModifier.sourceType = InfoSourceType.attribute
+            self.activeModifier.sourceType = SourceType.attribute
             self.activeModifier.sourceValue = self.__getAttr(element)
         # Else, store just direct value
         else:
             valMap = {Operand.defInt: self.__getInt,
                       Operand.defBool: self.__getBool}
-            self.activeModifier.sourceType = InfoSourceType.value
+            self.activeModifier.sourceType = SourceType.value
             self.activeModifier.sourceValue = valMap[element.operandId](element)
 
     def __tgtAttr(self, element):
@@ -309,7 +308,18 @@ class ModifierBuilder:
 
     def __getOptr(self, element):
         """Helper for modifying expressions, defines operator"""
-        return InfoOperator.expressionValueToOperator(element.value)
+        # Format: {operator name: operator ID}
+        conversionMap = {"PreAssignment": Operator.preAssignment,
+                         "PreMul": Operator.preMul,
+                         "PreDiv": Operator.preDiv,
+                         "ModAdd": Operator.modAdd,
+                         "ModSub": Operator.modSub,
+                         "PostMul": Operator.postMul,
+                         "PostDiv": Operator.postDiv,
+                         "PostPercent": Operator.postPercent,
+                         "PostAssignment": Operator.postAssignment}
+        operator = conversionMap[element.value]
+        return operator
 
     def __getLoc(self, element):
         """Define location"""

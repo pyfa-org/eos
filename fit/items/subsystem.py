@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.aux.location import Location
+from eos.const import Location
 from eos.fit.calc.holder import MutableAttributeHolder
 
 

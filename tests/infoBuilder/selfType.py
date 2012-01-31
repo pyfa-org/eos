@@ -21,10 +21,11 @@
 
 from unittest import TestCase
 
+
+from eos.const import FilterType
+from eos.eve.const import Type
 from eos.eve.expression import Expression
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.const import Type
-from eos.fit.calc.info.info import InfoFilterType
 
 
 class TestSelfType(TestCase):
@@ -47,7 +48,7 @@ class TestSelfType(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expFilterType = InfoFilterType.skill
+        expFilterType = FilterType.skill
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
         expFilterValue = Type.self_
         self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be reference to typeID of self {}".format(expFilterValue))

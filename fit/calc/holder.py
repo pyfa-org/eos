@@ -22,8 +22,8 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
+from eos.const import State
 from eos.exception import TargetException
-from eos.fit.aux.state import State
 from .affector import Affector
 from .map import MutableAttributeMap
 

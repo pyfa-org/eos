@@ -21,11 +21,9 @@
 
 from unittest import TestCase
 
+from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
-from eos.fit.aux.location import Location
-from eos.fit.aux.state import State
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoOperator, InfoSourceType
 
 
 class TestModAssignPreAttr(TestCase):
@@ -46,19 +44,19 @@ class TestModAssignPreAttr(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoRunTime.pre
+        expType = RunTime.pre
         self.assertEqual(info.runTime, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
         expLocation = Location.character
         self.assertEqual(info.location, expLocation, msg="info target location must be char (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = InfoOperator.assignment
+        expOperation = Operator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 166
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = InfoSourceType.attribute
+        expSrcType = SourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 177
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -72,7 +70,7 @@ class TestModAssignPreAttr(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryActive(self):
@@ -83,7 +81,7 @@ class TestModAssignPreAttr(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryTarget(self):
@@ -94,7 +92,7 @@ class TestModAssignPreAttr(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.projected
+        expContext = Context.projected
         self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
 
     def testEffCategoryArea(self):
@@ -111,7 +109,7 @@ class TestModAssignPreAttr(TestCase):
         info = infos.pop()
         expState = State.online
         self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryOverload(self):
@@ -122,7 +120,7 @@ class TestModAssignPreAttr(TestCase):
         info = infos.pop()
         expState = State.overload
         self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryDungeon(self):
@@ -139,7 +137,7 @@ class TestModAssignPreAttr(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
@@ -160,19 +158,19 @@ class TestModAssignPreVal(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoRunTime.pre
+        expType = RunTime.pre
         self.assertEqual(info.runTime, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
         expLocation = Location.self_
         self.assertEqual(info.location, expLocation, msg="info target location must be self (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = InfoOperator.assignment
+        expOperation = Operator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 2
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = InfoSourceType.value
+        expSrcType = SourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 1
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -186,7 +184,7 @@ class TestModAssignPreVal(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryActive(self):
@@ -197,7 +195,7 @@ class TestModAssignPreVal(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryTarget(self):
@@ -208,7 +206,7 @@ class TestModAssignPreVal(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.projected
+        expContext = Context.projected
         self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
 
     def testEffCategoryArea(self):
@@ -225,7 +223,7 @@ class TestModAssignPreVal(TestCase):
         info = infos.pop()
         expState = State.online
         self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryOverload(self):
@@ -236,7 +234,7 @@ class TestModAssignPreVal(TestCase):
         info = infos.pop()
         expState = State.overload
         self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryDungeon(self):
@@ -253,7 +251,7 @@ class TestModAssignPreVal(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
@@ -275,19 +273,19 @@ class TestModAssignPostAttr(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoRunTime.post
+        expType = RunTime.post
         self.assertEqual(info.runTime, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
         expLocation = Location.character
         self.assertEqual(info.location, expLocation, msg="info target location must be char (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = InfoOperator.assignment
+        expOperation = Operator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 166
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = InfoSourceType.attribute
+        expSrcType = SourceType.attribute
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
         expSrcVal = 177
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -301,7 +299,7 @@ class TestModAssignPostAttr(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryActive(self):
@@ -312,7 +310,7 @@ class TestModAssignPostAttr(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryTarget(self):
@@ -323,7 +321,7 @@ class TestModAssignPostAttr(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.projected
+        expContext = Context.projected
         self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
 
     def testEffCategoryArea(self):
@@ -340,7 +338,7 @@ class TestModAssignPostAttr(TestCase):
         info = infos.pop()
         expState = State.online
         self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryOverload(self):
@@ -351,7 +349,7 @@ class TestModAssignPostAttr(TestCase):
         info = infos.pop()
         expState = State.overload
         self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryDungeon(self):
@@ -368,7 +366,7 @@ class TestModAssignPostAttr(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
@@ -389,19 +387,19 @@ class TestModAssignPostVal(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expType = InfoRunTime.post
+        expType = RunTime.post
         self.assertEqual(info.runTime, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
         expLocation = Location.self_
         self.assertEqual(info.location, expLocation, msg="info target location must be self (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
-        expOperation = InfoOperator.assignment
+        expOperation = Operator.assignment
         self.assertEqual(info.operator, expOperation, msg="info operator must be Assign (ID {})".format(expOperation))
         expTgtAttr = 2
         self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = InfoSourceType.value
+        expSrcType = SourceType.value
         self.assertEqual(info.sourceType, expSrcType, msg="info source type must be value (ID {})".format(expSrcType))
         expSrcVal = 0
         self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
@@ -415,7 +413,7 @@ class TestModAssignPostVal(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryActive(self):
@@ -426,7 +424,7 @@ class TestModAssignPostVal(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryTarget(self):
@@ -437,7 +435,7 @@ class TestModAssignPostVal(TestCase):
         info = infos.pop()
         expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = InfoContext.projected
+        expContext = Context.projected
         self.assertEqual(info.context, expContext, msg="info context must be projected (ID {})".format(expContext))
 
     def testEffCategoryArea(self):
@@ -454,7 +452,7 @@ class TestModAssignPostVal(TestCase):
         info = infos.pop()
         expState = State.online
         self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryOverload(self):
@@ -465,7 +463,7 @@ class TestModAssignPostVal(TestCase):
         info = infos.pop()
         expState = State.overload
         self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
     def testEffCategoryDungeon(self):
@@ -482,5 +480,5 @@ class TestModAssignPostVal(TestCase):
         info = infos.pop()
         expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
-        expContext = InfoContext.local
+        expContext = Context.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
