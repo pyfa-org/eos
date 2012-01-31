@@ -20,7 +20,7 @@
 
 
 from eos.const import Attribute
-from eos.fit.calc.info.info import InfoLocation
+from eos.fit.aux.location import Location
 from eos.fit.calc.holder import MutableAttributeHolder
 
 
@@ -37,7 +37,7 @@ class Skill(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.character
+        return Location.character
 
     @property
     def level(self):

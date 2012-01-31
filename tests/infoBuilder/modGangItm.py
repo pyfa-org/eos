@@ -22,9 +22,10 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
+from eos.fit.aux.location import Location
 from eos.fit.aux.state import State
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoOperator, InfoSourceType
 
 
 class TestModGangItm(TestCase):
@@ -49,7 +50,7 @@ class TestModGangItm(TestCase):
         self.assertEqual(info.runTime, expType, msg="info type must be duration (ID {})".format(expType))
         expContext = InfoContext.gang
         self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
-        expLocation = InfoLocation.ship
+        expLocation = Location.ship
         self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")

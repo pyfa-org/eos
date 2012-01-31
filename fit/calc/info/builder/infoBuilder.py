@@ -20,8 +20,9 @@
 
 
 from eos.const import Operand, EffectCategory
+from eos.fit.aux.location import Location
 from eos.fit.aux.state import State
-from eos.fit.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import Info, InfoContext, InfoRunTime, InfoFilterType, InfoOperator, InfoSourceType
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
 from .operandData import operandData, OperandType
 
@@ -67,7 +68,7 @@ class InfoBuilder:
 
         Return value:
         Tuple (set with Info objects, build status), where build status
-        is InfoLocation class' attribute value
+        is Location class' attribute value
         """
         # By default, assume that our build is 100% successful
         buildStatus = InfoBuildStatus.okFull
@@ -277,7 +278,7 @@ class InfoBuilder:
     def __validateLocGrp(self, modifier):
         if modifier.targetSkillRequirementId is not None or modifier.runTime is not None:
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
+        validLocs = {Location.character, Location.ship, Location.target, Location.self_}
         if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetGroupId is None):
@@ -288,7 +289,7 @@ class InfoBuilder:
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
+        validLocs = {Location.character, Location.ship, Location.target, Location.self_}
         if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs):
             return False
@@ -297,7 +298,7 @@ class InfoBuilder:
     def __validateLocSrq(self, modifier):
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship, InfoLocation.target, InfoLocation.self_}
+        validLocs = {Location.character, Location.ship, Location.target, Location.self_}
         if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetSkillRequirementId is None):
@@ -307,7 +308,7 @@ class InfoBuilder:
     def __validateOwnSrq(self, modifier):
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
-        validLocs = {InfoLocation.character, InfoLocation.ship}
+        validLocs = {Location.character, Location.ship}
         if (modifier.sourceType != InfoSourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetSkillRequirementId is None):
@@ -413,26 +414,26 @@ class InfoBuilder:
     def __convertGangGrp(self, modifier, info):
         info.runTime = InfoRunTime.duration
         info.operator = modifier.operator
-        info.location = InfoLocation.ship
+        info.location = Location.ship
         info.filterType = InfoFilterType.group
         info.filterValue = modifier.targetGroupId
 
     def __convertGangItm(self, modifier, info):
         info.runTime = InfoRunTime.duration
         info.operator = modifier.operator
-        info.location = InfoLocation.ship
+        info.location = Location.ship
 
     def __convertGangOwnSrq(self, modifier, info):
         info.runTime = InfoRunTime.duration
         info.operator = modifier.operator
-        info.location = InfoLocation.space
+        info.location = Location.space
         info.filterType = InfoFilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
     def __convertGangSrq(self, modifier, info):
         info.runTime = InfoRunTime.duration
         info.operator = modifier.operator
-        info.location = InfoLocation.ship
+        info.location = Location.ship
         info.filterType = InfoFilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
@@ -464,7 +465,7 @@ class InfoBuilder:
     def __convertOwnSrq(self, modifier, info):
         info.runTime = InfoRunTime.duration
         info.operator = modifier.operator
-        info.location = InfoLocation.space
+        info.location = Location.space
         info.filterType = InfoFilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 

@@ -23,7 +23,8 @@ from copy import deepcopy
 from itertools import combinations
 
 from eos.const import Type, Operand
-from eos.fit.calc.info.info import InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.aux.location import Location
+from eos.fit.calc.info.info import InfoRunTime, InfoOperator, InfoSourceType
 from .atom import Atom, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from .operandData import operandData, OperandType
 from .modifier import Modifier
@@ -312,7 +313,7 @@ class ModifierBuilder:
 
     def __getLoc(self, element):
         """Define location"""
-        return InfoLocation.expressionValueToLocation(element.value)
+        return Location.expressionValueToLocation(element.value)
 
     def __getAttr(self, element):
         """Reference attribute via ID"""
@@ -328,7 +329,7 @@ class ModifierBuilder:
         if element.operandId == Operand.getType:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
-            if self.__getLoc(element.arg1) == InfoLocation.self_:
+            if self.__getLoc(element.arg1) == Location.self_:
                 return Type.self_
             else:
                 raise ModifierBuilderException("unexpected location referenced in type getter")

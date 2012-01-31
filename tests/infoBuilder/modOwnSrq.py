@@ -22,9 +22,10 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
+from eos.fit.aux.location import Location
 from eos.fit.aux.state import State
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoFilterType, InfoOperator, InfoSourceType
 
 
 class TestModOwnSrq(TestCase):
@@ -52,7 +53,7 @@ class TestModOwnSrq(TestCase):
         self.assertEqual(info.runTime, expType, msg="info type must be duration (ID {})".format(expType))
         expContext = InfoContext.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
-        expLocation = InfoLocation.space
+        expLocation = Location.space
         self.assertEqual(info.location, expLocation, msg="info target location must be space (ID {})".format(expLocation))
         expFilterType = InfoFilterType.skill
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))

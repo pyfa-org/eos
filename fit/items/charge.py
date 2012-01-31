@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.calc.info.info import InfoLocation
+from eos.fit.aux.location import Location
 from eos.fit.calc.holder import MutableAttributeHolder
 
 
@@ -39,7 +39,7 @@ class Charge(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.space
+        return Location.space
 
     @property
     def _other(self):

@@ -22,8 +22,8 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
+from eos.fit.aux.location import Location
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoLocation
 from eos.fit.calc.info.builder.atom import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 
 
@@ -206,7 +206,7 @@ class TestCondition(TestCase):
         currentAtom = info.conditions.child1
         expAtomType = AtomType.valueReference
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be value reference (ID {})".format(expAtomType))
-        expAtomCarrier = InfoLocation.self_
+        expAtomCarrier = Location.self_
         self.assertEqual(currentAtom.carrier, expAtomCarrier, msg="atom carrier must be self (ID {})".format(expAtomCarrier))
         expAtomAttr = 87
         self.assertEqual(currentAtom.attribute, expAtomAttr, msg="atom attribute ID must be {}".format(expAtomAttr))

@@ -20,8 +20,9 @@
 
 from eos.const import Attribute
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
+from .aux.location import Location
 from .aux.state import State
-from .calc.info.info import InfoContext, InfoLocation, InfoSourceType
+from .calc.info.info import InfoContext, InfoSourceType
 from .calc.register import Register
 
 
@@ -67,9 +68,9 @@ class Fit:
         # Make sure to properly process ship re-set in register. Optional argument
         # is passed to make sure that all direct modifications which were applied to
         # previous ship will also apply to new one
-        self._removeHolder(self.__ship, disableDirect=InfoLocation.ship)
+        self._removeHolder(self.__ship, disableDirect=Location.ship)
         self.__ship = ship
-        self._addHolder(self.__ship, enableDirect=InfoLocation.ship)
+        self._addHolder(self.__ship, enableDirect=Location.ship)
 
     @property
     def character(self):
@@ -81,9 +82,9 @@ class Fit:
         """Set character holder of fit"""
         # Like with ship, to re-apply effects directed to old ship, we need to pass
         # this optional argument
-        self._removeHolder(self.__character, disableDirect=InfoLocation.character)
+        self._removeHolder(self.__character, disableDirect=Location.character)
         self.__character = character
-        self._addHolder(self.__character, enableDirect=InfoLocation.character)
+        self._addHolder(self.__character, enableDirect=Location.character)
 
     def _addHolder(self, holder, **kwargs):
         """
@@ -116,7 +117,7 @@ class Fit:
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            self._addHolder(charge, enableDirect=InfoLocation.other)
+            self._addHolder(charge, enableDirect=Location.other)
 
     def _removeHolder(self, holder, **kwargs):
         """
@@ -134,7 +135,7 @@ class Fit:
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            self._removeHolder(charge, disableDirect=InfoLocation.other)
+            self._removeHolder(charge, disableDirect=Location.other)
         disabledStates = State._stateDifference(None, holder.state)
         processedContexts = {InfoContext.local}
         disabledAffectors = holder._generateAffectors(stateFilter=disabledStates, contextFilter=processedContexts)

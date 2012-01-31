@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.calc.info.info import InfoLocation
+from eos.fit.aux.location import Location
 from eos.fit.calc.holder import MutableAttributeHolder
 
 
@@ -36,4 +36,4 @@ class Booster(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.character
+        return Location.character

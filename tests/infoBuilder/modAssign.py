@@ -22,9 +22,10 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
+from eos.fit.aux.location import Location
 from eos.fit.aux.state import State
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoOperator, InfoSourceType
 
 
 class TestModAssignPreAttr(TestCase):
@@ -49,7 +50,7 @@ class TestModAssignPreAttr(TestCase):
         self.assertEqual(info.runTime, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expContext = InfoContext.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
-        expLocation = InfoLocation.character
+        expLocation = Location.character
         self.assertEqual(info.location, expLocation, msg="info target location must be char (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
@@ -163,7 +164,7 @@ class TestModAssignPreVal(TestCase):
         self.assertEqual(info.runTime, expType, msg="info type must be instant pre-modifier (ID {})".format(expType))
         expContext = InfoContext.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
-        expLocation = InfoLocation.self_
+        expLocation = Location.self_
         self.assertEqual(info.location, expLocation, msg="info target location must be self (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
@@ -278,7 +279,7 @@ class TestModAssignPostAttr(TestCase):
         self.assertEqual(info.runTime, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expContext = InfoContext.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
-        expLocation = InfoLocation.character
+        expLocation = Location.character
         self.assertEqual(info.location, expLocation, msg="info target location must be char (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")
@@ -392,7 +393,7 @@ class TestModAssignPostVal(TestCase):
         self.assertEqual(info.runTime, expType, msg="info type must be instant post-modifier (ID {})".format(expType))
         expContext = InfoContext.local
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
-        expLocation = InfoLocation.self_
+        expLocation = Location.self_
         self.assertEqual(info.location, expLocation, msg="info target location must be self (ID {})".format(expLocation))
         self.assertIsNone(info.filterType, msg="info target filter type must be None")
         self.assertIsNone(info.filterValue, msg="info target filter value must be None")

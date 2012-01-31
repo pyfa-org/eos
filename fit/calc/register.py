@@ -20,7 +20,8 @@
 
 
 from eos.const import Type
-from .info.info import InfoRunTime, InfoLocation, InfoFilterType
+from eos.fit.aux.location import Location
+from .info.info import InfoRunTime, InfoFilterType
 
 
 class DataSetMap(dict):
@@ -161,10 +162,10 @@ class Register():
         if info.filterType is None:
             # For single item modifications, we need to properly pick
             # target holder (it's key) based on location
-            if info.location == InfoLocation.self_:
+            if info.location == Location.self_:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
-            elif info.location == InfoLocation.character:
+            elif info.location == Location.character:
                 char = self.__fit.character
                 if char is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -172,7 +173,7 @@ class Register():
                 else:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
-            elif info.location == InfoLocation.ship:
+            elif info.location == Location.ship:
                 ship = self.__fit.ship
                 if ship is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -180,11 +181,11 @@ class Register():
                 else:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
-            elif info.location == InfoLocation.target:
+            elif info.location == Location.target:
                 raise RuntimeError("target is not supported location for direct item modification")
             # When other location is referenced, it means direct reference to module's charge
             # or to charge's module-container
-            elif info.location == InfoLocation.other:
+            elif info.location == Location.other:
                 try:
                     otherHolder = sourceHolder._other
                 except AttributeError:
@@ -232,15 +233,15 @@ class Register():
         targetLocation = affector.info.location
         # Reference to self is sparingly used on ship effects, so we must convert
         # it to real location
-        if targetLocation == InfoLocation.self_:
+        if targetLocation == Location.self_:
             if sourceHolder is self.__fit.ship:
-                return InfoLocation.ship
+                return Location.ship
             elif sourceHolder is self.__fit.character:
-                return InfoLocation.character
+                return Location.character
             else:
                 raise RuntimeError("reference to self on unexpected holder during processing of massive filtered modification")
         # Just return untouched location for all other valid cases
-        elif targetLocation in (InfoLocation.character, InfoLocation.ship, InfoLocation.space):
+        elif targetLocation in (Location.character, Location.ship, Location.space):
             return targetLocation
         # Raise error if location is invalid
         else:
@@ -329,7 +330,7 @@ class Register():
         affectorsToEnable = set()
         for affector in self.__disabledDirectAffectors.getData(otherHolder):
             info = affector.info
-            if info.location == InfoLocation.other and info.filterType is None:
+            if info.location == Location.other and info.filterType is None:
                 affectorsToEnable.add(affector)
         # Bail if we have nothing to do
         if len(affectorsToEnable) == 0:
@@ -386,9 +387,9 @@ class Register():
             affecteeMap.addData(key, {targetHolder})
         # Check if we have affectors which should directly influence passed holder,
         # but are disabled
-        directEnablers = {InfoLocation.ship: (self.__enableDirectSpec, (targetHolder, InfoLocation.ship), {}),
-                          InfoLocation.character: (self.__enableDirectSpec, (targetHolder, InfoLocation.character), {}),
-                          InfoLocation.other: (self.__enableDirectOther, (targetHolder,), {})}
+        directEnablers = {Location.ship: (self.__enableDirectSpec, (targetHolder, Location.ship), {}),
+                          Location.character: (self.__enableDirectSpec, (targetHolder, Location.character), {}),
+                          Location.other: (self.__enableDirectOther, (targetHolder,), {})}
         try:
             method, args, kwargs = directEnablers[enableDirect]
         except KeyError:
@@ -415,9 +416,9 @@ class Register():
             affecteeMap.rmData(key, {targetHolder})
         # When removing holder from register, make sure to move modifiers which
         # originate from other holders and directly affect it to disabled map
-        directEnablers = {InfoLocation.ship: (self.__disableDirectSpec, (targetHolder,), {}),
-                          InfoLocation.character: (self.__disableDirectSpec, (targetHolder,), {}),
-                          InfoLocation.other: (self.__disableDirectOther, (targetHolder,), {})}
+        directEnablers = {Location.ship: (self.__disableDirectSpec, (targetHolder,), {}),
+                          Location.character: (self.__disableDirectSpec, (targetHolder,), {}),
+                          Location.other: (self.__disableDirectOther, (targetHolder,), {})}
         try:
             method, args, kwargs = directEnablers[disableDirect]
         except KeyError:
@@ -469,17 +470,17 @@ class Register():
         affectees = set()
         # For direct modification, make set out of single target location
         if info.filterType is None:
-            if info.location == InfoLocation.self_:
+            if info.location == Location.self_:
                 target = {sourceHolder}
-            elif info.location == InfoLocation.character:
+            elif info.location == Location.character:
                 char = self.__fit.character
                 target = {char} if char is not None else None
-            elif info.location == InfoLocation.ship:
+            elif info.location == Location.ship:
                 ship = self.__fit.ship
                 target = {ship} if ship is not None else None
-            elif info.location == InfoLocation.target:
+            elif info.location == Location.target:
                 raise RuntimeError("target is not supported location for direct item modification")
-            elif info.location == InfoLocation.other:
+            elif info.location == Location.other:
                 try:
                     otherHolder = sourceHolder._other
                 except AttributeError:

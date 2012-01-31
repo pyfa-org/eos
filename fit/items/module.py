@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.calc.info.info import InfoLocation
+from eos.fit.aux.location import Location
 from eos.fit.calc.holder import MutableAttributeHolder
 
 
@@ -37,7 +37,7 @@ class Module(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return InfoLocation.ship
+        return Location.ship
 
     @property
     def _other(self):
@@ -57,10 +57,10 @@ class Module(MutableAttributeHolder):
         # modifiers are reapplied by passing special location keyword argument
         oldCharge = self.charge
         if oldCharge is not None:
-            self.fit._removeHolder(oldCharge, disableDirect=InfoLocation.other)
+            self.fit._removeHolder(oldCharge, disableDirect=Location.other)
             self.__charge = None
             oldCharge.container = None
         if newCharge is not None:
             newCharge.container = self
             self.__charge = newCharge
-            self.fit._addHolder(newCharge, enableDirect=InfoLocation.other)
+            self.fit._addHolder(newCharge, enableDirect=Location.other)

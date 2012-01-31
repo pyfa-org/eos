@@ -33,43 +33,6 @@ class InfoRunTime:
     post = 3  # Instant modification, applied in the end of the cycle
 
 
-class InfoLocation:
-    """Location ID holder"""
-    self_ = 1  # Target self, i.e. carrier of modification source
-    character = 2  # Target character
-    ship = 3  # Target ship
-    target = 4  # Target currently locked and selected ship as target
-    other = 5  # If used from charge, targets charge's container, is used from container, targets its charge
-    area = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
-    space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
-
-    @classmethod
-    def expressionValueToLocation(cls, expressionValue):
-        """
-        Convert expression value to location.
-
-        Positional arguments:
-        expressionValue -- value of expression, which is supposed
-        to be textual location identifier
-
-        Return value:
-        ID of location, corresponding to passed textual location
-        specifier, or None if no corresponding location was found
-        """
-        # Format: {location name: location ID}
-        conversionMap = {"Self": cls.self_,
-                         "Char": cls.character,
-                         "Ship": cls.ship,
-                         "Target": cls.target,
-                         "Other": cls.other,
-                         "Area": cls.area}
-        try:
-            result = conversionMap[expressionValue]
-        except KeyError:
-            result = None
-        return result
-
-
 class InfoFilterType:
     """Info filter type ID holder"""
     all_ = 1  # Affects all items in target location
