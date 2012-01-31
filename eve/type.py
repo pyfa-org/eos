@@ -92,8 +92,10 @@ class Type:
         Set with IDs of skills which are required to use type
         """
         if self.__requiredSkills is None:
+            skillRqAttrs = {Attribute.skillRq1, Attribute.skillRq2, Attribute.skillRq3,
+                            Attribute.skillRq4, Attribute.skillRq5, Attribute.skillRq6}
             self.__requiredSkills = set()
-            for srqAttrId in Attribute.skillRqMap:
+            for srqAttrId in skillRqAttrs:
                 srq = self.attributes.get(srqAttrId)
                 if srq is not None:
                     self.__requiredSkills.add(int(srq))
