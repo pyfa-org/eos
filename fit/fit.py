@@ -20,7 +20,8 @@
 
 from eos.const import Attribute
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
-from .calc.info.info import InfoState, InfoContext, InfoLocation, InfoSourceType
+from .aux.state import State
+from .calc.info.info import InfoContext, InfoLocation, InfoSourceType
 from .calc.register import Register
 
 
@@ -104,7 +105,7 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self.__register.registerAffectee(holder, **kwargs)
-        enabledStates = InfoState._stateDifference(None, holder.state)
+        enabledStates = State._stateDifference(None, holder.state)
         processedContexts = {InfoContext.local}
         enabledAffectors = holder._generateAffectors(stateFilter=enabledStates, contextFilter=processedContexts)
         for affector in enabledAffectors:
@@ -134,7 +135,7 @@ class Fit:
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._removeHolder(charge, disableDirect=InfoLocation.other)
-        disabledStates = InfoState._stateDifference(None, holder.state)
+        disabledStates = State._stateDifference(None, holder.state)
         processedContexts = {InfoContext.local}
         disabledAffectors = holder._generateAffectors(stateFilter=disabledStates, contextFilter=processedContexts)
         # When links in register are still alive, damage all attributes
@@ -158,7 +159,7 @@ class Fit:
         oldState = holder.state
         # Get set of affectors which we will need to register or
         # unregister
-        stateDifference = InfoState._stateDifference(oldState, newState)
+        stateDifference = State._stateDifference(oldState, newState)
         processedContexts = {InfoContext.local}
         affectorDiff = holder._generateAffectors(stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on

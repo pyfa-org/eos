@@ -20,7 +20,8 @@
 
 
 from eos.const import Operand, EffectCategory
-from eos.fit.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.fit.aux.state import State
+from eos.fit.calc.info.info import Info, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
 from .operandData import operandData, OperandType
 
@@ -28,17 +29,17 @@ from .operandData import operandData, OperandType
 # Dictionary which assists conversion of effect category
 # and operand gang/local modification to state and context
 # Format: {(effect category, gang flag): (state, context)}
-stateData = {(EffectCategory.passive, False): (InfoState.offline, InfoContext.local),
-             (EffectCategory.passive, True): (InfoState.offline, InfoContext.gang),
-             (EffectCategory.active, False): (InfoState.active, InfoContext.local),
-             (EffectCategory.active, True): (InfoState.active, InfoContext.gang),
-             (EffectCategory.target, False): (InfoState.active, InfoContext.projected),
-             (EffectCategory.online, False): (InfoState.online, InfoContext.local),
-             (EffectCategory.online, True): (InfoState.online, InfoContext.gang),
-             (EffectCategory.overload, False): (InfoState.overload, InfoContext.local),
-             (EffectCategory.overload, True): (InfoState.overload, InfoContext.gang),
-             (EffectCategory.system, False): (InfoState.offline, InfoContext.local),
-             (EffectCategory.system, True): (InfoState.offline, InfoContext.gang)}
+stateData = {(EffectCategory.passive, False): (State.offline, InfoContext.local),
+             (EffectCategory.passive, True): (State.offline, InfoContext.gang),
+             (EffectCategory.active, False): (State.active, InfoContext.local),
+             (EffectCategory.active, True): (State.active, InfoContext.gang),
+             (EffectCategory.target, False): (State.active, InfoContext.projected),
+             (EffectCategory.online, False): (State.online, InfoContext.local),
+             (EffectCategory.online, True): (State.online, InfoContext.gang),
+             (EffectCategory.overload, False): (State.overload, InfoContext.local),
+             (EffectCategory.overload, True): (State.overload, InfoContext.gang),
+             (EffectCategory.system, False): (State.offline, InfoContext.local),
+             (EffectCategory.system, True): (State.offline, InfoContext.gang)}
 
 
 class InfoBuildStatus:

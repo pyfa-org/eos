@@ -23,8 +23,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from eos.exception import TargetException
+from eos.fit.aux.state import State
 from .affector import Affector
-from .info.info import InfoState
 from .map import MutableAttributeMap
 
 
@@ -45,7 +45,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # Special dictionary subclass that holds modified attributes and data related to their calculation
         self.attributes = MutableAttributeMap(self)
         # Keeps current state of the holder
-        self.__state = InfoState.offline
+        self.__state = State.offline
         # Keeps current target of holder
         self.__target = None
 

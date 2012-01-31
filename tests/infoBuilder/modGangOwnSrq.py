@@ -22,8 +22,9 @@
 from unittest import TestCase
 
 from eos.eve.expression import Expression
+from eos.fit.aux.state import State
 from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
-from eos.fit.calc.info.info import InfoState, InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import InfoContext, InfoRunTime, InfoLocation, InfoFilterType, InfoOperator, InfoSourceType
 
 
 class TestModGangOwnSrq(TestCase):
@@ -72,7 +73,7 @@ class TestModGangOwnSrq(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expState = InfoState.offline
+        expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
         expContext = InfoContext.gang
         self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
@@ -83,7 +84,7 @@ class TestModGangOwnSrq(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expState = InfoState.active
+        expState = State.active
         self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
         expContext = InfoContext.gang
         self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
@@ -106,7 +107,7 @@ class TestModGangOwnSrq(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expState = InfoState.online
+        expState = State.online
         self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
         expContext = InfoContext.gang
         self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
@@ -117,7 +118,7 @@ class TestModGangOwnSrq(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expState = InfoState.overload
+        expState = State.overload
         self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
         expContext = InfoContext.gang
         self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
@@ -134,7 +135,7 @@ class TestModGangOwnSrq(TestCase):
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
-        expState = InfoState.offline
+        expState = State.offline
         self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
         expContext = InfoContext.gang
         self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))

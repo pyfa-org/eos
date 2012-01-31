@@ -19,45 +19,9 @@
 #===============================================================================
 
 
-from eos.const import nulls, Attribute, Effect, EffectCategory
-from eos.fit.calc.info.info import InfoState
-
-
-class Slot:
-    """Slot type ID holder"""
-    moduleHigh = 1
-    moduleMed = 2
-    moduleLow = 3
-    rig = 4
-    subsystem = 5
-    turret = 6
-    launcher = 7
-
-    @classmethod
-    def _effectToSlot(cls, effectId):
-        """
-        Convert effect to slot item uses.
-
-        Positional arguments:
-        effectId -- effect ID
-
-        Return value:
-        ID of slot, which corresponds to passed effect,
-        or None if no corresponding slot was found
-        """
-        # Format: {effect ID: slot ID}
-        conversionMap = {Effect.loPower: Slot.moduleLow,
-                         Effect.hiPower: Slot.moduleHigh,
-                         Effect.medPower: Slot.moduleMed,
-                         Effect.launcherFitted: Slot.launcher,
-                         Effect.turretFitted: Slot.turret,
-                         Effect.rigSlot: Slot.rig,
-                         Effect.subSystem: Slot.subsystem}
-        try:
-            result = conversionMap[effectId]
-        except KeyError:
-            result = None
-        return result
+from eos.const import nulls, Attribute, EffectCategory
+from eos.fit.aux.slot import Slot
+from eos.fit.aux.state import State
 
 
 class Type:
@@ -160,10 +124,10 @@ class Type:
         if self.__maxState is None:
             # All types can be at least offline,
             # even when they have no effects
-            maxState = InfoState.offline
+            maxState = State.offline
             for effect in self.effects:
                 # Convert effect category to state
-                effectState = InfoState._effectCategoryToState(effect.categoryId)
+                effectState = State._effectCategoryToState(effect.categoryId)
                 if effectState is not None:
                     maxState = max(maxState, effectState)
             self.__maxState = maxState
