@@ -51,10 +51,12 @@ class Attribute:
                   skillRq5: skillRq5Lvl,
                   skillRq6: skillRq6Lvl}
 
+
 class Type:
     """Item ID holder"""
     self_ = -1  # Eos-specific type, used in infos, refers carrier of info
     characterAmarr = 1373
+
 
 class Category:
     """Category ID holder"""
@@ -63,6 +65,19 @@ class Category:
     skill = 16
     implant = 20
     subsystem = 32
+
+
+class Effect:
+    """Effect ID holder"""
+    loPower = 11
+    hiPower = 12
+    medPower = 13
+    online = 16
+    launcherFitted = 40
+    turretFitted = 42
+    rigSlot = 2663
+    subSystem = 3772
+
 
 class EffectCategory:
     """Effect category ID holder"""
@@ -74,6 +89,7 @@ class EffectCategory:
     overload = 5  # Applied only when module is overloaded
     dungeon = 6  # Dungeon effects, several effects exist in this category, but not assigned to any item
     system = 7  # System-wide effects, like WH and incursion
+
 
 class Operand:
     """Expression operand ID holder"""

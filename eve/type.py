@@ -19,8 +19,45 @@
 #===============================================================================
 
 
-from eos.const import nulls, Attribute, EffectCategory
+from eos.const import nulls, Attribute, Effect, EffectCategory
 from eos.calc.info.info import InfoState
+
+
+class Slot:
+    """Slot type ID holder"""
+    moduleHigh = 1
+    moduleMed = 2
+    moduleLow = 3
+    rig = 4
+    subsystem = 5
+    turret = 6
+    launcher = 7
+
+    @classmethod
+    def _effectToSlot(cls, effectId):
+        """
+        Convert effect to slot item uses.
+
+        Positional arguments:
+        effectId -- effect ID
+
+        Return value:
+        ID of slot, which corresponds to passed effect,
+        or None if no corresponding slot was found
+        """
+        # Format: {effect ID: slot ID}
+        conversionMap = {Effect.loPower: Slot.moduleLow,
+                         Effect.hiPower: Slot.moduleHigh,
+                         Effect.medPower: Slot.moduleMed,
+                         Effect.launcherFitted: Slot.launcher,
+                         Effect.turretFitted: Slot.turret,
+                         Effect.rigSlot: Slot.rig,
+                         Effect.subSystem: Slot.subsystem}
+        try:
+            result = conversionMap[effectId]
+        except KeyError:
+            result = None
+        return result
 
 
 class Type:
@@ -79,6 +116,9 @@ class Type:
         # Cache targeted flag
         self.__targeted = None
 
+        # Cached set with slot types
+        self.__slots = None
+
     @property
     def requiredSkills(self):
         """
@@ -118,7 +158,15 @@ class Type:
         State class' attribute value, representing highest state
         """
         if self.__maxState is None:
-            self.__maxState, self.__targeted = self.__getEffectData()
+            # All types can be at least offline,
+            # even when they have no effects
+            maxState = InfoState.offline
+            for effect in self.effects:
+                # Convert effect category to state
+                effectState = InfoState._effectCategoryToState(effect.categoryId)
+                if effectState is not None:
+                    maxState = max(maxState, effectState)
+            self.__maxState = maxState
         return self.__maxState
 
     @property
@@ -131,30 +179,30 @@ class Type:
         Boolean targeted flag
         """
         if self.__targeted is None:
-            self.__maxState, self.__targeted = self.__getEffectData()
+            # Assume type is not targeted by default
+            targeted = False
+            for effect in self.effects:
+                # If any of effects is targeted, then type is targeted
+                if effect.categoryId == EffectCategory.target:
+                    targeted = True
+            self.__targeted = targeted
         return self.__targeted
 
-    def __getEffectData(self):
+    @property
+    def slots(self):
         """
-        Get type-specific data from effect set.
+        Get types of slots this type occupies.
 
         Return value:
-        Tuple (maxState, targeted flag)
+        Set with slot types
         """
-        # All types can be at least offline,
-        # even when they have no effects
-        maxState = InfoState.offline
-        # Assume type is not targeted by default
-        targeted = False
-        # We need to iterate through effects of type instead of infos because
-        # effect doesn't necessarily generate info, but we need data from all
-        # effects to reliably detect max state and targeted flag
-        for effect in self.effects:
-            # Convert effect category to state
-            effectState = InfoState._effectCategoryToState(effect.categoryId)
-            if effectState is not None:
-                maxState = max(maxState, effectState)
-            # If any of effects is targeted, then type is targeted
-            if effect.categoryId == EffectCategory.target:
-                targeted = True
-        return maxState, targeted
+        if self.__slots is None:
+            # Container for slot types item uses
+            slots = set()
+            for effect in self.effects:
+                # Convert effect ID to slot type item takes
+                slot = Slot._effectToSlot(effect.Id)
+                if slot is not None:
+                    slots.add(slot)
+            self.__slots = slots
+        return self.__slots
