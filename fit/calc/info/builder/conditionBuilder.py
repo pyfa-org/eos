@@ -137,7 +137,7 @@ class ConditionBuilder:
                         AtomComparisonOperator.less: AtomComparisonOperator.greaterOrEqual}
             condition.operator = invComps[condition.operator]
         else:
-            raise ConditionBuilderException("only logical and comparison ConditionAtoms can be reverted")
+            raise ConditionBuilderException("only logical and comparison ConditionAtoms can be inverted")
 
     @classmethod
     def conjuct(cls, cond1, cond2):

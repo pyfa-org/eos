@@ -85,7 +85,7 @@ class Fit:
         self.__character = character
         self._addHolder(self.__character, enableDirect=Location.character)
 
-    def _addHolder(self, holder, **kwargs):
+    def _addHolder(self, holder, enableDirect=None):
         """
         Handle adding of holder to fit
 
@@ -93,7 +93,9 @@ class Fit:
         holder -- holder to be added
 
         Keyword arguments:
-        Passed to one of internal registration methods
+        enableDirect -- according to location passed to this
+        argument, method asks to seek for disabled modifiers
+        for holder
         """
         # Don't do anything if None was passed as holder
         if holder is None:
@@ -104,7 +106,7 @@ class Fit:
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
-        self.__register.registerAffectee(holder, **kwargs)
+        self.__register.registerAffectee(holder, enableDirect=enableDirect)
         enabledStates = self.__getStateDifference(None, holder.state)
         processedContexts = {Context.local}
         enabledAffectors = holder._generateAffectors(stateFilter=enabledStates, contextFilter=processedContexts)
@@ -118,7 +120,7 @@ class Fit:
         if charge is not None:
             self._addHolder(charge, enableDirect=Location.other)
 
-    def _removeHolder(self, holder, **kwargs):
+    def _removeHolder(self, holder, disableDirect=None):
         """
         Handle removal of holder from fit
 
@@ -126,7 +128,9 @@ class Fit:
         holder -- holder to be removed
 
         Keyword arguments:
-        Passed to one of internal unregistration methods
+        disableDirect -- according to location passed to this
+        argument, method will ask to disable modifiers directly
+        affecting holder being removed
         """
         if holder is None:
             return
@@ -142,7 +146,7 @@ class Fit:
         # influenced by holder
         self._clearAffectorDependents(disabledAffectors)
         # Remove links from register
-        self.__register.unregisterAffectee(holder, **kwargs)
+        self.__register.unregisterAffectee(holder, disableDirect=disableDirect)
         for affector in disabledAffectors:
             self.__register.unregisterAffector(affector)
         # And finally, unset fit
