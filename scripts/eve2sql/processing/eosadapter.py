@@ -22,7 +22,7 @@
 import collections
 import re
 
-from eve2sql.const import DataType, Group, Category, Attribute, AttributeCategory, Operand
+from eve2sql.const import DataType, Type, Group, Category, Attribute, AttributeCategory, Operand
 from .preprocessor import Preprocessor
 
 
@@ -188,7 +188,7 @@ class EosAdapter(object):
 
         dataspec["invtypes"] = TableSpec({}, True)
         invtypes = dataspec["invtypes"].columns
-        invtypes["typeID"] = ColumnSpec(True, None, False, set())
+        invtypes["typeID"] = ColumnSpec(True, None, False, {Type.character_static})
         invtypes["groupID"] = ColumnSpec(False, "invgroups.groupID", False, set())
         invtypes["raceID"] = ColumnSpec(False, None, False, set())
         invtypes["published"] = ColumnSpec(False, None, False, set())
@@ -654,11 +654,8 @@ class EosAdapter(object):
         strong_categories = {Category.ship, Category.module, Category.charge,
                              Category.skill, Category.drone, Category.implant,
                              Category.subsystem}
-        # Set with groupIDs of published item we want to keep
+        # Set with groupIDs of published items we want to keep
         strong_groups = {Group.effect_beacon}
-        # Set with typeIDs of items we want to keep (even if
-        # they are not published)
-        super_strong_types = {}
         # Get indices of group and category columns in group table
         group_table = self.evedb["invgroups"]
         idx_groupid = group_table.index_by_name("groupID")
@@ -669,17 +666,14 @@ class EosAdapter(object):
                 strong_groups.add(datarow[idx_groupid])
         # Get typeIDs of items we're going to pump
         type_table = self.evedb["invtypes"]
-        idx_typeid = type_table.index_by_name("typeID")
         idx_groupid = type_table.index_by_name("groupID")
         idx_published = type_table.index_by_name("published")
         # Set-container for strong types
         rows2pump = set()
         for datarow in type_table.datarows:
-            typeid = datarow[idx_typeid]
             groupid = datarow[idx_groupid]
             published = bool(datarow[idx_published])
-            if ((groupid in strong_groups and published is True) or
-                typeid in super_strong_types):
+            if groupid in strong_groups and published is True:
                 rows2pump.add(datarow)
         self.__pump_data(type_table, rows2pump, strong_data)
         return

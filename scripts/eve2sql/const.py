@@ -29,6 +29,11 @@ class DataType(object):
     string = 4
 
 
+class Type(object):
+    """EVE items"""
+    character_static = 1381
+
+
 class Group(object):
     """EVE item groups"""
     effect_beacon = 920

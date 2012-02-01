@@ -36,7 +36,7 @@ class Eos:
         return fit
 
     def makeCharacter(self):
-        characterType = self.__dataHandler.getType(Type.characterAmarr)
+        characterType = self.__dataHandler.getType(Type.characterStatic)
         character = Character(characterType)
         return character
 

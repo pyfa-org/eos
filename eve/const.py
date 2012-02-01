@@ -51,7 +51,7 @@ class Attribute:
 
 class Type:
     """Item ID holder"""
-    characterAmarr = 1373
+    characterStatic = 1381
 
 
 class Category:
