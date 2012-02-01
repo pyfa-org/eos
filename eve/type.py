@@ -181,7 +181,7 @@ class Type:
                                  Effect.rigSlot: Slot.rig,
                                  Effect.subSystem: Slot.subsystem}
                 try:
-                    slot = conversionMap[effect.Id]
+                    slot = conversionMap[effect.id]
                 # Silently skip effect if it's not in map
                 except KeyError:
                     pass
