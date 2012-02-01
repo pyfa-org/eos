@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
+from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
 from eos.fit.calc.info.info import Info
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
