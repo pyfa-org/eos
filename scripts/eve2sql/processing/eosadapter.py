@@ -1,5 +1,6 @@
 #===============================================================================
-# Copyright (C) 2010-2011 Anton Vorobyov
+# Copyright (C) 2011 Diego Duclos
+# Copyright (C) 2011-2012 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -17,11 +18,13 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 import collections
 import re
 
 from eve2sql import const
 from .preprocessor import Preprocessor
+
 
 # Several local constants, describing type of the table
 table_BASE = 1  # Defines some entity
@@ -30,6 +33,7 @@ table_AUX = 2  # Auxiliary table, complements some entity with data or serves as
 # Auxiliary named tuples for use with custom database structure specification
 TableSpec = collections.namedtuple("TableSpec", ("columns", "strong"))
 ColumnSpec = collections.namedtuple("ColumnSpec", ("pk", "fk", "index", "strongvals"))
+
 
 class EosAdapter(object):
     """

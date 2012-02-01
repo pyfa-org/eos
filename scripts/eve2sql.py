@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #===============================================================================
-# Copyright (C) 2010-2011 Anton Vorobyov
+# Copyright (C) 2011 Diego Duclos
+# Copyright (C) 2011-2012 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -18,6 +19,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 """
 This script pulls data out of EVE cache and makes an SQLite dump
 Reverence library by Entity is used, check http://wiki.github.com/ntt/reverence/ for source code
@@ -25,6 +27,7 @@ Example commands to run the script for default paths under Linux to get SQLite d
 Tranquility: python eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/EVE" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_eve_tranquility/cache" --sqlite="/home/"$USER"/Desktop/eve.db"
 Singularity: python eve2sql.py --eve="~/.wine/drive_c/Program Files/CCP/Singularity" --cache="~/.wine/drive_c/users/"$USER"/Local Settings/Application Data/CCP/EVE/c_program_files_ccp_singularity_singularity/cache" --sisi --sqlite="/home/"$USER"/Desktop/evetest.db"
 """
+
 
 if __name__ == "__main__":
     # Check python version first (some parts of script and reverence require 2.7)
@@ -39,11 +42,13 @@ if __name__ == "__main__":
         sys.stderr.write("This application requires Python 2.7 to run, but {0}.{1} was used\n".format(major, minor))
         sys.exit()
 
+
     import os.path
     from optparse import OptionParser
 
     from eve2sql.data import EveDB
     from eve2sql.processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, Dumper
+
 
     # Parse command line options
     usage = "usage: %prog --eve=EVE --cache=CACHE --dump=DUMP [--sisi] [--release=RELEASE] [--eos]"

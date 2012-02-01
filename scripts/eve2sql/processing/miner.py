@@ -1,5 +1,6 @@
 #===============================================================================
-# Copyright (C) 2010-2011 Anton Vorobyov
+# Copyright (C) 2011 Diego Duclos
+# Copyright (C) 2011-2012 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -17,6 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 import cPickle
 import itertools
 import os.path
@@ -24,6 +26,7 @@ import sys
 from ConfigParser import ConfigParser
 
 from reverence import blue
+
 
 class DataMiner(object):
     """
