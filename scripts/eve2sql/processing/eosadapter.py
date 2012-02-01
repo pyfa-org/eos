@@ -26,9 +26,11 @@ from eve2sql.const import DataType, Group, Category, Attribute, AttributeCategor
 from .preprocessor import Preprocessor
 
 
-# Several local constants, describing type of the table
-table_BASE = 1  # Defines some entity
-table_AUX = 2  # Auxiliary table, complements some entity with data or serves as link between several other base tables
+class TableType(object):
+    """Describes type of table"""
+    base = 1  # Defines some entity
+    auxiliary = 2  # Auxiliary table, complements some entity with data or serves as link between several other base tables
+
 
 # Auxiliary named tuples for use with custom database structure specification
 TableSpec = collections.namedtuple("TableSpec", ("columns", "strong"))
@@ -37,7 +39,7 @@ ColumnSpec = collections.namedtuple("ColumnSpec", ("pk", "fk", "index", "strongv
 
 class EosAdapter(object):
     """
-    Adapt data to use in Eos before dumping
+    Adapt data for use in Eos before dumping.
     """
     def __init__(self, evedb):
         self.evedb = evedb
@@ -320,16 +322,16 @@ class EosAdapter(object):
                     "capacity": Attribute.capacity}
         # First, compose set of PK tuples which are already in target table
         typeattrs_table = self.evedb["dgmtypeattribs"]
-        idx_typeattrs_typeid = typeattrs_table.index_byname("typeID")
-        idx_typeattrs_attrid = typeattrs_table.index_byname("attributeID")
-        idx_typeattrs_value = typeattrs_table.index_byname("value")
+        idx_typeattrs_typeid = typeattrs_table.index_by_name("typeID")
+        idx_typeattrs_attrid = typeattrs_table.index_by_name("attributeID")
+        idx_typeattrs_value = typeattrs_table.index_by_name("value")
         typeattrs_collen = len(typeattrs_table)
         existing_data = set()
         for datarow in typeattrs_table.datarows:
             existing_data.add((datarow[idx_typeattrs_typeid], datarow[idx_typeattrs_attrid]))
         # Now, start working with invtypes table
         types_table = self.evedb["invtypes"]
-        idx_types_typeid = types_table.index_byname("typeID")
+        idx_types_typeid = types_table.index_by_name("typeID")
         # Define replacement map, as we're going to update values in types table too
         type_replacements = {}
         # Flag which keeps track of any collision errors
@@ -343,13 +345,13 @@ class EosAdapter(object):
                 if (datarow[idx_types_typeid], attr_map[attrcolname]) in existing_data:
                     collisions = True
                     continue
-                idx_types_attr = types_table.index_byname(attrcolname)
+                idx_types_attr = types_table.index_by_name(attrcolname)
                 # If source attribute value is 0 or None, also skip such row
                 attrval = datarow[idx_types_attr]
                 if attrval in {0, None}:
                     continue
                 # Initialize data row we're going to append to typeattrs table to 0 values
-                typeattr_datarow = list(0 for i in range(typeattrs_collen))
+                typeattr_datarow = list(0 for _ in range(typeattrs_collen))
                 # Fill it
                 typeattr_datarow[idx_typeattrs_typeid] = datarow[idx_types_typeid]
                 typeattr_datarow[idx_typeattrs_attrid] = attr_map[attrcolname]
@@ -387,8 +389,8 @@ class EosAdapter(object):
             entity_name_id = {}
             entity_name_collisions = set()
             entity_table = self.evedb[idz_data[0]]
-            idx_entityid = entity_table.index_byname(idz_data[1])
-            idx_entityname = entity_table.index_byname(idz_data[2])
+            idx_entityid = entity_table.index_by_name(idz_data[1])
+            idx_entityname = entity_table.index_by_name(idz_data[2])
             for datarow in entity_table.datarows:
                 name = datarow[idx_entityname]
                 if not name in entity_name_id:
@@ -403,9 +405,9 @@ class EosAdapter(object):
                     entity_name_collisions.add(name_stripped)
             # Get column indices for required columns in expression table
             exp_table = self.evedb["dgmexpressions"]
-            idx_operand = exp_table.index_byname("operandID")
-            idx_expvalue = exp_table.index_byname("expressionValue")
-            idx_expentity = exp_table.index_byname(idz_data[3])
+            idx_operand = exp_table.index_by_name("operandID")
+            idx_expvalue = exp_table.index_by_name("expressionValue")
+            idx_expentity = exp_table.index_by_name(idz_data[3])
             # Values which are considered to be empty
             nulls = {None, 0}
             for datarow in exp_table.datarows:
@@ -637,7 +639,7 @@ class EosAdapter(object):
                 if len(strong_vals) == 0:
                     continue
                 # Get index of column in question
-                colidx = table.index_byname(colname)
+                colidx = table.index_by_name(colname)
                 # Go through data rows and see which match to our criterion
                 for datarow in table.datarows:
                     # If row matches, add it to strong data set
@@ -656,15 +658,15 @@ class EosAdapter(object):
         strong_groups = {Group.effect_beacon}
         # Get indices of group and category columns in group table
         group_table = self.evedb["invgroups"]
-        idx_groupid = group_table.index_byname("groupID")
-        idx_categoryid = group_table.index_byname("categoryID")
+        idx_groupid = group_table.index_by_name("groupID")
+        idx_categoryid = group_table.index_by_name("categoryID")
         # Go through table data, filling valid groups set according to valid categories
         for datarow in group_table.datarows:
             if datarow[idx_categoryid] in strong_categories:
                 strong_groups.add(datarow[idx_groupid])
         # Get typeIDs of items we're going to pump
         type_table = self.evedb["invtypes"]
-        idx_groupid = type_table.index_byname("groupID")
+        idx_groupid = type_table.index_by_name("groupID")
         # Set-container for strong types
         rows2pump = set()
         for datarow in type_table.datarows:
@@ -727,21 +729,21 @@ class EosAdapter(object):
             pks = len(table.get_pks())
             # If there's no PKs at all or 2+ PKs, then table is auxiliary
             if pks > 1 or pks == 0:
-                type_map[table.name] = table_AUX
+                type_map[table.name] = TableType.auxiliary
                 continue
             # Even if there's single PK, but it references something else -
             # it means that table contents contain complementary data, thus table is
             # auxiliary too
             for column in table:
                 if column.pk is True and column.fk is not None:
-                    type_map[table.name] = table_AUX
+                    type_map[table.name] = TableType.auxiliary
                     break
             # Additional check to avoid going further, if we already detected
             # type of current table
             if table.name in type_map:
                 continue
             # Else, type is base
-            type_map[table.name] = table_BASE
+            type_map[table.name] = TableType.base
         return type_map
 
     def __make_fk_links(self):
@@ -783,7 +785,7 @@ class EosAdapter(object):
         for src_tabname in src_fk_tgt:
             # We won't need data for any source tables besides
             # auxiliary ones, so skip all other types
-            if tabletypes[src_tabname] != table_AUX:
+            if tabletypes[src_tabname] != TableType.auxiliary:
                 continue
             # Go through all column-FKs in auxiliary table
             for src_colname in src_fk_tgt[src_tabname]:
@@ -803,7 +805,7 @@ class EosAdapter(object):
         # Now, to the actual restore process
         for src_tabname in src_fk_tgt:
             # Skip all non-auxiliary tables
-            if tabletypes[src_tabname] != table_AUX:
+            if tabletypes[src_tabname] != TableType.auxiliary:
                 continue
             src_table = self.evedb[src_tabname]
             # Container for data we're going to restore
@@ -816,7 +818,7 @@ class EosAdapter(object):
                 if tgt_strength is not True:
                     continue
                 tgt_spec = "{0}.{1}".format(tgt_tabname, tgt_colname)
-                src_colidx = src_table.index_byname(src_colname)
+                src_colidx = src_table.index_by_name(src_colname)
                 # For each, check all thrashed data
                 for datarow in trashed_data[src_tabname]:
                     src_val = datarow[src_colidx]
@@ -865,7 +867,7 @@ class EosAdapter(object):
                     src_vals.update(coldata[src_spec])
                 # Finally, go through rows of removed data and mark it as to-be-restored
                 # if match happens
-                tgt_colidx = tgt_table.index_byname(tgt_colname)
+                tgt_colidx = tgt_table.index_by_name(tgt_colname)
                 for datarow in trashed_data[tgt_tabname]:
                     tgt_val = datarow[tgt_colidx]
                     if tgt_val in src_vals:
@@ -884,7 +886,7 @@ class EosAdapter(object):
                 # Except for the fact that we already have our data at hand and can use it
                 # without additional gathering
                 src_vals = special_attrval_links[tgt_tabname][tgt_colname]
-                tgt_colidx = tgt_table.index_byname(tgt_colname)
+                tgt_colidx = tgt_table.index_by_name(tgt_colname)
                 for datarow in trashed_data[tgt_tabname]:
                     tgt_val = datarow[tgt_colidx]
                     if tgt_val in src_vals:
@@ -900,8 +902,8 @@ class EosAdapter(object):
         # Format: {attrCategory: {attrID}}
         attrcat_attrid_map = {}
         attr_table = self.evedb["dgmattribs"]
-        idx_attrid = attr_table.index_byname("attributeID")
-        idx_attrcat = attr_table.index_byname("attributeCategory")
+        idx_attrid = attr_table.index_by_name("attributeID")
+        idx_attrcat = attr_table.index_by_name("attributeCategory")
         for datarow in attr_table.datarows:
             attrcat = datarow[idx_attrcat]
             if not attrcat in attrcat_attrid_map:
@@ -920,8 +922,8 @@ class EosAdapter(object):
         special_attrval_links = {}
         # Get indices to work with data in dgmtypeattribs table
         typeattrs_table = self.evedb["dgmtypeattribs"]
-        idx_attrid = typeattrs_table.index_byname("attributeID")
-        idx_value = typeattrs_table.index_byname("value")
+        idx_attrid = typeattrs_table.index_by_name("attributeID")
+        idx_value = typeattrs_table.index_by_name("value")
         # Some high-level access instructions, what to restore
         conditional_links = {(AttributeCategory.define_attribute, "dgmattribs", "attributeID"),
                              (AttributeCategory.define_group, "invgroups", "groupID"),

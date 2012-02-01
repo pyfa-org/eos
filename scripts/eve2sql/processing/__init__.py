@@ -23,4 +23,5 @@ from .miner import DataMiner
 from .preprocessor import Preprocessor
 from .deduplicator import Deduplicator
 from .eosadapter import EosAdapter
+from .eoschecker import EosChecker
 from .dumper import Dumper

@@ -79,7 +79,7 @@ class Table(DictList):
         # Return error flag
         return problems
 
-    def index_byname(self, name):
+    def index_by_name(self, name):
         """Return index of column with given name"""
         column = self[name]
         idx = self.index(column)

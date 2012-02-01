@@ -47,7 +47,7 @@ if __name__ == "__main__":
     from optparse import OptionParser
 
     from eve2sql.data import EveDB
-    from eve2sql.processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, Dumper
+    from eve2sql.processing import DataMiner, Preprocessor, Deduplicator, EosAdapter, EosChecker, Dumper
 
 
     # Parse command line options
@@ -91,9 +91,11 @@ if __name__ == "__main__":
         print("Refactoring database for Eos")
         adapter = EosAdapter(evedb)
         adapter.run()
+        # Additionally, perform checks on resulting data
+        print("Running Eos-specific data consistency checks")
+        checker = EosChecker(evedb)
+        checker.run()
     elif options.eosold is True:
-        # Manual mode: refactor database format to make it suitable for eos needs,
-        # remove data not needed and detect type of remaining
         print("Refactoring database for old Eos")
         adapter = EosAdapter(evedb)
         adapter.run_old()

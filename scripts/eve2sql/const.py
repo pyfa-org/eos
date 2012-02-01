@@ -60,6 +60,13 @@ class AttributeCategory(object):
     define_group = 12  # Attributes assigned to this category are used to reference group by its value via ID
 
 
+class Effect(object):
+    """EVE effects"""
+    low_power = 11
+    high_power = 12
+    medium_power = 13
+
+
 class Operand(object):
     """EVE expression operands"""
     define_attribute = 22  # Operand which defines attribute

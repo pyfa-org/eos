@@ -39,9 +39,6 @@ class DictList(object):
     def __iter__(self):
         return self.__childlist.__iter__()
 
-    def __next__(self):
-        return self.__childlist.__next__()
-
     def append(self, child):
         if not child.name in self.__childnamemap:
             self.__childlist.append(child)
