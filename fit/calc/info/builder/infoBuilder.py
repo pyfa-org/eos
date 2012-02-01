@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from eos.eve.const import Operand, EffectCategory
 from eos.fit.calc.info.info import Info
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
@@ -182,7 +182,7 @@ class InfoBuilder:
             return False
         # Check condition tree
         if modifier.conditions is not None:
-            if modifier.conditions.validateTree() is not True:
+            if cls.__validateCondition(modifier.conditions) is not True:
                 return False
         # It should be possible to convert gang flag and effect
         # category ID into state and context
@@ -222,7 +222,8 @@ class InfoBuilder:
             return False
         return method(modifier)
 
-    # Block with validating methods, called depending on modifier type
+    # Block with validating methods, called depending on modifier type,
+    # plus condition validation methods
     @classmethod
     def __validateGangGrp(cls, modifier):
         if (modifier.targetLocation is not None or modifier.targetSkillRequirementId is not None or
@@ -329,6 +330,103 @@ class InfoBuilder:
             (modifier.sourceType == SourceType.attribute and modifier.sourceValue is None) or
             (modifier.sourceType == SourceType.value and modifier.sourceValue is None) or
             modifier.targetLocation is None):
+            return False
+        return True
+
+    @classmethod
+    def __validateCondition(cls, condition):
+        """
+        Validate full condition tree, given we're checking top-level node.
+
+        Return value:
+        True if tree is valid, False if tree is not valid
+        """
+        # Top-level node can be either logical join or comparison
+        allowedTypes = {AtomType.logic, AtomType.comparison}
+        if not condition.type in allowedTypes:
+            return False
+        return cls.__validateConditionNode(condition)
+
+    @classmethod
+    def __validateConditionNode(cls, atom):
+        """
+        Pick appropriate validation method and run it.
+
+        Return value:
+        False if no proper method has been picked, else
+        transmit value returned by ran method
+        """
+        validationRouter = {AtomType.logic: cls.__validateConditionLogic,
+                            AtomType.comparison: cls.__validateConditionComparison,
+                            AtomType.math: cls.__validateConditionMath,
+                            AtomType.valueReference: cls.__validateConditionValueReference,
+                            AtomType.value: cls.__validateConditionValue}
+        try:
+            method = validationRouter[atom.type]
+        except KeyError:
+            return False
+        return method(atom)
+
+    @classmethod
+    def __validateConditionLogic(cls, atom):
+        if (atom.carrier is not None or atom.attribute is not None or
+            atom.value is not None):
+            return False
+        allowedSubtypes = {AtomType.logic, AtomType.comparison}
+        try:
+            if not atom.child1.type in allowedSubtypes or not atom.child2.type in allowedSubtypes:
+                return False
+        except AttributeError:
+            return False
+        if cls.__validateConditionNode(atom.child1) is not True or cls.__validateConditionNode(atom.child2) is not True:
+            return False
+        return True
+
+    @classmethod
+    def __validateConditionComparison(cls, atom):
+        if (atom.carrier is not None or atom.attribute is not None or
+            atom.value is not None):
+            return False
+        allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
+        try:
+            if not atom.child1.type in allowedSubtypes or not atom.child2.type in allowedSubtypes:
+                return False
+        except AttributeError:
+            return False
+        if cls.__validateConditionNode(atom.child1) is not True or cls.__validateConditionNode(atom.child2) is not True:
+            return False
+        return True
+
+    @classmethod
+    def __validateConditionMath(cls, atom):
+        if (atom.carrier is not None or atom.attribute is not None or
+            atom.value is not None):
+            return False
+        allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
+        try:
+            if not atom.child1.type in allowedSubtypes or not atom.child2.type in allowedSubtypes:
+                return False
+        except AttributeError:
+            return False
+        if cls.__validateConditionNode(atom.child1) is not True or cls.__validateConditionNode(atom.child2) is not True:
+            return False
+        return True
+
+    @classmethod
+    def __validateConditionValueReference(cls, atom):
+        if (atom.child1 is not None or atom.child2 is not None or
+            atom.value is not None):
+            return False
+        if atom.carrier is None or atom.attribute is None:
+            return False
+        return True
+
+    @classmethod
+    def __validateConditionValue(cls, atom):
+        if (atom.child1 is not None or atom.child2 is not None or
+            atom.carrier is not None or atom.attribute is not None):
+            return False
+        if atom.value is None:
             return False
         return True
 
