@@ -25,7 +25,10 @@ This file holds IDs of multiple Eos-specific entities.
 
 
 class State:
-    """State ID holder"""
+    """
+    Possible item states, used as part of public API and
+    internally by Info class and classes interacting with it
+    """
     # Values assigned to states are not deliberate, they must
     # be in ascending order. It means that e.g. online module
     # state, which should trigger modules' online and offline
@@ -38,7 +41,8 @@ class State:
 
 
 class Slot:
-    """Slot type ID holder"""
+    # TODO: add more sensible docstring here
+    """All slot types items can take"""
     moduleHigh = 1  #
     moduleMed = 2
     moduleLow = 3
@@ -47,41 +51,58 @@ class Slot:
     turret = 6
     launcher = 7
 
-
+# Class used by Infos and Item definitions
 class Location:
-    """Location ID holder"""
+    """
+    Location specification, often relative, thus item
+    context must be taken into account. Used only
+    internally by Info class, item classes and calculation
+    engine in general.
+    """
     self_ = 1  # Self, i.e. carrier of modification source
     character = 2  # Character
     ship = 3  # Ship
-    target = 4  # Target currently locked and selected ship as target
-    other = 5  # If used from charge, targets charge's container, is used from container, targets its charge
+    target = 4  # Currently locked and selected target
+    other = 5  # If used from charge, refers charge's container, if used from container, refers its charge
     area = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
     space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 
 class Context:
-    """Context ID holder"""
-    local = 1  # Applied to fit-local holders
-    gang = 2  # Applied to gang-mates
-    projected = 3  # Applied only when holder is projected onto some ship/fit
+    """
+    Describes when modification is applied, used only internally
+    by Info class and classes interacting with it
+    """
+    local = 1  # Fit-local modification
+    gang = 2  # Gang-wide modification
+    projected = 3  # Modification which is applied only when its holder is projected onto something
 
 
 class RunTime:
-    """Modification runtime ID holder"""
+    """
+    Modification runtime ID holder, used only internally
+    by Info class and classes interacting with it
+    """
     duration = 1  # Applies modification over duration
     pre = 2  # Instant modification, applied in the beginning of the cycle
     post = 3  # Instant modification, applied in the end of the cycle
 
 
 class FilterType:
-    """Filter type ID holder"""
+    """
+    Filter type ID holder, used only internally
+    by Info class and classes interacting with it
+    """
     all_ = 1  # Affects all items in target location
     group = 2  # Affects items in target location with additional filter by group
     skill = 3  # Affects items in target location with additional filter by skill requirement
 
 
 class Operator:
-    """Operator ID holder"""
+    """
+    Operator ID holder, used only internally
+    by Info class and classes interacting with it
+    """
     # Following operators are used in modifications
     # applied over some duration. We can deliberately assign
     # these some ID, but we need to make sure they're sorted
@@ -103,10 +124,17 @@ class Operator:
 
 
 class SourceType:
-    """Source value type ID holder"""
+    """
+    Source value type ID holder, used only internally
+    by Info class and classes interacting with it
+    """
     attribute = 1  # Source value is reference to attribute via ID, whose value should be used for modification
     value = 2  # Source value is actual value for modification
 
+
 class Type:
-    """Eos-specific type declarations"""
+    """
+    Eos-specific type declarations, used only internally
+    by Info class and classes interacting with it
+    """
     self_ = -1  # Refers carrier of info, special type ID, thus it must not overlap with any real type ID
