@@ -19,7 +19,8 @@
 #===============================================================================
 
 
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.const import EffectBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
 
 
 class Effect:
@@ -54,7 +55,7 @@ class Effect:
         self.__infos = None
 
         # Stores parsing status of info objects
-        self.infoStatus = InfoBuildStatus.notParsed
+        self.infoStatus = EffectBuildStatus.notParsed
 
     @property
     def infos(self):

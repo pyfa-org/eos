@@ -19,35 +19,7 @@
 #===============================================================================
 
 
-class AtomType:
-    """Condition atom type ID holder"""
-    logic = 1  # Logical OR or AND
-    comparison = 2  # Comparison of arguments
-    math = 3  # Some math operation applied onto arguments
-    valueReference = 4  # Reference to attribute value
-    value = 5  # Value is enclosed in atom itself
-
-
-class AtomLogicOperator:
-    """Condition atom logical operator ID holder"""
-    and_ = 1  # Logical and
-    or_ = 2  # Logical or
-
-
-class AtomComparisonOperator:
-    """Condition atom comparison operator ID holder"""
-    equal = 1  # ==
-    notEqual = 2  # !=
-    less = 3  # <
-    lessOrEqual = 4  # <=
-    greater = 5  # >
-    greaterOrEqual = 6  # >=
-
-
-class AtomMathOperator:
-    """Condition atom math operator ID holder"""
-    add = 1  # +
-    subtract = 2  # -
+from eos.const import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 
 
 class Atom:

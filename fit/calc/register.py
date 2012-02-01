@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, RunTime, FilterType, Type
+from eos.const import Location, RunTime, FilterType, InvType
 
 
 class DataSetMap(dict):
@@ -256,7 +256,7 @@ class Register():
         Real typeID, taken from affector's holder carrier
         """
         skillId = affector.info.filterValue
-        if skillId == Type.self_:
+        if skillId == InvType.self_:
             skillId = affector.sourceHolder.item.id
         return skillId
 

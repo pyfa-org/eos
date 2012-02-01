@@ -68,6 +68,17 @@ class Location:
     space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 
+class EffectBuildStatus:
+    """
+    Statuses which indicate effect->infos conversion result,
+    part of public API.
+    """
+    notParsed = 1  # Expression trees were not parsed into infos yet
+    error = 2  # Errors occurred during expression trees parsing or validation
+    okPartial = 3  # Infos were generated, but some of modifications were dropped as unsupported
+    okFull = 4  # All modifications were pulled out of expression tree successfully
+
+
 class Context:
     """
     Describes when modification is applied, used only internally
@@ -132,7 +143,50 @@ class SourceType:
     value = 2  # Source value is actual value for modification
 
 
-class Type:
+class AtomType:
+    """
+    Describes purpose of condition atom, used only internally
+    by everything which works with info conditions.
+    """
+    logic = 1  # Logical OR or AND
+    comparison = 2  # Comparison of arguments
+    math = 3  # Some math operation applied onto arguments
+    valueReference = 4  # Reference to attribute value
+    value = 5  # Value is enclosed in atom itself
+
+
+class AtomLogicOperator:
+    """
+    Logical operators of condition atom, used only internally
+    by everything which works with info conditions.
+    """
+    and_ = 1  # Logical and
+    or_ = 2  # Logical or
+
+
+class AtomComparisonOperator:
+    """
+    Comparison operators of condition atom, used only internally
+    by everything which works with info conditions.
+    """
+    equal = 1  # ==
+    notEqual = 2  # !=
+    less = 3  # <
+    lessOrEqual = 4  # <=
+    greater = 5  # >
+    greaterOrEqual = 6  # >=
+
+
+class AtomMathOperator:
+    """
+    Math operators of condition atom, used only internally
+    by everything which works with info conditions.
+    """
+    add = 1  # +
+    subtract = 2  # -
+
+
+class InvType:
     """
     Eos-specific type declarations, used only internally
     by Info class and classes interacting with it

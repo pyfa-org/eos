@@ -24,6 +24,22 @@ class EosException(Exception):
     pass
 
 
+class ModifierBuilderException(EosException):
+    """
+    Exception of this type is raised when modifier builder
+    encounters some 'known' error and wants to notify caller
+    """
+    pass
+
+
+class ConditionBuilderException(EosException):
+    """
+    Exception of this type is raised when condition atom builder
+    encounters some 'known' error and wants to notify caller
+    """
+    pass
+
+
 class TargetException(EosException):
     """Raised when passed target is invalid"""
     pass

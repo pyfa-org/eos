@@ -21,8 +21,9 @@
 
 from unittest import TestCase
 
+from eos.const import EffectBuildStatus
 from eos.eve.expression import Expression
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
 
 
 class TestIncompleteDuration(TestCase):
@@ -30,24 +31,24 @@ class TestIncompleteDuration(TestCase):
 
     def setUp(self):
         # Duration modifier, except for top-most expression
-        eTgt = Expression(24, value="Ship")
-        eTgtAttr = Expression(22, expressionAttributeId=9)
-        eOptr = Expression(21, value="PostPercent")
-        self.eSrcAttr = Expression(22, expressionAttributeId=327)
-        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
-        self.eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
-        self.stub = Expression(27, value="1")
+        eTgt = Expression(None, 24, value="Ship")
+        eTgtAttr = Expression(None, 22, expressionAttributeId=9)
+        eOptr = Expression(None, 21, value="PostPercent")
+        self.eSrcAttr = Expression(None, 22, expressionAttributeId=327)
+        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
+        self.eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
+        self.stub = Expression(None, 27, value="1")
 
     def testPre(self):
-        eAddMod = Expression(6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
+        eAddMod = Expression(None, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, self.stub, 0)
-        expStatus = InfoBuildStatus.okPartial
+        expStatus = EffectBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testPost(self):
-        eRmMod = Expression(58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
+        eRmMod = Expression(None, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
         infos, status = InfoBuilder().build(self.stub, eRmMod, 0)
-        expStatus = InfoBuildStatus.okPartial
+        expStatus = EffectBuildStatus.okPartial
         self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")

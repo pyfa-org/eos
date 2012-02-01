@@ -50,7 +50,7 @@ class Info:
         # For filterType.all or filterType.None must be None;
         # For filterType.group must be some integer, referring group via ID;
         # For filterType.skill must be some integer, referring type via ID,
-        # or const.Type.self_ to reference type of info carrier.
+        # or const.InvType.self_ to reference type of info carrier.
         self.filterValue = None
         # Which operation should be applied during modification,
         # must be eos.const.Operator class' attribute value.

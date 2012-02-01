@@ -21,29 +21,29 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.expression import Expression
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
 
 
 class TestModOwnSrq(TestCase):
     """Test parsing of trees describing modification filtered by owner and skill requirement"""
 
     def setUp(self):
-        eTgtOwn = Expression(24, value="Char")
-        eTgtSrq = Expression(29, expressionTypeId=3412)
-        eTgtAttr = Expression(22, expressionAttributeId=1372)
-        eOptr = Expression(21, value="PostPercent")
-        eSrcAttr = Expression(22, expressionAttributeId=1156)
-        eTgtItms = Expression(49, arg1=eTgtOwn, arg2=eTgtSrq)
-        eTgtSpec = Expression(12, arg1=eTgtItms, arg2=eTgtAttr)
-        eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
-        self.eAddMod = Expression(11, arg1=eOptrTgt, arg2=eSrcAttr)
-        self.eRmMod = Expression(62, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtOwn = Expression(None, 24, value="Char")
+        eTgtSrq = Expression(None, 29, expressionTypeId=3412)
+        eTgtAttr = Expression(None, 22, expressionAttributeId=1372)
+        eOptr = Expression(None, 21, value="PostPercent")
+        eSrcAttr = Expression(None, 22, expressionAttributeId=1156)
+        eTgtItms = Expression(None, 49, arg1=eTgtOwn, arg2=eTgtSrq)
+        eTgtSpec = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr)
+        eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
+        self.eAddMod = Expression(None, 11, arg1=eOptrTgt, arg2=eSrcAttr)
+        self.eRmMod = Expression(None, 62, arg1=eOptrTgt, arg2=eSrcAttr)
 
     def testGenericBuildSuccess(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -69,7 +69,7 @@ class TestModOwnSrq(TestCase):
 
     def testEffCategoryPassive(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -80,7 +80,7 @@ class TestModOwnSrq(TestCase):
 
     def testEffCategoryActive(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 1)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -91,7 +91,7 @@ class TestModOwnSrq(TestCase):
 
     def testEffCategoryTarget(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 2)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -102,13 +102,13 @@ class TestModOwnSrq(TestCase):
 
     def testEffCategoryArea(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 3)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategoryOnline(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 4)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -119,7 +119,7 @@ class TestModOwnSrq(TestCase):
 
     def testEffCategoryOverload(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 5)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -130,13 +130,13 @@ class TestModOwnSrq(TestCase):
 
     def testEffCategoryDungeon(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 6)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategorySystem(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 7)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()

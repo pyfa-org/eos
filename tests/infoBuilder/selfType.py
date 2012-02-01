@@ -22,32 +22,32 @@
 from unittest import TestCase
 
 
-from eos.const import FilterType, Type
+from eos.const import EffectBuildStatus, FilterType, InvType
 from eos.eve.expression import Expression
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
 
 
 class TestSelfType(TestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
     def testBuildSuccess(self):
-        eTgtOwn = Expression(24, value="Char")
-        eSelf = Expression(24, value="Self")
-        eSelfType = Expression(36, arg1=eSelf)
-        eTgtAttr = Expression(22, expressionAttributeId=64)
-        eOptr = Expression(21, value="PostPercent")
-        eSrcAttr = Expression(22, expressionAttributeId=292)
-        eTgtItms = Expression(49, arg1=eTgtOwn, arg2=eSelfType)
-        eTgtSpec = Expression(12, arg1=eTgtItms, arg2=eTgtAttr)
-        eOptrTgt = Expression(31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(11, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(62, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtOwn = Expression(None, 24, value="Char")
+        eSelf = Expression(None, 24, value="Self")
+        eSelfType = Expression(None, 36, arg1=eSelf)
+        eTgtAttr = Expression(None, 22, expressionAttributeId=64)
+        eOptr = Expression(None, 21, value="PostPercent")
+        eSrcAttr = Expression(None, 22, expressionAttributeId=292)
+        eTgtItms = Expression(None, 49, arg1=eTgtOwn, arg2=eSelfType)
+        eTgtSpec = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr)
+        eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
+        eAddMod = Expression(None, 11, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(None, 62, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
         expFilterType = FilterType.skill
         self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
-        expFilterValue = Type.self_
+        expFilterValue = InvType.self_
         self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be reference to typeID of self {}".format(expFilterValue))

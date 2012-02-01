@@ -21,9 +21,9 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, Operator, SourceType
+from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder, InfoBuildStatus
+from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
 
 
 class TestModAssignPreAttr(TestCase):
@@ -31,16 +31,16 @@ class TestModAssignPreAttr(TestCase):
 
     def setUp(self):
         # Manually composed example, CCP doesn't use such combination
-        eTgt = Expression(24, value="Char")
-        eTgtAttr = Expression(22, expressionAttributeId=166)
-        eSrcAttr = Expression(22, expressionAttributeId=177)
-        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
-        self.ePostStub = Expression(27, value="1")
+        eTgt = Expression(None, 24, value="Char")
+        eTgtAttr = Expression(None, 22, expressionAttributeId=166)
+        eSrcAttr = Expression(None, 22, expressionAttributeId=177)
+        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
+        self.ePreAssign = Expression(None, 65, arg1=eTgtSpec, arg2=eSrcAttr)
+        self.ePostStub = Expression(None, 27, value="1")
 
     def testGenericBuildSuccess(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -64,7 +64,7 @@ class TestModAssignPreAttr(TestCase):
 
     def testEffCategoryPassive(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -75,7 +75,7 @@ class TestModAssignPreAttr(TestCase):
 
     def testEffCategoryActive(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 1)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -86,7 +86,7 @@ class TestModAssignPreAttr(TestCase):
 
     def testEffCategoryTarget(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 2)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -97,13 +97,13 @@ class TestModAssignPreAttr(TestCase):
 
     def testEffCategoryArea(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 3)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategoryOnline(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 4)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -114,7 +114,7 @@ class TestModAssignPreAttr(TestCase):
 
     def testEffCategoryOverload(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 5)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -125,13 +125,13 @@ class TestModAssignPreAttr(TestCase):
 
     def testEffCategoryDungeon(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 6)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategorySystem(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 7)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -145,16 +145,16 @@ class TestModAssignPreVal(TestCase):
     """Test parsing of trees describing assignments by value applied in the beginning of the cycle"""
 
     def setUp(self):
-        eTgt = Expression(24, value="Self")
-        eTgtAttr = Expression(22, expressionAttributeId=2)
-        eSrcVal = Expression(27, value="1")
-        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
-        self.ePostStub = Expression(27, value="1")
+        eTgt = Expression(None, 24, value="Self")
+        eTgtAttr = Expression(None, 22, expressionAttributeId=2)
+        eSrcVal = Expression(None, 27, value="1")
+        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
+        self.ePreAssign = Expression(None, 65, arg1=eTgtSpec, arg2=eSrcVal)
+        self.ePostStub = Expression(None, 27, value="1")
 
     def testGenericBuildSuccess(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -178,7 +178,7 @@ class TestModAssignPreVal(TestCase):
 
     def testEffCategoryPassive(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -189,7 +189,7 @@ class TestModAssignPreVal(TestCase):
 
     def testEffCategoryActive(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 1)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -200,7 +200,7 @@ class TestModAssignPreVal(TestCase):
 
     def testEffCategoryTarget(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 2)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -211,13 +211,13 @@ class TestModAssignPreVal(TestCase):
 
     def testEffCategoryArea(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 3)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategoryOnline(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 4)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -228,7 +228,7 @@ class TestModAssignPreVal(TestCase):
 
     def testEffCategoryOverload(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 5)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -239,13 +239,13 @@ class TestModAssignPreVal(TestCase):
 
     def testEffCategoryDungeon(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 6)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategorySystem(self):
         infos, status = InfoBuilder().build(self.ePreAssign, self.ePostStub, 7)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -260,16 +260,16 @@ class TestModAssignPostAttr(TestCase):
 
     def setUp(self):
         # Manually composed example, CCP doesn't use such combination
-        eTgt = Expression(24, value="Char")
-        eTgtAttr = Expression(22, expressionAttributeId=166)
-        eSrcAttr = Expression(22, expressionAttributeId=177)
-        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreStub = Expression(27, value="1")
-        self.ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcAttr)
+        eTgt = Expression(None, 24, value="Char")
+        eTgtAttr = Expression(None, 22, expressionAttributeId=166)
+        eSrcAttr = Expression(None, 22, expressionAttributeId=177)
+        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
+        self.ePreStub = Expression(None, 27, value="1")
+        self.ePostAssign = Expression(None, 65, arg1=eTgtSpec, arg2=eSrcAttr)
 
     def testGenericBuildSuccess(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -293,7 +293,7 @@ class TestModAssignPostAttr(TestCase):
 
     def testEffCategoryPassive(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -304,7 +304,7 @@ class TestModAssignPostAttr(TestCase):
 
     def testEffCategoryActive(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 1)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -315,7 +315,7 @@ class TestModAssignPostAttr(TestCase):
 
     def testEffCategoryTarget(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 2)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -326,13 +326,13 @@ class TestModAssignPostAttr(TestCase):
 
     def testEffCategoryArea(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 3)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategoryOnline(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 4)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -343,7 +343,7 @@ class TestModAssignPostAttr(TestCase):
 
     def testEffCategoryOverload(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 5)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -354,13 +354,13 @@ class TestModAssignPostAttr(TestCase):
 
     def testEffCategoryDungeon(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 6)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategorySystem(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 7)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -374,16 +374,16 @@ class TestModAssignPostVal(TestCase):
     """Test parsing of trees describing assignments by value applied in the end of the cycle"""
 
     def setUp(self):
-        eTgt = Expression(24, value="Self")
-        eTgtAttr = Expression(22, expressionAttributeId=2)
-        eSrcVal = Expression(27, value="0")
-        eTgtSpec = Expression(12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreStub = Expression(27, value="1")
-        self.ePostAssign = Expression(65, arg1=eTgtSpec, arg2=eSrcVal)
+        eTgt = Expression(None, 24, value="Self")
+        eTgtAttr = Expression(None, 22, expressionAttributeId=2)
+        eSrcVal = Expression(None, 27, value="0")
+        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
+        self.ePreStub = Expression(None, 27, value="1")
+        self.ePostAssign = Expression(None, 65, arg1=eTgtSpec, arg2=eSrcVal)
 
     def testGenericBuildSuccess(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -407,7 +407,7 @@ class TestModAssignPostVal(TestCase):
 
     def testEffCategoryPassive(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 0)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -418,7 +418,7 @@ class TestModAssignPostVal(TestCase):
 
     def testEffCategoryActive(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 1)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -429,7 +429,7 @@ class TestModAssignPostVal(TestCase):
 
     def testEffCategoryTarget(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 2)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -440,13 +440,13 @@ class TestModAssignPostVal(TestCase):
 
     def testEffCategoryArea(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 3)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategoryOnline(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 4)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -457,7 +457,7 @@ class TestModAssignPostVal(TestCase):
 
     def testEffCategoryOverload(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 5)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()
@@ -468,13 +468,13 @@ class TestModAssignPostVal(TestCase):
 
     def testEffCategoryDungeon(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 6)
-        expStatus = InfoBuildStatus.error
+        expStatus = EffectBuildStatus.error
         self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
     def testEffCategorySystem(self):
         infos, status = InfoBuilder().build(self.ePreStub, self.ePostAssign, 7)
-        expStatus = InfoBuildStatus.okFull
+        expStatus = EffectBuildStatus.okFull
         self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
         self.assertEqual(len(infos), 1, msg="one info must be generated")
         info = infos.pop()

@@ -122,7 +122,8 @@ class JsonDataHandler(DataHandler):
         except KeyError:
             data = self.__expressionData[str(int(expId))]
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
-            expression = Expression(opndId,
+            expression = Expression(expId,
+                                    opndId,
                                     arg1=self.getExpression(arg1Id),
                                     arg2=self.getExpression(arg2Id),
                                     value=eVal,

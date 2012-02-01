@@ -19,9 +19,91 @@
 #===============================================================================
 
 
+"""
+This file is intended to hold some functions and data, which
+is used by multiple builders.
+"""
+
+
 from collections import namedtuple
 
+from eos.const import Location, Operator, InvType
 from eos.eve.const import Operand
+
+
+class ExpressionData:
+    """
+    Provides access to expression data with conversion
+    jobs where necessary.
+    """
+
+    @classmethod
+    def getOperator(cls, expression):
+        """Helper for modifying expressions, defines operator"""
+        # Format: {operator name: operator ID}
+        conversionMap = {"PreAssignment": Operator.preAssignment,
+                         "PreMul": Operator.preMul,
+                         "PreDiv": Operator.preDiv,
+                         "ModAdd": Operator.modAdd,
+                         "ModSub": Operator.modSub,
+                         "PostMul": Operator.postMul,
+                         "PostDiv": Operator.postDiv,
+                         "PostPercent": Operator.postPercent,
+                         "PostAssignment": Operator.postAssignment}
+        operator = conversionMap[expression.value]
+        return operator
+
+    @classmethod
+    def getLocation(cls, expression):
+        """Define location"""
+        # Format: {location name: location ID}
+        conversionMap = {"Self": Location.self_,
+                         "Char": Location.character,
+                         "Ship": Location.ship,
+                         "Target": Location.target,
+                         "Other": Location.other,
+                         "Area": Location.area}
+        location = conversionMap[expression.value]
+        return location
+
+    @classmethod
+    def getAttribute(cls, expression):
+        """Reference attribute via ID"""
+        attribute = int(expression.expressionAttributeId)
+        return attribute
+
+    @classmethod
+    def getGroup(cls, expression):
+        """Reference group via ID"""
+        group = int(expression.expressionGroupId)
+        return group
+
+    @classmethod
+    def getType(cls, expression):
+        """Reference type via ID"""
+        # Type getter function has special handling
+        if expression.operandId == Operand.getType:
+            # Currently, we have only ID representing self type getter, so run
+            # additional check if type getter is for self
+            if cls.getLocation(expression.arg1) == Location.self_:
+                return InvType.self_
+            else:
+                return None
+        else:
+            type_ = int(expression.expressionTypeId)
+            return type_
+
+    @classmethod
+    def getInteger(cls, expression):
+        """Get integer from value"""
+        integer = int(expression.value)
+        return integer
+
+    @classmethod
+    def getBoolean(cls, expression):
+        """Get integer from value"""
+        boolean = bool(expression.value)
+        return boolean
 
 
 # Named tuple for ease of access of operand metadata, where:

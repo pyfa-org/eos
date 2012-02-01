@@ -19,11 +19,11 @@
 #===============================================================================
 
 
-from eos.const import Location, State, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.const import Operand, EffectCategory
 from eos.fit.calc.info.info import Info
 from .modifierBuilder import ModifierBuilder, ModifierBuilderException
-from .operandData import operandData, OperandType
+from .helpers import operandData, OperandType
 
 
 # Dictionary which assists conversion of effect category
@@ -42,21 +42,14 @@ stateData = {(EffectCategory.passive, False): (State.offline, Context.local),
              (EffectCategory.system, True): (State.offline, Context.gang)}
 
 
-class InfoBuildStatus:
-    """Effect info building status ID holder"""
-    notParsed = 1  # Expression trees were not parsed into infos yet
-    error = 2  # Errors occurred during expression trees parsing or validation
-    okPartial = 3  # Infos were generated, but some of modifications were dropped as unsupported
-    okFull = 4  # All modifications were pulled out of expression tree successfully
-
-
 class InfoBuilder:
     """
     Class is responsible for converting Modifier objects into Info objects,
     which can then be used in the rest of the engine.
     """
 
-    def build(self, preExpression, postExpression, effectCategoryId):
+    @classmethod
+    def build(cls, preExpression, postExpression, effectCategoryId):
         """
         Generate Info objects out of passed data.
 
@@ -70,7 +63,7 @@ class InfoBuilder:
         is Location class' attribute value
         """
         # By default, assume that our build is 100% successful
-        buildStatus = InfoBuildStatus.okFull
+        buildStatus = EffectBuildStatus.okFull
         # Containers for our data
         preMods = set()
         postMods = set()
@@ -83,25 +76,25 @@ class InfoBuilder:
                 modifiers, skippedData = modBuilder.build(tree, runTime, effectCategoryId)
             # If any errors occurred, return empty set and error status
             except ModifierBuilderException:
-                return set(), InfoBuildStatus.error
+                return set(), EffectBuildStatus.error
             except:
                 # TODO: This is temporary debugging print, should be moved to logging
                 # module when its format is defined
-                print("unexpected exception occurred when parsing expression tree {}".format(tree.id))
-                return set(), InfoBuildStatus.error
+                print("unexpected exception occurred when parsing expression tree with root node ID {}".format(tree.id))
+                return set(), EffectBuildStatus.error
             else:
                 # Update set with modifiers we've just got
                 modSet.update(modifiers)
                 # If any skipped data was encountered, change build status
                 if skippedData is True:
-                    buildStatus = InfoBuildStatus.okPartial
+                    buildStatus = EffectBuildStatus.okPartial
         # Check modifiers we've got for validity
         for modSet in (preMods, postMods):
             for modifier in modSet:
-                if self.validateModifier(modifier) is not True:
+                if cls.validateModifier(modifier) is not True:
                     # If any is invalid, return empty set
                     # and error status
-                    return set(), InfoBuildStatus.error
+                    return set(), EffectBuildStatus.error
 
         # Container for actual info objects
         infos = set()
@@ -135,9 +128,9 @@ class InfoBuilder:
                 if postMod in usedPosts:
                     continue
                 # If matching pre- and post-modifiers were detected
-                if self.isMirrorToPost(preMod, postMod) is True:
+                if cls.isMirrorToPost(preMod, postMod) is True:
                     # Create actual info
-                    info = self.convertToInfo(preMod)
+                    info = cls.convertToInfo(preMod)
                     infos.add(info)
                     # Mark used modifiers as used
                     usedPres.add(preMod)
@@ -159,7 +152,7 @@ class InfoBuilder:
                 if modType != OperandType.instant:
                     continue
                 # Make actual info object
-                info = self.convertToInfo(modifier)
+                info = cls.convertToInfo(modifier)
                 infos.add(info)
                 # And mark modifier as used
                 usedMods.add(modifier)
@@ -167,11 +160,12 @@ class InfoBuilder:
         # If there're any modifiers which were not used for
         # info generation, mark current effect as partially parsed
         if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
-            buildStatus = InfoBuildStatus.okPartial
+            buildStatus = EffectBuildStatus.okPartial
 
         return infos, buildStatus
 
-    def validateModifier(self, modifier):
+    @classmethod
+    def validateModifier(cls, modifier):
         """
         Validation for modifier objects. Run few top-level modifier type-agnostic
         checks and then route to type-specific check methods.
@@ -201,27 +195,27 @@ class InfoBuilder:
         if not (modifier.effectCategoryId, gangFlag) in stateData:
             return False
         # Other fields are optional, check them using modifier type
-        validateMap = {Operand.addGangGrpMod: self.__validateGangGrp,
-                       Operand.rmGangGrpMod: self.__validateGangGrp,
-                       Operand.addGangItmMod: self.__validateGangItm,
-                       Operand.rmGangItmMod: self.__validateGangItm,
-                       Operand.addGangOwnSrqMod: self.__validateGangOwnSrq,
-                       Operand.rmGangOwnSrqMod: self.__validateGangOwnSrq,
-                       Operand.addGangSrqMod: self.__validateGangSrq,
-                       Operand.rmGangSrqMod: self.__validateGangSrq,
-                       Operand.addItmMod: self.__validateItm,
-                       Operand.rmItmMod: self.__validateItm,
-                       Operand.addLocGrpMod: self.__validateLocGrp,
-                       Operand.rmLocGrpMod: self.__validateLocGrp,
-                       Operand.addLocMod: self.__validateLoc,
-                       Operand.rmLocMod: self.__validateLoc,
-                       Operand.addLocSrqMod: self.__validateLocSrq,
-                       Operand.rmLocSrqMod: self.__validateLocSrq,
-                       Operand.addOwnSrqMod: self.__validateOwnSrq,
-                       Operand.rmOwnSrqMod: self.__validateOwnSrq,
-                       Operand.assign: self.__validateInstant,
-                       Operand.inc: self.__validateInstant,
-                       Operand.dec: self.__validateInstant}
+        validateMap = {Operand.addGangGrpMod: cls.__validateGangGrp,
+                       Operand.rmGangGrpMod: cls.__validateGangGrp,
+                       Operand.addGangItmMod: cls.__validateGangItm,
+                       Operand.rmGangItmMod: cls.__validateGangItm,
+                       Operand.addGangOwnSrqMod: cls.__validateGangOwnSrq,
+                       Operand.rmGangOwnSrqMod: cls.__validateGangOwnSrq,
+                       Operand.addGangSrqMod: cls.__validateGangSrq,
+                       Operand.rmGangSrqMod: cls.__validateGangSrq,
+                       Operand.addItmMod: cls.__validateItm,
+                       Operand.rmItmMod: cls.__validateItm,
+                       Operand.addLocGrpMod: cls.__validateLocGrp,
+                       Operand.rmLocGrpMod: cls.__validateLocGrp,
+                       Operand.addLocMod: cls.__validateLoc,
+                       Operand.rmLocMod: cls.__validateLoc,
+                       Operand.addLocSrqMod: cls.__validateLocSrq,
+                       Operand.rmLocSrqMod: cls.__validateLocSrq,
+                       Operand.addOwnSrqMod: cls.__validateOwnSrq,
+                       Operand.rmOwnSrqMod: cls.__validateOwnSrq,
+                       Operand.assign: cls.__validateInstant,
+                       Operand.inc: cls.__validateInstant,
+                       Operand.dec: cls.__validateInstant}
         try:
             method = validateMap[modifier.type]
         except KeyError:
@@ -229,7 +223,8 @@ class InfoBuilder:
         return method(modifier)
 
     # Block with validating methods, called depending on modifier type
-    def __validateGangGrp(self, modifier):
+    @classmethod
+    def __validateGangGrp(cls, modifier):
         if (modifier.targetLocation is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
@@ -238,7 +233,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateGangItm(self, modifier):
+    @classmethod
+    def __validateGangItm(cls, modifier):
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.targetLocation is not None or modifier.runTime is not None):
             return False
@@ -247,7 +243,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateGangOwnSrq(self, modifier):
+    @classmethod
+    def __validateGangOwnSrq(cls, modifier):
         if (modifier.targetLocation is not None or modifier.targetGroupId is not None or
             modifier.runTime is not None):
             return False
@@ -256,7 +253,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateGangSrq(self, modifier):
+    @classmethod
+    def __validateGangSrq(cls, modifier):
         if (modifier.targetLocation is not None or modifier.targetGroupId is not None or
             modifier.runTime is not None):
             return False
@@ -265,7 +263,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateItm(self, modifier):
+    @classmethod
+    def __validateItm(cls, modifier):
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
@@ -274,7 +273,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateLocGrp(self, modifier):
+    @classmethod
+    def __validateLocGrp(cls, modifier):
         if modifier.targetSkillRequirementId is not None or modifier.runTime is not None:
             return False
         validLocs = {Location.character, Location.ship, Location.target, Location.self_}
@@ -284,7 +284,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateLoc(self, modifier):
+    @classmethod
+    def __validateLoc(cls, modifier):
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
@@ -294,7 +295,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateLocSrq(self, modifier):
+    @classmethod
+    def __validateLocSrq(cls, modifier):
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
         validLocs = {Location.character, Location.ship, Location.target, Location.self_}
@@ -304,7 +306,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateOwnSrq(self, modifier):
+    @classmethod
+    def __validateOwnSrq(cls, modifier):
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
         validLocs = {Location.character, Location.ship}
@@ -314,7 +317,8 @@ class InfoBuilder:
             return False
         return True
 
-    def __validateInstant(self, modifier):
+    @classmethod
+    def __validateInstant(cls, modifier):
         if (modifier.operator is not None or modifier.targetGroupId is not None or
             modifier.targetSkillRequirementId is not None):
             return False
@@ -328,7 +332,8 @@ class InfoBuilder:
             return False
         return True
 
-    def isMirrorToPost(self, preMod, postMod):
+    @classmethod
+    def isMirrorToPost(cls, preMod, postMod):
         """
         Check if passed post-modifier is mirror to pre-modifier.
 
@@ -374,7 +379,8 @@ class InfoBuilder:
         # If all conditions were met, then it's actually mirror
         return True
 
-    def convertToInfo(self, modifier):
+    @classmethod
+    def convertToInfo(cls, modifier):
         """
         Convert modifier to Info object. Should be called on instant modifiers
         or duration modifiers which describe addition part (removal part normally
@@ -394,91 +400,103 @@ class InfoBuilder:
         info.targetAttributeId = modifier.targetAttributeId
         info.state, info.context = stateData[(modifier.effectCategoryId, operandData[modifier.type].gang)]
         # Fill remaining fields on per-modifier basis
-        conversionMap = {Operand.addGangGrpMod: self.__convertGangGrp,
-                         Operand.addGangItmMod: self.__convertGangItm,
-                         Operand.addGangOwnSrqMod: self.__convertGangOwnSrq,
-                         Operand.addGangSrqMod: self.__convertGangSrq,
-                         Operand.addItmMod: self.__convertItm,
-                         Operand.addLocGrpMod: self.__convertLocGrp,
-                         Operand.addLocMod: self.__convertLoc,
-                         Operand.addLocSrqMod: self.__convertLocSrq,
-                         Operand.addOwnSrqMod: self.__convertOwnSrq,
-                         Operand.assign: self.__convertAssign,
-                         Operand.inc: self.__convertInc,
-                         Operand.dec: self.__convertDec}
+        conversionMap = {Operand.addGangGrpMod: cls.__convertGangGrp,
+                         Operand.addGangItmMod: cls.__convertGangItm,
+                         Operand.addGangOwnSrqMod: cls.__convertGangOwnSrq,
+                         Operand.addGangSrqMod: cls.__convertGangSrq,
+                         Operand.addItmMod: cls.__convertItm,
+                         Operand.addLocGrpMod: cls.__convertLocGrp,
+                         Operand.addLocMod: cls.__convertLoc,
+                         Operand.addLocSrqMod: cls.__convertLocSrq,
+                         Operand.addOwnSrqMod: cls.__convertOwnSrq,
+                         Operand.assign: cls.__convertAssign,
+                         Operand.inc: cls.__convertInc,
+                         Operand.dec: cls.__convertDec}
         conversionMap[modifier.type](modifier, info)
         return info
 
     # Block with conversion methods, called depending on modifier type
-    def __convertGangGrp(self, modifier, info):
+    @classmethod
+    def __convertGangGrp(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.ship
         info.filterType = FilterType.group
         info.filterValue = modifier.targetGroupId
 
-    def __convertGangItm(self, modifier, info):
+    @classmethod
+    def __convertGangItm(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.ship
 
-    def __convertGangOwnSrq(self, modifier, info):
+    @classmethod
+    def __convertGangOwnSrq(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.space
         info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
-    def __convertGangSrq(self, modifier, info):
+    @classmethod
+    def __convertGangSrq(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.ship
         info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
-    def __convertItm(self, modifier, info):
+    @classmethod
+    def __convertItm(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
 
-    def __convertLocGrp(self, modifier, info):
+    @classmethod
+    def __convertLocGrp(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
         info.filterType = FilterType.group
         info.filterValue = modifier.targetGroupId
 
-    def __convertLoc(self, modifier, info):
+    @classmethod
+    def __convertLoc(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
         info.filterType = FilterType.all_
 
-    def __convertLocSrq(self, modifier, info):
+    @classmethod
+    def __convertLocSrq(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = modifier.targetLocation
         info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
-    def __convertOwnSrq(self, modifier, info):
+    @classmethod
+    def __convertOwnSrq(cls, modifier, info):
         info.runTime = RunTime.duration
         info.operator = modifier.operator
         info.location = Location.space
         info.filterType = FilterType.skill
         info.filterValue = modifier.targetSkillRequirementId
 
-    def __convertAssign(self, modifier, info):
+    @classmethod
+    def __convertAssign(cls, modifier, info):
         info.runTime = modifier.runTime
         info.operator = Operator.assignment
         info.location = modifier.targetLocation
 
-    def __convertInc(self, modifier, info):
+    @classmethod
+    def __convertInc(cls, modifier, info):
         info.runTime = modifier.runTime
         info.operator = Operator.increment
         info.location = modifier.targetLocation
 
-    def __convertDec(self, modifier, info):
+    @classmethod
+    def __convertDec(cls, modifier, info):
         info.runTime = modifier.runTime
         info.operator = Operator.decrement
         info.location = modifier.targetLocation

@@ -19,13 +19,15 @@
 #===============================================================================
 
 
-from .operandData import operandData, OperandType
+from .helpers import operandData, OperandType
 
 
 class Modifier:
     """
     Internal builder object, stores meaningful elements of expression tree
-    temporarily and provides facilities to convert them to Info objects
+    temporarily and provides facilities to convert them to Info objects. Values
+    contain mix of EVE-specific and Eos-specific constants, as only some of them
+    are converted into Eos 'format' when building modifier.
     """
 
     def __init__(self):
@@ -65,7 +67,7 @@ class Modifier:
         # Items only having this skill requirement will be affected by
         # modification:
         # For modifier types, which include skill requirement filter,
-        # must be integer which refers type via ID, or const.Type.self_
+        # must be integer which refers type via ID, or const.InvType.self_
         # to refer type of info carrier
         # For other modifier types must be None.
         self.targetSkillRequirementId = None
@@ -76,36 +78,3 @@ class Modifier:
         # For sourceType.attribute must be integer which refers attribute via ID;
         # For sourceType.value must be any value CCP can define in expression, integer or value.
         self.sourceValue = None
-
-    @classmethod
-    def isSameMod(cls, mod1, mod2):
-        """
-        Check if both duration modifiers actually do the same thing
-
-        Positional arguments:
-        mod1 -- first modifier to check
-        mod2 -- second modifier to check
-
-        Return value:
-        True if both modifiers are duration and all their duration-related
-        attributes are the same, else False
-        """
-        # Check if both are duration modifiers
-        for modifier in {mod1, mod2}:
-            try:
-                modData = operandData[modifier.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.duration:
-                return False
-        # Check all modifier fields that make the difference for duration modifiers
-        if (mod1.type != mod2.type or mod1.effectCategoryId != mod2.effectCategoryId or
-            mod1.sourceType != mod2.sourceType or mod1.sourceValue != mod2.sourceValue or
-            mod1.operator != mod2.operator or mod1.targetAttributeId != mod2.targetAttributeId or
-            mod1.targetLocation != mod2.targetLocation or mod1.targetGroupId != mod2.targetGroupId or
-            mod1.targetSkillRequirementId != mod2.targetSkillRequirementId):
-            return False
-        # They're the same if above conditions were passed, other fields irrelevant
-        return True
