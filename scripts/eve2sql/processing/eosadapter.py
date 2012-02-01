@@ -22,7 +22,7 @@
 import collections
 import re
 
-from eve2sql import const
+from eve2sql.const import DataType, Group, Category, Attribute, AttributeCategory, Operand
 from .preprocessor import Preprocessor
 
 
@@ -314,10 +314,10 @@ class EosAdapter(object):
     def __normalize_attrs(self):
         """Moves attributes defined in type table to type-attribs mapping table"""
         # Map which defines links between types table column names and attrIDs
-        attr_map = {"radius": const.attribute_RADIUS,
-                    "mass": const.attribute_MASS,
-                    "volume": const.attribute_VOLUME,
-                    "capacity": const.attribute_CAPACITY}
+        attr_map = {"radius": Attribute.radius,
+                    "mass": Attribute.mass,
+                    "volume": Attribute.volume,
+                    "capacity": Attribute.capacity}
         # First, compose set of PK tuples which are already in target table
         typeattrs_table = self.evedb["dgmtypeattribs"]
         idx_typeattrs_typeid = typeattrs_table.index_byname("typeID")
@@ -378,9 +378,9 @@ class EosAdapter(object):
         # Format: {current data row: replacement data row}
         replacement_map = {}
         # Set of entity field names which we're going to use
-        idz_datas = (("dgmattribs", "attributeID", "attributeName", "expressionAttributeID", const.operand_DEFATTR),
-                     ("invgroups", "groupID", "groupName", "expressionGroupID", const.operand_DEFGRP),
-                     ("invtypes", "typeID", "typeName", "expressionTypeID", const.operand_DEFTYPE))
+        idz_datas = (("dgmattribs", "attributeID", "attributeName", "expressionAttributeID", Operand.define_attribute),
+                     ("invgroups", "groupID", "groupName", "expressionGroupID", Operand.define_group),
+                     ("invtypes", "typeID", "typeName", "expressionTypeID", Operand.define_type))
         for idz_data in idz_datas:
             # First, we've got to compose name maps, as expressions can
             # reference using names
@@ -574,7 +574,7 @@ class EosAdapter(object):
                 if fkspec is None:
                     continue
                 # Source data column must be integer
-                if column.datatype != const.type_INT:
+                if column.datatype != DataType.integer:
                     print("  Non-integer column {0}.{1} has foreign key reference".format(table.name, column.name))
                     specerrors = True
                     continue
@@ -649,11 +649,11 @@ class EosAdapter(object):
     def __invtypes_pumping(self, strong_data):
         """Mark some hardcoded invtypes as strong"""
         # Set with categoryIDs we want to keep
-        strong_categories = {const.category_SHIP, const.category_MODULE, const.category_CHARGE,
-                             const.category_SKILL, const.category_DRONE, const.category_IMPLANT,
-                             const.category_SUBSYSTEM}
+        strong_categories = {Category.ship, Category.module, Category.charge,
+                             Category.skill, Category.drone, Category.implant,
+                             Category.subsystem}
         # Set with groupIDs we want to keep
-        strong_groups = {const.group_EFFECTBEACON}
+        strong_groups = {Group.effect_beacon}
         # Get indices of group and category columns in group table
         group_table = self.evedb["invgroups"]
         idx_groupid = group_table.index_byname("groupID")
@@ -923,9 +923,9 @@ class EosAdapter(object):
         idx_attrid = typeattrs_table.index_byname("attributeID")
         idx_value = typeattrs_table.index_byname("value")
         # Some high-level access instructions, what to restore
-        conditional_links = {(const.attributeCategory_DEFATTR, "dgmattribs", "attributeID"),
-                             (const.attributeCategory_DEFGROUP, "invgroups", "groupID"),
-                             (const.attributeCategory_DEFTYPE, "invtypes", "typeID")}
+        conditional_links = {(AttributeCategory.define_attribute, "dgmattribs", "attributeID"),
+                             (AttributeCategory.define_group, "invgroups", "groupID"),
+                             (AttributeCategory.define_type, "invtypes", "typeID")}
         # Go through each of them
         for entity_attrcat, entity_tabname, entity_colname in conditional_links:
             # Container for attribute IDs which reference corresponding entity

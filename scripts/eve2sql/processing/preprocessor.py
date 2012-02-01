@@ -24,7 +24,7 @@ import difflib
 import itertools
 import re
 
-from eve2sql import const
+from eve2sql.const import DataType
 
 
 class Preprocessor(object):
@@ -53,7 +53,7 @@ class Preprocessor(object):
         for column in table:
             colidx = table.index(column)
             # Assume the most limited data type by default
-            datatype = const.type_BOOL
+            datatype = DataType.boolean
             # Cycle through data rows
             for datarow in table.datarows:
                 # Get value for our column
@@ -61,23 +61,23 @@ class Preprocessor(object):
                 if value is None:
                     continue
                 # Boolean check
-                if datatype <= const.type_BOOL:
+                if datatype <= DataType.boolean:
                     if isinstance(value, bool):
                         continue
                     else:
-                        datatype = const.type_INT
+                        datatype = DataType.integer
                 # Integer check
-                if datatype <= const.type_INT:
+                if datatype <= DataType.integer:
                     if isinstance(value, int):
                         continue
                     else:
-                        datatype = const.type_FLOAT
+                        datatype = DataType.float_
                 # Float check
-                if datatype <= const.type_FLOAT:
+                if datatype <= DataType.float_:
                     if isinstance(value, float):
                         continue
                     else:
-                        datatype = const.type_STR
+                        datatype = DataType.string
                         # It can't be worse than string, so stop cycling
                         break
             # Write down results for current column
@@ -89,11 +89,11 @@ class Preprocessor(object):
         # Iterate through all columns
         for column in table:
             # We do not have any special restrictions on booleans or floats
-            if column.datatype in (const.type_BOOL, const.type_FLOAT):
+            if column.datatype in (DataType.boolean, DataType.float_):
                 continue
             colidx = table.index(column)
             # Integer processing
-            if column.datatype == const.type_INT:
+            if column.datatype == DataType.integer:
                 # Default min and max values are stored as Nones
                 minval = None
                 maxval = None
@@ -109,7 +109,7 @@ class Preprocessor(object):
                 # Store them in the data length specificator
                 column.datalen = (minval, maxval)
             # String processing
-            elif column.datatype == const.type_STR:
+            elif column.datatype == DataType.string:
                 # Start from zero length for both  bytes and characters
                 maxchars = 0
                 maxbytes = 0
@@ -185,7 +185,7 @@ class Preprocessor(object):
         # Check all columns
         for column in table:
             # Take only integers with some data in each row
-            if column.datatype == const.type_INT and column.notnull is True:
+            if column.datatype == DataType.integer and column.notnull is True:
                 # Assign zero score
                 candidates[column] = 0
         for column in candidates:

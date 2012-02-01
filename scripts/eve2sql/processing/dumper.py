@@ -24,7 +24,7 @@ import os.path
 import re
 import sqlite3
 
-from eve2sql import const
+from eve2sql.const import DataType
 
 
 class Dumper(object):
@@ -45,10 +45,10 @@ class Dumper(object):
         c = conn.cursor()
 
         # Data type specification for SQLite
-        datatypes = {const.type_BOOL: "INTEGER",
-                     const.type_INT: "INTEGER",
-                     const.type_FLOAT: "REAL",
-                     const.type_STR: "TEXT"}
+        datatypes = {DataType.boolean: "INTEGER",
+                     DataType.integer: "INTEGER",
+                     DataType.float_: "REAL",
+                     DataType.string: "TEXT"}
 
         # For each table
         for table in sorted(self.evedb, key=lambda table: table.name):
@@ -146,10 +146,10 @@ class Dumper(object):
                 colspec.append(u"`{0}`".format(column.name))
                 # Now, detect types
                 # Booleans are straight
-                if column.datatype == const.type_BOOL:
+                if column.datatype == DataType.boolean:
                     colspec.append("TINYINT")
                 # Integers are a bit more complex
-                elif column.datatype == const.type_INT:
+                elif column.datatype == DataType.integer:
                     # Unpack data length first
                     minval, maxval = column.datalen
                     # Use this block for signed integers
@@ -180,10 +180,10 @@ class Dumper(object):
                         # Let MySQL know that integer is unsigned
                         colspec.append("UNSIGNED")
                 # Floats are straight too
-                elif column.datatype == const.type_FLOAT:
+                elif column.datatype == DataType.float_:
                     colspec.append("DOUBLE")
                 # String is also complex
-                elif column.datatype == const.type_STR:
+                elif column.datatype == DataType.string:
                     # Unpack length info
                     maxchars, maxbytes = column.datalen
                     # Varchar can fit max 65535 bytes
