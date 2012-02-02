@@ -103,10 +103,10 @@ class MutableAttributeMap(Mapping):
         # Attribute metadata
         attrMeta = holder.fit._attrMetaGetter(attrId)
         # Container for non-penalized modifiers
-        # Format: operator: set(values)
+        # Format: {operator: {values}}
         normalMods = {}
         # Container for penalized modifiers
-        # Format: operator: set(values)
+        # Format: {operator: {values}}
         penalizedMods = {}
         # Now, go through all affectors affecting ourr holder
         for affector in holder.fit._getAffectors(holder):

@@ -782,7 +782,7 @@ class EosAdapter(object):
     def __reanimate_aux_friends(self, tabletypes, src_fk_tgt, trashed_data, changed):
         """Restore auxiliary data which is related to data left in the database"""
         # Container for column data, for data re-use
-        # Format: {"table.column": set(data)}
+        # Format: {"table.column": {data}}
         coldata = {}
         # Fill it with data, for columns which are referenced by FKs
         for src_tabname in src_fk_tgt:
@@ -842,7 +842,7 @@ class EosAdapter(object):
     def __reestablish_broken_relationships(self, src_fk_tgt, tgt_fk_src, trashed_data, attrcat_attrid_map, changed):
         """Restore rows targeted by FKs of actual data"""
         # Container for column data, for data re-use
-        # Format: {"table.column": set(data)}
+        # Format: {"table.column": {data}}
         coldata = {}
         # Fill it with data, for columns which are FKs
         for src_tabname in src_fk_tgt:

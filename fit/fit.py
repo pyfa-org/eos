@@ -224,7 +224,7 @@ class Fit:
             # Skip affectors which do not use attribute being damaged as source
             if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
                 continue
-            # Gp through all holders targeted by info
+            # Go through all holders targeted by info
             for targetHolder in self._getAffectees(affector):
                 # And remove target attribute
                 del targetHolder.attributes[info.targetAttributeId]

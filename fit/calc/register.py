@@ -89,36 +89,36 @@ class Register():
         self.__fit = fit
 
         # Keep track of holders belonging to certain location
-        # Format: {location: set(targetHolders)}
+        # Format: {location: {targetHolders}}
         self.__affecteeLocation = DataSetMap()
 
         # Keep track of holders belonging to certain location and group
-        # Format: {(location, group): set(targetHolders)}
+        # Format: {(location, group): {targetHolders}}
         self.__affecteeLocationGroup = DataSetMap()
 
         # Keep track of holders belonging to certain location and having certain skill requirement
-        # Format: {(location, skill): set(targetHolders)}
+        # Format: {(location, skill): {targetHolders}}
         self.__affecteeLocationSkill = DataSetMap()
 
         # Keep track of affectors influencing all holders belonging to certain location
-        # Format: {location: set(affectors)}
+        # Format: {location: {affectors}}
         self.__affectorLocation = DataSetMap()
 
         # Keep track of affectors influencing holders belonging to certain location and group
-        # Format: {(location, group): set(affectors)}
+        # Format: {(location, group): {affectors}}
         self.__affectorLocationGroup = DataSetMap()
 
         # Keep track of affectors influencing holders belonging to certain location and having certain skill requirement
-        # Format: {(location, skill): set(affectors)}
+        # Format: {(location, skill): {affectors}}
         self.__affectorLocationSkill = DataSetMap()
 
         # Keep track of affectors influencing holders directly
-        # Format: {targetHolder: set(affectors)}
+        # Format: {targetHolder: {affectors}}
         self.__activeDirectAffectors = DataSetMap()
 
         # Keep track of affectors which influence locOther, but are disabled
         # as their target location is not available
-        # Format: {sourceHolder: set(affectors)}
+        # Format: {sourceHolder: {affectors}}
         self.__disabledDirectAffectors = DataSetMap()
 
     def __getAffecteeMaps(self, targetHolder):
