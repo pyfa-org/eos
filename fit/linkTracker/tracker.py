@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, SourceType
+from eos.const import State, Location, Context, RunTime, SourceType
 from .affector import Affector
 from .register import LinkRegister
 
@@ -88,7 +88,7 @@ class LinkTracker:
         # unregister
         stateDifference = self.__stateDifference(oldState, state)
         processedContexts = {Context.local}
-        affectorDiff = self.__generateAffectors(holder, stateFilter=stateDifference, contextFilter=processedContexts)
+        affectorDiff = self.__generateDurationAffectors(holder, stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on
         if oldState is None or (state is not None and state > oldState):
             for affector in affectorDiff:
@@ -142,7 +142,7 @@ class LinkTracker:
         holder -- holder, which carries attribute in question
         attrId -- ID of attribute
         """
-        for affector in self.__generateAffectors(holder):
+        for affector in self.__generateDurationAffectors(holder):
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source
             if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
@@ -165,9 +165,9 @@ class LinkTracker:
                 # And remove target attribute
                 del targetHolder.attributes[affector.info.targetAttributeId]
 
-    def __generateAffectors(self, holder, stateFilter=None, contextFilter=None):
+    def __generateDurationAffectors(self, holder, stateFilter=None, contextFilter=None):
         """
-        Get all affectors spawned by holder.
+        Get all duration affectors spawned by holder.
 
         Positional arguments:
         holder -- holder, for which affectors are generated
@@ -188,6 +188,8 @@ class LinkTracker:
             if stateFilter is not None and not info.state in stateFilter:
                 continue
             if contextFilter is not None and not info.context in contextFilter:
+                continue
+            if info.runTime != RunTime.duration:
                 continue
             affector = Affector(holder, info)
             affectors.add(affector)

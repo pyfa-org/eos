@@ -97,11 +97,10 @@ class MutableAttributeMap(Mapping):
         Return value:
         Calculated attribute value
         """
-        holder =  self.__holder
         # Base attribute value which we'll use for modification
-        result = holder.item.attributes.get(attrId)
+        result = self.__holder.item.attributes.get(attrId)
         # Attribute metadata
-        attrMeta = holder.fit._attrMetaGetter(attrId)
+        attrMeta = self.__holder.fit._attrMetaGetter(attrId)
         # Container for non-penalized modifiers
         # Format: {operator: {values}}
         normalMods = {}
@@ -109,7 +108,7 @@ class MutableAttributeMap(Mapping):
         # Format: {operator: {values}}
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
-        for affector in holder.fit._linkTracker.getAffectors(holder):
+        for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder):
             sourceHolder, info = affector
             # Skip affectors who do not target attribute being calculated
             if info.targetAttributeId != attrId:

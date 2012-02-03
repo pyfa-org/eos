@@ -430,12 +430,8 @@ class LinkRegister:
         added to fit know that they should be affected by it.
 
         Positional arguments:
-        affector -- affector to register
+        affector -- duration affector to register
         """
-        info = affector.info
-        # Register keeps track of only local duration modifiers
-        if info.runTime != RunTime.duration:
-            return
         key, affectorMap = self.__getAffectorMap(affector)
         # Actually add data to map
         affectorMap.addData(key, {affector})
@@ -446,11 +442,8 @@ class LinkRegister:
         holders-affectees "know" that they're no longer affected by it.
 
         Positional arguments:
-        affector -- affector to unregister
+        affector -- duration affector to unregister
         """
-        info = affector.info
-        if info.runTime != RunTime.duration:
-            return
         key, affectorMap = self.__getAffectorMap(affector)
         affectorMap.rmData(key, {affector})
 
