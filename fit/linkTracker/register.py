@@ -75,7 +75,7 @@ class DataSetMap(dict):
         return data
 
 
-class Register():
+class LinkRegister:
     """
     Keep track of links between fit's local holders, which is required for efficient
     partial attribute recalculation.

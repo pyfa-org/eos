@@ -59,7 +59,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         """Set state of holder"""
         # First, check if holder's item can have this
         # state at all
-        if newState > self.item.maxState:
+        if newState is not None and newState > self.item.maxState:
             raise RuntimeError("invalid state")
         oldState = self.state
         if newState == oldState:
@@ -68,7 +68,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # to perform fit-specific state switch of our
         # holder
         if self.fit is not None:
-            self.fit._stateSwitch(self, newState)
+            self.fit._linkTracker.stateSwitch(self, newState)
         self.__state = newState
 
     @property

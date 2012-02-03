@@ -41,7 +41,7 @@ class Module(MutableAttributeHolder):
 
     @property
     def _other(self):
-        """Purely service property, used in fit registry"""
+        """Purely service property, used in fit link tracker registry"""
         return self.charge
 
     @property
@@ -57,10 +57,10 @@ class Module(MutableAttributeHolder):
         # modifiers are reapplied by passing special location keyword argument
         oldCharge = self.charge
         if oldCharge is not None:
-            self.fit._removeHolder(oldCharge, disableDirect=Location.other)
+            self.fit._removeHolder(oldCharge)
             self.__charge = None
             oldCharge.container = None
         if newCharge is not None:
             newCharge.container = self
             self.__charge = newCharge
-            self.fit._addHolder(newCharge, enableDirect=Location.other)
+            self.fit._addHolder(newCharge)

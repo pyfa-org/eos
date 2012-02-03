@@ -42,7 +42,7 @@ class MutableAttributeMap(Mapping):
         # Reference to holder for internal needs
         self.__holder = holder
         # Actual container of calculated attributes
-        # Format: {attributeID: value}
+        # Format: {attribute ID: value}
         self.__modifiedAttributes = {}
 
     def __getitem__(self, attrId):
@@ -108,8 +108,8 @@ class MutableAttributeMap(Mapping):
         # Container for penalized modifiers
         # Format: {operator: {values}}
         penalizedMods = {}
-        # Now, go through all affectors affecting ourr holder
-        for affector in holder.fit._getAffectors(holder):
+        # Now, go through all affectors affecting our holder
+        for affector in holder.fit._linkTracker.getAffectors(holder):
             sourceHolder, info = affector
             # Skip affectors who do not target attribute being calculated
             if info.targetAttributeId != attrId:

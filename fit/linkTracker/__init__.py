@@ -17,31 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from eos.const import Location
-from eos.fit.calc.holder import MutableAttributeHolder
-
-
-class Charge(MutableAttributeHolder):
-    """
-    Represents ammo - crystals, probes, bombs, etc.
-
-    Positional arguments:
-    type_ -- type (item), on which charge is based
-    """
-
-    def __init__(self, type_):
-        super().__init__(type_)
-        # Holder-container, into which our charge holder is
-        # "loaded"
-        self.container = None
-
-    @property
-    def _location(self):
-        return Location.space
-
-    @property
-    def _other(self):
-        """Purely service method, used in fit link tracker registry"""
-        return self.container

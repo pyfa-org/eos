@@ -19,10 +19,10 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, SourceType
+from eos.const import SourceType
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
 from eos.eve.const import Attribute
-from .calc.register import Register
+from .linkTracker.tracker import LinkTracker
 
 
 class Fit:
@@ -38,8 +38,8 @@ class Fit:
         # Variables used by properties
         self.__ship = None
         self.__character = None
-        # Register-helper for partial recalculations
-        self.__register = Register(self)
+        # TODO: add sensible comments
+        self._linkTracker = LinkTracker(self)
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._attrMetaGetter = attrMetaGetter
@@ -64,12 +64,10 @@ class Fit:
     @ship.setter
     def ship(self, ship):
         """Set ship holder of fit"""
-        # Make sure to properly process ship re-set in register. Optional argument
-        # is passed to make sure that all direct modifications which were applied to
-        # previous ship will also apply to new one
-        self._removeHolder(self.__ship, disableDirect=Location.ship)
+        if self.__ship is not None:
+            self._removeHolder(self.__ship)
         self.__ship = ship
-        self._addHolder(self.__ship, enableDirect=Location.ship)
+        self._addHolder(self.__ship)
 
     @property
     def character(self):
@@ -79,137 +77,55 @@ class Fit:
     @character.setter
     def character(self, character):
         """Set character holder of fit"""
-        # Like with ship, to re-apply effects directed to old ship, we need to pass
-        # this optional argument
-        self._removeHolder(self.__character, disableDirect=Location.character)
+        if self.__character is not None:
+            self._removeHolder(self.__character)
         self.__character = character
-        self._addHolder(self.__character, enableDirect=Location.character)
+        self._addHolder(self.__character)
 
-    def _addHolder(self, holder, enableDirect=None):
+    def _addHolder(self, holder):
         """
         Handle adding of holder to fit
 
         Positional arguments:
         holder -- holder to be added
-
-        Keyword arguments:
-        enableDirect -- according to location passed to this
-        argument, method asks to seek for disabled modifiers
-        for holder
         """
-        # Don't do anything if None was passed as holder
-        if holder is None:
-            return
         # Make sure the holder isn't used already
         if holder.fit is not None:
-            raise ValueError("cannot add holder which is already in some fit")
+            raise RuntimeError("cannot add holder which is already in some fit")
+        state = holder.state
+        holder.state = None
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
-        self.__register.registerAffectee(holder, enableDirect=enableDirect)
-        enabledStates = self.__getStateDifference(None, holder.state)
-        processedContexts = {Context.local}
-        enabledAffectors = holder._generateAffectors(stateFilter=enabledStates, contextFilter=processedContexts)
-        for affector in enabledAffectors:
-            self.__register.registerAffector(affector)
-        # When register operations are complete, we can damage
-        # all influenced by holder attributes
-        self._clearAffectorDependents(enabledAffectors)
+        self._linkTracker.addHolder(holder)
+        holder.state = state
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            self._addHolder(charge, enableDirect=Location.other)
+            self._addHolder(charge)
 
-    def _removeHolder(self, holder, disableDirect=None):
+    def _removeHolder(self, holder):
         """
         Handle removal of holder from fit
 
         Positional arguments:
         holder -- holder to be removed
-
-        Keyword arguments:
-        disableDirect -- according to location passed to this
-        argument, method will ask to disable modifiers directly
-        affecting holder being removed
         """
-        if holder is None:
-            return
         assert(holder.fit is self)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
-            self._removeHolder(charge, disableDirect=Location.other)
-        disabledStates = self.__getStateDifference(None, holder.state)
-        processedContexts = {Context.local}
-        disabledAffectors = holder._generateAffectors(stateFilter=disabledStates, contextFilter=processedContexts)
-        # When links in register are still alive, damage all attributes
-        # influenced by holder
-        self._clearAffectorDependents(disabledAffectors)
-        # Remove links from register
-        self.__register.unregisterAffectee(holder, disableDirect=disableDirect)
-        for affector in disabledAffectors:
-            self.__register.unregisterAffector(affector)
-        # And finally, unset fit
+            self._removeHolder(charge)
+        # Remember holder's state
+        state = holder.state
+        # Turn off its effects by switching state to None, then
+        # unregister holder itself
+        self._linkTracker.stateSwitch(holder, None)
+        self._linkTracker.removeHolder(holder)
+        # Unset holder's fit
         holder.fit = None
-
-    def _stateSwitch(self, holder, newState):
-        """
-        Handle holder state switch in fit's context.
-
-        Positional arguments:
-        holder -- holder which has its state changed
-        newState -- state which holder is taking
-        """
-        oldState = holder.state
-        # Get set of affectors which we will need to register or
-        # unregister
-        stateDifference = self.__getStateDifference(oldState, newState)
-        processedContexts = {Context.local}
-        affectorDiff = holder._generateAffectors(stateFilter=stateDifference, contextFilter=processedContexts)
-        # Register them, if we're turning something on
-        if newState > oldState:
-            for affector in affectorDiff:
-                self.__register.registerAffector(affector)
-            self._clearAffectorDependents(affectorDiff)
-        # Unregister, if we're turning something off
-        else:
-            self._clearAffectorDependents(affectorDiff)
-            for affector in affectorDiff:
-                self.__register.unregisterAffector(affector)
-
-    def __getStateDifference(self, state1, state2):
-        """
-        Get difference between two states (states which need to be
-        toggled to get from one state to another).
-
-        Positional arguments:
-        state1 -- ID of first state to compare, can be None
-        state2 -- ID of second state to compare, can be None
-
-        Return value:
-        Set with state IDs, which need to be enabled/disabled to perform
-        state switch
-        """
-        # If both passed states are the same, no state
-        # switch needed
-        if state1 == state2:
-            return set()
-        # Container which keeps all state IDs
-        allStates = {State.offline, State.online,
-                     State.active, State.overload}
-        # Get all states you need to trigger to get from
-        # no state to given state
-        states1 = set(filter(lambda state: state <= state1, allStates)) if state1 is not None else None
-        states2 = set(filter(lambda state: state <= state2, allStates)) if state2 is not None else None
-        # If one of passed states was None (if both were none, empty set should've been
-        # returned already), return other states set
-        if states1 is None or states2 is None:
-            result = states1 or states2
-        # If both states were not None, get all states which are present
-        # in one set but not in another
-        else:
-            result = states1.symmetric_difference(states2)
-        return result
+        # Restore holder state
+        holder.state = state
 
     def _clearHolderAttributeDependents(self, holder, attrId):
         """
@@ -225,7 +141,7 @@ class Fit:
             if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
                 continue
             # Go through all holders targeted by info
-            for targetHolder in self._getAffectees(affector):
+            for targetHolder in self._linkTracker.getAffectees(affector):
                 # And remove target attribute
                 del targetHolder.attributes[info.targetAttributeId]
 
@@ -238,33 +154,9 @@ class Fit:
         """
         for affector in affectors:
             # Go through all holders targeted by info
-            for targetHolder in self._getAffectees(affector):
+            for targetHolder in self._linkTracker.getAffectees(affector):
                 # And remove target attribute
                 del targetHolder.attributes[affector.info.targetAttributeId]
-
-    def _getAffectors(self, holder):
-        """
-        Get affectors, influencing passed holder.
-
-        Positional arguments:
-        holder -- holder, for which we're getting affectors
-
-        Return value:
-        Set with Affector objects
-        """
-        return self.__register.getAffectors(holder)
-
-    def _getAffectees(self, affector):
-        """
-        Get affectees being influenced by affector.
-
-        Positional arguments:
-        affector -- affector, for which we're getting affectees
-
-        Return value:
-        Set with holders
-        """
-        return self.__register.getAffectees(affector)
 
 
 class HolderContainer:
