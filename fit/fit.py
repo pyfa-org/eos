@@ -19,7 +19,6 @@
 #===============================================================================
 
 
-from eos.const import SourceType
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
 from eos.eve.const import Attribute
 from .linkTracker.tracker import LinkTracker
@@ -126,37 +125,6 @@ class Fit:
         holder.fit = None
         # Restore holder state
         holder.state = state
-
-    def _clearHolderAttributeDependents(self, holder, attrId):
-        """
-        Clear calculated attributes relying on passed attribute.
-
-        Positional arguments:
-        holder -- holder, which carries attribute in question
-        attrId -- ID of attribute
-        """
-        for affector in holder._generateAffectors():
-            info = affector.info
-            # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
-                continue
-            # Go through all holders targeted by info
-            for targetHolder in self._linkTracker.getAffectees(affector):
-                # And remove target attribute
-                del targetHolder.attributes[info.targetAttributeId]
-
-    def _clearAffectorDependents(self, affectors):
-        """
-        Clear calculated attributes relying on affectors.
-
-        Positional arguments:
-        affectors -- iterable with affectors in question
-        """
-        for affector in affectors:
-            # Go through all holders targeted by info
-            for targetHolder in self._linkTracker.getAffectees(affector):
-                # And remove target attribute
-                del targetHolder.attributes[affector.info.targetAttributeId]
 
 
 class HolderContainer:

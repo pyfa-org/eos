@@ -50,7 +50,7 @@ class MutableAttributeMap(Mapping):
             val = self.__modifiedAttributes[attrId]
         except KeyError:
             val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
-            self.__holder.fit._clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
 
     def __len__(self):
@@ -77,7 +77,7 @@ class MutableAttributeMap(Mapping):
         else:
             # And make sure all other attributes relying on it
             # are cleared too
-            self.__holder.fit._clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def __setitem__(self, attrId, value):
         # This method is added to allow direct skill level changes
@@ -85,7 +85,7 @@ class MutableAttributeMap(Mapping):
             raise RuntimeError("changing any attribute besides skillLevel is prohibited")
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
-        self.__holder.fit._clearHolderAttributeDependents(self.__holder, attrId)
+        self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def __calculate(self, attrId):
         """

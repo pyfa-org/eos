@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context
+from eos.const import State, Location, Context, SourceType
 from .register import LinkRegister
 
 
@@ -27,6 +27,30 @@ class LinkTracker:
     def __init__(self, fit):
         self.__fit = fit
         self.__register = LinkRegister(fit)
+
+    def getAffectors(self, holder):
+        """
+        Get affectors, influencing passed holder.
+
+        Positional arguments:
+        holder -- holder, for which we're getting affectors
+
+        Return value:
+        Set with Affector objects
+        """
+        return self.__register.getAffectors(holder)
+
+    def getAffectees(self, affector):
+        """
+        Get affectees being influenced by affector.
+
+        Positional arguments:
+        affector -- affector, for which we're getting affectees
+
+        Return value:
+        Set with holders
+        """
+        return self.__register.getAffectees(affector)
 
     def addHolder(self, holder):
         if holder is self.__fit.ship:
@@ -68,10 +92,10 @@ class LinkTracker:
         if oldState is None or (state is not None and state > oldState):
             for affector in affectorDiff:
                 self.__register.registerAffector(affector)
-            self.__fit._clearAffectorDependents(affectorDiff)
+            self.__clearAffectorsDependents(affectorDiff)
         # Unregister, if we're turning something off
         else:
-            self.__fit._clearAffectorDependents(affectorDiff)
+            self.__clearAffectorsDependents(affectorDiff)
             for affector in affectorDiff:
                 self.__register.unregisterAffector(affector)
 
@@ -109,27 +133,33 @@ class LinkTracker:
             result = states1.symmetric_difference(states2)
         return result
 
-
-    def getAffectors(self, holder):
+    def clearHolderAttributeDependents(self, holder, attrId):
         """
-        Get affectors, influencing passed holder.
+        Clear calculated attributes relying on passed attribute.
 
         Positional arguments:
-        holder -- holder, for which we're getting affectors
-
-        Return value:
-        Set with Affector objects
+        holder -- holder, which carries attribute in question
+        attrId -- ID of attribute
         """
-        return self.__register.getAffectors(holder)
+        for affector in holder._generateAffectors():
+            info = affector.info
+            # Skip affectors which do not use attribute being damaged as source
+            if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
+                continue
+            # Go through all holders targeted by info
+            for targetHolder in self.getAffectees(affector):
+                # And remove target attribute
+                del targetHolder.attributes[info.targetAttributeId]
 
-    def getAffectees(self, affector):
+    def __clearAffectorsDependents(self, affectors):
         """
-        Get affectees being influenced by affector.
+        Clear calculated attributes relying on affectors.
 
         Positional arguments:
-        affector -- affector, for which we're getting affectees
-
-        Return value:
-        Set with holders
+        affectors -- iterable with affectors in question
         """
-        return self.__register.getAffectees(affector)
+        for affector in affectors:
+            # Go through all holders targeted by info
+            for targetHolder in self.getAffectees(affector):
+                # And remove target attribute
+                del targetHolder.attributes[affector.info.targetAttributeId]
