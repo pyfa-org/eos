@@ -24,7 +24,6 @@ from abc import abstractmethod
 
 from eos.const import State
 from eos.exception import TargetException
-from .affector import Affector
 from .map import MutableAttributeMap
 
 
@@ -122,28 +121,3 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         calculation process
         """
         ...
-
-    def _generateAffectors(self, stateFilter=None, contextFilter=None):
-        """
-        Get all affectors spawned by holder.
-
-        Keyword arguments:
-        stateFilter -- filter results by affector's required state,
-        which should be in this iterable; if None, no filtering
-        occurs (default None)
-        contextFilter -- filter results by affector's required state,
-        which should be in this iterable; if None, no filtering
-        occurs (default None)
-
-        Return value:
-        Set with Affector objects, satisfying passed filters
-        """
-        affectors = set()
-        for info in self.item.infos:
-            if stateFilter is not None and not info.state in stateFilter:
-                continue
-            if contextFilter is not None and not info.context in contextFilter:
-                continue
-            affector = Affector(self, info)
-            affectors.add(affector)
-        return affectors

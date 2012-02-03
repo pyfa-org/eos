@@ -20,6 +20,7 @@
 
 
 from eos.const import State, Location, Context, SourceType
+from .affector import Affector
 from .register import LinkRegister
 
 
@@ -87,7 +88,7 @@ class LinkTracker:
         # unregister
         stateDifference = self.__stateDifference(oldState, state)
         processedContexts = {Context.local}
-        affectorDiff = holder._generateAffectors(stateFilter=stateDifference, contextFilter=processedContexts)
+        affectorDiff = self.__generateAffectors(holder, stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on
         if oldState is None or (state is not None and state > oldState):
             for affector in affectorDiff:
@@ -141,7 +142,7 @@ class LinkTracker:
         holder -- holder, which carries attribute in question
         attrId -- ID of attribute
         """
-        for affector in holder._generateAffectors():
+        for affector in self.__generateAffectors(holder):
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source
             if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
@@ -163,3 +164,31 @@ class LinkTracker:
             for targetHolder in self.getAffectees(affector):
                 # And remove target attribute
                 del targetHolder.attributes[affector.info.targetAttributeId]
+
+    def __generateAffectors(self, holder, stateFilter=None, contextFilter=None):
+        """
+        Get all affectors spawned by holder.
+
+        Positional arguments:
+        holder -- holder, for which affectors are generated
+
+        Keyword arguments:
+        stateFilter -- filter results by affector's required state,
+        which should be in this iterable; if None, no filtering
+        occurs (default None)
+        contextFilter -- filter results by affector's required state,
+        which should be in this iterable; if None, no filtering
+        occurs (default None)
+
+        Return value:
+        Set with Affector objects, satisfying passed filters
+        """
+        affectors = set()
+        for info in holder.item.infos:
+            if stateFilter is not None and not info.state in stateFilter:
+                continue
+            if contextFilter is not None and not info.context in contextFilter:
+                continue
+            affector = Affector(holder, info)
+            affectors.add(affector)
+        return affectors
