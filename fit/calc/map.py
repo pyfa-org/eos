@@ -19,7 +19,6 @@
 #===============================================================================
 
 
-from collections import Mapping
 from math import exp
 
 from eos.const import Operator, SourceType
@@ -30,7 +29,7 @@ from eos.eve.const import Category, Attribute
 penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
 
-class MutableAttributeMap(Mapping):
+class MutableAttributeMap:
     """
     Calculate, store and provide access to modified attribute values.
 
@@ -64,10 +63,6 @@ class MutableAttributeMap(Mapping):
         for k in self.keys():
             yield k
 
-    def keys(self):
-        keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
-        return keys
-
     def __delitem__(self, attrId):
         try:
             # Clear the value in our calculated attributes dict
@@ -86,6 +81,13 @@ class MutableAttributeMap(Mapping):
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
         self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+
+    def keys(self):
+        keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
+        return keys
+
+    def clear(self):
+        self.__modifiedAttributes.clear()
 
     def __calculate(self, attrId):
         """

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, RunTime, FilterType, InvType
+from eos.const import Location, FilterType, InvType
 
 
 class DataSetMap(dict):

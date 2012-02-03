@@ -38,7 +38,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
 
     def __init__(self, type_):
         # Which fit this holder is bound to
-        self.fit = None
+        self.__fit = None
         # Which type this holder wraps
         self.item = type_
         # Special dictionary subclass that holds modified attributes and data related to their calculation
@@ -47,6 +47,17 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         self.__state = State.offline
         # Keeps current target of holder
         self.__target = None
+
+    @property
+    def fit(self):
+        """Get fit to which holder is assigned"""
+        return self.__fit
+
+    @fit.setter
+    def fit(self, newFit):
+        """Assign holder to fit"""
+        self.attributes.clear()
+        self.__fit = newFit
 
     @property
     def state(self):
