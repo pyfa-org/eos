@@ -21,7 +21,7 @@
 
 from eos.exception import NoSlotAttributeException, SlotOccupiedException
 from eos.eve.const import Attribute
-from .linkTracker.tracker import LinkTracker
+from .attributeCalculator.tracker import LinkTracker
 
 
 class Fit:

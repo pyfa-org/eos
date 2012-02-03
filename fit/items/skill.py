@@ -21,7 +21,7 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.calc.holder import MutableAttributeHolder
+from eos.fit.holder import MutableAttributeHolder
 
 
 class Skill(MutableAttributeHolder):

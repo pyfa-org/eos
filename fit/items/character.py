@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.calc.holder import MutableAttributeHolder
+from eos.fit.holder import MutableAttributeHolder
 
 
 class Character(MutableAttributeHolder):

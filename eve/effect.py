@@ -20,7 +20,7 @@
 
 
 from eos.const import EffectBuildStatus
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
+from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 
 
 class Effect:

@@ -20,7 +20,7 @@
 
 
 from eos.const import Location
-from eos.fit.calc.holder import MutableAttributeHolder
+from eos.fit.holder import MutableAttributeHolder
 
 
 class Booster(MutableAttributeHolder):

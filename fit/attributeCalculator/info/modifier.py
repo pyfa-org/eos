@@ -19,9 +19,6 @@
 #===============================================================================
 
 
-from .helpers import operandData, OperandType
-
-
 class Modifier:
     """
     Internal builder object, stores meaningful elements of expression tree
