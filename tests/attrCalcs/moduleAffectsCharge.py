@@ -24,11 +24,12 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.eve.effect import Effect
-from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import Info
+from eos.const import State, Context, RunTime, Location, Operator, SourceType
 from eos.fit.fit import Fit
-from eos.fit.ship import Ship
-from eos.fit.module import Module
-from eos.fit.charge import Charge
+from eos.fit.items.ship import Ship
+from eos.fit.items.module import Module
+from eos.fit.items.charge import Charge
 
 
 class TestModuleAffectsCharge(TestCase):
@@ -50,19 +51,19 @@ class TestModuleAffectsCharge(TestCase):
 
         attrMod = attrMetaGetter(2)
         info = Info()
-        info.state = InfoState.offline
-        info.context = InfoContext.local
-        info.runTime = InfoRunTime.duration
+        info.state = State.offline
+        info.context = Context.local
+        info.runTime = RunTime.duration
         info.gang = False
-        info.location = InfoLocation.other
-        info.operator = InfoOperator.postPercent
+        info.location = Location.other
+        info.operator = Operator.postPercent
         info.targetAttributeId = attrCharge.id
-        info.sourceType = InfoSourceType.attribute
+        info.sourceType = SourceType.attribute
         info.sourceValue = attrMod.id
-        modEffect = Effect(1, None, None, 0, 0)
+        modEffect = Effect(1, categoryId=0)
         modEffect._Effect__infos = {info}
         module = Module(Type(4, effects={modEffect}, attributes={attrMod.id: 20}))
-        fit.modules.append(module)
+        fit.modulesHigh.append(module)
 
         # First, check if delayed modifier is applied properly
         module.charge = charge1

@@ -24,10 +24,11 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.eve.effect import Effect
-from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import Info
+from eos.const import State, Context, RunTime, Location, Operator, SourceType
 from eos.fit.fit import Fit
-from eos.fit.ship import Ship
-from eos.fit.character import Character
+from eos.fit.items.ship import Ship
+from eos.fit.items.character import Character
 
 
 class TestCharAffectsShip(TestCase):
@@ -48,14 +49,14 @@ class TestCharAffectsShip(TestCase):
         ship2 = Ship(Type(2, attributes={attrShip.id: 20}))
 
         info = Info()
-        info.state = InfoState.offline
-        info.context = InfoContext.local
-        info.runTime = InfoRunTime.duration
+        info.state = State.offline
+        info.context = Context.local
+        info.runTime = RunTime.duration
         info.gang = False
-        info.location = InfoLocation.ship
-        info.operator = InfoOperator.postPercent
+        info.location = Location.ship
+        info.operator = Operator.postPercent
         info.targetAttributeId = attrShip.id
-        info.sourceType = InfoSourceType.attribute
+        info.sourceType = SourceType.attribute
         info.sourceValue = attrChar.id
         modEffect = Effect(1, categoryId=0)
         modEffect._Effect__infos = {info}

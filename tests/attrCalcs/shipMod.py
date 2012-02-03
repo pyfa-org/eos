@@ -24,10 +24,11 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.eve.effect import Effect
-from eos.calc.info.info import Info, InfoState, InfoContext, InfoRunTime, InfoLocation, InfoOperator, InfoSourceType
+from eos.fit.calc.info.info import Info
+from eos.const import State, Context, RunTime, Location, Operator, SourceType
 from eos.fit.fit import Fit
-from eos.fit.ship import Ship
-from eos.fit.module import Module
+from eos.fit.items.ship import Ship
+from eos.fit.items.module import Module
 
 
 class TestShipMod(TestCase):
@@ -42,22 +43,22 @@ class TestShipMod(TestCase):
         shipTgtAttr = attrMetaGetter(1)
         ship = Ship(Type(1, attributes={1: 100}))
         modSrcAttr = attrMetaGetter(2)
-        modEffect = Effect(1)
+        modEffect = Effect(1, categoryId=0)
         info = Info()
-        info.state = InfoState.offline
-        info.context = InfoContext.local
-        info.runTime = InfoRunTime.duration
+        info.state = State.offline
+        info.context = Context.local
+        info.runTime = RunTime.duration
         info.gang = False
-        info.location = InfoLocation.ship
-        info.operator = InfoOperator.postPercent
+        info.location = Location.ship
+        info.operator = Operator.postPercent
         info.targetAttributeId = shipTgtAttr.id
-        info.sourceType = InfoSourceType.attribute
+        info.sourceType = SourceType.attribute
         info.sourceValue = modSrcAttr.id
         modEffect._Effect__infos = {info}
         module = Module(Type(2, effects={modEffect}, attributes={2: 20}))
         fit = Fit(attrMetaGetter)
         fit.ship = ship
-        fit.modules.append(module)
+        fit.modulesHigh.append(module)
         expVal = 120
         self.assertAlmostEqual(ship.attributes[1], expVal)
 
