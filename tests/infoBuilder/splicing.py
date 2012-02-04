@@ -23,7 +23,7 @@ from unittest import TestCase
 
 from eos.const import EffectBuildStatus
 from eos.eve.expression import Expression
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
+from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 
 
 class TestSplicing(TestCase):

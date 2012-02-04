@@ -24,7 +24,7 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.eve.effect import Effect
-from eos.fit.calc.info.info import Info
+from eos.fit.attributeCalculator.info.info import Info
 from eos.const import State, Context, RunTime, Location, Operator, SourceType
 from eos.fit.fit import Fit
 from eos.fit.items.ship import Ship

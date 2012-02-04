@@ -24,15 +24,14 @@ from unittest import TestCase
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.eve.effect import Effect
-from eos.fit.calc.info.info import Info
+from eos.fit.attributeCalculator.info.info import Info
 from eos.const import State, Context, RunTime, Location, Operator, SourceType
 from eos.fit.fit import Fit
 from eos.fit.items.ship import Ship
-from eos.fit.items.module import Module
-from eos.fit.items.charge import Charge
+from eos.fit.items.character import Character
 
 
-class TestModuleAffectsCharge(TestCase):
+class TestCharAffectsShip(TestCase):
 
     def testAttrCalc(self):
 
@@ -41,38 +40,35 @@ class TestModuleAffectsCharge(TestCase):
                      2: Attribute(2, highIsGood=1, stackable=1)}
             return attrs[attrId]
 
+        attrShip = attrMetaGetter(1)
+        attrChar = attrMetaGetter(2)
+
         fit = Fit(attrMetaGetter)
-        ship = Ship(Type(1))
-        fit.ship = ship
 
-        attrCharge = attrMetaGetter(1)
-        charge1 = Charge(Type(2, attributes={attrCharge.id: 50}))
-        charge2 = Charge(Type(3, attributes={attrCharge.id: 200}))
+        ship1 = Ship(Type(1, attributes={attrShip.id: 100}))
+        ship2 = Ship(Type(2, attributes={attrShip.id: 20}))
 
-        attrMod = attrMetaGetter(2)
         info = Info()
         info.state = State.offline
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.other
+        info.location = Location.ship
         info.operator = Operator.postPercent
-        info.targetAttributeId = attrCharge.id
+        info.targetAttributeId = attrShip.id
         info.sourceType = SourceType.attribute
-        info.sourceValue = attrMod.id
+        info.sourceValue = attrChar.id
         modEffect = Effect(1, categoryId=0)
         modEffect._Effect__infos = {info}
-        module = Module(Type(4, effects={modEffect}, attributes={attrMod.id: 20}))
-        fit.modulesHigh.append(module)
+        char = Character(Type(3, effects={modEffect}, attributes={attrChar.id: 40}))
+        fit.character = char
 
-        # First, check if delayed modifier is applied properly
-        module.charge = charge1
-        expVal = 60
-        self.assertAlmostEqual(charge1.attributes[attrCharge.id], expVal)
+        fit.ship = ship1
+        expVal = 140
+        self.assertAlmostEqual(ship1.attributes[attrShip.id], expVal)
 
         # Then, check if after removal of modifier it's disabled properly,
         # to become enabled once again for other charge
-        module.charge = None
-        module.charge = charge2
-        expVal = 240
-        self.assertAlmostEqual(charge2.attributes[attrCharge.id], expVal)
+        fit.ship = ship2
+        expVal = 28
+        self.assertAlmostEqual(ship2.attributes[attrShip.id], expVal)

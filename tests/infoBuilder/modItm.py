@@ -23,7 +23,7 @@ from unittest import TestCase
 
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
-from eos.fit.calc.info.builder.infoBuilder import InfoBuilder
+from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 
 
 class TestModItm(TestCase):
