@@ -20,64 +20,12 @@
 
 
 from eos.const import Location, FilterType, InvType
-
-
-class DataSetMap(dict):
-    """
-    Dictionary-like class, with couple of additional methods which
-    make it easier to use it, given that its values are sets with data.
-    """
-
-    def addData(self, key, data):
-        """
-        Add data set to dictionary, with proper creation jobs
-        if necessary.
-
-        Positional arguments:
-        key -- key to access dictionary value (data set)
-        data -- set with data to add to value
-        """
-        try:
-            value = self[key]
-        except KeyError:
-            value = self[key] = set()
-        value.update(data)
-
-    def rmData(self, key, data):
-        """
-        Remove data set from dictionary, with proper cleanup
-        jobs if necessary.
-
-        Positional arguments:
-        key -- key to access dictionary value (data set)
-        data -- set with data to remove from value
-        """
-        try:
-            value = self[key]
-        except KeyError:
-            return
-        else:
-            value.difference_update(data)
-            if len(value) == 0:
-                del self[key]
-
-    def getData(self, key):
-        """
-        Get data set with safe fallback.
-
-        Positional arguments:
-        key -- key to access dictionary value (data set)
-
-        Return value:
-        set with data
-        """
-        data = self.get(key, set())
-        return data
+from eos.util.keyedSet import KeyedSet
 
 
 class LinkRegister:
     """
-    Keep track of links between fit's local holders, which is required for efficient
+    Keep track of links between holders, which is required for efficient
     partial attribute recalculation.
 
     Positional arguments:
@@ -90,36 +38,36 @@ class LinkRegister:
 
         # Keep track of holders belonging to certain location
         # Format: {location: {targetHolders}}
-        self.__affecteeLocation = DataSetMap()
+        self.__affecteeLocation = KeyedSet()
 
         # Keep track of holders belonging to certain location and group
         # Format: {(location, group): {targetHolders}}
-        self.__affecteeLocationGroup = DataSetMap()
+        self.__affecteeLocationGroup = KeyedSet()
 
         # Keep track of holders belonging to certain location and having certain skill requirement
         # Format: {(location, skill): {targetHolders}}
-        self.__affecteeLocationSkill = DataSetMap()
+        self.__affecteeLocationSkill = KeyedSet()
 
         # Keep track of affectors influencing all holders belonging to certain location
         # Format: {location: {affectors}}
-        self.__affectorLocation = DataSetMap()
+        self.__affectorLocation = KeyedSet()
 
         # Keep track of affectors influencing holders belonging to certain location and group
         # Format: {(location, group): {affectors}}
-        self.__affectorLocationGroup = DataSetMap()
+        self.__affectorLocationGroup = KeyedSet()
 
         # Keep track of affectors influencing holders belonging to certain location and having certain skill requirement
         # Format: {(location, skill): {affectors}}
-        self.__affectorLocationSkill = DataSetMap()
+        self.__affectorLocationSkill = KeyedSet()
 
         # Keep track of affectors influencing holders directly
         # Format: {targetHolder: {affectors}}
-        self.__activeDirectAffectors = DataSetMap()
+        self.__activeDirectAffectors = KeyedSet()
 
         # Keep track of affectors which influence locOther, but are disabled
         # as their target location is not available
         # Format: {sourceHolder: {affectors}}
-        self.__disabledDirectAffectors = DataSetMap()
+        self.__disabledDirectAffectors = KeyedSet()
 
     def __getAffecteeMaps(self, targetHolder):
         """

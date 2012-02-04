@@ -31,47 +31,58 @@ class Modifier:
         # Conditions under which modification is applied,
         # must be None or tree of condition Atom objects.
         self.conditions = None
-        # Type of modification, must be Operand class' attribute value,
-        # only those which describe some operation applied onto item
-        # (belonging to either durationMods orinstantMods sets).
+
+        # Type of modification, must be eos.eve.const.Operand class'
+        # attribute value, only those which describe some operation
+        # applied onto item (.helper.operandData[type].type must be
+        # .helpers.OperandType.duration or .helpers.OperandType.instant).
         self.type = None
+
         # Keeps category ID of effect from whose expressions it
         # was generated
         self.effectCategoryId = None
+
         # Describes when modification should be applied, for instant
         # modifications only:
         # For modifier types, belonging to instant, must be
-        # InfoRunTime.pre or InfoRunTime.post;
+        # eos.const.RunTime.pre or eos.const.RunTime.post;
         # For other modifier types, must be None.
         self.runTime = None
+
         # Target location to change:
         # For modifier types belonging to gang group, must be None
-        # For other modifier types must be InfoLocation class'
-        # attribute value.
+        # For other modifier types must be eos.const.Location
+        # class' attribute value.
         self.targetLocation = None
+
         # Which operation should be applied during modification,
-        # must be InfoOperator class' attribute value.
+        # must be eos.const.Operator class' attribute value.
         self.operator = None
+
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
         self.targetAttributeId = None
+
         # Items only belonging to this group will be affected by
         # modification:
         # For modifier types, which include group filter, must be integer
         # which refers group via ID;
         # For other modifier types must be None.
         self.targetGroupId = None
+
         # Items only having this skill requirement will be affected by
         # modification:
         # For modifier types, which include skill requirement filter,
-        # must be integer which refers type via ID, or const.InvType.self_
-        # to refer type of info carrier
+        # must be integer which refers type via ID, or
+        # eos.const.InvType.self_ to refer type of info carrier
         # For other modifier types must be None.
         self.targetSkillRequirementId = None
-        # SourceValue type, must be InfoSourceType class'
+
+        # SourceValue type, must be eos.const.SourceType class'
         # attribute value.
         self.sourceType = None
+
         # Value which is used as modification value for operation:
         # For sourceType.attribute must be integer which refers attribute via ID;
-        # For sourceType.value must be any value CCP can define in expression, integer or value.
+        # For sourceType.value must be any value CCP can define in expression, integer or boolean.
         self.sourceValue = None

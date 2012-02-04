@@ -29,6 +29,7 @@ class Atom:
         # Describes purpose of this atom, must be AtomType
         # class' attribute value
         self.type = None
+
         # Which operator should be applied to combine its childs:
         # For type.logic, must be AtomLogicOperator class' attribute value;
         # For type.comparison, must be AtomComparisonOperator class' attribute value;
@@ -58,7 +59,7 @@ class Atom:
         self.value = None
 
     def __repr__(self, indent=""):
-        """Convert atom tree to pretty string, starting from self"""
+        """Visualize condition atom tree, starting from self as root"""
         # Scatter logic operator and its arguments into several lines with different
         # indentation level
         if self.type == AtomType.logic:

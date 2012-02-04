@@ -25,6 +25,16 @@ from .register import LinkRegister
 
 
 class LinkTracker:
+    """
+    Serve as intermediate layer between fit and holder link register.
+    Implements methods which make it easier for fit to add, modify and
+    remove holders, and exposes two main register getters for external
+    use.
+
+    Positional arguments:
+    fit -- Fit object to which tracker is assigned
+    """
+
     def __init__(self, fit):
         self.__fit = fit
         self.__register = LinkRegister(fit)
@@ -53,31 +63,62 @@ class LinkTracker:
         """
         return self.__register.getAffectees(affector)
 
-    def addHolder(self, holder):
+    def __getHolderDirectLocation(self, holder):
+        """
+        Get location which you need to target to apply
+        direct holder modification.
+
+        Positional arguments:
+        holder -- holder in question
+
+        Return value:
+        Location specification, if holder can be targeted directly
+        from the outside, or None if it can't
+        """
+        # For ship and character it's easy, we're just picking
+        # corresponding location
         if holder is self.__fit.ship:
-            enabledLocation = Location.ship
+            location = Location.ship
         elif holder is self.__fit.character:
-            enabledLocation = Location.character
+            location = Location.character
+        # For "other" location, we should've checked for presence
+        # of other entity - not just charge's container, but also
+        # module's charge; we check just for charge's container instead
+        # because in Eos container can be removed only with its charge,
+        # thus scenario, when direct modification from charge to its
+        # container is disabled, is impossible
         elif getattr(holder, "container", None) is not None:
-            enabledLocation = Location.other
+            location = Location.other
         else:
-            enabledLocation = None
-        self.__register.registerAffectee(holder, enableDirect=enabledLocation)
+            location = None
+        return location
+
+    def addHolder(self, holder):
+        """
+        Track links between passed holder and already
+        tracked holders.
+
+        Positional arguments:
+        holder -- holder which is added to tracker
+        """
+        enabledDirectLocation = self.__getHolderDirectLocation(holder)
+        self.__register.registerAffectee(holder, enableDirect=enabledDirectLocation)
 
     def removeHolder(self, holder):
-        if holder is self.__fit.ship:
-            disabledLocation = Location.ship
-        elif holder is self.__fit.character:
-            disabledLocation = Location.character
-        elif getattr(holder, "container", None) is not None:
-            disabledLocation = Location.other
-        else:
-            disabledLocation = None
-        self.__register.unregisterAffectee(holder, disableDirect=disabledLocation)
+        """
+        Stop tracking links between passed holder
+        and remaining tracked holders.
+
+        Positional arguments:
+        holder -- holder which is removed from tracker
+        """
+        disabledDirectLocation = self.__getHolderDirectLocation(holder)
+        self.__register.unregisterAffectee(holder, disableDirect=disabledDirectLocation)
 
     def stateSwitch(self, holder, state):
         """
-        Handle holder state switch in fit's context.
+        Handle holder state switch in link tracker. Toggles holder's
+        effects on another holders.
 
         Positional arguments:
         holder -- holder which has its state changed

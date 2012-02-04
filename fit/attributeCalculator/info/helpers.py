@@ -21,7 +21,7 @@
 
 """
 This file is intended to hold some functions and data, which
-is used by multiple builders.
+is used by several builders.
 """
 
 

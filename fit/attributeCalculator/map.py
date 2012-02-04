@@ -45,8 +45,10 @@ class MutableAttributeMap:
         self.__modifiedAttributes = {}
 
     def __getitem__(self, attrId):
+        # If value is stored, it's considered valid
         try:
             val = self.__modifiedAttributes[attrId]
+        # Else, we have to run full calculation process
         except KeyError:
             val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
@@ -56,6 +58,8 @@ class MutableAttributeMap:
         return len(self.keys())
 
     def __contains__(self, attrId):
+        # Seek for attribute in both modified attribute container
+        # and original item attributes
         result = attrId in self.__modifiedAttributes or attrId in self.__holder.item.attributes
         return result
 
@@ -64,14 +68,15 @@ class MutableAttributeMap:
             yield k
 
     def __delitem__(self, attrId):
+        # Clear the value in our calculated attributes dictionary
         try:
-            # Clear the value in our calculated attributes dict
             del self.__modifiedAttributes[attrId]
+        # Do nothing if it wasn't calculated
         except KeyError:
             pass
+        # And make sure all other attributes relying on it
+        # are cleared too
         else:
-            # And make sure all other attributes relying on it
-            # are cleared too
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def __setitem__(self, attrId, value):

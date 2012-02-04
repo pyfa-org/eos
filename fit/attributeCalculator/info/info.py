@@ -31,36 +31,46 @@ class Info:
         # Conditions under which modification is applied,
         # must be None or tree of condition Atom objects.
         self.conditions = None
+
         # Info can be applied only when its holder is in
         # this or greater state, must be State class'
         # attribute value.
         self.state = None
+
         # Boolean flag, identifying local/gang change.
         self.context = None
+
         # Time context in which modification is applied, must
         # be eos.const.RunTime class' attribute value.
         self.runTime = None
+
         # Target location to change, must be eos.const.Location
         # class' attribute value.
         self.location = None
+
         # Filter type of the modification, must be None or
         # eos.const.FilterType class' attribute value.
         self.filterType = None
+
         # Filter value of the modification:
         # For filterType.all or filterType.None must be None;
         # For filterType.group must be some integer, referring group via ID;
         # For filterType.skill must be some integer, referring type via ID,
-        # or const.InvType.self_ to reference type of info carrier.
+        # or eos.const.InvType.self_ to reference type of info carrier.
         self.filterValue = None
+
         # Which operation should be applied during modification,
         # must be eos.const.Operator class' attribute value.
         self.operator = None
+
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
         self.targetAttributeId = None
+
         # SourceValue type, must be eos.const.SourceType class'
         # attribute value.
         self.sourceType = None
+
         # Value which is used as modification value for operation:
         # For sourceType.attribute must be integer which refers attribute via ID;
         # For sourceType.value must be any value CCP can define in expression, integer or value.
