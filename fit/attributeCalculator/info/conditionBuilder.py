@@ -141,7 +141,7 @@ class ConditionBuilder:
 
     @classmethod
     def conjuct(cls, cond1, cond2):
-        """Combine two passed condition trees into one"""
+        """Conjuct two passed condition trees"""
         # If any of passed conditions is None, return other one
         if cond1 is None or cond2 is None:
             combined = cond1 or cond2
@@ -156,7 +156,7 @@ class ConditionBuilder:
 
     @classmethod
     def disjunct(cls, cond1, cond2):
-        """Combine two passed condition trees into one"""
+        """Disjunct two passed condition trees"""
         # If any of passed conditions is None, return other one
         if cond1 is None or cond2 is None:
             combined = cond1 or cond2

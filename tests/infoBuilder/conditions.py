@@ -217,6 +217,8 @@ class TestCondition(TestCase):
         self.assertEqual(currentAtom.value, expAtomValue, msg="atom value must be {}".format(expAtomValue))
 
     def testNested(self):
+        # When we have nested if-then-else blocks, for infos stored under
+        # lowest-level block conditions should be unified using conjunction
         # Tree which has two if-then-else blocks
         eTgtShip = Expression(None, 24, value="Ship")
         eAttr1 = Expression(None, 22, expressionAttributeId=11)
@@ -327,7 +329,7 @@ class TestCondition(TestCase):
 
     def testUnification(self):
         # If we have 2 similar duration modifiers with different conditions,
-        # they should be combined into one by builder
+        # they should be combined into one by builder, using disjunction
         eTgtShip = Expression(None, 24, value="Ship")
         eAttr = Expression(None, 22, expressionAttributeId=175)
         eVal1 = Expression(None, 27, value="8")
