@@ -25,7 +25,7 @@ from eos.eve.type import Type
 from eos.fit.items.module import Module
 
 
-class TestUnattached(TestCase):
+class TestDetached(TestCase):
     """Test access to item attributes when it's not attached to any fit"""
 
     def testAttributeAccess(self):
@@ -34,4 +34,3 @@ class TestUnattached(TestCase):
         attrValue = module.attributes[56]
         expValue = 50
         self.assertEqual(attrValue, expValue, "attribute value must be {}".format(expValue))
-

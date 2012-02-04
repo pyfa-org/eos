@@ -17,3 +17,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+"""
+Info builder tests use manually built expression objects
+as input (please note they must use raw values for instantiation,
+no data from any const files), output is checked against set of
+criteria depending on test purpose (this time, using const files
+where appropriate).
+"""

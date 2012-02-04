@@ -29,7 +29,7 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, id_, categoryId=None, isOffensive=None, isAssistance=None,
+    def __init__(self, id_, categoryId, isOffensive=None, isAssistance=None,
                  fittingUsageChanceAttributeID=None, preExpression=None, postExpression=None):
         # The unique ID of an effect
         self.id = int(id_) if id_ is not None else None
