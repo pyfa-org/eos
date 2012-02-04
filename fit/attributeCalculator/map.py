@@ -51,7 +51,7 @@ class MutableAttributeMap:
         # Else, we have to run full calculation process
         except KeyError:
             val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
-            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
         return val
 
     def __len__(self):
@@ -77,7 +77,7 @@ class MutableAttributeMap:
         # And make sure all other attributes relying on it
         # are cleared too
         else:
-            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
 
     def __setitem__(self, attrId, value):
         # This method is added to allow direct skill level changes
@@ -85,7 +85,7 @@ class MutableAttributeMap:
             raise RuntimeError("changing any attribute besides skillLevel is prohibited")
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
-        self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+        self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
 
     def keys(self):
         keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
@@ -115,7 +115,7 @@ class MutableAttributeMap:
         # Format: {operator: {values}}
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
-        for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder):
+        for affector in self.__holder.fit.linkTracker.getAffectors(self.__holder):
             sourceHolder, info = affector
             # Skip affectors who do not target attribute being calculated
             if info.targetAttributeId != attrId:

@@ -38,7 +38,7 @@ class Fit:
         self.__ship = None
         self.__character = None
         # TODO: add sensible comments
-        self._linkTracker = LinkTracker(self)
+        self.linkTracker = LinkTracker(self)
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._attrMetaGetter = attrMetaGetter
@@ -96,7 +96,7 @@ class Fit:
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
-        self._linkTracker.addHolder(holder)
+        self.linkTracker._addHolder(holder)
         holder.state = state
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
@@ -119,8 +119,8 @@ class Fit:
         state = holder.state
         # Turn off its effects by switching state to None, then
         # unregister holder itself
-        self._linkTracker.stateSwitch(holder, None)
-        self._linkTracker.removeHolder(holder)
+        self.linkTracker._stateSwitch(holder, None)
+        self.linkTracker._removeHolder(holder)
         # Unset holder's fit
         holder.fit = None
         # Restore holder state
