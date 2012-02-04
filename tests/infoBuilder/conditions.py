@@ -216,7 +216,7 @@ class TestCondition(TestCase):
         expAtomValue = -50
         self.assertEqual(currentAtom.value, expAtomValue, msg="atom value must be {}".format(expAtomValue))
 
-    def testNested(self):
+    def testConjunctionNested(self):
         # When we have nested if-then-else blocks, for infos stored under
         # lowest-level block conditions should be unified using conjunction
         # Tree which has two if-then-else blocks
@@ -327,7 +327,7 @@ class TestCondition(TestCase):
         expAtomOptr = AtomComparisonOperator.greater
         self.assertEqual(currentAtom.operator, expAtomOptr, msg="atom operator must be greater than (ID {})".format(expAtomOptr))
 
-    def testUnification(self):
+    def testDisjunctionUnification(self):
         # If we have 2 similar duration modifiers with different conditions,
         # they should be combined into one by builder, using disjunction
         eTgtShip = Expression(None, 24, value="Ship")
@@ -365,3 +365,24 @@ class TestCondition(TestCase):
         currentAtom = info.conditions.child2
         expAtomType = AtomType.comparison
         self.assertEqual(currentAtom.type, expAtomType, msg="atom type must be comparison (ID {})".format(expAtomType))
+
+    def testDisjunctionClear(self):
+        # When we have 2 similar duration modifiers, and
+        # one of them doesn't have any conditions, single info
+        # without conditions must be generated
+        eTgtShip = Expression(None, 24, value="Target")
+        eAttr = Expression(None, 22, expressionAttributeId=53)
+        eVal1 = Expression(None, 27, value="60")
+        eStub = Expression(None, 27, value="1")
+        eTgtSpec = Expression(None, 35, arg1=eTgtShip, arg2=eAttr)
+        eComp = Expression(None, 33, arg1=eTgtSpec, arg2=eVal1)
+        eIfThen = Expression(None, 41, arg1=eComp, arg2=self.eAddMod)
+        eIfElse = Expression(None, 52, arg1=eIfThen, arg2=eStub)
+        eSplicedPre = Expression(None, 17, arg1=eIfElse, arg2=self.eAddMod)
+
+        infos, status = InfoBuilder().build(eSplicedPre, self.eRmMod, 0)
+        expStatus = EffectBuildStatus.okFull
+        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
+        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        info = infos.pop()
+        self.assertIsNone(info.conditions, msg="info conditions must be None")
