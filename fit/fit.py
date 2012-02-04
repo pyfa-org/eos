@@ -37,7 +37,7 @@ class Fit:
         # Variables used by properties
         self.__ship = None
         self.__character = None
-        # TODO: add sensible comments
+        # Tracks links between holders assigned to fit
         self.linkTracker = LinkTracker(self)
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID

@@ -45,6 +45,11 @@ class MutableAttributeMap:
         self.__modifiedAttributes = {}
 
     def __getitem__(self, attrId):
+        # If carrier holder isn't assigned to any fit, then
+        # we can use just item's original attributes
+        if self.__holder.fit is None:
+            val = self.__holder.item.attributes[attrId]
+            return val
         # If value is stored, it's considered valid
         try:
             val = self.__modifiedAttributes[attrId]
