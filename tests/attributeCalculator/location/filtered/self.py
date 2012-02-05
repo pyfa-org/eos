@@ -24,12 +24,11 @@ from unittest import TestCase
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.exception import BadContainerException
 from eos.fit.attributeCalculator.info.info import Info
-from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.helper import Fit, IndependentItem, CharacterItem, ShipItem
 
 
 class TestLocationFilterSelf(TestCase):
@@ -55,7 +54,7 @@ class TestLocationFilterSelf(TestCase):
         self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testShip(self):
-        self.fit._Fit__ship = self.influenceSource
+        self.fit.ship = self.influenceSource
         self.fit._addHolder(self.influenceSource)
         influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
@@ -63,7 +62,7 @@ class TestLocationFilterSelf(TestCase):
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testCharacter(self):
-        self.fit._Fit__character = self.influenceSource
+        self.fit.character = self.influenceSource
         self.fit._addHolder(self.influenceSource)
         influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)

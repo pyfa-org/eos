@@ -20,14 +20,31 @@
 
 
 """
-This file contains helper classes, which are used in attribute
-calculator tests instead of Eos item classes.
+This file contains helper classes, which implement minimalistic
+version of environment in which attributeCalculator resides.
 """
 
 
 from eos.const import Location
+from eos.fit.attributeCalculator.tracker import LinkTracker
 from eos.fit.holder import MutableAttributeHolder
 
+
+
+class Fit:
+
+    def __init__(self, attrMetaGetter):
+        self._attrMetaGetter = attrMetaGetter
+        self.linkTracker = LinkTracker(self)
+        self.character = None
+        self.ship = None
+
+    def _addHolder(self, holder):
+        holder.fit = self
+        self.linkTracker._addHolder(holder)
+        state = holder.state
+        holder.state = None
+        self.linkTracker._stateSwitch(holder, state)
 
 class IndependentItem(MutableAttributeHolder):
 

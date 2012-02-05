@@ -23,12 +23,11 @@ from unittest import TestCase
 
 from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
-from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import IndependentItem, CharacterItem
+from eos.tests.attributeCalculator.helper import Fit, IndependentItem, CharacterItem
 
 
 class TestLocationDirectCharacter(TestCase):
@@ -56,7 +55,7 @@ class TestLocationDirectCharacter(TestCase):
 
     def testCharacter(self):
         influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
-        self.fit._Fit__character = influenceTarget
+        self.fit.character = influenceTarget
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")

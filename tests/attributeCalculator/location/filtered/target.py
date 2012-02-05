@@ -24,12 +24,11 @@ from unittest import TestCase
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
-from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import IndependentItem
+from eos.tests.attributeCalculator.helper import Fit, IndependentItem
 
 
 class TestLocationFilterTarget(TestCase):
