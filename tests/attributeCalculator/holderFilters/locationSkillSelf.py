@@ -22,13 +22,13 @@
 from unittest import TestCase
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType, InvType
-from eos.eve.const import Attribute as DgmAttribute, EffectCategory
-from eos.fit.fit import Fit
-from eos.fit.items.module import Module
 from eos.fit.attributeCalculator.info.info import Info
+from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
+from eos.eve.const import Attribute as AttributeIDs, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
+from eos.tests.attributeCalculator.helper import ShipItem
 
 
 class TestFilterLocationSkillrqSelf(TestCase):
@@ -54,18 +54,18 @@ class TestFilterLocationSkillrqSelf(TestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
-        influenceSource = Module(Type(772, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = ShipItem(Type(772, effects={effect}, attributes={srcAttr.id: 20}))
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         self.fit._addHolder(influenceSource)
 
     def testMatch(self):
-        influenceTarget = Module(Type(2, attributes={self.tgtAttr.id: 100, DgmAttribute.skillRq1: 772}))
+        influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100, AttributeIDs.skillRq1: 772}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testOtherSkill(self):
-        influenceTarget = Module(Type(2, attributes={self.tgtAttr.id: 100, DgmAttribute.skillRq1: 51}))
+        influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100, AttributeIDs.skillRq1: 51}))
         self.fit._addHolder(influenceTarget)
         expValue = 100
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")

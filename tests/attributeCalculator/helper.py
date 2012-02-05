@@ -20,6 +20,50 @@
 
 
 """
-Tests in this module check that massive modification
-filters are applied onto holders properly.
+This file contains helper classes, which are used in attribute
+calculator tests instead of Eos item classes.
 """
+
+
+from eos.const import Location
+from eos.fit.holder import MutableAttributeHolder
+
+
+class IndependentItem(MutableAttributeHolder):
+
+    def __init__(self, type_):
+        super().__init__(type_)
+
+    @property
+    def _location(self):
+        return None
+
+
+class CharacterItem(MutableAttributeHolder):
+
+    def __init__(self, type_):
+        super().__init__(type_)
+
+    @property
+    def _location(self):
+        return Location.character
+
+
+class ShipItem(MutableAttributeHolder):
+
+    def __init__(self, type_):
+        super().__init__(type_)
+
+    @property
+    def _location(self):
+        return Location.ship
+
+
+class SpaceItem(MutableAttributeHolder):
+
+    def __init__(self, type_):
+        super().__init__(type_)
+
+    @property
+    def _location(self):
+        return Location.space

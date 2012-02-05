@@ -22,15 +22,14 @@
 from unittest import TestCase
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
-from eos.eve.const import EffectCategory
-from eos.fit.fit import Fit
-from eos.fit.items.implant import Implant
-from eos.fit.items.module import Module
-from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.attributeCalculator.exception import BadContainerException
+from eos.fit.attributeCalculator.info.info import Info
+from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
+from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
+from eos.tests.attributeCalculator.helper import CharacterItem, ShipItem
 
 
 class TestLocationFilterSelf(TestCase):
@@ -55,13 +54,13 @@ class TestLocationFilterSelf(TestCase):
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit
-        self.influenceSource = Module(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        self.influenceSource = ShipItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testShip(self):
         self.fit._Fit__ship = self.influenceSource
         self.fit._addHolder(self.influenceSource)
         # Here we can use any holder which belongs to ship
-        influenceTarget = Module(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
@@ -70,10 +69,13 @@ class TestLocationFilterSelf(TestCase):
         self.fit._Fit__character = self.influenceSource
         self.fit._addHolder(self.influenceSource)
         # Here we can use any holder which belongs to character
-        influenceTarget = Implant(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testUnpositioned(self):
+        # Here we do not position holder in fit, this way attribute
+        # calculator won't know that source is 'owner' of some location
+        # and will throw corresponding exception
         self.assertRaises(BadContainerException, self.fit._addHolder, self.influenceSource)
