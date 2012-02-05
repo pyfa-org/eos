@@ -20,12 +20,12 @@
 
 from eos.eve.const import Type
 from eos.fit.fit import Fit
-from eos.fit.items.character import Character
-from eos.fit.items.ship import Ship
-from eos.fit.items.module import Module
-from eos.fit.items.charge import Charge
-from eos.fit.items.drone import Drone
-from eos.fit.items.implant import Implant
+from eos.fit.item.character import Character
+from eos.fit.item.ship import Ship
+from eos.fit.item.module import Module
+from eos.fit.item.charge import Charge
+from eos.fit.item.drone import Drone
+from eos.fit.item.implant import Implant
 
 class Eos:
     def __init__(self, dataHandler):

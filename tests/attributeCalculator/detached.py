@@ -22,7 +22,7 @@
 from unittest import TestCase
 
 from eos.eve.type import Type
-from eos.fit.items.module import Module
+from eos.tests.attributeCalculator.helper import ShipItem
 
 
 class TestDetached(TestCase):
@@ -30,7 +30,7 @@ class TestDetached(TestCase):
 
     def testAttributeAccess(self):
         type_ = Type(1, attributes={56: 50})
-        module = Module(type_)
+        module = ShipItem(type_)
         attrValue = module.attributes[56]
         expValue = 50
         self.assertEqual(attrValue, expValue, "attribute value must be {}".format(expValue))

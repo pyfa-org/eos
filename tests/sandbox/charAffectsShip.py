@@ -27,8 +27,8 @@ from eos.eve.effect import Effect
 from eos.fit.attributeCalculator.info.info import Info
 from eos.const import State, Context, RunTime, Location, Operator, SourceType
 from eos.fit.fit import Fit
-from eos.fit.items.ship import Ship
-from eos.fit.items.character import Character
+from eos.fit.item.ship import Ship
+from eos.fit.item.character import Character
 
 
 class TestCharAffectsShip(TestCase):
