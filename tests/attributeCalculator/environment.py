@@ -30,7 +30,6 @@ from eos.fit.attributeCalculator.tracker import LinkTracker
 from eos.fit.holder import MutableAttributeHolder
 
 
-
 class Fit:
 
     def __init__(self, attrMetaGetter):
@@ -45,6 +44,14 @@ class Fit:
         state = holder.state
         holder.state = None
         self.linkTracker._stateSwitch(holder, state)
+
+    def _removeHolder(self, holder):
+        state = holder.state
+        self.linkTracker._stateSwitch(holder, None)
+        self.linkTracker._removeHolder(holder)
+        holder.fit = None
+        holder.state = state
+
 
 class IndependentItem(MutableAttributeHolder):
 
