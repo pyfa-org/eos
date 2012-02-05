@@ -21,19 +21,18 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
-from eos.fit.attributeCalculator.exception import UnsupportedLocationException
+from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import IndependentItem
+from eos.tests.attributeCalculator.helper import IndependentItem, ShipItem
 
 
-class TestLocationFilterArea(TestCase):
-    """Test location.area for massive filtered modifications"""
+class TestLocationDirectShip(TestCase):
+    """Test location.ship for direct modifications"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -43,8 +42,8 @@ class TestLocationFilterArea(TestCase):
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.area
-        info.filterType = FilterType.all_
+        info.location = Location.ship
+        info.filterType = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
@@ -52,8 +51,18 @@ class TestLocationFilterArea(TestCase):
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        self.fit._addHolder(influenceSource)
 
-    def testException(self):
-        # This location just isn't used in EVE and unsupported by Eos by design
-        self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)
+    def testShip(self):
+        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        self.fit._Fit__ship = influenceTarget
+        self.fit._addHolder(influenceTarget)
+        notExpValue = 100
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+
+    def testOther(self):
+        influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        self.fit._addHolder(influenceTarget)
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")

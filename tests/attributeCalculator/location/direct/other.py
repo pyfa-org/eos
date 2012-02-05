@@ -21,19 +21,18 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
-from eos.fit.attributeCalculator.exception import BadContainerException
+from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.helper import IndependentItem
 
 
-class TestLocationFilterSelf(TestCase):
-    """Test location.self (self-reference) for massive filtered modifications"""
+class TestLocationDirectOther(TestCase):
+    """Test location.other for direct modifications"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -43,8 +42,8 @@ class TestLocationFilterSelf(TestCase):
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.self_
-        info.filterType = FilterType.all_
+        info.location = Location.other
+        info.filterType = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
@@ -52,26 +51,33 @@ class TestLocationFilterSelf(TestCase):
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-
-    def testShip(self):
-        self.fit._Fit__ship = self.influenceSource
+        # We added target attribute to influence source for testSelf;
+        # currently, eos cannot calculate attributes which are originally
+        # missing on item
+        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
         self.fit._addHolder(self.influenceSource)
-        influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100}))
+
+    def testOtherLocation(self):
+        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        self.influenceSource._other = influenceTarget
+        influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
-    def testCharacter(self):
-        self.fit._Fit__character = self.influenceSource
-        self.fit._addHolder(self.influenceSource)
-        influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
+    def testSelf(self):
+        # Check that source holder isn't modified
+        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        self.influenceSource._other = influenceTarget
+        influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        expValue = 100
+        self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
 
-    def testUnpositioned(self):
-        # Here we do not position holder in fit, this way attribute
-        # calculator won't know that source is 'owner' of some location
-        # and will throw corresponding exception
-        self.assertRaises(BadContainerException, self.fit._addHolder, self.influenceSource)
+    def testOtherHolder(self):
+        # Here we check some "random" holder, w/o assigning
+        # _other attribute
+        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        self.fit._addHolder(influenceTarget)
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")

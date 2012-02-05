@@ -82,12 +82,8 @@ class LinkTracker:
         elif holder is self.__fit.character:
             location = Location.character
         # For "other" location, we should've checked for presence
-        # of other entity - not just charge's container, but also
-        # module's charge; we check just for charge's container instead
-        # because in Eos container can be removed only with its charge,
-        # thus scenario, when direct modification from charge to its
-        # container is disabled, is impossible
-        elif getattr(holder, "container", None) is not None:
+        # of other entity - charge's container or module's charge
+        elif getattr(holder, "_other", None) is not None:
             location = Location.other
         else:
             location = None

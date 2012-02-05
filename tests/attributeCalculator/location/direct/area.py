@@ -21,7 +21,7 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.fit import Fit
@@ -32,8 +32,8 @@ from eos.eve.type import Type
 from eos.tests.attributeCalculator.helper import IndependentItem
 
 
-class TestLocationFilterArea(TestCase):
-    """Test location.area for massive filtered modifications"""
+class TestLocationDirectArea(TestCase):
+    """Test location.area for direct modifications"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -44,7 +44,7 @@ class TestLocationFilterArea(TestCase):
         info.runTime = RunTime.duration
         info.gang = False
         info.location = Location.area
-        info.filterType = FilterType.all_
+        info.filterType = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute

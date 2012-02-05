@@ -21,7 +21,7 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.fit import Fit
@@ -32,8 +32,8 @@ from eos.eve.type import Type
 from eos.tests.attributeCalculator.helper import IndependentItem
 
 
-class TestLocationFilterArea(TestCase):
-    """Test location.area for massive filtered modifications"""
+class TestLocationDirectTarget(TestCase):
+    """Test location.target for direct modifications"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -43,8 +43,8 @@ class TestLocationFilterArea(TestCase):
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.area
-        info.filterType = FilterType.all_
+        info.location = Location.target
+        info.filterType = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
@@ -55,5 +55,5 @@ class TestLocationFilterArea(TestCase):
         self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testException(self):
-        # This location just isn't used in EVE and unsupported by Eos by design
+        # This functionality isn't implemented for now
         self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)

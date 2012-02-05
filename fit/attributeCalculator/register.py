@@ -128,8 +128,6 @@ class LinkRegister:
                 else:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
-            elif info.location == Location.target:
-                raise RuntimeError("target is not supported location for direct item modification")
             # When other location is referenced, it means direct reference to module's charge
             # or to charge's module-container
             elif info.location == Location.other:
@@ -146,7 +144,7 @@ class LinkRegister:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             else:
-                raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
+                raise UnsupportedLocationException("unsupported location (ID {}) for direct item modification".format(info.location))
         # For massive modifications, compose key, making sure reference to self
         # is converted into appropriate real location
         elif info.filterType == FilterType.all_:
@@ -418,8 +416,6 @@ class LinkRegister:
             elif info.location == Location.ship:
                 ship = self.__fit.ship
                 target = {ship} if ship is not None else None
-            elif info.location == Location.target:
-                raise RuntimeError("target is not supported location for direct item modification")
             elif info.location == Location.other:
                 try:
                     otherHolder = sourceHolder._other
@@ -427,7 +423,7 @@ class LinkRegister:
                     otherHolder = None
                 target = {otherHolder} if otherHolder is not None else None
             else:
-                raise RuntimeError("unknown location (ID {}) passed for direct item modification".format(info.location))
+                raise UnsupportedLocationException("unsupported location (ID {}) for direct item modification".format(info.location))
         # For filtered modifications, pick appropriate dictionary and get set
         # with target holders
         elif info.filterType == FilterType.all_:
