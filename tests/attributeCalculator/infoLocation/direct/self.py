@@ -53,38 +53,38 @@ class TestLocationDirectSelf(TestCase):
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
 
     def testIndependent(self):
-        influenceSource = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        holder = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        self.fit._addHolder(holder)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceSource.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
         # We do not test item removal here, because removed holder (which is
         # both source and target in this test set) essentially becomes
         # detached, which is covered by other tests
 
     def testCharacter(self):
-        influenceSource = CharacterItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        holder = CharacterItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        self.fit._addHolder(holder)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceSource.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testShip(self):
-        influenceSource = ShipItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        holder = ShipItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        self.fit._addHolder(holder)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceSource.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testSpace(self):
-        influenceSource = SpaceItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        holder = SpaceItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        self.fit._addHolder(holder)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceSource.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testPositioned(self):
-        influenceSource = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit.character = influenceSource
-        self.fit._addHolder(influenceSource)
+        holder = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        self.fit.character = holder
+        self.fit._addHolder(holder)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceSource.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testOther(self):
         # Here we check that self-reference modifies only carrier-item,

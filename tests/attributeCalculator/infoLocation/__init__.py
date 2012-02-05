@@ -20,7 +20,7 @@
 
 
 """
-Check that target holders are modified properly, or expected exceptions are raised,
+Check that target holders are modified, or expected exceptions are raised,
 according to location field of info. Location field meaning differs, depending
 on filter presence, thus two test sets are required.
 """
