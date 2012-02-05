@@ -44,13 +44,12 @@ class Fit:
         state = holder.state
         holder.state = None
         self.linkTracker._stateSwitch(holder, state)
+        holder.state = state
 
     def _removeHolder(self, holder):
-        state = holder.state
         self.linkTracker._stateSwitch(holder, None)
         self.linkTracker._removeHolder(holder)
         holder.fit = None
-        holder.state = state
 
 
 class IndependentItem(MutableAttributeHolder):

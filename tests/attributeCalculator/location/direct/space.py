@@ -57,3 +57,4 @@ class TestLocationDirectSpace(TestCase):
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
         self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)
+        self.assertRaises(UnsupportedLocationException, self.fit._removeHolder, self.influenceSource)

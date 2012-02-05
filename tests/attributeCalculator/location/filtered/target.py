@@ -56,3 +56,4 @@ class TestLocationFilterTarget(TestCase):
     def testException(self):
         # This functionality isn't implemented for now
         self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)
+        self.assertRaises(UnsupportedLocationException, self.fit._removeHolder, self.influenceSource)

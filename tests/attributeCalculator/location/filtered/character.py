@@ -52,14 +52,17 @@ class TestLocationFilterCharacter(TestCase):
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit
-        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        self.fit._addHolder(self.influenceSource)
 
     def testMatch(self):
         influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.fit._removeHolder(self.influenceSource)
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
     def testOtherLocation(self):
         influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))

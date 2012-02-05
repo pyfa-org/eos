@@ -60,6 +60,10 @@ class TestLocationFilterSelf(TestCase):
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.fit._removeHolder(self.influenceSource)
+        self.fit.ship = None
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
@@ -68,9 +72,14 @@ class TestLocationFilterSelf(TestCase):
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.fit._removeHolder(self.influenceSource)
+        self.fit.character = None
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
     def testUnpositioned(self):
         # Here we do not position holder in fit, this way attribute
         # calculator won't know that source is 'owner' of some location
         # and will throw corresponding exception
         self.assertRaises(BadContainerException, self.fit._addHolder, self.influenceSource)
+        self.assertRaises(BadContainerException, self.fit._removeHolder, self.influenceSource)

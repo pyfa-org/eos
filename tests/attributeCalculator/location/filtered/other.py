@@ -57,3 +57,4 @@ class TestLocationFilterOther(TestCase):
         # Charge's container or module's charge can't be 'owner'
         # of other holders, thus such modification type is unsupported
         self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)
+        self.assertRaises(UnsupportedLocationException, self.fit._removeHolder, self.influenceSource)

@@ -56,6 +56,9 @@ class TestLocationDirectSelf(TestCase):
         self.fit._addHolder(influenceSource)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceSource.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        # We do not test item removal here, because removed holder (which is
+        # both source and target in this test set) essentially becomes
+        # detached, which is covered by other tests
 
     def testCharacter(self):
         influenceSource = CharacterItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))

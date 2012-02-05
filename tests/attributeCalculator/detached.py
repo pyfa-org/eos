@@ -22,7 +22,7 @@
 from unittest import TestCase
 
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import ShipItem
+from eos.tests.attributeCalculator.environment import ShipItem
 
 
 class TestDetached(TestCase):

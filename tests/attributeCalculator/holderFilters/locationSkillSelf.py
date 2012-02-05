@@ -28,7 +28,7 @@ from eos.eve.attribute import Attribute
 from eos.eve.const import Attribute as AttributeIDs, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem
 
 
 class TestFilterLocationSkillrqSelf(TestCase):
@@ -54,15 +54,18 @@ class TestFilterLocationSkillrqSelf(TestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
-        influenceSource = ShipItem(Type(772, effects={effect}, attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(772, effects={effect}, attributes={srcAttr.id: 20}))
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.fit._addHolder(influenceSource)
+        self.fit._addHolder(self.influenceSource)
 
     def testMatch(self):
         influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100, AttributeIDs.skillRq1: 772}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.fit._removeHolder(self.influenceSource)
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
     def testOtherSkill(self):
         influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100, AttributeIDs.skillRq1: 51}))

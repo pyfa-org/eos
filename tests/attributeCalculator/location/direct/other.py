@@ -63,6 +63,11 @@ class TestLocationDirectOther(TestCase):
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.fit._removeHolder(self.influenceSource)
+        self.influenceSource._other = None
+        influenceTarget._other = None
+        expValue = 100
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
     def testSelf(self):
         # Check that source holder isn't modified

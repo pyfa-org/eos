@@ -118,7 +118,7 @@ class LinkTracker:
 
         Positional arguments:
         holder -- holder which has its state changed
-        newState -- state which holder is taking
+        state -- state which holder is taking
         """
         oldState = holder.state
         # Get set of affectors which we will need to register or

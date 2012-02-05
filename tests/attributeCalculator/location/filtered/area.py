@@ -56,3 +56,4 @@ class TestLocationFilterArea(TestCase):
     def testException(self):
         # This location just isn't used in EVE and unsupported by Eos by design
         self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)
+        self.assertRaises(UnsupportedLocationException, self.fit._removeHolder, self.influenceSource)
