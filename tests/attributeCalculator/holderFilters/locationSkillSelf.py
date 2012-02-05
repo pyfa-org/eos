@@ -52,9 +52,9 @@ class TestFilterLocationSkillrqSelf(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        modEffect = Effect(1, EffectCategory.passive)
-        modEffect._Effect__infos = {info}
-        influenceSource = Module(Type(772, effects={modEffect}, attributes={srcAttr.id: 20}))
+        effect = Effect(1, EffectCategory.passive)
+        effect._Effect__infos = {info}
+        influenceSource = Module(Type(772, effects={effect}, attributes={srcAttr.id: 20}))
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         self.fit._addHolder(influenceSource)
 

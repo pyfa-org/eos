@@ -21,6 +21,7 @@
 
 from eos.const import Location, FilterType, InvType
 from eos.util.keyedSet import KeyedSet
+from .exception import BadContainerException
 
 
 class LinkRegister:
@@ -185,7 +186,7 @@ class LinkRegister:
             elif sourceHolder is self.__fit.character:
                 return Location.character
             else:
-                raise RuntimeError("reference to self on unexpected holder during processing of massive filtered modification")
+                raise BadContainerException("reference to self on unexpected holder during processing of massive filtered modification")
         # Just return untouched location for all other valid cases
         elif targetLocation in (Location.character, Location.ship, Location.space):
             return targetLocation
