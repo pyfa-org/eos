@@ -21,8 +21,9 @@
 
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
+from .exception import ModifierBuilderException
 from .info import Info
-from .modifierBuilder import ModifierBuilder, ModifierBuilderException
+from .modifierBuilder import ModifierBuilder
 from .helpers import operandData, OperandType
 
 

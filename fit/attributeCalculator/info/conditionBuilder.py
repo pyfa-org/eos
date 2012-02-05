@@ -21,8 +21,8 @@
 
 from eos.const import AtomType, AtomLogicOperator, AtomComparisonOperator, AtomMathOperator
 from eos.eve.const import Operand
-from eos.exception import ConditionBuilderException
 from .condition import Atom
+from .exception import ConditionBuilderException
 from .helpers import ExpressionData
 
 

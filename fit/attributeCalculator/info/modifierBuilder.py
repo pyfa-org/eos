@@ -24,8 +24,8 @@ from itertools import combinations
 
 from eos.const import RunTime, SourceType
 from eos.eve.const import Operand
-from eos.exception import ModifierBuilderException, ConditionBuilderException
 from .conditionBuilder import ConditionBuilder
+from .exception import ModifierBuilderException, ConditionBuilderException
 from .helpers import ExpressionData, operandData, OperandType
 from .modifier import Modifier
 
