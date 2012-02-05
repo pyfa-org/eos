@@ -44,6 +44,7 @@ class TestLocationDirectArea(TestCase):
         info.gang = False
         info.location = Location.area
         info.filterType = None
+        info.filterValue = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute

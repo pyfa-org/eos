@@ -43,6 +43,7 @@ class TestLocationDirectShip(TestCase):
         info.gang = False
         info.location = Location.ship
         info.filterType = None
+        info.filterValue = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute

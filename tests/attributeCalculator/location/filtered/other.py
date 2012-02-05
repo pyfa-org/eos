@@ -44,6 +44,7 @@ class TestLocationFilterOther(TestCase):
         info.gang = False
         info.location = Location.other
         info.filterType = FilterType.all_
+        info.filterValue = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
