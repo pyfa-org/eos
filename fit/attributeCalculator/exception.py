@@ -23,13 +23,20 @@ from eos.exception import EosException
 
 
 class AttributeCalculatorException(EosException):
-    """All attribute calculator exceptions are based on this class"""
+    """All attribute calculator exceptions are based on this class."""
     pass
 
 
 class BadContainerException(AttributeCalculatorException):
     """
     Raised when info references itself as holder container, but
-    actually it can't have any holders assigned to it
+    actually it can't have any holders assigned to it.
     """
     pass
+
+class UnsupportedLocationException(AttributeCalculatorException):
+    """
+    Raised when location in Info object being processed cannot be
+    handled by register (set of unsupported locations is different
+    for direct and filtered modifications).
+    """

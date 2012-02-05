@@ -29,11 +29,11 @@ from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import CharacterItem, ShipItem
+from eos.tests.attributeCalculator.helper import IndependentItem, CharacterItem, ShipItem
 
 
 class TestLocationFilterSelf(TestCase):
-    """Test self-reference location for massive filtered modifications"""
+    """Test location.self (self-reference) for massive filtered modifications"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -54,7 +54,7 @@ class TestLocationFilterSelf(TestCase):
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit
-        self.influenceSource = ShipItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testShip(self):
         self.fit._Fit__ship = self.influenceSource

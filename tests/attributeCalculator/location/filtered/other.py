@@ -22,17 +22,18 @@
 from unittest import TestCase
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.helper import IndependentItem, CharacterItem
+from eos.tests.attributeCalculator.helper import IndependentItem
 
 
-class TestLocationFilterCharacter(TestCase):
-    """Test location.character for massive filtered modifications"""
+class TestLocationFilterOther(TestCase):
+    """Test location.other for massive filtered modifications"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -42,7 +43,7 @@ class TestLocationFilterCharacter(TestCase):
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.character
+        info.location = Location.other
         info.filterType = FilterType.all_
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
@@ -51,19 +52,9 @@ class TestLocationFilterCharacter(TestCase):
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        # It doesn't matter holder of which type we're using,
-        # the only thing which matters is its position in fit
-        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
 
-    def testMatch(self):
-        influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
-
-    def testOtherLocation(self):
-        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+    def testException(self):
+        # Charge's container or module's charge can't be 'owner'
+        # of other holders, thus such modification type is unsupported
+        self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)

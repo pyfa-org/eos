@@ -21,7 +21,7 @@
 
 from eos.const import Location, FilterType, InvType
 from eos.util.keyedSet import KeyedSet
-from .exception import BadContainerException
+from .exception import BadContainerException, UnsupportedLocationException
 
 
 class LinkRegister:
@@ -192,7 +192,7 @@ class LinkRegister:
             return targetLocation
         # Raise error if location is invalid
         else:
-            raise RuntimeError("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
+            raise UnsupportedLocationException("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
 
     def __contextizeSkillrqId(self, affector):
         """
