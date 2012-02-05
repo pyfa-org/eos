@@ -18,6 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 """
 Info builder tests use manually built expression objects
 as input (please note they must use raw values for instantiation,
