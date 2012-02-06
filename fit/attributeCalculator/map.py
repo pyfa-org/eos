@@ -127,20 +127,18 @@ class MutableAttributeMap:
             if info.targetAttributeId != attrId:
                 continue
             operator = info.operator
-            # If source value is attribute reference
+            # Decide if it should be stacking penalized or not, based on stackable property,
+            # source item category and operator
+            penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
+            penalizableOperators = {Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv}
+            penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
+                        and operator in penalizableOperators)
+            # If source value is attribute reference, get its value
             if info.sourceType == SourceType.attribute:
-                # Get its value
                 modValue = sourceHolder.attributes[info.sourceValue]
-                # And decide if it should be stacking penalized or not, based on stackable property,
-                # source item category and operator
-                penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
-                penalizableOperators = {Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv}
-                penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
-                            and operator in penalizableOperators)
-            # For value modifications, just use stored in info value and avoid its penalization
+            # For value modifications, just use stored in info value
             else:
                 modValue = info.sourceValue
-                penalize = False
             # Normalize addition/subtraction, so it's always
             # acts as addition
             if operator == Operator.modSub:
