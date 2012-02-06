@@ -23,7 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category, Attribute
-from .exception import UnsupportedOperatorException
+from .exception import UnsupportedOperatorException, UnsupportedSourceException
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -137,8 +137,10 @@ class MutableAttributeMap:
             if info.sourceType == SourceType.attribute:
                 modValue = sourceHolder.attributes[info.sourceValue]
             # For value modifications, just use stored in info value
-            else:
+            elif info.sourceType == SourceType.value:
                 modValue = info.sourceValue
+            else:
+                raise UnsupportedSourceException("source type with ID {} is not supported for attribute calculation".format(info.sourceType))
             # Normalize addition/subtraction, so it's always
             # acts as addition
             if operator == Operator.modSub:

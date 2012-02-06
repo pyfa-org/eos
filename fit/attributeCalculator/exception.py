@@ -46,3 +46,9 @@ class UnsupportedOperatorException(AttributeCalculatorException):
     Raised during calculation process, if attribute affector is
     using operator which is not supported by calculate method.
     """
+
+class UnsupportedSourceException(AttributeCalculatorException):
+    """
+    Raised during calculation process, if source type is unknown
+    to calculate method.
+    """

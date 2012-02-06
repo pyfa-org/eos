@@ -33,7 +33,7 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 class TestTargetAttribute(TestCase):
     """Test that only targeted attributes are modified"""
 
-    def testTargetAttribute(self):
+    def testTargetAttributes(self):
         tgtAttr1 = Attribute(1)
         tgtAttr2 = Attribute(2)
         tgtAttr3 = Attribute(3)
@@ -69,9 +69,12 @@ class TestTargetAttribute(TestCase):
         holder = IndependentItem(Type(None, effects={effect}, attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
                                                                           tgtAttr3.id: 100, srcAttr.id: 20}))
         fit._addHolder(holder)
+        # First attribute should be modified by info1
         expValue = 60
         self.assertAlmostEqual(holder.attributes[tgtAttr1.id], expValue, msg="value must be {}".format(expValue))
+        # Second should be modified by info2
         expValue = 96
+        # Third should stay unmodified
         self.assertAlmostEqual(holder.attributes[tgtAttr2.id], expValue, msg="value must be {}".format(expValue))
         expValue = 100
         self.assertAlmostEqual(holder.attributes[tgtAttr3.id], expValue, msg="value must be {}".format(expValue))
