@@ -30,8 +30,8 @@ from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestOperatorPostMul(TestCase):
-    """Test post-multiplication operator"""
+class TestOperatorSub(TestCase):
+    """Test subtraction operator"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -44,32 +44,28 @@ class TestOperatorPostMul(TestCase):
         info.location = Location.ship
         info.filterType = FilterType.all_
         info.filterValue = None
-        info.operator = Operator.postMul
+        info.operator = Operator.modSub
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        influenceSource1 = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 1.2}))
-        influenceSource2 = IndependentItem(Type(2, effects={effect}, attributes={srcAttr.id: 1.5}))
-        influenceSource3 = IndependentItem(Type(3, effects={effect}, attributes={srcAttr.id: 0.1}))
-        influenceSource4 = IndependentItem(Type(4, effects={effect}, attributes={srcAttr.id: 0.75}))
-        influenceSource5 = IndependentItem(Type(5, effects={effect}, attributes={srcAttr.id: 5}))
+        influenceSource1 = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: -10}))
+        influenceSource2 = IndependentItem(Type(2, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource3 = IndependentItem(Type(3, effects={effect}, attributes={srcAttr.id: -53}))
         self.influenceTarget = ShipItem(Type(5, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceSource1)
         fit._addHolder(influenceSource2)
         fit._addHolder(influenceSource3)
-        fit._addHolder(influenceSource4)
-        fit._addHolder(influenceSource5)
         fit._addHolder(self.influenceTarget)
 
     def testUnpenalized(self):
         self.tgtAttr.stackable = True
-        expValue = 67.5
+        expValue = 143
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
 
     def testPenalized(self):
         self.tgtAttr.stackable = False
-        expValue = 62.5497832
+        expValue = 143
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))

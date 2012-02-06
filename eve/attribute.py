@@ -39,9 +39,9 @@ class Attribute:
         self.defaultValue = float(defaultValue) if defaultValue is not None else None
 
         # Boolean describing if it's good when attribute is high or not,
-        # used in calculation process
-        self.highIsGood = bool(highIsGood) if highIsGood is not None else None
+        # used in calculation process, with default being True
+        self.highIsGood = bool(highIsGood) if highIsGood is not None else True
 
         # Boolean which defines if attribute can be stacking penalized (False)
-        # or not (True)
-        self.stackable = bool(stackable) if stackable is not None else None
+        # or not (True), with default being True
+        self.stackable = bool(stackable) if stackable is not None else True

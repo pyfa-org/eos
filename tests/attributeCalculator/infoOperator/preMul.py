@@ -30,8 +30,8 @@ from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestOperatorPostMul(TestCase):
-    """Test post-multiplication operator"""
+class TestOperatorPreMul(TestCase):
+    """Test pre-multiplication operator"""
 
     def setUp(self):
         self.tgtAttr = tgtAttr = Attribute(1)
@@ -44,7 +44,7 @@ class TestOperatorPostMul(TestCase):
         info.location = Location.ship
         info.filterType = FilterType.all_
         info.filterValue = None
-        info.operator = Operator.postMul
+        info.operator = Operator.preMul
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
