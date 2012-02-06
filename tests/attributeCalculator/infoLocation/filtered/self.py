@@ -49,15 +49,15 @@ class TestLocationFilterSelf(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testShip(self):
         self.fit.ship = self.influenceSource
         self.fit._addHolder(self.influenceSource)
-        influenceTarget = ShipItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
@@ -69,7 +69,7 @@ class TestLocationFilterSelf(TestCase):
     def testCharacter(self):
         self.fit.character = self.influenceSource
         self.fit._addHolder(self.influenceSource)
-        influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")

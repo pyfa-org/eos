@@ -48,14 +48,14 @@ class TestLocationFilterSpace(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         self.fit._addHolder(self.influenceSource)
 
     def testMatch(self):
-        influenceTarget = SpaceItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = SpaceItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         notExpValue = 100
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
@@ -64,7 +64,7 @@ class TestLocationFilterSpace(TestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
     def testOtherLocation(self):
-        influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         expValue = 100
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")

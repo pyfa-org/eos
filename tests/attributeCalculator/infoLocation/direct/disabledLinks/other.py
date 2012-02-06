@@ -48,12 +48,12 @@ class TestLocationDirectOtherSwitch(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         fit._addHolder(influenceSource)
-        influenceTarget1 = IndependentItem(Type(2, attributes={tgtAttr.id: 100}))
+        influenceTarget1 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
         influenceSource._other = influenceTarget1
         influenceTarget1._other = influenceSource
         fit._addHolder(influenceTarget1)
@@ -62,7 +62,7 @@ class TestLocationDirectOtherSwitch(TestCase):
         fit._removeHolder(influenceTarget1)
         influenceSource._other = None
         influenceTarget1._other = None
-        influenceTarget2 = IndependentItem(Type(3, attributes={tgtAttr.id: 100}))
+        influenceTarget2 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
         influenceSource._other = influenceTarget2
         influenceTarget2._other = influenceSource
         fit._addHolder(influenceTarget2)

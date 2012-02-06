@@ -48,17 +48,17 @@ class TestLocationDirectOther(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         # We added target attribute to influence source for testSelf;
         # currently, eos cannot calculate attributes which are originally
         # missing on item
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
         self.fit._addHolder(self.influenceSource)
 
     def testOtherLocation(self):
-        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.influenceSource._other = influenceTarget
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
@@ -72,7 +72,7 @@ class TestLocationDirectOther(TestCase):
 
     def testSelf(self):
         # Check that source holder isn't modified
-        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.influenceSource._other = influenceTarget
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
@@ -82,7 +82,7 @@ class TestLocationDirectOther(TestCase):
     def testOtherHolder(self):
         # Here we check some "random" holder, w/o assigning
         # _other attribute
-        influenceTarget = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         expValue = 100
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")

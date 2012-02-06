@@ -48,15 +48,15 @@ class TestOperatorPostPercent(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        influenceSource1 = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-        influenceSource2 = IndependentItem(Type(2, effects={effect}, attributes={srcAttr.id: 50}))
-        influenceSource3 = IndependentItem(Type(3, effects={effect}, attributes={srcAttr.id: -90}))
-        influenceSource4 = IndependentItem(Type(4, effects={effect}, attributes={srcAttr.id: -25}))
-        influenceSource5 = IndependentItem(Type(5, effects={effect}, attributes={srcAttr.id: 400}))
-        self.influenceTarget = ShipItem(Type(5, attributes={tgtAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource2 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 50}))
+        influenceSource3 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: -90}))
+        influenceSource4 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: -25}))
+        influenceSource5 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 400}))
+        self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceSource1)
         fit._addHolder(influenceSource2)
         fit._addHolder(influenceSource3)

@@ -49,11 +49,11 @@ class TestOperatorUnknown(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 1.2}))
-        influenceTarget = ShipItem(Type(5, attributes={tgtAttr.id: 100}))
+        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 1.2}))
+        influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceSource)
         fit._addHolder(influenceTarget)
         # Any other operator types are unknown to calculate method,

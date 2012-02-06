@@ -48,12 +48,12 @@ class TestLocationDirectSelf(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        self.effect = Effect(1, EffectCategory.passive)
+        self.effect = Effect(None, EffectCategory.passive)
         self.effect._Effect__infos = {info}
         self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
 
     def testIndependent(self):
-        holder = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
         notExpValue = 100
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
@@ -62,25 +62,25 @@ class TestLocationDirectSelf(TestCase):
         # detached, which is covered by other tests
 
     def testCharacter(self):
-        holder = CharacterItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = CharacterItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
         notExpValue = 100
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testShip(self):
-        holder = ShipItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = ShipItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
         notExpValue = 100
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testSpace(self):
-        holder = SpaceItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = SpaceItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
         notExpValue = 100
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
 
     def testPositioned(self):
-        holder = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = holder
         self.fit._addHolder(holder)
         notExpValue = 100
@@ -91,10 +91,10 @@ class TestLocationDirectSelf(TestCase):
         # and nothing else is affected. We position item as character and
         # check character item to also check that items 'belonging' to self
         # are not affected too
-        influenceSource = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = influenceSource
         self.fit._addHolder(influenceSource)
-        influenceTarget = CharacterItem(Type(2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         expValue = 100
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")

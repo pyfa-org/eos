@@ -29,7 +29,7 @@ class TestDetached(TestCase):
     """Test access to item attributes when it's not attached to any fit"""
 
     def testAttributeAccess(self):
-        type_ = Type(1, attributes={56: 50})
+        type_ = Type(None, attributes={56: 50})
         module = ShipItem(type_)
         attrValue = module.attributes[56]
         expValue = 50

@@ -49,10 +49,10 @@ class TestLocationFilterTarget(TestCase):
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        effect = Effect(1, EffectCategory.passive)
+        effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         # This functionality isn't implemented for now
         self.assertRaises(UnsupportedLocationException, fit._addHolder, influenceSource)
         self.assertRaises(UnsupportedLocationException, fit._removeHolder, influenceSource)
