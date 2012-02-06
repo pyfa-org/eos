@@ -34,8 +34,8 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 class TestLocationDirectArea(TestCase):
     """Test location.area for direct modifications"""
 
-    def setUp(self):
-        self.tgtAttr = tgtAttr = Attribute(1)
+    def testException(self):
+        tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
         info.state = State.offline
@@ -51,10 +51,8 @@ class TestLocationDirectArea(TestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-
-    def testException(self):
+        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
         # This location just isn't used in EVE and unsupported by Eos by design
-        self.assertRaises(UnsupportedLocationException, self.fit._addHolder, self.influenceSource)
-        self.assertRaises(UnsupportedLocationException, self.fit._removeHolder, self.influenceSource)
+        self.assertRaises(UnsupportedLocationException, fit._addHolder, influenceSource)
+        self.assertRaises(UnsupportedLocationException, fit._removeHolder, influenceSource)

@@ -23,6 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category, Attribute
+from .exception import UnsupportedOperatorException
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -184,6 +185,8 @@ class MutableAttributeMap:
                               Operator.postDiv, Operator.postPercent):
                 for modVal in modList:
                     result *= modVal
+            else:
+                raise UnsupportedOperatorException("operator with ID {} is not supported for attribute calculation".format(operator))
         return result
 
     def __penalizeValues(self, modList):

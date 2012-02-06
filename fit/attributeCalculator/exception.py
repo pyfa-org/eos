@@ -40,3 +40,9 @@ class UnsupportedLocationException(AttributeCalculatorException):
     handled by register (set of unsupported locations is different
     for direct and filtered modifications).
     """
+
+class UnsupportedOperatorException(AttributeCalculatorException):
+    """
+    Raised during calculation process, if attribute affector is
+    using operator which is not supported by calculate method.
+    """

@@ -33,8 +33,8 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 class TestLocationDirectOtherSwitch(TestCase):
     """Test direct modification of "other" (e.g. module's charge) when it's changed"""
 
-    def setUp(self):
-        self.tgtAttr = tgtAttr = Attribute(1)
+    def testOther(self):
+        tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
         info.state = State.offline
@@ -50,23 +50,21 @@ class TestLocationDirectOtherSwitch(TestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-        self.fit._addHolder(self.influenceSource)
-
-    def testOther(self):
-        influenceTarget1 = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
-        self.influenceSource._other = influenceTarget1
-        influenceTarget1._other = self.influenceSource
-        self.fit._addHolder(influenceTarget1)
+        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        fit._addHolder(influenceSource)
+        influenceTarget1 = IndependentItem(Type(2, attributes={tgtAttr.id: 100}))
+        influenceSource._other = influenceTarget1
+        influenceTarget1._other = influenceSource
+        fit._addHolder(influenceTarget1)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget1.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
-        self.fit._removeHolder(influenceTarget1)
-        self.influenceSource._other = None
+        self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
+        fit._removeHolder(influenceTarget1)
+        influenceSource._other = None
         influenceTarget1._other = None
-        influenceTarget2 = IndependentItem(Type(3, attributes={self.tgtAttr.id: 100}))
-        self.influenceSource._other = influenceTarget2
-        influenceTarget2._other = self.influenceSource
-        self.fit._addHolder(influenceTarget2)
+        influenceTarget2 = IndependentItem(Type(3, attributes={tgtAttr.id: 100}))
+        influenceSource._other = influenceTarget2
+        influenceTarget2._other = influenceSource
+        fit._addHolder(influenceTarget2)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget2.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], notExpValue, msg="value must be modified")

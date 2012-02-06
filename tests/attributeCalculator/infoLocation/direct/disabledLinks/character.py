@@ -33,8 +33,8 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 class TestLocationDirectCharacterSwitch(TestCase):
     """Test direct modification of character when it's changed"""
 
-    def setUp(self):
-        self.tgtAttr = tgtAttr = Attribute(1)
+    def testCharacter(self):
+        tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
         info.state = State.offline
@@ -50,20 +50,18 @@ class TestLocationDirectCharacterSwitch(TestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(1, EffectCategory.passive)
         effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        self.influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
-        self.fit._addHolder(self.influenceSource)
-
-    def testCharacter(self):
-        influenceTarget1 = IndependentItem(Type(2, attributes={self.tgtAttr.id: 100}))
-        self.fit.character = influenceTarget1
-        self.fit._addHolder(influenceTarget1)
+        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        influenceSource = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 20}))
+        fit._addHolder(influenceSource)
+        influenceTarget1 = IndependentItem(Type(2, attributes={tgtAttr.id: 100}))
+        fit.character = influenceTarget1
+        fit._addHolder(influenceTarget1)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget1.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
-        self.fit._removeHolder(influenceTarget1)
-        self.fit.character = None
-        influenceTarget2 = IndependentItem(Type(3, attributes={self.tgtAttr.id: 100}))
-        self.fit.character = influenceTarget2
-        self.fit._addHolder(influenceTarget2)
+        self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
+        fit._removeHolder(influenceTarget1)
+        fit.character = None
+        influenceTarget2 = IndependentItem(Type(3, attributes={tgtAttr.id: 100}))
+        fit.character = influenceTarget2
+        fit._addHolder(influenceTarget2)
         notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget2.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
