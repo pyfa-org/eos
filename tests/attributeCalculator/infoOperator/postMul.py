@@ -21,39 +21,53 @@
 
 from unittest import TestCase
 
-from eos.const import State, Location, Context, RunTime, Operator, SourceType
+from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
 class TestOperatorPostMul(TestCase):
-    """Test location.self (self-reference) for direct modifications"""
+    """Test post-multiplier operator"""
 
     def setUp(self):
-        self.tgtAttr = tgtAttr = Attribute(1, highIsGood=1, stackable=1)
-        self.srcAttr = srcAttr = Attribute(2)
+        self.tgtAttr = tgtAttr = Attribute(1, highIsGood=1)
+        srcAttr = Attribute(2)
         info = Info()
         info.state = State.offline
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.self_
-        info.filterType = None
+        info.location = Location.ship
+        info.filterType = FilterType.all_
         info.filterValue = None
         info.operator = Operator.postMul
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
-        self.effect = Effect(1, EffectCategory.passive)
-        self.effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        effect = Effect(1, EffectCategory.passive)
+        effect._Effect__infos = {info}
+        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        influenceSource1 = IndependentItem(Type(1, effects={effect}, attributes={srcAttr.id: 1.2}))
+        influenceSource2 = IndependentItem(Type(2, effects={effect}, attributes={srcAttr.id: 1.5}))
+        influenceSource3 = IndependentItem(Type(3, effects={effect}, attributes={srcAttr.id: 0.1}))
+        influenceSource4 = IndependentItem(Type(4, effects={effect}, attributes={srcAttr.id: 0.75}))
+        self.influenceTarget = ShipItem(Type(5, attributes={tgtAttr.id: 100}))
+        fit._addHolder(influenceSource1)
+        fit._addHolder(influenceSource2)
+        fit._addHolder(influenceSource3)
+        fit._addHolder(influenceSource4)
+        fit._addHolder(self.influenceTarget)
 
-    def testIndependent(self):
-        holder = IndependentItem(Type(1, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 1.2}))
-        self.fit._addHolder(holder)
-        expValue = 120
-        self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+    def testUnpenalized(self):
+        self.tgtAttr.stackable = 1
+        expValue = 13.5
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+
+    def testPenalized(self):
+        self.tgtAttr.stackable = 0
+        expValue = 13.7816329
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
