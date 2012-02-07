@@ -102,7 +102,7 @@ class LinkTracker:
             location = None
         return location
 
-    def _addHolder(self, holder):
+    def addHolder(self, holder):
         """
         Track links between passed holder and already
         tracked holders.
@@ -113,7 +113,7 @@ class LinkTracker:
         enabledDirectLocation = self.__getHolderDirectLocation(holder)
         self.__register.registerAffectee(holder, enableDirect=enabledDirectLocation)
 
-    def _removeHolder(self, holder):
+    def removeHolder(self, holder):
         """
         Stop tracking links between passed holder
         and remaining tracked holders.
@@ -124,7 +124,7 @@ class LinkTracker:
         disabledDirectLocation = self.__getHolderDirectLocation(holder)
         self.__register.unregisterAffectee(holder, disableDirect=disabledDirectLocation)
 
-    def _stateSwitch(self, holder, state):
+    def stateSwitch(self, holder, state):
         """
         Handle holder state switch in link tracker. Toggles holder's
         effects on another holders.
@@ -184,7 +184,7 @@ class LinkTracker:
             result = states1.symmetric_difference(states2)
         return result
 
-    def _clearHolderAttributeDependents(self, holder, attrId):
+    def clearHolderAttributeDependents(self, holder, attrId):
         """
         Clear calculated attributes relying on passed attribute.
 

@@ -34,21 +34,21 @@ class Fit:
 
     def __init__(self, attrMetaGetter):
         self._attrMetaGetter = attrMetaGetter
-        self.linkTracker = LinkTracker(self)
+        self._linkTracker = LinkTracker(self)
         self.character = None
         self.ship = None
 
     def _addHolder(self, holder):
         holder.fit = self
-        self.linkTracker._addHolder(holder)
+        self._linkTracker.addHolder(holder)
         state = holder.state
         holder.state = None
-        self.linkTracker._stateSwitch(holder, state)
+        self._linkTracker.stateSwitch(holder, state)
         holder.state = state
 
     def _removeHolder(self, holder):
-        self.linkTracker._stateSwitch(holder, None)
-        self.linkTracker._removeHolder(holder)
+        self._linkTracker.stateSwitch(holder, None)
+        self._linkTracker.removeHolder(holder)
         holder.fit = None
 
 

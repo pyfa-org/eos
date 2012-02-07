@@ -57,7 +57,7 @@ class MutableAttributeMap:
         # Else, we have to run full calculation process
         except KeyError:
             val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
-            self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
 
     def __len__(self):
@@ -83,12 +83,12 @@ class MutableAttributeMap:
         # And make sure all other attributes relying on it
         # are cleared too
         else:
-            self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def __setitem__(self, attrId, value):
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
-        self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
+        self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def keys(self):
         keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
@@ -122,7 +122,7 @@ class MutableAttributeMap:
         # Format: {operator: {values}}
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
-        for affector in self.__holder.fit.linkTracker.getAffectors(self.__holder, attrId=attrId):
+        for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder, attrId=attrId):
             sourceHolder, info = affector
             operator = info.operator
             # Decide if it should be stacking penalized or not, based on stackable property,
