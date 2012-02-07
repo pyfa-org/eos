@@ -39,17 +39,30 @@ class LinkTracker:
         self.__fit = fit
         self.__register = LinkRegister(fit)
 
-    def getAffectors(self, holder):
+    def getAffectors(self, holder, attrId=None):
         """
         Get affectors, influencing passed holder.
 
         Positional arguments:
         holder -- holder, for which we're getting affectors
 
+        Keyword arguments:
+        attrId -- target attribute ID filters; only affectors
+        which influence attribute with this ID will be returned.
+        If None, all affectors influencing holder are returned
+        (default None)
+
         Return value:
         Set with Affector objects
         """
-        return self.__register.getAffectors(holder)
+        if attrId is None:
+            affectors = self.__register.getAffectors(holder)
+        else:
+            affectors = set()
+            for affector in self.__register.getAffectors(holder):
+                if affector.info.targetAttributeId == attrId:
+                    affectors.add(affector)
+        return affectors
 
     def getAffectees(self, affector):
         """

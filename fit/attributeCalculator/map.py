@@ -122,11 +122,8 @@ class MutableAttributeMap:
         # Format: {operator: {values}}
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
-        for affector in self.__holder.fit.linkTracker.getAffectors(self.__holder):
+        for affector in self.__holder.fit.linkTracker.getAffectors(self.__holder, attrId=attrId):
             sourceHolder, info = affector
-            # Skip affectors who do not target attribute being calculated
-            if info.targetAttributeId != attrId:
-                continue
             operator = info.operator
             # Decide if it should be stacking penalized or not, based on stackable property,
             # source item category and operator
