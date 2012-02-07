@@ -18,5 +18,10 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
+from eos.util import logger
 from .eos import Eos
 from .const import State
+
+
+logger.setup()
