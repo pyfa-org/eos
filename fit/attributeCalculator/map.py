@@ -23,7 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category
-from .exception import UnsupportedOperatorException, UnsupportedSourceException
+from .exception import NoAttributeException, UnsupportedOperatorException, UnsupportedSourceException
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -108,7 +108,11 @@ class MutableAttributeMap:
         Calculated attribute value
         """
         # Base attribute value which we'll use for modification
-        result = self.__holder.item.attributes.get(attrId)
+        baseAttribDict = self.__holder.item.attributes
+        try:
+            result = baseAttribDict[attrId]
+        except KeyError as e:
+            raise NoAttributeException("no attribute with ID {} on original item".format(attrId)) from e
         # Attribute metadata
         attrMeta = self.__holder.fit._attrMetaGetter(attrId)
         # Container for non-penalized modifiers

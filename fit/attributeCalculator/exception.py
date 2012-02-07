@@ -57,3 +57,9 @@ class UnsupportedSourceException(AttributeCalculatorException):
     to calculate method.
     """
     pass
+
+class NoAttributeException(AttributeCalculatorException):
+    """
+    Raised when requested attribute doesn't exist, and thus
+    can't be calculated.
+    """
