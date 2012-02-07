@@ -24,17 +24,17 @@ from unittest import TestCase
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
-from eos.eve.const import Attribute as DgmAttribute, EffectCategory
+from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
 
 
-class TestCleanupChainAddition(TestCase):
-    """Check that added item damages all attributes which are now relying on its attributes"""
+class TestCleanupChainChange(TestCase):
+    """Check that changed attribute damages all attributes which are relying on it"""
 
     def testAttribute(self):
-        attr1 = Attribute(DgmAttribute.skillLevel)
+        attr1 = Attribute(1)
         attr2 = Attribute(2)
         attr3 = Attribute(3)
         info1 = Info()

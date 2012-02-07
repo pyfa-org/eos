@@ -22,7 +22,7 @@
 from math import exp
 
 from eos.const import Operator, SourceType
-from eos.eve.const import Category, Attribute
+from eos.eve.const import Category
 from .exception import UnsupportedOperatorException, UnsupportedSourceException
 
 
@@ -86,9 +86,6 @@ class MutableAttributeMap:
             self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
 
     def __setitem__(self, attrId, value):
-        # This method is added to allow direct skill level changes
-        if attrId != Attribute.skillLevel:
-            raise RuntimeError("changing any attribute besides skillLevel is prohibited")
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
         self.__holder.fit.linkTracker._clearHolderAttributeDependents(self.__holder, attrId)
