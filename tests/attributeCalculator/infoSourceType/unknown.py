@@ -23,7 +23,6 @@ from logging import WARNING
 
 
 from eos.const import State, Location, Context, RunTime, Operator
-from eos.fit.attributeCalculator.exception import UnsupportedSourceException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory

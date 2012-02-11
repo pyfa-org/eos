@@ -169,7 +169,7 @@ class MutableAttributeMap:
                 modList.append(modValue)
             # Handle source type failure
             except UnsupportedSourceException as e:
-                msg = "Error detected during processing affectors of item with ID {itemId}: unknown source type with ID {sourceType}"
+                msg = "Error detected during processing affectors of item with ID {itemId} %(itemId)d: unknown source type with ID {sourceType} %(sourceType)d"
                 extra = {"itemId": sourceHolder.item.id, "sourceType": e.args[0]}
                 logger.warning(msg, extra=extra)
                 continue

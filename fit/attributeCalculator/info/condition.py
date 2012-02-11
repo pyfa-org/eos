@@ -58,7 +58,7 @@ class Atom:
         # For other atom types, must be None.
         self.value = None
 
-    def __repr__(self, indent=""):
+    def __str__(self, indent=""):
         """Visualize condition atom tree, starting from self as root"""
         # Scatter logic operator and its arguments into several lines with different
         # indentation level
@@ -66,7 +66,7 @@ class Atom:
             logicLiterals = {AtomLogicOperator.and_: "and",
                              AtomLogicOperator.or_: "or"}
             newindent = "  {0}".format(indent)
-            result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.child1.__repr__(indent=newindent), self.child2.__repr__(indent=newindent))
+            result = "{2}\n{0}{1}\n{3}".format(indent, logicLiterals[self.operator], self.child1.__str__(indent=newindent), self.child2.__str__(indent=newindent))
         # Print comparison on the same line with its arguments, just place them in brackets
         elif self.type == AtomType.comparison:
             compLiterals = {AtomComparisonOperator.equal: "==",
@@ -76,13 +76,13 @@ class Atom:
                             AtomComparisonOperator.greater: ">",
                             AtomComparisonOperator.greaterOrEqual: ">="}
             newindent = "  {0}".format(indent)
-            result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.child1.__repr__(), self.child2.__repr__())
+            result = "{0}({2}) {1} ({3})".format(indent, compLiterals[self.operator], self.child1.__str__(), self.child2.__str__())
         # Math operations are printed on the same line with its arguments
         elif self.type == AtomType.math:
             mathLiterals = {AtomMathOperator.add: "+",
                             AtomMathOperator.subtract: "-"}
             newindent = "  {0}".format(indent)
-            result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.child1.__repr__(), self.child2.__repr__())
+            result = "{0}{2} {1} {3}".format(indent, mathLiterals[self.operator], self.child1.__str__(), self.child2.__str__())
         # Tag carrier location with c, its attribute with a
         elif self.type == AtomType.valueReference:
             result = "c{0}.a{1}".format(self.carrier, self.attribute)
