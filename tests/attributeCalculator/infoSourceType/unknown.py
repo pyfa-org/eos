@@ -53,13 +53,14 @@ class TestSourceTypeUnknown(EosTestCase):
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        holder = IndependentItem(Type(739, effects={effect}, attributes={tgtAttr.id: 50, srcAttr.id: 20}))
+        item = Type(739, effects={effect}, attributes={tgtAttr.id: 50, srcAttr.id: 20})
+        holder = IndependentItem(item)
         fit._addHolder(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 50)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
         # Check item ID in message
-        self.assertEqual(logRecord.itemId, 739)
+        self.assertEqual(logRecord.itemId, item.id)
         # Check malformed source ID in exception message
-        self.assertEqual(logRecord.sourceType, 56)
+        self.assertEqual(logRecord.sourceType, info.sourceType)
