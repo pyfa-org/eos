@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModAddPreAttr(TestCase):
+class TestModAddPreAttr(EosTestCase):
     """Test parsing of trees describing increment by attribute in the beginning of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Ship")
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcAttr = Expression(None, 22, expressionAttributeId=68)
@@ -140,10 +140,11 @@ class TestModAddPreAttr(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModAddPreVal(TestCase):
+class TestModAddPreVal(EosTestCase):
     """Test parsing of trees describing increment by value in the beginning of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Ship")
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcVal = Expression(None, 27, value="200")
@@ -254,10 +255,11 @@ class TestModAddPreVal(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModAddPostAttr(TestCase):
+class TestModAddPostAttr(EosTestCase):
     """Test parsing of trees describing increment by attribute in the end of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Ship")
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcAttr = Expression(None, 22, expressionAttributeId=68)
@@ -368,10 +370,11 @@ class TestModAddPostAttr(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModAddPostVal(TestCase):
+class TestModAddPostVal(EosTestCase):
     """Test parsing of trees describing increment by value in the end of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Ship")
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcVal = Expression(None, 27, value="3")

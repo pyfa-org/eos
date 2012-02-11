@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModAssignPreAttr(TestCase):
+class TestModAssignPreAttr(EosTestCase):
     """Test parsing of trees describing assignments by attribute applied in the beginning of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         # Manually composed example, CCP doesn't use such combination
         eTgt = Expression(None, 24, value="Char")
         eTgtAttr = Expression(None, 22, expressionAttributeId=166)
@@ -141,10 +141,11 @@ class TestModAssignPreAttr(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModAssignPreVal(TestCase):
+class TestModAssignPreVal(EosTestCase):
     """Test parsing of trees describing assignments by value applied in the beginning of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Self")
         eTgtAttr = Expression(None, 22, expressionAttributeId=2)
         eSrcVal = Expression(None, 27, value="1")
@@ -255,10 +256,11 @@ class TestModAssignPreVal(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModAssignPostAttr(TestCase):
+class TestModAssignPostAttr(EosTestCase):
     """Test parsing of trees describing assignments by attribute applied in the end of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         # Manually composed example, CCP doesn't use such combination
         eTgt = Expression(None, 24, value="Char")
         eTgtAttr = Expression(None, 22, expressionAttributeId=166)
@@ -370,10 +372,11 @@ class TestModAssignPostAttr(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModAssignPostVal(TestCase):
+class TestModAssignPostVal(EosTestCase):
     """Test parsing of trees describing assignments by value applied in the end of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Self")
         eTgtAttr = Expression(None, 22, expressionAttributeId=2)
         eSrcVal = Expression(None, 27, value="0")

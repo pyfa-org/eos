@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
@@ -28,9 +26,10 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestOperatorForcedValue(TestCase):
+class TestOperatorForcedValue(EosTestCase):
     """Test that post-assignment forces value of attribute"""
 
     def testForcedValue(self):

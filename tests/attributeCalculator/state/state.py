@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
@@ -28,12 +26,14 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestStateSwitching(TestCase):
+class TestStateSwitching(EosTestCase):
     """Test holder state switching and info states"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr1 = Attribute(2)
         srcAttr2 = Attribute(3)

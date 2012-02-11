@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import EffectBuildStatus
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestIncompleteDuration(TestCase):
+class TestIncompleteDuration(EosTestCase):
     """Test parsing of trees, which include modifiers, which are not converted into infos"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         # Duration modifier, except for top-most expression
         eTgt = Expression(None, 24, value="Ship")
         eTgtAttr = Expression(None, 22, expressionAttributeId=9)

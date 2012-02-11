@@ -19,14 +19,13 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import EffectBuildStatus
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestInactive(TestCase):
+class TestInactive(EosTestCase):
     """Test parsing of trees involving disabled operands"""
 
     def testAttack(self):

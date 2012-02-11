@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModOwnSrq(TestCase):
+class TestModOwnSrq(EosTestCase):
     """Test parsing of trees describing modification filtered by owner and skill requirement"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgtOwn = Expression(None, 24, value="Char")
         eTgtSrq = Expression(None, 29, expressionTypeId=3412)
         eTgtAttr = Expression(None, 22, expressionAttributeId=1372)

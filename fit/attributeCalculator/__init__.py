@@ -17,3 +17,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+
+from logging import getLogger
+
+
+# Default logger for this module
+logger = getLogger("eos.attributeCalculator")

@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModGangItm(TestCase):
+class TestModGangItm(EosTestCase):
     """Test parsing of trees describing gang-mates' direct ship modification"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgtAttr = Expression(None, 22, expressionAttributeId=70)
         eOptr = Expression(None, 21, value="PostPercent")
         eSrcAttr = Expression(None, 22, expressionAttributeId=151)

@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModSubPreAttr(TestCase):
+class TestModSubPreAttr(EosTestCase):
     """Test parsing of trees describing decrement by attribute in the beginning of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Target")
         eTgtAttr = Expression(None, 22, expressionAttributeId=18)
         eSrcAttr = Expression(None, 22, expressionAttributeId=97)
@@ -140,10 +140,11 @@ class TestModSubPreAttr(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModSubPreVal(TestCase):
+class TestModSubPreVal(EosTestCase):
     """Test parsing of trees describing decrement by value in the beginning of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Target")
         eTgtAttr = Expression(None, 22, expressionAttributeId=18)
         eSrcVal = Expression(None, 27, value="7")
@@ -254,10 +255,11 @@ class TestModSubPreVal(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModSubPostAttr(TestCase):
+class TestModSubPostAttr(EosTestCase):
     """Test parsing of trees describing decrement by attribute in the end of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Target")
         eTgtAttr = Expression(None, 22, expressionAttributeId=266)
         eSrcAttr = Expression(None, 22, expressionAttributeId=84)
@@ -368,10 +370,11 @@ class TestModSubPostAttr(TestCase):
         self.assertEqual(info.context, expContext, msg="info context must be local (ID {})".format(expContext))
 
 
-class TestModSubPostVal(TestCase):
+class TestModSubPostVal(EosTestCase):
     """Test parsing of trees describing decrement by value in the end of the cycle"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgt = Expression(None, 24, value="Target")
         eTgtAttr = Expression(None, 22, expressionAttributeId=266)
         eSrcVal = Expression(None, 27, value="1")

@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType, InvType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.fit.fit import Fit
@@ -29,15 +27,17 @@ from eos.eve.const import Attribute as AttributeIDs, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestFilterLocationSkillrqSelf(TestCase):
+class TestFilterLocationSkillrqSelf(EosTestCase):
     """
     Test location-skill requirement filter, where skill
     requirement references typeID of info carrier
     """
 
     def setUp(self):
+        EosTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()

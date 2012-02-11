@@ -19,20 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestAccessNonExistent(TestCase):
+class TestAccessNonExistent(EosTestCase):
     """Test return value when requesting attribute which doesn't exist"""
 
     def testAttributeAccess(self):
         fit = Fit(lambda attrId: {}[attrId])
         holder = IndependentItem(Type(None))
         fit._addHolder(holder)
-        # As our raw item object doesn't contain base attribute
-        # value, error should be raised
         self.assertRaises(NoAttributeException, holder.attributes.__getitem__, 1)

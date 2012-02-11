@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
@@ -29,9 +27,10 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestLocationDirectArea(TestCase):
+class TestLocationDirectArea(EosTestCase):
     """Test location.area for direct modifications"""
 
     def testException(self):

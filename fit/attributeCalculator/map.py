@@ -106,6 +106,10 @@ class MutableAttributeMap:
 
         Return value:
         Calculated attribute value
+
+        Possible exceptions:
+        NoAttributeException -- attribute cannot be
+        calculated, as its base value is not available
         """
         # Base attribute value which we'll use for modification
         baseAttribDict = self.__holder.item.attributes

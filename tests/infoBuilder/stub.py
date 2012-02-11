@@ -19,14 +19,13 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import EffectBuildStatus
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestStubInt0(TestCase):
+class TestStubInt0(EosTestCase):
     """Test parsing of trees describing integer-0 stub"""
 
     def testBuildSuccess(self):
@@ -38,7 +37,7 @@ class TestStubInt0(TestCase):
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
 
-class TestStubInt1(TestCase):
+class TestStubInt1(EosTestCase):
     """Test parsing of trees describing integer-1 stub"""
 
     def testBuildSuccess(self):
@@ -50,7 +49,7 @@ class TestStubInt1(TestCase):
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
 
-class TestStubBoolTrue(TestCase):
+class TestStubBoolTrue(EosTestCase):
     """Test parsing of trees describing boolean-True stub"""
 
     def tesBuildSuccess(self):
@@ -62,7 +61,7 @@ class TestStubBoolTrue(TestCase):
         self.assertEqual(len(infos), 0, msg="no infos must be generated")
 
 
-class TestStubMixed(TestCase):
+class TestStubMixed(EosTestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def testBuildSuccess(self):

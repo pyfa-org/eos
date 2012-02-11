@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.exception import BadContainerException
 from eos.fit.attributeCalculator.info.info import Info
@@ -29,12 +27,14 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestLocationFilterSelf(TestCase):
+class TestLocationFilterSelf(EosTestCase):
     """Test location.self (self-reference) for massive filtered modifications"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()

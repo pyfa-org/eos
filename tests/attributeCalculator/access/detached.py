@@ -19,13 +19,12 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import ShipItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestAccessDetached(TestCase):
+class TestAccessDetached(EosTestCase):
     """Test access to item attributes when it's not attached to any fit"""
 
     def testAttributeAccess(self):

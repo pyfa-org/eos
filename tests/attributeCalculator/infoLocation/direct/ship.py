@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
@@ -28,12 +26,14 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestLocationDirectShip(TestCase):
+class TestLocationDirectShip(EosTestCase):
     """Test location.ship for direct modifications"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()

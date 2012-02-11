@@ -23,12 +23,11 @@ import logging
 import os.path
 
 
+logger = logging.getLogger("eos")
+
+
 def setup():
     logger = logging.getLogger("eos")
     logPath = os.path.expanduser(os.path.join("~", "Desktop", "eoslog"))
     handler = logging.FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
     logger.addHandler(handler)
-
-
-def shutdown():
-    logging.shutdown()

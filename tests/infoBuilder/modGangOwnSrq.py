@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModGangOwnSrq(TestCase):
+class TestModGangOwnSrq(EosTestCase):
     """Test parsing of trees describing gang-mates' in-space items modification filtered by skill requirement"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         # Manually composed example, as CCP doesn't use this modification type in any effect
         eTgtSrq = Expression(None, 29, expressionTypeId=3326)
         eTgtAttr = Expression(None, 22, expressionAttributeId=654)

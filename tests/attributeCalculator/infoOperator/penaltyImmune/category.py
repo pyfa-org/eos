@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
@@ -28,12 +26,14 @@ from eos.eve.const import Category, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestOperatorPenaltyImmuneCategory(TestCase):
+class TestOperatorPenaltyImmuneCategory(EosTestCase):
     """Test that items from several categories are immune to stacking penalty"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1, stackable=False)
         self.srcAttr = srcAttr = Attribute(2)
         info = Info()

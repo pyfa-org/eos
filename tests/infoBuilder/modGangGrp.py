@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModGangGrp(TestCase):
+class TestModGangGrp(EosTestCase):
     """Test parsing of trees describing gang-mates' ship modules modification filtered by group"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         # Manually composed example, as CCP doesn't use this modification type in any effect
         eTgtGrp = Expression(None, 26, expressionGroupId=80)
         eTgtAttr = Expression(None, 22, expressionAttributeId=158)

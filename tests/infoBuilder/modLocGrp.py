@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from unittest import TestCase
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from eos.tests.eosTestCase import EosTestCase
 
 
-class TestModLocGrp(TestCase):
+class TestModLocGrp(EosTestCase):
     """Test parsing of trees describing modification filtered by location and group"""
 
     def setUp(self):
+        EosTestCase.setUp(self)
         eTgtLoc = Expression(None, 24, value="Ship")
         eTgtGrp = Expression(None, 26, expressionGroupId=46)
         eTgtAttr = Expression(None, 22, expressionAttributeId=6)
