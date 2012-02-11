@@ -19,6 +19,9 @@
 #===============================================================================
 
 
+from logging import WARNING
+
+
 from eos.const import State, Location, Context, RunTime, Operator
 from eos.fit.attributeCalculator.exception import UnsupportedSourceException
 from eos.fit.attributeCalculator.info.info import Info
@@ -35,9 +38,7 @@ class TestSourceTypeUnknown(EosTestCase):
 
     def testUnknown(self):
         tgtAttr = Attribute(1)
-        # Use attribute with ID equal to info.sourceValue to double-check
-        # it won't be taken as source
-        srcAttr = Attribute(50)
+        srcAttr = Attribute(2)
         info = Info()
         info.state = State.offline
         info.context = Context.local
@@ -48,12 +49,18 @@ class TestSourceTypeUnknown(EosTestCase):
         info.filterValue = None
         info.operator = Operator.postPercent
         info.targetAttributeId = tgtAttr.id
-        info.sourceType = None
+        info.sourceType = 56
         info.sourceValue = 37
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        holder = IndependentItem(Type(None, effects={effect}, attributes={tgtAttr.id: 50, srcAttr.id: 20}))
+        holder = IndependentItem(Type(739, effects={effect}, attributes={tgtAttr.id: 50, srcAttr.id: 20}))
         fit._addHolder(holder)
-        # Check that source attribute is properly modified by 50 percent
-        self.assertRaises(UnsupportedSourceException, holder.attributes.__getitem__, tgtAttr.id)
+        self.assertAlmostEqual(holder.attributes[tgtAttr.id], 50)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        # Check item ID in message
+        self.assertEqual(logRecord.itemId, 739)
+        # Check malformed source ID in exception message
+        self.assertEqual(logRecord.sourceType, 56)

@@ -55,11 +55,19 @@ class UnsupportedSourceException(AttributeCalculatorException):
     """
     Raised during calculation process, if source type is unknown
     to calculate method.
+
+    Positional arguments:
+    sourceType -- ID of sourceType which triggered exception
     """
-    pass
+
+    def __str__(self):
+        string =  "source type with ID {} is not supported for attribute calculation".format(self.args[0])
+        return string
+
 
 class NoAttributeException(AttributeCalculatorException):
     """
     Raised when requested attribute doesn't exist, and thus
     can't be calculated.
     """
+    pass

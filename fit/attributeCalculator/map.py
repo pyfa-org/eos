@@ -23,6 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category
+from . import logger
 from .exception import NoAttributeException, UnsupportedOperatorException, UnsupportedSourceException
 
 
@@ -127,44 +128,51 @@ class MutableAttributeMap:
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
         for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder, attrId=attrId):
-            sourceHolder, info = affector
-            operator = info.operator
-            # Decide if it should be stacking penalized or not, based on stackable property,
-            # source item category and operator
-            penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
-            penalizableOperators = {Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv}
-            penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
-                        and operator in penalizableOperators)
-            # If source value is attribute reference, get its value
-            if info.sourceType == SourceType.attribute:
-                modValue = sourceHolder.attributes[info.sourceValue]
-            # For value modifications, just use stored in info value
-            elif info.sourceType == SourceType.value:
-                modValue = info.sourceValue
-            else:
-                raise UnsupportedSourceException("source type with ID {} is not supported for attribute calculation".format(info.sourceType))
-            # Normalize addition/subtraction, so it's always
-            # acts as addition
-            if operator == Operator.modSub:
-                modValue = -modValue
-            # Normalize multiplicative modifiers, converting them into form of
-            # multiplier
-            elif operator in {Operator.preDiv, Operator.postDiv}:
-                modValue = 1 / modValue
-            elif operator == Operator.postPercent:
-                modValue = modValue / 100 + 1
-            # Add value to appropriate dictionary
-            if penalize is True:
-                try:
-                    modList = penalizedMods[operator]
-                except KeyError:
-                    modList = penalizedMods[operator] = []
-            else:
-                try:
-                    modList = normalMods[operator]
-                except KeyError:
-                    modList = normalMods[operator] = []
-            modList.append(modValue)
+            try:
+                sourceHolder, info = affector
+                operator = info.operator
+                # Decide if it should be stacking penalized or not, based on stackable property,
+                # source item category and operator
+                penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
+                penalizableOperators = {Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv}
+                penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
+                            and operator in penalizableOperators)
+                # If source value is attribute reference, get its value
+                if info.sourceType == SourceType.attribute:
+                    modValue = sourceHolder.attributes[info.sourceValue]
+                # For value modifications, just use stored in info value
+                elif info.sourceType == SourceType.value:
+                    modValue = info.sourceValue
+                else:
+                    raise UnsupportedSourceException(info.sourceType)
+                # Normalize addition/subtraction, so it's always
+                # acts as addition
+                if operator == Operator.modSub:
+                    modValue = -modValue
+                # Normalize multiplicative modifiers, converting them into form of
+                # multiplier
+                elif operator in {Operator.preDiv, Operator.postDiv}:
+                    modValue = 1 / modValue
+                elif operator == Operator.postPercent:
+                    modValue = modValue / 100 + 1
+                # Add value to appropriate dictionary
+                if penalize is True:
+                    try:
+                        modList = penalizedMods[operator]
+                    except KeyError:
+                        modList = penalizedMods[operator] = []
+                else:
+                    try:
+                        modList = normalMods[operator]
+                    except KeyError:
+                        modList = normalMods[operator] = []
+                modList.append(modValue)
+            # Handle source type failure
+            except UnsupportedSourceException as e:
+                msg = "Error detected during processing affectors of item with ID {itemId}: unknown source type with ID {sourceType}"
+                extra = {"itemId": sourceHolder.item.id, "sourceType": e.args[0]}
+                logger.warning(msg, extra=extra)
+                continue
         # When data gathering was finished, process penalized modifiers
         # They are penalized on per-operator basis
         for operator, modList in penalizedMods.items():
