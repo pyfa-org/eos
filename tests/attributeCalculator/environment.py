@@ -30,10 +30,22 @@ from eos.fit.attributeCalculator.tracker import LinkTracker
 from eos.fit.holder import MutableAttributeHolder
 
 
-class Fit:
+class DataHandler:
+    def __init__(self, attrMetaData):
+        self.__attrMetaData = attrMetaData
 
-    def __init__(self, attrMetaGetter):
-        self._attrMetaGetter = attrMetaGetter
+    def getAttribute(self, attrId):
+        return self.__attrMetaData[attrId]
+
+
+class Eos:
+    def __init__(self, attrMetaData):
+        self._dataHandler = DataHandler(attrMetaData)
+
+
+class Fit:
+    def __init__(self, attrMetaData):
+        self._eos = Eos(attrMetaData)
         self._linkTracker = LinkTracker(self)
         self.character = None
         self.ship = None

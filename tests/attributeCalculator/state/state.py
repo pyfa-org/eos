@@ -90,9 +90,8 @@ class TestStateSwitching(EosTestCase):
         # Overload category will make sure that holder can enter all states
         effect = Effect(None, EffectCategory.overload)
         effect._Effect__infos = {infoOff, infoOn, infoAct, infoOver}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr1.id: srcAttr1,
-                                       srcAttr2.id: srcAttr2, srcAttr3.id: srcAttr3,
-                                       srcAttr4.id: srcAttr4}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr1.id: srcAttr1, srcAttr2.id: srcAttr2,
+                        srcAttr3.id: srcAttr3, srcAttr4.id: srcAttr4})
         self.holder = IndependentItem(Type(None, effects={effect}, attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,
                                                                                srcAttr2.id: 1.3, srcAttr3.id: 1.5,
                                                                                srcAttr4.id: 1.7}))

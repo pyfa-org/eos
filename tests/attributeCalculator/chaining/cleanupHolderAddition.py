@@ -67,8 +67,7 @@ class TestCleanupChainAddition(EosTestCase):
         effect2._Effect__infos = {info2}
         holder2 = IndependentItem(Type(None, effects={effect2}, attributes={attr2.id: 7.5}))
         holder3 = ShipItem(Type(None, attributes={attr3.id: 0.5}))
-        fit = Fit(lambda attrId: {attr1.id: attr1, attr2.id: attr2,
-                                  attr3.id: attr3}[attrId])
+        fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3})
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)
@@ -114,7 +113,7 @@ class TestCleanupChainAddition(EosTestCase):
         effect2._Effect__infos = {info2}
         holder2 = IndependentItem(Type(None, effects={effect2}, attributes={attr1.id: 7.5}))
         holder3 = ShipItem(Type(None, attributes={attr2.id: 0.5}))
-        fit = Fit(lambda attrId: {attr1.id: attr1, attr2.id: attr2}[attrId])
+        fit = Fit({attr1.id: attr1, attr2.id: attr2})
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)

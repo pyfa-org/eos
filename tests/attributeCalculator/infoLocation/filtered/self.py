@@ -51,7 +51,7 @@ class TestLocationFilterSelf(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testShip(self):

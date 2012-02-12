@@ -50,7 +50,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         info.sourceValue = srcAttr.id
         self.effect = Effect(1, EffectCategory.passive)
         self.effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testShip(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.ship, attributes={self.srcAttr.id: 50}))

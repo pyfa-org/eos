@@ -49,7 +49,7 @@ class TestLocationDirectShipSwitch(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         fit._addHolder(influenceSource)
         influenceTarget1 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))

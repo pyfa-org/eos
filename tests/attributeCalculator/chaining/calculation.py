@@ -82,8 +82,7 @@ class TestCalculationChain(EosTestCase):
         effect3._Effect__infos = {info3}
         holder2 = IndependentItem(Type(None, effects={effect3}, attributes={attr3.id: 150}))
         holder3 = ShipItem(Type(None, attributes={attr4.id: 12.5}))
-        fit = Fit(lambda attrId: {attr1.id: attr1, attr2.id: attr2,
-                                  attr3.id: attr3, attr4.id: attr4}[attrId])
+        fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3, attr4.id: attr4})
         fit._addHolder(holder1)
         fit.ship = holder2
         fit._addHolder(holder2)

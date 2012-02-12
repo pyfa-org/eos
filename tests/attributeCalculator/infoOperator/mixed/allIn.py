@@ -35,7 +35,7 @@ class TestOperatorAllIn(EosTestCase):
     def testAllIn(self):
         tgtAttr = Attribute(1, stackable=False)
         srcAttr = Attribute(2)
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         infoPreAss = Info()
         infoPreAss.state = State.offline
         infoPreAss.context = Context.local

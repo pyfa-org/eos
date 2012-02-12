@@ -50,7 +50,7 @@ class TestOperatorPreMul(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource1 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 1.2}))
         influenceSource2 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 1.5}))
         influenceSource3 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 0.1}))

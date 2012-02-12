@@ -50,7 +50,7 @@ class TestLocationDirectSelf(EosTestCase):
         info.sourceValue = srcAttr.id
         self.effect = Effect(None, EffectCategory.passive)
         self.effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testIndependent(self):
         holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))

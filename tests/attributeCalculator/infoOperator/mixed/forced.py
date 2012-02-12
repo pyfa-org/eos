@@ -35,7 +35,7 @@ class TestOperatorForcedValue(EosTestCase):
     def testForcedValue(self):
         tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         infoPreAss = Info()
         infoPreAss.state = State.offline
         infoPreAss.context = Context.local

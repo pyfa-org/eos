@@ -50,7 +50,7 @@ class TestLocationDirectSpace(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly

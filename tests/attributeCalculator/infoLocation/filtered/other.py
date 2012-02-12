@@ -50,7 +50,7 @@ class TestLocationFilterOther(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         # Charge's container or module's charge can't be 'owner'
         # of other holders, thus such modification type is unsupported

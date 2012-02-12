@@ -52,7 +52,7 @@ class TestSourceTypeUnknown(EosTestCase):
         info.sourceValue = 37
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(739, effects={effect}, attributes={srcAttr.id: 20}))
         self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 50}))
         self.fit._addHolder(influenceSource)

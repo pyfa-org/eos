@@ -50,7 +50,7 @@ class TestOperatorSub(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource1 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: -10}))
         influenceSource2 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
         influenceSource3 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: -53}))

@@ -21,12 +21,11 @@
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
-from eos.fit.fit import Fit
 from eos.eve.attribute import Attribute
 from eos.eve.const import Attribute as DgmAttribute, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem, SpaceItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -52,7 +51,7 @@ class TestFilterLocationSkillrq(EosTestCase):
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         self.fit._addHolder(self.influenceSource)
 
     def testMatch(self):

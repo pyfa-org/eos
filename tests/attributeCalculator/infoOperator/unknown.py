@@ -52,7 +52,7 @@ class TestOperatorUnknown(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(83, effects={effect}, attributes={srcAttr.id: 1.2}))
         self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         self.fit._addHolder(influenceSource)
