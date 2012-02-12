@@ -123,7 +123,7 @@ class MutableAttributeMap:
         except KeyError as e:
             raise NoAttributeException("no attribute with ID {} on original item".format(attrId)) from e
         # Attribute metadata
-        attrMeta = self.__holder.fit._attrMetaGetter(attrId)
+        attrMeta = self.__holder.fit._eos._dataHandler.getAttribute(attrId)
         # Container for non-penalized modifiers
         # Format: {operator: {values}}
         normalMods = {}

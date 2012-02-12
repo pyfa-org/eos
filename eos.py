@@ -29,38 +29,38 @@ from eos.fit.item.implant import Implant
 
 class Eos:
     def __init__(self, dataHandler):
-        self.__dataHandler = dataHandler
+        self._dataHandler = dataHandler
 
     def makeFit(self):
-        fit = Fit(self.__dataHandler.getAttribute)
+        fit = Fit(self)
         return fit
 
     def makeCharacter(self):
-        characterType = self.__dataHandler.getType(Type.characterStatic)
+        characterType = self._dataHandler.getType(Type.characterStatic)
         character = Character(characterType)
         return character
 
     def makeShip(self, typeId):
-        shipType = self.__dataHandler.getType(typeId)
+        shipType = self._dataHandler.getType(typeId)
         ship = Ship(shipType)
         return ship
 
     def makeModule(self, typeId):
-        moduleType = self.__dataHandler.getType(typeId)
+        moduleType = self._dataHandler.getType(typeId)
         module = Module(moduleType)
         return module
 
     def makeCharge(self, typeId):
-        chargeType = self.__dataHandler.getType(typeId)
+        chargeType = self._dataHandler.getType(typeId)
         charge = Charge(chargeType)
         return charge
 
     def makeDrone(self, typeId):
-        droneType = self.__dataHandler.getType(typeId)
+        droneType = self._dataHandler.getType(typeId)
         drone = Drone(droneType)
         return drone
 
     def makeImplant(self, typeId):
-        implantType = self.__dataHandler.getType(typeId)
+        implantType = self._dataHandler.getType(typeId)
         implant = Implant(implantType)
         return implant

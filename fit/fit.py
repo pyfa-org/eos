@@ -29,11 +29,10 @@ class Fit:
     Fit holds all fit items and facilities to calculate their attributes.
 
     Positional arguments:
-    attrMetaGetter -- getter for attribute metadata, which should return
-    eve.Attribute object when ran with attribute ID passed to it
+    eos -- eos instance within which fit is created
     """
 
-    def __init__(self, attrMetaGetter):
+    def __init__(self, eos):
         # Variables used by properties
         self.__ship = None
         self.__character = None
@@ -41,7 +40,7 @@ class Fit:
         self._linkTracker = LinkTracker(self)
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
-        self._attrMetaGetter = attrMetaGetter
+        self._eos = eos
         # Character-related holder containers
         self.skills = HolderContainer(self)
         self.implants = SlotHolderContainer(self, Attribute.implantness)
