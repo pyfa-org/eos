@@ -21,7 +21,6 @@
 
 from logging import WARNING
 
-
 from eos.const import State, Location, Context, RunTime, Operator
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
@@ -35,7 +34,7 @@ from eos.tests.eosTestCase import EosTestCase
 class TestSourceTypeUnknown(EosTestCase):
     """Test how calculator reacts to unknown source type"""
 
-    def testUnknown(self):
+    def testLog(self):
         tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()

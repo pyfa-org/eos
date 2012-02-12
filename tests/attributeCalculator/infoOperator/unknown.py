@@ -19,6 +19,8 @@
 #===============================================================================
 
 
+from logging import WARNING
+
 from eos.const import State, Location, Context, RunTime, FilterType, SourceType
 from eos.fit.attributeCalculator.exception import UnsupportedOperatorException
 from eos.fit.attributeCalculator.info.info import Info
@@ -33,7 +35,7 @@ from eos.tests.eosTestCase import EosTestCase
 class TestOperatorUnknown(EosTestCase):
     """Test unknown operator type"""
 
-    def testError(self):
+    def testLog(self):
         tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -44,17 +46,20 @@ class TestOperatorUnknown(EosTestCase):
         info.location = Location.ship
         info.filterType = FilterType.all_
         info.filterValue = None
-        info.operator = None
+        info.operator = 1008
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
-        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 1.2}))
+        influenceSource = IndependentItem(Type(83, effects={effect}, attributes={srcAttr.id: 1.2}))
         influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceSource)
         fit._addHolder(influenceTarget)
-        # Any other operator types are unknown to calculate method,
-        # thus it should raise corresponding exception
-        self.assertRaises(UnsupportedOperatorException, influenceTarget.attributes.__getitem__, tgtAttr.id)
+        self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 100)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.args.get("itemId"), 83)
+        self.assertEqual(logRecord.args.get("operator"), 1008)

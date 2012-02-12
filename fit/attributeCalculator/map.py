@@ -184,19 +184,25 @@ class MutableAttributeMap:
             modList.append(penalizedValue)
         # Calculate result of normal dictionary, according to operator order
         for operator in sorted(normalMods):
-            modList = normalMods[operator]
-            # Pick best modifier for assignments, based on highIsGood value
-            if operator in (Operator.preAssignment, Operator.postAssignment):
-                result = max(modList) if attrMeta.highIsGood is True else min(modList)
-            elif operator in (Operator.modAdd, Operator.modSub):
-                for modVal in modList:
-                    result += modVal
-            elif operator in (Operator.preMul, Operator.preDiv, Operator.postMul,
-                              Operator.postDiv, Operator.postPercent):
-                for modVal in modList:
-                    result *= modVal
-            else:
-                raise UnsupportedOperatorException("operator with ID {} is not supported for attribute calculation".format(operator))
+            try:
+                modList = normalMods[operator]
+                # Pick best modifier for assignments, based on highIsGood value
+                if operator in (Operator.preAssignment, Operator.postAssignment):
+                    result = max(modList) if attrMeta.highIsGood is True else min(modList)
+                elif operator in (Operator.modAdd, Operator.modSub):
+                    for modVal in modList:
+                        result += modVal
+                elif operator in (Operator.preMul, Operator.preDiv, Operator.postMul,
+                                  Operator.postDiv, Operator.postPercent):
+                    for modVal in modList:
+                        result *= modVal
+                else:
+                    raise UnsupportedOperatorException(operator)
+            except UnsupportedOperatorException as e:
+                msg = "unknown operator %(operator)d on item %(itemId)d"
+                data = {"itemId": sourceHolder.item.id, "operator": e.args[0]}
+                logger.warning(msg, data)
+                continue
         return result
 
     def __penalizeValues(self, modList):
