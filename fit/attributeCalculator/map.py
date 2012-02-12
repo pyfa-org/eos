@@ -37,6 +37,10 @@ class MutableAttributeMap:
 
     Positional arguments:
     holder -- holder, to which this map is assigned
+
+    Possible exceptions:
+    NoAttributeException -- raised on access to attribute which
+    cannot be calculated
     """
 
     def __init__(self, holder):

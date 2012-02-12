@@ -21,7 +21,7 @@
 
 from logging import WARNING
 
-from eos.const import State, Location, Context, RunTime, FilterType, SourceType
+from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
@@ -34,9 +34,10 @@ from eos.tests.eosTestCase import EosTestCase
 class TestOperatorUnknown(EosTestCase):
     """Test unknown operator type"""
 
-    def testLog(self):
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+    def setUp(self):
+        EosTestCase.setUp(self)
+        self.tgtAttr = tgtAttr = Attribute(1)
+        self.srcAttr = srcAttr = Attribute(2)
         info = Info()
         info.state = State.offline
         info.context = Context.local
@@ -51,14 +52,37 @@ class TestOperatorUnknown(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
+        self.fit = Fit(lambda attrId: {tgtAttr.id: tgtAttr, srcAttr.id: srcAttr}[attrId])
         influenceSource = IndependentItem(Type(83, effects={effect}, attributes={srcAttr.id: 1.2}))
-        influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
-        fit._addHolder(influenceSource)
-        fit._addHolder(influenceTarget)
-        self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 100)
+        self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
+        self.fit._addHolder(influenceSource)
+        self.fit._addHolder(self.influenceTarget)
+
+    def testLog(self):
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
         self.assertTrue("item 83" in logRecord.msg)
         self.assertTrue("operator 1008" in logRecord.msg)
+
+    def testCombination(self):
+        info = Info()
+        info.state = State.offline
+        info.context = Context.local
+        info.runTime = RunTime.duration
+        info.gang = False
+        info.location = Location.ship
+        info.filterType = FilterType.all_
+        info.filterValue = None
+        info.operator = Operator.postMul
+        info.targetAttributeId = self.tgtAttr.id
+        info.sourceType = SourceType.attribute
+        info.sourceValue = self.srcAttr.id
+        effect = Effect(None, EffectCategory.passive)
+        effect._Effect__infos = {info}
+        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={self.srcAttr.id: 1.5}))
+        self.fit._addHolder(influenceSource)
+        # Make sure presence of invalid operator doesn't prevent
+        # from calculating value based on valid infos
+        self.assertNotAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 100)
