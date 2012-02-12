@@ -60,6 +60,6 @@ class TestSourceTypeUnknown(EosTestCase):
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
         # Check item ID in message
-        self.assertEqual(logRecord.itemId, 739)
+        self.assertEqual(logRecord.args.get("itemId"), 739)
         # Check malformed source ID in exception message
-        self.assertEqual(logRecord.sourceType, 56)
+        self.assertEqual(logRecord.args.get("sourceType"), 56)

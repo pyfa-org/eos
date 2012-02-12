@@ -23,11 +23,10 @@ import logging
 import os.path
 
 
-logger = logging.getLogger("eos")
-
-
 def setup():
     logger = logging.getLogger("eos")
     logPath = os.path.expanduser(os.path.join("~", "Desktop", "eoslog"))
     handler = logging.FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
+    formatter = logging.Formatter(fmt="{asctime}: {message}", style="{")
+    handler.setFormatter(formatter)
     logger.addHandler(handler)
