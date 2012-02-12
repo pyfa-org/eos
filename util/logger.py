@@ -19,14 +19,41 @@
 #===============================================================================
 
 
-import logging
 import os.path
+from logging import getLogger, FileHandler, Formatter
 
 
-def setup():
-    logger = logging.getLogger("eos")
-    logPath = os.path.expanduser(os.path.join("~", "Desktop", "eoslog"))
-    handler = logging.FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
-    formatter = logging.Formatter(fmt="{asctime}: {message}", style="{")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+class Logger:
+    """
+    Handles everything related to logs.
+
+    Positional arguments:
+    name -- name of root logger for this instance,
+    used in log filename
+    """
+    def __init__(self, name):
+        self.__rootLogger = getLogger(name)
+        # Clear any handlers this logger already may have
+        for handler in self.__rootLogger.handlers:
+            self.__rootLogger.removeHandler(handler)
+        # Define how logger will handle log entries
+        logPath = os.path.expanduser(os.path.join("~", "Desktop", "eos_logs", "{}.log".format(name)))
+        handler = FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
+        formatter = Formatter(fmt="{asctime}: {message}", style="{")
+        handler.setFormatter(formatter)
+        self.__rootLogger.addHandler(handler)
+
+    def getLogger(self, name=None):
+        """
+        Get python's logger instance, which may be used to log
+        actual entries according to logging module documentation.
+
+        Keyword arguments:
+        name -- name of child logger to get, if None is passed,
+        root logger is returned (default None)
+        """
+        if name is None:
+            logger = self.__rootLogger
+        else:
+            logger = self.__rootLogger.getChild(name)
+        return logger

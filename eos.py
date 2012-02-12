@@ -26,10 +26,12 @@ from eos.fit.item.module import Module
 from eos.fit.item.charge import Charge
 from eos.fit.item.drone import Drone
 from eos.fit.item.implant import Implant
+from eos.util.logger import Logger
 
 class Eos:
-    def __init__(self, dataHandler):
+    def __init__(self, dataHandler, name="eos"):
         self._dataHandler = dataHandler
+        self._logger = Logger(name)
 
     def makeFit(self):
         fit = Fit(self)

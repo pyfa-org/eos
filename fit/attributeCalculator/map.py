@@ -23,7 +23,6 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category
-from . import logger
 from .exception import NoAttributeException, UnsupportedOperatorException, UnsupportedSourceException
 
 
@@ -173,6 +172,7 @@ class MutableAttributeMap:
                 modList.append(modValue)
             # Handle source type failure
             except UnsupportedSourceException as e:
+                logger = self.__holder.fit._eos._logger.getLogger("attributeCalculator")
                 msg = "unknown info source type {} on item {}".format(e.args[0], sourceHolder.item.id)
                 logger.warning(msg)
                 continue
@@ -202,6 +202,7 @@ class MutableAttributeMap:
                 else:
                     raise UnsupportedOperatorException(operator)
             except UnsupportedOperatorException as e:
+                logger = self.__holder.fit._eos._logger.getLogger("attributeCalculator")
                 msg = "unknown info operator {} on item {}".format(e.args[0], sourceHolder.item.id)
                 logger.warning(msg)
                 continue
