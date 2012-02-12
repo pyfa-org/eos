@@ -21,6 +21,7 @@
 
 from eos.const import Location, FilterType, InvType
 from eos.util.keyedSet import KeyedSet
+from . import logger
 from .exception import BadContainerException, UnsupportedLocationException
 
 
@@ -103,6 +104,14 @@ class LinkRegister:
         Return value:
         (key, affectorMap) tuple, where key should be used to access
         data set (appropriate to passed affector) in affectorMap
+
+        Possible exceptions:
+        BadContainerException -- raised if affector's info specifies filtered
+        modification and target location refers self, but affector's holder
+        isn't in position to be target for filtered modifications
+        UnsupportedLocationException -- raised when affector's info target
+        location is not supported (supported locations depend on
+        direct/filtered modification)
         """
         sourceHolder, info = affector
         # For each filter type, define affector map and key to use
@@ -144,25 +153,25 @@ class LinkRegister:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             else:
-                raise UnsupportedLocationException("unsupported location (ID {}) for direct item modification".format(info.location))
+                raise UnsupportedLocationException(info.location)
         # For massive modifications, compose key, making sure reference to self
         # is converted into appropriate real location
         elif info.filterType == FilterType.all_:
             affectorMap = self.__affectorLocation
-            location = self.__contextizeLocation(affector)
+            location = self.__contextizeFilterLocation(affector)
             key = location
         elif info.filterType == FilterType.group:
             affectorMap = self.__affectorLocationGroup
-            location = self.__contextizeLocation(affector)
+            location = self.__contextizeFilterLocation(affector)
             key = (location, info.filterValue)
         elif info.filterType == FilterType.skill:
             affectorMap = self.__affectorLocationSkill
-            location = self.__contextizeLocation(affector)
+            location = self.__contextizeFilterLocation(affector)
             skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
         return key, affectorMap
 
-    def __contextizeLocation(self, affector):
+    def __contextizeFilterLocation(self, affector):
         """
         Convert location self-reference to real location, like character or ship.
         Used only in modifications of multiple filtered holders, direct modifications
@@ -173,6 +182,12 @@ class LinkRegister:
 
         Return value:
         Real contextized location
+
+        Possible exceptions:
+        BadContainerException -- raised if affector's info refers self, but affector's
+        holder isn't in position to be target for massive filtered modifications
+        UnsupportedLocationException -- raised when affector's info target location is
+        not supported for massive modifications
         """
         sourceHolder = affector.sourceHolder
         targetLocation = affector.info.location
@@ -184,13 +199,13 @@ class LinkRegister:
             elif sourceHolder is self.__fit.character:
                 return Location.character
             else:
-                raise BadContainerException("reference to self on unexpected holder during processing of massive filtered modification")
+                raise BadContainerException
         # Just return untouched location for all other valid cases
         elif targetLocation in (Location.character, Location.ship, Location.space):
             return targetLocation
         # Raise error if location is invalid
         else:
-            raise UnsupportedLocationException("unsupported location (ID {}) for massive filtered modifications".format(targetLocation))
+            raise UnsupportedLocationException(targetLocation)
 
     def __contextizeSkillrqId(self, affector):
         """
@@ -379,9 +394,16 @@ class LinkRegister:
         Positional arguments:
         affector -- duration affector to register
         """
-        key, affectorMap = self.__getAffectorMap(affector)
-        # Actually add data to map
-        affectorMap.addData(key, {affector})
+        try:
+            key, affectorMap = self.__getAffectorMap(affector)
+            # Actually add data to map
+            affectorMap.addData(key, {affector})
+        except BadContainerException:
+            msg = "unable to register affector of item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
+            logger.warning(msg)
+        except UnsupportedLocationException as e:
+            msg = "unable to register affector of item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
+            logger.warning(msg)
 
     def unregisterAffector(self, affector):
         """
@@ -391,8 +413,15 @@ class LinkRegister:
         Positional arguments:
         affector -- duration affector to unregister
         """
-        key, affectorMap = self.__getAffectorMap(affector)
-        affectorMap.rmData(key, {affector})
+        try:
+            key, affectorMap = self.__getAffectorMap(affector)
+            affectorMap.rmData(key, {affector})
+        except BadContainerException:
+            msg = "unable to unregister affector of item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
+            logger.warning(msg)
+        except UnsupportedLocationException as e:
+            msg = "unable to unregister affector of item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
+            logger.warning(msg)
 
     def getAffectees(self, affector):
         """
@@ -406,41 +435,48 @@ class LinkRegister:
         """
         sourceHolder, info = affector
         affectees = set()
-        # For direct modification, make set out of single target location
-        if info.filterType is None:
-            if info.location == Location.self_:
-                target = {sourceHolder}
-            elif info.location == Location.character:
-                char = self.__fit.character
-                target = {char} if char is not None else None
-            elif info.location == Location.ship:
-                ship = self.__fit.ship
-                target = {ship} if ship is not None else None
-            elif info.location == Location.other:
-                try:
-                    otherHolder = sourceHolder._other
-                except AttributeError:
-                    otherHolder = None
-                target = {otherHolder} if otherHolder is not None else None
-            else:
-                raise UnsupportedLocationException("unsupported location (ID {}) for direct item modification".format(info.location))
-        # For filtered modifications, pick appropriate dictionary and get set
-        # with target holders
-        elif info.filterType == FilterType.all_:
-            key = self.__contextizeLocation(affector)
-            target = self.__affecteeLocation.getData(key)
-        elif info.filterType == FilterType.group:
-            location = self.__contextizeLocation(affector)
-            key = (location, info.filterValue)
-            target = self.__affecteeLocationGroup.getData(key)
-        elif info.filterType == FilterType.skill:
-            location = self.__contextizeLocation(affector)
-            skill = self.__contextizeSkillrqId(affector)
-            key = (location, skill)
-            target = self.__affecteeLocationSkill.getData(key)
-        # Add our set to affectees
-        if target is not None:
-            affectees.update(target)
+        try:
+            # For direct modification, make set out of single target location
+            if info.filterType is None:
+                if info.location == Location.self_:
+                    target = {sourceHolder}
+                elif info.location == Location.character:
+                    char = self.__fit.character
+                    target = {char} if char is not None else None
+                elif info.location == Location.ship:
+                    ship = self.__fit.ship
+                    target = {ship} if ship is not None else None
+                elif info.location == Location.other:
+                    try:
+                        otherHolder = sourceHolder._other
+                    except AttributeError:
+                        otherHolder = None
+                    target = {otherHolder} if otherHolder is not None else None
+                else:
+                    raise UnsupportedLocationException(info.location)
+            # For filtered modifications, pick appropriate dictionary and get set
+            # with target holders
+            elif info.filterType == FilterType.all_:
+                key = self.__contextizeFilterLocation(affector)
+                target = self.__affecteeLocation.getData(key)
+            elif info.filterType == FilterType.group:
+                location = self.__contextizeFilterLocation(affector)
+                key = (location, info.filterValue)
+                target = self.__affecteeLocationGroup.getData(key)
+            elif info.filterType == FilterType.skill:
+                location = self.__contextizeFilterLocation(affector)
+                skill = self.__contextizeSkillrqId(affector)
+                key = (location, skill)
+                target = self.__affecteeLocationSkill.getData(key)
+            # Add our set to affectees
+            if target is not None:
+                affectees.update(target)
+        except BadContainerException:
+            msg = "unable to get affectees for affector of item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
+            logger.warning(msg)
+        except UnsupportedLocationException as e:
+            msg = "unable to get affectees for affector of item {}: unsupported target location {}".format(sourceHolder.item.id, e.args[0])
+            logger.warning(msg)
         return affectees
 
     def getAffectors(self, targetHolder):

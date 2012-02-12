@@ -39,11 +39,10 @@ class Fit:
         self.ship = None
 
     def _addHolder(self, holder):
-        holder.fit = self
         self._linkTracker.addHolder(holder)
         state = holder.state
         holder.state = None
-        self._linkTracker.stateSwitch(holder, state)
+        holder.fit = self
         holder.state = state
 
     def _removeHolder(self, holder):
