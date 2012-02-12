@@ -169,9 +169,8 @@ class MutableAttributeMap:
                 modList.append(modValue)
             # Handle source type failure
             except UnsupportedSourceException as e:
-                msg = "unknown source type %(sourceType)d on item %(itemId)d"
-                data = {"itemId": sourceHolder.item.id, "sourceType": e.args[0]}
-                logger.warning(msg, data)
+                msg = "unknown info source type {} on item {}".format(e.args[0], sourceHolder.item.id)
+                logger.warning(msg)
                 continue
         # When data gathering was finished, process penalized modifiers
         # They are penalized on per-operator basis
@@ -199,9 +198,8 @@ class MutableAttributeMap:
                 else:
                     raise UnsupportedOperatorException(operator)
             except UnsupportedOperatorException as e:
-                msg = "unknown operator %(operator)d on item %(itemId)d"
-                data = {"itemId": sourceHolder.item.id, "operator": e.args[0]}
-                logger.warning(msg, data)
+                msg = "unknown info operator {} on item {}".format(e.args[0], sourceHolder.item.id)
+                logger.warning(msg)
                 continue
         return result
 

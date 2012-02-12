@@ -22,7 +22,6 @@
 from logging import WARNING
 
 from eos.const import State, Location, Context, RunTime, FilterType, SourceType
-from eos.fit.attributeCalculator.exception import UnsupportedOperatorException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
@@ -61,5 +60,5 @@ class TestOperatorUnknown(EosTestCase):
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertEqual(logRecord.args.get("itemId"), 83)
-        self.assertEqual(logRecord.args.get("operator"), 1008)
+        self.assertTrue("item 83" in logRecord.msg)
+        self.assertTrue("operator 1008" in logRecord.msg)
