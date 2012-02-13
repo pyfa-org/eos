@@ -142,7 +142,6 @@ class MutableAttributeMap:
                             and operator in penalizableOperators)
                 # If source value is attribute reference, get its value
                 if info.sourceType == SourceType.attribute:
-                    raise UnsupportedSourceException(info.sourceType)
                     modValue = sourceHolder.attributes[info.sourceValue]
                 # For value modifications, just use stored in info value
                 elif info.sourceType == SourceType.value:
@@ -173,14 +172,9 @@ class MutableAttributeMap:
                 modList.append(modValue)
             # Handle source type failure
             except UnsupportedSourceException as e:
-                sourceType = e.args[0]
-                itemId = sourceHolder.item.id
-                problemSignature = (UnsupportedSourceException, itemId, sourceType)
-                logger = self.__holder.fit._eos._logger
-                if not problemSignature in logger.knownSignatures:
-                    msg = "unknown info source type {} on item {}".format(sourceType, itemId)
-                    logger.getLogger("attributeCalculator").warning(msg)
-                    logger.knownSignatures.add(problemSignature)
+                signature = (UnsupportedSourceException, sourceHolder.item.id, e.args[0])
+                msg = "unknown info source type {} on item {}".format(e.args[0], sourceHolder.item.id)
+                self.__holder.fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
                 continue
         # When data gathering was finished, process penalized modifiers
         # They are penalized on per-operator basis
@@ -208,9 +202,9 @@ class MutableAttributeMap:
                 else:
                     raise UnsupportedOperatorException(operator)
             except UnsupportedOperatorException as e:
-                logger = self.__holder.fit._eos._logger.getLogger("attributeCalculator")
+                signature = (UnsupportedOperatorException, sourceHolder.item.id, e.args[0])
                 msg = "unknown info operator {} on item {}".format(e.args[0], sourceHolder.item.id)
-                logger.warning(msg)
+                self.__holder.fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
                 continue
         return result
 

@@ -33,9 +33,40 @@ class Logger:
     """
     def __init__(self, name):
         self.__setup(name)
-        self.knownSignatures = set()
+        # Storage for signatures of logged entries,
+        # to avoid logging them again when it's not desirable
+        self.__knownSignatures = set()
+
+    def warning(self, msg, child=None, signature=None):
+        """
+        Log warning-level message.
+
+        Positional arguments:
+        msg -- message to log
+
+        Keyword arguments:
+        child -- name of child logger to use, if None,
+        root logger is used (default None)
+        signature -- hashable signature of log entry;
+        if not None, logger logs message only if no message
+        with same signature has been logged during current
+        session (default None)
+        """
+        logger = self.__getLogger(child)
+        if signature is None:
+            logger.warning(msg)
+        elif not signature in self.__knownSignatures:
+            logger.warning(msg)
+            self.__knownSignatures.add(signature)
 
     def __setup(self, name):
+        """
+        Configure python logging system for our neeeds.
+
+        Positional arguments:
+        name -- name of root python logger which will be
+        used as root for our logger object
+        """
         self.__rootLogger = getLogger(name)
         # Clear any handlers this logger already may have
         for handler in self.__rootLogger.handlers:
@@ -47,7 +78,7 @@ class Logger:
         handler.setFormatter(formatter)
         self.__rootLogger.addHandler(handler)
 
-    def getLogger(self, name=None):
+    def __getLogger(self, name=None):
         """
         Get python's logger instance, which may be used to log
         actual entries according to logging module documentation.
