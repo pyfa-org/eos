@@ -176,4 +176,4 @@ class TestOperatorAllIn(EosTestCase):
         fit._addHolder(influenceTarget)
         # Operators shouldn't be penalized and should go in this order
         expValue = ((valuePreAss * valuePreMul / valuePreDiv) + valueModAdd - valueModSub) * valuePostMul / valuePostDiv * (1 + valuePostPerc / 100)
-        self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], expValue)

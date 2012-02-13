@@ -183,5 +183,4 @@ class TestOperatorForcedValue(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceTarget)
         # Post-assignment value must override all other modifications
-        expValue = 68
-        self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 68)

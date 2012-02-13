@@ -57,14 +57,11 @@ class TestLocationFilterShip(EosTestCase):
     def testMatch(self):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherLocation(self):
         influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)

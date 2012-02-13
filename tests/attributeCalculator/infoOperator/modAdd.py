@@ -62,10 +62,8 @@ class TestOperatorAdd(EosTestCase):
 
     def testUnpenalized(self):
         self.tgtAttr.stackable = True
-        expValue = 143
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 143)
 
     def testPenalized(self):
         self.tgtAttr.stackable = False
-        expValue = 143
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 143)

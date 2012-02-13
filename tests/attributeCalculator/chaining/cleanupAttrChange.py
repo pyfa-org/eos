@@ -72,10 +72,8 @@ class TestCleanupChainChange(EosTestCase):
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)
-        expValue = 0.6875
-        self.assertAlmostEqual(holder3.attributes[attr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
         holder1.attributes[attr1.id] = 4
         # Manually changed attribute must trigger damaging whole chain
         # of attributes, effectively allowing us to recalculate its new value
-        expValue = 0.65
-        self.assertAlmostEqual(holder3.attributes[attr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.65)

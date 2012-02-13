@@ -55,5 +55,4 @@ class TestSourceTypeValue(EosTestCase):
         holder = IndependentItem(Type(None, effects={effect}, attributes={tgtAttr.id: 50, srcAttr.id: 20}))
         fit._addHolder(holder)
         # Check that source attribute is properly modified by 50 percent
-        expValue = 75
-        self.assertAlmostEqual(holder.attributes[tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder.attributes[tgtAttr.id], 75)

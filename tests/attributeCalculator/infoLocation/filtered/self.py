@@ -60,24 +60,20 @@ class TestLocationFilterSelf(EosTestCase):
         self.fit._addHolder(self.influenceSource)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.fit.ship = None
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
         self.fit._addHolder(self.influenceSource)
         influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.fit.character = None
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute

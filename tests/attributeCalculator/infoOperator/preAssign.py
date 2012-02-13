@@ -62,10 +62,8 @@ class TestOperatorPreAssign(EosTestCase):
 
     def testHighGood(self):
         self.tgtAttr.highIsGood = True
-        expValue = 53
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 53)
 
     def testHighBad(self):
         self.tgtAttr.highIsGood = False
-        expValue = -20
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], -20)

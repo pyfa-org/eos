@@ -42,13 +42,11 @@ class TestIncompleteDuration(EosTestCase):
     def testPre(self):
         eAddMod = Expression(None, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, self.stub, 0)
-        expStatus = EffectBuildStatus.okPartial
-        self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okPartial)
+        self.assertEqual(len(infos), 0)
 
     def testPost(self):
         eRmMod = Expression(None, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
         infos, status = InfoBuilder().build(self.stub, eRmMod, 0)
-        expStatus = EffectBuildStatus.okPartial
-        self.assertEqual(status, expStatus, msg="expressions must be partially parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okPartial)
+        self.assertEqual(len(infos), 0)

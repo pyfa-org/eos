@@ -71,13 +71,11 @@ class TestCleanupChainAddition(EosTestCase):
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)
-        expValue = 0.5375
-        self.assertAlmostEqual(holder3.attributes[attr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
         fit._addHolder(holder1)
         # Added holder must clean all already calculated attributes
         # which are now affected by it, to allow recalculation
-        expValue = 0.6875
-        self.assertAlmostEqual(holder3.attributes[attr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
 
     def testValue(self):
         attr1 = Attribute(1)
@@ -117,11 +115,9 @@ class TestCleanupChainAddition(EosTestCase):
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)
-        expValue = 0.5375
-        self.assertAlmostEqual(holder3.attributes[attr2.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr2.id], 0.5375)
         fit._addHolder(holder1)
         # Added holder must clean all attributes depending on its affectors,
         # not only attributes; affectors may use both attributes and 'hardcoded'
         # into them values as data source
-        expValue = 0.6875
-        self.assertAlmostEqual(holder3.attributes[attr2.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr2.id], 0.6875)

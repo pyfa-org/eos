@@ -31,5 +31,4 @@ class TestAccessDetached(EosTestCase):
         type_ = Type(None, attributes={56: 50})
         module = ShipItem(type_)
         attrValue = module.attributes[56]
-        expValue = 50
-        self.assertEqual(attrValue, expValue, "attribute value must be {}".format(expValue))
+        self.assertEqual(attrValue, 50)

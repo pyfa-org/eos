@@ -41,99 +41,71 @@ class TestModGangSrq(EosTestCase):
 
     def testGenericBuildSuccess(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expType = RunTime.duration
-        self.assertEqual(info.runTime, expType, msg="info type must be duration (ID {})".format(expType))
-        expContext = Context.gang
-        self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
-        expLocation = Location.ship
-        self.assertEqual(info.location, expLocation, msg="info target location must be ship (ID {})".format(expLocation))
-        expFilterType = FilterType.skill
-        self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
-        expFilterValue = 3435
-        self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be {}".format(expFilterValue))
-        expOperation = Operator.postPercent
-        self.assertEqual(info.operator, expOperation, msg="info operator must be PostPercent (ID {})".format(expOperation))
-        expTgtAttr = 54
-        self.assertEqual(info.targetAttributeId, expTgtAttr, msg="info target attribute ID must be {}".format(expTgtAttr))
-        expSrcType = SourceType.attribute
-        self.assertEqual(info.sourceType, expSrcType, msg="info source type must be attribute (ID {})".format(expSrcType))
-        expSrcVal = 833
-        self.assertEqual(info.sourceValue, expSrcVal, msg="info source value must be {}".format(expSrcVal))
-        self.assertIsNone(info.conditions, msg="info conditions must be None")
+        self.assertEqual(info.runTime, RunTime.duration)
+        self.assertEqual(info.context, Context.gang)
+        self.assertEqual(info.location, Location.ship)
+        self.assertEqual(info.filterType, FilterType.skill)
+        self.assertEqual(info.filterValue, 3435)
+        self.assertEqual(info.operator, Operator.postPercent)
+        self.assertEqual(info.targetAttributeId, 54)
+        self.assertEqual(info.sourceType, SourceType.attribute)
+        self.assertEqual(info.sourceValue, 833)
+        self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expState = State.offline
-        self.assertEqual(info.state, expState, msg="info state must be passive (ID {})".format(expState))
-        expContext = Context.gang
-        self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
+        self.assertEqual(info.state, State.offline)
+        self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryActive(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 1)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expState = State.active
-        self.assertEqual(info.state, expState, msg="info state must be active (ID {})".format(expState))
-        expContext = Context.gang
-        self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
+        self.assertEqual(info.state, State.active)
+        self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryTarget(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 2)
-        expStatus = EffectBuildStatus.error
-        self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
 
     def testEffCategoryArea(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 3)
-        expStatus = EffectBuildStatus.error
-        self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 4)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expState = State.online
-        self.assertEqual(info.state, expState, msg="info state must be online (ID {})".format(expState))
-        expContext = Context.gang
-        self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
+        self.assertEqual(info.state, State.online)
+        self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryOverload(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 5)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expState = State.overload
-        self.assertEqual(info.state, expState, msg="info state must be overload (ID {})".format(expState))
-        expContext = Context.gang
-        self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
+        self.assertEqual(info.state, State.overload)
+        self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryDungeon(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 6)
-        expStatus = EffectBuildStatus.error
-        self.assertEqual(status, expStatus, msg="expressions must be erroneously parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
         infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 7)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expState = State.offline
-        self.assertEqual(info.state, expState, msg="info state must be offline (ID {})".format(expState))
-        expContext = Context.gang
-        self.assertEqual(info.context, expContext, msg="info context must be gang (ID {})".format(expContext))
+        self.assertEqual(info.state, State.offline)
+        self.assertEqual(info.context, Context.gang)

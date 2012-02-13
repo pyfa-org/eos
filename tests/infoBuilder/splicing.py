@@ -56,6 +56,5 @@ class TestSplicing(EosTestCase):
         eRmSplice1 = Expression(None, 17, arg1=eRmMod1, arg2=eRmMod3)
         eRmSplice2 = Expression(None, 17, arg1=eRmMod2, arg2=eRmSplice1)
         infos, status = InfoBuilder().build(eAddSplice2, eRmSplice2, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 3, msg="three infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 3)

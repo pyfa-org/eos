@@ -59,8 +59,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testCharge(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -69,8 +68,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testSkill(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
@@ -79,8 +77,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testImplant(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
@@ -89,8 +86,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testSubsystem(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
@@ -99,8 +95,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testMixed(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -109,8 +104,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testWithNotImmune(self):
         influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -119,5 +113,4 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 300
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)

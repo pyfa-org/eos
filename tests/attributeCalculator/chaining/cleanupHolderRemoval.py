@@ -72,13 +72,11 @@ class TestCleanupChainRemoval(EosTestCase):
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)
-        expValue = 0.6875
-        self.assertAlmostEqual(holder3.attributes[attr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
         fit._removeHolder(holder1)
         # When holder1 is removed, attr2 of holder2 and attr3 of holder3
         # must be cleaned to allow recalculation of attr3 based on new data
-        expValue = 0.5375
-        self.assertAlmostEqual(holder3.attributes[attr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
 
     def testValue(self):
         attr1 = Attribute(1)
@@ -119,13 +117,11 @@ class TestCleanupChainRemoval(EosTestCase):
         fit.ship = holder2
         fit._addHolder(holder2)
         fit._addHolder(holder3)
-        expValue = 0.6875
-        self.assertAlmostEqual(holder3.attributes[attr2.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr2.id], 0.6875)
         fit._removeHolder(holder1)
         # This test is almost the same as previous, but holder1 uses info itself
         # as data source; we need to check this special case to avoid attribute
         # "damaging" based on attributes of holder being removed; if it were the
         # case, target attribute on holder3 wouldn't be damaged. Proper way is to
         # rely on affectors of holder removed.
-        expValue = 0.5375
-        self.assertAlmostEqual(holder3.attributes[attr2.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr2.id], 0.5375)

@@ -92,5 +92,4 @@ class TestCalculationChain(EosTestCase):
         # on ship's (holder2) attr3, resulting in 150 + 100% = 300, then it is applied
         # to all entities assigned to ship, including holder3, to theirs attr4 as
         # percentage modifier again - so final result is 12.5 + 300% = 50
-        expValue = 50
-        self.assertAlmostEqual(holder3.attributes[attr4.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder3.attributes[attr4.id], 50)

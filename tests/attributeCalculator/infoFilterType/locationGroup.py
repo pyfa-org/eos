@@ -57,20 +57,16 @@ class TestFilterLocationGroup(EosTestCase):
     def testMatch(self):
         influenceTarget = ShipItem(Type(None, groupId=35, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherLocation(self):
         influenceTarget = SpaceItem(Type(None, groupId=35, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherGroup(self):
         influenceTarget = ShipItem(Type(None, groupId=3, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)

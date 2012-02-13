@@ -56,8 +56,7 @@ class TestLocationDirectOtherSwitch(EosTestCase):
         influenceSource._other = influenceTarget1
         influenceTarget1._other = influenceSource
         fit._addHolder(influenceTarget1)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
         fit._removeHolder(influenceTarget1)
         influenceSource._other = None
         influenceTarget1._other = None
@@ -65,5 +64,4 @@ class TestLocationDirectOtherSwitch(EosTestCase):
         influenceSource._other = influenceTarget2
         influenceTarget2._other = influenceSource
         fit._addHolder(influenceTarget2)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)

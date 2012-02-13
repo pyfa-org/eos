@@ -55,12 +55,10 @@ class TestLocationDirectShipSwitch(EosTestCase):
         influenceTarget1 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
         fit.ship = influenceTarget1
         fit._addHolder(influenceTarget1)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
         fit._removeHolder(influenceTarget1)
         fit.ship = None
         influenceTarget2 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
         fit.ship = influenceTarget2
         fit._addHolder(influenceTarget2)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)

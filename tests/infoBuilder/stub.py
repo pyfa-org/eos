@@ -32,9 +32,8 @@ class TestStubInt0(EosTestCase):
         ePreStub = Expression(None, 27, value="0")
         ePostStub = Expression(None, 27, value="0")
         infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 0)
 
 
 class TestStubInt1(EosTestCase):
@@ -44,9 +43,8 @@ class TestStubInt1(EosTestCase):
         ePreStub = Expression(None, 27, value="1")
         ePostStub = Expression(None, 27, value="1")
         infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 0)
 
 
 class TestStubBoolTrue(EosTestCase):
@@ -56,9 +54,8 @@ class TestStubBoolTrue(EosTestCase):
         ePreStub = Expression(None, 23, value="True")
         ePostStub = Expression(None, 23, value="True")
         infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 0)
 
 
 class TestStubMixed(EosTestCase):
@@ -68,6 +65,5 @@ class TestStubMixed(EosTestCase):
         preStub = Expression(None, 23, value="True")
         postStub = Expression(None, 27, value="0")
         infos, status = InfoBuilder().build(preStub, postStub, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 0, msg="no infos must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 0)

@@ -41,11 +41,8 @@ class TestSelfType(EosTestCase):
         eAddMod = Expression(None, 11, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(None, 62, arg1=eOptrTgt, arg2=eSrcAttr)
         infos, status = InfoBuilder().build(eAddMod, eRmMod, 0)
-        expStatus = EffectBuildStatus.okFull
-        self.assertEqual(status, expStatus, msg="expressions must be successfully parsed (ID {})".format(expStatus))
-        self.assertEqual(len(infos), 1, msg="one info must be generated")
+        self.assertEqual(status, EffectBuildStatus.okFull)
+        self.assertEqual(len(infos), 1)
         info = infos.pop()
-        expFilterType = FilterType.skill
-        self.assertEqual(info.filterType, expFilterType, msg="info target filter type must be skill (ID {})".format(expFilterType))
-        expFilterValue = InvType.self_
-        self.assertEqual(info.filterValue, expFilterValue, msg="info target filter value must be reference to typeID of self {}".format(expFilterValue))
+        self.assertEqual(info.filterType, FilterType.skill)
+        self.assertEqual(info.filterValue, InvType.self_)

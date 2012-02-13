@@ -55,8 +55,7 @@ class TestLocationDirectSelf(EosTestCase):
     def testIndependent(self):
         holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
-        notExpValue = 100
-        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         # We do not test item removal here, because removed holder (which is
         # both source and target in this test set) essentially becomes
         # detached, which is covered by other tests
@@ -64,27 +63,23 @@ class TestLocationDirectSelf(EosTestCase):
     def testCharacter(self):
         holder = CharacterItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
-        notExpValue = 100
-        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
 
     def testShip(self):
         holder = ShipItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
-        notExpValue = 100
-        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
 
     def testSpace(self):
         holder = SpaceItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
-        notExpValue = 100
-        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
 
     def testPositioned(self):
         holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = holder
         self.fit._addHolder(holder)
-        notExpValue = 100
-        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
 
     def testOther(self):
         # Here we check that self-reference modifies only carrier-item,
@@ -96,5 +91,4 @@ class TestLocationDirectSelf(EosTestCase):
         self.fit._addHolder(influenceSource)
         influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)

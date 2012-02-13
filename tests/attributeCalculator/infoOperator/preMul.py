@@ -66,10 +66,8 @@ class TestOperatorPreMul(EosTestCase):
 
     def testUnpenalized(self):
         self.tgtAttr.stackable = True
-        expValue = 67.5
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 67.5)
 
     def testPenalized(self):
         self.tgtAttr.stackable = False
-        expValue = 62.5497832
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be equal {}".format(expValue))
+        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 62.5497832)

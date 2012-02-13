@@ -68,11 +68,8 @@ class TestTargetAttribute(EosTestCase):
                                                                           tgtAttr3.id: 100, srcAttr.id: 20}))
         fit._addHolder(holder)
         # First attribute should be modified by info1
-        expValue = 60
-        self.assertAlmostEqual(holder.attributes[tgtAttr1.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder.attributes[tgtAttr1.id], 60)
         # Second should be modified by info2
-        expValue = 96
+        self.assertAlmostEqual(holder.attributes[tgtAttr2.id], 96)
         # Third should stay unmodified
-        self.assertAlmostEqual(holder.attributes[tgtAttr2.id], expValue, msg="value must be {}".format(expValue))
-        expValue = 100
-        self.assertAlmostEqual(holder.attributes[tgtAttr3.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(holder.attributes[tgtAttr3.id], 100)

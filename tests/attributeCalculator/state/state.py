@@ -99,51 +99,43 @@ class TestStateSwitching(EosTestCase):
     def testFitOffline(self):
         self.holder.state = State.offline
         self.fit._addHolder(self.holder)
-        expValue = 110
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
 
     def testFitOnline(self):
         self.holder.state = State.online
         self.fit._addHolder(self.holder)
-        expValue = 143
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
 
     def testFitActive(self):
         self.holder.state = State.active
         self.fit._addHolder(self.holder)
-        expValue = 214.5
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
 
     def testFitOverloaded(self):
         self.holder.state = State.overload
         self.fit._addHolder(self.holder)
-        expValue = 364.65
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
 
     def testSwitchUpSingle(self):
         self.holder.state = State.offline
         self.fit._addHolder(self.holder)
         self.holder.state = State.online
-        expValue = 143
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
 
     def testSwitchUpMultiple(self):
         self.holder.state = State.online
         self.fit._addHolder(self.holder)
         self.holder.state = State.overload
-        expValue = 364.65
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
 
     def testSwitchDownSingle(self):
         self.holder.state = State.overload
         self.fit._addHolder(self.holder)
         self.holder.state = State.active
-        expValue = 214.5
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
 
     def testSwitchDownMultiple(self):
         self.holder.state = State.active
         self.fit._addHolder(self.holder)
         self.holder.state = State.offline
-        expValue = 110
-        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], expValue, msg="value must be {}".format(expValue))
+        self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)

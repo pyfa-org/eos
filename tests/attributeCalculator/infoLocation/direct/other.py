@@ -62,13 +62,11 @@ class TestLocationDirectOther(EosTestCase):
         self.influenceSource._other = influenceTarget
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
-        notExpValue = 100
-        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], notExpValue, msg="value must be modified")
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.influenceSource._other = None
         influenceTarget._other = None
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testSelf(self):
         # Check that source holder isn't modified
@@ -76,13 +74,11 @@ class TestLocationDirectOther(EosTestCase):
         self.influenceSource._other = influenceTarget
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+        self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], 100)
 
     def testOtherHolder(self):
         # Here we check some "random" holder, w/o assigning
         # _other attribute
         influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
-        expValue = 100
-        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must stay unmodified")
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
