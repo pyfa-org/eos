@@ -25,6 +25,8 @@ version of environment in which attributeCalculator resides.
 """
 
 
+from logging import getLogger
+
 from eos.const import Location
 from eos.fit.attributeCalculator.tracker import LinkTracker
 from eos.fit.holder import MutableAttributeHolder
@@ -38,9 +40,19 @@ class DataHandler:
         return self.__attrMetaData[attrId]
 
 
+class Logger:
+    def getLogger(self, name=None):
+        if name is None:
+            logger = getLogger("eos_test")
+        else:
+            logger = getLogger("eos_test").getChild(name)
+        return logger
+
+
 class Eos:
     def __init__(self, attrMetaData):
         self._dataHandler = DataHandler(attrMetaData)
+        self._logger = Logger()
 
 
 class Fit:
