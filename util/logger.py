@@ -32,6 +32,10 @@ class Logger:
     used in log filename
     """
     def __init__(self, name):
+        self.__setup(name)
+        self.knownSignatures = set()
+
+    def __setup(self, name):
         self.__rootLogger = getLogger(name)
         # Clear any handlers this logger already may have
         for handler in self.__rootLogger.handlers:
