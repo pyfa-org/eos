@@ -398,11 +398,11 @@ class LinkRegister:
             # Actually add data to map
             affectorMap.addData(key, {affector})
         except BadContainerException:
-            msg = "malformed affector on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
+            msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (BadContainerException, affector.sourceHolder.item.id)
             self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
         except UnsupportedLocationException as e:
-            msg = "malformed affector on item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed info on item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedLocationException, affector.sourceHolder.item.id, e.args[0])
             self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
 
@@ -418,11 +418,11 @@ class LinkRegister:
             key, affectorMap = self.__getAffectorMap(affector)
             affectorMap.rmData(key, {affector})
         except BadContainerException:
-            msg = "malformed affector on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
+            msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (BadContainerException, affector.sourceHolder.item.id)
             self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
         except UnsupportedLocationException as e:
-            msg = "malformed affector on item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed info on item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedLocationException, affector.sourceHolder.item.id, e.args[0])
             self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
 
@@ -475,11 +475,11 @@ class LinkRegister:
             if target is not None:
                 affectees.update(target)
         except BadContainerException:
-            msg = "malformed affector on item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
+            msg = "malformed info on item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
             signature = (BadContainerException, sourceHolder.item.id)
             self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
         except UnsupportedLocationException as e:
-            msg = "malformed affector on item {}: unsupported target location {}".format(sourceHolder.item.id, e.args[0])
+            msg = "malformed info on item {}: unsupported target location {}".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedLocationException, sourceHolder.item.id, e.args[0])
             self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
 

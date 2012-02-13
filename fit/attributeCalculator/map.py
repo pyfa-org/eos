@@ -172,7 +172,7 @@ class MutableAttributeMap:
                 modList.append(modValue)
             # Handle source type failure
             except UnsupportedSourceException as e:
-                msg = "unknown info source type {} on item {}".format(e.args[0], sourceHolder.item.id)
+                msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
                 signature = (UnsupportedSourceException, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
                 continue
@@ -202,7 +202,7 @@ class MutableAttributeMap:
                 else:
                     raise UnsupportedOperatorException(operator)
             except UnsupportedOperatorException as e:
-                msg = "unknown info operator {} on item {}".format(e.args[0], sourceHolder.item.id)
+                msg = "malformed info on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
                 signature = (UnsupportedOperatorException, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
                 continue
