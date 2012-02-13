@@ -398,13 +398,11 @@ class LinkRegister:
             # Actually add data to map
             affectorMap.addData(key, {affector})
         except BadContainerException:
-            logger = self.__fit._eos._logger.getLogger("attributeCalculator")
             msg = "unable to register affector of item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
-            logger.warning(msg)
+            self.__fit._eos._logger.warning(msg, child="attributeCalculator")
         except UnsupportedLocationException as e:
-            logger = self.__fit._eos._logger.getLogger("attributeCalculator")
             msg = "unable to register affector of item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
-            logger.warning(msg)
+            self.__fit._eos._logger.warning(msg, child="attributeCalculator")
 
     def unregisterAffector(self, affector):
         """
@@ -418,13 +416,11 @@ class LinkRegister:
             key, affectorMap = self.__getAffectorMap(affector)
             affectorMap.rmData(key, {affector})
         except BadContainerException:
-            logger = self.__fit._eos._logger.getLogger("attributeCalculator")
             msg = "unable to unregister affector of item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
-            logger.warning(msg)
+            self.__fit._eos._logger.warning(msg, child="attributeCalculator")
         except UnsupportedLocationException as e:
-            logger = self.__fit._eos._logger.getLogger("attributeCalculator")
             msg = "unable to unregister affector of item {}: unsupported target location {}".format(affector.sourceHolder.item.id, e.args[0])
-            logger.warning(msg)
+            self.__fit._eos._logger.warning(msg, child="attributeCalculator")
 
     def getAffectees(self, affector):
         """
@@ -475,13 +471,11 @@ class LinkRegister:
             if target is not None:
                 affectees.update(target)
         except BadContainerException:
-            logger = self.__fit._eos._logger.getLogger("attributeCalculator")
             msg = "unable to get affectees for affector of item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
-            logger.warning(msg)
+            self.__fit._eos._logger.warning(msg, child="attributeCalculator")
         except UnsupportedLocationException as e:
-            logger = self.__fit._eos._logger.getLogger("attributeCalculator")
             msg = "unable to get affectees for affector of item {}: unsupported target location {}".format(sourceHolder.item.id, e.args[0])
-            logger.warning(msg)
+            self.__fit._eos._logger.warning(msg, child="attributeCalculator")
         return affectees
 
     def getAffectors(self, targetHolder):

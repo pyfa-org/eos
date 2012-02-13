@@ -41,13 +41,16 @@ class DataHandler:
 
 
 class Logger:
-    def getLogger(self, name=None):
-        if name is None:
+    """
+    Our test logger doesn't contain functionality to not log
+    duplicate log entries, so we can inspect stuff more thoroughly.
+    """
+    def warning(self, msg, child=None, signature=None):
+        if child is None:
             logger = getLogger("eos_test")
         else:
-            logger = getLogger("eos_test").getChild(name)
-        return logger
-
+            logger = getLogger("eos_test").getChild(child)
+        logger.warning(msg)
 
 class Eos:
     def __init__(self, attrMetaData):
