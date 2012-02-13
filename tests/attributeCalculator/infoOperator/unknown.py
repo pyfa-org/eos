@@ -58,7 +58,7 @@ class TestOperatorUnknown(EosTestCase):
         self.fit._addHolder(influenceSource)
         self.fit._addHolder(self.influenceTarget)
 
-    def testLog(self):
+    def testError(self):
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]

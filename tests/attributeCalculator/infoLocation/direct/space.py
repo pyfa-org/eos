@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from logging import WARNING
+
 from eos.const import State, Location, Context, RunTime, Operator, SourceType
-from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
@@ -33,7 +34,7 @@ from eos.tests.eosTestCase import EosTestCase
 class TestLocationDirectSpace(EosTestCase):
     """Test location.space for direct modifications"""
 
-    def testException(self):
+    def testError(self):
         tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -51,8 +52,26 @@ class TestLocationDirectSpace(EosTestCase):
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(34, effects={effect}, attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
-        self.assertRaises(UnsupportedLocationException, fit._addHolder, influenceSource)
-        self.assertRaises(UnsupportedLocationException, fit._removeHolder, influenceSource)
+        fit._addHolder(influenceSource)
+        self.assertEqual(len(self.log), 2)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 34" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.space) in logRecord.msg)
+        logRecord = self.log[1]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 34" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.space) in logRecord.msg)
+        fit._removeHolder(influenceSource)
+        self.assertEqual(len(self.log), 4)
+        logRecord = self.log[2]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 34" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.space) in logRecord.msg)
+        logRecord = self.log[3]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 34" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.space) in logRecord.msg)

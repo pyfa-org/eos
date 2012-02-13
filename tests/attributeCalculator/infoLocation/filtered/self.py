@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from logging import WARNING
+
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
-from eos.fit.attributeCalculator.exception import BadContainerException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
@@ -52,7 +53,7 @@ class TestLocationFilterSelf(EosTestCase):
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(1061, effects={effect}, attributes={srcAttr.id: 20}))
 
     def testShip(self):
         self.fit.ship = self.influenceSource
@@ -78,9 +79,23 @@ class TestLocationFilterSelf(EosTestCase):
         expValue = 100
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], expValue, msg="value must be reverted")
 
-    def testUnpositioned(self):
+    def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute
         # calculator won't know that source is 'owner' of some location
         # and will throw corresponding exception
-        self.assertRaises(BadContainerException, self.fit._addHolder, self.influenceSource)
-        self.assertRaises(BadContainerException, self.fit._removeHolder, self.influenceSource)
+        self.fit._addHolder(self.influenceSource)
+        self.assertEqual(len(self.log), 2)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 1061" in logRecord.msg)
+        logRecord = self.log[1]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 1061" in logRecord.msg)
+        self.fit._removeHolder(self.influenceSource)
+        self.assertEqual(len(self.log), 4)
+        logRecord = self.log[2]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 1061" in logRecord.msg)
+        logRecord = self.log[3]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 1061" in logRecord.msg)

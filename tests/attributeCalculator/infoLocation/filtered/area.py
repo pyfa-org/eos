@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from logging import WARNING
+
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
-from eos.fit.attributeCalculator.exception import UnsupportedLocationException
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
@@ -33,7 +34,7 @@ from eos.tests.eosTestCase import EosTestCase
 class TestLocationFilterArea(EosTestCase):
     """Test location.area for massive filtered modifications"""
 
-    def testException(self):
+    def testError(self):
         tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -51,7 +52,25 @@ class TestLocationFilterArea(EosTestCase):
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(56, effects={effect}, attributes={srcAttr.id: 20}))
         # This location just isn't used in EVE and unsupported by Eos by design
-        self.assertRaises(UnsupportedLocationException, fit._addHolder, influenceSource)
-        self.assertRaises(UnsupportedLocationException, fit._removeHolder, influenceSource)
+        fit._addHolder(influenceSource)
+        self.assertEqual(len(self.log), 2)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 56" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.area) in logRecord.msg)
+        logRecord = self.log[1]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 56" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.area) in logRecord.msg)
+        fit._removeHolder(influenceSource)
+        self.assertEqual(len(self.log), 4)
+        logRecord = self.log[2]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 56" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.area) in logRecord.msg)
+        logRecord = self.log[3]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertTrue("item 56" in logRecord.msg)
+        self.assertTrue("location {}".format(Location.area) in logRecord.msg)

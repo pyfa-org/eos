@@ -34,7 +34,7 @@ from eos.tests.eosTestCase import EosTestCase
 class TestLocationDirectArea(EosTestCase):
     """Test location.area for direct modifications"""
 
-    def testLog(self):
+    def testError(self):
         tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
