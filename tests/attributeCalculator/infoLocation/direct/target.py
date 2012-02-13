@@ -58,19 +58,16 @@ class TestLocationDirectTarget(EosTestCase):
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertTrue("item 102" in logRecord.msg)
-        self.assertTrue("location {}".format(Location.target) in logRecord.msg)
+        expMessage = "malformed info on item 102: unsupported target location {}".format(Location.target)
+        self.assertEqual(logRecord.msg, expMessage)
         logRecord = self.log[1]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertTrue("item 102" in logRecord.msg)
-        self.assertTrue("location {}".format(Location.target) in logRecord.msg)
+        self.assertEqual(logRecord.msg, expMessage)
         fit._removeHolder(influenceSource)
         self.assertEqual(len(self.log), 4)
         logRecord = self.log[2]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertTrue("item 102" in logRecord.msg)
-        self.assertTrue("location {}".format(Location.target) in logRecord.msg)
+        self.assertEqual(logRecord.msg, expMessage)
         logRecord = self.log[3]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertTrue("item 102" in logRecord.msg)
-        self.assertTrue("location {}".format(Location.target) in logRecord.msg)
+        self.assertEqual(logRecord.msg, expMessage)

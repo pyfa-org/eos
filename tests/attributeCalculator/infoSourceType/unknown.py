@@ -63,8 +63,8 @@ class TestSourceTypeUnknown(EosTestCase):
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertTrue("item 739" in logRecord.msg)
-        self.assertTrue("source type 56" in logRecord.msg)
+        expMessage = "malformed info on item 739: unknown source type 56"
+        self.assertEqual(logRecord.msg, expMessage)
 
     def testCombination(self):
         info = Info()
