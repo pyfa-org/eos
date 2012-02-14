@@ -45,12 +45,19 @@ class Logger:
     Our test logger doesn't contain functionality to not log
     duplicate log entries, so we can inspect stuff more thoroughly.
     """
+    def __init__(self):
+        self.__knownSignatures = set()
+
     def warning(self, msg, child=None, signature=None):
         if child is None:
             logger = getLogger("eos_test")
         else:
             logger = getLogger("eos_test").getChild(child)
-        logger.warning(msg)
+        if signature is None:
+            logger.warning(msg)
+        elif not signature in self.__knownSignatures:
+            logger.warning(msg)
+            self.__knownSignatures.add(signature)
 
 class Eos:
     def __init__(self, attrMetaData):

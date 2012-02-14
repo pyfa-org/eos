@@ -430,6 +430,10 @@ class LinkRegister:
         try:
             key, affectorMap = self.__getAffectorMap(affector)
             affectorMap.rmData(key, {affector})
+        # Following block handles exceptions; all of them must be handled
+        # when registering affector too, thus they won't appear in log
+        # if logger's handler suppresses messages with duplicate
+        # signature
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, affector.sourceHolder.item.id, e.args[0])
@@ -497,6 +501,9 @@ class LinkRegister:
             # Add our set to affectees
             if target is not None:
                 affectees.update(target)
+        # If passed affector has already been registered and logger prefers
+        # to suppress messages with duplicate signatures, following error handling
+        # won't produce new log entries
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, sourceHolder.item.id, e.args[0])

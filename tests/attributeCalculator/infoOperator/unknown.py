@@ -61,8 +61,7 @@ class TestOperatorUnknown(EosTestCase):
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        expMessage = "malformed info on item 83: unknown operator 1008"
-        self.assertEqual(logRecord.msg, expMessage)
+        self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator 1008")
 
     def testCombination(self):
         validInfo = Info()

@@ -57,22 +57,10 @@ class TestLocationFilterUnknown(EosTestCase):
         self.effect._Effect__infos = {self.invalidInfo}
         holder = IndependentItem(Type(754, effects={self.effect}, attributes={self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
-        self.assertEqual(len(self.log), 2)
+        self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        expMessage = "malformed info on item 754: unsupported target location 1972 for filtered modification"
-        self.assertEqual(logRecord.msg, expMessage)
-        logRecord = self.log[1]
-        self.assertEqual(logRecord.levelno, WARNING)
-        self.assertEqual(logRecord.msg, expMessage)
-        self.fit._removeHolder(holder)
-        self.assertEqual(len(self.log), 4)
-        logRecord = self.log[2]
-        self.assertEqual(logRecord.levelno, WARNING)
-        self.assertEqual(logRecord.msg, expMessage)
-        logRecord = self.log[3]
-        self.assertEqual(logRecord.levelno, WARNING)
-        self.assertEqual(logRecord.msg, expMessage)
+        self.assertEqual(logRecord.msg, "malformed info on item 754: unsupported target location 1972 for filtered modification")
 
     def testCombination(self):
         validInfo = Info()
