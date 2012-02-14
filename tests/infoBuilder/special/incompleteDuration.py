@@ -20,9 +20,11 @@
 
 
 from eos.const import EffectBuildStatus
+from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import Logger
 
 
 class TestIncompleteDuration(EosTestCase):
@@ -41,12 +43,14 @@ class TestIncompleteDuration(EosTestCase):
 
     def testPre(self):
         eAddMod = Expression(None, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        infos, status = InfoBuilder().build(eAddMod, self.stub, 0)
+        effect = Effect(None, 0, preExpression=eAddMod, postExpression=self.stub)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
 
     def testPost(self):
         eRmMod = Expression(None, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        infos, status = InfoBuilder().build(self.stub, eRmMod, 0)
+        effect = Effect(None, 0, preExpression=self.stub, postExpression=eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)

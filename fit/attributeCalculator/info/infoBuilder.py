@@ -50,14 +50,13 @@ class InfoBuilder:
     """
 
     @classmethod
-    def build(cls, preExpression, postExpression, effectCategoryId):
+    def build(cls, effect, logger):
         """
         Generate Info objects out of passed data.
 
         Positional arguments:
-        preExpression -- root node of preExpression
-        postExpression -- root node of postExpression
-        effectCategoryId -- effect category ID for which we're making infos
+        effect -- effect, for which we're building infos
+        logger -- logger for possible errors
 
         Return value:
         Tuple (set with Info objects, build status), where build status
@@ -71,10 +70,10 @@ class InfoBuilder:
         # Make instance of modifier builder
         modBuilder = ModifierBuilder()
         # Get modifiers out of both trees
-        for tree, runTime, modSet in ((preExpression, RunTime.pre, preMods),
-                                      (postExpression, RunTime.post, postMods)):
+        for tree, runTime, modSet in ((effect.preExpression, RunTime.pre, preMods),
+                                      (effect.postExpression, RunTime.post, postMods)):
             try:
-                modifiers, skippedData = modBuilder.build(tree, runTime, effectCategoryId)
+                modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
             # If any errors occurred, return empty set and error status
             except ModifierBuilderException:
                 return set(), EffectBuildStatus.error

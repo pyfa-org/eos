@@ -20,9 +20,11 @@
 
 
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
+from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import Logger
 
 
 class TestModGangSrq(EosTestCase):
@@ -40,7 +42,8 @@ class TestModGangSrq(EosTestCase):
         self.eRmMod = Expression(None, 57, arg1=eOptrTgt, arg2=eSrcAttr)
 
     def testGenericBuildSuccess(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
+        effect = Effect(None, 0, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos.pop()
@@ -56,7 +59,8 @@ class TestModGangSrq(EosTestCase):
         self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 0)
+        effect = Effect(None, 0, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos.pop()
@@ -64,7 +68,8 @@ class TestModGangSrq(EosTestCase):
         self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryActive(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 1)
+        effect = Effect(None, 1, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos.pop()
@@ -72,17 +77,20 @@ class TestModGangSrq(EosTestCase):
         self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryTarget(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 2)
+        effect = Effect(None, 2, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryArea(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 3)
+        effect = Effect(None, 3, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 4)
+        effect = Effect(None, 4, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos.pop()
@@ -90,7 +98,8 @@ class TestModGangSrq(EosTestCase):
         self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryOverload(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 5)
+        effect = Effect(None, 5, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos.pop()
@@ -98,12 +107,14 @@ class TestModGangSrq(EosTestCase):
         self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryDungeon(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 6)
+        effect = Effect(None, 6, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
-        infos, status = InfoBuilder().build(self.eAddMod, self.eRmMod, 7)
+        effect = Effect(None, 7, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos.pop()

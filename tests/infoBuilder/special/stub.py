@@ -20,9 +20,11 @@
 
 
 from eos.const import EffectBuildStatus
+from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import Logger
 
 
 class TestStubInt0(EosTestCase):
@@ -31,7 +33,8 @@ class TestStubInt0(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(None, 27, value="0")
         ePostStub = Expression(None, 27, value="0")
-        infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
+        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -42,7 +45,8 @@ class TestStubInt1(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(None, 27, value="1")
         ePostStub = Expression(None, 27, value="1")
-        infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
+        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -53,7 +57,8 @@ class TestStubBoolTrue(EosTestCase):
     def tesBuildSuccess(self):
         ePreStub = Expression(None, 23, value="True")
         ePostStub = Expression(None, 23, value="True")
-        infos, status = InfoBuilder().build(ePreStub, ePostStub, 0)
+        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -62,8 +67,9 @@ class TestStubMixed(EosTestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def testBuildSuccess(self):
-        preStub = Expression(None, 23, value="True")
-        postStub = Expression(None, 27, value="0")
-        infos, status = InfoBuilder().build(preStub, postStub, 0)
+        ePreStub = Expression(None, 23, value="True")
+        ePostStub = Expression(None, 27, value="0")
+        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)

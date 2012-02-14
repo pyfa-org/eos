@@ -41,10 +41,6 @@ class DataHandler:
 
 
 class Logger:
-    """
-    Our test logger doesn't contain functionality to not log
-    duplicate log entries, so we can inspect stuff more thoroughly.
-    """
     def __init__(self):
         self.__knownSignatures = set()
 
@@ -58,6 +54,7 @@ class Logger:
         elif not signature in self.__knownSignatures:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
+
 
 class Eos:
     def __init__(self, attrMetaData):
