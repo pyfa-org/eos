@@ -34,6 +34,6 @@ if __name__ == "__main__":
     parser.add_argument("suite", nargs='?', type=str, help="system or module path to test suite to run, defaults to all tests", default=".")
     args = parser.parse_args()
     # Get all tests into suite
-    tests = unittest.TestLoader().discover(args.suite, "*.py")
+    tests = unittest.TestLoader().discover(args.suite, "test*.py")
     # Run them
     unittest.TextTestRunner().run(tests)
