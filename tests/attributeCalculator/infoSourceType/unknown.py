@@ -21,13 +21,13 @@
 
 from logging import WARNING
 
-from eos.const import State, Location, FilterType, Context, RunTime, Operator, SourceType
+from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -38,28 +38,26 @@ class TestSourceTypeUnknown(EosTestCase):
         EosTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         self.srcAttr = srcAttr = Attribute(2)
-        info = Info()
-        info.state = State.offline
-        info.context = Context.local
-        info.runTime = RunTime.duration
-        info.gang = False
-        info.location = Location.ship
-        info.filterType = FilterType.all_
-        info.filterValue = None
-        info.operator = Operator.postPercent
-        info.targetAttributeId = tgtAttr.id
-        info.sourceType = 56
-        info.sourceValue = 37
-        effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = {info}
+        self.invalidInfo = invalidInfo = Info()
+        invalidInfo.state = State.offline
+        invalidInfo.context = Context.local
+        invalidInfo.runTime = RunTime.duration
+        invalidInfo.gang = False
+        invalidInfo.location = Location.self_
+        invalidInfo.filterType = None
+        invalidInfo.filterValue = None
+        invalidInfo.operator = Operator.postPercent
+        invalidInfo.targetAttributeId = tgtAttr.id
+        invalidInfo.sourceType = 56
+        invalidInfo.sourceValue = 37
+        self.effect = Effect(None, EffectCategory.passive)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(739, effects={effect}, attributes={srcAttr.id: 20}))
-        self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 50}))
-        self.fit._addHolder(influenceSource)
-        self.fit._addHolder(self.influenceTarget)
 
-    def testError(self):
-        self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 50)
+    def testLog(self):
+        self.effect._Effect__infos = {self.invalidInfo}
+        holder = IndependentItem(Type(739, effects={self.effect}, attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
+        self.fit._addHolder(holder)
+        self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
@@ -67,22 +65,21 @@ class TestSourceTypeUnknown(EosTestCase):
         self.assertEqual(logRecord.msg, expMessage)
 
     def testCombination(self):
-        info = Info()
-        info.state = State.offline
-        info.context = Context.local
-        info.runTime = RunTime.duration
-        info.gang = False
-        info.location = Location.ship
-        info.filterType = FilterType.all_
-        info.filterValue = None
-        info.operator = Operator.postMul
-        info.targetAttributeId = self.tgtAttr.id
-        info.sourceType = SourceType.attribute
-        info.sourceValue = self.srcAttr.id
-        effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = {info}
-        influenceSource = IndependentItem(Type(None, effects={effect}, attributes={self.srcAttr.id: 1.5}))
-        self.fit._addHolder(influenceSource)
+        validInfo = Info()
+        validInfo.state = State.offline
+        validInfo.context = Context.local
+        validInfo.runTime = RunTime.duration
+        validInfo.gang = False
+        validInfo.location = Location.self_
+        validInfo.filterType = None
+        validInfo.filterValue = None
+        validInfo.operator = Operator.postMul
+        validInfo.targetAttributeId = self.tgtAttr.id
+        validInfo.sourceType = SourceType.attribute
+        validInfo.sourceValue = self.srcAttr.id
+        self.effect._Effect__infos = {self.invalidInfo, validInfo}
+        holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.srcAttr.id: 1.5, self.tgtAttr.id: 100}))
+        self.fit._addHolder(holder)
         # Make sure presence of invalid sourceType doesn't screw
         # calculating value using other infos
-        self.assertNotAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)

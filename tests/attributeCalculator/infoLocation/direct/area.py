@@ -58,7 +58,7 @@ class TestLocationDirectArea(EosTestCase):
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        expMessage = "malformed info on item 772: unsupported target location {}".format(Location.area)
+        expMessage = "malformed info on item 772: unsupported target location {} for direct modification".format(Location.area)
         self.assertEqual(logRecord.msg, expMessage)
         logRecord = self.log[1]
         self.assertEqual(logRecord.levelno, WARNING)

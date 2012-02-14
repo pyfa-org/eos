@@ -34,7 +34,24 @@ class BadContainerException(AttributeCalculatorException):
     """
     pass
 
-class UnsupportedLocationException(AttributeCalculatorException):
+
+class UnsupportedFilterException(AttributeCalculatorException):
+    """
+    Raised when info specifies uknown to calculator filter type.
+    """
+    pass
+
+
+class UnsupportedDirectLocationException(AttributeCalculatorException):
+    """
+    Raised when location in Info object being processed cannot be
+    handled by register (set of unsupported locations is different
+    for direct and filtered modifications).
+    """
+    pass
+
+
+class UnsupportedFilteredLocationException(AttributeCalculatorException):
     """
     Raised when location in Info object being processed cannot be
     handled by register (set of unsupported locations is different

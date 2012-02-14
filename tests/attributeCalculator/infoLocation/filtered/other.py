@@ -59,7 +59,7 @@ class TestLocationFilterOther(EosTestCase):
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        expMessage = "malformed info on item 90: unsupported target location {}".format(Location.other)
+        expMessage = "malformed info on item 90: unsupported target location {} for filtered modification".format(Location.other)
         self.assertEqual(logRecord.msg, expMessage)
         logRecord = self.log[1]
         self.assertEqual(logRecord.levelno, WARNING)

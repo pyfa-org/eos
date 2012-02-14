@@ -31,8 +31,8 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
 
-class TestOperatorUnknown(EosTestCase):
-    """Test unknown operator type"""
+class TestFilterUnknown(EosTestCase):
+    """Test location filter"""
 
     def setUp(self):
         EosTestCase.setUp(self)
@@ -44,9 +44,9 @@ class TestOperatorUnknown(EosTestCase):
         invalidInfo.runTime = RunTime.duration
         invalidInfo.gang = False
         invalidInfo.location = Location.self_
-        invalidInfo.filterType = None
+        invalidInfo.filterType = 26500
         invalidInfo.filterValue = None
-        invalidInfo.operator = 1008
+        invalidInfo.operator = Operator.postPercent
         invalidInfo.targetAttributeId = tgtAttr.id
         invalidInfo.sourceType = SourceType.attribute
         invalidInfo.sourceValue = srcAttr.id
@@ -55,13 +55,23 @@ class TestOperatorUnknown(EosTestCase):
 
     def testLog(self):
         self.effect._Effect__infos = {self.invalidInfo}
-        holder = IndependentItem(Type(83, effects={self.effect}, attributes={self.srcAttr.id: 1.2, self.tgtAttr.id: 100}))
+        holder = IndependentItem(Type(31, effects={self.effect}, attributes={self.srcAttr.id: 20, self.tgtAttr: 100}))
         self.fit._addHolder(holder)
-        self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        expMessage = "malformed info on item 83: unknown operator 1008"
+        expMessage = "malformed info on item 31: invalid filter type 26500"
+        self.assertEqual(logRecord.msg, expMessage)
+        logRecord = self.log[1]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.msg, expMessage)
+        self.fit._removeHolder(holder)
+        self.assertEqual(len(self.log), 4)
+        logRecord = self.log[2]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.msg, expMessage)
+        logRecord = self.log[3]
+        self.assertEqual(logRecord.levelno, WARNING)
         self.assertEqual(logRecord.msg, expMessage)
 
     def testCombination(self):
@@ -73,13 +83,12 @@ class TestOperatorUnknown(EosTestCase):
         validInfo.location = Location.self_
         validInfo.filterType = None
         validInfo.filterValue = None
-        validInfo.operator = Operator.postMul
+        validInfo.operator = Operator.postPercent
         validInfo.targetAttributeId = self.tgtAttr.id
         validInfo.sourceType = SourceType.attribute
         validInfo.sourceValue = self.srcAttr.id
         self.effect._Effect__infos = {self.invalidInfo, validInfo}
-        holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.srcAttr.id: 1.5, self.tgtAttr.id: 100}))
+        holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
         self.fit._addHolder(holder)
-        # Make sure presence of invalid operator doesn't prevent
-        # from calculating value based on valid infos
+        # Invalid filter type in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
