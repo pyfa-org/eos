@@ -76,7 +76,7 @@ class TestLocationFilterSelf(EosTestCase):
     def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute
         # calculator won't know that source is 'owner' of some location
-        # and will throw corresponding exception
+        # and will log corresponding error
         self.fit._addHolder(self.influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]

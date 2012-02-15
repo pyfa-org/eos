@@ -55,7 +55,7 @@ class ModifierBuilder:
 
         Possible exceptions:
         ModifierBuilderException -- raised when tree has documented deviations
-        Exception -- any other exception type may be thrown, as structure and
+        Exception -- any other exception type may be raised, as structure and
         contents of tree may differ from expected greatly, so please wrap call
         into try-except block which catches all exceptions if you want to achieve
         at least basic level of stability
@@ -152,7 +152,7 @@ class ModifierBuilder:
         self.activeModifier.sourceValue = ExpressionData.getAttribute(element.arg2)
         # Append filled modifier to list we're currently working with
         self.modifiers.add(self.activeModifier)
-        # If something weird happens, clean current modifier to throw
+        # If something weird happens, clean current modifier to raise
         # exceptions instead of filling old modifier if something goes wrong
         self.activeModifier = None
 
