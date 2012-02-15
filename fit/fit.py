@@ -21,6 +21,7 @@
 
 from eos.eve.const import Attribute
 from .attributeCalculator.tracker import LinkTracker
+from .restrictionTracker.tracker import RestrictionTracker
 
 
 class Fit:
@@ -37,6 +38,7 @@ class Fit:
         self.__character = None
         # Tracks links between holders assigned to fit
         self._linkTracker = LinkTracker(self)
+        self._restrictionTracker = RestrictionTracker(self)
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._eos = eos
@@ -93,6 +95,7 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self._linkTracker.addHolder(holder)
+        self._restrictionTracker.addHolder(holder)
         self._linkTracker.stateSwitch(holder, None, holder.state)
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
@@ -114,6 +117,7 @@ class Fit:
         # Turn off its effects by switching state to None, then
         # unregister holder itself
         self._linkTracker.stateSwitch(holder, holder.state, None)
+        self._restrictionTracker.removeHolder(holder)
         self._linkTracker.removeHolder(holder)
         # Unset holder's fit
         holder.fit = None
