@@ -51,15 +51,25 @@ class ModifierValidationException(InfoBuilderException):
     pass
 
 
+class UnusedModifierException(InfoBuilderException):
+    """
+    Raised when some modifiers are not marked as used after
+    generating infos out of them.
+    """
+    pass
+
+
 class ModifierBuilderException(EosException):
     """
-    All exceptions raised by modifier builder are based on this class.
+    All exceptions raised by modifier builder are either represented
+    by this class or based on it.
     """
     pass
 
 
 class ConditionBuilderException(EosException):
     """
-    All exceptions raised by condition builder are based on this class.
+    All exceptions raised by condition builder are either represented
+    by this class or based on it.
     """
     pass

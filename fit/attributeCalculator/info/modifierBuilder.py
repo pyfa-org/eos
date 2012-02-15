@@ -52,6 +52,13 @@ class ModifierBuilder:
         Tuple (set with Modifier objects, skipped data flag), where
         skipped data flag indicates that we have encountered inactive
         operands
+
+        Possible exceptions:
+        ModifierBuilderException -- raised when tree has documented deviations
+        Exception -- any other exception type may be thrown, as structure and
+        contents of tree may differ from expected greatly, so please wrap call
+        into try-except block which catches all exceptions if you want to achieve
+        at least basic level of stability
         """
         # Flag which indicates, did we have data which we
         # are skipping or not

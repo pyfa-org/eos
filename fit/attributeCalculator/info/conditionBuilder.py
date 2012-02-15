@@ -136,8 +136,12 @@ class ConditionBuilder:
                         AtomComparisonOperator.greaterOrEqual: AtomComparisonOperator.less,
                         AtomComparisonOperator.less: AtomComparisonOperator.greaterOrEqual}
             condition.operator = invComps[condition.operator]
+        # Theoretically, we should never get into here if code which uses
+        # condition builder is properly written: conditions are built by builder
+        # so that their top-level node types can be only logical and comparison,
+        # and if conditions are not modified afterwards, this error shouldn't occur
         else:
-            raise ConditionBuilderException("only logical and comparison ConditionAtoms can be inverted")
+            raise ConditionBuilderException("unexpected condition atom type {} for inversion".format(condition.type))
 
     @classmethod
     def conjuct(cls, cond1, cond2):

@@ -21,7 +21,8 @@
 
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
-from .exception import ModifierBuilderException, TreeParsingExpectedException, TreeParsingUnexpectedException, ModifierValidationException
+from .exception import ModifierBuilderException, TreeParsingExpectedException, TreeParsingUnexpectedException, \
+UnusedModifierException, ModifierValidationException
 from .info import Info
 from .modifierBuilder import ModifierBuilder
 from .helpers import operandData, OperandType
@@ -82,7 +83,8 @@ class InfoBuilder:
                     raise TreeParsingUnexpectedException from e
                 # Update set with modifiers we've just got
                 modSet.update(modifiers)
-                # If any skipped data was encountered, change build status
+                # If any skipped data (for example, inactive operands) was
+                # encountered, change build status
                 if skippedData is True:
                     buildStatus = EffectBuildStatus.okPartial
             # Check modifiers we've got for validity
@@ -155,7 +157,13 @@ class InfoBuilder:
 
             # If there're any modifiers which were not used for
             # info generation, mark current effect as partially parsed
-            if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
+            try:
+                if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
+                    raise UnusedModifierException
+            except UnusedModifierException:
+                msg = "unused modifiers left after generating infos for effect {}".format(effect.id)
+                signature = (UnusedModifierException, effect.id)
+                logger.warning(msg, child="infoBuilder", signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
