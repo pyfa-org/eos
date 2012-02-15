@@ -25,7 +25,7 @@ from itertools import combinations
 from eos.const import RunTime, SourceType
 from eos.eve.const import Operand
 from .conditionBuilder import ConditionBuilder
-from .exception import ModifierBuilderException, GenericOperandException, ConditionBuilderException
+from .exception import ModifierBuilderException, ConditionBuilderException
 from .helpers import ExpressionData, operandData, OperandType
 from .modifier import Modifier
 
@@ -108,7 +108,7 @@ class ModifierBuilder:
             try:
                 method = genericOpnds[element.operandId]
             except KeyError as e:
-                raise GenericOperandException from e
+                raise ModifierBuilderException("unknown generic operand {}".format(element.operandId)) from e
             method(element, conditions)
 
     def __splice(self, element, conditions):
@@ -120,13 +120,13 @@ class ModifierBuilder:
         """Checks if given expression is stub, returning integer 0 or 1"""
         value = ExpressionData.getInteger(element)
         if not value in {0, 1}:
-            raise ModifierBuilderException("integer stub with unexpected value")
+            raise ModifierBuilderException("integer stub with unexpected value {}".format(value))
 
     def __checkBoolStub(self, element, conditions):
         """Checks if given expression is stub, returning boolean true"""
         value = ExpressionData.getBoolean(element)
         if value is not True:
-            raise ModifierBuilderException("boolean stub with value other than True")
+            raise ModifierBuilderException("boolean stub with unexpected value {}".format(value))
 
     def __makeDurationMod(self, element, conditions):
         """Make modifier for duration expressions"""

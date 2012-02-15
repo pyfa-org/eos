@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from logging import WARNING
+from logging import ERROR, WARNING
 
 from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
@@ -33,13 +33,49 @@ class TestModifierBuilderError(EosTestCase):
     """Test reaction to errors occurred during modifier building stage"""
 
     def testGeneric(self):
-        ePre = Expression(None, 1009)
-        ePost = Expression(None, 296)
-        effect = Effect(568, 0, preExpression=ePre, postExpression=ePost)
+        ePreStub = Expression(None, 27, value="1")
+        ePost = Expression(None, 1009)
+        effect = Effect(568, 0, preExpression=ePreStub, postExpression=ePost)
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.levelno, WARNING)
-        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 568")
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 568: unknown generic operand 1009")
+
+    def testIntStub(self):
+        ePreStub = Expression(None, 27, value="0")
+        ePost = Expression(None, 27, value="6")
+        effect = Effect(662, 0, preExpression=ePreStub, postExpression=ePost)
+        infos, status = InfoBuilder().build(effect, Logger())
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 662: integer stub with unexpected value 6")
+
+    def testBoolStub(self):
+        ePreStub = Expression(None, 27, value="0")
+        ePost = Expression(None, 23, value="False")
+        effect = Effect(92, 0, preExpression=ePreStub, postExpression=ePost)
+        infos, status = InfoBuilder().build(effect, Logger())
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 92: boolean stub with unexpected value False")
+
+    def testUnknown(self):
+        ePreStub = Expression(None, 27, value="0")
+        ePost = Expression(None, 23, value="Garbage")
+        effect = Effect(66, 0, preExpression=ePreStub, postExpression=ePost)
+        infos, status = InfoBuilder().build(effect, Logger())
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, ERROR)
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 66 due to unknown reason")

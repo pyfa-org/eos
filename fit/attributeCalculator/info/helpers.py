@@ -102,7 +102,10 @@ class ExpressionData:
     @classmethod
     def getBoolean(cls, expression):
         """Get integer from value"""
-        boolean = bool(expression.value)
+        # Format: {boolean name: boolean value}
+        conversionMap = {"True": True,
+                         "False": False}
+        boolean = conversionMap[expression.value]
         return boolean
 
 

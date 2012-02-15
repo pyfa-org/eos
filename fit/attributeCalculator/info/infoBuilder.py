@@ -77,7 +77,7 @@ class InfoBuilder:
                     modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
                 except ModifierBuilderException as e:
-                    raise TreeParsingExpectedException from e
+                    raise TreeParsingExpectedException(*e.args) from e
                 except Exception as e:
                     raise TreeParsingUnexpectedException from e
                 # Update set with modifiers we've just got
@@ -159,8 +159,8 @@ class InfoBuilder:
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
-        except TreeParsingExpectedException:
-            msg = "failed to parse expressions of effect {}".format(effect.id)
+        except TreeParsingExpectedException as e:
+            msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
             signature = (TreeParsingExpectedException, effect.id)
             logger.warning(msg, child="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error

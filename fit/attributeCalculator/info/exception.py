@@ -58,14 +58,6 @@ class ModifierBuilderException(EosException):
     pass
 
 
-class GenericOperandException(ModifierBuilderException):
-    """
-    Raised when operand which is expected to be generic cannot
-    be processed.
-    """
-    pass
-
-
 class ConditionBuilderException(EosException):
     """
     All exceptions raised by condition builder are based on this class.
