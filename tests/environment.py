@@ -21,7 +21,7 @@
 
 """
 This file contains helper classes, which implement minimalistic
-version of environment in which attributeCalculator resides.
+version of environment in which eos modules reside.
 """
 
 
