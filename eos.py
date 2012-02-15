@@ -32,6 +32,7 @@ class Eos:
     def __init__(self, dataHandler, name="eos"):
         self._dataHandler = dataHandler
         self._logger = Logger(name)
+        self._logger.info("session started")
 
     def makeFit(self):
         fit = Fit(self)

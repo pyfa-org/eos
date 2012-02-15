@@ -20,7 +20,7 @@
 
 
 import os.path
-from logging import getLogger, FileHandler, Formatter
+from logging import getLogger, FileHandler, Formatter, INFO
 
 
 class Logger:
@@ -36,6 +36,28 @@ class Logger:
         # Storage for signatures of logged entries,
         # to avoid logging them again when it's not desirable
         self.__knownSignatures = set()
+
+    def info(self, msg, child=None, signature=None):
+        """
+        Log info-level message.
+
+        Positional arguments:
+        msg -- message to log
+
+        Keyword arguments:
+        child -- name of child logger to use, if None,
+        root logger is used (default None)
+        signature -- hashable signature of log entry;
+        if not None, logger logs message only if no message
+        with same signature has been logged during current
+        session (default None)
+        """
+        logger = self.__getLogger(child)
+        if signature is None:
+            logger.info(msg)
+        elif not signature in self.__knownSignatures:
+            logger.info(msg)
+            self.__knownSignatures.add(signature)
 
     def warning(self, msg, child=None, signature=None):
         """
@@ -90,13 +112,16 @@ class Logger:
         used as root for our logger object
         """
         self.__rootLogger = getLogger(name)
+        # Set level to INFO to enable handling of
+        # all messages with level up to info
+        self.__rootLogger.setLevel(INFO)
         # Clear any handlers this logger already may have
         for handler in self.__rootLogger.handlers:
             self.__rootLogger.removeHandler(handler)
         # Define how logger will handle log entries
         logPath = os.path.expanduser(os.path.join("~", "Desktop", "eos_logs", "{}.log".format(name)))
         handler = FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
-        formatter = Formatter(fmt="{asctime}: {message}", style="{")
+        formatter = Formatter(fmt="[{asctime}] {levelname}: {message}", style="{")
         handler.setFormatter(formatter)
         self.__rootLogger.addHandler(handler)
 
