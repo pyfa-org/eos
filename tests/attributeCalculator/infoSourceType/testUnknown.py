@@ -19,15 +19,13 @@
 #===============================================================================
 
 
-from logging import WARNING
-
 from eos.const import State, Location, Context, RunTime, Operator, SourceType
 from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.environment import Fit, IndependentItem
+from eos.tests.environment import Logger, Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -60,7 +58,7 @@ class TestSourceTypeUnknown(EosTestCase):
         self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 739: unknown source type 56")
 
     def testCombination(self):

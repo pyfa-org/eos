@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from logging import ERROR, WARNING
-
 from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
@@ -41,7 +39,7 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 568: unknown generic operand 1009")
 
     def testIntStub(self):
@@ -53,7 +51,7 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 662: integer stub with unexpected value 6")
 
     def testBoolStub(self):
@@ -65,7 +63,7 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 92: boolean stub with unexpected value False")
 
     def testUnknown(self):
@@ -77,5 +75,5 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, ERROR)
+        self.assertEqual(logRecord.levelno, Logger.ERROR)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 66 due to unknown reason")

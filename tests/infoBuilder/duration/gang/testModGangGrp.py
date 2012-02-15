@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from logging import WARNING
-
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
@@ -86,7 +84,7 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to validate modifiers for effect 692")
 
     def testEffCategoryArea(self):

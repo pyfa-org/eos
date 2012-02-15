@@ -25,7 +25,7 @@ version of environment in which attributeCalculator resides.
 """
 
 
-from logging import getLogger
+from logging import getLogger, ERROR, WARNING
 
 from eos.const import Location
 from eos.fit.attributeCalculator.tracker import LinkTracker
@@ -44,6 +44,9 @@ class Logger:
     def __init__(self):
         self.__knownSignatures = set()
         self.__rootLogger = getLogger("eos_test")
+
+    ERROR = ERROR
+    WARNING = WARNING
 
     def warning(self, msg, child=None, signature=None):
         logger = self.__getChildLogger(child)

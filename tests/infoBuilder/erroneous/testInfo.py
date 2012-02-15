@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from logging import WARNING
-
 from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
@@ -52,7 +50,7 @@ class TestInfoBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to validate modifiers for effect 20807")
 
     def testUnusedModifiers(self):
@@ -72,5 +70,5 @@ class TestInfoBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "unused modifiers left after generating infos for effect 799")
