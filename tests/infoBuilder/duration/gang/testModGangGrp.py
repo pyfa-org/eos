@@ -19,6 +19,8 @@
 #===============================================================================
 
 
+from logging import WARNING
+
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
@@ -78,10 +80,14 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(info.context, Context.gang)
 
     def testEffCategoryTarget(self):
-        effect = Effect(None, 2, preExpression=self.eAddMod, postExpression=self.eRmMod)
+        effect = Effect(692, 2, preExpression=self.eAddMod, postExpression=self.eRmMod)
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.levelno, WARNING)
+        self.assertEqual(logRecord.msg, "failed to validate modifiers for effect 692")
 
     def testEffCategoryArea(self):
         effect = Effect(None, 3, preExpression=self.eAddMod, postExpression=self.eRmMod)

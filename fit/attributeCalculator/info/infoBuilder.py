@@ -76,10 +76,10 @@ class InfoBuilder:
                 try:
                     modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
-                except ModifierBuilderException:
-                    raise TreeParsingExpectedException
-                except:
-                    raise TreeParsingUnexpectedException
+                except ModifierBuilderException as e:
+                    raise TreeParsingExpectedException from e
+                except Exception as e:
+                    raise TreeParsingUnexpectedException from e
                 # Update set with modifiers we've just got
                 modSet.update(modifiers)
                 # If any skipped data was encountered, change build status
