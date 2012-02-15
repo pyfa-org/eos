@@ -174,7 +174,7 @@ class MutableAttributeMap:
             except UnsupportedSourceException as e:
                 msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
                 signature = (UnsupportedSourceException, sourceHolder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         # When data gathering was finished, process penalized modifiers
         # They are penalized on per-operator basis
@@ -204,7 +204,7 @@ class MutableAttributeMap:
             except UnsupportedOperatorException as e:
                 msg = "malformed info on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
                 signature = (UnsupportedOperatorException, sourceHolder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         return result
 

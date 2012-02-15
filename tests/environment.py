@@ -48,27 +48,27 @@ class Logger:
     ERROR = ERROR
     WARNING = WARNING
 
-    def warning(self, msg, child=None, signature=None):
-        logger = self.__getChildLogger(child)
+    def warning(self, msg, childName=None, signature=None):
+        logger = self.__getChildLogger(childName)
         if signature is None:
             logger.warning(msg)
         elif not signature in self.__knownSignatures:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
 
-    def error(self, msg, child=None, signature=None):
-        logger = self.__getChildLogger(child)
+    def error(self, msg, childName=None, signature=None):
+        logger = self.__getChildLogger(childName)
         if signature is None:
             logger.error(msg)
         elif not signature in self.__knownSignatures:
             logger.error(msg)
             self.__knownSignatures.add(signature)
 
-    def __getChildLogger(self, name):
-        if name is None:
+    def __getChildLogger(self, childName):
+        if childName is None:
             logger = self.__rootLogger
         else:
-            logger = self.__rootLogger.getChild(name)
+            logger = self.__rootLogger.getChild(childName)
         return logger
 
 

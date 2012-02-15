@@ -405,19 +405,19 @@ class LinkRegister:
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except BadContainerException:
             msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (BadContainerException, affector.sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedDirectLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedDirectLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedFilteredLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilteredLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
 
     def unregisterAffector(self, affector):
         """
@@ -437,19 +437,19 @@ class LinkRegister:
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except BadContainerException:
             msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (BadContainerException, affector.sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedDirectLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedDirectLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedFilteredLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilteredLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
 
     def getAffectees(self, affector):
         """
@@ -507,19 +507,19 @@ class LinkRegister:
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except BadContainerException:
             msg = "malformed info on item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
             signature = (BadContainerException, sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedDirectLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedDirectLocationException, sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedFilteredLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilteredLocationException, sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, child="attributeCalculator", signature=signature)
+            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         return affectees
 
     def getAffectors(self, targetHolder):

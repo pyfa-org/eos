@@ -37,7 +37,7 @@ class Logger:
         # to avoid logging them again when it's not desirable
         self.__knownSignatures = set()
 
-    def info(self, msg, child=None, signature=None):
+    def info(self, msg, childName=None, signature=None):
         """
         Log info-level message.
 
@@ -45,21 +45,21 @@ class Logger:
         msg -- message to log
 
         Keyword arguments:
-        child -- name of child logger to use, if None,
+        childName -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
         if not None, logger logs message only if no message
         with same signature has been logged during current
         session (default None)
         """
-        logger = self.__getLogger(child)
+        logger = self.__getLogger(childName)
         if signature is None:
             logger.info(msg)
         elif not signature in self.__knownSignatures:
             logger.info(msg)
             self.__knownSignatures.add(signature)
 
-    def warning(self, msg, child=None, signature=None):
+    def warning(self, msg, childName=None, signature=None):
         """
         Log warning-level message.
 
@@ -67,21 +67,21 @@ class Logger:
         msg -- message to log
 
         Keyword arguments:
-        child -- name of child logger to use, if None,
+        childName -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
         if not None, logger logs message only if no message
         with same signature has been logged during current
         session (default None)
         """
-        logger = self.__getLogger(child)
+        logger = self.__getLogger(childName)
         if signature is None:
             logger.warning(msg)
         elif not signature in self.__knownSignatures:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
 
-    def error(self, msg, child=None, signature=None):
+    def error(self, msg, childName=None, signature=None):
         """
         Log error-level message.
 
@@ -96,7 +96,7 @@ class Logger:
         with same signature has been logged during current
         session (default None)
         """
-        logger = self.__getLogger(child)
+        logger = self.__getLogger(childName)
         if signature is None:
             logger.error(msg)
         elif not signature in self.__knownSignatures:
@@ -128,17 +128,17 @@ class Logger:
         handler.setFormatter(formatter)
         self.__rootLogger.addHandler(handler)
 
-    def __getLogger(self, name=None):
+    def __getLogger(self, childName=None):
         """
         Get python's logger instance, which may be used to log
         actual entries according to logging module documentation.
 
         Keyword arguments:
-        name -- name of child logger to get, if None is passed,
-        root logger is returned (default None)
+        childName -- name of child logger to get, if None is
+        passed, root logger is returned (default None)
         """
-        if name is None:
+        if childName is None:
             logger = self.__rootLogger
         else:
-            logger = self.__rootLogger.getChild(name)
+            logger = self.__rootLogger.getChild(childName)
         return logger

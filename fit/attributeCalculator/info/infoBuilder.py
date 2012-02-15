@@ -163,24 +163,24 @@ class InfoBuilder:
             except UnusedModifierException:
                 msg = "unused modifiers left after generating infos for effect {}".format(effect.id)
                 signature = (UnusedModifierException, effect.id)
-                logger.warning(msg, child="infoBuilder", signature=signature)
+                logger.warning(msg, childName="infoBuilder", signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
         except TreeParsingExpectedException as e:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
             signature = (TreeParsingExpectedException, effect.id)
-            logger.warning(msg, child="infoBuilder", signature=signature)
+            logger.warning(msg, childName="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error
         except TreeParsingUnexpectedException:
             msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
             signature = (TreeParsingUnexpectedException, effect.id)
-            logger.error(msg, child="infoBuilder", signature=signature)
+            logger.error(msg, childName="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error
         except ModifierValidationException:
             msg = "failed to validate modifiers for effect {}".format(effect.id)
             signature = (ModifierValidationException, effect.id)
-            logger.warning(msg, child="infoBuilder", signature=signature)
+            logger.warning(msg, childName="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error
 
         return infos, buildStatus
