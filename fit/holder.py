@@ -79,7 +79,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # to perform fit-specific state switch of our
         # holder
         if self.fit is not None:
-            self.fit._linkTracker.stateSwitch(self, newState)
+            self.fit._linkTracker.stateSwitch(self, oldState, newState)
         self.__state = newState
 
 #    @property

@@ -89,13 +89,11 @@ class Fit:
         # Make sure the holder isn't used already
         if holder.fit is not None:
             raise RuntimeError("cannot add holder which is already in some fit")
-        state = holder.state
-        holder.state = None
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
         self._linkTracker.addHolder(holder)
-        holder.state = state
+        self._linkTracker.stateSwitch(holder, None, holder.state)
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
         if charge is not None:
@@ -113,16 +111,12 @@ class Fit:
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._removeHolder(charge)
-        # Remember holder's state
-        state = holder.state
         # Turn off its effects by switching state to None, then
         # unregister holder itself
-        self._linkTracker.stateSwitch(holder, None)
+        self._linkTracker.stateSwitch(holder, holder.state, None)
         self._linkTracker.removeHolder(holder)
         # Unset holder's fit
         holder.fit = None
-        # Restore holder state
-        holder.state = state
 
 
 class HolderContainer:

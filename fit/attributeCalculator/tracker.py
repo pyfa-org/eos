@@ -38,6 +38,7 @@ class LinkTracker:
     def __init__(self, fit):
         self.__fit = fit
         self.__register = LinkRegister(fit)
+        self.__holderStates = {}
 
     def getAffectors(self, holder, attrId=None):
         """
@@ -124,23 +125,23 @@ class LinkTracker:
         disabledDirectLocation = self.__getHolderDirectLocation(holder)
         self.__register.unregisterAffectee(holder, disableDirect=disabledDirectLocation)
 
-    def stateSwitch(self, holder, state):
+    def stateSwitch(self, holder, oldState, newState):
         """
         Handle holder state switch in link tracker. Toggles holder's
         effects on another holders.
 
         Positional arguments:
         holder -- holder which has its state changed
-        state -- state which holder is taking
+        oldState -- state from which holder is being switched
+        newState -- state to which holder is being switched
         """
-        oldState = holder.state
         # Get set of affectors which we will need to register or
         # unregister
-        stateDifference = self.__stateDifference(oldState, state)
+        stateDifference = self.__stateDifference(oldState, newState)
         processedContexts = {Context.local}
         affectorDiff = self.__generateDurationAffectors(holder, stateFilter=stateDifference, contextFilter=processedContexts)
         # Register them, if we're turning something on
-        if oldState is None or (state is not None and state > oldState):
+        if oldState is None or (newState is not None and newState > oldState):
             for affector in affectorDiff:
                 self.__register.registerAffector(affector)
             self.__clearAffectorsDependents(affectorDiff)

@@ -86,14 +86,12 @@ class Fit:
         self.ship = None
 
     def _addHolder(self, holder):
-        self._linkTracker.addHolder(holder)
-        state = holder.state
-        holder.state = None
         holder.fit = self
-        holder.state = state
+        self._linkTracker.addHolder(holder)
+        self._linkTracker.stateSwitch(holder, None, holder.state)
 
     def _removeHolder(self, holder):
-        self._linkTracker.stateSwitch(holder, None)
+        self._linkTracker.stateSwitch(holder, holder.state, None)
         self._linkTracker.removeHolder(holder)
         holder.fit = None
 
