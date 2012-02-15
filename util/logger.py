@@ -121,7 +121,10 @@ class Logger:
         # Define how logger will handle log entries
         logPath = os.path.expanduser(os.path.join("~", "Desktop", "eos_logs", "{}.log".format(name)))
         handler = FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
-        formatter = Formatter(fmt="[{asctime}] {levelname}: {message}", style="{")
+        # Set up formatter options
+        msgFormat = "[{asctime}] {name} {levelname}: {message}"
+        timeFormat = "%Y-%m-%d %H:%M:%S"  # Must be specified in old style, as of python 3.2
+        formatter = Formatter(fmt=msgFormat, datefmt=timeFormat, style="{")
         handler.setFormatter(formatter)
         self.__rootLogger.addHandler(handler)
 
