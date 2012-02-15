@@ -39,6 +39,7 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 568: unknown generic operand 1009")
 
@@ -51,6 +52,7 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 662: integer stub with unexpected value 6")
 
@@ -63,6 +65,7 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 92: boolean stub with unexpected value False")
 
@@ -75,5 +78,6 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
         self.assertEqual(logRecord.levelno, Logger.ERROR)
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 66 due to unknown reason")

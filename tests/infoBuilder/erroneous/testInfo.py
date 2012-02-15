@@ -50,6 +50,7 @@ class TestInfoBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "failed to validate modifiers for effect 20807")
 
@@ -70,5 +71,6 @@ class TestInfoBuilderError(EosTestCase):
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "unused modifiers left after generating infos for effect 799")

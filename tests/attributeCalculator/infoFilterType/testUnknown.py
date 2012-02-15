@@ -57,6 +57,7 @@ class TestFilterUnknown(EosTestCase):
         self.fit._addHolder(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 31: invalid filter type 26500")
 

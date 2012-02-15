@@ -58,6 +58,7 @@ class TestOperatorUnknown(EosTestCase):
         self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator 1008")
 

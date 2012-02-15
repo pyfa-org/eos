@@ -80,5 +80,6 @@ class TestLocationFilterSelf(EosTestCase):
         self.fit._addHolder(self.influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 1061: invalid reference to self for filtered modification")

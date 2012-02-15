@@ -83,9 +83,6 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
-        logRecord = self.log[0]
-        self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "failed to validate modifiers for effect 692")
 
     def testEffCategoryArea(self):
         effect = Effect(None, 3, preExpression=self.eAddMod, postExpression=self.eRmMod)

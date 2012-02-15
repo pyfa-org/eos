@@ -55,5 +55,6 @@ class TestLocationDirectArea(EosTestCase):
         fit._addHolder(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 772: unsupported target location {} for direct modification".format(Location.area))
