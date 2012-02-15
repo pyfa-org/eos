@@ -23,7 +23,6 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from eos.const import State
-from eos.exception import TargetException
 from .attributeCalculator.map import MutableAttributeMap
 
 
@@ -83,18 +82,18 @@ class MutableAttributeHolder(metaclass=ABCMeta):
             self.fit._linkTracker.stateSwitch(self, newState)
         self.__state = newState
 
-    @property
-    def target(self):
-        """Get target, onto which holder is applied"""
-        return self.__target
-
-    @target.setter
-    def target(self, newTarget):
-        """Project holder onto target"""
-        if self.item.isTargeted is True:
-            self.__target = newTarget
-        else:
-            raise TargetException("attempt to project holder with non-projectable item")
+#    @property
+#    def target(self):
+#        """Get target, onto which holder is applied"""
+#        return self.__target
+#
+#    @target.setter
+#    def target(self, newTarget):
+#        """Project holder onto target"""
+#        if self.item.isTargeted is True:
+#            self.__target = newTarget
+#        else:
+#            raise TargetException("attempt to project holder with non-projectable item")
 
     @property
     def trackingSpeed(self):

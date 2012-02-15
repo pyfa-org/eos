@@ -22,32 +22,3 @@
 class EosException(Exception):
     """All public exceptions raised by Eos are based on this class"""
     pass
-
-
-class TargetException(EosException):
-    """Raised when passed target is invalid"""
-    pass
-
-
-class ItemFittingException(EosException):
-    """
-    Not used directly, subclassed by more specific exceptions
-    which specify exact reason why item cannot be fit.
-    """
-    pass
-
-
-class NoSlotAttributeException(ItemFittingException):
-    """
-    Raised on attempt to add holder to slot-based container, if holder's
-    item doesn't have attribute which is used as slot index.
-    """
-    pass
-
-
-class SlotOccupiedException(ItemFittingException):
-    """
-    Raised on attempt to add holder to slot-based container, if slot
-    to which holder should be added is already occupied by another holder.
-    """
-    pass

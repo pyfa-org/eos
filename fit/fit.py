@@ -19,7 +19,6 @@
 #===============================================================================
 
 
-from eos.exception import NoSlotAttributeException, SlotOccupiedException
 from eos.eve.const import Attribute
 from .attributeCalculator.tracker import LinkTracker
 
@@ -215,9 +214,11 @@ class SlotHolderContainer:
         try:
             slot = holderItemAttrs[self.__slotAttrId]
         except KeyError as e:
-            raise NoSlotAttributeException("item of passed holder doesn't contain slot specification") from e
+            #raise NoSlotAttributeException("item of passed holder doesn't contain slot specification") from e
+            pass
         if slot in self.__dict:
-            raise SlotOccupiedException("slot which passed holder is going to take is already occupied")
+            #raise SlotOccupiedException("slot which passed holder is going to take is already occupied")
+            pass
         self.__dict[slot] = holder
         self.__fit._addHolder(holder)
 
