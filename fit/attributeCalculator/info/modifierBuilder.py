@@ -25,7 +25,7 @@ from itertools import combinations
 from eos.const import RunTime, SourceType
 from eos.eve.const import Operand
 from .conditionBuilder import ConditionBuilder
-from .exception import ModifierBuilderException, ConditionBuilderException
+from .exception import ModifierBuilderException, GenericOperandException, ConditionBuilderException
 from .helpers import ExpressionData, operandData, OperandType
 from .modifier import Modifier
 
@@ -108,7 +108,7 @@ class ModifierBuilder:
             try:
                 method = genericOpnds[element.operandId]
             except KeyError as e:
-                raise ModifierBuilderException("unknown operand has been passed to __generic") from e
+                raise GenericOperandException from e
             method(element, conditions)
 
     def __splice(self, element, conditions):
