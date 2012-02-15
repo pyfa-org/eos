@@ -59,6 +59,28 @@ class Logger:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
 
+    def error(self, msg, child=None, signature=None):
+        """
+        Log error-level message.
+
+        Positional arguments:
+        msg -- message to log
+
+        Keyword arguments:
+        child -- name of child logger to use, if None,
+        root logger is used (default None)
+        signature -- hashable signature of log entry;
+        if not None, logger logs message only if no message
+        with same signature has been logged during current
+        session (default None)
+        """
+        logger = self.__getLogger(child)
+        if signature is None:
+            logger.error(msg)
+        elif not signature in self.__knownSignatures:
+            logger.error(msg)
+            self.__knownSignatures.add(signature)
+
     def __setup(self, name):
         """
         Configure python logging system for our neeeds.

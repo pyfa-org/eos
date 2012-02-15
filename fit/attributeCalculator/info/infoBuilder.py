@@ -21,7 +21,7 @@
 
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
-from .exception import ModifierBuilderException
+from .exception import ModifierBuilderException, TreeParsingExpectedException, TreeParsingUnexpectedException, ModifierValidationException
 from .info import Info
 from .modifierBuilder import ModifierBuilder
 from .helpers import operandData, OperandType
@@ -62,105 +62,118 @@ class InfoBuilder:
         Tuple (set with Info objects, build status), where build status
         is Location class' attribute value
         """
-        # By default, assume that our build is 100% successful
-        buildStatus = EffectBuildStatus.okFull
-        # Containers for our data
-        preMods = set()
-        postMods = set()
-        # Make instance of modifier builder
-        modBuilder = ModifierBuilder()
-        # Get modifiers out of both trees
-        for tree, runTime, modSet in ((effect.preExpression, RunTime.pre, preMods),
-                                      (effect.postExpression, RunTime.post, postMods)):
-            try:
-                modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
-            # If any errors occurred, return empty set and error status
-            except ModifierBuilderException:
-                return set(), EffectBuildStatus.error
-            except:
-                # TODO: This is temporary debugging print, should be moved to logging
-                # module when its format is defined
-                print("unexpected exception occurred when parsing expression tree with root node ID {}".format(tree.id))
-                return set(), EffectBuildStatus.error
-            else:
+        try:
+            # By default, assume that our build is 100% successful
+            buildStatus = EffectBuildStatus.okFull
+            # Containers for our data
+            preMods = set()
+            postMods = set()
+            # Make instance of modifier builder
+            modBuilder = ModifierBuilder()
+            # Get modifiers out of both trees
+            for tree, runTime, modSet in ((effect.preExpression, RunTime.pre, preMods),
+                                          (effect.postExpression, RunTime.post, postMods)):
+                try:
+                    modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
+                # If any errors occurred, raise corresponding exceptions
+                except ModifierBuilderException:
+                    raise TreeParsingExpectedException
+                except:
+                    raise TreeParsingUnexpectedException
                 # Update set with modifiers we've just got
                 modSet.update(modifiers)
                 # If any skipped data was encountered, change build status
                 if skippedData is True:
                     buildStatus = EffectBuildStatus.okPartial
-        # Check modifiers we've got for validity
-        for modSet in (preMods, postMods):
-            for modifier in modSet:
-                if cls.validateModifier(modifier) is not True:
-                    # If any is invalid, return empty set
-                    # and error status
-                    return set(), EffectBuildStatus.error
+            # Check modifiers we've got for validity
+            for modSet in (preMods, postMods):
+                for modifier in modSet:
+                    if cls.validateModifier(modifier) is not True:
+                        # If any of modifiers is invalid, raise exception
+                        raise ModifierValidationException
 
-        # Container for actual info objects
-        infos = set()
-        # Helper containers for modifier->info conversion process
-        # Contains references to already used for generation
-        # of infos pre-modifiers
-        usedPres = set()
-        # Same for post-modifiers
-        usedPosts = set()
+            # Container for actual info objects
+            infos = set()
+            # Helper containers for modifier->info conversion process
+            # Contains references to already used for generation
+            # of infos pre-modifiers
+            usedPres = set()
+            # Same for post-modifiers
+            usedPosts = set()
 
-        # To get all duration infos, we need two mirror duration modifiers,
-        # modifier which applies and modifier which undos effect; cycle through
-        # pre-modifiers, which are applying ones
-        for preMod in preMods:
-            # Skip all non-duration modifiers, we're not interested
-            # in them for now. We could avoid this check, as mirror
-            # check includes it too, but it would need to be done
-            # multiple times, when doing this one time per one preMod
-            # is enough.
-            try:
-                modData = operandData[preMod.type]
-            except KeyError:
-                modType = None
-            else:
-                modType = modData.type
-            if modType != OperandType.duration:
-                continue
-            # Cycle through post-modifiers
-            for postMod in postMods:
-                # Skip modifiers which we already used
-                if postMod in usedPosts:
-                    continue
-                # If matching pre- and post-modifiers were detected
-                if cls.isMirrorToPost(preMod, postMod) is True:
-                    # Create actual info
-                    info = cls.convertToInfo(preMod)
-                    infos.add(info)
-                    # Mark used modifiers as used
-                    usedPres.add(preMod)
-                    usedPosts.add(postMod)
-                    # We found  what we've been looking for in this postMod loop, thus bail
-                    break
-
-        # Time of instantly-applied modifiers: the ones which
-        # are applied just in the beginning and in the end of cycle
-        for modSet, usedMods in ((preMods, usedPres), (postMods, usedPosts)):
-            for modifier in modSet:
-                # Skip non-instant modifier types
+            # To get all duration infos, we need two mirror duration modifiers,
+            # modifier which applies and modifier which undos effect; cycle through
+            # pre-modifiers, which are applying ones
+            for preMod in preMods:
+                # Skip all non-duration modifiers, we're not interested
+                # in them for now. We could avoid this check, as mirror
+                # check includes it too, but it would need to be done
+                # multiple times, when doing this one time per one preMod
+                # is enough.
                 try:
-                    modData = operandData[modifier.type]
+                    modData = operandData[preMod.type]
                 except KeyError:
                     modType = None
                 else:
                     modType = modData.type
-                if modType != OperandType.instant:
+                if modType != OperandType.duration:
                     continue
-                # Make actual info object
-                info = cls.convertToInfo(modifier)
-                infos.add(info)
-                # And mark modifier as used
-                usedMods.add(modifier)
+                # Cycle through post-modifiers
+                for postMod in postMods:
+                    # Skip modifiers which we already used
+                    if postMod in usedPosts:
+                        continue
+                    # If matching pre- and post-modifiers were detected
+                    if cls.isMirrorToPost(preMod, postMod) is True:
+                        # Create actual info
+                        info = cls.convertToInfo(preMod)
+                        infos.add(info)
+                        # Mark used modifiers as used
+                        usedPres.add(preMod)
+                        usedPosts.add(postMod)
+                        # We found  what we've been looking for in this postMod loop, thus bail
+                        break
 
-        # If there're any modifiers which were not used for
-        # info generation, mark current effect as partially parsed
-        if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
-            buildStatus = EffectBuildStatus.okPartial
+            # Time of instantly-applied modifiers: the ones which
+            # are applied just in the beginning and in the end of cycle
+            for modSet, usedMods in ((preMods, usedPres), (postMods, usedPosts)):
+                for modifier in modSet:
+                    # Skip non-instant modifier types
+                    try:
+                        modData = operandData[modifier.type]
+                    except KeyError:
+                        modType = None
+                    else:
+                        modType = modData.type
+                    if modType != OperandType.instant:
+                        continue
+                    # Make actual info object
+                    info = cls.convertToInfo(modifier)
+                    infos.add(info)
+                    # And mark modifier as used
+                    usedMods.add(modifier)
+
+            # If there're any modifiers which were not used for
+            # info generation, mark current effect as partially parsed
+            if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
+                buildStatus = EffectBuildStatus.okPartial
+
+        # Handle raised exceptions
+        except TreeParsingExpectedException:
+            msg = "failed to parse expressions of effect {}".format(effect.id)
+            signature = (TreeParsingExpectedException, effect.id)
+            logger.warning(msg, child="infoBuilder", signature=signature)
+            return set(), EffectBuildStatus.error
+        except TreeParsingUnexpectedException:
+            msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
+            signature = (TreeParsingUnexpectedException, effect.id)
+            logger.error(msg, child="infoBuilder", signature=signature)
+            return set(), EffectBuildStatus.error
+        except ModifierValidationException:
+            msg = "failed to validate modifiers for effect {}".format(effect.id)
+            signature = (ModifierValidationException, effect.id)
+            logger.warning(msg, child="infoBuilder", signature=signature)
+            return set(), EffectBuildStatus.error
 
         return infos, buildStatus
 

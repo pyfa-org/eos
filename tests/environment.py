@@ -43,17 +43,30 @@ class DataHandler:
 class Logger:
     def __init__(self):
         self.__knownSignatures = set()
+        self.__rootLogger = getLogger("eos_test")
 
     def warning(self, msg, child=None, signature=None):
-        if child is None:
-            logger = getLogger("eos_test")
-        else:
-            logger = getLogger("eos_test").getChild(child)
+        logger = self.__getChildLogger(child)
         if signature is None:
             logger.warning(msg)
         elif not signature in self.__knownSignatures:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
+
+    def error(self, msg, child=None, signature=None):
+        logger = self.__getChildLogger(child)
+        if signature is None:
+            logger.error(msg)
+        elif not signature in self.__knownSignatures:
+            logger.error(msg)
+            self.__knownSignatures.add(signature)
+
+    def __getChildLogger(self, name):
+        if name is None:
+            logger = self.__rootLogger
+        else:
+            logger = self.__rootLogger.getChild(name)
+        return logger
 
 
 class Eos:

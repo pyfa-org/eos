@@ -22,17 +22,44 @@
 from eos.exception import EosException
 
 
+class InfoBuilderException(EosException):
+    """
+    All exceptions raised by info builder are based on this class.
+    """
+    pass
+
+
+class TreeParsingExpectedException(InfoBuilderException):
+    """
+    Raised when modifier builder encounters some expected error.
+    """
+    pass
+
+
+class TreeParsingUnexpectedException(InfoBuilderException):
+    """
+    Raised when modifier builder encounters some unhandled error.
+    """
+    pass
+
+
+class ModifierValidationException(InfoBuilderException):
+    """
+    Raised when some modifier generated out of expression tree
+    is invalid.
+    """
+    pass
+
+
 class ModifierBuilderException(EosException):
     """
-    Exception of this type is raised when modifier builder
-    encounters some 'known' error and wants to notify caller
+    All exceptions raised by modifier builder are based on this class.
     """
     pass
 
 
 class ConditionBuilderException(EosException):
     """
-    Exception of this type is raised when condition atom builder
-    encounters some 'known' error and wants to notify caller
+    All exceptions raised by condition builder are based on this class.
     """
     pass
