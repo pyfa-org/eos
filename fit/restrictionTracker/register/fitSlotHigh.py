@@ -24,6 +24,7 @@ from eos.eve.const import Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import HighSlotException
 
+
 class FitSlotHighRegister:
     def __init__(self, fit):
         self.__fit = fit
@@ -33,14 +34,21 @@ class FitSlotHighRegister:
         resUse = Slot.moduleHigh in holder.item.slots
         if resUse is not True:
             return
-        resUsed = len(self.__resUsers)
+        self.__resUsers.add(holder)
+        self.validate()
+
+    def unregisterHolder(self, holder):
+        self.__resUsers.remove(holder)
+
+    def validate(self):
+        if len(self.__resUsers) > self.__getMaxRes():
+            overUsers = set()
+            overUsers.update(self.__resUsers)
+            raise HighSlotException(overUsers)
+
+    def __getMaxRes(self):
         try:
             resMax = self.__fit.ship.attributes[Attribute.hiSlots]
         except NoAttributeException:
             resMax = 0
-        if resUsed + 1 > resMax:
-            raise HighSlotException
-        self.__resUsers.add(holder)
-
-    def unregisterHolder(self, holder):
-        self.__resUsers.remove(holder)
+        return resMax

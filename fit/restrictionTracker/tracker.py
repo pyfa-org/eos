@@ -20,15 +20,23 @@
 
 
 from .register.fitSlotHigh import FitSlotHighRegister
+from .exception import HighSlotException
 
 
 class RestrictionTracker:
     def __init__(self, fit):
         self.__fit = fit
-        self.__slotHighRegiister = FitSlotHighRegister(fit)
+        self.__slotHighRegister = FitSlotHighRegister(fit)
 
     def addHolder(self, holder):
-        self.__slotHighRegiister.registerHolder(holder)
+        try:
+            self.__slotHighRegister.registerHolder(holder)
+        except HighSlotException:
+            self.__slotHighRegister.unregisterHolder(holder)
+            raise
 
     def removeHolder(self, holder):
-        self.__slotHighRegiister.unregisterHolder(holder)
+        self.__slotHighRegister.unregisterHolder(holder)
+
+    def validate(self):
+        self.__slotHighRegister.validate()
