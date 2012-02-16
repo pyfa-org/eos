@@ -20,7 +20,7 @@
 
 
 from eos.eve.type import Type
-from eos.tests.environment import ShipItem
+from eos.tests.attributeCalculator.environment import ShipItem
 from eos.tests.eosTestCase import EosTestCase
 
 

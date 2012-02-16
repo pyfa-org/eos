@@ -25,7 +25,7 @@ from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.environment import Fit, IndependentItem, ShipItem, SpaceItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem
 from eos.tests.eosTestCase import EosTestCase
 
 

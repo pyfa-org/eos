@@ -23,7 +23,7 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.environment import Logger
+from eos.tests.infoBuilder.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
 
 

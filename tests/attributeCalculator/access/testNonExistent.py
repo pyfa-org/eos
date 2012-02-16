@@ -21,7 +21,7 @@
 
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.exception import NoAttributeException
-from eos.tests.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
 

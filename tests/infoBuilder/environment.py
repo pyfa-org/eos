@@ -19,25 +19,7 @@
 #===============================================================================
 
 
-"""
-This file contains helper classes, which implement minimalistic
-version of environment in which eos modules reside.
-"""
-
-
 from logging import getLogger, ERROR, WARNING
-
-from eos.const import Location
-from eos.fit.attributeCalculator.tracker import LinkTracker
-from eos.fit.holder import MutableAttributeHolder
-
-
-class DataHandler:
-    def __init__(self, attrMetaData):
-        self.__attrMetaData = attrMetaData
-
-    def getAttribute(self, attrId):
-        return self.__attrMetaData[attrId]
 
 
 class Logger:
@@ -70,67 +52,3 @@ class Logger:
         else:
             logger = self.__rootLogger.getChild(childName)
         return logger
-
-
-class Eos:
-    def __init__(self, attrMetaData):
-        self._dataHandler = DataHandler(attrMetaData)
-        self._logger = Logger()
-
-
-class Fit:
-    def __init__(self, attrMetaData):
-        self._eos = Eos(attrMetaData)
-        self._linkTracker = LinkTracker(self)
-        self.character = None
-        self.ship = None
-
-    def _addHolder(self, holder):
-        holder.fit = self
-        self._linkTracker.addHolder(holder)
-        self._linkTracker.stateSwitch(holder, None, holder.state)
-
-    def _removeHolder(self, holder):
-        self._linkTracker.stateSwitch(holder, holder.state, None)
-        self._linkTracker.removeHolder(holder)
-        holder.fit = None
-
-
-class IndependentItem(MutableAttributeHolder):
-
-    def __init__(self, type_):
-        super().__init__(type_)
-
-    @property
-    def _location(self):
-        return None
-
-
-class CharacterItem(MutableAttributeHolder):
-
-    def __init__(self, type_):
-        super().__init__(type_)
-
-    @property
-    def _location(self):
-        return Location.character
-
-
-class ShipItem(MutableAttributeHolder):
-
-    def __init__(self, type_):
-        super().__init__(type_)
-
-    @property
-    def _location(self):
-        return Location.ship
-
-
-class SpaceItem(MutableAttributeHolder):
-
-    def __init__(self, type_):
-        super().__init__(type_)
-
-    @property
-    def _location(self):
-        return Location.space
