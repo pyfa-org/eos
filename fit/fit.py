@@ -44,10 +44,10 @@ class Fit:
         self._eos = eos
         # Character-related holder containers
         self.skills = HolderContainer(self)
-        self.implants = SlotHolderContainer(self, Attribute.implantness)
-        self.boosters = SlotHolderContainer(self, Attribute.boosterness)
+        self.implants = HolderContainer(self)
+        self.boosters = HolderContainer(self)
         # Ship-related containers
-        self.subsystems = SlotHolderContainer(self, Attribute.subsystemSlot)
+        self.subsystems = HolderContainer(self)
         self.modulesHigh = HolderContainer(self)
         self.modulesMed = HolderContainer(self)
         self.modulesLow = HolderContainer(self)
@@ -179,82 +179,3 @@ class HolderContainer:
 
     def __iter__(self):
         return (item for item in self.__list)
-
-class SlotHolderContainer:
-    """
-    Keep holders in slot-based list form, one instance per suitable
-    for list high-level type: implants, subsystems, etc. It makes sure
-    added/removed holders are registered/unregistered properly and do not
-    overlap according to slot they're taking.
-
-    Positional arguments:
-    fit -- fit, to which list is assigned
-    slotAttrId -- ID of attribute which describes slot to which this item
-    is fit (ID of implantness for implants, for example)
-    """
-    def __init__(self, fit, slotAttrId):
-        self.__fit = fit
-        self.__slotAttrId = slotAttrId
-        self.__dict = {}
-
-    def add(self, holder):
-        """
-        Add holder to dictionary.
-
-        Positional arguments:
-        holder -- holder to add
-
-        Possible exceptions:
-        eos.exceptions.NoSlotAttributeException -- raised when passed holder
-        doesn't contain slot specificator
-        eos.exceptions.SlotOccupiedException -- raised when slot into which
-        holder should be installed is already occupied
-        """
-        holderItemAttrs = holder.item.attributes
-        try:
-            slot = holderItemAttrs[self.__slotAttrId]
-        except KeyError as e:
-            #raise NoSlotAttributeException("item of passed holder doesn't contain slot specification") from e
-            pass
-        if slot in self.__dict:
-            #raise SlotOccupiedException("slot which passed holder is going to take is already occupied")
-            pass
-        self.__dict[slot] = holder
-        self.__fit._addHolder(holder)
-
-    def remove(self, holder):
-        """
-        Remove holder from dictionary.
-
-        Positional arguments:
-        holder -- holder to remove
-
-        Possible exceptions:
-        ValueError -- raised when passed holder can't be found in
-        dictionary
-        """
-        holderItemAttrs = holder.item.attributes
-        try:
-            slot = holderItemAttrs[self.__slotAttrId]
-        # Holders w/o slots can't be placed into such container,
-        # thus we can be sure that there's no such holder in whole dict
-        except KeyError as e:
-            raise ValueError("no such holder") from e
-        # If slot isn't found in dict, it means there can't be such item
-        # too
-        if not slot in self.__dict:
-            raise ValueError("no such holder")
-        # If holder occupied target slot isn't our holder, it means we
-        # raise the same exception again
-        if self.__dict[slot] is not holder:
-            raise ValueError("no such holder")
-        # Finally, remove holder
-        del self.__dict[slot]
-        self.__fit._removeHolder(holder)
-
-    def __len__(self):
-        return self.__dict.__len__()
-
-    def __iter__(self):
-        # Sort stuff by slot ID
-        return (self.__dict[key] for key in sorted(self.__dict))
