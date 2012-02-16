@@ -33,6 +33,8 @@ class GroupFittedRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         groupId = holder.item.groupId
+        if groupId is None:
+            return
         self.__groupAll.addData(groupId, {holder})
         try:
             holder.attributes[Attribute.maxGroupFitted]

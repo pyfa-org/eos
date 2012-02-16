@@ -41,6 +41,11 @@ class GroupFittedException(RestrictionTrackerException):
     """Raised when excessive modules of certain group are fitted to ship."""
     pass
 
+
+class ShipGroupException(RestrictionTrackerException):
+    """Raised when item cannot be fitted to ship of given group."""
+    pass
+
 class ShipItemSizeException(RestrictionTrackerException):
     """Raised when too big modules are fit on non-capital ship."""
     pass

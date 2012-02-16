@@ -22,9 +22,10 @@
 from eos.const import State
 from .register.cpu import CpuRegister
 from .register.highSlot import HighSlotRegister
+from .register.shipGroup import ShipGroupRegister
 from .register.groupFitted import GroupFittedRegister
 from .register.shipItemSize import ShipItemSizeRegister
-from .exception import CpuException, HighSlotException, GroupFittedException, ShipItemSizeException
+from .exception import CpuException, HighSlotException, GroupFittedException, ShipGroupException, ShipItemSizeException
 
 
 class RestrictionTracker:
@@ -33,6 +34,7 @@ class RestrictionTracker:
         self.__cpuRegister = CpuRegister(fit)
         self.__highSlotRegister = HighSlotRegister(fit)
         self.__groupFittedRegister = GroupFittedRegister()
+        self.__shipGroupRegister = ShipGroupRegister(fit)
         self.__shipItemSizeRegister = ShipItemSizeRegister(fit)
 
     def addHolder(self, holder):
@@ -47,6 +49,11 @@ class RestrictionTracker:
             self.__groupFittedRegister.unregisterHolder(holder)
             raise
         try:
+            self.__shipGroupRegister.registerHolder(holder)
+        except ShipGroupException:
+            self.__shipGroupRegister.unregisterHolder(holder)
+            raise
+        try:
             self.__shipItemSizeRegister.registerHolder(holder)
         except ShipItemSizeException:
             self.__shipItemSizeRegister.unregisterHolder(holder)
@@ -55,6 +62,7 @@ class RestrictionTracker:
     def removeHolder(self, holder):
         self.__highSlotRegister.unregisterHolder(holder)
         self.__groupFittedRegister.unregisterHolder(holder)
+        self.__shipGroupRegister.unregisterHolder(holder)
         self.__shipItemSizeRegister.unregisterHolder(holder)
 
     def stateSwitch(self, holder, oldState, newState):
@@ -70,4 +78,6 @@ class RestrictionTracker:
     def validate(self):
         self.__cpuRegister.validate()
         self.__highSlotRegister.validate()
+        self.__groupFittedRegister.validate()
+        self.__shipGroupRegister.validate()
         self.__shipItemSizeRegister.validate()

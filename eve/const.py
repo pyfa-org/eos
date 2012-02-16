@@ -26,7 +26,7 @@ This file holds IDs of multiple EVE's entities.
 
 # When some EVE's database row refers another,
 # these values are considered as absence of reference
-nulls = {0, None}
+nulls = frozenset((0, None))
 
 
 class Attribute:
@@ -50,6 +50,10 @@ class Attribute:
     skillRq6Lvl = 1288
     skillRq5 = 1289
     skillRq6 = 1290
+    canFitShipGroup1 = 1298
+    canFitShipGroup2 = 1299
+    canFitShipGroup3 = 1300
+    canFitShipGroup4 = 1301
     subsystemSlot = 1366
     maxGroupFitted = 1544
 
