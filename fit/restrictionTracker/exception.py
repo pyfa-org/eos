@@ -30,3 +30,8 @@ class RestrictionTrackerException(EosException):
 class HighSlotException(RestrictionTrackerException):
     """Raised when ship doesn't have enough high slots to fit all modules."""
     pass
+
+
+class ShipItemSizeException(RestrictionTrackerException):
+    """Raised when too big modules are fit on non-capital ship."""
+    pass

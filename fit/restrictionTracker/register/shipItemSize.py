@@ -19,36 +19,42 @@
 #===============================================================================
 
 
-from eos.const import Slot
-from eos.eve.const import Attribute
+from eos.const import Location
+from eos.eve.const import Type, Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
-from eos.fit.restrictionTracker.exception import HighSlotException
+from eos.fit.restrictionTracker.exception import ShipItemSizeException
 
 
-class FitSlotHighRegister:
+class ShipItemSizeRegister:
     def __init__(self, fit):
         self.__fit = fit
-        self.__resUsers = set()
+        self.__shipOwnedHolders = set()
 
     def registerHolder(self, holder):
-        resUse = Slot.moduleHigh in holder.item.slots
-        if resUse is not True:
+        if holder._location != Location.ship:
             return
-        self.__resUsers.add(holder)
+        self.__shipOwnedHolders.add(holder)
         self.validate()
 
     def unregisterHolder(self, holder):
-        self.__resUsers.remove(holder)
+        self.__shipOwnedHolders.remove(holder)
 
     def validate(self):
-        if len(self.__resUsers) > self.__getMaxRes():
-            overUsers = set()
-            overUsers.update(self.__resUsers)
-            raise HighSlotException(overUsers)
-
-    def __getMaxRes(self):
+        shipHolder = self.__fit.ship
         try:
-            resMax = self.__fit.ship.attributes[Attribute.hiSlots]
-        except NoAttributeException:
-            resMax = 0
-        return resMax
+            shipItem = shipHolder.item
+        except AttributeError:
+            pass
+        else:
+            if Type.capitalShips in shipItem.requiredSkills:
+                return
+        taintedHolders = set()
+        for shipOwnedHolder in self.__shipOwnedHolders:
+            try:
+                holderVolume = shipOwnedHolder.attributes[Attribute.volume]
+            except NoAttributeException:
+                continue
+            if holderVolume > 500:
+                taintedHolders.add(shipOwnedHolder)
+        if len(taintedHolders) > 0:
+            raise ShipItemSizeException(taintedHolders)

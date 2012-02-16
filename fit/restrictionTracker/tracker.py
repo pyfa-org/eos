@@ -19,24 +19,33 @@
 #===============================================================================
 
 
-from .register.fitSlotHigh import FitSlotHighRegister
-from .exception import HighSlotException
+from .register.highSlot import HighSlotRegister
+from .register.shipItemSize import ShipItemSizeRegister
+from .exception import HighSlotException, ShipItemSizeException
 
 
 class RestrictionTracker:
     def __init__(self, fit):
         self.__fit = fit
-        self.__slotHighRegister = FitSlotHighRegister(fit)
+        self.__highSlotRegister = HighSlotRegister(fit)
+        self.__shipItemSizeRegister = ShipItemSizeRegister(fit)
 
     def addHolder(self, holder):
         try:
-            self.__slotHighRegister.registerHolder(holder)
+            self.__highSlotRegister.registerHolder(holder)
         except HighSlotException:
-            self.__slotHighRegister.unregisterHolder(holder)
+            self.__highSlotRegister.unregisterHolder(holder)
+            raise
+        try:
+            self.__shipItemSizeRegister.registerHolder(holder)
+        except ShipItemSizeException:
+            self.__shipItemSizeRegister.unregisterHolder(holder)
             raise
 
     def removeHolder(self, holder):
-        self.__slotHighRegister.unregisterHolder(holder)
+        self.__highSlotRegister.unregisterHolder(holder)
+        self.__shipItemSizeRegister.unregisterHolder(holder)
 
     def validate(self):
-        self.__slotHighRegister.validate()
+        self.__highSlotRegister.validate()
+        self.__shipItemSizeRegister.validate()

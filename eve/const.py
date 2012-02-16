@@ -34,6 +34,7 @@ class Attribute:
     hiSlots = 14
     cpuOutput = 48
     cpu = 50
+    volume = 161
     skillRq1 = 182
     skillRq2 = 183
     skillRq3 = 184
@@ -55,6 +56,7 @@ class Attribute:
 class Type:
     """Item ID holder"""
     characterStatic = 1381
+    capitalShips = 20533
 
 
 class Category:
