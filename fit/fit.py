@@ -97,6 +97,7 @@ class Fit:
         self._linkTracker.addHolder(holder)
         self._restrictionTracker.addHolder(holder)
         self._linkTracker.stateSwitch(holder, None, holder.state)
+        self._restrictionTracker.stateSwitch(holder, None, holder.state)
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
         if charge is not None:
@@ -116,6 +117,7 @@ class Fit:
             self._removeHolder(charge)
         # Turn off its effects by switching state to None, then
         # unregister holder itself
+        self._restrictionTracker.stateSwitch(holder, holder.state, None)
         self._linkTracker.stateSwitch(holder, holder.state, None)
         self._restrictionTracker.removeHolder(holder)
         self._linkTracker.removeHolder(holder)

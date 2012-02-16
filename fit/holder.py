@@ -80,6 +80,7 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         # holder
         if self.fit is not None:
             self.fit._linkTracker.stateSwitch(self, oldState, newState)
+            self.fit._restrictionTracker.stateSwitch(self, oldState, newState)
         self.__state = newState
 
 #    @property

@@ -27,6 +27,11 @@ class RestrictionTrackerException(EosException):
     pass
 
 
+class CpuException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough cpus to fit all modules."""
+    pass
+
+
 class HighSlotException(RestrictionTrackerException):
     """Raised when ship doesn't have enough high slots to fit all modules."""
     pass

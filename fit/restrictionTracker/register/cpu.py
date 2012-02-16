@@ -19,39 +19,41 @@
 #===============================================================================
 
 
-from eos.const import Slot
 from eos.eve.const import Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
-from eos.fit.restrictionTracker.exception import HighSlotException
+from eos.fit.restrictionTracker.exception import CpuException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
-class HighSlotRegister(RestrictionRegister):
+class CpuRegister(RestrictionRegister):
     def __init__(self, fit):
         self.__fit = fit
-        self.__highSlotHolders = set()
+        self.__cpuUsers = set()
 
     def registerHolder(self, holder):
-        if (Slot.moduleHigh in holder.item.slots) is not True:
+        if not Attribute.cpu in holder.item.attributes:
             return
-        self.__highSlotHolders.add(holder)
+        self.__cpuUsers.add(holder)
         self.validate()
 
     def unregisterHolder(self, holder):
-        self.__highSlotHolders.discard(holder)
+        self.__cpuUsers.discard(holder)
 
     def validate(self):
+        cpuUse = 0
+        for cpuUser in self.__cpuUsers:
+            cpuUse += cpuUser.attributes[Attribute.cpu]
         shipHolder = self.__fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
-            highSlots = 0
+            cpuOutput = 0
         else:
             try:
-                highSlots = shipHolderAttribs[Attribute.hiSlots]
+                cpuOutput = shipHolderAttribs[Attribute.cpuOutput]
             except NoAttributeException:
-                highSlots = 0
-        if len(self.__highSlotHolders) > highSlots:
+                cpuOutput = 0
+        if cpuUse > cpuOutput:
             taintedHolders = set()
-            taintedHolders.update(self.__highSlotHolders)
-            raise HighSlotException(taintedHolders)
+            taintedHolders.update(self.__cpuUsers)
+            raise CpuException(taintedHolders)

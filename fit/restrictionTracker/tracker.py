@@ -19,14 +19,17 @@
 #===============================================================================
 
 
+from eos.const import State
+from .register.cpu import CpuRegister
 from .register.highSlot import HighSlotRegister
 from .register.shipItemSize import ShipItemSizeRegister
-from .exception import HighSlotException, ShipItemSizeException
+from .exception import CpuException, HighSlotException, ShipItemSizeException
 
 
 class RestrictionTracker:
     def __init__(self, fit):
         self.__fit = fit
+        self.__cpuRegister = CpuRegister(fit)
         self.__highSlotRegister = HighSlotRegister(fit)
         self.__shipItemSizeRegister = ShipItemSizeRegister(fit)
 
@@ -46,6 +49,17 @@ class RestrictionTracker:
         self.__highSlotRegister.unregisterHolder(holder)
         self.__shipItemSizeRegister.unregisterHolder(holder)
 
+    def stateSwitch(self, holder, oldState, newState):
+        if (oldState is None or oldState < State.online) and (newState is not None and newState >= State.online):
+            try:
+                self.__cpuRegister.registerHolder(holder)
+            except CpuException:
+                self.__cpuRegister.unregisterHolder(holder)
+                raise
+        elif (newState is None or newState < State.online) and (oldState is not None and oldState >= State.online):
+            self.__cpuRegister.unregisterHolder(holder)
+
     def validate(self):
+        self.__cpuRegister.validate()
         self.__highSlotRegister.validate()
         self.__shipItemSizeRegister.validate()
