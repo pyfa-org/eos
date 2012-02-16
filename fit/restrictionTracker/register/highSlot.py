@@ -38,7 +38,7 @@ class HighSlotRegister(RestrictionRegister):
         self.validate()
 
     def unregisterHolder(self, holder):
-        self.__highSlotHolders.remove(holder)
+        self.__highSlotHolders.discard(holder)
 
     def validate(self):
         shipHolder = self.__fit.ship

@@ -38,7 +38,7 @@ class ShipItemSizeRegister(RestrictionRegister):
         self.validate()
 
     def unregisterHolder(self, holder):
-        self.__shipOwnedHolders.remove(holder)
+        self.__shipOwnedHolders.discard(holder)
 
     def validate(self):
         shipHolder = self.__fit.ship
