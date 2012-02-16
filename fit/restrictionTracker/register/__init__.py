@@ -17,18 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from .register.fitSlotHigh import FitSlotHighRegister
-
-
-class RestrictionTracker:
-    def __init__(self, fit):
-        self.__fit = fit
-        self.__slotHighRegiister = FitSlotHighRegister(fit)
-
-    def addHolder(self, holder):
-        self.__slotHighRegiister.registerHolder(holder)
-
-    def removeHolder(self, holder):
-        self.__slotHighRegiister.unregisterHolder(holder)

@@ -19,16 +19,14 @@
 #===============================================================================
 
 
-from .register.fitSlotHigh import FitSlotHighRegister
+from eos.exception import EosException
 
 
-class RestrictionTracker:
-    def __init__(self, fit):
-        self.__fit = fit
-        self.__slotHighRegiister = FitSlotHighRegister(fit)
+class RestrictionTrackerException(EosException):
+    """All restriction tracker exceptions are based on this class."""
+    pass
 
-    def addHolder(self, holder):
-        self.__slotHighRegiister.registerHolder(holder)
 
-    def removeHolder(self, holder):
-        self.__slotHighRegiister.unregisterHolder(holder)
+class HighSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough high slots to fit all modules."""
+    pass

@@ -19,16 +19,28 @@
 #===============================================================================
 
 
-from .register.fitSlotHigh import FitSlotHighRegister
+from eos.const import Slot
+from eos.eve.const import Attribute
+from eos.fit.attributeCalculator.exception import NoAttributeException
+from eos.fit.restrictionTracker.exception import HighSlotException
 
-
-class RestrictionTracker:
+class FitSlotHighRegister:
     def __init__(self, fit):
         self.__fit = fit
-        self.__slotHighRegiister = FitSlotHighRegister(fit)
+        self.__resUsers = set()
 
-    def addHolder(self, holder):
-        self.__slotHighRegiister.registerHolder(holder)
+    def registerHolder(self, holder):
+        resUse = Slot.moduleHigh in holder.item.slots
+        if resUse is not True:
+            return
+        resUsed = len(self.__resUsers)
+        try:
+            resMax = self.__fit.ship.attributes[Attribute.hiSlots]
+        except NoAttributeException:
+            resMax = 0
+        if resUsed + 1 > resMax:
+            raise HighSlotException
+        self.__resUsers.add(holder)
 
-    def removeHolder(self, holder):
-        self.__slotHighRegiister.unregisterHolder(holder)
+    def unregisterHolder(self, holder):
+        self.__resUsers.remove(holder)

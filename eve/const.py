@@ -31,6 +31,7 @@ nulls = {0, None}
 
 class Attribute:
     """Attribute ID holder"""
+    hiSlots = 14
     cpuOutput = 48
     cpu = 50
     skillRq1 = 182
