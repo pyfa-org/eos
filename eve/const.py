@@ -56,7 +56,7 @@ class Attribute:
 class Type:
     """Item ID holder"""
     characterStatic = 1381
-    capitalShips = 20533
+    capitalShips = 20533  # Skill
 
 
 class Category:

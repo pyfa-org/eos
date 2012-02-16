@@ -23,9 +23,10 @@ from eos.const import Location
 from eos.eve.const import Type, Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import ShipItemSizeException
+from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
-class ShipItemSizeRegister:
+class ShipItemSizeRegister(RestrictionRegister):
     def __init__(self, fit):
         self.__fit = fit
         self.__shipOwnedHolders = set()

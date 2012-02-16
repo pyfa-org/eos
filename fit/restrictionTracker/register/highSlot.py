@@ -23,9 +23,10 @@ from eos.const import Slot
 from eos.eve.const import Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import HighSlotException
+from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
-class HighSlotRegister:
+class HighSlotRegister(RestrictionRegister):
     def __init__(self, fit):
         self.__fit = fit
         self.__highSlotHolders = set()

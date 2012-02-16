@@ -23,27 +23,16 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class DataHandler(metaclass=ABCMeta):
-    """
-    DataHandler abstract baseclass, it handles fetching relevant data from wherever it is stored
-    """
+class RestrictionRegister(metaclass=ABCMeta):
 
     @abstractmethod
-    def getType(self, typeId):
-        """Return the type with the passed id"""
+    def registerHolder(self):
         ...
 
     @abstractmethod
-    def getAttribute(self, attrId):
-        """Return the attribute with the passed id"""
+    def unregisterHolder(self):
         ...
 
     @abstractmethod
-    def getEffect(self, effectId):
-        """Return the effect with the passed id"""
-        ...
-
-    @abstractmethod
-    def getExpression(self, expId):
-        """Return the expression with the passed id"""
+    def validate(self):
         ...
