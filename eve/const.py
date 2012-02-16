@@ -51,6 +51,7 @@ class Attribute:
     skillRq5 = 1289
     skillRq6 = 1290
     subsystemSlot = 1366
+    maxGroupFitted = 1544
 
 
 class Type:

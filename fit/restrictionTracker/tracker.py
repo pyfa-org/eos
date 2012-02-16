@@ -22,8 +22,9 @@
 from eos.const import State
 from .register.cpu import CpuRegister
 from .register.highSlot import HighSlotRegister
+from .register.groupFitted import GroupFittedRegister
 from .register.shipItemSize import ShipItemSizeRegister
-from .exception import CpuException, HighSlotException, ShipItemSizeException
+from .exception import CpuException, HighSlotException, GroupFittedException, ShipItemSizeException
 
 
 class RestrictionTracker:
@@ -31,6 +32,7 @@ class RestrictionTracker:
         self.__fit = fit
         self.__cpuRegister = CpuRegister(fit)
         self.__highSlotRegister = HighSlotRegister(fit)
+        self.__groupFittedRegister = GroupFittedRegister()
         self.__shipItemSizeRegister = ShipItemSizeRegister(fit)
 
     def addHolder(self, holder):
@@ -40,6 +42,11 @@ class RestrictionTracker:
             self.__highSlotRegister.unregisterHolder(holder)
             raise
         try:
+            self.__groupFittedRegister.registerHolder(holder)
+        except GroupFittedException:
+            self.__groupFittedRegister.unregisterHolder(holder)
+            raise
+        try:
             self.__shipItemSizeRegister.registerHolder(holder)
         except ShipItemSizeException:
             self.__shipItemSizeRegister.unregisterHolder(holder)
@@ -47,6 +54,7 @@ class RestrictionTracker:
 
     def removeHolder(self, holder):
         self.__highSlotRegister.unregisterHolder(holder)
+        self.__groupFittedRegister.unregisterHolder(holder)
         self.__shipItemSizeRegister.unregisterHolder(holder)
 
     def stateSwitch(self, holder, oldState, newState):

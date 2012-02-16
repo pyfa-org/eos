@@ -37,6 +37,10 @@ class HighSlotException(RestrictionTrackerException):
     pass
 
 
+class GroupFittedException(RestrictionTrackerException):
+    """Raised when excessive modules of certain group are fitted to ship."""
+    pass
+
 class ShipItemSizeException(RestrictionTrackerException):
     """Raised when too big modules are fit on non-capital ship."""
     pass
