@@ -37,7 +37,7 @@ class HighSlotException(RestrictionTrackerException):
     pass
 
 
-class GroupFittedException(RestrictionTrackerException):
+class MaxGroupFittedException(RestrictionTrackerException):
     """Raised when excessive modules of certain group are fitted to ship."""
     pass
 

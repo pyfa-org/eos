@@ -21,33 +21,32 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import GroupFittedException
+from eos.fit.restrictionTracker.exception import MaxGroupFittedException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-class GroupFittedRegister(RestrictionRegister):
+class MaxGroupRegister(RestrictionRegister):
     """
-    Implements restriction:
-    If holder has max group fitted restriction, number of
-    holders of this group should not exceed restriction value,
-    else holder with such restriction is tainted.
-
-    Details:
-    Only holders belonging to ship are tracked.
-    Only holders whose items have restriction attribute are tracked.
-    For validation, modified value of restriction attribute is taken.
+    Class which implements common functionality for all
+    registers, which track maximum number of belonging to
+    ship holders in certain state on per-group basis.
     """
 
-    def __init__(self):
-        # Container for all fitted holders, keyed
+    def __init__(self, maxGroupAttr, exceptionClass):
+        # Attribute ID whose value contains group restriction
+        # of holder
+        self.__maxGroupAttr = maxGroupAttr
+        # Exception class to throw on validation failure
+        self.__exceptionClass = exceptionClass
+        # Container for all tracked holders, keyed
         # by their group ID
         # Format: {group ID: {holders}}
         self.__groupAll = KeyedSet()
-        # Container for holder, which have group
-        # fitted restriction
+        # Container for holders, which have max group
+        # restriction to become operational
         # Format: {holders}
-        self.__groupRestricted = set()
+        self.__maxGroupRestricted = set()
 
     def registerHolder(self, holder):
         # Ignore holders which do not belong to ship
@@ -63,30 +62,46 @@ class GroupFittedRegister(RestrictionRegister):
         self.__groupAll.addData(groupId, {holder})
         # To enter restriction container, original
         # item must have restriction attribute
-        if Attribute.maxGroupFitted in holder.item.attributes:
-            self.__groupRestricted.add(holder)
+        if self.__maxGroupAttr in holder.item.attributes:
+            self.__maxGroupRestricted.add(holder)
 
     def unregisterHolder(self, holder):
         # Just clear data containers
         groupId = holder.item.groupId
         self.__groupAll.rmData(groupId, {holder})
-        self.__groupRestricted.discard(holder)
+        self.__maxGroupRestricted.discard(holder)
 
     def validate(self):
         # Container for tainted holders
         taintedHolders = set()
         # Go through all restricted holders
-        for restrictedHolder in self.__groupRestricted:
-            # Get number of fitted holders, assigned to group
-            # of current restricted holder, and holder's
-            # restriction
+        for restrictedHolder in self.__maxGroupRestricted:
+            # Get number of registered holders, assigned to group of current
+            # restricted holder, and holder's restriction value
             groupId = restrictedHolder.item.groupId
-            groupFitted = len(self.__groupAll.getData(groupId))
-            maxGroupFitted = restrictedHolder.attributes[Attribute.maxGroupFitted]
-            # If number of fitted holders is bigger, then
-            # current holder is tainted
-            if groupFitted > maxGroupFitted:
+            groupRegistered = len(self.__groupAll.getData(groupId))
+            maxGroupRestriction = restrictedHolder.attributes[self.__maxGroupAttr]
+            # If number of registered holders from this group is bigger,
+            # then current holder is tainted
+            if groupRegistered > maxGroupRestriction:
                 taintedHolders.add(restrictedHolder)
         # Raise error if we detected any tainted holders
         if len(taintedHolders) > 0:
-            raise GroupFittedException(taintedHolders)
+            raise self.__exceptionClass(taintedHolders)
+
+
+class MaxGroupFittedRegister(MaxGroupRegister):
+    """
+    Implements restriction:
+    If holder has max group fitted restriction, number of fitted
+    holders of this group should not exceed restriction value,
+    else holder with such restriction is tainted.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    Only holders whose items have restriction attribute are tracked.
+    For validation, modified value of restriction attribute is taken.
+    """
+
+    def __init__(self):
+        MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, MaxGroupFittedException)

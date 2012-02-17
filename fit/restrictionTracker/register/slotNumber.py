@@ -30,8 +30,8 @@ from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 class SlotNumberRegister(RestrictionRegister):
     """
     Class which implements common functionality for all
-    registers, which track number of occupied slots vs
-    number of available slots.
+    registers, which track number of occupied ship slots
+    against number of available ship slots.
     """
 
     def __init__(self, fit, slotType, slotAmountAttr, exceptionClass):
