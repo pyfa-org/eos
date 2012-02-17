@@ -24,7 +24,7 @@ from .register.cpu import CpuRegister
 from .register.highSlot import HighSlotRegister
 from .register.shipGroup import ShipGroupRegister
 from .register.groupFitted import GroupFittedRegister
-from .register.shipItemSize import ShipItemSizeRegister
+from .register.capitalModule import CapitalModuleRegister
 
 
 class RestrictionTracker:
@@ -34,19 +34,19 @@ class RestrictionTracker:
         self.__highSlotRegister = HighSlotRegister(fit)
         self.__groupFittedRegister = GroupFittedRegister()
         self.__shipGroupRegister = ShipGroupRegister(fit)
-        self.__shipItemSizeRegister = ShipItemSizeRegister(fit)
+        self.__capitalModuleRegister = CapitalModuleRegister(fit)
 
     def addHolder(self, holder):
         self.__highSlotRegister.registerHolder(holder)
         self.__groupFittedRegister.registerHolder(holder)
         self.__shipGroupRegister.registerHolder(holder)
-        self.__shipItemSizeRegister.registerHolder(holder)
+        self.__capitalModuleRegister.registerHolder(holder)
 
     def removeHolder(self, holder):
         self.__highSlotRegister.unregisterHolder(holder)
         self.__groupFittedRegister.unregisterHolder(holder)
         self.__shipGroupRegister.unregisterHolder(holder)
-        self.__shipItemSizeRegister.unregisterHolder(holder)
+        self.__capitalModuleRegister.unregisterHolder(holder)
 
     def stateSwitch(self, holder, oldState, newState):
         if (oldState is None or oldState < State.online) and (newState is not None and newState >= State.online):
@@ -59,4 +59,4 @@ class RestrictionTracker:
         self.__highSlotRegister.validate()
         self.__groupFittedRegister.validate()
         self.__shipGroupRegister.validate()
-        self.__shipItemSizeRegister.validate()
+        self.__capitalModuleRegister.validate()

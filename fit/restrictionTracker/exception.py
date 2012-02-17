@@ -46,6 +46,6 @@ class ShipGroupException(RestrictionTrackerException):
     """Raised when item cannot be fitted to ship of given group."""
     pass
 
-class ShipItemSizeException(RestrictionTrackerException):
-    """Raised when too big modules are fit on non-capital ship."""
+class CapitalModuleException(RestrictionTrackerException):
+    """Raised when capital modules are fit on non-capital ship."""
     pass

@@ -21,11 +21,11 @@
 
 from eos.const import Location
 from eos.eve.const import Type, Attribute
-from eos.fit.restrictionTracker.exception import ShipItemSizeException
+from eos.fit.restrictionTracker.exception import CapitalModuleException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
-class ShipItemSizeRegister(RestrictionRegister):
+class CapitalModuleRegister(RestrictionRegister):
     """
     Implements restriction:
     To fit holders with volume bigger than 500, ship must
@@ -39,16 +39,20 @@ class ShipItemSizeRegister(RestrictionRegister):
     def __init__(self, fit):
         self.__fit = fit
         # Container for all tracked holders
-        self.__shipOwnedHolders = set()
+        self.__capitalHolders = set()
 
     def registerHolder(self, holder):
         # Ignore holders which do not belong to ship
         if holder._location != Location.ship:
             return
-        self.__shipOwnedHolders.add(holder)
+        # Ignore non-capital holders
+        holderVolume = holder.item.attributes.get(Attribute.volume)
+        if holderVolume is None or holderVolume <= 500:
+            return
+        self.__capitalHolders.add(holder)
 
     def unregisterHolder(self, holder):
-        self.__shipOwnedHolders.discard(holder)
+        self.__capitalHolders.discard(holder)
 
     def validate(self):
         # Skip validation only if ship has capital
@@ -61,19 +65,9 @@ class ShipItemSizeRegister(RestrictionRegister):
         else:
             if Type.capitalShips in shipItem.requiredSkills:
                 return
-        # Container for tainted holders
-        taintedHolders = set()
-        # Go through all ship-owned holders
-        for shipOwnedHolder in self.__shipOwnedHolders:
-            # Skip those which do not have volume attribute, or
-            # its value is None
-            holderVolume = shipOwnedHolder.item.attributes.get(Attribute.volume)
-            if holderVolume is None:
-                continue
-            # Taint holders which are too big
-            if holderVolume > 500:
-                taintedHolders.add(shipOwnedHolder)
-        # If there were any tainted holders, report
-        # them
-        if len(taintedHolders) > 0:
-            raise ShipItemSizeException(taintedHolders)
+        # If we got here, then we're dealing with non-capital
+        # ship, and all registered holders are tainted
+        if len(self.__capitalHolders) > 0:
+            taintedHolders = set()
+            taintedHolders.update(self.__capitalHolders)
+            raise CapitalModuleException(taintedHolders)
