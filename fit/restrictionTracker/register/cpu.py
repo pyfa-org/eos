@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.const import Location
 from eos.eve.const import Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import CpuException
@@ -26,23 +27,41 @@ from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
 class CpuRegister(RestrictionRegister):
+    """
+    Implements restriction:
+    CPU usage by holders should not exceed CPU output.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified values of CPU usage and
+    CPU output are taken.
+    """
+
     def __init__(self, fit):
         self.__fit = fit
+        # Container for registered holders
+        # Format: {cpu consumers}
         self.__cpuUsers = set()
 
     def registerHolder(self, holder):
+        # Ignore holders which do not belong to ship
+        if holder._location != Location.ship:
+            return
+        # Do not process holders, whose base items don't
+        # consume cpu
         if not Attribute.cpu in holder.item.attributes:
             return
+        # Add holder to container
         self.__cpuUsers.add(holder)
-        self.validate()
 
     def unregisterHolder(self, holder):
+        # Remove holder from container, if it's there
         self.__cpuUsers.discard(holder)
 
     def validate(self):
-        cpuUse = 0
-        for cpuUser in self.__cpuUsers:
-            cpuUse += cpuUser.attributes[Attribute.cpu]
+        # Get ship's CPU output, setting it to 0
+        # if fitting doesn't have ship assigned,
+        # or ship doesn't have cpu output attribute
         shipHolder = self.__fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
@@ -53,7 +72,17 @@ class CpuRegister(RestrictionRegister):
                 cpuOutput = shipHolderAttribs[Attribute.cpuOutput]
             except NoAttributeException:
                 cpuOutput = 0
-        if cpuUse > cpuOutput:
-            taintedHolders = set()
-            taintedHolders.update(self.__cpuUsers)
-            raise CpuException(taintedHolders)
+        # Calculate CPU consumption of all holders on ship
+        totalCpuConsumption = 0
+        # Also use the same loop to compose set of holders,
+        # which actually consume CPU
+        cpuConsumers = set()
+        for cpuUser in self.__cpuUsers:
+            cpuUse = cpuUser.attributes[Attribute.cpu]
+            totalCpuConsumption += cpuUse
+            if cpuUse > 0:
+                cpuConsumers.add(cpuUser)
+        # If fitting is out of CPU, raise error
+        # with holders-cpu-consumers
+        if totalCpuConsumption > cpuOutput:
+            raise CpuException(cpuConsumers)

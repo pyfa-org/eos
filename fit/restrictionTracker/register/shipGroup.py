@@ -21,53 +21,80 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import ShipGroupException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
 class ShipGroupRegister(RestrictionRegister):
+    """
+    Implements restriction:
+    Holders which have certain fittable ship groups specified
+    can be fitted only to ships belonging to one of these groups.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, unmodified values of canFitShipGroupX
+    attributes is taken.
+    """
+
     def __init__(self, fit):
         self.__fit = fit
+        # Container for holders which contain
+        # ship group restriction
+        # Format: {holder: set(allowed ship group IDs)}
         self.__groupRestricted = KeyedSet()
-        self.__restrictionAttrs = frozenset((Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
-                                             Attribute.canFitShipGroup3, Attribute.canFitShipGroup4))
+        # Tuple with IDs of attributes, whose values represent
+        # actual fittable groups
+        self.__restrictionAttrs = (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
+                                   Attribute.canFitShipGroup3, Attribute.canFitShipGroup4)
 
     def registerHolder(self, holder):
+        # Ignore all holders which do not belong to ship
         if holder._location != Location.ship:
             return
-        hasRestrictions = set()
+        # Container for attribute IDs, which restrict
+        # ship group for passed holder
+        allowedGroups = set()
+        # Cycle through IDs of known restriction attributes
         for restrictionAttr in self.__restrictionAttrs:
-            try:
-                holder.attributes[restrictionAttr]
-            except NoAttributeException:
-                continue
-            hasRestrictions.add(restrictionAttr)
-        if len(hasRestrictions) == 0:
+            # If holder item has it and its value is not None,
+            # mark its value, representing group ID, as allowed
+            allowedGroup = holder.item.attributes.get(restrictionAttr)
+            if allowedGroup is not None:
+                allowedGroups.add(restrictionAttr)
+        # Ignore holders whose items don't have any allowed
+        # groups, i.e. can fit to any ship
+        if len(allowedGroups) == 0:
             return
-        self.__groupRestricted.addData(holder, hasRestrictions)
-        self.validate()
+        # Finally, register holders which made it
+        # into here
+        self.__groupRestricted.addData(holder, allowedGroups)
 
     def unregisterHolder(self, holder):
-        self.__groupRestricted.rmData(holder, self.__restrictionAttrs)
+        # Just discard data from container
+        try:
+            del self.__groupRestricted[holder]
+        except KeyError:
+            pass
 
     def validate(self):
+        # Get group ID of ship, if no ship available,
+        # assume it's None
         shipHolder = self.__fit.ship
         try:
             shipGroupId = shipHolder.item.groupId
         except AttributeError:
             shipGroupId = None
+        # Container for tainted holders
         taintedHolders = set()
+        # Go through all known restricted holders
         for restrictedHolder in self.__groupRestricted:
-            validShipGroups = set()
-            for canFitShipGroupAttr in self.__groupRestricted.getData(restrictedHolder):
-                validShipGroup = restrictedHolder.attributes[canFitShipGroupAttr]
-                if validShipGroup is not None:
-                    validShipGroups.add(validShipGroup)
-            if len(validShipGroups) == 0:
-                continue
-            if not shipGroupId in validShipGroups:
+            allowedGroups = self.__groupRestricted.getData(restrictedHolder)
+            # If ship's group isn't in allowed groups,
+            # then holder is tainted
+            if not shipGroupId in allowedGroups:
                 taintedHolders.add(restrictedHolder)
+        # Raise error if there're any tainted holders
         if len(taintedHolders) > 0:
             raise ShipGroupException(taintedHolders)

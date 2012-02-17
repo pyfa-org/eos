@@ -24,15 +24,31 @@ from abc import abstractmethod
 
 
 class RestrictionRegister(metaclass=ABCMeta):
+    """Base class for all restriction registers."""
 
     @abstractmethod
-    def registerHolder(self):
+    def registerHolder(self, holder):
+        """
+        Perform registration jobs upon holder.
+
+        Posiitional arguments:
+        holder -- holder to register
+        """
         ...
 
     @abstractmethod
-    def unregisterHolder(self):
+    def unregisterHolder(self, holder):
+        """
+        Perform unregistration jobs upon holder.
+
+        Posiitional arguments:
+        holder -- holder to unregister
+        """
         ...
 
     @abstractmethod
     def validate(self):
+        """
+        Check all registered holders for validity.
+        """
         ...

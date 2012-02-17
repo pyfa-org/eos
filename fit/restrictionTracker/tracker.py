@@ -25,7 +25,6 @@ from .register.highSlot import HighSlotRegister
 from .register.shipGroup import ShipGroupRegister
 from .register.groupFitted import GroupFittedRegister
 from .register.shipItemSize import ShipItemSizeRegister
-from .exception import CpuException, HighSlotException, GroupFittedException, ShipGroupException, ShipItemSizeException
 
 
 class RestrictionTracker:
@@ -38,26 +37,10 @@ class RestrictionTracker:
         self.__shipItemSizeRegister = ShipItemSizeRegister(fit)
 
     def addHolder(self, holder):
-        try:
-            self.__highSlotRegister.registerHolder(holder)
-        except HighSlotException:
-            self.__highSlotRegister.unregisterHolder(holder)
-            raise
-        try:
-            self.__groupFittedRegister.registerHolder(holder)
-        except GroupFittedException:
-            self.__groupFittedRegister.unregisterHolder(holder)
-            raise
-        try:
-            self.__shipGroupRegister.registerHolder(holder)
-        except ShipGroupException:
-            self.__shipGroupRegister.unregisterHolder(holder)
-            raise
-        try:
-            self.__shipItemSizeRegister.registerHolder(holder)
-        except ShipItemSizeException:
-            self.__shipItemSizeRegister.unregisterHolder(holder)
-            raise
+        self.__highSlotRegister.registerHolder(holder)
+        self.__groupFittedRegister.registerHolder(holder)
+        self.__shipGroupRegister.registerHolder(holder)
+        self.__shipItemSizeRegister.registerHolder(holder)
 
     def removeHolder(self, holder):
         self.__highSlotRegister.unregisterHolder(holder)

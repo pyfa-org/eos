@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.const import Location
 from eos.const import Slot
 from eos.eve.const import Attribute
 from eos.fit.attributeCalculator.exception import NoAttributeException
@@ -27,20 +28,41 @@ from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
 class HighSlotRegister(RestrictionRegister):
+    """
+    Implements restriction:
+    Number of high-slot holders should not exceed number of
+    high slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of high slots is taken.
+    """
+
     def __init__(self, fit):
         self.__fit = fit
+        # Container for holders which occupy
+        # high slot
+        # Format: {holders}
         self.__highSlotHolders = set()
 
     def registerHolder(self, holder):
+        # Ignore holders which do not belong to ship
+        if holder._location != Location.ship:
+            return
+        # Ignore all holders which do not occupy high slot
         if (Slot.moduleHigh in holder.item.slots) is not True:
             return
+        # Just add holder to container
         self.__highSlotHolders.add(holder)
-        self.validate()
 
     def unregisterHolder(self, holder):
         self.__highSlotHolders.discard(holder)
 
     def validate(self):
+        # Get number of high slots ship provides,
+        # if fit doesn't have ship or ship doesn't
+        # have high slot attribute, assume number
+        # of provided high slots is 0
         shipHolder = self.__fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
@@ -51,6 +73,10 @@ class HighSlotRegister(RestrictionRegister):
                 highSlots = shipHolderAttribs[Attribute.hiSlots]
             except NoAttributeException:
                 highSlots = 0
+        # Assuming each holder takes exactly one high slot,
+        # check if we have enough of them; if number of high
+        # slot users is bigger than number of available high
+        # slots, then all holders in container are tainted
         if len(self.__highSlotHolders) > highSlots:
             taintedHolders = set()
             taintedHolders.update(self.__highSlotHolders)
