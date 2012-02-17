@@ -20,7 +20,7 @@
 
 
 from eos.const import State
-from .register.cpu import CpuRegister
+from .register.resource import CpuRegister
 from .register.slotNumber import HighSlotRegister
 from .register.shipTypeGroup import ShipTypeGroupRegister
 from .register.maxGroup import MaxGroupFittedRegister
