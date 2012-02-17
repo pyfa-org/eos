@@ -21,7 +21,7 @@
 
 from eos.const import State
 from .register.cpu import CpuRegister
-from .register.highSlot import HighSlotRegister
+from .register.slotNumber import HighSlotRegister
 from .register.shipGroup import ShipGroupRegister
 from .register.groupFitted import GroupFittedRegister
 from .register.capitalModule import CapitalModuleRegister
