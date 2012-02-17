@@ -44,10 +44,6 @@ class ShipGroupRegister(RestrictionRegister):
         # ship group restriction
         # Format: {holder: set(allowed ship group IDs)}
         self.__groupRestricted = KeyedSet()
-        # Tuple with IDs of attributes, whose values represent
-        # actual fittable groups
-        self.__restrictionAttrs = (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
-                                   Attribute.canFitShipGroup3, Attribute.canFitShipGroup4)
 
     def registerHolder(self, holder):
         # Ignore all holders which do not belong to ship
@@ -57,12 +53,13 @@ class ShipGroupRegister(RestrictionRegister):
         # ship group for passed holder
         allowedGroups = set()
         # Cycle through IDs of known restriction attributes
-        for restrictionAttr in self.__restrictionAttrs:
+        for restrictionAttr in (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
+                                Attribute.canFitShipGroup3, Attribute.canFitShipGroup4):
             # If holder item has it and its value is not None,
             # mark its value, representing group ID, as allowed
             allowedGroup = holder.item.attributes.get(restrictionAttr)
             if allowedGroup is not None:
-                allowedGroups.add(restrictionAttr)
+                allowedGroups.add(allowedGroup)
         # Ignore holders whose items don't have any allowed
         # groups, i.e. can fit to any ship
         if len(allowedGroups) == 0:
