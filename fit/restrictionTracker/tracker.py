@@ -22,7 +22,7 @@
 from eos.const import State
 from .register.cpu import CpuRegister
 from .register.slotNumber import HighSlotRegister
-from .register.shipGroup import ShipGroupRegister
+from .register.shipTypeGroup import ShipTypeGroupRegister
 from .register.maxGroup import MaxGroupFittedRegister
 from .register.capitalModule import CapitalModuleRegister
 
@@ -33,19 +33,19 @@ class RestrictionTracker:
         self.__cpuRegister = CpuRegister(fit)
         self.__highSlotRegister = HighSlotRegister(fit)
         self.__maxGroupFittedRegister = MaxGroupFittedRegister()
-        self.__shipGroupRegister = ShipGroupRegister(fit)
+        self.__shipTypeGroupRegister = ShipTypeGroupRegister(fit)
         self.__capitalModuleRegister = CapitalModuleRegister(fit)
 
     def addHolder(self, holder):
         self.__highSlotRegister.registerHolder(holder)
         self.__maxGroupFittedRegister.registerHolder(holder)
-        self.__shipGroupRegister.registerHolder(holder)
+        self.__shipTypeGroupRegister.registerHolder(holder)
         self.__capitalModuleRegister.registerHolder(holder)
 
     def removeHolder(self, holder):
         self.__highSlotRegister.unregisterHolder(holder)
         self.__maxGroupFittedRegister.unregisterHolder(holder)
-        self.__shipGroupRegister.unregisterHolder(holder)
+        self.__shipTypeGroupRegister.unregisterHolder(holder)
         self.__capitalModuleRegister.unregisterHolder(holder)
 
     def stateSwitch(self, holder, oldState, newState):
@@ -58,5 +58,5 @@ class RestrictionTracker:
         self.__cpuRegister.validate()
         self.__highSlotRegister.validate()
         self.__maxGroupFittedRegister.validate()
-        self.__shipGroupRegister.validate()
+        self.__shipTypeGroupRegister.validate()
         self.__capitalModuleRegister.validate()

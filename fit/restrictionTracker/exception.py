@@ -42,8 +42,8 @@ class MaxGroupFittedException(RestrictionTrackerException):
     pass
 
 
-class ShipGroupException(RestrictionTrackerException):
-    """Raised when item cannot be fitted to ship of given group."""
+class ShipTypeGroupException(RestrictionTrackerException):
+    """Raised when item cannot be fitted to ship because of ship's type or group."""
     pass
 
 class CapitalModuleException(RestrictionTrackerException):

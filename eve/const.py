@@ -54,6 +54,10 @@ class Attribute:
     canFitShipGroup2 = 1299
     canFitShipGroup3 = 1300
     canFitShipGroup4 = 1301
+    canFitShipType1 = 1302
+    canFitShipType2 = 1303
+    canFitShipType3 = 1304
+    canFitShipType4 = 1305
     subsystemSlot = 1366
     maxGroupFitted = 1544
 
