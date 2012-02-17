@@ -70,7 +70,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
         allowedData = AllowedData(types=set(), groups=set())
         # Containers for attribute
         typeRestrictionAttrs = {Attribute.canFitShipType1, Attribute.canFitShipType2,
-                                Attribute.canFitShipType3, Attribute.canFitShipType4}
+                                Attribute.canFitShipType3, Attribute.canFitShipType4,
+                                Attribute.fitsToShipType}
         groupRestrictionAttrs = {Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
                                  Attribute.canFitShipGroup3, Attribute.canFitShipGroup4}
         for allowedContainer, restrictionAttrs in ((allowedData.types, typeRestrictionAttrs),
