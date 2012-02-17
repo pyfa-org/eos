@@ -50,11 +50,7 @@ class RestrictionTracker:
 
     def stateSwitch(self, holder, oldState, newState):
         if (oldState is None or oldState < State.online) and (newState is not None and newState >= State.online):
-            try:
-                self.__cpuRegister.registerHolder(holder)
-            except CpuException:
-                self.__cpuRegister.unregisterHolder(holder)
-                raise
+            self.__cpuRegister.registerHolder(holder)
         elif (newState is None or newState < State.online) and (oldState is not None and oldState >= State.online):
             self.__cpuRegister.unregisterHolder(holder)
 
