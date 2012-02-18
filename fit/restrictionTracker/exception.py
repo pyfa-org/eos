@@ -36,6 +36,7 @@ class HighSlotException(RestrictionTrackerException):
     """Raised when ship doesn't have enough high slots to fit all modules."""
     pass
 
+
 class ImplantSlotIndexException(RestrictionTrackerException):
     """Raised when there're more than one implant fit to certain implant slot."""
     pass
@@ -50,6 +51,11 @@ class ShipTypeGroupException(RestrictionTrackerException):
     """Raised when item cannot be fitted to ship because of ship's type or group."""
     pass
 
+
 class CapitalItemException(RestrictionTrackerException):
     """Raised when capital modules are fit on non-capital ship."""
+    pass
+
+class SkillRequirementException(RestrictionTrackerException):
+    """Raised when any holder on fit has its skill requirements not satisfied."""
     pass

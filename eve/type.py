@@ -70,7 +70,7 @@ class Type:
         # which this type applies
         self.effects = effects
 
-        # Stores required skill IDs as set once calculated
+        # Stores required skill IDs and levels as dictionary once calculated
         self.__requiredSkills = None
 
         # Caches results of max allowed state as integer ID
@@ -105,16 +105,22 @@ class Type:
         Get skill requirements.
 
         Return value:
-        Set with IDs of skills which are required to use type
+        Dictionary with IDs of skills and corresponding skill levels,
+        which are required to use type
         """
         if self.__requiredSkills is None:
-            skillRqAttrs = {Attribute.skillRq1, Attribute.skillRq2, Attribute.skillRq3,
-                            Attribute.skillRq4, Attribute.skillRq5, Attribute.skillRq6}
-            self.__requiredSkills = set()
+            skillRqAttrs = {Attribute.requiredSkill1: Attribute.requiredSkill1Level,
+                            Attribute.requiredSkill2: Attribute.requiredSkill2Level,
+                            Attribute.requiredSkill3: Attribute.requiredSkill3Level,
+                            Attribute.requiredSkill4: Attribute.requiredSkill4Level,
+                            Attribute.requiredSkill5: Attribute.requiredSkill5Level,
+                            Attribute.requiredSkill6: Attribute.requiredSkill6Level}
+            self.__requiredSkills = {}
             for srqAttrId in skillRqAttrs:
                 srq = self.attributes.get(srqAttrId)
                 if srq is not None:
-                    self.__requiredSkills.add(int(srq))
+                    srqLvl = self.attributes.get(skillRqAttrs[srqAttrId])
+                    self.__requiredSkills[int(srq)] = int(srqLvl) if srqLvl is not None else None
         return self.__requiredSkills
 
     @property

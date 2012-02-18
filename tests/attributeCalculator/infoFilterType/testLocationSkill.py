@@ -55,18 +55,18 @@ class TestFilterLocationSkillrq(EosTestCase):
         self.fit._addHolder(self.influenceSource)
 
     def testMatch(self):
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.skillRq1: 56}))
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.requiredSkill1: 56}))
         self.fit._addHolder(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherLocation(self):
-        influenceTarget = SpaceItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.skillRq1: 56}))
+        influenceTarget = SpaceItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.requiredSkill1: 56}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherSkill(self):
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.skillRq1: 87}))
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.requiredSkill1: 87}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
