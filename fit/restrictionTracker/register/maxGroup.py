@@ -37,7 +37,6 @@ class MaxGroupRegister(RestrictionRegister):
         # Attribute ID whose value contains group restriction
         # of holder
         self.__maxGroupAttr = maxGroupAttr
-        # Exception class to throw on validation failure
         self.__exceptionClass = exceptionClass
         # Container for all tracked holders, keyed
         # by their group ID

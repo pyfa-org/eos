@@ -28,7 +28,7 @@ class RestrictionTrackerException(EosException):
 
 
 class CpuException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough cpus to fit all modules."""
+    """Raised when ship doesn't have enough CPU to fit all modules."""
     pass
 
 
@@ -50,6 +50,6 @@ class ShipTypeGroupException(RestrictionTrackerException):
     """Raised when item cannot be fitted to ship because of ship's type or group."""
     pass
 
-class CapitalModuleException(RestrictionTrackerException):
+class CapitalItemException(RestrictionTrackerException):
     """Raised when capital modules are fit on non-capital ship."""
     pass

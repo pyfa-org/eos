@@ -21,11 +21,11 @@
 
 from eos.const import Location
 from eos.eve.const import Type, Attribute
-from eos.fit.restrictionTracker.exception import CapitalModuleException
+from eos.fit.restrictionTracker.exception import CapitalItemException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
-class CapitalModuleRegister(RestrictionRegister):
+class CapitalItemRegister(RestrictionRegister):
     """
     Implements restriction:
     To fit holders with volume bigger than 500, ship must
@@ -70,4 +70,4 @@ class CapitalModuleRegister(RestrictionRegister):
         if len(self.__capitalHolders) > 0:
             taintedHolders = set()
             taintedHolders.update(self.__capitalHolders)
-            raise CapitalModuleException(taintedHolders)
+            raise CapitalItemException(taintedHolders)

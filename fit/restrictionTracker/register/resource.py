@@ -29,19 +29,18 @@ class ResourceRegister(RestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is
-    consumed by items belonging to ship, and produced
+    used by items belonging to ship, and produced
     by ship itself.
     """
 
     def __init__(self, fit, usageAttr, outputAttr, exceptionClass):
         self.__fit = fit
-        # Attribute with this ID on holders contains
+        # On holders, attribute with this ID contains
         # amount of used resource as value
         self.__usageAttr = usageAttr
-        # Attribute with this ID on ship holder
+        # On ship holder, attribute with this ID
         # contains total amount of produced resource
         self.__outputAttr = outputAttr
-        # Exception class to throw on validation failure
         self.__exceptionClass = exceptionClass
         # Container for holders which use resource
         # Format: {holders}
@@ -55,7 +54,6 @@ class ResourceRegister(RestrictionRegister):
         # use resource
         if not self.__usageAttr in holder.item.attributes:
             return
-        # Add holder to container
         self.__resourceUsers.add(holder)
 
     def unregisterHolder(self, holder):
@@ -95,7 +93,7 @@ class ResourceRegister(RestrictionRegister):
 class CpuRegister(ResourceRegister):
     """
     Implements restriction:
-    CPU usage by holders should not exceed CPU output.
+    CPU usage by ship holders should not exceed ship CPU output.
 
     Details:
     Only holders belonging to ship are tracked.

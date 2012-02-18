@@ -37,7 +37,6 @@ class SlotIndexRegister(RestrictionRegister):
         # This attribute's value on holder
         # represents their index of slot
         self.__slotIndexAttr = slotIndexAttr
-        # Exception class to throw on validation failure
         self.__exceptionClass = exceptionClass
         # All holders which possess index of slot
         # are stored in this container
@@ -62,11 +61,10 @@ class SlotIndexRegister(RestrictionRegister):
         taintedHolders = set()
         for slotIndex in self.__slottedHolders:
             slotIndexHolders = self.__slottedHolders[slotIndex]
-            # If more than one item occupies the same slot, holders in this
-            # slot are tainted
+            # If more than one item occupies the same slot, all
+            # holders in this slot are tainted
             if len(slotIndexHolders) > 1:
                 taintedHolders.update(slotIndexHolders)
-        # Raise error if there're any tainted holders
         if len(taintedHolders) > 0:
             raise self.__exceptionClass(taintedHolders)
 

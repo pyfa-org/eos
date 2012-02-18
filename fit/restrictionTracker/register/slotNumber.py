@@ -40,7 +40,6 @@ class SlotNumberRegister(RestrictionRegister):
         # Modified ship holder attribute with this ID
         # contains number of available slots as value
         self.__slotAmountAttr = slotAmountAttr
-        # Exception class to throw on validation failure
         self.__exceptionClass = exceptionClass
         # Container for holders which occupy slot
         # being tracked by register
@@ -76,9 +75,9 @@ class SlotNumberRegister(RestrictionRegister):
             except KeyError:
                 providedSlots = 0
         # Assuming each holder takes exactly one slot, check
-        # if we have enough of them; if number of  slot users
-        # is bigger than number of available slots, then all
-        # holders in container are tainted
+        # if we have enough of them; if number of holders which
+        # take this slot is bigger than number of available slots,
+        # then all holders in container are tainted
         if len(self.__slotConsumers) > providedSlots:
             taintedHolders = set()
             taintedHolders.update(self.__slotConsumers)
@@ -93,7 +92,8 @@ class HighSlotRegister(SlotNumberRegister):
 
     Details:
     Only holders belonging to ship are tracked.
-    For validation, modified amount of high slots is taken.
+    For validation, modified amount of high slots is taken
+    from ship holder.
     """
 
     def __init__(self, fit):

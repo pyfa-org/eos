@@ -35,7 +35,7 @@ AllowedData = namedtuple("AllowedData", ("types", "groups"))
 class ShipTypeGroupRegister(RestrictionRegister):
     """
     Implements restriction:
-    Holders, which have certain fittable ship types or groups
+    Holders, which have certain fittable ship types or ship groups
     specified, can be fitted only to ships belonging to one of
     these types or groups.
 
@@ -44,10 +44,11 @@ class ShipTypeGroupRegister(RestrictionRegister):
     It's enough to satisfy any of conditions to make holder usable
     (e.g. ship's group may not satisfy canFitShipGroupX restriction,
     but its type may be suitable to use holder).
-    If holder has at least one restriction attribute, but all
-    available restriction attributes have value equal to None, it
-    makes it impossible to use such holder.
-    For validation, unmodified values of canFitShipTypeX and
+    If holder has at least one restriction attribute, it is enabled
+    for tracking by this register. Please note that None-values of
+    attributes enable restriction, but do not allow to fit holder to
+    any ship, even if its type or group are None.
+    For validation, original values of canFitShipTypeX and
     canFitShipGroupX attributes are taken.
     """
 
@@ -68,7 +69,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # Containers for typeIDs and groupIDs of ships, to
         # which holder is allowed to fit
         allowedData = AllowedData(types=set(), groups=set())
-        # Containers for attribute
+        # Containers for attribute IDs which
+        # are used to restrict fitting
         typeRestrictionAttrs = {Attribute.canFitShipType1, Attribute.canFitShipType2,
                                 Attribute.canFitShipType3, Attribute.canFitShipType4,
                                 Attribute.fitsToShipType}
@@ -96,7 +98,6 @@ class ShipTypeGroupRegister(RestrictionRegister):
         self.__restrictedHolders[holder] = allowedData
 
     def unregisterHolder(self, holder):
-        # Just discard data from container
         if holder in self.__restrictedHolders:
             del self.__restrictedHolders[holder]
 

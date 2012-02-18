@@ -24,7 +24,7 @@ from .register.resource import CpuRegister
 from .register.slotNumber import HighSlotRegister
 from .register.shipTypeGroup import ShipTypeGroupRegister
 from .register.maxGroup import MaxGroupFittedRegister
-from .register.capitalModule import CapitalModuleRegister
+from .register.capitalItem import CapitalItemRegister
 from .register.slotIndex import ImplantSlotIndexRegister
 
 
@@ -35,21 +35,21 @@ class RestrictionTracker:
         self.__highSlotRegister = HighSlotRegister(fit)
         self.__maxGroupFittedRegister = MaxGroupFittedRegister()
         self.__shipTypeGroupRegister = ShipTypeGroupRegister(fit)
-        self.__capitalModuleRegister = CapitalModuleRegister(fit)
+        self.__capitalItemRegister = CapitalItemRegister(fit)
         self.__implantSlotIndexRegister = ImplantSlotIndexRegister()
 
     def addHolder(self, holder):
         self.__highSlotRegister.registerHolder(holder)
         self.__maxGroupFittedRegister.registerHolder(holder)
         self.__shipTypeGroupRegister.registerHolder(holder)
-        self.__capitalModuleRegister.registerHolder(holder)
+        self.__capitalItemRegister.registerHolder(holder)
         self.__implantSlotIndexRegister.registerHolder(holder)
 
     def removeHolder(self, holder):
         self.__highSlotRegister.unregisterHolder(holder)
         self.__maxGroupFittedRegister.unregisterHolder(holder)
         self.__shipTypeGroupRegister.unregisterHolder(holder)
-        self.__capitalModuleRegister.unregisterHolder(holder)
+        self.__capitalItemRegister.unregisterHolder(holder)
         self.__implantSlotIndexRegister.unregisterHolder(holder)
 
     def stateSwitch(self, holder, oldState, newState):
@@ -63,5 +63,5 @@ class RestrictionTracker:
         self.__highSlotRegister.validate()
         self.__maxGroupFittedRegister.validate()
         self.__shipTypeGroupRegister.validate()
-        self.__capitalModuleRegister.validate()
+        self.__capitalItemRegister.validate()
         self.__implantSlotIndexRegister.validate()
