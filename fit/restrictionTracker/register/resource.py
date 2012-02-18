@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import CpuException
+from eos.fit.restrictionTracker.exception import CpuException, PowerGridException, CalibrationException, \
+DroneBayVolumeException, DroneBandwidthException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
@@ -33,23 +33,20 @@ class ResourceRegister(RestrictionRegister):
     by ship itself.
     """
 
-    def __init__(self, fit, usageAttr, outputAttr, exceptionClass):
+    def __init__(self, fit, outputAttr, usageAttr, exceptionClass):
         self.__fit = fit
-        # On holders, attribute with this ID contains
-        # amount of used resource as value
-        self.__usageAttr = usageAttr
         # On ship holder, attribute with this ID
         # contains total amount of produced resource
         self.__outputAttr = outputAttr
+        # On holders, attribute with this ID contains
+        # amount of used resource as value
+        self.__usageAttr = usageAttr
         self.__exceptionClass = exceptionClass
         # Container for holders which use resource
         # Format: {holders}
         self.__resourceUsers = set()
 
     def registerHolder(self, holder):
-        # Ignore holders which do not belong to ship
-        if holder._location != Location.ship:
-            return
         # Do not process holders, whose base items don't
         # use resource
         if not self.__usageAttr in holder.item.attributes:
@@ -93,14 +90,72 @@ class ResourceRegister(RestrictionRegister):
 class CpuRegister(ResourceRegister):
     """
     Implements restriction:
-    CPU usage by ship holders should not exceed ship CPU output.
+    CPU usage by holders should not exceed ship CPU output.
 
     Details:
-    Only holders belonging to ship are tracked.
     For validation, modified values of CPU usage and
     CPU output are taken.
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.cpu, Attribute.cpuOutput, CpuException)
-        self.__fit = fit
+        ResourceRegister.__init__(self, fit, Attribute.cpuOutput, Attribute.cpu, CpuException)
+
+
+class PowerGridRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Power grid usage by holders should not exceed ship
+    power grid output.
+
+    Details:
+    For validation, modified values of power grid usage and
+    power grid output are taken.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.powerOutput, Attribute.power, PowerGridException)
+
+
+class CalibrationRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Calibration usage by holders should not exceed ship
+    calibration output.
+
+    Details:
+    For validation, modified values of calibration usage and
+    calibration output are taken.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.upgradeCapacity, Attribute.upgradeCost, CalibrationException)
+
+
+class DroneBayVolumeRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Drone bay volume usage by holders should not exceed ship
+    drone bay volume.
+
+    Details:
+    For validation, modified values of drone bay volume usage and
+    drone bay volume are taken.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeException)
+
+
+class DroneBandwidthRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Drone bandwidth usage by holders should not exceed ship
+    drone bandwidth output.
+
+    Details:
+    For validation, modified values of drone bandwidth usage and
+    drone bandwidth output are taken.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, DroneBandwidthException)

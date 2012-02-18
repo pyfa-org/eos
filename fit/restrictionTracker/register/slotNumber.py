@@ -22,7 +22,8 @@
 from eos.const import Location
 from eos.const import Slot
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import HighSlotException
+from eos.fit.restrictionTracker.exception import HighSlotException, MediumSlotException, LowSlotException, \
+RigSlotException, SubsystemSlotException, TurretSlotException, LauncherSlotException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
 
@@ -98,3 +99,99 @@ class HighSlotRegister(SlotNumberRegister):
 
     def __init__(self, fit):
         SlotNumberRegister.__init__(self, fit, Slot.moduleHigh, Attribute.hiSlots, HighSlotException)
+
+
+class MediumSlotRegister(SlotNumberRegister):
+    """
+    Implements restriction:
+    Number of medium-slot holders should not exceed number of
+    medium slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of medium slots is taken
+    from ship holder.
+    """
+
+    def __init__(self, fit):
+        SlotNumberRegister.__init__(self, fit, Slot.moduleMed, Attribute.medSlots, MediumSlotException)
+
+
+class LowSlotRegister(SlotNumberRegister):
+    """
+    Implements restriction:
+    Number of low-slot holders should not exceed number of
+    low slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of low slots is taken
+    from ship holder.
+    """
+
+    def __init__(self, fit):
+        SlotNumberRegister.__init__(self, fit, Slot.moduleLow, Attribute.lowSlots, LowSlotException)
+
+
+class RigSlotRegister(SlotNumberRegister):
+    """
+    Implements restriction:
+    Number of rig-slot holders should not exceed number of
+    rig slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of rig slots is taken
+    from ship holder.
+    """
+
+    def __init__(self, fit):
+        SlotNumberRegister.__init__(self, fit, Slot.rig, Attribute.rigSlots, RigSlotException)
+
+
+class SubsystemSlotRegister(SlotNumberRegister):
+    """
+    Implements restriction:
+    Number of subsystem-slot holders should not exceed number of
+    subsystem slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of subsystem slots is taken
+    from ship holder.
+    """
+
+    def __init__(self, fit):
+        SlotNumberRegister.__init__(self, fit, Slot.subsystem, Attribute.maxSubSystems, SubsystemSlotException)
+
+
+class TurretSlotRegister(SlotNumberRegister):
+    """
+    Implements restriction:
+    Number of turret-slot holders should not exceed number of
+    turret slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of turret slots is taken
+    from ship holder.
+    """
+
+    def __init__(self, fit):
+        SlotNumberRegister.__init__(self, fit, Slot.turret, Attribute.turretSlotsLeft, TurretSlotException)
+
+
+class LauncherSlotRegister(SlotNumberRegister):
+    """
+    Implements restriction:
+    Number of launcher-slot holders should not exceed number of
+    launcher slots ship provides.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    For validation, modified amount of launcher slots is taken
+    from ship holder.
+    """
+
+    def __init__(self, fit):
+        SlotNumberRegister.__init__(self, fit, Slot.launcher, Attribute.launcherSlotsLeft, LauncherSlotException)

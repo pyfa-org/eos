@@ -27,23 +27,97 @@ class RestrictionTrackerException(EosException):
     pass
 
 
+# Exceptions used by ResourceRegister subclasses
 class CpuException(RestrictionTrackerException):
     """Raised when ship doesn't have enough CPU to fit all modules."""
     pass
 
 
+class PowerGridException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough power grid to fit all modules."""
+    pass
+
+
+class CalibrationException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough calibration to fit all rigs."""
+    pass
+
+
+class DroneBayVolumeException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough drone bay volume to fit all drones."""
+    pass
+
+
+class DroneBandwidthException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough drone bandwidth to use all drones."""
+    pass
+
+
+# Exceptions used by SlotNumberRegister subclasses
 class HighSlotException(RestrictionTrackerException):
     """Raised when ship doesn't have enough high slots to fit all modules."""
     pass
 
 
-class ImplantSlotIndexException(RestrictionTrackerException):
+class MediumSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough medium slots to fit all modules."""
+    pass
+
+
+class LowSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough medium slots to fit all modules."""
+    pass
+
+
+class RigSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough rig slots to fit all rigs."""
+    pass
+
+
+class SubsystemSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough subsystem slots to fit all subsystems."""
+    pass
+
+
+class TurretSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough turret hardpoints to fit all turrets."""
+    pass
+
+
+class LauncherSlotException(RestrictionTrackerException):
+    """Raised when ship doesn't have enough launcher hardpoints to fit all missile launchers."""
+    pass
+
+
+# Exceptions used by SlotIndexRegister subclasses
+class SubsystemIndexException(RestrictionTrackerException):
+    """Raised when there're more than one subsystem fit to certain subsystem slot."""
+    pass
+
+
+class ImplantIndexException(RestrictionTrackerException):
     """Raised when there're more than one implant fit to certain implant slot."""
     pass
 
 
+class BoosterIndexException(RestrictionTrackerException):
+    """Raised when there're more than one booster fit to certain booster slot."""
+    pass
+
+
+# Exceptions used by MaxGroupRegister subclasses
 class MaxGroupFittedException(RestrictionTrackerException):
-    """Raised when excessive modules of certain group are fitted to ship."""
+    """Raised when excessive number of modules of certain group is fitted to ship."""
+    pass
+
+
+class MaxGroupOnlineException(RestrictionTrackerException):
+    """Raised when excessive number of modules of certain group is online on ship."""
+    pass
+
+
+class MaxGroupActiveException(RestrictionTrackerException):
+    """Raised when excessive number of modules of certain group is active on ship."""
     pass
 
 

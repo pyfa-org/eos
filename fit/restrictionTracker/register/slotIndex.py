@@ -20,7 +20,7 @@
 
 
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import ImplantSlotIndexException
+from eos.fit.restrictionTracker.exception import SubsystemIndexException, ImplantIndexException, BoosterIndexException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
@@ -69,7 +69,20 @@ class SlotIndexRegister(RestrictionRegister):
             raise self.__exceptionClass(taintedHolders)
 
 
-class ImplantSlotIndexRegister(SlotIndexRegister):
+class SubsystemIndexRegister(SlotIndexRegister):
+    """
+    Implements restriction:
+    Multiple subsystems can't be added into the same subsystem slot.
+
+    Details:
+    Slot to fill is determined by original item attributes.
+    """
+
+    def __init__(self):
+        SlotIndexRegister.__init__(self, Attribute.subSystemSlot, SubsystemIndexException)
+
+
+class ImplantIndexRegister(SlotIndexRegister):
     """
     Implements restriction:
     Multiple implants can't be added into the same implant slot.
@@ -79,4 +92,17 @@ class ImplantSlotIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.implantness, ImplantSlotIndexException)
+        SlotIndexRegister.__init__(self, Attribute.implantness, ImplantIndexException)
+
+
+class BoosterIndexRegister(SlotIndexRegister):
+    """
+    Implements restriction:
+    Multiple boosters can't be added into the same booster slot.
+
+    Details:
+    Slot to fill is determined by original item attributes.
+    """
+
+    def __init__(self):
+        SlotIndexRegister.__init__(self, Attribute.boosterness, BoosterIndexException)

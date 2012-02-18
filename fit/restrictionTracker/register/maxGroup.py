@@ -21,7 +21,7 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import MaxGroupFittedException
+from eos.fit.restrictionTracker.exception import MaxGroupFittedException, MaxGroupOnlineException, MaxGroupActiveException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
@@ -104,3 +104,37 @@ class MaxGroupFittedRegister(MaxGroupRegister):
 
     def __init__(self):
         MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, MaxGroupFittedException)
+
+
+class MaxGroupOnlineRegister(MaxGroupRegister):
+    """
+    Implements restriction:
+    If holder has max group online restriction, number of online
+    holders of this group should not exceed restriction value,
+    else holder with such restriction is tainted.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    Only holders whose items have restriction attribute are tracked.
+    For validation, modified value of restriction attribute is taken.
+    """
+
+    def __init__(self):
+        MaxGroupRegister.__init__(self, Attribute.maxGroupOnline, MaxGroupOnlineException)
+
+
+class MaxGroupActiveRegister(MaxGroupRegister):
+    """
+    Implements restriction:
+    If holder has max group active restriction, number of active
+    holders of this group should not exceed restriction value,
+    else holder with such restriction is tainted.
+
+    Details:
+    Only holders belonging to ship are tracked.
+    Only holders whose items have restriction attribute are tracked.
+    For validation, modified value of restriction attribute is taken.
+    """
+
+    def __init__(self):
+        MaxGroupRegister.__init__(self, Attribute.maxGroupActive, MaxGroupActiveException)

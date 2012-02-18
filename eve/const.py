@@ -31,9 +31,15 @@ nulls = frozenset((0, None))
 
 class Attribute:
     """Attribute ID holder"""
+    powerOutput = 11
+    lowSlots = 12
+    medSlots = 13
     hiSlots = 14
     cpuOutput = 48
+    power = 30
     cpu = 50
+    launcherSlotsLeft = 101
+    turretSlotsLeft = 102
     volume = 161
     requiredSkill1 = 182
     requiredSkill2 = 183
@@ -42,8 +48,16 @@ class Attribute:
     requiredSkill2Level = 278
     requiredSkill3Level = 279
     skillLevel = 280
+    droneCapacity = 283
     implantness = 331
+    maxGroupActive = 763
+    maxGroupOnline = 978
     boosterness = 1087
+    upgradeCapacity = 1132
+    rigSlots = 1137
+    upgradeCost = 1153
+    droneBandwidth = 1271
+    droneBandwidthUsed = 1272
     requiredSkill4 = 1285
     requiredSkill4Level = 1286
     requiredSkill5Level = 1287
@@ -58,7 +72,8 @@ class Attribute:
     canFitShipType2 = 1303
     canFitShipType3 = 1304
     canFitShipType4 = 1305
-    subsystemSlot = 1366
+    subSystemSlot = 1366
+    maxSubSystems = 1367
     fitsToShipType = 1380
     maxGroupFitted = 1544
 
