@@ -34,7 +34,8 @@ class SlotIndexRegister(RestrictionRegister):
     """
 
     def __init__(self, slotIndexAttr, exceptionClass):
-        # This attribute contains index of slot
+        # This attribute's value on holder
+        # represents their index of slot
         self.__slotIndexAttr = slotIndexAttr
         # Exception class to throw on validation failure
         self.__exceptionClass = exceptionClass
@@ -73,10 +74,10 @@ class SlotIndexRegister(RestrictionRegister):
 class ImplantSlotIndexRegister(SlotIndexRegister):
     """
     Implements restriction:
-    Two implants can't be added into the same implant slot.
+    Multiple implants can't be added into the same implant slot.
 
     Details:
-    Slot to fill is determined by unmodified item attributes.
+    Slot to fill is determined by original item attributes.
     """
 
     def __init__(self):

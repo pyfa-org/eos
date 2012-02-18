@@ -41,7 +41,10 @@ class Skill(MutableAttributeHolder):
 
     @property
     def level(self):
-        level = self.attributes[Attribute.skillLevel]
+        try:
+            level = self.attributes[Attribute.skillLevel]
+        except KeyError:
+            level = None
         return level
 
     @level.setter
