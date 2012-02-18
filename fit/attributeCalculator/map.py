@@ -23,7 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category
-from .exception import NoAttributeException, UnsupportedOperatorException, UnsupportedSourceException
+from .exception import AbsentAttributeBaseException, UnsupportedOperatorException, UnsupportedSourceException
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -36,10 +36,6 @@ class MutableAttributeMap:
 
     Positional arguments:
     holder -- holder, to which this map is assigned
-
-    Possible exceptions:
-    NoAttributeException -- raised on access to attribute which
-    cannot be calculated
     """
 
     def __init__(self, holder):
@@ -60,7 +56,10 @@ class MutableAttributeMap:
             val = self.__modifiedAttributes[attrId]
         # Else, we have to run full calculation process
         except KeyError:
-            val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
+            try:
+                val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
+            except AbsentAttributeBaseException as e:
+                raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
 
@@ -112,7 +111,7 @@ class MutableAttributeMap:
         Calculated attribute value
 
         Possible exceptions:
-        NoAttributeException -- attribute cannot be
+        AbsentAttributeBaseException -- attribute cannot be
         calculated, as its base value is not available
         """
         # Base attribute value which we'll use for modification
@@ -120,7 +119,7 @@ class MutableAttributeMap:
         try:
             result = baseAttribDict[attrId]
         except KeyError as e:
-            raise NoAttributeException("no attribute with ID {} on original item".format(attrId)) from e
+            raise AbsentAttributeBaseException(attrId) from e
         # Attribute metadata
         attrMeta = self.__holder.fit._eos._dataHandler.getAttribute(attrId)
         # Container for non-penalized modifiers

@@ -22,7 +22,6 @@
 from eos.const import Location
 from eos.const import Slot
 from eos.eve.const import Attribute
-from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import HighSlotException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
@@ -74,7 +73,7 @@ class SlotNumberRegister(RestrictionRegister):
         else:
             try:
                 providedSlots = shipHolderAttribs[self.__slotAmountAttr]
-            except NoAttributeException:
+            except KeyError:
                 providedSlots = 0
         # Assuming each holder takes exactly one slot, check
         # if we have enough of them; if number of  slot users

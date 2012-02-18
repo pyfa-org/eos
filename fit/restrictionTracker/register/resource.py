@@ -21,7 +21,6 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.fit.restrictionTracker.exception import CpuException
 from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
 
@@ -74,7 +73,7 @@ class ResourceRegister(RestrictionRegister):
         else:
             try:
                 resourceOutput = shipHolderAttribs[self.__outputAttr]
-            except NoAttributeException:
+            except KeyError:
                 resourceOutput = 0
         # Calculate resource consumption of all holders on ship
         totalResourceConsumption = 0

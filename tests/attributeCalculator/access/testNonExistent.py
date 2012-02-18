@@ -20,7 +20,6 @@
 
 
 from eos.eve.type import Type
-from eos.fit.attributeCalculator.exception import NoAttributeException
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
@@ -32,4 +31,4 @@ class TestAccessNonExistent(EosTestCase):
         fit = Fit(lambda attrId: {}[attrId])
         holder = IndependentItem(Type(None))
         fit._addHolder(holder)
-        self.assertRaises(NoAttributeException, holder.attributes.__getitem__, 1)
+        self.assertRaises(KeyError, holder.attributes.__getitem__, 1)
