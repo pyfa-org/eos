@@ -36,6 +36,10 @@ class HighSlotException(RestrictionTrackerException):
     """Raised when ship doesn't have enough high slots to fit all modules."""
     pass
 
+class ImplantSlotIndexException(RestrictionTrackerException):
+    """Raised when there're more than one implant fit to certain implant slot."""
+    pass
+
 
 class MaxGroupFittedException(RestrictionTrackerException):
     """Raised when excessive modules of certain group are fitted to ship."""
