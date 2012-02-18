@@ -34,7 +34,7 @@ class ResourceRegister(RestrictionRegister):
     """
 
     def __init__(self, fit, outputAttr, usageAttr, exceptionClass):
-        self.__fit = fit
+        self._fit = fit
         # On ship holder, attribute with this ID
         # contains total amount of produced resource
         self.__outputAttr = outputAttr
@@ -60,7 +60,7 @@ class ResourceRegister(RestrictionRegister):
         # Get ship's resource output, setting it to 0
         # if fitting doesn't have ship assigned,
         # or ship doesn't have resource output attribute
-        shipHolder = self.__fit.ship
+        shipHolder = self._fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
@@ -138,12 +138,18 @@ class DroneBayVolumeRegister(ResourceRegister):
     drone bay volume.
 
     Details:
+    Only holders located in drone container are tracked.
     For validation, modified values of drone bay volume usage and
     drone bay volume are taken.
     """
 
     def __init__(self, fit):
         ResourceRegister.__init__(self, fit, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeException)
+
+    def registerHolder(self, holder):
+        if not holder in self._fit.drones:
+            return
+        ResourceRegister.registerHolder(self, holder)
 
 
 class DroneBandwidthRegister(ResourceRegister):

@@ -37,7 +37,7 @@ class CapitalItemRegister(RestrictionRegister):
     """
 
     def __init__(self, fit):
-        self.__fit = fit
+        self._fit = fit
         # Container for all tracked holders
         self.__capitalHolders = set()
 
@@ -57,7 +57,7 @@ class CapitalItemRegister(RestrictionRegister):
     def validate(self):
         # Skip validation only if ship has capital
         # ships requirement, else carry on
-        shipHolder = self.__fit.ship
+        shipHolder = self._fit.ship
         try:
             shipItem = shipHolder.item
         except AttributeError:

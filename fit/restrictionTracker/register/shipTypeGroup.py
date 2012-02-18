@@ -53,7 +53,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
     """
 
     def __init__(self, fit):
-        self.__fit = fit
+        self._fit = fit
         # Container for holders which possess
         # ship type/group restriction
         # Format: {holder: allowedData}
@@ -107,7 +107,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # them to None because our primary data container
         # with restricted holders can't contain None in its
         # values anyway
-        shipHolder = self.__fit.ship
+        shipHolder = self._fit.ship
         try:
             shipTypeId = shipHolder.item.id
             shipGroupId = shipHolder.item.groupId

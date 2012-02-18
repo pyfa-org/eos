@@ -35,7 +35,7 @@ class SlotNumberRegister(RestrictionRegister):
     """
 
     def __init__(self, fit, slotType, slotAmountAttr, exceptionClass):
-        self.__fit = fit
+        self._fit = fit
         # Keeps slot type we're tracking
         self.__slotType = slotType
         # Modified ship holder attribute with this ID
@@ -65,7 +65,7 @@ class SlotNumberRegister(RestrictionRegister):
         # if fit doesn't have ship or ship doesn't
         # have corresponding slot attribute, assume number
         # of provided slots is 0
-        shipHolder = self.__fit.ship
+        shipHolder = self._fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:

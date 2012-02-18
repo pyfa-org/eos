@@ -19,7 +19,6 @@
 #===============================================================================
 
 
-from eos.eve.const import Attribute
 from .attributeCalculator.tracker import LinkTracker
 from .restrictionTracker.tracker import RestrictionTracker
 

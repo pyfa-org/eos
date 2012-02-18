@@ -64,7 +64,7 @@ class RestrictionTracker:
 
     def addHolder(self, holder):
         self.__calibrationRegister.registerHolder(holder)
-        #self.__droneBayVolumeRegister.registerHolder(holder)
+        self.__droneBayVolumeRegister.registerHolder(holder)
 
         self.__highSlotRegister.registerHolder(holder)
         self.__mediumSlotRegister.registerHolder(holder)
@@ -88,7 +88,7 @@ class RestrictionTracker:
 
     def removeHolder(self, holder):
         self.__calibrationRegister.unregisterHolder(holder)
-        #self.__droneBayVolumeRegister.unregisterHolder(holder)
+        self.__droneBayVolumeRegister.unregisterHolder(holder)
 
         self.__highSlotRegister.unregisterHolder(holder)
         self.__mediumSlotRegister.unregisterHolder(holder)
