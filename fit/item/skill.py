@@ -34,6 +34,7 @@ class Skill(MutableAttributeHolder):
 
     def __init__(self, type_):
         super().__init__(type_)
+        self.__level = 0
 
     @property
     def _location(self):
@@ -41,12 +42,8 @@ class Skill(MutableAttributeHolder):
 
     @property
     def level(self):
-        try:
-            level = self.attributes[Attribute.skillLevel]
-        except KeyError:
-            level = None
-        return level
+        return self.__level
 
     @level.setter
     def level(self, value):
-        self.attributes[Attribute.skillLevel] = value
+        self.__level = value
