@@ -50,6 +50,7 @@ class Attribute:
     skillLevel = 280
     droneCapacity = 283
     implantness = 331
+    maxActiveDrones = 352
     maxGroupActive = 763
     maxGroupOnline = 978
     boosterness = 1087

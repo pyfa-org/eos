@@ -22,6 +22,7 @@
 from eos.const import State
 from .restriction.capitalItem import CapitalItemRegister
 from .restriction.droneGroup import DroneGroupRegister
+from .restriction.droneNumber import DroneNumberRegister
 from .restriction.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .restriction.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
 DroneBandwidthRegister
@@ -66,6 +67,7 @@ class RestrictionTracker:
 
         self.__droneGroupRegister = DroneGroupRegister(self)
         self.__rigSizeRegister = RigSizeRegister(self)
+        self.__droneNumberRegister = DroneNumberRegister(self)
 
         self.__skillRequirementRegister = SkillRequirementRegister()
 
@@ -129,11 +131,13 @@ class RestrictionTracker:
             self.__powerGridRegister.registerHolder(holder)
             self.__droneBandwidthRegister.registerHolder(holder)
             self.__maxGroupOnlineRegister.registerHolder(holder)
+            self.__droneNumberRegister.registerHolder(holder)
         elif (newState is None or newState < State.online) and (oldState is not None and oldState >= State.online):
             self.__cpuRegister.unregisterHolder(holder)
             self.__powerGridRegister.unregisterHolder(holder)
             self.__droneBandwidthRegister.unregisterHolder(holder)
             self.__maxGroupOnlineRegister.unregisterHolder(holder)
+            self.__droneNumberRegister.unregisterHolder(holder)
         if (oldState is None or oldState < State.active) and (newState is not None and newState >= State.active):
             self.__maxGroupActiveRegister.registerHolder(holder)
         elif (newState is None or newState < State.active) and (oldState is not None and oldState >= State.active):
@@ -168,5 +172,6 @@ class RestrictionTracker:
 
         self.__droneGroupRegister.validate()
         self.__rigSizeRegister.validate()
+        self.__droneNumberRegister.validate()
 
         self.__skillRequirementRegister.validate()

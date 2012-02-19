@@ -23,124 +23,198 @@ from eos.exception import EosException
 
 
 class RestrictionTrackerException(EosException):
-    """All restriction tracker exceptions are based on this class."""
+    """
+    All restriction tracker exceptions are based on this class.
+    """
     pass
 
 
 # Exceptions used by ResourceRegister subclasses
 class CpuException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough CPU to fit all modules."""
+    """
+    Raised when ship doesn't have enough CPU to fit all modules.
+    """
     pass
 
 
 class PowerGridException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough power grid to fit all modules."""
+    """
+    Raised when ship doesn't have enough power grid to fit
+    all modules.
+    """
     pass
 
 
 class CalibrationException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough calibration to fit all rigs."""
+    """
+    Raised when ship doesn't have enough calibration to fit all
+    rigs.
+    """
     pass
 
 
 class DroneBayVolumeException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough drone bay volume to fit all drones."""
+    """
+    Raised when ship doesn't have enough drone bay volume to fit
+    all drones.
+    """
     pass
 
 
 class DroneBandwidthException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough drone bandwidth to use all drones."""
+    """
+    Raised when ship doesn't have enough drone bandwidth to use
+    all drones.
+    """
     pass
 
 
 # Exceptions used by SlotNumberRegister subclasses
 class HighSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough high slots to fit all modules."""
+    """
+    Raised when ship doesn't have enough high slots to fit all
+    modules.
+    """
     pass
 
 
 class MediumSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough medium slots to fit all modules."""
+    """
+    Raised when ship doesn't have enough medium slots to fit all
+    modules.
+    """
     pass
 
 
 class LowSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough medium slots to fit all modules."""
+    """
+    Raised when ship doesn't have enough medium slots to fit all
+    modules.
+    """
     pass
 
 
 class RigSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough rig slots to fit all rigs."""
+    """
+    Raised when ship doesn't have enough rig slots to fit all rigs.
+    """
     pass
 
 
 class SubsystemSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough subsystem slots to fit all subsystems."""
+    """
+    Raised when ship doesn't have enough subsystem slots to fit all
+    subsystems.
+    """
     pass
 
 
 class TurretSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough turret hardpoints to fit all turrets."""
+    """Raised when ship doesn't have enough turret hardpoints to fit
+    all turrets."""
     pass
 
 
 class LauncherSlotException(RestrictionTrackerException):
-    """Raised when ship doesn't have enough launcher hardpoints to fit all missile launchers."""
+    """
+    Raised when ship doesn't have enough launcher hardpoints to fit
+    all missile launchers.
+    """
     pass
 
 
 # Exceptions used by SlotIndexRegister subclasses
 class SubsystemIndexException(RestrictionTrackerException):
-    """Raised when there're more than one subsystem fit to certain subsystem slot."""
+    """
+    Raised when there're more than one subsystem fit to certain
+    subsystem slot.
+    """
     pass
 
 
 class ImplantIndexException(RestrictionTrackerException):
-    """Raised when there're more than one implant fit to certain implant slot."""
+    """
+    Raised when there're more than one implant fit to certain implant
+    slot.
+    """
     pass
 
 
 class BoosterIndexException(RestrictionTrackerException):
-    """Raised when there're more than one booster fit to certain booster slot."""
+    """
+    Raised when there're more than one booster fit to certain booster
+    slot.
+    """
     pass
 
 
 # Exceptions used by MaxGroupRegister subclasses
 class MaxGroupFittedException(RestrictionTrackerException):
-    """Raised when excessive number of modules of certain group is fitted to ship."""
+    """
+    Raised when excessive number of modules of certain group is fitted
+    to ship.
+    """
     pass
 
 
 class MaxGroupOnlineException(RestrictionTrackerException):
-    """Raised when excessive number of modules of certain group is online on ship."""
+    """
+    Raised when excessive number of modules of certain group is online
+    on ship.
+    """
     pass
 
 
 class MaxGroupActiveException(RestrictionTrackerException):
-    """Raised when excessive number of modules of certain group is active on ship."""
+    """
+    Raised when excessive number of modules of certain group is active
+    on ship.
+    """
     pass
 
 
 class ShipTypeGroupException(RestrictionTrackerException):
-    """Raised when item cannot be fitted to ship because of ship's type or group."""
+    """
+    Raised when item cannot be fitted to ship because of ship's type or
+    group.
+    """
     pass
 
 
 class CapitalItemException(RestrictionTrackerException):
-    """Raised when capital modules are fit on non-capital ship."""
+    """
+    Raised when capital modules are fit on non-capital ship.
+    """
     pass
 
 
 class DroneGroupException(RestrictionTrackerException):
-    """Raised when drones of certain group are put into drone bay of
-    ship which doesn't allow it."""
+    """
+    Raised when drones of certain group are put into drone bay of
+    ship which doesn't allow it.
+    """
     pass
 
+
 class RigSizeException(RestrictionTrackerException):
-    """Raised when rig is fit to some ship which can fit only rigs of other size."""
+    """
+    Raised when rig is fit to some ship which can fit only rigs of
+    other size.
+    """
+    pass
+
+
+class DroneOnlineException(RestrictionTrackerException):
+    """
+    Raised when number of drones in-space exceeds number of drones
+    character is allowed to control.
+    """
     pass
 
 
 class SkillRequirementException(RestrictionTrackerException):
-    """Raised when any holder on fit has its skill requirements not satisfied."""
+    """
+    Raised when any holder on fit has its skill requirements not
+    satisfied.
+    """
     pass

@@ -20,31 +20,32 @@
 
 
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import RigSizeException
+from eos.fit.restrictionTracker.exception import DroneOnlineException
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-class RigSizeRegister(RestrictionRegister):
+class DroneNumberRegister(RestrictionRegister):
     """
     Implements restriction:
-    If ship requires rigs of certain size, rigs of other size cannot
-    be used.
+    Number of simultaneoursly used drones cannot exceed number of
+    drones character is able to control.
 
     Details:
-    If required rig size is None, holders which specify any rig size
-    cannot be added to fit.
-    For validation, original value of rigSize attribute is taken.
+    Only holders located in drone container are tracked.
+    For validation, modified value of maxActiveDrones attribute
+    is taken.
     """
 
     def __init__(self, tracker):
         self._tracker = tracker
-        # Container for holders which have rig size restriction
+        # Container for holders which are considered
+        # as in-space drones
+        # Format: {holders}
         self.__restrictedHolders = set()
 
     def registerHolder(self, holder):
-        # Register only holders which have attribute,
-        # which restricts rig size
-        if not Attribute.rigSize in holder.item.attributes:
+        # Register only drones
+        if not holder in self._tracker._fit.drones:
             return
         self.__restrictedHolders.add(holder)
 
@@ -52,26 +53,22 @@ class RigSizeRegister(RestrictionRegister):
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
-        shipHolder = self._tracker._fit.ship
-        # Do not apply restriction when fit doesn't
-        # have ship
+        # Get number of drones fit can have in space; assign
+        # it to None if fitting doesn't have character, or
+        # attribute isn't available
+        characterHolder = self._tracker._fit.character
         try:
-            shipItem = shipHolder.item
+            characterHolderAttribs = characterHolder.attributes
         except AttributeError:
-            return
-        # If ship doesn't have restriction attribute,
-        # allow all rigs - skip validation
-        try:
-            allowedRigSize = shipItem.attributes[Attribute.rigSize]
-        except KeyError:
-            return
-        taintedHolders = set()
-        if allowedRigSize is None:
-            taintedHolders.update(self.__restrictedHolders)
+            maxDrones = 0
         else:
-            for restrictedHolder in self.__restrictedHolders:
-                holderRigSize = restrictedHolder.item.attributes[Attribute.rigSize]
-                if holderRigSize != allowedRigSize:
-                    taintedHolders.add(restrictedHolder)
-        if len(taintedHolders) > 0:
-            raise RigSizeException(taintedHolders)
+            try:
+                maxDrones = characterHolderAttribs[Attribute.maxActiveDrones]
+            except KeyError:
+                maxDrones = 0
+        # If number of registered drones exceeds number of maximum number
+        # of allowed drones, raise error
+        if len(self.__restrictedHolders) > maxDrones:
+            taintedHolders = set()
+            taintedHolders.update(self.__restrictedHolders)
+            raise DroneOnlineException(taintedHolders)
