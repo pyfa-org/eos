@@ -71,5 +71,5 @@ class Eos:
 
     def makeSkill(self, typeId):
         skillType = self._dataHandler.getType(typeId)
-        skill = Implant(skillType)
+        skill = Skill(skillType)
         return skill
