@@ -50,6 +50,7 @@ class Fit:
         self.modulesHigh = HolderContainer(self)
         self.modulesMed = HolderContainer(self)
         self.modulesLow = HolderContainer(self)
+        self.rigs = HolderContainer(self)
         self.drones = HolderContainer(self)
         # Celestial container
         self.systemWide = HolderContainer(self)

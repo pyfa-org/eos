@@ -136,6 +136,10 @@ class DroneGroupException(RestrictionTrackerException):
     ship which doesn't allow it."""
     pass
 
+class RigSizeException(RestrictionTrackerException):
+    """Raised when rig is fit to some ship which can fit only rigs of other size."""
+    pass
+
 
 class SkillRequirementException(RestrictionTrackerException):
     """Raised when any holder on fit has its skill requirements not satisfied."""

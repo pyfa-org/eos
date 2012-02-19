@@ -25,6 +25,7 @@ from .restriction.droneGroup import DroneGroupRegister
 from .restriction.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .restriction.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
 DroneBandwidthRegister
+from .restriction.rigSize import RigSizeRegister
 from .restriction.shipTypeGroup import ShipTypeGroupRegister
 from .restriction.skillRequirement import SkillRequirementRegister
 from .restriction.slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
@@ -64,6 +65,7 @@ class RestrictionTracker:
         self.__maxGroupActiveRegister = MaxGroupActiveRegister()
 
         self.__droneGroupRegister = DroneGroupRegister(self)
+        self.__rigSizeRegister = RigSizeRegister(self)
 
         self.__skillRequirementRegister = SkillRequirementRegister()
 
@@ -90,6 +92,7 @@ class RestrictionTracker:
         self.__maxGroupFittedRegister.registerHolder(holder)
 
         self.__droneGroupRegister.registerHolder(holder)
+        self.__rigSizeRegister.registerHolder(holder)
 
         self.__skillRequirementRegister.registerHolder(holder)
 
@@ -116,6 +119,7 @@ class RestrictionTracker:
         self.__maxGroupFittedRegister.unregisterHolder(holder)
 
         self.__droneGroupRegister.unregisterHolder(holder)
+        self.__rigSizeRegister.unregisterHolder(holder)
 
         self.__skillRequirementRegister.unregisterHolder(holder)
 
@@ -163,5 +167,6 @@ class RestrictionTracker:
         self.__maxGroupActiveRegister.validate()
 
         self.__droneGroupRegister.validate()
+        self.__rigSizeRegister.validate()
 
         self.__skillRequirementRegister.validate()

@@ -45,16 +45,16 @@ class DroneGroupRegister(RestrictionRegister):
         # Container for holders which can be subject
         # for restriction
         # Format: {holders}
-        self.__restrictableHolders = set()
+        self.__restrictedHolders = set()
 
     def registerHolder(self, holder):
         # Ignore everything but drones
         if not holder in self._tracker._fit.drones:
             return
-        self.__restrictableHolders.add(holder)
+        self.__restrictedHolders.add(holder)
 
     def unregisterHolder(self, holder):
-        self.__restrictableHolders.discard(holder)
+        self.__restrictedHolders.discard(holder)
 
     def validate(self):
         shipHolder = self._tracker._fit.ship
@@ -79,7 +79,7 @@ class DroneGroupRegister(RestrictionRegister):
         if droneRestriction is not True:
             return
         taintedHolders = set()
-        for restrictedHolder in self.__restrictableHolders:
+        for restrictedHolder in self.__restrictedHolders:
             # NTaint holders, whose group is not allowed
             holderGroup = restrictedHolder.item.groupId
             if not holderGroup in allowedGroups:

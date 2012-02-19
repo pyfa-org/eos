@@ -26,6 +26,7 @@ from eos.fit.item.module import Module
 from eos.fit.item.charge import Charge
 from eos.fit.item.drone import Drone
 from eos.fit.item.implant import Implant
+from eos.fit.item.rig import Rig
 from eos.fit.item.skill import Skill
 from eos.util.logger import Logger
 
@@ -73,3 +74,8 @@ class Eos:
         skillType = self._dataHandler.getType(typeId)
         skill = Skill(skillType)
         return skill
+
+    def makeRig(self, typeId):
+        rigType = self._dataHandler.getType(typeId)
+        rig = Rig(rigType)
+        return rig
