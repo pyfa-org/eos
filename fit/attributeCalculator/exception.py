@@ -76,9 +76,9 @@ class UnsupportedSourceException(AttributeCalculatorException):
     pass
 
 
-class AbsentAttributeBaseException(AttributeCalculatorException):
+class NoAttributeException(AttributeCalculatorException):
     """
     Raised when value, upon which attribute calculation should be based,
-    is absent, thus making it impossible to calculate attribute.
+    cannot be determined, thus making it impossible to calculate attribute.
     """
     pass

@@ -23,7 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category, Attribute
-from .exception import AbsentAttributeBaseException, UnsupportedOperatorException, UnsupportedSourceException
+from .exception import NoAttributeException, UnsupportedOperatorException, UnsupportedSourceException
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -67,7 +67,7 @@ class MutableAttributeMap:
         except KeyError:
             try:
                 val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
-            except AbsentAttributeBaseException as e:
+            except NoAttributeException as e:
                 raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
@@ -123,14 +123,20 @@ class MutableAttributeMap:
         AbsentAttributeBaseException -- attribute cannot be
         calculated, as its base value is not available
         """
+        dataHandler = self.__holder.fit._eos._dataHandler
+        # Attribute object for attribute being calculated
+        attrMeta = dataHandler.getAttribute(attrId)
         # Base attribute value which we'll use for modification
         baseAttribDict = self.__holder.item.attributes
         try:
             result = baseAttribDict[attrId]
-        except KeyError as e:
-            raise AbsentAttributeBaseException(attrId) from e
-        # Attribute metadata
-        attrMeta = self.__holder.fit._eos._dataHandler.getAttribute(attrId)
+        # If attribute isn't available on base item,
+        # base off its default value
+        except KeyError:
+            result = attrMeta.defaultValue
+            # If no default value is available, raise error
+            if result is None:
+                raise NoAttributeException(attrId)
         # Container for non-penalized modifiers
         # Format: {operator: {values}}
         normalMods = {}
@@ -214,6 +220,12 @@ class MutableAttributeMap:
                 signature = (UnsupportedOperatorException, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
+        # If attribute has upper cap, do not let
+        # its value to grow above it
+        if attrMeta.maxAttributeId is not None:
+            maxAttrMeta = dataHandler.getAttribute(attrMeta.maxAttributeId)
+            if maxAttrMeta is not None and maxAttrMeta.defaultValue is not None:
+                result = max(result, maxAttrMeta.defaultValue)
         return result
 
     def __penalizeValues(self, modList):
