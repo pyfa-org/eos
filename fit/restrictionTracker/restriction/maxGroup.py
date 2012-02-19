@@ -22,7 +22,7 @@
 from eos.const import Location
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import MaxGroupFittedException, MaxGroupOnlineException, MaxGroupActiveException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 

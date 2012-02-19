@@ -21,7 +21,7 @@
 
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import SubsystemIndexException, ImplantIndexException, BoosterIndexException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 

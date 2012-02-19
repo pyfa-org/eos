@@ -22,7 +22,7 @@
 from eos.const import Location
 from eos.eve.const import Type, Attribute
 from eos.fit.restrictionTracker.exception import CapitalItemException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
 class CapitalItemRegister(RestrictionRegister):

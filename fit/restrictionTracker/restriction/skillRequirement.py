@@ -21,7 +21,7 @@
 
 from eos.const import Location
 from eos.fit.restrictionTracker.exception import SkillRequirementException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
 class SkillRequirementRegister(RestrictionRegister):

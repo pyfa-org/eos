@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const import Location
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import ShipTypeGroupException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
 # Helper class-container for metadata regarding allowed

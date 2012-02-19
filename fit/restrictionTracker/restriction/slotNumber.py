@@ -24,7 +24,7 @@ from eos.const import Slot
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import HighSlotException, MediumSlotException, LowSlotException, \
 RigSlotException, SubsystemSlotException, TurretSlotException, LauncherSlotException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
 class SlotNumberRegister(RestrictionRegister):

@@ -22,7 +22,7 @@
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import CpuException, PowerGridException, CalibrationException, \
 DroneBayVolumeException, DroneBandwidthException
-from eos.fit.restrictionTracker.registerAbc import RestrictionRegister
+from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
 class ResourceRegister(RestrictionRegister):

@@ -20,14 +20,14 @@
 
 
 from eos.const import State
-from .register.capitalItem import CapitalItemRegister
-from .register.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
-from .register.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
+from .restriction.capitalItem import CapitalItemRegister
+from .restriction.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
+from .restriction.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
 DroneBandwidthRegister
-from .register.shipTypeGroup import ShipTypeGroupRegister
-from .register.skillRequirement import SkillRequirementRegister
-from .register.slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
-from .register.slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
+from .restriction.shipTypeGroup import ShipTypeGroupRegister
+from .restriction.skillRequirement import SkillRequirementRegister
+from .restriction.slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
+from .restriction.slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
 SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 
 
