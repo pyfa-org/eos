@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.eve.attribute import Attribute
 from eos.eve.type import Type
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
@@ -28,7 +29,8 @@ class TestAccessNonExistent(EosTestCase):
     """Test return value when requesting attribute which doesn't exist"""
 
     def testAttributeAccess(self):
-        fit = Fit({})
+        attr = Attribute(1)
+        fit = Fit({attr.id: attr})
         holder = IndependentItem(Type(None))
         fit._addHolder(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 1)

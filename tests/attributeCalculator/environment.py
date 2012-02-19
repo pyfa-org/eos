@@ -22,6 +22,7 @@
 from logging import getLogger, ERROR, WARNING
 
 from eos.const import State, Location
+from eos.dataHandler.exception import AttributeDataException
 from eos.fit.attributeCalculator.map import MutableAttributeMap
 from eos.fit.attributeCalculator.tracker import LinkTracker
 
@@ -31,7 +32,11 @@ class DataHandler:
         self.__attrMetaData = attrMetaData
 
     def getAttribute(self, attrId):
-        return self.__attrMetaData[attrId]
+        try:
+            attr = self.__attrMetaData[attrId]
+        except KeyError:
+            raise AttributeDataException(attrId)
+        return attr
 
 
 class Logger:
