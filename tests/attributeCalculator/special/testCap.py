@@ -25,36 +25,35 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
 
-class TestLocationDirectTarget(EosTestCase):
-    """Test location.target for direct modifications"""
+class TestCap(EosTestCase):
+    """Test return value when requesting attribute which isn't set"""
 
-    def testError(self):
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+    def testValue(self):
+        srcAttr = Attribute(1)
+        tgtAttr = Attribute(2, maxAttributeId=3)
+        capAttr = Attribute(3, defaultValue=5.2)
+        # Just to make sure cap is applied to final value, not
+        # base, make some basic modification info
         info = Info()
         info.state = State.offline
         info.context = Context.local
         info.runTime = RunTime.duration
         info.gang = False
-        info.location = Location.target
+        info.location = Location.self_
         info.filterType = None
         info.filterValue = None
-        info.operator = Operator.postPercent
+        info.operator = Operator.postMul
         info.targetAttributeId = tgtAttr.id
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(102, effects={effect}, attributes={srcAttr.id: 20}))
-        # This functionality isn't implemented for now
-        fit._addHolder(influenceSource)
-        self.assertEqual(len(self.log), 1)
-        logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
-        self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "malformed info on item 102: unsupported target location {} for direct modification".format(Location.target))
+        fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr, capAttr.id: capAttr})
+        holder = IndependentItem(Type(None, effects={effect}, attributes={tgtAttr.id: 3, srcAttr.id: 6}))
+        fit._addHolder(holder)
+        # Attribute should be capped at 5.2
+        self.assertAlmostEqual(holder.attributes[tgtAttr.id], 5.2)

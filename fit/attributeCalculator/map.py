@@ -225,7 +225,7 @@ class MutableAttributeMap:
         if attrMeta.maxAttributeId is not None:
             maxAttrMeta = dataHandler.getAttribute(attrMeta.maxAttributeId)
             if maxAttrMeta is not None and maxAttrMeta.defaultValue is not None:
-                result = max(result, maxAttrMeta.defaultValue)
+                result = min(result, maxAttrMeta.defaultValue)
         return result
 
     def __penalizeValues(self, modList):

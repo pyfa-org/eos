@@ -25,8 +25,8 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.eosTestCase import EosTestCase
 
 
-class TestAccessNonExistent(EosTestCase):
-    """Test return value when requesting attribute which doesn't exist"""
+class TestNonExistent(EosTestCase):
+    """Test return value when requesting attribute which isn't set"""
 
     def testAttributeAccess(self):
         attr = Attribute(1)
@@ -34,3 +34,13 @@ class TestAccessNonExistent(EosTestCase):
         holder = IndependentItem(Type(None))
         fit._addHolder(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 1)
+
+
+    def testDefaultValue(self):
+        # Default value should be used if attribute
+        # value is not available on item
+        attr = Attribute(1, defaultValue=5.6)
+        fit = Fit({attr.id: attr})
+        holder = IndependentItem(Type(None))
+        fit._addHolder(holder)
+        self.assertAlmostEqual(holder.attributes[1], 5.6)

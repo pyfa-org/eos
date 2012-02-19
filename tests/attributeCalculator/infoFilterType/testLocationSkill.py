@@ -20,11 +20,11 @@
 
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
-from eos.fit.attributeCalculator.info.info import Info
 from eos.eve.attribute import Attribute
 from eos.eve.const import Attribute as DgmAttribute, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
+from eos.fit.attributeCalculator.info.info import Info
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem
 from eos.tests.eosTestCase import EosTestCase
 
