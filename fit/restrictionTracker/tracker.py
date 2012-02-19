@@ -36,142 +36,62 @@ SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 
 class RestrictionTracker:
     def __init__(self, fit):
-
+        # Fit reference, to which this restriction tracker
+        # is attached
         self._fit = fit
-
-        self.__cpuRegister = CpuRegister(self)
-        self.__powerGridRegister = PowerGridRegister(self)
-        self.__calibrationRegister = CalibrationRegister(self)
-        self.__droneBayVolumeRegister = DroneBayVolumeRegister(self)
-        self.__droneBandwidthRegister = DroneBandwidthRegister(self)
-
-        self.__highSlotRegister = HighSlotRegister(self)
-        self.__mediumSlotRegister = MediumSlotRegister(self)
-        self.__lowSlotRegister = LowSlotRegister(self)
-        self.__rigSlotRegister = RigSlotRegister(self)
-        self.__subsystemSlotRegister = SubsystemSlotRegister(self)
-        self.__turretSlotRegister = TurretSlotRegister(self)
-        self.__launcherSlotRegister = LauncherSlotRegister(self)
-
-        self.__subsystemIndexRegister = SubsystemIndexRegister()
-        self.__implantIndexRegister = ImplantIndexRegister()
-        self.__boosterIndexRegister = BoosterIndexRegister()
-
-        self.__shipTypeGroupRegister = ShipTypeGroupRegister(self)
-
-        self.__capitalItemRegister = CapitalItemRegister(self)
-
-        self.__maxGroupFittedRegister = MaxGroupFittedRegister()
-        self.__maxGroupOnlineRegister = MaxGroupOnlineRegister()
-        self.__maxGroupActiveRegister = MaxGroupActiveRegister()
-
-        self.__droneGroupRegister = DroneGroupRegister(self)
-        self.__rigSizeRegister = RigSizeRegister(self)
-        self.__droneNumberRegister = DroneNumberRegister(self)
-
-        self.__skillRequirementRegister = SkillRequirementRegister()
+        # Dictionary which keeps all restriction registers
+        # used by tracker. When some holder passes state stored
+        # as key, it's registered/unregistered in registers
+        # stored as value. None state means that holders are
+        # registered/unregistered when they're added/removed
+        # to fit, not when they enter or leave some state
+        # Format: {triggering state: {registers}}
+        self.__registers = {None: {CalibrationRegister(self),
+                                   DroneBayVolumeRegister(self),
+                                   HighSlotRegister(self),
+                                   MediumSlotRegister(self),
+                                   LowSlotRegister(self),
+                                   RigSlotRegister(self),
+                                   SubsystemSlotRegister(self),
+                                   TurretSlotRegister(self),
+                                   LauncherSlotRegister(self),
+                                   SubsystemIndexRegister(),
+                                   ImplantIndexRegister(),
+                                   BoosterIndexRegister(),
+                                   ShipTypeGroupRegister(self),
+                                   CapitalItemRegister(self),
+                                   MaxGroupFittedRegister(),
+                                   DroneGroupRegister(self),
+                                   RigSizeRegister(self),
+                                   SkillRequirementRegister()},
+                            State.online: {CpuRegister(self),
+                                           PowerGridRegister(self),
+                                           DroneBandwidthRegister(self),
+                                           MaxGroupOnlineRegister(),
+                                           DroneNumberRegister(self)},
+                            State.active: {MaxGroupActiveRegister()}}
 
     def addHolder(self, holder):
-        self.__calibrationRegister.registerHolder(holder)
-        self.__droneBayVolumeRegister.registerHolder(holder)
-
-        self.__highSlotRegister.registerHolder(holder)
-        self.__mediumSlotRegister.registerHolder(holder)
-        self.__lowSlotRegister.registerHolder(holder)
-        self.__rigSlotRegister.registerHolder(holder)
-        self.__subsystemSlotRegister.registerHolder(holder)
-        self.__turretSlotRegister.registerHolder(holder)
-        self.__launcherSlotRegister.registerHolder(holder)
-
-        self.__subsystemIndexRegister.registerHolder(holder)
-        self.__implantIndexRegister.registerHolder(holder)
-        self.__boosterIndexRegister.registerHolder(holder)
-
-        self.__shipTypeGroupRegister.registerHolder(holder)
-
-        self.__capitalItemRegister.registerHolder(holder)
-
-        self.__maxGroupFittedRegister.registerHolder(holder)
-
-        self.__droneGroupRegister.registerHolder(holder)
-        self.__rigSizeRegister.registerHolder(holder)
-
-        self.__skillRequirementRegister.registerHolder(holder)
+        for register in self.__registers[None]:
+            register.registerHolder(holder)
 
     def removeHolder(self, holder):
-        self.__calibrationRegister.unregisterHolder(holder)
-        self.__droneBayVolumeRegister.unregisterHolder(holder)
-
-        self.__highSlotRegister.unregisterHolder(holder)
-        self.__mediumSlotRegister.unregisterHolder(holder)
-        self.__lowSlotRegister.unregisterHolder(holder)
-        self.__rigSlotRegister.unregisterHolder(holder)
-        self.__subsystemSlotRegister.unregisterHolder(holder)
-        self.__turretSlotRegister.unregisterHolder(holder)
-        self.__launcherSlotRegister.unregisterHolder(holder)
-
-        self.__subsystemIndexRegister.unregisterHolder(holder)
-        self.__implantIndexRegister.unregisterHolder(holder)
-        self.__boosterIndexRegister.unregisterHolder(holder)
-
-        self.__shipTypeGroupRegister.unregisterHolder(holder)
-
-        self.__capitalItemRegister.unregisterHolder(holder)
-
-        self.__maxGroupFittedRegister.unregisterHolder(holder)
-
-        self.__droneGroupRegister.unregisterHolder(holder)
-        self.__rigSizeRegister.unregisterHolder(holder)
-
-        self.__skillRequirementRegister.unregisterHolder(holder)
+        for register in self.__registers[None]:
+            register.unregisterHolder(holder)
 
     def stateSwitch(self, holder, oldState, newState):
-        if (oldState is None or oldState < State.online) and (newState is not None and newState >= State.online):
-            self.__cpuRegister.registerHolder(holder)
-            self.__powerGridRegister.registerHolder(holder)
-            self.__droneBandwidthRegister.registerHolder(holder)
-            self.__maxGroupOnlineRegister.registerHolder(holder)
-            self.__droneNumberRegister.registerHolder(holder)
-        elif (newState is None or newState < State.online) and (oldState is not None and oldState >= State.online):
-            self.__cpuRegister.unregisterHolder(holder)
-            self.__powerGridRegister.unregisterHolder(holder)
-            self.__droneBandwidthRegister.unregisterHolder(holder)
-            self.__maxGroupOnlineRegister.unregisterHolder(holder)
-            self.__droneNumberRegister.unregisterHolder(holder)
-        if (oldState is None or oldState < State.active) and (newState is not None and newState >= State.active):
-            self.__maxGroupActiveRegister.registerHolder(holder)
-        elif (newState is None or newState < State.active) and (oldState is not None and oldState >= State.active):
-            self.__maxGroupActiveRegister.unregisterHolder(holder)
+        for state in self.__registers:
+            if state is None:
+                continue
+            stateRegisters = self.__registers[state]
+            if (oldState is None or oldState < state) and (newState is not None and newState >= state):
+                for register in stateRegisters:
+                    register.registerHolder(holder)
+            elif (newState is None or newState < state) and (oldState is not None and oldState >= state):
+                for register in stateRegisters:
+                    register.unregisterHolder(holder)
 
     def validate(self):
-        self.__cpuRegister.validate()
-        self.__powerGridRegister.validate()
-        self.__calibrationRegister.validate()
-        self.__droneBayVolumeRegister.validate()
-        self.__droneBandwidthRegister.validate()
-
-        self.__highSlotRegister.validate()
-        self.__mediumSlotRegister.validate()
-        self.__lowSlotRegister.validate()
-        self.__rigSlotRegister.validate()
-        self.__subsystemSlotRegister.validate()
-        self.__turretSlotRegister.validate()
-        self.__launcherSlotRegister.validate()
-
-        self.__subsystemIndexRegister.validate()
-        self.__implantIndexRegister.validate()
-        self.__boosterIndexRegister.validate()
-
-        self.__shipTypeGroupRegister.validate()
-
-        self.__capitalItemRegister.validate()
-
-        self.__maxGroupFittedRegister.validate()
-        self.__maxGroupOnlineRegister.validate()
-        self.__maxGroupActiveRegister.validate()
-
-        self.__droneGroupRegister.validate()
-        self.__rigSizeRegister.validate()
-        self.__droneNumberRegister.validate()
-
-        self.__skillRequirementRegister.validate()
+        for state in self.__registers:
+            for register in self.__registers[state]:
+                register.validate()
