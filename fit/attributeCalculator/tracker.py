@@ -36,8 +36,8 @@ class LinkTracker:
     """
 
     def __init__(self, fit):
-        self.__fit = fit
-        self.__register = LinkRegister(fit)
+        self._fit = fit
+        self.__register = LinkRegister(self)
         self.__holderStates = {}
 
     def getAffectors(self, holder, attrId=None):
@@ -91,9 +91,9 @@ class LinkTracker:
         """
         # For ship and character it's easy, we're just picking
         # corresponding location
-        if holder is self.__fit.ship:
+        if holder is self._fit.ship:
             location = Location.ship
-        elif holder is self.__fit.character:
+        elif holder is self._fit.character:
             location = Location.character
         # For "other" location, we should've checked for presence
         # of other entity - charge's container or module's charge
@@ -235,7 +235,7 @@ class LinkTracker:
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        for info in holder.item.getInfos(self.__fit._eos._logger):
+        for info in holder.item.getInfos(self._fit._eos._logger):
             if stateFilter is not None and not info.state in stateFilter:
                 continue
             if contextFilter is not None and not info.context in contextFilter:

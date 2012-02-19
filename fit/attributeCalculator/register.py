@@ -30,12 +30,12 @@ class LinkRegister:
     partial attribute recalculation.
 
     Positional arguments:
-    fit -- Fit object to which register is assigned
+    tracker -- LinkTracker object, which uses this register
     """
 
-    def __init__(self, fit):
+    def __init__(self, tracker):
         # The fit we're keeping track of things for
-        self.__fit = fit
+        self.__tracker = tracker
 
         # Keep track of holders belonging to certain location
         # Format: {location: {targetHolders}}
@@ -124,7 +124,7 @@ class LinkRegister:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
             elif info.location == Location.character:
-                char = self.__fit.character
+                char = self.__tracker._fit.character
                 if char is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = char
@@ -132,7 +132,7 @@ class LinkRegister:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             elif info.location == Location.ship:
-                ship = self.__fit.ship
+                ship = self.__tracker._fit.ship
                 if ship is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = ship
@@ -198,9 +198,9 @@ class LinkRegister:
         # Reference to self is sparingly used on ship effects, so we must convert
         # it to real location
         if targetLocation == Location.self_:
-            if sourceHolder is self.__fit.ship:
+            if sourceHolder is self.__tracker._fit.ship:
                 return Location.ship
-            elif sourceHolder is self.__fit.character:
+            elif sourceHolder is self.__tracker._fit.character:
                 return Location.character
             else:
                 raise BadContainerException
@@ -405,19 +405,19 @@ class LinkRegister:
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except BadContainerException:
             msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (BadContainerException, affector.sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedDirectLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedDirectLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedFilteredLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilteredLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
 
     def unregisterAffector(self, affector):
         """
@@ -437,19 +437,19 @@ class LinkRegister:
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except BadContainerException:
             msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (BadContainerException, affector.sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedDirectLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedDirectLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedFilteredLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilteredLocationException, affector.sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
 
     def getAffectees(self, affector):
         """
@@ -469,10 +469,10 @@ class LinkRegister:
                 if info.location == Location.self_:
                     target = {sourceHolder}
                 elif info.location == Location.character:
-                    char = self.__fit.character
+                    char = self.__tracker._fit.character
                     target = {char} if char is not None else None
                 elif info.location == Location.ship:
-                    ship = self.__fit.ship
+                    ship = self.__tracker._fit.ship
                     target = {ship} if ship is not None else None
                 elif info.location == Location.other:
                     try:
@@ -507,19 +507,19 @@ class LinkRegister:
         except UnsupportedFilterException as e:
             msg = "malformed info on item {}: invalid filter type {}".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilterException, sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except BadContainerException:
             msg = "malformed info on item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
             signature = (BadContainerException, sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedDirectLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedDirectLocationException, sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except UnsupportedFilteredLocationException as e:
             msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(sourceHolder.item.id, e.args[0])
             signature = (UnsupportedFilteredLocationException, sourceHolder.item.id, e.args[0])
-            self.__fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+            self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         return affectees
 
     def getAffectors(self, targetHolder):
