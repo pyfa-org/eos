@@ -123,9 +123,8 @@ class MutableAttributeMap:
         AbsentAttributeBaseException -- attribute cannot be
         calculated, as its base value is not available
         """
-        dataHandler = self.__holder.fit._eos._dataHandler
         # Attribute object for attribute being calculated
-        attrMeta = dataHandler.getAttribute(attrId)
+        attrMeta = self.__holder.fit._eos._dataHandler.getAttribute(attrId)
         # Base attribute value which we'll use for modification
         baseAttribDict = self.__holder.item.attributes
         try:
@@ -222,10 +221,8 @@ class MutableAttributeMap:
                 continue
         # If attribute has upper cap, do not let
         # its value to grow above it
-        if attrMeta.maxAttributeId is not None:
-            maxAttrMeta = dataHandler.getAttribute(attrMeta.maxAttributeId)
-            if maxAttrMeta is not None and maxAttrMeta.defaultValue is not None:
-                result = min(result, maxAttrMeta.defaultValue)
+        if attrMeta.maxValue is not None:
+            result = min(result, attrMeta.maxValue)
         return result
 
     def __penalizeValues(self, modList):

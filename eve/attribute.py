@@ -19,20 +19,17 @@
 #===============================================================================
 
 
-from .const import nulls
-
-
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self, id_, maxAttributeId=None, defaultValue=None,
+    def __init__(self, id_, maxValue=None, defaultValue=None,
                  highIsGood=None, stackable=None):
         # Just ID of attribute, integer
         self.id = int(id_) if id_ is not None else None
 
         # When value of this attribute is calculated on any item, it cannot
-        # be bigger than defaultValue of attribute referenced here
-        self.maxAttributeId = int(maxAttributeId) if not maxAttributeId in nulls else None
+        # be bigger than maxValue
+        self.maxValue = float(maxValue) if maxValue is not None else None
 
         # Default value of this attribute, used when base attribute value
         # is not available on item during calculation process

@@ -34,8 +34,7 @@ class TestCap(EosTestCase):
 
     def testValue(self):
         srcAttr = Attribute(1)
-        tgtAttr = Attribute(2, maxAttributeId=3)
-        capAttr = Attribute(3, defaultValue=5.2)
+        tgtAttr = Attribute(2, maxValue=5.2)
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification info
         info = Info()
@@ -52,7 +51,7 @@ class TestCap(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._Effect__infos = {info}
-        fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr, capAttr.id: capAttr})
+        fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr})
         holder = IndependentItem(Type(None, effects={effect}, attributes={tgtAttr.id: 3, srcAttr.id: 6}))
         fit._addHolder(holder)
         # Attribute should be capped at 5.2

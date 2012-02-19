@@ -95,9 +95,9 @@ class JsonDataHandler(DataHandler):
                 data = self.__attributeData[jsonAttrId]
             except KeyError as e:
                 raise AttributeDataException(attrId) from e
-            maxAttrId, defaultValue, highIsGood, stackable = data
+            maxValue, defaultValue, highIsGood, stackable = data
             attribute = Attribute(attrId,
-                                  maxAttributeId=maxAttrId,
+                                  maxValue=maxValue,
                                   defaultValue=defaultValue,
                                   highIsGood=highIsGood,
                                   stackable=stackable)
