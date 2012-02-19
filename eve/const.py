@@ -76,6 +76,9 @@ class Attribute:
     maxSubSystems = 1367
     fitsToShipType = 1380
     maxGroupFitted = 1544
+    rigSize = 1547
+    allowedDroneGroup1 = 1782
+    allowedDroneGroup2 = 1783
 
 
 class Type:

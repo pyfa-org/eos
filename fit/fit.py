@@ -126,9 +126,9 @@ class Fit:
 
 class HolderContainer:
     """
-    Keep holders in plain list-like form, one instance per suitable
-    for list high-level type: modules, drones, etc. It makes sure
-    added/removed holders are registered/unregistered properly.
+    Keep holders in plain list-like form It makes sure
+    added/removed holders are registered/unregistered
+    properly.
 
     Positional arguments:
     fit -- fit, to which list is assigned
@@ -137,6 +137,11 @@ class HolderContainer:
         self.__fit = fit
         self.__list = []
 
+    # All methods which add/remove items from container
+    # must perform data addition/removal to internal list
+    # before/after holder fit-specific processing, as it
+    # sometimes relies on presence of holder in internal
+    # list (e.g. drone volume restriction register)
     def append(self, holder):
         """
         Add holder to the end of the list.
@@ -158,8 +163,8 @@ class HolderContainer:
         ValueError -- raised when no matching holder
         is found in list
         """
-        self.__list.remove(holder)
         self.__fit._removeHolder(holder)
+        self.__list.remove(holder)
 
     def insert(self, index, holder):
         """
