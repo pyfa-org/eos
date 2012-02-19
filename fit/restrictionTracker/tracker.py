@@ -35,33 +35,35 @@ SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 class RestrictionTracker:
     def __init__(self, fit):
 
-        self.__cpuRegister = CpuRegister(fit)
-        self.__powerGridRegister = PowerGridRegister(fit)
-        self.__calibrationRegister = CalibrationRegister(fit)
-        self.__droneBayVolumeRegister = DroneBayVolumeRegister(fit)
-        self.__droneBandwidthRegister = DroneBandwidthRegister(fit)
+        self._fit = fit
 
-        self.__highSlotRegister = HighSlotRegister(fit)
-        self.__mediumSlotRegister = MediumSlotRegister(fit)
-        self.__lowSlotRegister = LowSlotRegister(fit)
-        self.__rigSlotRegister = RigSlotRegister(fit)
-        self.__subsystemSlotRegister = SubsystemSlotRegister(fit)
-        self.__turretSlotRegister = TurretSlotRegister(fit)
-        self.__launcherSlotRegister = LauncherSlotRegister(fit)
+        self.__cpuRegister = CpuRegister(self)
+        self.__powerGridRegister = PowerGridRegister(self)
+        self.__calibrationRegister = CalibrationRegister(self)
+        self.__droneBayVolumeRegister = DroneBayVolumeRegister(self)
+        self.__droneBandwidthRegister = DroneBandwidthRegister(self)
+
+        self.__highSlotRegister = HighSlotRegister(self)
+        self.__mediumSlotRegister = MediumSlotRegister(self)
+        self.__lowSlotRegister = LowSlotRegister(self)
+        self.__rigSlotRegister = RigSlotRegister(self)
+        self.__subsystemSlotRegister = SubsystemSlotRegister(self)
+        self.__turretSlotRegister = TurretSlotRegister(self)
+        self.__launcherSlotRegister = LauncherSlotRegister(self)
 
         self.__subsystemIndexRegister = SubsystemIndexRegister()
         self.__implantIndexRegister = ImplantIndexRegister()
         self.__boosterIndexRegister = BoosterIndexRegister()
 
-        self.__shipTypeGroupRegister = ShipTypeGroupRegister(fit)
+        self.__shipTypeGroupRegister = ShipTypeGroupRegister(self)
 
-        self.__capitalItemRegister = CapitalItemRegister(fit)
+        self.__capitalItemRegister = CapitalItemRegister(self)
 
         self.__maxGroupFittedRegister = MaxGroupFittedRegister()
         self.__maxGroupOnlineRegister = MaxGroupOnlineRegister()
         self.__maxGroupActiveRegister = MaxGroupActiveRegister()
 
-        self.__droneGroupRegister = DroneGroupRegister(fit)
+        self.__droneGroupRegister = DroneGroupRegister(self)
 
         self.__skillRequirementRegister = SkillRequirementRegister()
 

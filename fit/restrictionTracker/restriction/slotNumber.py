@@ -34,8 +34,8 @@ class SlotNumberRegister(RestrictionRegister):
     against number of available ship slots.
     """
 
-    def __init__(self, fit, slotType, slotAmountAttr, exceptionClass):
-        self._fit = fit
+    def __init__(self, tracker, slotType, slotAmountAttr, exceptionClass):
+        self._tracker = tracker
         # Keeps slot type we're tracking
         self.__slotType = slotType
         # Modified ship holder attribute with this ID
@@ -65,7 +65,7 @@ class SlotNumberRegister(RestrictionRegister):
         # if fit doesn't have ship or ship doesn't
         # have corresponding slot attribute, assume number
         # of provided slots is 0
-        shipHolder = self._fit.ship
+        shipHolder = self._tracker._fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
@@ -97,8 +97,8 @@ class HighSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.moduleHigh, Attribute.hiSlots, HighSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleHigh, Attribute.hiSlots, HighSlotException)
 
 
 class MediumSlotRegister(SlotNumberRegister):
@@ -113,8 +113,8 @@ class MediumSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.moduleMed, Attribute.medSlots, MediumSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleMed, Attribute.medSlots, MediumSlotException)
 
 
 class LowSlotRegister(SlotNumberRegister):
@@ -129,8 +129,8 @@ class LowSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.moduleLow, Attribute.lowSlots, LowSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleLow, Attribute.lowSlots, LowSlotException)
 
 
 class RigSlotRegister(SlotNumberRegister):
@@ -145,8 +145,8 @@ class RigSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.rig, Attribute.rigSlots, RigSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.rig, Attribute.rigSlots, RigSlotException)
 
 
 class SubsystemSlotRegister(SlotNumberRegister):
@@ -161,8 +161,8 @@ class SubsystemSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.subsystem, Attribute.maxSubSystems, SubsystemSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.subsystem, Attribute.maxSubSystems, SubsystemSlotException)
 
 
 class TurretSlotRegister(SlotNumberRegister):
@@ -177,8 +177,8 @@ class TurretSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.turret, Attribute.turretSlotsLeft, TurretSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.turret, Attribute.turretSlotsLeft, TurretSlotException)
 
 
 class LauncherSlotRegister(SlotNumberRegister):
@@ -193,5 +193,5 @@ class LauncherSlotRegister(SlotNumberRegister):
     from ship holder.
     """
 
-    def __init__(self, fit):
-        SlotNumberRegister.__init__(self, fit, Slot.launcher, Attribute.launcherSlotsLeft, LauncherSlotException)
+    def __init__(self, tracker):
+        SlotNumberRegister.__init__(self, tracker, Slot.launcher, Attribute.launcherSlotsLeft, LauncherSlotException)

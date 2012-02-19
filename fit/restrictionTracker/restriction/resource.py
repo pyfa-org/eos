@@ -33,8 +33,8 @@ class ResourceRegister(RestrictionRegister):
     by ship itself.
     """
 
-    def __init__(self, fit, outputAttr, usageAttr, exceptionClass):
-        self._fit = fit
+    def __init__(self, tracker, outputAttr, usageAttr, exceptionClass):
+        self._tracker = tracker
         # On ship holder, attribute with this ID
         # contains total amount of produced resource
         self.__outputAttr = outputAttr
@@ -60,7 +60,7 @@ class ResourceRegister(RestrictionRegister):
         # Get ship's resource output, setting it to 0
         # if fitting doesn't have ship assigned,
         # or ship doesn't have resource output attribute
-        shipHolder = self._fit.ship
+        shipHolder = self._tracker._fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
@@ -97,8 +97,8 @@ class CpuRegister(ResourceRegister):
     CPU output are taken.
     """
 
-    def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.cpuOutput, Attribute.cpu, CpuException)
+    def __init__(self, tracker):
+        ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, CpuException)
 
 
 class PowerGridRegister(ResourceRegister):
@@ -112,8 +112,8 @@ class PowerGridRegister(ResourceRegister):
     power grid output are taken.
     """
 
-    def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.powerOutput, Attribute.power, PowerGridException)
+    def __init__(self, tracker):
+        ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, PowerGridException)
 
 
 class CalibrationRegister(ResourceRegister):
@@ -127,8 +127,8 @@ class CalibrationRegister(ResourceRegister):
     calibration output are taken.
     """
 
-    def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.upgradeCapacity, Attribute.upgradeCost, CalibrationException)
+    def __init__(self, tracker):
+        ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, CalibrationException)
 
 
 class DroneBayVolumeRegister(ResourceRegister):
@@ -143,11 +143,11 @@ class DroneBayVolumeRegister(ResourceRegister):
     drone bay volume are taken.
     """
 
-    def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeException)
+    def __init__(self, tracker):
+        ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeException)
 
     def registerHolder(self, holder):
-        if not holder in self._fit.drones:
+        if not holder in self._tracker._fit.drones:
             return
         ResourceRegister.registerHolder(self, holder)
 
@@ -163,5 +163,5 @@ class DroneBandwidthRegister(ResourceRegister):
     drone bandwidth output are taken.
     """
 
-    def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, DroneBandwidthException)
+    def __init__(self, tracker):
+        ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, DroneBandwidthException)
