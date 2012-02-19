@@ -130,6 +130,13 @@ class CapitalItemException(RestrictionTrackerException):
     """Raised when capital modules are fit on non-capital ship."""
     pass
 
+
+class DroneGroupException(RestrictionTrackerException):
+    """Raised when drones of certain group are put into drone bay of
+    ship which doesn't allow it."""
+    pass
+
+
 class SkillRequirementException(RestrictionTrackerException):
     """Raised when any holder on fit has its skill requirements not satisfied."""
     pass

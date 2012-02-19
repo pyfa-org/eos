@@ -21,6 +21,7 @@
 
 from eos.const import State
 from .restriction.capitalItem import CapitalItemRegister
+from .restriction.droneGroup import DroneGroupRegister
 from .restriction.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .restriction.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
 DroneBandwidthRegister
@@ -60,6 +61,8 @@ class RestrictionTracker:
         self.__maxGroupOnlineRegister = MaxGroupOnlineRegister()
         self.__maxGroupActiveRegister = MaxGroupActiveRegister()
 
+        self.__droneGroupRegister = DroneGroupRegister(fit)
+
         self.__skillRequirementRegister = SkillRequirementRegister()
 
     def addHolder(self, holder):
@@ -84,6 +87,8 @@ class RestrictionTracker:
 
         self.__maxGroupFittedRegister.registerHolder(holder)
 
+        self.__droneGroupRegister.registerHolder(holder)
+
         self.__skillRequirementRegister.registerHolder(holder)
 
     def removeHolder(self, holder):
@@ -107,6 +112,8 @@ class RestrictionTracker:
         self.__capitalItemRegister.unregisterHolder(holder)
 
         self.__maxGroupFittedRegister.unregisterHolder(holder)
+
+        self.__droneGroupRegister.unregisterHolder(holder)
 
         self.__skillRequirementRegister.unregisterHolder(holder)
 
@@ -152,5 +159,7 @@ class RestrictionTracker:
         self.__maxGroupFittedRegister.validate()
         self.__maxGroupOnlineRegister.validate()
         self.__maxGroupActiveRegister.validate()
+
+        self.__droneGroupRegister.validate()
 
         self.__skillRequirementRegister.validate()
