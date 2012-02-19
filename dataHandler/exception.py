@@ -18,8 +18,29 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+from eos.exception import EosException
 
-"""
-Tests in this module check calculator's reaction to attribute
-value request in several special situations.
-"""
+
+class DataHandlerException(EosException):
+    """All data handler exceptions are based on this class."""
+    pass
+
+
+class TypeDataException(DataHandlerException):
+    """Raised when data handler can't find type with requested ID."""
+    pass
+
+
+class AttributeDataException(DataHandlerException):
+    """Raised when data handler can't find attribute with requested ID."""
+    pass
+
+
+class EffectDataException(DataHandlerException):
+    """Raised when data handler can't find effect with requested ID."""
+    pass
+
+
+class ExpressionDataException(DataHandlerException):
+    """Raised when data handler can't find expression with requested ID."""
+    pass

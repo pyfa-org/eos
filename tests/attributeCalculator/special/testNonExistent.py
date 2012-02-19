@@ -28,7 +28,7 @@ class TestAccessNonExistent(EosTestCase):
     """Test return value when requesting attribute which doesn't exist"""
 
     def testAttributeAccess(self):
-        fit = Fit(lambda attrId: {}[attrId])
+        fit = Fit({})
         holder = IndependentItem(Type(None))
         fit._addHolder(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 1)

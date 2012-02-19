@@ -25,25 +25,58 @@ from abc import abstractmethod
 
 class DataHandler(metaclass=ABCMeta):
     """
-    DataHandler abstract baseclass, it handles fetching relevant data from wherever it is stored
+    DataHandler abstract baseclass, it handles fetching relevant data
+    from wherever it is stored.
     """
 
     @abstractmethod
     def getType(self, typeId):
-        """Return the type with the passed id"""
+        """
+        Get Type object from data source.
+
+        Positional arguments:
+        typeId -- ID of type to get
+
+        Return value:
+        eve.type.Type object
+        """
         ...
 
     @abstractmethod
     def getAttribute(self, attrId):
-        """Return the attribute with the passed id"""
+        """
+        Get Attribute object from data source.
+
+        Positional arguments:
+        attrId -- ID of attribute to get
+
+        Return value:
+        eve.attribute.Attribute object
+        """
         ...
 
     @abstractmethod
     def getEffect(self, effectId):
-        """Return the effect with the passed id"""
+        """
+        Get Effect object from data source.
+
+        Positional arguments:
+        effectId -- ID of effect to get
+
+        Return value:
+        eve.effect.Effect object
+        """
         ...
 
     @abstractmethod
     def getExpression(self, expId):
-        """Return the expression with the passed id"""
+        """
+        Get Expression object from data source.
+
+        Positional arguments:
+        expId -- ID of expression to get
+
+        Return value:
+        eve.expression.Expression object
+        """
         ...

@@ -29,6 +29,7 @@ from eos.eve.expression import Expression
 from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
 from .dataHandler import DataHandler
+from .exception import TypeDataException, AttributeDataException, EffectDataException, ExpressionDataException
 
 
 class JsonDataHandler(DataHandler):
@@ -63,7 +64,11 @@ class JsonDataHandler(DataHandler):
         except KeyError:
             # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
-            data = self.__typeData[str(int(typeId))]
+            jsonTypeId = str(int(typeId))
+            try:
+                data = self.__typeData[jsonTypeId]
+            except KeyError as e:
+                raise TypeDataException(typeId) from e
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
             type_ = Type(typeId,
                          groupId=groupId,
@@ -85,7 +90,11 @@ class JsonDataHandler(DataHandler):
         try:
             attribute = self.__attributesCache[attrId]
         except KeyError:
-            data = self.__attributeData[str(int(attrId))]
+            jsonAttrId = str(int(attrId))
+            try:
+                data = self.__attributeData[jsonAttrId]
+            except KeyError as e:
+                raise AttributeDataException(attrId) from e
             maxAttrId, defaultValue, highIsGood, stackable = data
             attribute = Attribute(attrId,
                                   maxAttributeId=maxAttrId,
@@ -101,7 +110,11 @@ class JsonDataHandler(DataHandler):
         try:
             effect = self.__effectsCache[effectId]
         except KeyError:
-            data = self.__effectData[str(int(effectId))]
+            jsonEffectId = str(int(effectId))
+            try:
+                data = self.__effectData[jsonEffectId]
+            except KeyError as e:
+                raise EffectDataException(effectId) from e
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
             effect = Effect(effectId,
                             categoryId=effCategoryId,
@@ -120,7 +133,11 @@ class JsonDataHandler(DataHandler):
         try:
             expression = self.__expressionsCache[expId]
         except KeyError:
-            data = self.__expressionData[str(int(expId))]
+            jsonExpId = str(int(expId))
+            try:
+                data = self.__expressionData[jsonExpId]
+            except KeyError as e:
+                raise ExpressionDataException(expId) from e
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
             expression = Expression(expId,
                                     opndId,
