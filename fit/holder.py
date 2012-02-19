@@ -70,7 +70,9 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         """Set state of holder"""
         # First, check if holder's item can have this
         # state at all
-        if newState is not None and newState > self.item.maxState:
+        validStates = filter(lambda state: state <= self.item.maxState,
+                             (State.offline, State.online, State.active, State.overload))
+        if not newState in validStates:
             raise RuntimeError("invalid state")
         oldState = self.state
         if newState == oldState:
