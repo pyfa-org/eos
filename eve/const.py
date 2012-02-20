@@ -24,12 +24,15 @@ This file holds IDs of multiple EVE's entities.
 """
 
 
+from eos.util.namespace import NameSpace
+
+
 # When some EVE's database row refers another,
 # these values are considered as absence of reference
 nulls = frozenset((0, None))
 
 
-class Attribute:
+class Attribute(metaclass=NameSpace):
     """Attribute ID holder"""
     powerOutput = 11
     lowSlots = 12
@@ -82,13 +85,13 @@ class Attribute:
     allowedDroneGroup2 = 1783
 
 
-class Type:
+class Type(metaclass=NameSpace):
     """Item ID holder"""
     characterStatic = 1381
     capitalShips = 20533  # Skill
 
 
-class Category:
+class Category(metaclass=NameSpace):
     """Category ID holder"""
     ship = 6
     charge = 8
@@ -97,7 +100,7 @@ class Category:
     subsystem = 32
 
 
-class Effect:
+class Effect(metaclass=NameSpace):
     """Effect ID holder"""
     loPower = 11
     hiPower = 12
@@ -109,7 +112,7 @@ class Effect:
     subSystem = 3772
 
 
-class EffectCategory:
+class EffectCategory(metaclass=NameSpace):
     """Effect category ID holder"""
     passive = 0  # Applied when item is just present in fit - implants, skills, offlined modules
     active = 1  # Applied only when module is activated
@@ -121,7 +124,7 @@ class EffectCategory:
     system = 7  # System-wide effects, like WH and incursion
 
 
-class Operand:
+class Operand(metaclass=NameSpace):
     """Expression operand ID holder"""
     add = 1  # Add two numbers to return result, used in conditions
     addGangGrpMod = 2  # Applies modification to items of gang-mates (not used in any effect), filtered by group, format: [(groupFilter.targetAttribute).(operator)].AGGM(sourceAttribute)

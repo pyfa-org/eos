@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, RunTime, SourceType
+from eos.const import Location, Context, RunTime, SourceType
 from .affector import Affector
 from .register import LinkRegister
 

@@ -53,8 +53,7 @@ class Module(MutableAttributeHolder):
     def charge(self, newCharge):
         """Set charge holder of module"""
         # Way of processing it is exactly the same as with fit's ship or
-        # character: unset old charge, and set new one, making sure that all
-        # modifiers are reapplied by passing special location keyword argument
+        # character: unset old charge, and set new one
         oldCharge = self.charge
         if oldCharge is not None:
             self.fit._removeHolder(oldCharge)

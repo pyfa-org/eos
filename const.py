@@ -24,7 +24,10 @@ This file holds IDs of multiple Eos-specific entities.
 """
 
 
-class State:
+from eos.util.namespace import NameSpace
+
+
+class State(metaclass=NameSpace):
     """
     Possible item states, used as part of public API and
     internally by Info class and classes interacting with it
@@ -40,7 +43,7 @@ class State:
     overload = 4
 
 
-class Slot:
+class Slot(metaclass=NameSpace):
     # TODO: add more sensible docstring here
     """All slot types items can take"""
     moduleHigh = 1  #
@@ -52,7 +55,7 @@ class Slot:
     launcher = 7
 
 # Class used by Infos and Item definitions
-class Location:
+class Location(metaclass=NameSpace):
     """
     Location specification, often relative, thus item
     context must be taken into account. Used only
@@ -68,7 +71,7 @@ class Location:
     space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 
-class EffectBuildStatus:
+class EffectBuildStatus(metaclass=NameSpace):
     """
     Statuses which indicate effect->infos conversion result,
     part of public API.
@@ -79,7 +82,7 @@ class EffectBuildStatus:
     okFull = 4  # All modifications were pulled out of expression tree successfully
 
 
-class Context:
+class Context(metaclass=NameSpace):
     """
     Describes when modification is applied, used only internally
     by Info class and classes interacting with it
@@ -89,7 +92,7 @@ class Context:
     projected = 3  # Modification which is applied only when its holder is projected onto something
 
 
-class RunTime:
+class RunTime(metaclass=NameSpace):
     """
     Modification runtime ID holder, used only internally
     by Info class and classes interacting with it
@@ -99,7 +102,7 @@ class RunTime:
     post = 3  # Instant modification, applied in the end of the cycle
 
 
-class FilterType:
+class FilterType(metaclass=NameSpace):
     """
     Filter type ID holder, used only internally
     by Info class and classes interacting with it
@@ -109,7 +112,7 @@ class FilterType:
     skill = 3  # Affects items in target location with additional filter by skill requirement
 
 
-class Operator:
+class Operator(metaclass=NameSpace):
     """
     Operator ID holder, used only internally
     by Info class and classes interacting with it
@@ -134,7 +137,7 @@ class Operator:
     assignment = 12
 
 
-class SourceType:
+class SourceType(metaclass=NameSpace):
     """
     Source value type ID holder, used only internally
     by Info class and classes interacting with it
@@ -143,7 +146,7 @@ class SourceType:
     value = 2  # Source value is actual value for modification
 
 
-class AtomType:
+class AtomType(metaclass=NameSpace):
     """
     Describes purpose of condition atom, used only internally
     by everything which works with info conditions.
@@ -155,7 +158,7 @@ class AtomType:
     value = 5  # Value is enclosed in atom itself
 
 
-class AtomLogicOperator:
+class AtomLogicOperator(metaclass=NameSpace):
     """
     Logical operators of condition atom, used only internally
     by everything which works with info conditions.
@@ -164,7 +167,7 @@ class AtomLogicOperator:
     or_ = 2  # Logical or
 
 
-class AtomComparisonOperator:
+class AtomComparisonOperator(metaclass=NameSpace):
     """
     Comparison operators of condition atom, used only internally
     by everything which works with info conditions.
@@ -177,7 +180,7 @@ class AtomComparisonOperator:
     greaterOrEqual = 6  # >=
 
 
-class AtomMathOperator:
+class AtomMathOperator(metaclass=NameSpace):
     """
     Math operators of condition atom, used only internally
     by everything which works with info conditions.
@@ -186,7 +189,7 @@ class AtomMathOperator:
     subtract = 2  # -
 
 
-class InvType:
+class InvType(metaclass=NameSpace):
     """
     Eos-specific type declarations, used only internally
     by Info class and classes interacting with it

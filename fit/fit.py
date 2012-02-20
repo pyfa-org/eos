@@ -140,6 +140,8 @@ class Fit:
         holder -- holder, for which state should be switched
         newState -- state, which holder should take
         """
+        for s in State:
+            print(type(s), s)
         knownStates = {State.offline, State.online, State.active, State.overload}
         enabledStates = set(filter(lambda s: s > holder.state and s <= newState, knownStates))
         disabledStates = set(filter(lambda s: s > newState and s <= holder.state, knownStates))
