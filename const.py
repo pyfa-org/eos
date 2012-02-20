@@ -24,7 +24,7 @@ This file holds IDs of multiple Eos-specific entities.
 """
 
 
-from eos.util.namespace import NameSpace
+from eos.util.nameSpace import NameSpace
 
 
 class State(metaclass=NameSpace):

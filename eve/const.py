@@ -24,7 +24,7 @@ This file holds IDs of multiple EVE's entities.
 """
 
 
-from eos.util.namespace import NameSpace
+from eos.util.nameSpace import NameSpace
 
 
 # When some EVE's database row refers another,

@@ -29,7 +29,7 @@ from collections import namedtuple
 
 from eos.const import Location, Operator, InvType
 from eos.eve.const import Operand
-from eos.util.namespace import NameSpace
+from eos.util.nameSpace import NameSpace
 
 
 class ExpressionData:
