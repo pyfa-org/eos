@@ -127,13 +127,12 @@ class LinkTracker:
 
     def enableStates(self, holder, states):
         """
-        Enable affectors, spawned by holder, according to
-        passed states.
+        Handle state switch upwards.
 
         Positional arguments:
-        holder -- holder, for which affectors are enabled
-        states -- iterable with states, for which we're
-        enabling affectors
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for initial state
         """
         processedContexts = {Context.local}
         enabledAffectors = self.__generateDurationAffectors(holder, stateFilter=states, contextFilter=processedContexts)
@@ -144,13 +143,12 @@ class LinkTracker:
 
     def disableStates(self, holder, states):
         """
-        Disable affectors, spawned by holder, according to
-        passed states.
+        Handle state switch downwards.
 
         Positional arguments:
-        holder -- holder, for which affectors are disabled
-        states -- iterable with states, for which we're
-        disabling affectors
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for final state
         """
         processedContexts = {Context.local}
         disabledAffectors = self.__generateDurationAffectors(holder, stateFilter=states, contextFilter=processedContexts)

@@ -35,6 +35,16 @@ SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 
 
 class RestrictionTracker:
+    """
+    Track all restrictions applied to fitting and expose functionality
+    to validate against various criteria. Actually works as middle-layer
+    between fit and restriction registers, managing them and providing
+    results to fit.
+
+    Positional arguments:
+    fit -- Fit object to which tracker is assigned
+    """
+
     def __init__(self, fit):
         # Fit reference, to which this restriction tracker
         # is attached
@@ -70,7 +80,17 @@ class RestrictionTracker:
                             State.active:  {MaxGroupActiveRegister()}}
 
     def enableStates(self, holder, states):
+        """
+        Handle state switch upwards.
+
+        Positional arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for initial state
+        """
         for state in states:
+            # Not all states have corresponding registers,
+            # just skip those which don't
             try:
                 registers = self.__registers[state]
             except KeyError:
@@ -79,6 +99,14 @@ class RestrictionTracker:
                 register.registerHolder(holder)
 
     def disableStates(self, holder, states):
+        """
+        Handle state switch downwards.
+
+        Positional arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for final state
+        """
         for state in states:
             try:
                 registers = self.__registers[state]
@@ -88,6 +116,16 @@ class RestrictionTracker:
                 register.unregisterHolder(holder)
 
     def validate(self, skipChecks=set()):
+        """
+        Validate fit.
+
+        Keyword arguments:
+        skipChecks -- iterable with exception classes, for which
+        checks are skipped (default set())
+
+        Possible exceptions:
+        any, for now
+        """
         for state in self.__registers:
             for register in self.__registers[state]:
                 if register.exceptionClass in skipChecks:

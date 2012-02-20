@@ -31,4 +31,4 @@ class Enum(type):
         # at least one underscore, into cached _all attribute
         if getattr(self, "_all", None) is None:
             self._all = tuple(getattr(self, attr) for attr in filter(lambda attr: attr.startswith("_") is False, dir(self)))
-        return (attr for attr in self._all)
+        return iter(self._all)
