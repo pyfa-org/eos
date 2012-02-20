@@ -20,7 +20,7 @@
 
 
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import SubsystemIndexException, ImplantIndexException, BoosterIndexException
+from eos.fit.restrictionTracker.exception import SubsystemIndexError, ImplantIndexError, BoosterIndexError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
@@ -83,7 +83,7 @@ class SubsystemIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.subSystemSlot, SubsystemIndexException)
+        SlotIndexRegister.__init__(self, Attribute.subSystemSlot, SubsystemIndexError)
 
 
 class ImplantIndexRegister(SlotIndexRegister):
@@ -96,7 +96,7 @@ class ImplantIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.implantness, ImplantIndexException)
+        SlotIndexRegister.__init__(self, Attribute.implantness, ImplantIndexError)
 
 
 class BoosterIndexRegister(SlotIndexRegister):
@@ -109,4 +109,4 @@ class BoosterIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.boosterness, BoosterIndexException)
+        SlotIndexRegister.__init__(self, Attribute.boosterness, BoosterIndexError)

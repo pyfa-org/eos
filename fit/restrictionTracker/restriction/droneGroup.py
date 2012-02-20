@@ -20,7 +20,7 @@
 
 
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import DroneGroupException
+from eos.fit.restrictionTracker.exception import DroneGroupError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -85,8 +85,8 @@ class DroneGroupRegister(RestrictionRegister):
             if not holderGroup in allowedGroups:
                 taintedHolders.add(restrictedHolder)
         if len(taintedHolders) > 0:
-            raise DroneGroupException(taintedHolders)
+            raise DroneGroupError(taintedHolders)
 
     @property
     def exceptionClass(self):
-        return DroneGroupException
+        return DroneGroupError

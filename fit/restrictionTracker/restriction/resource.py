@@ -20,8 +20,8 @@
 
 
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import CpuException, PowerGridException, CalibrationException, \
-DroneBayVolumeException, DroneBandwidthException
+from eos.fit.restrictionTracker.exception import CpuError, PowerGridError, CalibrationError, \
+DroneBayVolumeError, DroneBandwidthError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -102,7 +102,7 @@ class CpuRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, CpuException)
+        ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, CpuError)
 
 
 class PowerGridRegister(ResourceRegister):
@@ -117,7 +117,7 @@ class PowerGridRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, PowerGridException)
+        ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, PowerGridError)
 
 
 class CalibrationRegister(ResourceRegister):
@@ -132,7 +132,7 @@ class CalibrationRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, CalibrationException)
+        ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, CalibrationError)
 
 
 class DroneBayVolumeRegister(ResourceRegister):
@@ -148,7 +148,7 @@ class DroneBayVolumeRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeException)
+        ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeError)
 
     def registerHolder(self, holder):
         if not holder in self._tracker._fit.drones:
@@ -168,4 +168,4 @@ class DroneBandwidthRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, DroneBandwidthException)
+        ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, DroneBandwidthError)

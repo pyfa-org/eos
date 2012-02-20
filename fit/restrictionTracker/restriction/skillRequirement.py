@@ -20,7 +20,7 @@
 
 
 from eos.const import Location
-from eos.fit.restrictionTracker.exception import SkillRequirementException
+from eos.fit.restrictionTracker.exception import SkillRequirementError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -87,8 +87,8 @@ class SkillRequirementRegister(RestrictionRegister):
                     taintedHolders.add(restrictedHolder)
                     break
         if len(taintedHolders) > 0:
-            raise SkillRequirementException(taintedHolders)
+            raise SkillRequirementError(taintedHolders)
 
     @property
     def exceptionClass(self):
-        return SkillRequirementException
+        return SkillRequirementError

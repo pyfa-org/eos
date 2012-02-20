@@ -21,7 +21,7 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import MaxGroupFittedException, MaxGroupOnlineException, MaxGroupActiveException
+from eos.fit.restrictionTracker.exception import MaxGroupFittedError, MaxGroupOnlineError, MaxGroupActiveError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
@@ -107,7 +107,7 @@ class MaxGroupFittedRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, MaxGroupFittedException)
+        MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, MaxGroupFittedError)
 
 
 class MaxGroupOnlineRegister(MaxGroupRegister):
@@ -124,7 +124,7 @@ class MaxGroupOnlineRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.maxGroupOnline, MaxGroupOnlineException)
+        MaxGroupRegister.__init__(self, Attribute.maxGroupOnline, MaxGroupOnlineError)
 
 
 class MaxGroupActiveRegister(MaxGroupRegister):
@@ -141,4 +141,4 @@ class MaxGroupActiveRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.maxGroupActive, MaxGroupActiveException)
+        MaxGroupRegister.__init__(self, Attribute.maxGroupActive, MaxGroupActiveError)

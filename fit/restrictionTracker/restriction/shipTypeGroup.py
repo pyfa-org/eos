@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import ShipTypeGroupException
+from eos.fit.restrictionTracker.exception import ShipTypeGroupError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -125,8 +125,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
                 taintedHolders.add(restrictedHolder)
         # Raise error if there're any tainted holders
         if len(taintedHolders) > 0:
-            raise ShipTypeGroupException(taintedHolders)
+            raise ShipTypeGroupError(taintedHolders)
 
     @property
     def exceptionClass(self):
-        return ShipTypeGroupException
+        return ShipTypeGroupError

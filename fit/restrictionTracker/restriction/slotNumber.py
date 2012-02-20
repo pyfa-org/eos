@@ -22,8 +22,8 @@
 from eos.const import Location
 from eos.const import Slot
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import HighSlotException, MediumSlotException, LowSlotException, \
-RigSlotException, SubsystemSlotException, TurretSlotException, LauncherSlotException
+from eos.fit.restrictionTracker.exception import HighSlotError, MediumSlotError, LowSlotError, \
+RigSlotError, SubsystemSlotError, TurretSlotError, LauncherSlotError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -102,7 +102,7 @@ class HighSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.moduleHigh, Attribute.hiSlots, HighSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleHigh, Attribute.hiSlots, HighSlotError)
 
 
 class MediumSlotRegister(SlotNumberRegister):
@@ -118,7 +118,7 @@ class MediumSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.moduleMed, Attribute.medSlots, MediumSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleMed, Attribute.medSlots, MediumSlotError)
 
 
 class LowSlotRegister(SlotNumberRegister):
@@ -134,7 +134,7 @@ class LowSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.moduleLow, Attribute.lowSlots, LowSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleLow, Attribute.lowSlots, LowSlotError)
 
 
 class RigSlotRegister(SlotNumberRegister):
@@ -150,7 +150,7 @@ class RigSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.rig, Attribute.rigSlots, RigSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.rig, Attribute.rigSlots, RigSlotError)
 
 
 class SubsystemSlotRegister(SlotNumberRegister):
@@ -166,7 +166,7 @@ class SubsystemSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.subsystem, Attribute.maxSubSystems, SubsystemSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.subsystem, Attribute.maxSubSystems, SubsystemSlotError)
 
 
 class TurretSlotRegister(SlotNumberRegister):
@@ -182,7 +182,7 @@ class TurretSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.turret, Attribute.turretSlotsLeft, TurretSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.turret, Attribute.turretSlotsLeft, TurretSlotError)
 
 
 class LauncherSlotRegister(SlotNumberRegister):
@@ -198,4 +198,4 @@ class LauncherSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.launcher, Attribute.launcherSlotsLeft, LauncherSlotException)
+        SlotNumberRegister.__init__(self, tracker, Slot.launcher, Attribute.launcherSlotsLeft, LauncherSlotError)

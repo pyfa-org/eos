@@ -20,7 +20,7 @@
 
 
 from eos.const import State
-from .exception import ValidationException
+from .exception import ValidationError
 from .restriction.capitalItem import CapitalItemRegister
 from .restriction.droneGroup import DroneGroupRegister
 from .restriction.droneNumber import DroneNumberRegister
@@ -148,4 +148,4 @@ class RestrictionTracker:
         # Raise validation error only if we got at least
         # one failure report from register
         if len(validationErrors) > 0:
-            raise ValidationException(validationErrors)
+            raise ValidationError(validationErrors)
