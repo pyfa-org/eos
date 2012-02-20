@@ -20,6 +20,7 @@
 
 
 from eos.const import State
+from .exception import ValidationException
 from .restriction.capitalItem import CapitalItemRegister
 from .restriction.droneGroup import DroneGroupRegister
 from .restriction.droneNumber import DroneNumberRegister
@@ -121,13 +122,30 @@ class RestrictionTracker:
 
         Keyword arguments:
         skipChecks -- iterable with exception classes, for which
-        checks are skipped (default set())
+        checks are skipped (default is empty set)
 
         Possible exceptions:
-        any, for now
+        ValidationException -- if any failure is occurred during
+        validation, this exception is thrown, with all register
+        exceptions in set, which were caught in process.
         """
+        # Container for raised validation exceptions
+        validationErrors = set()
+        # Go through all known registers
         for state in self.__registers:
             for register in self.__registers[state]:
-                if register.exceptionClass in skipChecks:
+                # Skip check if we're told to do so, based
+                # on exception class assigned to register
+                registerException = register.exceptionClass
+                if registerException in skipChecks:
                     continue
-                register.validate()
+                # Run validation for current register, if validation
+                # failure exception is raised - add it to container
+                try:
+                    register.validate()
+                except registerException as e:
+                    validationErrors.add(e)
+        # Raise validation error only if we got at least
+        # one failure report from register
+        if len(validationErrors) > 0:
+            raise ValidationException(validationErrors)

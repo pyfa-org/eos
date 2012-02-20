@@ -29,6 +29,12 @@ class RestrictionTrackerException(EosException):
     pass
 
 
+class ValidationException(RestrictionTrackerException):
+    """
+    Raised when validation fails.
+    """
+    pass
+
 # Exceptions used by ResourceRegister subclasses
 class CpuException(RestrictionTrackerException):
     """
