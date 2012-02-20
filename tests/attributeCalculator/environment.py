@@ -87,13 +87,20 @@ class Fit:
     def _addHolder(self, holder):
         holder.fit = self
         self._linkTracker.addHolder(holder)
-        self._linkTracker.stateSwitch(holder, None, holder.state)
+        enabledStates = set(filter(lambda s: s <= holder.state, State))
+        self._linkTracker.enableStates(holder, enabledStates)
 
     def _removeHolder(self, holder):
-        self._linkTracker.stateSwitch(holder, holder.state, None)
+        disabledStates = set(filter(lambda s: s <= holder.state, State))
+        self._linkTracker.disableStates(holder, disabledStates)
         self._linkTracker.removeHolder(holder)
         holder.fit = None
 
+    def _holderStateSwitch(self, holder, newState):
+        enabledStates = set(filter(lambda s: s > holder.state and s <= newState, State))
+        disabledStates = set(filter(lambda s: s > newState and s <= holder.state, State))
+        self._linkTracker.enableStates(holder, enabledStates)
+        self._linkTracker.disableStates(holder, disabledStates)
 
 class MutableAttributeHolder:
 
@@ -122,7 +129,7 @@ class MutableAttributeHolder:
         if newState == oldState:
             return
         if self.fit is not None:
-            self.fit._linkTracker.stateSwitch(self, oldState, newState)
+            self.fit._holderStateSwitch(self, newState)
         self.__state = newState
 
 
