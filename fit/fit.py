@@ -96,8 +96,7 @@ class Fit:
         # Only after add it to register
         self._linkTracker.addHolder(holder)
         self._restrictionTracker.addHolder(holder)
-        knownStates = {State.offline, State.online, State.active, State.overload}
-        enabledStates = set(filter(lambda s: s <= holder.state, knownStates))
+        enabledStates = set(filter(lambda s: s <= holder.state, State))
         if len(enabledStates) > 0:
             self._linkTracker.enableStates(holder, enabledStates)
             self._restrictionTracker.enableStates(holder, enabledStates)
@@ -121,8 +120,7 @@ class Fit:
         if charge is not None:
             self._removeHolder(charge)
         # Turn off its effects by disabling all of its active states
-        knownStates = {State.offline, State.online, State.active, State.overload}
-        disabledStates = set(filter(lambda s: s <= holder.state, knownStates))
+        disabledStates = set(filter(lambda s: s <= holder.state, State))
         if len(disabledStates) > 0:
             self._restrictionTracker.disableStates(holder, disabledStates)
             self._linkTracker.disableStates(holder, disabledStates)
@@ -140,11 +138,8 @@ class Fit:
         holder -- holder, for which state should be switched
         newState -- state, which holder should take
         """
-        for s in State:
-            print(type(s), s)
-        knownStates = {State.offline, State.online, State.active, State.overload}
-        enabledStates = set(filter(lambda s: s > holder.state and s <= newState, knownStates))
-        disabledStates = set(filter(lambda s: s > newState and s <= holder.state, knownStates))
+        enabledStates = set(filter(lambda s: s > holder.state and s <= newState, State))
+        disabledStates = set(filter(lambda s: s > newState and s <= holder.state, State))
         # Only one of sets must be filled, state switch is always performed
         # either upwards or downwards, but never both
         assert(not (len(enabledStates) > 0 and len(disabledStates) > 0))
