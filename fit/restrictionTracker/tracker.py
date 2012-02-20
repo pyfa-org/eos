@@ -42,9 +42,7 @@ class RestrictionTracker:
         # Dictionary which keeps all restriction registers
         # used by tracker. When some holder passes state stored
         # as key, it's registered/unregistered in registers
-        # stored as value. None state means that holders are
-        # registered/unregistered when they're added/removed
-        # to fit, not when they enter or leave some state
+        # stored as value.
         # Format: {triggering state: {registers}}
         self.__registers = {State.offline: {CalibrationRegister(self),
                                             DroneBayVolumeRegister(self),
@@ -89,7 +87,9 @@ class RestrictionTracker:
             for register in registers:
                 register.unregisterHolder(holder)
 
-    def validate(self):
+    def validate(self, skipChecks=set()):
         for state in self.__registers:
             for register in self.__registers[state]:
+                if register.exceptionClass in skipChecks:
+                    continue
                 register.validate()

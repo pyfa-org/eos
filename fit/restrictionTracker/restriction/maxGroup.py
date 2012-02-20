@@ -88,6 +88,10 @@ class MaxGroupRegister(RestrictionRegister):
         if len(taintedHolders) > 0:
             raise self.__exceptionClass(taintedHolders)
 
+    @property
+    def exceptionClass(self):
+        return self.__exceptionClass
+
 
 class MaxGroupFittedRegister(MaxGroupRegister):
     """

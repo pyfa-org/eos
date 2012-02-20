@@ -126,3 +126,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # Raise error if there're any tainted holders
         if len(taintedHolders) > 0:
             raise ShipTypeGroupException(taintedHolders)
+
+    @property
+    def exceptionClass(self):
+        return ShipTypeGroupException

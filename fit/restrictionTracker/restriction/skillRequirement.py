@@ -88,3 +88,7 @@ class SkillRequirementRegister(RestrictionRegister):
                     break
         if len(taintedHolders) > 0:
             raise SkillRequirementException(taintedHolders)
+
+    @property
+    def exceptionClass(self):
+        return SkillRequirementException

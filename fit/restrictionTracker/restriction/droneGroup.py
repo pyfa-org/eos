@@ -86,3 +86,7 @@ class DroneGroupRegister(RestrictionRegister):
                 taintedHolders.add(restrictedHolder)
         if len(taintedHolders) > 0:
             raise DroneGroupException(taintedHolders)
+
+    @property
+    def exceptionClass(self):
+        return DroneGroupException

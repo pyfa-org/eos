@@ -84,6 +84,10 @@ class SlotNumberRegister(RestrictionRegister):
             taintedHolders.update(self.__slotConsumers)
             raise self.__exceptionClass(taintedHolders)
 
+    @property
+    def exceptionClass(self):
+        return self.__exceptionClass
+
 
 class HighSlotRegister(SlotNumberRegister):
     """

@@ -71,3 +71,7 @@ class CapitalItemRegister(RestrictionRegister):
             taintedHolders = set()
             taintedHolders.update(self.__capitalHolders)
             raise CapitalItemException(taintedHolders)
+
+    @property
+    def exceptionClass(self):
+        return CapitalItemException

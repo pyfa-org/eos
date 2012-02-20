@@ -75,3 +75,7 @@ class RigSizeRegister(RestrictionRegister):
                     taintedHolders.add(restrictedHolder)
         if len(taintedHolders) > 0:
             raise RigSizeException(taintedHolders)
+
+    @property
+    def exceptionClass(self):
+        return RigSizeException

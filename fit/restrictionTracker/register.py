@@ -20,7 +20,7 @@
 
 
 from abc import ABCMeta
-from abc import abstractmethod
+from abc import abstractmethod, abstractproperty
 
 
 class RestrictionRegister(metaclass=ABCMeta):
@@ -53,5 +53,13 @@ class RestrictionRegister(metaclass=ABCMeta):
         """
         Check all registered holders for validity. Both mutable
         and immutable holder properties can be used during process.
+        """
+        ...
+
+    @property
+    @abstractmethod
+    def exceptionClass(self):
+        """
+        Get exception class raised by register on validation failure.
         """
         ...

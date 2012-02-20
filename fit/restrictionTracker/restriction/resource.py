@@ -86,6 +86,10 @@ class ResourceRegister(RestrictionRegister):
         if totalResourceConsumption > resourceOutput:
             raise self.__exceptionClass(resourceConsumers)
 
+    @property
+    def exceptionClass(self):
+        return self.__exceptionClass
+
 
 class CpuRegister(ResourceRegister):
     """

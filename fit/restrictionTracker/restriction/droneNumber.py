@@ -72,3 +72,7 @@ class DroneNumberRegister(RestrictionRegister):
             taintedHolders = set()
             taintedHolders.update(self.__restrictedHolders)
             raise DroneOnlineException(taintedHolders)
+
+    @property
+    def exceptionClass(self):
+        return DroneOnlineException
