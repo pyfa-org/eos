@@ -27,7 +27,26 @@ class AttributeCalculatorException(EosException):
     pass
 
 
-class BadContainerException(AttributeCalculatorException):
+# Exception classes used by link register
+class DirectLocationError(AttributeCalculatorException):
+    """
+    Raised when location in Info object being processed cannot be
+    handled by register (set of unsupported locations is different
+    for direct and filtered modifications).
+    """
+    pass
+
+
+class FilteredLocationError(AttributeCalculatorException):
+    """
+    Raised when location in Info object being processed cannot be
+    handled by register (set of unsupported locations is different
+    for direct and filtered modifications).
+    """
+    pass
+
+
+class FilteredSelfReferenceError(AttributeCalculatorException):
     """
     Raised when info references itself as holder container, but
     actually it can't have any holders assigned to it.
@@ -35,32 +54,24 @@ class BadContainerException(AttributeCalculatorException):
     pass
 
 
-class UnsupportedFilterException(AttributeCalculatorException):
+class FilterTypeError(AttributeCalculatorException):
     """
     Raised when info specifies uknown to calculator filter type.
     """
     pass
 
 
-class UnsupportedDirectLocationException(AttributeCalculatorException):
+# Exception classes used by map's calculation method
+class BaseValueError(AttributeCalculatorException):
     """
-    Raised when location in Info object being processed cannot be
-    handled by register (set of unsupported locations is different
-    for direct and filtered modifications).
-    """
-    pass
-
-
-class UnsupportedFilteredLocationException(AttributeCalculatorException):
-    """
-    Raised when location in Info object being processed cannot be
-    handled by register (set of unsupported locations is different
-    for direct and filtered modifications).
+    Raised when value, upon which attribute calculation should be based,
+    cannot be determined, thus making it impossible to calculate attribute.
     """
     pass
 
 
-class UnsupportedOperatorException(AttributeCalculatorException):
+
+class OperatorError(AttributeCalculatorException):
     """
     Raised during calculation process, if attribute affector is
     using operator which is not supported by calculate method.
@@ -68,17 +79,9 @@ class UnsupportedOperatorException(AttributeCalculatorException):
     pass
 
 
-class UnsupportedSourceException(AttributeCalculatorException):
+class SourceTypeError(AttributeCalculatorException):
     """
     Raised during calculation process, if source type is unknown
     to calculate method.
-    """
-    pass
-
-
-class NoAttributeException(AttributeCalculatorException):
-    """
-    Raised when value, upon which attribute calculation should be based,
-    cannot be determined, thus making it impossible to calculate attribute.
     """
     pass

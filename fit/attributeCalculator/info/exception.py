@@ -22,6 +22,7 @@
 from eos.exception import EosException
 
 
+# Exception classes used by info builder
 class InfoBuilderException(EosException):
     """
     All exceptions raised by info builder are based on this class.
@@ -29,21 +30,21 @@ class InfoBuilderException(EosException):
     pass
 
 
-class TreeParsingExpectedException(InfoBuilderException):
+class TreeParsingError(InfoBuilderException):
     """
     Raised when modifier builder encounters some expected error.
     """
     pass
 
 
-class TreeParsingUnexpectedException(InfoBuilderException):
+class TreeParsingUnexpectedError(InfoBuilderException):
     """
     Raised when modifier builder encounters some unhandled error.
     """
     pass
 
 
-class ModifierValidationException(InfoBuilderException):
+class ModifierValidationError(InfoBuilderException):
     """
     Raised when some modifier generated out of expression tree
     is invalid.
@@ -51,7 +52,7 @@ class ModifierValidationException(InfoBuilderException):
     pass
 
 
-class UnusedModifierException(InfoBuilderException):
+class UnusedModifierError(InfoBuilderException):
     """
     Raised when some modifiers are not marked as used after
     generating infos out of them.
@@ -59,6 +60,7 @@ class UnusedModifierException(InfoBuilderException):
     pass
 
 
+# Exception classes used by modifier builder
 class ModifierBuilderException(EosException):
     """
     All exceptions raised by modifier builder are either represented
@@ -67,6 +69,7 @@ class ModifierBuilderException(EosException):
     pass
 
 
+# Exception classes used by condition builder
 class ConditionBuilderException(EosException):
     """
     All exceptions raised by condition builder are either represented

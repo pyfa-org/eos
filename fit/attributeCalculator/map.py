@@ -23,7 +23,7 @@ from math import exp
 
 from eos.const import Operator, SourceType
 from eos.eve.const import Category, Attribute
-from .exception import NoAttributeException, UnsupportedOperatorException, UnsupportedSourceException
+from .exception import BaseValueError, OperatorError, SourceTypeError
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -67,7 +67,7 @@ class MutableAttributeMap:
         except KeyError:
             try:
                 val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
-            except NoAttributeException as e:
+            except BaseValueError as e:
                 raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
@@ -135,7 +135,7 @@ class MutableAttributeMap:
             result = attrMeta.defaultValue
             # If no default value is available, raise error
             if result is None:
-                raise NoAttributeException(attrId)
+                raise BaseValueError(attrId)
         # Container for non-penalized modifiers
         # Format: {operator: {values}}
         normalMods = {}
@@ -160,7 +160,7 @@ class MutableAttributeMap:
                 elif info.sourceType == SourceType.value:
                     modValue = info.sourceValue
                 else:
-                    raise UnsupportedSourceException(info.sourceType)
+                    raise SourceTypeError(info.sourceType)
                 # Normalize addition/subtraction, so it's always
                 # acts as addition
                 if operator == Operator.modSub:
@@ -184,9 +184,9 @@ class MutableAttributeMap:
                         modList = normalMods[operator] = []
                 modList.append(modValue)
             # Handle source type failure
-            except UnsupportedSourceException as e:
+            except SourceTypeError as e:
                 msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
-                signature = (UnsupportedSourceException, sourceHolder.item.id, e.args[0])
+                signature = (SourceTypeError, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         # When data gathering was finished, process penalized modifiers
@@ -213,10 +213,10 @@ class MutableAttributeMap:
                     for modVal in modList:
                         result *= modVal
                 else:
-                    raise UnsupportedOperatorException(operator)
-            except UnsupportedOperatorException as e:
+                    raise OperatorError(operator)
+            except OperatorError as e:
                 msg = "malformed info on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
-                signature = (UnsupportedOperatorException, sourceHolder.item.id, e.args[0])
+                signature = (OperatorError, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         # If attribute has upper cap, do not let

@@ -21,8 +21,8 @@
 
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
-from .exception import ModifierBuilderException, TreeParsingExpectedException, TreeParsingUnexpectedException, \
-UnusedModifierException, ModifierValidationException
+from .exception import ModifierBuilderException, ModifierValidationError, TreeParsingError, TreeParsingUnexpectedError, \
+UnusedModifierError
 from .info import Info
 from .modifierBuilder import ModifierBuilder
 from .helpers import operandData, OperandType
@@ -78,9 +78,9 @@ class InfoBuilder:
                     modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
                 except ModifierBuilderException as e:
-                    raise TreeParsingExpectedException(*e.args) from e
+                    raise TreeParsingError(*e.args) from e
                 except Exception as e:
-                    raise TreeParsingUnexpectedException from e
+                    raise TreeParsingUnexpectedError from e
                 # Update set with modifiers we've just got
                 modSet.update(modifiers)
                 # If any skipped data (for example, inactive operands) was
@@ -92,7 +92,7 @@ class InfoBuilder:
                 for modifier in modSet:
                     if cls.validateModifier(modifier) is not True:
                         # If any of modifiers is invalid, raise exception
-                        raise ModifierValidationException
+                        raise ModifierValidationError
 
             # Container for actual info objects
             infos = set()
@@ -159,27 +159,27 @@ class InfoBuilder:
             # info generation, mark current effect as partially parsed
             try:
                 if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
-                    raise UnusedModifierException
-            except UnusedModifierException:
+                    raise UnusedModifierError
+            except UnusedModifierError:
                 msg = "unused modifiers left after generating infos for effect {}".format(effect.id)
-                signature = (UnusedModifierException, effect.id)
+                signature = (UnusedModifierError, effect.id)
                 logger.warning(msg, childName="infoBuilder", signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
-        except TreeParsingExpectedException as e:
+        except TreeParsingError as e:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
-            signature = (TreeParsingExpectedException, effect.id)
+            signature = (TreeParsingError, effect.id)
             logger.warning(msg, childName="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error
-        except TreeParsingUnexpectedException:
+        except TreeParsingUnexpectedError:
             msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
-            signature = (TreeParsingUnexpectedException, effect.id)
+            signature = (TreeParsingUnexpectedError, effect.id)
             logger.error(msg, childName="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error
-        except ModifierValidationException:
+        except ModifierValidationError:
             msg = "failed to validate modifiers for effect {}".format(effect.id)
-            signature = (ModifierValidationException, effect.id)
+            signature = (ModifierValidationError, effect.id)
             logger.warning(msg, childName="infoBuilder", signature=signature)
             return set(), EffectBuildStatus.error
 
