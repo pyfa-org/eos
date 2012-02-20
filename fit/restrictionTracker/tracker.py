@@ -79,17 +79,23 @@ class RestrictionTracker:
         for register in self.__registers[None]:
             register.unregisterHolder(holder)
 
-    def stateSwitch(self, holder, oldState, newState):
-        for state in self.__registers:
-            if state is None:
+    def enableStates(self, holder, states):
+        for state in states:
+            try:
+                registers = self.__registers[state]
+            except KeyError:
                 continue
-            stateRegisters = self.__registers[state]
-            if (oldState is None or oldState < state) and (newState is not None and newState >= state):
-                for register in stateRegisters:
-                    register.registerHolder(holder)
-            elif (newState is None or newState < state) and (oldState is not None and oldState >= state):
-                for register in stateRegisters:
-                    register.unregisterHolder(holder)
+            for register in registers:
+                register.registerHolder(holder)
+
+    def disableStates(self, holder, states):
+        for state in states:
+            try:
+                registers = self.__registers[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.unregisterHolder(holder)
 
     def validate(self):
         for state in self.__registers:

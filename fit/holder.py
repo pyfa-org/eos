@@ -70,19 +70,18 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         """Set state of holder"""
         # First, check if holder's item can have this
         # state at all
-        validStates = filter(lambda state: state <= self.item.maxState,
-                             (State.offline, State.online, State.active, State.overload))
+        knownStates = {State.offline, State.online, State.active, State.overload}
+        # TODO: probably move this check to restriction tracker,
+        # or throw custom exception
+        validStates = filter(lambda state: state <= self.item.maxState, knownStates)
         if not newState in validStates:
             raise RuntimeError("invalid state")
-        oldState = self.state
-        if newState == oldState:
+        if newState == self.state:
             return
-        # When holder is assigned to some fit, ask fit
-        # to perform fit-specific state switch of our
-        # holder
+        # When holder is assigned to some fit, ask fit to perform
+        # fit-specific state switch of our holder
         if self.fit is not None:
-            self.fit._linkTracker.stateSwitch(self, oldState, newState)
-            self.fit._restrictionTracker.stateSwitch(self, oldState, newState)
+            self.fit._holderStateSwitch(self, newState)
         self.__state = newState
 
 #    @property

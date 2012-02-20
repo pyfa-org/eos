@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.const import State
 from .attributeCalculator.tracker import LinkTracker
 from .restrictionTracker.tracker import RestrictionTracker
 
@@ -83,21 +84,23 @@ class Fit:
 
     def _addHolder(self, holder):
         """
-        Handle adding of holder to fit
+        Handle adding of holder to fit.
 
         Positional arguments:
         holder -- holder to be added
         """
         # Make sure the holder isn't used already
-        if holder.fit is not None:
-            raise RuntimeError("cannot add holder which is already in some fit")
+        assert(holder.fit is None)
         # Assign fit to holder first
         holder.fit = self
         # Only after add it to register
         self._linkTracker.addHolder(holder)
         self._restrictionTracker.addHolder(holder)
-        self._linkTracker.stateSwitch(holder, None, holder.state)
-        self._restrictionTracker.stateSwitch(holder, None, holder.state)
+        knownStates = {State.offline, State.online, State.active, State.overload}
+        enabledStates = set(filter(lambda s: s <= holder.state, knownStates))
+        if len(enabledStates) > 0:
+            self._linkTracker.enableStates(holder, enabledStates)
+            self._restrictionTracker.enableStates(holder, enabledStates)
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
         if charge is not None:
@@ -105,24 +108,50 @@ class Fit:
 
     def _removeHolder(self, holder):
         """
-        Handle removal of holder from fit
+        Handle removal of holder from fit.
 
         Positional arguments:
         holder -- holder to be removed
         """
+        # Check that removed holder belongs to fit
+        # it's removed from
         assert(holder.fit is self)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._removeHolder(charge)
-        # Turn off its effects by switching state to None, then
-        # unregister holder itself
-        self._restrictionTracker.stateSwitch(holder, holder.state, None)
-        self._linkTracker.stateSwitch(holder, holder.state, None)
+        # Turn off its effects by disabling all of its active states
+        knownStates = {State.offline, State.online, State.active, State.overload}
+        disabledStates = set(filter(lambda s: s <= holder.state, knownStates))
+        if len(disabledStates) > 0:
+            self._restrictionTracker.disableStates(holder, disabledStates)
+            self._linkTracker.disableStates(holder, disabledStates)
+        # Remove holder from fit altogether
         self._restrictionTracker.removeHolder(holder)
         self._linkTracker.removeHolder(holder)
         # Unset holder's fit
         holder.fit = None
+
+    def _holderStateSwitch(self, holder, newState):
+        """
+        Handle fit-specific part of holder state switch.
+
+        Positional arguments:
+        holder -- holder, for which state should be switched
+        newState -- state, which holder should take
+        """
+        knownStates = {State.offline, State.online, State.active, State.overload}
+        enabledStates = set(filter(lambda s: s > holder.state and s <= newState, knownStates))
+        disabledStates = set(filter(lambda s: s > newState and s <= holder.state, knownStates))
+        # Only one of sets must be filled, state switch is always performed
+        # either upwards or downwards, but never both
+        assert(not (len(enabledStates) > 0 and len(disabledStates) > 0))
+        if len(enabledStates) > 0:
+            self._linkTracker.enableStates(holder, enabledStates)
+            self._restrictionTracker.enableStates(holder, enabledStates)
+        if len(disabledStates) > 0:
+            self._linkTracker.disableStates(holder, disabledStates)
+            self._restrictionTracker.disableStates(holder, disabledStates)
 
 
 class HolderContainer:
