@@ -95,7 +95,6 @@ class Fit:
         holder.fit = self
         # Only after add it to register
         self._linkTracker.addHolder(holder)
-        self._restrictionTracker.addHolder(holder)
         # Trigger attribute links and restrictions according
         # to holder's state
         enabledStates = set(filter(lambda s: s <= holder.state, State))
@@ -122,12 +121,11 @@ class Fit:
         if charge is not None:
             self._removeHolder(charge)
         # Turn off its effects by disabling all of its active states
+        # and remove holder from fit altogether
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         if len(disabledStates) > 0:
             self._restrictionTracker.disableStates(holder, disabledStates)
             self._linkTracker.disableStates(holder, disabledStates)
-        # Remove holder from fit altogether
-        self._restrictionTracker.removeHolder(holder)
         self._linkTracker.removeHolder(holder)
         # Unset holder's fit
         holder.fit = None

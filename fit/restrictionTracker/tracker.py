@@ -46,38 +46,30 @@ class RestrictionTracker:
         # registered/unregistered when they're added/removed
         # to fit, not when they enter or leave some state
         # Format: {triggering state: {registers}}
-        self.__registers = {None: {CalibrationRegister(self),
-                                   DroneBayVolumeRegister(self),
-                                   HighSlotRegister(self),
-                                   MediumSlotRegister(self),
-                                   LowSlotRegister(self),
-                                   RigSlotRegister(self),
-                                   SubsystemSlotRegister(self),
-                                   TurretSlotRegister(self),
-                                   LauncherSlotRegister(self),
-                                   SubsystemIndexRegister(),
-                                   ImplantIndexRegister(),
-                                   BoosterIndexRegister(),
-                                   ShipTypeGroupRegister(self),
-                                   CapitalItemRegister(self),
-                                   MaxGroupFittedRegister(),
-                                   DroneGroupRegister(self),
-                                   RigSizeRegister(self),
-                                   SkillRequirementRegister()},
-                            State.online: {CpuRegister(self),
-                                           PowerGridRegister(self),
-                                           DroneBandwidthRegister(self),
-                                           MaxGroupOnlineRegister(),
-                                           DroneNumberRegister(self)},
-                            State.active: {MaxGroupActiveRegister()}}
-
-    def addHolder(self, holder):
-        for register in self.__registers[None]:
-            register.registerHolder(holder)
-
-    def removeHolder(self, holder):
-        for register in self.__registers[None]:
-            register.unregisterHolder(holder)
+        self.__registers = {State.offline: {CalibrationRegister(self),
+                                            DroneBayVolumeRegister(self),
+                                            HighSlotRegister(self),
+                                            MediumSlotRegister(self),
+                                            LowSlotRegister(self),
+                                            RigSlotRegister(self),
+                                            SubsystemSlotRegister(self),
+                                            TurretSlotRegister(self),
+                                            LauncherSlotRegister(self),
+                                            SubsystemIndexRegister(),
+                                            ImplantIndexRegister(),
+                                            BoosterIndexRegister(),
+                                            ShipTypeGroupRegister(self),
+                                            CapitalItemRegister(self),
+                                            MaxGroupFittedRegister(),
+                                            DroneGroupRegister(self),
+                                            RigSizeRegister(self),
+                                            SkillRequirementRegister()},
+                            State.online:  {CpuRegister(self),
+                                            PowerGridRegister(self),
+                                            DroneBandwidthRegister(self),
+                                            MaxGroupOnlineRegister(),
+                                            DroneNumberRegister(self)},
+                            State.active:  {MaxGroupActiveRegister()}}
 
     def enableStates(self, holder, states):
         for state in states:
