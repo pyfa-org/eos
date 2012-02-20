@@ -24,10 +24,10 @@ This file holds IDs of multiple Eos-specific entities.
 """
 
 
-from eos.util.nameSpace import NameSpace
+from eos.util.enum import Enum
 
 
-class State(metaclass=NameSpace):
+class State(metaclass=Enum):
     """
     Possible item states, used as part of public API and
     internally by Info class and classes interacting with it
@@ -43,7 +43,7 @@ class State(metaclass=NameSpace):
     overload = 4
 
 
-class Slot(metaclass=NameSpace):
+class Slot(metaclass=Enum):
     # TODO: add more sensible docstring here
     """All slot types items can take"""
     moduleHigh = 1  #
@@ -55,7 +55,7 @@ class Slot(metaclass=NameSpace):
     launcher = 7
 
 # Class used by Infos and Item definitions
-class Location(metaclass=NameSpace):
+class Location(metaclass=Enum):
     """
     Location specification, often relative, thus item
     context must be taken into account. Used only
@@ -71,7 +71,7 @@ class Location(metaclass=NameSpace):
     space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
 
 
-class EffectBuildStatus(metaclass=NameSpace):
+class EffectBuildStatus(metaclass=Enum):
     """
     Statuses which indicate effect->infos conversion result,
     part of public API.
@@ -82,7 +82,7 @@ class EffectBuildStatus(metaclass=NameSpace):
     okFull = 4  # All modifications were pulled out of expression tree successfully
 
 
-class Context(metaclass=NameSpace):
+class Context(metaclass=Enum):
     """
     Describes when modification is applied, used only internally
     by Info class and classes interacting with it
@@ -92,7 +92,7 @@ class Context(metaclass=NameSpace):
     projected = 3  # Modification which is applied only when its holder is projected onto something
 
 
-class RunTime(metaclass=NameSpace):
+class RunTime(metaclass=Enum):
     """
     Modification runtime ID holder, used only internally
     by Info class and classes interacting with it
@@ -102,7 +102,7 @@ class RunTime(metaclass=NameSpace):
     post = 3  # Instant modification, applied in the end of the cycle
 
 
-class FilterType(metaclass=NameSpace):
+class FilterType(metaclass=Enum):
     """
     Filter type ID holder, used only internally
     by Info class and classes interacting with it
@@ -112,7 +112,7 @@ class FilterType(metaclass=NameSpace):
     skill = 3  # Affects items in target location with additional filter by skill requirement
 
 
-class Operator(metaclass=NameSpace):
+class Operator(metaclass=Enum):
     """
     Operator ID holder, used only internally
     by Info class and classes interacting with it
@@ -137,7 +137,7 @@ class Operator(metaclass=NameSpace):
     assignment = 12
 
 
-class SourceType(metaclass=NameSpace):
+class SourceType(metaclass=Enum):
     """
     Source value type ID holder, used only internally
     by Info class and classes interacting with it
@@ -146,7 +146,7 @@ class SourceType(metaclass=NameSpace):
     value = 2  # Source value is actual value for modification
 
 
-class AtomType(metaclass=NameSpace):
+class AtomType(metaclass=Enum):
     """
     Describes purpose of condition atom, used only internally
     by everything which works with info conditions.
@@ -158,7 +158,7 @@ class AtomType(metaclass=NameSpace):
     value = 5  # Value is enclosed in atom itself
 
 
-class AtomLogicOperator(metaclass=NameSpace):
+class AtomLogicOperator(metaclass=Enum):
     """
     Logical operators of condition atom, used only internally
     by everything which works with info conditions.
@@ -167,7 +167,7 @@ class AtomLogicOperator(metaclass=NameSpace):
     or_ = 2  # Logical or
 
 
-class AtomComparisonOperator(metaclass=NameSpace):
+class AtomComparisonOperator(metaclass=Enum):
     """
     Comparison operators of condition atom, used only internally
     by everything which works with info conditions.
@@ -180,7 +180,7 @@ class AtomComparisonOperator(metaclass=NameSpace):
     greaterOrEqual = 6  # >=
 
 
-class AtomMathOperator(metaclass=NameSpace):
+class AtomMathOperator(metaclass=Enum):
     """
     Math operators of condition atom, used only internally
     by everything which works with info conditions.
@@ -189,7 +189,7 @@ class AtomMathOperator(metaclass=NameSpace):
     subtract = 2  # -
 
 
-class InvType(metaclass=NameSpace):
+class InvType(metaclass=Enum):
     """
     Eos-specific type declarations, used only internally
     by Info class and classes interacting with it

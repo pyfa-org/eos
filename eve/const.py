@@ -24,7 +24,7 @@ This file holds IDs of multiple EVE's entities.
 """
 
 
-from eos.util.nameSpace import NameSpace
+from eos.util.enum import Enum
 
 
 # When some EVE's database row refers another,
@@ -32,7 +32,7 @@ from eos.util.nameSpace import NameSpace
 nulls = frozenset((0, None))
 
 
-class Attribute(metaclass=NameSpace):
+class Attribute(metaclass=Enum):
     """Attribute ID holder"""
     powerOutput = 11
     lowSlots = 12
@@ -85,13 +85,13 @@ class Attribute(metaclass=NameSpace):
     allowedDroneGroup2 = 1783
 
 
-class Type(metaclass=NameSpace):
+class Type(metaclass=Enum):
     """Item ID holder"""
     characterStatic = 1381
     capitalShips = 20533  # Skill
 
 
-class Category(metaclass=NameSpace):
+class Category(metaclass=Enum):
     """Category ID holder"""
     ship = 6
     charge = 8
@@ -100,7 +100,7 @@ class Category(metaclass=NameSpace):
     subsystem = 32
 
 
-class Effect(metaclass=NameSpace):
+class Effect(metaclass=Enum):
     """Effect ID holder"""
     loPower = 11
     hiPower = 12
@@ -112,7 +112,7 @@ class Effect(metaclass=NameSpace):
     subSystem = 3772
 
 
-class EffectCategory(metaclass=NameSpace):
+class EffectCategory(metaclass=Enum):
     """Effect category ID holder"""
     passive = 0  # Applied when item is just present in fit - implants, skills, offlined modules
     active = 1  # Applied only when module is activated
@@ -124,7 +124,7 @@ class EffectCategory(metaclass=NameSpace):
     system = 7  # System-wide effects, like WH and incursion
 
 
-class Operand(metaclass=NameSpace):
+class Operand(metaclass=Enum):
     """Expression operand ID holder"""
     add = 1  # Add two numbers to return result, used in conditions
     addGangGrpMod = 2  # Applies modification to items of gang-mates (not used in any effect), filtered by group, format: [(groupFilter.targetAttribute).(operator)].AGGM(sourceAttribute)

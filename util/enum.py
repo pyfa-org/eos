@@ -19,12 +19,11 @@
 #===============================================================================
 
 
-class NameSpace(type):
+class Enum(type):
     """
-    We use classes as namespaces throughout eos,
-    this class can be used as metaclass for such
-    namespace classes, providing some additional
-    functionality.
+    We use classes as enums throughout eos, this class
+    can be used as metaclass for such classes, providing
+    some additional functionality.
     """
 
     def __iter__(self):

@@ -29,7 +29,7 @@ from collections import namedtuple
 
 from eos.const import Location, Operator, InvType
 from eos.eve.const import Operand
-from eos.util.nameSpace import NameSpace
+from eos.util.enum import Enum
 
 
 class ExpressionData:
@@ -117,7 +117,7 @@ class ExpressionData:
 OperandMeta = namedtuple("OperandMeta", ("type", "gang", "mirror"))
 
 
-class OperandType(metaclass=NameSpace):
+class OperandType(metaclass=Enum):
     """Modifier operand type ID holder"""
     duration = 1
     instant = 2
