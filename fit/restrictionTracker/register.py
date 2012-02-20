@@ -29,7 +29,8 @@ class RestrictionRegister(metaclass=ABCMeta):
     @abstractmethod
     def registerHolder(self, holder):
         """
-        Perform registration jobs upon holder.
+        Perform registration jobs upon holder. Only immutable
+        holder properties should be used during process.
 
         Posiitional arguments:
         holder -- holder to register
@@ -39,7 +40,8 @@ class RestrictionRegister(metaclass=ABCMeta):
     @abstractmethod
     def unregisterHolder(self, holder):
         """
-        Perform unregistration jobs upon holder.
+        Perform unregistration jobs upon holder. Only immutable
+        holder properties should be used during process.
 
         Posiitional arguments:
         holder -- holder to unregister
@@ -49,6 +51,7 @@ class RestrictionRegister(metaclass=ABCMeta):
     @abstractmethod
     def validate(self):
         """
-        Check all registered holders for validity.
+        Check all registered holders for validity. Both mutable
+        and immutable holder properties can be used during process.
         """
         ...

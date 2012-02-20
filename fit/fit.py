@@ -96,6 +96,8 @@ class Fit:
         # Only after add it to register
         self._linkTracker.addHolder(holder)
         self._restrictionTracker.addHolder(holder)
+        # Trigger attribute links and restrictions according
+        # to holder's state
         enabledStates = set(filter(lambda s: s <= holder.state, State))
         if len(enabledStates) > 0:
             self._linkTracker.enableStates(holder, enabledStates)
@@ -138,11 +140,14 @@ class Fit:
         holder -- holder, for which state should be switched
         newState -- state, which holder should take
         """
+        # Get states which are passed during enabling/disabling
+        # into single set (other should stay empty)
         enabledStates = set(filter(lambda s: s > holder.state and s <= newState, State))
         disabledStates = set(filter(lambda s: s > newState and s <= holder.state, State))
         # Only one of sets must be filled, state switch is always performed
         # either upwards or downwards, but never both
         assert(not (len(enabledStates) > 0 and len(disabledStates) > 0))
+        # Ask trackers to perform corresponding actions
         if len(enabledStates) > 0:
             self._linkTracker.enableStates(holder, enabledStates)
             self._restrictionTracker.enableStates(holder, enabledStates)
