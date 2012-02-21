@@ -19,11 +19,16 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
+
+
+SlotIndexErrorData = namedtuple("SlotIndexErrorData", ("holderSlotIndex", "slotIndexHolders"))
 
 
 class SlotIndexRegister(RestrictionRegister):
@@ -59,13 +64,16 @@ class SlotIndexRegister(RestrictionRegister):
         self.__slottedHolders.rmData(slotIndex, {holder})
 
     def validate(self):
-        taintedHolders = set()
+        taintedHolders = {}
         for slotIndex in self.__slottedHolders:
             slotIndexHolders = self.__slottedHolders[slotIndex]
             # If more than one item occupies the same slot, all
             # holders in this slot are tainted
             if len(slotIndexHolders) > 1:
-                taintedHolders.update(slotIndexHolders)
+                slotIndexHolders = frozenset(slotIndexHolders)
+                for holder in slotIndexHolders:
+                    taintedHolders[holder] = SlotIndexErrorData(holderSlotIndex=slotIndex,
+                                                                slotIndexHolders=slotIndexHolders)
         if len(taintedHolders) > 0:
             raise RegisterValidationError(taintedHolders)
 

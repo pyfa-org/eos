@@ -19,9 +19,14 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Location, Restriction
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
+
+
+SkillRequirementErrorData = namedtuple("SkillRequirementErrorData", ("skill", "level", "requiredLevel"))
 
 
 class SkillRequirementRegister(RestrictionRegister):
@@ -64,28 +69,25 @@ class SkillRequirementRegister(RestrictionRegister):
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
-        taintedHolders = set()
+        taintedHolders = {}
         # Go through restricted holders
-        for restrictedHolder in self.__restrictedHolders:
+        for holder in self.__restrictedHolders:
             # Check each skill requirement
-            for requiredSkillId in restrictedHolder.item.requiredSkills:
-                requiredSkillLevel = restrictedHolder.item.requiredSkills[requiredSkillId]
-                # If required skill level is None, skip it
-                if requiredSkillLevel is None:
-                    continue
-                # If skill is required at some level, but we don't have corresponding
-                # skill holder in skill container - mark holder as tainted and move to
-                # checking next one
-                skillHolder = self.__skillHolders.get(requiredSkillId)
-                if skillHolder is None:
-                    taintedHolders.add(restrictedHolder)
-                    break
+            for requiredSkillId in holder.item.requiredSkills:
+                requiredSkillLevel = holder.item.requiredSkills[requiredSkillId]
+                # Absence of skill is considered as skill level set to None
+                try:
+                    skillHolder = self.__skillHolders[requiredSkillId]
+                except KeyError:
+                    skillLevel = None
+                else:
+                    skillLevel = skillHolder.level
                 # Last check - if skill level is lower than expected, current holder
                 # is tainted; mark it so and move to the next one
-                skillLevel = skillHolder.level
-                if skillLevel is None or skillLevel < requiredSkillLevel:
-                    taintedHolders.add(restrictedHolder)
-                    break
+                if skillLevel is None or requiredSkillLevel is None or skillLevel < requiredSkillLevel:
+                    taintedHolders[holder] = SkillRequirementErrorData(skill=requiredSkillId,
+                                                                       level=skillLevel,
+                                                                       requiredLevel=requiredSkillLevel)
         if len(taintedHolders) > 0:
             raise RegisterValidationError(taintedHolders)
 

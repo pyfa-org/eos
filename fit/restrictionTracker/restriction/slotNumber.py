@@ -19,10 +19,15 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Location, Restriction, Slot
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
+
+
+SlotNumberErrorData = namedtuple("SlotNumberErrorData", ("slotNumber", "slotHolders"))
 
 
 class SlotNumberRegister(RestrictionRegister):
@@ -78,8 +83,11 @@ class SlotNumberRegister(RestrictionRegister):
         # take this slot is bigger than number of available slots,
         # then all holders in container are tainted
         if len(self.__slotConsumers) > providedSlots:
-            taintedHolders = set()
-            taintedHolders.update(self.__slotConsumers)
+            taintedHolders = {}
+            slotHolders = frozenset(self.__slotConsumers)
+            for holder in slotHolders:
+                taintedHolders[holder] = SlotNumberErrorData(slotNumber=providedSlots,
+                                                             slotHolders=slotHolders)
             raise RegisterValidationError(taintedHolders)
 
     @property

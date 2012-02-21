@@ -19,16 +19,21 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-class DroneNumberRegister(RestrictionRegister):
+LaunchedDroneErrorData = namedtuple("LaunchedDroneErrorData", ("maxLaunchedDrones", "launchedDrones"))
+
+
+class LaunchedDroneRegister(RestrictionRegister):
     """
     Implements restriction:
-    Number of simultaneoursly used drones cannot exceed number of
+    Number of simultaneously used drones cannot exceed number of
     drones character is able to control.
 
     Details:
@@ -61,17 +66,21 @@ class DroneNumberRegister(RestrictionRegister):
         try:
             characterHolderAttribs = characterHolder.attributes
         except AttributeError:
-            maxDrones = 0
+            maxLaunchedDrones = 0
         else:
             try:
-                maxDrones = characterHolderAttribs[Attribute.maxActiveDrones]
+                maxLaunchedDrones = characterHolderAttribs[Attribute.maxActiveDrones]
             except KeyError:
-                maxDrones = 0
+                maxLaunchedDrones = 0
         # If number of registered drones exceeds number of maximum number
         # of allowed drones, raise error
-        if len(self.__restrictedHolders) > maxDrones:
-            taintedHolders = set()
-            taintedHolders.update(self.__restrictedHolders)
+        if len(self.__restrictedHolders) > maxLaunchedDrones:
+            taintedHolders = {}
+            # Make new frozen set, so we can re-use data for each launched holder
+            launchedDrones = frozenset(self.__restrictedHolders)
+            for holder in self.__restrictedHolders:
+                taintedHolders[holder] = LaunchedDroneErrorData(maxLaunchedDrones=maxLaunchedDrones,
+                                                                launchedDrones=launchedDrones)
             raise RegisterValidationError(taintedHolders)
 
     @property

@@ -19,10 +19,15 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
+
+
+ResourceErrorData = namedtuple("ResourceErrorData", ("output", "holderConsumption", "consumerHolders"))
 
 
 class ResourceRegister(RestrictionRegister):
@@ -74,17 +79,23 @@ class ResourceRegister(RestrictionRegister):
         totalResourceConsumption = 0
         # Also use the same loop to compose set of holders,
         # which actually consume resource (have positive non-null
-        # usage)
-        resourceConsumers = set()
+        # usage), and consumption value
+        resourceConsumerData = {}
         for resourceUser in self.__resourceUsers:
             resourceUse = resourceUser.attributes[self.__usageAttr]
             totalResourceConsumption += resourceUse
             if resourceUse > 0:
-                resourceConsumers.add(resourceUser)
+                resourceConsumerData[resourceUser] = resourceUse
         # If we're out of resource, raise error
         # with holders-resource-consumers
         if totalResourceConsumption > resourceOutput:
-            raise RegisterValidationError(resourceConsumers)
+            resourceConsumers = frozenset(resourceConsumerData)
+            taintedHolders = {}
+            for holder in resourceConsumers:
+                taintedHolders[holder] = ResourceErrorData(output=resourceOutput,
+                                                           holderConsumption=resourceConsumerData[holder],
+                                                           consumerHolders=resourceConsumers)
+            raise RegisterValidationError(taintedHolders)
 
     @property
     def restrictionType(self):

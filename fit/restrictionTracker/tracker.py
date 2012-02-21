@@ -23,7 +23,7 @@ from eos.const import State
 from .exception import RegisterValidationError, ValidationError
 from .restriction.capitalItem import CapitalItemRegister
 from .restriction.droneGroup import DroneGroupRegister
-from .restriction.droneNumber import DroneNumberRegister
+from .restriction.launchedDrone import LaunchedDroneRegister
 from .restriction.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .restriction.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
 DroneBandwidthRegister
@@ -77,7 +77,7 @@ class RestrictionTracker:
                                             PowerGridRegister(self),
                                             DroneBandwidthRegister(self),
                                             MaxGroupOnlineRegister(),
-                                            DroneNumberRegister(self)},
+                                            LaunchedDroneRegister(self)},
                             State.active:  {MaxGroupActiveRegister()}}
 
     def enableStates(self, holder, states):
@@ -130,7 +130,7 @@ class RestrictionTracker:
         data in its arguments.
         """
         # Container for validation error data
-        # Format: {holder: set(errors)}
+        # Format: {holder: {error type: error data}}
         invalidHolders = {}
         # Go through all known registers
         for state in self.__registers:
@@ -147,13 +147,15 @@ class RestrictionTracker:
                 except RegisterValidationError as e:
                     # All erroneous holders should be in 1st argument
                     # of raised exception
-                    for holder in e.args[0]:
+                    exceptionData = e.args[0]
+                    for holder in exceptionData:
+                        holderError = exceptionData[holder]
                         # Fill container for invalid holders
                         try:
                             holderErrors = invalidHolders[holder]
                         except KeyError:
-                            holderErrors = invalidHolders[holder] = set()
-                        holderErrors.add(restrictionType)
+                            holderErrors = invalidHolders[holder] = {}
+                        holderErrors[restrictionType] = holderError
         # Raise validation error only if we got any
         # failures
         if len(invalidHolders) > 0:

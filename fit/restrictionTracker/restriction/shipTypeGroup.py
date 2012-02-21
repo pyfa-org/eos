@@ -27,6 +27,9 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
+ShipTypeGroupErrorData = namedtuple("ShipTypeGroupErrorData", ("allowedTypes", "allowedGroups", "shipType", "shipGroup"))
+
+
 # Helper class-container for metadata regarding allowed
 # types and groups
 AllowedData = namedtuple("AllowedData", ("types", "groups"))
@@ -115,14 +118,19 @@ class ShipTypeGroupRegister(RestrictionRegister):
             shipTypeId = None
             shipGroupId = None
         # Container for tainted holders
-        taintedHolders = set()
+        taintedHolders = {}
         # Go through all known restricted holders
-        for restrictedHolder in self.__restrictedHolders:
-            allowedData = self.__restrictedHolders[restrictedHolder]
+        for holder in self.__restrictedHolders:
+            allowedData = self.__restrictedHolders[holder]
             # If ship's type isn't in allowed types and ship's
             # group isn't in allowed groups, holder is tainted
             if not shipTypeId in allowedData.types and not shipGroupId in allowedData.groups:
-                taintedHolders.add(restrictedHolder)
+                allowedTypes = frozenset(allowedData.types)
+                allowedGroups = frozenset(allowedData.groups)
+                taintedHolders[holder] = ShipTypeGroupErrorData(allowedTypes=allowedTypes,
+                                                                allowedGroups=allowedGroups,
+                                                                shipType=shipTypeId,
+                                                                shipGroup=shipGroupId)
         # Raise error if there're any tainted holders
         if len(taintedHolders) > 0:
             raise RegisterValidationError(taintedHolders)

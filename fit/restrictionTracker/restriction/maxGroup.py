@@ -19,11 +19,16 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Location, Restriction
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
+
+
+MaxGroupErrorData = namedtuple("MaxGroupErrorData", ("maxGroup", "holderGroup", "groupHolders"))
 
 
 class MaxGroupRegister(RestrictionRegister):
@@ -72,18 +77,20 @@ class MaxGroupRegister(RestrictionRegister):
 
     def validate(self):
         # Container for tainted holders
-        taintedHolders = set()
+        taintedHolders = {}
         # Go through all restricted holders
-        for restrictedHolder in self.__maxGroupRestricted:
+        for holder in self.__maxGroupRestricted:
             # Get number of registered holders, assigned to group of current
             # restricted holder, and holder's restriction value
-            groupId = restrictedHolder.item.groupId
+            groupId = holder.item.groupId
             groupRegistered = len(self.__groupAll.getData(groupId))
-            maxGroupRestriction = restrictedHolder.attributes[self.__maxGroupAttr]
+            maxGroupRestriction = holder.attributes[self.__maxGroupAttr]
             # If number of registered holders from this group is bigger,
             # then current holder is tainted
             if groupRegistered > maxGroupRestriction:
-                taintedHolders.add(restrictedHolder)
+                groupHolders = frozenset(self.__groupAll[groupId])
+                taintedHolders[holder] = MaxGroupErrorData(maxGroup=maxGroupRestriction,
+                                                           holderGroup=groupId, groupHolders=groupHolders)
         # Raise error if we detected any tainted holders
         if len(taintedHolders) > 0:
             raise RegisterValidationError(taintedHolders)

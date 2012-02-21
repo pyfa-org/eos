@@ -19,10 +19,15 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
+
+
+RigSizeErrorData = namedtuple("RigSizeErrorData", ("allowedSize", "holderSize"))
 
 
 class RigSizeRegister(RestrictionRegister):
@@ -66,14 +71,14 @@ class RigSizeRegister(RestrictionRegister):
             allowedRigSize = shipItem.attributes[Attribute.rigSize]
         except KeyError:
             return
-        taintedHolders = set()
-        if allowedRigSize is None:
-            taintedHolders.update(self.__restrictedHolders)
-        else:
-            for restrictedHolder in self.__restrictedHolders:
-                holderRigSize = restrictedHolder.item.attributes[Attribute.rigSize]
-                if holderRigSize != allowedRigSize:
-                    taintedHolders.add(restrictedHolder)
+        taintedHolders = {}
+        for holder in self.__restrictedHolders:
+            holderRigSize = holder.item.attributes[Attribute.rigSize]
+            # If both rig and ship do not have value for attribute
+            # (it's None), ship still can't use rig
+            if holderRigSize != allowedRigSize or allowedRigSize is None:
+                taintedHolders[holder] = RigSizeErrorData(allowedSize=allowedRigSize,
+                                                          holderSize=holderRigSize)
         if len(taintedHolders) > 0:
             raise RegisterValidationError(taintedHolders)
 

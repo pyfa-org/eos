@@ -19,10 +19,15 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Location, Restriction
 from eos.eve.const import Type, Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
+
+
+CapitalItemErrorData = namedtuple("CapitalItemErrorData", ("allowedVolume", "holderVolume"))
 
 
 class CapitalItemRegister(RestrictionRegister):
@@ -40,6 +45,9 @@ class CapitalItemRegister(RestrictionRegister):
         self._tracker = tracker
         # Container for all tracked holders
         self.__capitalHolders = set()
+        # Holders of volume bigger than this
+        # are considered as capital
+        self.__maxSubcapVolume = 500
 
     def registerHolder(self, holder):
         # Ignore holders which do not belong to ship
@@ -47,7 +55,7 @@ class CapitalItemRegister(RestrictionRegister):
             return
         # Ignore non-capital holders
         holderVolume = holder.item.attributes.get(Attribute.volume)
-        if holderVolume is None or holderVolume <= 500:
+        if holderVolume is None or holderVolume <= self.__maxSubcapVolume:
             return
         self.__capitalHolders.add(holder)
 
@@ -68,8 +76,11 @@ class CapitalItemRegister(RestrictionRegister):
         # If we got here, then we're dealing with non-capital
         # ship, and all registered holders are tainted
         if len(self.__capitalHolders) > 0:
-            taintedHolders = set()
-            taintedHolders.update(self.__capitalHolders)
+            taintedHolders = {}
+            for holder in self.__capitalHolders:
+                holderVolume = holder.item.attributes[Attribute.volume]
+                taintedHolders[holder] = CapitalItemErrorData(allowedVolume=self.__maxSubcapVolume,
+                                                              holderVolume=holderVolume)
             raise RegisterValidationError(taintedHolders)
 
     @property

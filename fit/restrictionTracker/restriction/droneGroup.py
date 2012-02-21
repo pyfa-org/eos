@@ -19,10 +19,15 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
+
+
+DroneGroupErrorData = namedtuple("DroneGroupErrorData", ("allowedGroups", "droneGroup"))
 
 
 class DroneGroupRegister(RestrictionRegister):
@@ -79,12 +84,16 @@ class DroneGroupRegister(RestrictionRegister):
         # obviously
         if droneRestriction is not True:
             return
-        taintedHolders = set()
-        for restrictedHolder in self.__restrictedHolders:
-            # NTaint holders, whose group is not allowed
-            holderGroup = restrictedHolder.item.groupId
+        taintedHolders = {}
+        # Freeze set so it can't be modified, this way we can use it
+        # multiple times in error data
+        allowedGroups = frozenset(allowedGroups)
+        for holder in self.__restrictedHolders:
+            # Taint holders, whose group is not allowed
+            holderGroup = holder.item.groupId
             if not holderGroup in allowedGroups:
-                taintedHolders.add(restrictedHolder)
+                taintedHolders[holder] = DroneGroupErrorData(allowedGroups=allowedGroups,
+                                                             droneGroup=holderGroup)
         if len(taintedHolders) > 0:
             raise RegisterValidationError(taintedHolders)
 
