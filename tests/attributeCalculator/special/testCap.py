@@ -50,9 +50,9 @@ class TestCap(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = {info}
+        effect._Effect__infos = (info,)
         fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr})
-        holder = IndependentItem(Type(None, effects={effect}, attributes={tgtAttr.id: 3, srcAttr.id: 6}))
+        holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr.id: 3, srcAttr.id: 6}))
         fit._addHolder(holder)
         # Attribute should be capped at 5.2
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 5.2)

@@ -45,7 +45,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.runTime, RunTime.pre)
         self.assertEqual(info.context, Context.local)
         self.assertEqual(info.location, Location.character)
@@ -62,7 +62,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -71,7 +71,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.local)
 
@@ -80,7 +80,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.projected)
 
@@ -95,7 +95,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.online)
         self.assertEqual(info.context, Context.local)
 
@@ -104,7 +104,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.overload)
         self.assertEqual(info.context, Context.local)
 
@@ -119,7 +119,7 @@ class TestModAssignPreAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -141,7 +141,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.runTime, RunTime.pre)
         self.assertEqual(info.context, Context.local)
         self.assertEqual(info.location, Location.self_)
@@ -158,7 +158,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -167,7 +167,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.local)
 
@@ -176,7 +176,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.projected)
 
@@ -191,7 +191,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.online)
         self.assertEqual(info.context, Context.local)
 
@@ -200,7 +200,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.overload)
         self.assertEqual(info.context, Context.local)
 
@@ -215,7 +215,7 @@ class TestModAssignPreVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -238,7 +238,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.runTime, RunTime.post)
         self.assertEqual(info.context, Context.local)
         self.assertEqual(info.location, Location.character)
@@ -255,7 +255,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -264,7 +264,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.local)
 
@@ -273,7 +273,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.projected)
 
@@ -288,7 +288,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.online)
         self.assertEqual(info.context, Context.local)
 
@@ -297,7 +297,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.overload)
         self.assertEqual(info.context, Context.local)
 
@@ -312,7 +312,7 @@ class TestModAssignPostAttr(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -334,7 +334,7 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.runTime, RunTime.post)
         self.assertEqual(info.context, Context.local)
         self.assertEqual(info.location, Location.self_)
@@ -351,7 +351,7 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)
 
@@ -360,7 +360,7 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.local)
 
@@ -369,7 +369,7 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.projected)
 
@@ -384,7 +384,7 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.online)
         self.assertEqual(info.context, Context.local)
 
@@ -393,7 +393,7 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.overload)
         self.assertEqual(info.context, Context.local)
 
@@ -408,6 +408,6 @@ class TestModAssignPostVal(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.local)

@@ -49,9 +49,9 @@ class TestOperatorAllIn(EosTestCase):
         infoPreAss.sourceType = SourceType.attribute
         infoPreAss.sourceValue = srcAttr.id
         effectPreAss = Effect(None, EffectCategory.passive)
-        effectPreAss._Effect__infos = {infoPreAss}
+        effectPreAss._Effect__infos = (infoPreAss,)
         valuePreAss = 5
-        influenceSourcePreAss = IndependentItem(Type(None, effects={effectPreAss}, attributes={srcAttr.id: valuePreAss}))
+        influenceSourcePreAss = IndependentItem(Type(None, effects=(effectPreAss,), attributes={srcAttr.id: valuePreAss}))
         fit._addHolder(influenceSourcePreAss)
         infoPreMul = Info()
         infoPreMul.state = State.offline
@@ -66,9 +66,9 @@ class TestOperatorAllIn(EosTestCase):
         infoPreMul.sourceType = SourceType.attribute
         infoPreMul.sourceValue = srcAttr.id
         effectPreMul = Effect(None, EffectCategory.passive)
-        effectPreMul._Effect__infos = {infoPreMul}
+        effectPreMul._Effect__infos = (infoPreMul,)
         valuePreMul = 50
-        influenceSourcePreMul = IndependentItem(Type(None, effects={effectPreMul}, attributes={srcAttr.id: valuePreMul}))
+        influenceSourcePreMul = IndependentItem(Type(None, effects=(effectPreMul,), attributes={srcAttr.id: valuePreMul}))
         fit._addHolder(influenceSourcePreMul)
         infoPreDiv = Info()
         infoPreDiv.state = State.offline
@@ -83,9 +83,9 @@ class TestOperatorAllIn(EosTestCase):
         infoPreDiv.sourceType = SourceType.attribute
         infoPreDiv.sourceValue = srcAttr.id
         effectPreDiv = Effect(None, EffectCategory.passive)
-        effectPreDiv._Effect__infos = {infoPreDiv}
+        effectPreDiv._Effect__infos = (infoPreDiv,)
         valuePreDiv = 0.5
-        influenceSourcePreDiv = IndependentItem(Type(None, effects={effectPreDiv}, attributes={srcAttr.id: valuePreDiv}))
+        influenceSourcePreDiv = IndependentItem(Type(None, effects=(effectPreDiv,), attributes={srcAttr.id: valuePreDiv}))
         fit._addHolder(influenceSourcePreDiv)
         infoModAdd = Info()
         infoModAdd.state = State.offline
@@ -100,9 +100,9 @@ class TestOperatorAllIn(EosTestCase):
         infoModAdd.sourceType = SourceType.attribute
         infoModAdd.sourceValue = srcAttr.id
         effectModAdd = Effect(None, EffectCategory.passive)
-        effectModAdd._Effect__infos = {infoModAdd}
+        effectModAdd._Effect__infos = (infoModAdd,)
         valueModAdd = 10
-        influenceSourceModAdd = IndependentItem(Type(None, effects={effectModAdd}, attributes={srcAttr.id: valueModAdd}))
+        influenceSourceModAdd = IndependentItem(Type(None, effects=(effectModAdd,), attributes={srcAttr.id: valueModAdd}))
         fit._addHolder(influenceSourceModAdd)
         infoModSub = Info()
         infoModSub.state = State.offline
@@ -117,9 +117,9 @@ class TestOperatorAllIn(EosTestCase):
         infoModSub.sourceType = SourceType.attribute
         infoModSub.sourceValue = srcAttr.id
         effectModSub = Effect(None, EffectCategory.passive)
-        effectModSub._Effect__infos = {infoModSub}
+        effectModSub._Effect__infos = (infoModSub,)
         valueModSub = 63
-        influenceSourceModSub = IndependentItem(Type(None, effects={effectModSub}, attributes={srcAttr.id: valueModSub}))
+        influenceSourceModSub = IndependentItem(Type(None, effects=(effectModSub,), attributes={srcAttr.id: valueModSub}))
         fit._addHolder(influenceSourceModSub)
         infoPostMul = Info()
         infoPostMul.state = State.offline
@@ -134,9 +134,9 @@ class TestOperatorAllIn(EosTestCase):
         infoPostMul.sourceType = SourceType.attribute
         infoPostMul.sourceValue = srcAttr.id
         effectPostMul = Effect(None, EffectCategory.passive)
-        effectPostMul._Effect__infos = {infoPostMul}
+        effectPostMul._Effect__infos = (infoPostMul,)
         valuePostMul = 1.35
-        influenceSourcePostMul = IndependentItem(Type(None, effects={effectPostMul}, attributes={srcAttr.id: valuePostMul}))
+        influenceSourcePostMul = IndependentItem(Type(None, effects=(effectPostMul,), attributes={srcAttr.id: valuePostMul}))
         fit._addHolder(influenceSourcePostMul)
         infoPostDiv = Info()
         infoPostDiv.state = State.offline
@@ -151,9 +151,9 @@ class TestOperatorAllIn(EosTestCase):
         infoPostDiv.sourceType = SourceType.attribute
         infoPostDiv.sourceValue = srcAttr.id
         effectPostDiv = Effect(None, EffectCategory.passive)
-        effectPostDiv._Effect__infos = {infoPostDiv}
+        effectPostDiv._Effect__infos = (infoPostDiv,)
         valuePostDiv = 2.7
-        influenceSourcePostDiv = IndependentItem(Type(None, effects={effectPostDiv}, attributes={srcAttr.id: valuePostDiv}))
+        influenceSourcePostDiv = IndependentItem(Type(None, effects=(effectPostDiv,), attributes={srcAttr.id: valuePostDiv}))
         fit._addHolder(influenceSourcePostDiv)
         infoPostPerc = Info()
         infoPostPerc.state = State.offline
@@ -168,9 +168,9 @@ class TestOperatorAllIn(EosTestCase):
         infoPostPerc.sourceType = SourceType.attribute
         infoPostPerc.sourceValue = srcAttr.id
         effectPostPerc = Effect(None, EffectCategory.passive)
-        effectPostPerc._Effect__infos = {infoPostPerc}
+        effectPostPerc._Effect__infos = (infoPostPerc,)
         valuePostPerc = 15
-        influenceSourcePostPerc = IndependentItem(Type(None, effects={effectPostPerc}, attributes={srcAttr.id: valuePostPerc}))
+        influenceSourcePostPerc = IndependentItem(Type(None, effects=(effectPostPerc,), attributes={srcAttr.id: valuePostPerc}))
         fit._addHolder(influenceSourcePostPerc)
         influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceTarget)

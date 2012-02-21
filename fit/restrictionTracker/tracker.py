@@ -55,7 +55,7 @@ class RestrictionTracker:
         # as key, it's registered/unregistered in registers
         # stored as value.
         # Format: {triggering state: {registers}}
-        self.__registers = {State.offline: {CalibrationRegister(self),
+        self.__registers = {State.offline: (CalibrationRegister(self),
                                             DroneBayVolumeRegister(self),
                                             HighSlotRegister(self),
                                             MediumSlotRegister(self),
@@ -72,13 +72,13 @@ class RestrictionTracker:
                                             MaxGroupFittedRegister(),
                                             DroneGroupRegister(self),
                                             RigSizeRegister(self),
-                                            SkillRequirementRegister()},
-                            State.online:  {CpuRegister(self),
+                                            SkillRequirementRegister()),
+                            State.online:  (CpuRegister(self),
                                             PowerGridRegister(self),
                                             DroneBandwidthRegister(self),
                                             MaxGroupOnlineRegister(),
-                                            LaunchedDroneRegister(self)},
-                            State.active:  {MaxGroupActiveRegister()}}
+                                            LaunchedDroneRegister(self)),
+                            State.active:  (MaxGroupActiveRegister(),)}
 
     def enableStates(self, holder, states):
         """

@@ -126,7 +126,7 @@ class ModifierBuilder:
     def __checkIntStub(self, element, conditions):
         """Checks if given expression is stub, returning integer 0 or 1"""
         value = ExpressionData.getInteger(element)
-        if not value in {0, 1}:
+        if not value in (0, 1):
             raise ModifierBuilderException("integer stub with unexpected value {}".format(value))
 
     def __checkBoolStub(self, element, conditions):
@@ -336,7 +336,7 @@ class ModifierBuilder:
         attributes are the same, else False
         """
         # Check if both are duration modifiers
-        for modifier in {mod1, mod2}:
+        for modifier in (mod1, mod2):
             try:
                 modData = operandData[modifier.type]
             except KeyError:

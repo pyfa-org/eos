@@ -48,9 +48,9 @@ class TestLocationDirectTarget(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = {info}
+        effect._Effect__infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(102, effects={effect}, attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(Type(102, effects=(effect,), attributes={srcAttr.id: 20}))
         # This functionality isn't implemented for now
         fit._addHolder(influenceSource)
         self.assertEqual(len(self.log), 1)

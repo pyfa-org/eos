@@ -49,13 +49,13 @@ class TestOperatorPostMul(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = {info}
+        effect._Effect__infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource1 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 1.2}))
-        influenceSource2 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 1.5}))
-        influenceSource3 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 0.1}))
-        influenceSource4 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 0.75}))
-        influenceSource5 = IndependentItem(Type(None, effects={effect}, attributes={srcAttr.id: 5}))
+        influenceSource1 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.2}))
+        influenceSource2 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5}))
+        influenceSource3 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 0.1}))
+        influenceSource4 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 0.75}))
+        influenceSource5 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 5}))
         self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
         fit._addHolder(influenceSource1)
         fit._addHolder(influenceSource2)

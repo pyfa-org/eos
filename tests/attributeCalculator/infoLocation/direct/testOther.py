@@ -49,12 +49,12 @@ class TestLocationDirectOther(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = {info}
+        effect._Effect__infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         # We added target attribute to influence source for testSelf;
         # currently, eos cannot calculate attributes which are originally
         # missing on item
-        self.influenceSource = IndependentItem(Type(None, effects={effect}, attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
         self.fit._addHolder(self.influenceSource)
 
     def testOtherLocation(self):

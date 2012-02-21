@@ -80,7 +80,7 @@ class JsonDataHandler(DataHandler):
                          trackingSpeedAttributeId=tracking,
                          fittableNonSingleton=fittable,
                          attributes={attrId: attrVal for attrId, attrVal in attrIds},
-                         effects={self.getEffect(effectId) for effectId in effectIds})
+                         effects=tuple(self.getEffect(effectId) for effectId in effectIds))
             self.__typesCache[typeId] = type_
         return type_
 

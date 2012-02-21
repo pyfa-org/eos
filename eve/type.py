@@ -31,7 +31,7 @@ class Type:
 
     def __init__(self, typeId, groupId=None, categoryId=None, durationAttributeId=None, dischargeAttributeId=None,
                  rangeAttributeId=None, falloffAttributeId=None, trackingSpeedAttributeId=None, fittableNonSingleton=None,
-                 attributes={}, effects=set()):
+                 attributes={}, effects=()):
         # The ID of the type
         self.id = int(typeId) if typeId is not None else None
 
@@ -66,7 +66,7 @@ class Type:
         # Format: {attributeId: attributeValue}
         self.attributes = attributes
 
-        # Set of effects this type has, they describe modifications
+        # Iterable with effects this type has, they describe modifications
         # which this type applies
         self.effects = effects
 

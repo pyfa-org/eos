@@ -29,7 +29,7 @@ from eos.util.enum import Enum
 
 # When some EVE's database row refers another,
 # these values are considered as absence of reference
-nulls = frozenset((0, None))
+nulls = (0, None)
 
 
 class Attribute(metaclass=Enum):

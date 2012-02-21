@@ -137,10 +137,10 @@ class MutableAttributeMap:
             if result is None:
                 raise BaseValueError(attrId)
         # Container for non-penalized modifiers
-        # Format: {operator: {values}}
+        # Format: {operator: [values]}
         normalMods = {}
         # Container for penalized modifiers
-        # Format: {operator: {values}}
+        # Format: {operator: [values]}
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
         for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder, attrId=attrId):
@@ -149,8 +149,8 @@ class MutableAttributeMap:
                 operator = info.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
-                penaltyImmuneCategories = {Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem}
-                penalizableOperators = {Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv}
+                penaltyImmuneCategories = (Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem)
+                penalizableOperators = (Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv)
                 penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
                             and operator in penalizableOperators)
                 # If source value is attribute reference, get its value
@@ -167,7 +167,7 @@ class MutableAttributeMap:
                     modValue = -modValue
                 # Normalize multiplicative modifiers, converting them into form of
                 # multiplier
-                elif operator in {Operator.preDiv, Operator.postDiv}:
+                elif operator in (Operator.preDiv, Operator.postDiv):
                     modValue = 1 / modValue
                 elif operator == Operator.postPercent:
                     modValue = modValue / 100 + 1

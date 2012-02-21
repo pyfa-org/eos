@@ -171,19 +171,19 @@ class InfoBuilder:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
             signature = (TreeParsingError, effect.id)
             logger.warning(msg, childName="infoBuilder", signature=signature)
-            return set(), EffectBuildStatus.error
+            return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError:
             msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
             signature = (TreeParsingUnexpectedError, effect.id)
             logger.error(msg, childName="infoBuilder", signature=signature)
-            return set(), EffectBuildStatus.error
+            return (), EffectBuildStatus.error
         except ModifierValidationError:
             msg = "failed to validate modifiers for effect {}".format(effect.id)
             signature = (ModifierValidationError, effect.id)
             logger.warning(msg, childName="infoBuilder", signature=signature)
-            return set(), EffectBuildStatus.error
+            return (), EffectBuildStatus.error
 
-        return infos, buildStatus
+        return tuple(infos), buildStatus
 
     @classmethod
     def validateModifier(cls, modifier):
@@ -299,7 +299,7 @@ class InfoBuilder:
     def __validateLocGrp(cls, modifier):
         if modifier.targetSkillRequirementId is not None or modifier.runTime is not None:
             return False
-        validLocs = {Location.character, Location.ship, Location.target, Location.self_}
+        validLocs = (Location.character, Location.ship, Location.target, Location.self_)
         if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetGroupId is None):
@@ -311,7 +311,7 @@ class InfoBuilder:
         if (modifier.targetGroupId is not None or modifier.targetSkillRequirementId is not None or
             modifier.runTime is not None):
             return False
-        validLocs = {Location.character, Location.ship, Location.target, Location.self_}
+        validLocs = (Location.character, Location.ship, Location.target, Location.self_)
         if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs):
             return False
@@ -321,7 +321,7 @@ class InfoBuilder:
     def __validateLocSrq(cls, modifier):
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
-        validLocs = {Location.character, Location.ship, Location.target, Location.self_}
+        validLocs = (Location.character, Location.ship, Location.target, Location.self_)
         if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetSkillRequirementId is None):
@@ -332,7 +332,7 @@ class InfoBuilder:
     def __validateOwnSrq(cls, modifier):
         if modifier.targetGroupId is not None or modifier.runTime is not None:
             return False
-        validLocs = {Location.character, Location.ship}
+        validLocs = (Location.character, Location.ship)
         if (modifier.sourceType != SourceType.attribute or modifier.sourceValue is None or
             modifier.operator is None or not modifier.targetLocation in validLocs or
             modifier.targetSkillRequirementId is None):
@@ -344,8 +344,8 @@ class InfoBuilder:
         if (modifier.operator is not None or modifier.targetGroupId is not None or
             modifier.targetSkillRequirementId is not None):
             return False
-        validSrcTypes = {SourceType.attribute, SourceType.value}
-        validRunTimes = {RunTime.pre, RunTime.post}
+        validSrcTypes = (SourceType.attribute, SourceType.value)
+        validRunTimes = (RunTime.pre, RunTime.post)
         # We can either refer some non-zero source attribute, or provide source value directly
         if (not modifier.sourceType in validSrcTypes or not modifier.runTime in validRunTimes or
             (modifier.sourceType == SourceType.attribute and modifier.sourceValue is None) or
@@ -363,7 +363,7 @@ class InfoBuilder:
         True if tree is valid, False if tree is not valid
         """
         # Top-level node can be either logical join or comparison
-        allowedTypes = {AtomType.logic, AtomType.comparison}
+        allowedTypes = (AtomType.logic, AtomType.comparison)
         if not condition.type in allowedTypes:
             return False
         return cls.__validateConditionNode(condition)
@@ -393,7 +393,7 @@ class InfoBuilder:
         if (atom.carrier is not None or atom.attribute is not None or
             atom.value is not None):
             return False
-        allowedSubtypes = {AtomType.logic, AtomType.comparison}
+        allowedSubtypes = (AtomType.logic, AtomType.comparison)
         try:
             if not atom.child1.type in allowedSubtypes or not atom.child2.type in allowedSubtypes:
                 return False
@@ -408,7 +408,7 @@ class InfoBuilder:
         if (atom.carrier is not None or atom.attribute is not None or
             atom.value is not None):
             return False
-        allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
+        allowedSubtypes = (AtomType.math, AtomType.valueReference, AtomType.value)
         try:
             if not atom.child1.type in allowedSubtypes or not atom.child2.type in allowedSubtypes:
                 return False
@@ -423,7 +423,7 @@ class InfoBuilder:
         if (atom.carrier is not None or atom.attribute is not None or
             atom.value is not None):
             return False
-        allowedSubtypes = {AtomType.math, AtomType.valueReference, AtomType.value}
+        allowedSubtypes = (AtomType.math, AtomType.valueReference, AtomType.value)
         try:
             if not atom.child1.type in allowedSubtypes or not atom.child2.type in allowedSubtypes:
                 return False
@@ -467,7 +467,7 @@ class InfoBuilder:
         """
         # First, check type, it should be duration modification for both,
         # as only they have do-undo pair
-        for modifier in {preMod, postMod}:
+        for modifier in (preMod, postMod):
             try:
                 modData = operandData[modifier.type]
             except KeyError:

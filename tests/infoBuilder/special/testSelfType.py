@@ -46,6 +46,6 @@ class TestSelfType(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.filterType, FilterType.skill)
         self.assertEqual(info.filterValue, InvType.self_)

@@ -49,12 +49,12 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         self.effect = Effect(1, EffectCategory.passive)
-        self.effect._Effect__infos = {info}
+        self.effect._Effect__infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testShip(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.ship, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.ship, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -62,8 +62,8 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testCharge(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -71,8 +71,8 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testSkill(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.skill, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -80,8 +80,8 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testImplant(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -89,8 +89,8 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testSubsystem(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.subsystem, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -98,8 +98,8 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testMixed(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -107,8 +107,8 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
 
     def testWithNotImmune(self):
-        influenceSource1 = IndependentItem(Type(None, effects={self.effect}, categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects={self.effect}, categoryId=None, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=None, attributes={self.srcAttr.id: 100}))
         self.fit._addHolder(influenceSource1)
         self.fit._addHolder(influenceSource2)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))

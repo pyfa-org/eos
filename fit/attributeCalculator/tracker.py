@@ -38,7 +38,6 @@ class LinkTracker:
     def __init__(self, fit):
         self._fit = fit
         self.__register = LinkRegister(self)
-        self.__holderStates = {}
 
     def getAffectors(self, holder, attrId=None):
         """
@@ -134,7 +133,7 @@ class LinkTracker:
         states -- iterable with states, which are passed
         during state switch, except for initial state
         """
-        processedContexts = {Context.local}
+        processedContexts = (Context.local,)
         enabledAffectors = self.__generateDurationAffectors(holder, stateFilter=states, contextFilter=processedContexts)
         # Clear attributes only after registration jobs
         for affector in enabledAffectors:
@@ -150,7 +149,7 @@ class LinkTracker:
         states -- iterable with states, which are passed
         during state switch, except for final state
         """
-        processedContexts = {Context.local}
+        processedContexts = (Context.local,)
         disabledAffectors = self.__generateDurationAffectors(holder, stateFilter=states, contextFilter=processedContexts)
         # Clear attributes before unregistering, otherwise
         # we won't clean them up properly

@@ -52,8 +52,8 @@ class TestLocationDirectUnknown(EosTestCase):
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testLog(self):
-        self.effect._Effect__infos = {self.invalidInfo}
-        holder = IndependentItem(Type(754, effects={self.effect}, attributes={self.srcAttr.id: 20}))
+        self.effect._Effect__infos = (self.invalidInfo,)
+        holder = IndependentItem(Type(754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit._addHolder(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -74,8 +74,8 @@ class TestLocationDirectUnknown(EosTestCase):
         validInfo.targetAttributeId = self.tgtAttr.id
         validInfo.sourceType = SourceType.attribute
         validInfo.sourceValue = self.srcAttr.id
-        self.effect._Effect__infos = {self.invalidInfo, validInfo}
-        holder = IndependentItem(Type(None, effects={self.effect}, attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
+        self.effect._Effect__infos = (self.invalidInfo, validInfo)
+        holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
         self.fit._addHolder(holder)
         # Invalid location in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)

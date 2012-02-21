@@ -47,7 +47,7 @@ class TestModGangGrp(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.runTime, RunTime.duration)
         self.assertEqual(info.context, Context.gang)
         self.assertEqual(info.location, Location.ship)
@@ -64,7 +64,7 @@ class TestModGangGrp(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.gang)
 
@@ -73,7 +73,7 @@ class TestModGangGrp(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.active)
         self.assertEqual(info.context, Context.gang)
 
@@ -95,7 +95,7 @@ class TestModGangGrp(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.online)
         self.assertEqual(info.context, Context.gang)
 
@@ -104,7 +104,7 @@ class TestModGangGrp(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.overload)
         self.assertEqual(info.context, Context.gang)
 
@@ -119,6 +119,6 @@ class TestModGangGrp(EosTestCase):
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
-        info = infos.pop()
+        info = infos[0]
         self.assertEqual(info.state, State.offline)
         self.assertEqual(info.context, Context.gang)
