@@ -35,10 +35,9 @@ class KeyedSet(dict):
         data -- set with data to add to value
         """
         try:
-            value = self[key]
+            self[key].update(data)
         except KeyError:
-            value = self[key] = set()
-        value.update(data)
+            self[key] = set(data)
 
     def rmData(self, key, data):
         """
@@ -55,7 +54,7 @@ class KeyedSet(dict):
             return
         else:
             value.difference_update(data)
-            if len(value) == 0:
+            if not value:
                 del self[key]
 
     def getData(self, key):
@@ -68,5 +67,4 @@ class KeyedSet(dict):
         Return value:
         set with data
         """
-        data = self.get(key, set())
-        return data
+        return self.get(key) or set()
