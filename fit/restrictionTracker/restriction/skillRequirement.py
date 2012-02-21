@@ -57,13 +57,13 @@ class SkillRequirementRegister(RestrictionRegister):
         # Only holders which belong to character and have
         # level attribute are tracked as skills
         if holder._location == Location.character and hasattr(holder, "level") is True:
-            self.__skillHolders.addData(holder.item.id, {holder})
+            self.__skillHolders.addData(holder.item.id, holder)
         # Holders which have any skill requirement are tracked
         if len(holder.item.requiredSkills) > 0:
             self.__restrictedHolders.add(holder)
 
     def unregisterHolder(self, holder):
-        self.__skillHolders.rmData(holder.item.id, {holder})
+        self.__skillHolders.rmData(holder.item.id, holder)
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
@@ -73,7 +73,7 @@ class SkillRequirementRegister(RestrictionRegister):
             # Check each skill requirement
             for requiredSkillId in holder.item.requiredSkills:
                 requiredSkillLevel = holder.item.requiredSkills[requiredSkillId]
-                skillHolders = self.__skillHolders.getData(requiredSkillId)
+                skillHolders = self.__skillHolders.get(requiredSkillId) or ()
                 # Pick max level of all skill holders, absence of skill
                 # is considered as skill level set to None
                 skillLevel = None

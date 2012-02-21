@@ -25,35 +25,69 @@ class KeyedSet(dict):
     make it easier to use it, given that its values are sets with data.
     """
 
-    def addData(self, key, data):
+    def addDataSet(self, key, dataSet):
         """
         Add data set to dictionary, with proper creation jobs
         if necessary.
 
         Positional arguments:
         key -- key to access dictionary value (data set)
-        data -- set with data to add to value
+        dataSet -- set with data to add to value
         """
         try:
-            self[key].update(data)
+            self[key].update(dataSet)
         except KeyError:
-            self[key] = set(data)
+            self[key] = set(dataSet)
 
-    def rmData(self, key, data):
+
+
+    def rmDataSet(self, key, dataSet):
         """
         Remove data set from dictionary, with proper cleanup
         jobs if necessary.
 
         Positional arguments:
         key -- key to access dictionary value (data set)
-        data -- set with data to remove from value
+        dataSet -- set with data to remove from value
         """
         try:
             value = self[key]
         except KeyError:
             return
         else:
-            value.difference_update(data)
+            value.difference_update(dataSet)
+            if not value:
+                del self[key]
+
+    def addData(self, key, data):
+        """
+        Add single object to dictionary, with proper creation
+        jobs if necessary.
+
+        Positional arguments:
+        key -- key to access dictionary value (data set)
+        data -- object to add to value
+        """
+        try:
+            self[key].add(data)
+        except KeyError:
+            self[key] = set((data,))
+
+    def rmData(self, key, data):
+        """
+        Remove single object from dictionary, with proper
+        cleanup jobs if necessary.
+
+        Positional arguments:
+        key -- key to access dictionary value (data set)
+        dataSet -- object to remove from value
+        """
+        try:
+            value = self[key]
+        except KeyError:
+            return
+        else:
+            value.discard(data)
             if not value:
                 del self[key]
 

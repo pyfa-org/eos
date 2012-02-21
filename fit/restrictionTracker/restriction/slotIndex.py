@@ -55,13 +55,13 @@ class SlotIndexRegister(RestrictionRegister):
         slotIndex = holder.item.attributes.get(self.__slotIndexAttr)
         if slotIndex is None:
             return
-        self.__slottedHolders.addData(slotIndex, {holder})
+        self.__slottedHolders.addData(slotIndex, holder)
 
     def unregisterHolder(self, holder):
         slotIndex = holder.item.attributes.get(self.__slotIndexAttr)
         if slotIndex is None:
             return
-        self.__slottedHolders.rmData(slotIndex, {holder})
+        self.__slottedHolders.rmData(slotIndex, holder)
 
     def validate(self):
         taintedHolders = {}

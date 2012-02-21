@@ -249,9 +249,8 @@ class LinkRegister:
         if len(affectorsToEnable) == 0:
             return
         # Move all of them to direct modification dictionary
-        self.__activeDirectAffectors.addData(targetHolder, affectorsToEnable)
-        for affector in affectorsToEnable:
-            self.__disabledDirectAffectors.rmData(affector.sourceHolder, {affector})
+        self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
+        self.__disabledDirectAffectors.rmDataSet(affector.sourceHolder, affectorsToEnable)
 
     def __disableDirectSpec(self, targetHolder):
         """
@@ -262,7 +261,7 @@ class LinkRegister:
         """
         affectorsToDisable = set()
         # Check all affectors, targeting passed holder
-        for affector in self.__activeDirectAffectors.getData(targetHolder):
+        for affector in self.__activeDirectAffectors.get(targetHolder) or ():
             # Mark them as to-be-disabled only if they originate from
             # other holder, else they should be removed with passed holder
             if affector.sourceHolder is not targetHolder:
@@ -270,9 +269,8 @@ class LinkRegister:
         if len(affectorsToDisable) == 0:
             return
         # Move data from map to map
-        for affector in affectorsToDisable:
-            self.__disabledDirectAffectors.addData(affector.sourceHolder, {affector})
-        self.__activeDirectAffectors.rmData(targetHolder, affectorsToDisable)
+        self.__disabledDirectAffectors.addDataSet(affector.sourceHolder, affectorsToDisable)
+        self.__activeDirectAffectors.rmDataSet(targetHolder, affectorsToDisable)
 
     def __enableDirectOther(self, targetHolder):
         """
@@ -292,7 +290,7 @@ class LinkRegister:
             return
         # Get all disabled affectors which should influence our targetHolder
         affectorsToEnable = set()
-        for affector in self.__disabledDirectAffectors.getData(otherHolder):
+        for affector in self.__disabledDirectAffectors.get(otherHolder) or ():
             info = affector.info
             if info.location == Location.other and info.filterType is None:
                 affectorsToEnable.add(affector)
@@ -300,8 +298,8 @@ class LinkRegister:
         if len(affectorsToEnable) == 0:
             return
         # Move all of them to direct modification dictionary
-        self.__activeDirectAffectors.addData(targetHolder, affectorsToEnable)
-        self.__disabledDirectAffectors.rmData(otherHolder, affectorsToEnable)
+        self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
+        self.__disabledDirectAffectors.rmDataSet(otherHolder, affectorsToEnable)
 
     def __disableDirectOther(self, targetHolder):
         """
@@ -319,7 +317,7 @@ class LinkRegister:
             return
         affectorsToDisable = set()
         # Go through all affectors influencing holder being unregistered
-        for affector in self.__activeDirectAffectors.getData(targetHolder):
+        for affector in self.__activeDirectAffectors.get(targetHolder) or ():
             # If affector originates from otherHolder, mark it as
             # to-be-disabled
             if affector.sourceHolder is otherHolder:
@@ -328,8 +326,8 @@ class LinkRegister:
         if len(affectorsToDisable) == 0:
             return
         # If we have, move them from map to map
-        self.__disabledDirectAffectors.addData(otherHolder, affectorsToDisable)
-        self.__activeDirectAffectors.rmData(targetHolder, affectorsToDisable)
+        self.__disabledDirectAffectors.addDataSet(otherHolder, affectorsToDisable)
+        self.__activeDirectAffectors.rmDataSet(targetHolder, affectorsToDisable)
 
     def registerAffectee(self, targetHolder, enableDirect=None):
         """
@@ -348,7 +346,7 @@ class LinkRegister:
         """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map
-            affecteeMap.addData(key, {targetHolder})
+            affecteeMap.addData(key, targetHolder)
         # Check if we have affectors which should directly influence passed holder,
         # but are disabled
         directEnablers = {Location.ship: (self.__enableDirectSpec, (targetHolder, Location.ship), {}),
@@ -377,7 +375,7 @@ class LinkRegister:
         disables them (default None)
         """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
-            affecteeMap.rmData(key, {targetHolder})
+            affecteeMap.rmData(key, targetHolder)
         # When removing holder from register, make sure to move modifiers which
         # originate from other holders and directly affect it to disabled map
         directEnablers = {Location.ship: (self.__disableDirectSpec, (targetHolder,), {}),
@@ -401,7 +399,7 @@ class LinkRegister:
         try:
             key, affectorMap = self.__getAffectorMap(affector)
             # Actually add data to map
-            affectorMap.addData(key, {affector})
+            affectorMap.addData(key, affector)
         except DirectLocationError as e:
             msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (DirectLocationError, affector.sourceHolder.item.id, e.args[0])
@@ -429,7 +427,7 @@ class LinkRegister:
         """
         try:
             key, affectorMap = self.__getAffectorMap(affector)
-            affectorMap.rmData(key, {affector})
+            affectorMap.rmData(key, affector)
         # Following block handles exceptions; all of them must be handled
         # when registering affector too, thus they won't appear in log
         # if logger's handler suppresses messages with duplicate
@@ -486,16 +484,16 @@ class LinkRegister:
             # with target holders
             elif info.filterType == FilterType.all_:
                 key = self.__contextizeFilterLocation(affector)
-                target = self.__affecteeLocation.getData(key)
+                target = self.__affecteeLocation.get(key) or set()
             elif info.filterType == FilterType.group:
                 location = self.__contextizeFilterLocation(affector)
                 key = (location, info.filterValue)
-                target = self.__affecteeLocationGroup.getData(key)
+                target = self.__affecteeLocationGroup.get(key) or set()
             elif info.filterType == FilterType.skill:
                 location = self.__contextizeFilterLocation(affector)
                 skill = self.__contextizeSkillrqId(affector)
                 key = (location, skill)
-                target = self.__affecteeLocationSkill.getData(key)
+                target = self.__affecteeLocationSkill.get(key) or set()
             else:
                 raise FilterTypeError(info.filterType)
             # Add our set to affectees
@@ -535,14 +533,14 @@ class LinkRegister:
         """
         affectors = set()
         # Add all affectors which directly affect it
-        affectors.update(self.__activeDirectAffectors.getData(targetHolder))
+        affectors.update(self.__activeDirectAffectors.get(targetHolder) or set())
         # Then all affectors which affect location of passed holder
         location = targetHolder._location
-        affectors.update(self.__affectorLocation.getData(location))
+        affectors.update(self.__affectorLocation.get(location) or set())
         # All affectors which affect location and group of passed holder
         group = targetHolder.item.groupId
-        affectors.update(self.__affectorLocationGroup.getData((location, group)))
+        affectors.update(self.__affectorLocationGroup.get((location, group)) or set())
         # Same, but for location & skill requirement of passed holder
         for skill in targetHolder.item.requiredSkills:
-            affectors.update(self.__affectorLocationSkill.getData((location, skill)))
+            affectors.update(self.__affectorLocationSkill.get((location, skill)) or set())
         return affectors

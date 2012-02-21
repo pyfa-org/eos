@@ -63,7 +63,7 @@ class MaxGroupRegister(RestrictionRegister):
             return
         # Having group ID is enough condition
         # to enter container of all fitted holders
-        self.__groupAll.addData(groupId, {holder})
+        self.__groupAll.addData(groupId, holder)
         # To enter restriction container, original
         # item must have restriction attribute
         if self.__maxGroupAttr in holder.item.attributes:
@@ -72,7 +72,7 @@ class MaxGroupRegister(RestrictionRegister):
     def unregisterHolder(self, holder):
         # Just clear data containers
         groupId = holder.item.groupId
-        self.__groupAll.rmData(groupId, {holder})
+        self.__groupAll.rmData(groupId, holder)
         self.__maxGroupRestricted.discard(holder)
 
     def validate(self):
@@ -83,7 +83,7 @@ class MaxGroupRegister(RestrictionRegister):
             # Get number of registered holders, assigned to group of current
             # restricted holder, and holder's restriction value
             groupId = holder.item.groupId
-            groupRegistered = len(self.__groupAll.getData(groupId))
+            groupRegistered = len(self.__groupAll.get(groupId) or ())
             maxGroupRestriction = holder.attributes[self.__maxGroupAttr]
             # If number of registered holders from this group is bigger,
             # then current holder is tainted
