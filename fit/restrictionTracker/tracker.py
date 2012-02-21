@@ -130,8 +130,8 @@ class RestrictionTracker:
         data in its arguments.
         """
         # Container for validation error data
-        # Format: {restriction type: error data}
-        validationErrors = {}
+        # Format: {holder: set(errors)}
+        invalidHolders = {}
         # Go through all known registers
         for state in self.__registers:
             for register in self.__registers[state]:
@@ -145,8 +145,16 @@ class RestrictionTracker:
                 try:
                     register.validate()
                 except RegisterValidationError as e:
-                    validationErrors[restrictionType] = e.args[0]
-        # Raise validation error only if we got at least
-        # one failure report from register
-        if len(validationErrors) > 0:
-            raise ValidationError(validationErrors)
+                    # All erroneous holders should be in 1st argument
+                    # of raised exception
+                    for holder in e.args[0]:
+                        # Fill container for invalid holders
+                        try:
+                            holderErrors = invalidHolders[holder]
+                        except KeyError:
+                            holderErrors = invalidHolders[holder] = set()
+                        holderErrors.add(restrictionType)
+        # Raise validation error only if we got any
+        # failures
+        if len(invalidHolders) > 0:
+            raise ValidationError(invalidHolders)
