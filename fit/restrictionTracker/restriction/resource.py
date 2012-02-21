@@ -19,9 +19,9 @@
 #===============================================================================
 
 
+from eos.const import Restriction
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import CpuError, PowerGridError, CalibrationError, \
-DroneBayVolumeError, DroneBandwidthError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -33,7 +33,7 @@ class ResourceRegister(RestrictionRegister):
     by ship itself.
     """
 
-    def __init__(self, tracker, outputAttr, usageAttr, exceptionClass):
+    def __init__(self, tracker, outputAttr, usageAttr, restrictionType):
         self._tracker = tracker
         # On ship holder, attribute with this ID
         # contains total amount of produced resource
@@ -41,7 +41,7 @@ class ResourceRegister(RestrictionRegister):
         # On holders, attribute with this ID contains
         # amount of used resource as value
         self.__usageAttr = usageAttr
-        self.__exceptionClass = exceptionClass
+        self.__restrictionType = restrictionType
         # Container for holders which use resource
         # Format: {holders}
         self.__resourceUsers = set()
@@ -84,11 +84,11 @@ class ResourceRegister(RestrictionRegister):
         # If we're out of resource, raise error
         # with holders-resource-consumers
         if totalResourceConsumption > resourceOutput:
-            raise self.__exceptionClass(resourceConsumers)
+            raise RegisterValidationError(resourceConsumers)
 
     @property
-    def exceptionClass(self):
-        return self.__exceptionClass
+    def restrictionType(self):
+        return self.__restrictionType
 
 
 class CpuRegister(ResourceRegister):
@@ -102,7 +102,7 @@ class CpuRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, CpuError)
+        ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, Restriction.cpu)
 
 
 class PowerGridRegister(ResourceRegister):
@@ -117,7 +117,7 @@ class PowerGridRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, PowerGridError)
+        ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, Restriction.powerGrid)
 
 
 class CalibrationRegister(ResourceRegister):
@@ -132,7 +132,7 @@ class CalibrationRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, CalibrationError)
+        ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, Restriction.calibration)
 
 
 class DroneBayVolumeRegister(ResourceRegister):
@@ -148,7 +148,7 @@ class DroneBayVolumeRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, DroneBayVolumeError)
+        ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, Restriction.droneBayVolume)
 
     def registerHolder(self, holder):
         if not holder in self._tracker._fit.drones:
@@ -168,4 +168,4 @@ class DroneBandwidthRegister(ResourceRegister):
     """
 
     def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, DroneBandwidthError)
+        ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, Restriction.droneBandwidth)

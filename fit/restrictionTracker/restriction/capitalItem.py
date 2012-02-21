@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Location
+from eos.const import Location, Restriction
 from eos.eve.const import Type, Attribute
-from eos.fit.restrictionTracker.exception import CapitalItemError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -70,8 +70,8 @@ class CapitalItemRegister(RestrictionRegister):
         if len(self.__capitalHolders) > 0:
             taintedHolders = set()
             taintedHolders.update(self.__capitalHolders)
-            raise CapitalItemError(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return CapitalItemError
+    def restrictionType(self):
+        return Restriction.capitalItem

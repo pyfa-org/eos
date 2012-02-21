@@ -20,7 +20,7 @@
 
 
 from eos.const import State
-from .exception import ValidationError
+from .exception import RegisterValidationError, ValidationError
 from .restriction.capitalItem import CapitalItemRegister
 from .restriction.droneGroup import DroneGroupRegister
 from .restriction.droneNumber import DroneNumberRegister
@@ -121,30 +121,31 @@ class RestrictionTracker:
         Validate fit.
 
         Keyword arguments:
-        skipChecks -- iterable with exception classes, for which
+        skipChecks -- iterable with restriction types, for which
         checks are skipped (default is empty set)
 
         Possible exceptions:
-        ValidationException -- if any failure is occurred during
-        validation, this exception is thrown, with all register
-        exceptions in set, which were caught in process.
+        ValidationError -- if any failure is occurred during
+        validation, this exception is thrown, with all failure
+        data in its arguments.
         """
-        # Container for raised validation exceptions
-        validationErrors = set()
+        # Container for validation error data
+        # Format: {restriction type: error data}
+        validationErrors = {}
         # Go through all known registers
         for state in self.__registers:
             for register in self.__registers[state]:
                 # Skip check if we're told to do so, based
                 # on exception class assigned to register
-                registerException = register.exceptionClass
-                if registerException in skipChecks:
+                restrictionType = register.restrictionType
+                if restrictionType in skipChecks:
                     continue
                 # Run validation for current register, if validation
                 # failure exception is raised - add it to container
                 try:
                     register.validate()
-                except registerException as e:
-                    validationErrors.add(e)
+                except RegisterValidationError as e:
+                    validationErrors[restrictionType] = e.args[0]
         # Raise validation error only if we got at least
         # one failure report from register
         if len(validationErrors) > 0:

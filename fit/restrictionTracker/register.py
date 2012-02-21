@@ -58,8 +58,8 @@ class RestrictionRegister(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def exceptionClass(self):
+    def restrictionType(self):
         """
-        Get exception class raised by register on validation failure.
+        Get restriction type this register is dealing with.
         """
         ...

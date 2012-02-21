@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from eos.const import Restriction
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import RigSizeError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -74,8 +75,8 @@ class RigSizeRegister(RestrictionRegister):
                 if holderRigSize != allowedRigSize:
                     taintedHolders.add(restrictedHolder)
         if len(taintedHolders) > 0:
-            raise RigSizeError(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return RigSizeError
+    def restrictionType(self):
+        return Restriction.rigSize

@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from eos.const import Restriction
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import SubsystemIndexError, ImplantIndexError, BoosterIndexError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
@@ -33,11 +34,11 @@ class SlotIndexRegister(RestrictionRegister):
     same index.
     """
 
-    def __init__(self, slotIndexAttr, exceptionClass):
+    def __init__(self, slotIndexAttr, restrictionType):
         # This attribute's value on holder
         # represents their index of slot
         self.__slotIndexAttr = slotIndexAttr
-        self.__exceptionClass = exceptionClass
+        self.__restrictionType = restrictionType
         # All holders which possess index of slot
         # are stored in this container
         # Format: {slot index: {holders}}
@@ -66,11 +67,11 @@ class SlotIndexRegister(RestrictionRegister):
             if len(slotIndexHolders) > 1:
                 taintedHolders.update(slotIndexHolders)
         if len(taintedHolders) > 0:
-            raise self.__exceptionClass(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return self.__exceptionClass
+    def restrictionType(self):
+        return self.__restrictionType
 
 
 class SubsystemIndexRegister(SlotIndexRegister):
@@ -83,7 +84,7 @@ class SubsystemIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.subSystemSlot, SubsystemIndexError)
+        SlotIndexRegister.__init__(self, Attribute.subSystemSlot, Restriction.subsystemIndex)
 
 
 class ImplantIndexRegister(SlotIndexRegister):
@@ -96,7 +97,7 @@ class ImplantIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.implantness, ImplantIndexError)
+        SlotIndexRegister.__init__(self, Attribute.implantness, Restriction.implantIndex)
 
 
 class BoosterIndexRegister(SlotIndexRegister):
@@ -109,4 +110,4 @@ class BoosterIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.boosterness, BoosterIndexError)
+        SlotIndexRegister.__init__(self, Attribute.boosterness, Restriction.boosterIndex)

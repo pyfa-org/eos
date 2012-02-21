@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from eos.const import Restriction
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import DroneOnlineError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -71,8 +72,8 @@ class DroneNumberRegister(RestrictionRegister):
         if len(self.__restrictedHolders) > maxDrones:
             taintedHolders = set()
             taintedHolders.update(self.__restrictedHolders)
-            raise DroneOnlineError(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return DroneOnlineError
+    def restrictionType(self):
+        return Restriction.droneNumber

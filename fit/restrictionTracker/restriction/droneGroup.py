@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+from eos.const import Restriction
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import DroneGroupError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -85,8 +86,8 @@ class DroneGroupRegister(RestrictionRegister):
             if not holderGroup in allowedGroups:
                 taintedHolders.add(restrictedHolder)
         if len(taintedHolders) > 0:
-            raise DroneGroupError(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return DroneGroupError
+    def restrictionType(self):
+        return Restriction.droneGroup

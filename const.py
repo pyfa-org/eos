@@ -195,3 +195,33 @@ class InvType(metaclass=Enum):
     by Info class and classes interacting with it
     """
     self_ = -1  # Refers carrier of info, special type ID, thus it must not overlap with any real type ID
+
+
+class Restriction(metaclass=Enum):
+    """
+    Fitting restriction types.
+    """
+    cpu = 1
+    powerGrid = 2
+    calibration = 3
+    droneBayVolume = 4
+    droneBandwidth = 5
+    droneNumber = 6
+    droneGroup = 7
+    highSlot = 8
+    mediumSlot = 9
+    lowSlot = 10
+    rigSlot = 11
+    rigSize = 12
+    subsystemSlot = 13
+    subsystemIndex = 14
+    turretSlot = 15
+    launcherSlot = 16
+    implantIndex = 17
+    boosterIndex = 18
+    shipTypeGroup = 19
+    capitalItem = 20
+    maxGroupFitted = 21
+    maxGroupOnline = 22
+    maxGroupActive = 23
+    skillRequirement = 24

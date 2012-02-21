@@ -19,11 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Location
-from eos.const import Slot
+from eos.const import Location, Restriction, Slot
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import HighSlotError, MediumSlotError, LowSlotError, \
-RigSlotError, SubsystemSlotError, TurretSlotError, LauncherSlotError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
@@ -34,14 +32,14 @@ class SlotNumberRegister(RestrictionRegister):
     against number of available ship slots.
     """
 
-    def __init__(self, tracker, slotType, slotAmountAttr, exceptionClass):
+    def __init__(self, tracker, slotType, slotAmountAttr, restrictionType):
         self._tracker = tracker
         # Keeps slot type we're tracking
         self.__slotType = slotType
         # Modified ship holder attribute with this ID
         # contains number of available slots as value
         self.__slotAmountAttr = slotAmountAttr
-        self.__exceptionClass = exceptionClass
+        self.__restrictionType = restrictionType
         # Container for holders which occupy slot
         # being tracked by register
         # Format: {holders}
@@ -82,11 +80,11 @@ class SlotNumberRegister(RestrictionRegister):
         if len(self.__slotConsumers) > providedSlots:
             taintedHolders = set()
             taintedHolders.update(self.__slotConsumers)
-            raise self.__exceptionClass(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return self.__exceptionClass
+    def restrictionType(self):
+        return self.__restrictionType
 
 
 class HighSlotRegister(SlotNumberRegister):
@@ -102,7 +100,7 @@ class HighSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.moduleHigh, Attribute.hiSlots, HighSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleHigh, Attribute.hiSlots, Restriction.highSlot)
 
 
 class MediumSlotRegister(SlotNumberRegister):
@@ -118,7 +116,7 @@ class MediumSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.moduleMed, Attribute.medSlots, MediumSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleMed, Attribute.medSlots, Restriction.mediumSlot)
 
 
 class LowSlotRegister(SlotNumberRegister):
@@ -134,7 +132,7 @@ class LowSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.moduleLow, Attribute.lowSlots, LowSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.moduleLow, Attribute.lowSlots, Restriction.lowSlot)
 
 
 class RigSlotRegister(SlotNumberRegister):
@@ -150,7 +148,7 @@ class RigSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.rig, Attribute.rigSlots, RigSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.rig, Attribute.rigSlots, Restriction.rigSlot)
 
 
 class SubsystemSlotRegister(SlotNumberRegister):
@@ -166,7 +164,7 @@ class SubsystemSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.subsystem, Attribute.maxSubSystems, SubsystemSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.subsystem, Attribute.maxSubSystems, Restriction.subsystemSlot)
 
 
 class TurretSlotRegister(SlotNumberRegister):
@@ -182,7 +180,7 @@ class TurretSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.turret, Attribute.turretSlotsLeft, TurretSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.turret, Attribute.turretSlotsLeft, Restriction.turretSlot)
 
 
 class LauncherSlotRegister(SlotNumberRegister):
@@ -198,4 +196,4 @@ class LauncherSlotRegister(SlotNumberRegister):
     """
 
     def __init__(self, tracker):
-        SlotNumberRegister.__init__(self, tracker, Slot.launcher, Attribute.launcherSlotsLeft, LauncherSlotError)
+        SlotNumberRegister.__init__(self, tracker, Slot.launcher, Attribute.launcherSlotsLeft, Restriction.launcherSlot)

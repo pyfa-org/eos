@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Location
+from eos.const import Location, Restriction
 from eos.eve.const import Attribute
-from eos.fit.restrictionTracker.exception import MaxGroupFittedError, MaxGroupOnlineError, MaxGroupActiveError
+from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
@@ -33,11 +33,11 @@ class MaxGroupRegister(RestrictionRegister):
     ship holders in certain state on per-group basis.
     """
 
-    def __init__(self, maxGroupAttr, exceptionClass):
+    def __init__(self, maxGroupAttr, restrictionType):
         # Attribute ID whose value contains group restriction
         # of holder
         self.__maxGroupAttr = maxGroupAttr
-        self.__exceptionClass = exceptionClass
+        self.__restrictionType = restrictionType
         # Container for all tracked holders, keyed
         # by their group ID
         # Format: {group ID: {holders}}
@@ -86,11 +86,11 @@ class MaxGroupRegister(RestrictionRegister):
                 taintedHolders.add(restrictedHolder)
         # Raise error if we detected any tainted holders
         if len(taintedHolders) > 0:
-            raise self.__exceptionClass(taintedHolders)
+            raise RegisterValidationError(taintedHolders)
 
     @property
-    def exceptionClass(self):
-        return self.__exceptionClass
+    def restrictionType(self):
+        return self.__restrictionType
 
 
 class MaxGroupFittedRegister(MaxGroupRegister):
@@ -107,7 +107,7 @@ class MaxGroupFittedRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, MaxGroupFittedError)
+        MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, Restriction.maxGroupFitted)
 
 
 class MaxGroupOnlineRegister(MaxGroupRegister):
@@ -124,7 +124,7 @@ class MaxGroupOnlineRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.maxGroupOnline, MaxGroupOnlineError)
+        MaxGroupRegister.__init__(self, Attribute.maxGroupOnline, Restriction.maxGroupOnline)
 
 
 class MaxGroupActiveRegister(MaxGroupRegister):
@@ -141,4 +141,4 @@ class MaxGroupActiveRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.maxGroupActive, MaxGroupActiveError)
+        MaxGroupRegister.__init__(self, Attribute.maxGroupActive, Restriction.maxGroupActive)
