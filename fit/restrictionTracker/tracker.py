@@ -158,5 +158,5 @@ class RestrictionTracker:
                         holderErrors[restrictionType] = holderError
         # Raise validation error only if we got any
         # failures
-        if len(invalidHolders) > 0:
+        if invalidHolders:
             raise ValidationError(invalidHolders)

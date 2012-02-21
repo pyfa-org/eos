@@ -59,7 +59,7 @@ class SkillRequirementRegister(RestrictionRegister):
         if holder._location == Location.character and hasattr(holder, "level") is True:
             self.__skillHolders.addData(holder.item.id, holder)
         # Holders which have any skill requirement are tracked
-        if len(holder.item.requiredSkills) > 0:
+        if holder.item.requiredSkills:
             self.__restrictedHolders.add(holder)
 
     def unregisterHolder(self, holder):
@@ -89,7 +89,7 @@ class SkillRequirementRegister(RestrictionRegister):
                     taintedHolders[holder] = SkillRequirementErrorData(skill=requiredSkillId,
                                                                        level=skillLevel,
                                                                        requiredLevel=requiredSkillLevel)
-        if len(taintedHolders) > 0:
+        if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 
     @property

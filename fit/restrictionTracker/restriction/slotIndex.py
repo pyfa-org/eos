@@ -74,7 +74,7 @@ class SlotIndexRegister(RestrictionRegister):
                 for holder in slotIndexHolders:
                     taintedHolders[holder] = SlotIndexErrorData(holderSlotIndex=slotIndex,
                                                                 slotIndexHolders=slotIndexHolders)
-        if len(taintedHolders) > 0:
+        if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 
     @property

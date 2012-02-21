@@ -92,7 +92,7 @@ class MaxGroupRegister(RestrictionRegister):
                 taintedHolders[holder] = MaxGroupErrorData(maxGroup=maxGroupRestriction,
                                                            holderGroup=groupId, groupHolders=groupHolders)
         # Raise error if we detected any tainted holders
-        if len(taintedHolders) > 0:
+        if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 
     @property

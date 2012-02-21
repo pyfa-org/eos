@@ -79,7 +79,7 @@ class RigSizeRegister(RestrictionRegister):
             if holderRigSize != allowedRigSize or allowedRigSize is None:
                 taintedHolders[holder] = RigSizeErrorData(allowedSize=allowedRigSize,
                                                           holderSize=holderRigSize)
-        if len(taintedHolders) > 0:
+        if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 
     @property

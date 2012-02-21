@@ -75,7 +75,7 @@ class CapitalItemRegister(RestrictionRegister):
                 return
         # If we got here, then we're dealing with non-capital
         # ship, and all registered holders are tainted
-        if len(self.__capitalHolders) > 0:
+        if self.__capitalHolders:
             taintedHolders = {}
             for holder in self.__capitalHolders:
                 holderVolume = holder.item.attributes[Attribute.volume]

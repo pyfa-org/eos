@@ -132,7 +132,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
                                                                 shipType=shipTypeId,
                                                                 shipGroup=shipGroupId)
         # Raise error if there're any tainted holders
-        if len(taintedHolders) > 0:
+        if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 
     @property

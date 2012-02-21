@@ -246,7 +246,7 @@ class LinkRegister:
                 if info.location == targetLocation and info.filterType is None:
                     affectorsToEnable.add(affector)
         # Bail if we have nothing to do
-        if len(affectorsToEnable) == 0:
+        if not affectorsToEnable:
             return
         # Move all of them to direct modification dictionary
         self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
@@ -266,7 +266,7 @@ class LinkRegister:
             # other holder, else they should be removed with passed holder
             if affector.sourceHolder is not targetHolder:
                 affectorsToDisable.add(affector)
-        if len(affectorsToDisable) == 0:
+        if not affectorsToDisable:
             return
         # Move data from map to map
         self.__disabledDirectAffectors.addDataSet(affector.sourceHolder, affectorsToDisable)
@@ -295,7 +295,7 @@ class LinkRegister:
             if info.location == Location.other and info.filterType is None:
                 affectorsToEnable.add(affector)
         # Bail if we have nothing to do
-        if len(affectorsToEnable) == 0:
+        if not affectorsToEnable:
             return
         # Move all of them to direct modification dictionary
         self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
@@ -323,7 +323,7 @@ class LinkRegister:
             if affector.sourceHolder is otherHolder:
                 affectorsToDisable.add(affector)
         # Do nothing if we have no such affectors
-        if len(affectorsToDisable) == 0:
+        if not affectorsToDisable:
             return
         # If we have, move them from map to map
         self.__disabledDirectAffectors.addDataSet(otherHolder, affectorsToDisable)

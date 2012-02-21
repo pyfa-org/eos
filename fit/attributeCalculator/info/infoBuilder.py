@@ -158,7 +158,7 @@ class InfoBuilder:
             # If there're any modifiers which were not used for
             # info generation, mark current effect as partially parsed
             try:
-                if len(preMods.difference(usedPres)) > 0 or len(postMods.difference(usedPosts)) > 0:
+                if preMods.difference(usedPres) or postMods.difference(usedPosts):
                     raise UnusedModifierError
             except UnusedModifierError:
                 msg = "unused modifiers left after generating infos for effect {}".format(effect.id)

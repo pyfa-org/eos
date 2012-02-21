@@ -94,7 +94,7 @@ class DroneGroupRegister(RestrictionRegister):
             if not holderGroup in allowedGroups:
                 taintedHolders[holder] = DroneGroupErrorData(allowedGroups=allowedGroups,
                                                              droneGroup=holderGroup)
-        if len(taintedHolders) > 0:
+        if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 
     @property
