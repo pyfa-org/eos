@@ -28,6 +28,7 @@ from eos.fit.item.drone import Drone
 from eos.fit.item.implant import Implant
 from eos.fit.item.rig import Rig
 from eos.fit.item.skill import Skill
+from eos.fit.item.booster import Booster
 from eos.util.logger import Logger
 
 class Eos:
@@ -79,3 +80,8 @@ class Eos:
         rigType = self._dataHandler.getType(typeId)
         rig = Rig(rigType)
         return rig
+
+    def makeBooster(self, typeId):
+        boosterType = self._dataHandler.getType(typeId)
+        booster = Booster(boosterType)
+        return booster

@@ -58,10 +58,12 @@ class Module(MutableAttributeHolder):
         # character: unset old charge, and set new one
         oldCharge = self.charge
         if oldCharge is not None:
-            self.fit._removeHolder(oldCharge)
+            if self.fit is not None:
+                self.fit._removeHolder(oldCharge)
             self.__charge = None
             oldCharge.container = None
         if newCharge is not None:
             newCharge.container = self
             self.__charge = newCharge
-            self.fit._addHolder(newCharge)
+            if self.fit is not None:
+                self.fit._addHolder(newCharge)
