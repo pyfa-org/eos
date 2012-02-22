@@ -30,6 +30,7 @@ DroneBandwidthRegister
 from .restriction.rigSize import RigSizeRegister
 from .restriction.shipTypeGroup import ShipTypeGroupRegister
 from .restriction.skillRequirement import SkillRequirementRegister
+from .restriction.skillUniqueness import SkillUniquenessRegister
 from .restriction.slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
 from .restriction.slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
 SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
@@ -72,7 +73,8 @@ class RestrictionTracker:
                                             MaxGroupFittedRegister(),
                                             DroneGroupRegister(self),
                                             RigSizeRegister(self),
-                                            SkillRequirementRegister()),
+                                            SkillRequirementRegister(),
+                                            SkillUniquenessRegister()),
                             State.online:  (CpuRegister(self),
                                             PowerGridRegister(self),
                                             DroneBandwidthRegister(self),

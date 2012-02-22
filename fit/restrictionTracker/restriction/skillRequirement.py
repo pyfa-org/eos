@@ -36,10 +36,12 @@ class SkillRequirementRegister(RestrictionRegister):
     To use holder, all its skill requirements must be met.
 
     Details:
+    Only holders belonging to character and having level attribute
+    are tracked.
     Original item attributes are taken to determine skill and
     skill level requirements.
     If required skill level is None, skill requirement check
-    is skipped.
+    is failed.
     If corresponding skill is found, but its skill level is None,
     check for holder is failed.
     """
