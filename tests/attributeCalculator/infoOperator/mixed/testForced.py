@@ -49,7 +49,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPreAss.sourceType = SourceType.attribute
         infoPreAss.sourceValue = srcAttr.id
         effectPreAss = Effect(None, EffectCategory.passive)
-        effectPreAss._Effect__infos = (infoPreAss,)
+        effectPreAss._infos = (infoPreAss,)
         influenceSourcePreAss = IndependentItem(Type(None, effects=(effectPreAss,), attributes={srcAttr.id: 5}))
         fit._addHolder(influenceSourcePreAss)
         infoPreMul = Info()
@@ -65,7 +65,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPreMul.sourceType = SourceType.attribute
         infoPreMul.sourceValue = srcAttr.id
         effectPreMul = Effect(None, EffectCategory.passive)
-        effectPreMul._Effect__infos = (infoPreMul,)
+        effectPreMul._infos = (infoPreMul,)
         influenceSourcePreMul = IndependentItem(Type(None, effects=(effectPreMul,), attributes={srcAttr.id: 50}))
         fit._addHolder(influenceSourcePreMul)
         infoPreDiv = Info()
@@ -81,7 +81,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPreDiv.sourceType = SourceType.attribute
         infoPreDiv.sourceValue = srcAttr.id
         effectPreDiv = Effect(None, EffectCategory.passive)
-        effectPreDiv._Effect__infos = (infoPreDiv,)
+        effectPreDiv._infos = (infoPreDiv,)
         influenceSourcePreDiv = IndependentItem(Type(None, effects=(effectPreDiv,), attributes={srcAttr.id: 0.5}))
         fit._addHolder(influenceSourcePreDiv)
         infoModAdd = Info()
@@ -97,7 +97,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoModAdd.sourceType = SourceType.attribute
         infoModAdd.sourceValue = srcAttr.id
         effectModAdd = Effect(None, EffectCategory.passive)
-        effectModAdd._Effect__infos = (infoModAdd,)
+        effectModAdd._infos = (infoModAdd,)
         influenceSourceModAdd = IndependentItem(Type(None, effects=(effectModAdd,), attributes={srcAttr.id: 10}))
         fit._addHolder(influenceSourceModAdd)
         infoModSub = Info()
@@ -113,7 +113,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoModSub.sourceType = SourceType.attribute
         infoModSub.sourceValue = srcAttr.id
         effectModSub = Effect(None, EffectCategory.passive)
-        effectModSub._Effect__infos = (infoModSub,)
+        effectModSub._infos = (infoModSub,)
         influenceSourceModSub = IndependentItem(Type(None, effects=(effectModSub,), attributes={srcAttr.id: 63}))
         fit._addHolder(influenceSourceModSub)
         infoPostMul = Info()
@@ -129,7 +129,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPostMul.sourceType = SourceType.attribute
         infoPostMul.sourceValue = srcAttr.id
         effectPostMul = Effect(None, EffectCategory.passive)
-        effectPostMul._Effect__infos = (infoPostMul,)
+        effectPostMul._infos = (infoPostMul,)
         influenceSourcePostMul = IndependentItem(Type(None, effects=(effectPostMul,), attributes={srcAttr.id: 1.35}))
         fit._addHolder(influenceSourcePostMul)
         infoPostDiv = Info()
@@ -145,7 +145,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPostDiv.sourceType = SourceType.attribute
         infoPostDiv.sourceValue = srcAttr.id
         effectPostDiv = Effect(None, EffectCategory.passive)
-        effectPostDiv._Effect__infos = (infoPostDiv,)
+        effectPostDiv._infos = (infoPostDiv,)
         influenceSourcePostDiv = IndependentItem(Type(None, effects=(effectPostDiv,), attributes={srcAttr.id: 2.7}))
         fit._addHolder(influenceSourcePostDiv)
         infoPostPerc = Info()
@@ -161,7 +161,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPostPerc.sourceType = SourceType.attribute
         infoPostPerc.sourceValue = srcAttr.id
         effectPostPerc = Effect(None, EffectCategory.passive)
-        effectPostPerc._Effect__infos = (infoPostPerc,)
+        effectPostPerc._infos = (infoPostPerc,)
         influenceSourcePostPerc = IndependentItem(Type(None, effects=(effectPostPerc,), attributes={srcAttr.id: 15}))
         fit._addHolder(influenceSourcePostPerc)
         infoPostAss = Info()
@@ -177,7 +177,7 @@ class TestOperatorForcedValue(EosTestCase):
         infoPostAss.sourceType = SourceType.attribute
         infoPostAss.sourceValue = srcAttr.id
         effectPostAss = Effect(None, EffectCategory.passive)
-        effectPostAss._Effect__infos = (infoPostAss,)
+        effectPostAss._infos = (infoPostAss,)
         influenceSourcePostAss = IndependentItem(Type(None, effects=(effectPostAss,), attributes={srcAttr.id: 68}))
         fit._addHolder(influenceSourcePostAss)
         influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))

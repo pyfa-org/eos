@@ -43,10 +43,15 @@ class Attribute(metaclass=Enum):
     cpu = 50
     launcherSlotsLeft = 101
     turretSlotsLeft = 102
+    emDamage = 114
+    explosiveDamage = 116
+    kineticDamage = 117
+    thermalDamage = 118
     volume = 161
     requiredSkill1 = 182
     requiredSkill2 = 183
     requiredSkill3 = 184
+    missileDamageMultiplier = 212
     requiredSkill1Level = 277
     requiredSkill2Level = 278
     requiredSkill3Level = 279
@@ -88,6 +93,7 @@ class Attribute(metaclass=Enum):
 class Type(metaclass=Enum):
     """Item ID holder"""
     characterStatic = 1381
+    missileLauncherOperation = 3319  # Skill
     capitalShips = 20533  # Skill
 
 

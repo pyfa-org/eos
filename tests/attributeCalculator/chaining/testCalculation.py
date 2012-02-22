@@ -50,7 +50,7 @@ class TestCalculationChain(EosTestCase):
         info1.sourceType = SourceType.attribute
         info1.sourceValue = attr1.id
         effect1 = Effect(None, EffectCategory.passive)
-        effect1._Effect__infos = (info1,)
+        effect1._infos = (info1,)
         info2 = Info()
         info2.state = State.offline
         info2.context = Context.local
@@ -64,7 +64,7 @@ class TestCalculationChain(EosTestCase):
         info2.sourceType = SourceType.attribute
         info2.sourceValue = attr2.id
         effect2 = Effect(None, EffectCategory.passive)
-        effect2._Effect__infos = (info2,)
+        effect2._infos = (info2,)
         holder1 = CharacterItem(Type(None, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
         info3 = Info()
         info3.state = State.offline
@@ -79,7 +79,7 @@ class TestCalculationChain(EosTestCase):
         info3.sourceType = SourceType.attribute
         info3.sourceValue = attr3.id
         effect3 = Effect(None, EffectCategory.passive)
-        effect3._Effect__infos = (info3,)
+        effect3._infos = (info3,)
         holder2 = IndependentItem(Type(None, effects=(effect3,), attributes={attr3.id: 150}))
         holder3 = ShipItem(Type(None, attributes={attr4.id: 12.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3, attr4.id: attr4})

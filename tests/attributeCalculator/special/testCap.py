@@ -50,7 +50,7 @@ class TestCap(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr.id: 3, srcAttr.id: 6}))
         fit._addHolder(holder)

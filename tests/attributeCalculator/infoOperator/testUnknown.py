@@ -52,7 +52,7 @@ class TestOperatorUnknown(EosTestCase):
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testLog(self):
-        self.effect._Effect__infos = (self.invalidInfo,)
+        self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(83, effects=(self.effect,), attributes={self.srcAttr.id: 1.2, self.tgtAttr.id: 100}))
         self.fit._addHolder(holder)
         self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
@@ -75,7 +75,7 @@ class TestOperatorUnknown(EosTestCase):
         validInfo.targetAttributeId = self.tgtAttr.id
         validInfo.sourceType = SourceType.attribute
         validInfo.sourceValue = self.srcAttr.id
-        self.effect._Effect__infos = (self.invalidInfo, validInfo)
+        self.effect._infos = (self.invalidInfo, validInfo)
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 1.5, self.tgtAttr.id: 100}))
         self.fit._addHolder(holder)
         # Make sure presence of invalid operator doesn't prevent

@@ -49,7 +49,7 @@ class TestLocationDirectOther(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         # We added target attribute to influence source for testSelf;
         # currently, eos cannot calculate attributes which are originally

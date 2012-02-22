@@ -37,7 +37,8 @@ class Info:
         # attribute value.
         self.state = None
 
-        # Boolean flag, identifying local/gang change.
+        # Describes context in which info is applied, must
+        # be Context class' attribute value.
         self.context = None
 
         # Time context in which modification is applied, must

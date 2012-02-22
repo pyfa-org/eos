@@ -52,7 +52,7 @@ class TestFilterUnknown(EosTestCase):
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testLog(self):
-        self.effect._Effect__infos = (self.invalidInfo,)
+        self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(31, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr: 100}))
         self.fit._addHolder(holder)
         self.assertEqual(len(self.log), 1)
@@ -74,7 +74,7 @@ class TestFilterUnknown(EosTestCase):
         validInfo.targetAttributeId = self.tgtAttr.id
         validInfo.sourceType = SourceType.attribute
         validInfo.sourceValue = self.srcAttr.id
-        self.effect._Effect__infos = (self.invalidInfo, validInfo)
+        self.effect._infos = (self.invalidInfo, validInfo)
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
         self.fit._addHolder(holder)
         # Invalid filter type in info should prevent proper processing of other infos

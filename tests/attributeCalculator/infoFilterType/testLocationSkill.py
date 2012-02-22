@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.attribute import Attribute
-from eos.eve.const import Attribute as DgmAttribute, EffectCategory
+from eos.eve.const import Attribute as ConstAttribute, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
@@ -49,24 +49,24 @@ class TestFilterLocationSkillrq(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         self.influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         self.fit._addHolder(self.influenceSource)
 
     def testMatch(self):
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.requiredSkill1: 56}))
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill1: 56}))
         self.fit._addHolder(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherLocation(self):
-        influenceTarget = SpaceItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.requiredSkill1: 56}))
+        influenceTarget = SpaceItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill1: 56}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
 
     def testOtherSkill(self):
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, DgmAttribute.requiredSkill1: 87}))
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill1: 87}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)

@@ -19,8 +19,11 @@
 #===============================================================================
 
 
+from itertools import chain
+
 from .const import nulls, Attribute, Effect, EffectCategory
 from eos.const import Slot, State
+from eos.override.itemEffects import additionalEffects
 
 
 class Type:
@@ -67,8 +70,12 @@ class Type:
         self.attributes = attributes
 
         # Iterable with effects this type has, they describe modifications
-        # which this type applies
-        self.effects = effects
+        # which this type applies. If there're any additional effects specified
+        # in overrides, add them too
+        if additionalEffects.get(self.id) is None:
+            self.effects = effects
+        else:
+            self.effects = tuple(chain(effects, additionalEffects[self.id]))
 
         # Stores required skill IDs and levels as dictionary once calculated
         self.__requiredSkills = None

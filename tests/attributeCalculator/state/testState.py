@@ -89,7 +89,7 @@ class TestStateSwitching(EosTestCase):
         infoOver.sourceValue = srcAttr4.id
         # Overload category will make sure that holder can enter all states
         effect = Effect(None, EffectCategory.overload)
-        effect._Effect__infos = (infoOff, infoOn, infoAct, infoOver)
+        effect._infos = (infoOff, infoOn, infoAct, infoOver)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr1.id: srcAttr1, srcAttr2.id: srcAttr2,
                         srcAttr3.id: srcAttr3, srcAttr4.id: srcAttr4})
         self.holder = IndependentItem(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,

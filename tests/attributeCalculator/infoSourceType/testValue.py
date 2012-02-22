@@ -50,7 +50,7 @@ class TestSourceTypeValue(EosTestCase):
         info.sourceType = SourceType.value
         info.sourceValue = 50
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr.id: 50, srcAttr.id: 20}))
         fit._addHolder(holder)

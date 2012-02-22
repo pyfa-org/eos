@@ -48,7 +48,7 @@ class TestLocationFilterOther(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(90, effects=(effect,), attributes={srcAttr.id: 20}))
         # Charge's container or module's charge can't be 'owner'

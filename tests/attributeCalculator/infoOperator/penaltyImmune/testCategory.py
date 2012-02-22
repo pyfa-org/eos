@@ -49,7 +49,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         self.effect = Effect(1, EffectCategory.passive)
-        self.effect._Effect__infos = (info,)
+        self.effect._infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
 
     def testShip(self):

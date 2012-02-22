@@ -21,12 +21,12 @@
 
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
+from eos.override.effectInfo import infoOverrides
 from .exception import ModifierBuilderException, ModifierValidationError, TreeParsingError, TreeParsingUnexpectedError, \
 UnusedModifierError
 from .helpers import operandData, OperandType
 from .info import Info
 from .modifierBuilder import ModifierBuilder
-from .override import overrides
 
 
 # Dictionary which assists conversion of effect category
@@ -64,8 +64,8 @@ class InfoBuilder:
         Tuple (tuple with Info objects, build status), where build status
         is EffectBuildStatus class' attribute value
         """
-        if overrides.get(effect.id) is not None:
-            return overrides[effect.id], EffectBuildStatus.override
+        if infoOverrides.get(effect.id) is not None:
+            return infoOverrides[effect.id], EffectBuildStatus.override
         try:
             # By default, assume that our build is 100% successful
             buildStatus = EffectBuildStatus.okFull

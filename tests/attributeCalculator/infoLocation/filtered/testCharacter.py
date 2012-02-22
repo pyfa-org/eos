@@ -49,7 +49,7 @@ class TestLocationFilterCharacter(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit

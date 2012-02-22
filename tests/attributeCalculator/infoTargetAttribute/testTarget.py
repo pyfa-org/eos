@@ -62,7 +62,7 @@ class TestTargetAttribute(EosTestCase):
         info2.sourceType = SourceType.attribute
         info2.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info1, info2)
+        effect._infos = (info1, info2)
         fit = Fit({tgtAttr1.id: tgtAttr1, tgtAttr2.id: tgtAttr2, tgtAttr3.id: tgtAttr3, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
                                                                            tgtAttr3.id: 100, srcAttr.id: 20}))

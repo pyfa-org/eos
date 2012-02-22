@@ -22,7 +22,8 @@
 from eos.eve.const import Effect
 
 
-# Dictionary with effect override data
+# Dictionary with infos which override any other
+# infos effects may have
 # Format: {effect: (infos)}
-overrides = {Effect.launcherFitted: (),
-             Effect.turretFitted: ()}
+infoOverrides = {Effect.launcherFitted: (),
+                 Effect.turretFitted: ()}

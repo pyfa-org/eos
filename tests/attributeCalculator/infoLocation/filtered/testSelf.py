@@ -49,7 +49,7 @@ class TestLocationFilterSelf(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         self.influenceSource = IndependentItem(Type(1061, effects=(effect,), attributes={srcAttr.id: 20}))
 

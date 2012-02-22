@@ -48,7 +48,7 @@ class TestLocationDirectSpace(EosTestCase):
         info.sourceType = SourceType.attribute
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
-        effect._Effect__infos = (info,)
+        effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(34, effects=(effect,), attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
