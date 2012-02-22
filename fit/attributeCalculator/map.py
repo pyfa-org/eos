@@ -50,13 +50,15 @@ class MutableAttributeMap:
     def __getitem__(self, attrId):
         # Special handling for skill level attribute
         if attrId == Attribute.skillLevel:
-            # Attempt to return level attribute of holder; if there's no
-            # such attribute, raise KeyError, as on any access failure
+            # Attempt to return level attribute of holder
             try:
                 val = self.__holder.level
-            except AttributeError as e:
-                raise KeyError(attrId) from e
-            return val
+            # Try regular way of getting attribute, if accessing
+            # level attribute failed
+            except AttributeError:
+                pass
+            else:
+                return val
         # If carrier holder isn't assigned to any fit, then
         # we can use just item's original attributes
         if self.__holder.fit is None:
