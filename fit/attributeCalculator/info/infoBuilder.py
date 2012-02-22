@@ -52,13 +52,14 @@ class InfoBuilder:
     """
 
     @classmethod
-    def build(cls, effect, logger):
+    def build(cls, effect, eos):
         """
         Generate Info objects out of passed data.
 
         Positional arguments:
         effect -- effect, for which we're building infos
-        logger -- logger for possible errors
+        eos -- something belonging in this eos instance
+        requests data
 
         Return value:
         Tuple (tuple with Info objects, build status), where build status
@@ -73,12 +74,16 @@ class InfoBuilder:
             preMods = set()
             postMods = set()
             # Make instance of modifier builder
-            modBuilder = ModifierBuilder()
+            modBuilder = ModifierBuilder(eos)
             # Get modifiers out of both trees
-            for tree, runTime, modSet in ((effect.preExpression, RunTime.pre, preMods),
-                                          (effect.postExpression, RunTime.post, postMods)):
+            for treeRootId, runTime, modSet in ((effect.preExpressionId, RunTime.pre, preMods),
+                                                (effect.postExpressionId, RunTime.post, postMods)):
+                # If there's no tree, then there's
+                # nothing to build
+                if treeRootId is None:
+                    continue
                 try:
-                    modifiers, skippedData = modBuilder.build(tree, runTime, effect.categoryId)
+                    modifiers, skippedData = modBuilder.build(treeRootId, runTime, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
                 except ModifierBuilderException as e:
                     raise TreeParsingError(*e.args) from e
@@ -166,24 +171,24 @@ class InfoBuilder:
             except UnusedModifierError:
                 msg = "unused modifiers left after generating infos for effect {}".format(effect.id)
                 signature = (UnusedModifierError, effect.id)
-                logger.warning(msg, childName="infoBuilder", signature=signature)
+                eos._logger.warning(msg, childName="infoBuilder", signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
         except TreeParsingError as e:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
             signature = (TreeParsingError, effect.id)
-            logger.warning(msg, childName="infoBuilder", signature=signature)
+            eos._logger.warning(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError:
             msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
             signature = (TreeParsingUnexpectedError, effect.id)
-            logger.error(msg, childName="infoBuilder", signature=signature)
+            eos._logger.error(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
         except ModifierValidationError:
             msg = "failed to validate modifiers for effect {}".format(effect.id)
             signature = (ModifierValidationError, effect.id)
-            logger.warning(msg, childName="infoBuilder", signature=signature)
+            eos._logger.warning(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
 
         return tuple(infos), buildStatus

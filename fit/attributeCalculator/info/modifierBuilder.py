@@ -36,12 +36,16 @@ class ModifierBuilder:
     aren't directly useful to us) into Modifier objects.
     """
 
-    def build(self, expressionTree, treeRunTime, effectCategoryId):
+    def __init__(self, eos):
+        # Used to request expression tree
+        self.__dataHandler = eos._dataHandler
+
+    def build(self, treeRootId, treeRunTime, effectCategoryId):
         """
         Generate Modifier objects out of passed data.
 
         Positional arguments:
-        expressionTree -- root expression of expression tree
+        treeRootId -- ID of root expression of expression tree
         treeRunTime -- is it pre- or post-expression tree, used
         to define type of instant modifiers, must be RunTime.pre
         or RunTime.post
@@ -74,8 +78,10 @@ class ModifierBuilder:
         # Conditions applied to all expressions found on current
         # building stage
         self.conditions = None
+        # Request tree to parse
+        treeRoot = self.__dataHandler.getExpression(treeRootId)
         # Run parsing process
-        self.__generic(expressionTree, None)
+        self.__generic(treeRoot, None)
         # Unify multiple modifiers which do the same thing, but under different
         # conditions, into single modifiers. We need this for pre-modifiers only,
         # as post-modifiers shouldn't contain conditions by definition, if they

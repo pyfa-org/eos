@@ -121,8 +121,8 @@ class JsonDataHandler(DataHandler):
                             isOffensive=isOffence,
                             isAssistance=isAssist,
                             fittingUsageChanceAttributeID=fitChanceId,
-                            preExpression=self.getExpression(preExpId),
-                            postExpression=self.getExpression(postExpId))
+                            preExpressionId=preExpId,
+                            postExpressionId=postExpId)
             self.__effectsCache[effectId] = effect
 
         return effect
