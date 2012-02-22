@@ -23,7 +23,7 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Logger
+from eos.tests.infoBuilder.environment import Eos
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -31,10 +31,11 @@ class TestStubInt0(EosTestCase):
     """Test parsing of trees describing integer-0 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(None, 27, value="0")
-        ePostStub = Expression(None, 27, value="0")
-        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        ePreStub = Expression(1, 27, value="0")
+        ePostStub = Expression(2, 27, value="0")
+        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
+        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -43,10 +44,11 @@ class TestStubInt1(EosTestCase):
     """Test parsing of trees describing integer-1 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(None, 27, value="1")
-        ePostStub = Expression(None, 27, value="1")
-        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        ePreStub = Expression(1, 27, value="1")
+        ePostStub = Expression(2, 27, value="1")
+        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
+        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -55,10 +57,11 @@ class TestStubBoolTrue(EosTestCase):
     """Test parsing of trees describing boolean-True stub"""
 
     def tesBuildSuccess(self):
-        ePreStub = Expression(None, 23, value="True")
-        ePostStub = Expression(None, 23, value="True")
-        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        ePreStub = Expression(1, 23, value="True")
+        ePostStub = Expression(2, 23, value="True")
+        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
+        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -67,9 +70,10 @@ class TestStubMixed(EosTestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def testBuildSuccess(self):
-        ePreStub = Expression(None, 23, value="True")
-        ePostStub = Expression(None, 27, value="0")
-        effect = Effect(None, 0, preExpression=ePreStub, postExpression=ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        ePreStub = Expression(1, 23, value="True")
+        ePostStub = Expression(2, 27, value="0")
+        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
+        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)

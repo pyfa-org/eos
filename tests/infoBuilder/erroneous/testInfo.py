@@ -23,7 +23,7 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Logger
+from eos.tests.infoBuilder.environment import Eos, Logger
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -42,10 +42,11 @@ class TestInfoBuilderError(EosTestCase):
         eTgtItms = Expression(None, 48, arg1=eTgtLoc, arg2=eTgtGrp)
         eTgtSpec = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr)
         eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(None, 6, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(None, 58, arg1=eOptrTgt, arg2=eSrcAttr)
-        effect = Effect(20807, 0, preExpression=eAddMod, postExpression=eRmMod)
-        infos, status = InfoBuilder().build(effect, Logger())
+        eAddMod = Expression(1, 6, arg1=eOptrTgt, arg2=eSrcAttr)
+        eRmMod = Expression(2, 58, arg1=eOptrTgt, arg2=eSrcAttr)
+        effect = Effect(20807, 0, preExpressionId=eAddMod.id, postExpressionId=eRmMod.id)
+        eos = Eos({eAddMod.id: eAddMod, eRmMod.id: eRmMod})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
@@ -63,10 +64,11 @@ class TestInfoBuilderError(EosTestCase):
         eSrcAttr = Expression(None, 22, expressionAttributeId=327)
         eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
         eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(None, 6, arg1=eOptrTgt, arg2=eSrcAttr)
-        ePostStub = Expression(None, 27, value="1")
-        effect = Effect(799, 0, preExpression=eAddMod, postExpression=ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        eAddMod = Expression(1, 6, arg1=eOptrTgt, arg2=eSrcAttr)
+        ePostStub = Expression(2, 27, value="1")
+        effect = Effect(799, 0, preExpressionId=eAddMod.id, postExpressionId=ePostStub.id)
+        eos = Eos({eAddMod.id: eAddMod, ePostStub.id: ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)

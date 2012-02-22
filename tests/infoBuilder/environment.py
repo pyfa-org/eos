@@ -21,6 +21,20 @@
 
 from logging import getLogger, ERROR, WARNING
 
+from eos.dataHandler.exception import ExpressionDataException
+
+
+class DataHandler:
+    def __init__(self, expressionData):
+        self.__expressionData = expressionData
+
+    def getExpression(self, expId):
+        try:
+            expression = self.__expressionData[expId]
+        except KeyError:
+            raise ExpressionDataException(expId)
+        return expression
+
 
 class Logger:
     def __init__(self):
@@ -52,3 +66,9 @@ class Logger:
         else:
             logger = self.__rootLogger.getChild(childName)
         return logger
+
+
+class Eos:
+    def __init__(self, expressionData):
+        self._dataHandler = DataHandler(expressionData)
+        self._logger = Logger()

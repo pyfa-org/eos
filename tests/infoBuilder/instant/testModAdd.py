@@ -23,7 +23,7 @@ from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Oper
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Logger
+from eos.tests.infoBuilder.environment import Eos
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -36,12 +36,13 @@ class TestModAddPreAttr(EosTestCase):
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcAttr = Expression(None, 22, expressionAttributeId=68)
         eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreAdd = Expression(None, 42, arg1=eTgtSpec, arg2=eSrcAttr)
-        self.ePostStub = Expression(None, 27, value="1")
+        self.ePreAdd = Expression(1, 42, arg1=eTgtSpec, arg2=eSrcAttr)
+        self.ePostStub = Expression(2, 27, value="1")
 
     def testGenericBuildSuccess(self):
-        effect = Effect(None, 0, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -57,8 +58,9 @@ class TestModAddPreAttr(EosTestCase):
         self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
-        effect = Effect(None, 0, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -66,8 +68,9 @@ class TestModAddPreAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryActive(self):
-        effect = Effect(None, 1, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 1, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -75,8 +78,9 @@ class TestModAddPreAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryTarget(self):
-        effect = Effect(None, 2, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 2, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -84,14 +88,16 @@ class TestModAddPreAttr(EosTestCase):
         self.assertEqual(info.context, Context.projected)
 
     def testEffCategoryArea(self):
-        effect = Effect(None, 3, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 3, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
-        effect = Effect(None, 4, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 4, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -99,8 +105,9 @@ class TestModAddPreAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryOverload(self):
-        effect = Effect(None, 5, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 5, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -108,14 +115,16 @@ class TestModAddPreAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryDungeon(self):
-        effect = Effect(None, 6, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 6, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
-        effect = Effect(None, 7, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 7, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -132,12 +141,13 @@ class TestModAddPreVal(EosTestCase):
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcVal = Expression(None, 27, value="200")
         eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreAdd = Expression(None, 42, arg1=eTgtSpec, arg2=eSrcVal)
-        self.ePostStub = Expression(None, 27, value="1")
+        self.ePreAdd = Expression(1, 42, arg1=eTgtSpec, arg2=eSrcVal)
+        self.ePostStub = Expression(2, 27, value="1")
 
     def testGenericBuildSuccess(self):
-        effect = Effect(None, 0, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -153,8 +163,9 @@ class TestModAddPreVal(EosTestCase):
         self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
-        effect = Effect(None, 0, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -162,8 +173,9 @@ class TestModAddPreVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryActive(self):
-        effect = Effect(None, 1, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 1, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -171,8 +183,9 @@ class TestModAddPreVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryTarget(self):
-        effect = Effect(None, 2, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 2, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -180,14 +193,16 @@ class TestModAddPreVal(EosTestCase):
         self.assertEqual(info.context, Context.projected)
 
     def testEffCategoryArea(self):
-        effect = Effect(None, 3, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 3, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
-        effect = Effect(None, 4, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 4, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -195,8 +210,9 @@ class TestModAddPreVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryOverload(self):
-        effect = Effect(None, 5, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 5, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -204,14 +220,16 @@ class TestModAddPreVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryDungeon(self):
-        effect = Effect(None, 6, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 6, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
-        effect = Effect(None, 7, preExpression=self.ePreAdd, postExpression=self.ePostStub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 7, preExpressionId=self.ePreAdd.id, postExpressionId=self.ePostStub.id)
+        eos = Eos({self.ePreAdd.id: self.ePreAdd, self.ePostStub.id: self.ePostStub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -228,12 +246,13 @@ class TestModAddPostAttr(EosTestCase):
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcAttr = Expression(None, 22, expressionAttributeId=68)
         eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreStub = Expression(None, 27, value="1")
-        self.ePostAdd = Expression(None, 42, arg1=eTgtSpec, arg2=eSrcAttr)
+        self.ePreStub = Expression(1, 27, value="1")
+        self.ePostAdd = Expression(2, 42, arg1=eTgtSpec, arg2=eSrcAttr)
 
     def testGenericBuildSuccess(self):
-        effect = Effect(None, 0, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -249,8 +268,9 @@ class TestModAddPostAttr(EosTestCase):
         self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
-        effect = Effect(None, 0, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -258,8 +278,9 @@ class TestModAddPostAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryActive(self):
-        effect = Effect(None, 1, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 1, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -267,8 +288,9 @@ class TestModAddPostAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryTarget(self):
-        effect = Effect(None, 2, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 2, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -276,14 +298,16 @@ class TestModAddPostAttr(EosTestCase):
         self.assertEqual(info.context, Context.projected)
 
     def testEffCategoryArea(self):
-        effect = Effect(None, 3, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 3, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
-        effect = Effect(None, 4, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 4, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -291,8 +315,9 @@ class TestModAddPostAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryOverload(self):
-        effect = Effect(None, 5, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 5, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -300,14 +325,16 @@ class TestModAddPostAttr(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryDungeon(self):
-        effect = Effect(None, 6, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 6, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
-        effect = Effect(None, 7, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 7, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -324,12 +351,13 @@ class TestModAddPostVal(EosTestCase):
         eTgtAttr = Expression(None, 22, expressionAttributeId=264)
         eSrcVal = Expression(None, 27, value="3")
         eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
-        self.ePreStub = Expression(None, 27, value="1")
-        self.ePostAdd = Expression(None, 42, arg1=eTgtSpec, arg2=eSrcVal)
+        self.ePreStub = Expression(1, 27, value="1")
+        self.ePostAdd = Expression(2, 42, arg1=eTgtSpec, arg2=eSrcVal)
 
     def testGenericBuildSuccess(self):
-        effect = Effect(None, 0, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -345,8 +373,9 @@ class TestModAddPostVal(EosTestCase):
         self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
-        effect = Effect(None, 0, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 0, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -354,8 +383,9 @@ class TestModAddPostVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryActive(self):
-        effect = Effect(None, 1, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 1, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -363,8 +393,9 @@ class TestModAddPostVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryTarget(self):
-        effect = Effect(None, 2, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 2, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -372,14 +403,16 @@ class TestModAddPostVal(EosTestCase):
         self.assertEqual(info.context, Context.projected)
 
     def testEffCategoryArea(self):
-        effect = Effect(None, 3, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 3, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
-        effect = Effect(None, 4, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 4, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -387,8 +420,9 @@ class TestModAddPostVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryOverload(self):
-        effect = Effect(None, 5, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 5, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -396,14 +430,16 @@ class TestModAddPostVal(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryDungeon(self):
-        effect = Effect(None, 6, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 6, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
-        effect = Effect(None, 7, preExpression=self.ePreStub, postExpression=self.ePostAdd)
-        infos, status = InfoBuilder().build(effect, Logger())
+        effect = Effect(None, 7, preExpressionId=self.ePreStub.id, postExpressionId=self.ePostAdd.id)
+        eos = Eos({self.ePreStub.id: self.ePreStub, self.ePostAdd.id: self.ePostAdd})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]

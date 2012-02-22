@@ -23,7 +23,7 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Logger
+from eos.tests.infoBuilder.environment import Eos
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -32,25 +32,28 @@ class TestIncompleteDuration(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        # Duration modifier, except for top-most expression
+        # Duration modifier, except for top-most expression, which
+        # is added in test cases
         eTgt = Expression(None, 24, value="Ship")
         eTgtAttr = Expression(None, 22, expressionAttributeId=9)
         eOptr = Expression(None, 21, value="PostPercent")
         self.eSrcAttr = Expression(None, 22, expressionAttributeId=327)
         eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
         self.eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        self.stub = Expression(None, 27, value="1")
+        self.stub = Expression(1, 27, value="1")
 
     def testPre(self):
-        eAddMod = Expression(None, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpression=eAddMod, postExpression=self.stub)
-        infos, status = InfoBuilder().build(effect, Logger())
+        eAddMod = Expression(2, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
+        effect = Effect(None, 0, preExpressionId=eAddMod.id, postExpressionId=self.stub.id)
+        eos = Eos({eAddMod.id: eAddMod, self.stub.id: self.stub})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
 
     def testPost(self):
-        eRmMod = Expression(None, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpression=self.stub, postExpression=eRmMod)
-        infos, status = InfoBuilder().build(effect, Logger())
+        eRmMod = Expression(2, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
+        effect = Effect(None, 0, preExpressionId=self.stub.id, postExpressionId=eRmMod.id)
+        eos = Eos({self.stub.id: self.stub, eRmMod.id: eRmMod})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)

@@ -34,6 +34,9 @@ class ModifierBuilder:
     """
     Class is responsible for converting two trees (pre and post) of Expression objects (which
     aren't directly useful to us) into Modifier objects.
+
+    Positional arguments:
+    eos -- eos instance which uses builder
     """
 
     def __init__(self, eos):

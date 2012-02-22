@@ -23,7 +23,7 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Logger
+from eos.tests.infoBuilder.environment import Eos
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -54,10 +54,11 @@ class TestSplicing(EosTestCase):
         eRmMod2 = Expression(None, 61, arg1=eOptrTgt2, arg2=eSrcAttr2)
         eRmMod3 = Expression(None, 61, arg1=eOptrTgt3, arg2=eSrcAttr3)
         eAddSplice1 = Expression(None, 17, arg1=eAddMod1, arg2=eAddMod3)
-        eAddSplice2 = Expression(None, 17, arg1=eAddMod2, arg2=eAddSplice1)
+        eAddSplice2 = Expression(1, 17, arg1=eAddMod2, arg2=eAddSplice1)
         eRmSplice1 = Expression(None, 17, arg1=eRmMod1, arg2=eRmMod3)
-        eRmSplice2 = Expression(None, 17, arg1=eRmMod2, arg2=eRmSplice1)
-        effect = Effect(None, 0, preExpression=eAddSplice2, postExpression=eRmSplice2)
-        infos, status = InfoBuilder().build(effect, Logger())
+        eRmSplice2 = Expression(2, 17, arg1=eRmMod2, arg2=eRmSplice1)
+        effect = Effect(None, 0, preExpressionId=eAddSplice2.id, postExpressionId=eRmSplice2.id)
+        eos = Eos({eAddSplice2.id: eAddSplice2, eRmSplice2.id: eRmSplice2})
+        infos, status = InfoBuilder().build(effect, eos)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 3)
