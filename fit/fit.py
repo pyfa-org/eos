@@ -82,6 +82,18 @@ class Fit:
         self.__character = character
         self._addHolder(self.__character)
 
+    def validate(self, skipChecks=()):
+        """
+        Run fit validation.
+
+        Keyword arguments:
+        skipChecks -- iterable with checks to be skipped
+
+        Possible exceptions:
+        ValidationError -- raised when validation fails
+        """
+        self._restrictionTracker.validate(skipChecks=skipChecks)
+
     def _addHolder(self, holder):
         """
         Handle adding of holder to fit.

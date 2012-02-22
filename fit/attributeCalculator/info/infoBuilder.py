@@ -60,8 +60,8 @@ class InfoBuilder:
         logger -- logger for possible errors
 
         Return value:
-        Tuple (set with Info objects, build status), where build status
-        is Location class' attribute value
+        Tuple (tuple with Info objects, build status), where build status
+        is EffectBuildStatus class' attribute value
         """
         try:
             # By default, assume that our build is 100% successful
