@@ -31,8 +31,10 @@ class Rig(MutableAttributeHolder):
     type_ -- type (item), on which rig is based
     """
 
+    __slots__ = ()
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
 
     @property
     def _location(self):

@@ -20,7 +20,6 @@
 
 
 from eos.const import Location
-from eos.eve.const import Attribute
 from eos.fit.holder import MutableAttributeHolder
 
 
@@ -32,8 +31,10 @@ class Skill(MutableAttributeHolder):
     type_ -- type (item), on which skill is based
     """
 
+    __slots__ = ("__level",)
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
         self.__level = 0
 
     @property

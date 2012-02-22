@@ -31,8 +31,10 @@ class Module(MutableAttributeHolder):
     type_ -- type (item), on which module is based
     """
 
+    __slots__ = ("__charge",)
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
         self.__charge = None
 
     @property

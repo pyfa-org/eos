@@ -135,8 +135,10 @@ class MutableAttributeHolder:
 
 class IndependentItem(MutableAttributeHolder):
 
+    __slots__ = ()
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
 
     @property
     def _location(self):
@@ -145,8 +147,10 @@ class IndependentItem(MutableAttributeHolder):
 
 class CharacterItem(MutableAttributeHolder):
 
+    __slots__ = ()
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
 
     @property
     def _location(self):
@@ -155,8 +159,10 @@ class CharacterItem(MutableAttributeHolder):
 
 class ShipItem(MutableAttributeHolder):
 
+    __slots__ = ()
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
 
     @property
     def _location(self):
@@ -165,8 +171,10 @@ class ShipItem(MutableAttributeHolder):
 
 class SpaceItem(MutableAttributeHolder):
 
+    __slots__ = ()
+
     def __init__(self, type_):
-        super().__init__(type_)
+        MutableAttributeHolder.__init__(self, type_)
 
     @property
     def _location(self):

@@ -19,14 +19,11 @@
 #===============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
-
 from eos.const import State
 from .attributeCalculator.map import MutableAttributeMap
 
 
-class MutableAttributeHolder(metaclass=ABCMeta):
+class MutableAttributeHolder:
     """
     Base attribute holder class inherited by all classes that
     need to keep track of modified attributes.
@@ -34,6 +31,8 @@ class MutableAttributeHolder(metaclass=ABCMeta):
     Positional arguments:
     type_ -- type (item), on which this holder is based
     """
+
+    __slots__ = ("__fit", "item", "attributes", "__state", "__target")
 
     def __init__(self, type_):
         # Which fit this holder is bound to
@@ -125,12 +124,3 @@ class MutableAttributeHolder(metaclass=ABCMeta):
         else:
             falloff = None
         return falloff
-
-    @property
-    @abstractmethod
-    def _location(self):
-        """
-        Service method which each class must implement, used in
-        calculation process
-        """
-        ...
