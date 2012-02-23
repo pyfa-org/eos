@@ -26,7 +26,7 @@ from eos.const import RunTime, SourceType
 from eos.dataHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand
 from .conditionBuilder import ConditionBuilder
-from .exception import ModifierBuilderException, ConditionBuilderException
+from .exception import ModifierBuilderException, TreeFetchError, ConditionBuilderException
 from .helpers import ExpressionData, operandData, OperandType
 from .modifier import Modifier
 
@@ -86,7 +86,7 @@ class ModifierBuilder:
         try:
             treeRoot = self.__dataHandler.getExpression(treeRootId)
         except ExpressionFetchError as e:
-            raise ModifierBuilderException("unable to fetch expression {}".format(e.args[0])) from e
+            raise TreeFetchError("unable to fetch expression {} from tree with root {}".format(e.args[0], treeRootId)) from e
         # Run parsing process
         self.__generic(treeRoot, None)
         # Unify multiple modifiers which do the same thing, but under different

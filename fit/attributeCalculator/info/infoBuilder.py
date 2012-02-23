@@ -22,8 +22,8 @@
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
 from eos.eve.const import Operand, EffectCategory
 from eos.override.effectInfo import infoOverrides
-from .exception import ModifierBuilderException, ModifierValidationError, TreeParsingError, TreeParsingUnexpectedError, \
-UnusedModifierError
+from .exception import TreeDataError, TreeParsingError, TreeParsingUnexpectedError, UnusedModifierError, ModifierValidationError
+from .exception import ModifierBuilderException, TreeFetchError
 from .helpers import operandData, OperandType
 from .info import Info
 from .modifierBuilder import ModifierBuilder
@@ -84,6 +84,8 @@ class InfoBuilder:
                 try:
                     modifiers, skippedData = modBuilder.build(treeRootId, runTime, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
+                except TreeFetchError as e:
+                    raise TreeDataError(*e.args) from e
                 except ModifierBuilderException as e:
                     raise TreeParsingError(*e.args) from e
                 except Exception as e:
@@ -174,6 +176,11 @@ class InfoBuilder:
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
+        except TreeDataError as e:
+            msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
+            signature = (TreeDataError, effect.id)
+            eos._logger.error(msg, childName="infoBuilder", signature=signature)
+            return (), EffectBuildStatus.error
         except TreeParsingError as e:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
             signature = (TreeParsingError, effect.id)

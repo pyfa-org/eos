@@ -39,8 +39,8 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.infoBuilder")
-        self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 900: unable to fetch expression 902")
+        self.assertEqual(logRecord.levelno, Logger.ERROR)
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 900: unable to fetch expression 902 from tree with root 902")
 
     def testGeneric(self):
         ePreStub = Expression(1, 27, value="1")
