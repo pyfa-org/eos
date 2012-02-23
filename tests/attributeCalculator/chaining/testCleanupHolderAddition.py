@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -76,6 +76,11 @@ class TestCleanupChainAddition(EosTestCase):
         # Added holder must clean all already calculated attributes
         # which are now affected by it, to allow recalculation
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
+        fit._removeHolder(holder1)
+        fit._removeHolder(holder2)
+        fit.ship = None
+        fit._removeHolder(holder3)
+        self.assertEqual(fitTrackedData(fit), 0)
 
     def testValue(self):
         attr1 = Attribute(1)
@@ -121,3 +126,8 @@ class TestCleanupChainAddition(EosTestCase):
         # not only attributes; affectors may use both attributes and 'hardcoded'
         # into them values as data source
         self.assertAlmostEqual(holder3.attributes[attr2.id], 0.6875)
+        fit._removeHolder(holder1)
+        fit._removeHolder(holder2)
+        fit.ship = None
+        fit._removeHolder(holder3)
+        self.assertEqual(fitTrackedData(fit), 0)

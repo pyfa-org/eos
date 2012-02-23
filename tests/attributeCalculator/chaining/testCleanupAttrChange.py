@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -77,3 +77,8 @@ class TestCleanupChainChange(EosTestCase):
         # Manually changed attribute must trigger damaging whole chain
         # of attributes, effectively allowing us to recalculate its new value
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.65)
+        fit._removeHolder(holder1)
+        fit._removeHolder(holder2)
+        fit.ship = None
+        fit._removeHolder(holder3)
+        self.assertEqual(fitTrackedData(fit), 0)

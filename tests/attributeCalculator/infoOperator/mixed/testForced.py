@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -184,3 +184,14 @@ class TestOperatorForcedValue(EosTestCase):
         fit._addHolder(influenceTarget)
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 68)
+        fit._removeHolder(influenceSourcePreAss)
+        fit._removeHolder(influenceSourcePreMul)
+        fit._removeHolder(influenceSourcePreDiv)
+        fit._removeHolder(influenceSourceModAdd)
+        fit._removeHolder(influenceSourceModSub)
+        fit._removeHolder(influenceSourcePostMul)
+        fit._removeHolder(influenceSourcePostDiv)
+        fit._removeHolder(influenceSourcePostPerc)
+        fit._removeHolder(influenceSourcePostAss)
+        fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(fit), 0)

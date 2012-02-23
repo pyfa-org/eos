@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -54,3 +54,5 @@ class TestSourceTypeAttribute(EosTestCase):
         fit._addHolder(holder)
         # Check that source attribute is properly modified by 20 percent
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 60)
+        fit._removeHolder(holder)
+        self.assertEqual(fitTrackedData(fit), 0)

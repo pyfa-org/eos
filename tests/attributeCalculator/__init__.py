@@ -21,5 +21,5 @@
 
 """
 Tests in this module verify attributeCalculator
-functionality.
+functionality and absence of memory leaks.
 """

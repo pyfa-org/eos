@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, CharacterItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -62,6 +62,8 @@ class TestLocationFilterSelf(EosTestCase):
         self.fit._removeHolder(self.influenceSource)
         self.fit.ship = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
@@ -72,6 +74,8 @@ class TestLocationFilterSelf(EosTestCase):
         self.fit._removeHolder(self.influenceSource)
         self.fit.character = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute
@@ -83,3 +87,5 @@ class TestLocationFilterSelf(EosTestCase):
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 1061: invalid reference to self for filtered modification")
+        self.fit._removeHolder(self.influenceSource)
+        self.assertEqual(fitTrackedData(self.fit), 0)

@@ -25,7 +25,7 @@ from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -100,42 +100,58 @@ class TestStateSwitching(EosTestCase):
         self.holder.state = State.offline
         self.fit._addHolder(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testFitOnline(self):
         self.holder.state = State.online
         self.fit._addHolder(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testFitActive(self):
         self.holder.state = State.active
         self.fit._addHolder(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testFitOverloaded(self):
         self.holder.state = State.overload
         self.fit._addHolder(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSwitchUpSingle(self):
         self.holder.state = State.offline
         self.fit._addHolder(self.holder)
         self.holder.state = State.online
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSwitchUpMultiple(self):
         self.holder.state = State.online
         self.fit._addHolder(self.holder)
         self.holder.state = State.overload
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSwitchDownSingle(self):
         self.holder.state = State.overload
         self.fit._addHolder(self.holder)
         self.holder.state = State.active
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSwitchDownMultiple(self):
         self.holder.state = State.active
         self.fit._addHolder(self.holder)
         self.holder.state = State.offline
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
+        self.fit._removeHolder(self.holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)

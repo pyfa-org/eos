@@ -27,6 +27,20 @@ from eos.fit.attributeCalculator.map import MutableAttributeMap
 from eos.fit.attributeCalculator.tracker import LinkTracker
 
 
+def fitTrackedData(fit):
+    data = 0
+    register = fit._linkTracker._LinkTracker__register
+    data += len(register._LinkRegister__affecteeLocation)
+    data += len(register._LinkRegister__affecteeLocationGroup)
+    data += len(register._LinkRegister__affecteeLocationSkill)
+    data += len(register._LinkRegister__affectorLocation)
+    data += len(register._LinkRegister__affectorLocationGroup)
+    data += len(register._LinkRegister__affectorLocationSkill)
+    data += len(register._LinkRegister__activeDirectAffectors)
+    data += len(register._LinkRegister__disabledDirectAffectors)
+    return data
+
+
 class DataHandler:
     def __init__(self, attrMetaData):
         self.__attrMetaData = attrMetaData

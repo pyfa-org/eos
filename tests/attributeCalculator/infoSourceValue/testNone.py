@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -61,6 +61,8 @@ class TestSourceValueNone(EosTestCase):
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed source value None on item 529")
+        self.fit._removeHolder(holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testCombination(self):
         validInfo = Info()
@@ -80,3 +82,5 @@ class TestSourceValueNone(EosTestCase):
         self.fit._addHolder(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)

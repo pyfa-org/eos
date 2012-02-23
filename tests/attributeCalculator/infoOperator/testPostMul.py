@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -50,24 +50,38 @@ class TestOperatorPostMul(EosTestCase):
         info.sourceValue = srcAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._infos = (info,)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource1 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.2}))
-        influenceSource2 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5}))
-        influenceSource3 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 0.1}))
-        influenceSource4 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 0.75}))
-        influenceSource5 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 5}))
+        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        self.influenceSource1 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.2}))
+        self.influenceSource2 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5}))
+        self.influenceSource3 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 0.1}))
+        self.influenceSource4 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 0.75}))
+        self.influenceSource5 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 5}))
         self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
-        fit._addHolder(influenceSource1)
-        fit._addHolder(influenceSource2)
-        fit._addHolder(influenceSource3)
-        fit._addHolder(influenceSource4)
-        fit._addHolder(influenceSource5)
-        fit._addHolder(self.influenceTarget)
+        self.fit._addHolder(self.influenceSource1)
+        self.fit._addHolder(self.influenceSource2)
+        self.fit._addHolder(self.influenceSource3)
+        self.fit._addHolder(self.influenceSource4)
+        self.fit._addHolder(self.influenceSource5)
+        self.fit._addHolder(self.influenceTarget)
 
     def testUnpenalized(self):
         self.tgtAttr.stackable = True
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 67.5)
+        self.fit._removeHolder(self.influenceSource1)
+        self.fit._removeHolder(self.influenceSource2)
+        self.fit._removeHolder(self.influenceSource3)
+        self.fit._removeHolder(self.influenceSource4)
+        self.fit._removeHolder(self.influenceSource5)
+        self.fit._removeHolder(self.influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testPenalized(self):
         self.tgtAttr.stackable = False
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 62.5497832)
+        self.fit._removeHolder(self.influenceSource1)
+        self.fit._removeHolder(self.influenceSource2)
+        self.fit._removeHolder(self.influenceSource3)
+        self.fit._removeHolder(self.influenceSource4)
+        self.fit._removeHolder(self.influenceSource5)
+        self.fit._removeHolder(self.influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)

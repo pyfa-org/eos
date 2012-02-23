@@ -25,7 +25,7 @@ from eos.eve.const import Attribute as AttributeIDs, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -62,10 +62,14 @@ class TestFilterLocationSkillrqSelf(EosTestCase):
         self.fit._addHolder(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
-
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testOtherSkill(self):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, AttributeIDs.requiredSkill1: 51}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(self.influenceSource)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)

@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -61,6 +61,8 @@ class TestSourceTypeUnknown(EosTestCase):
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 739: unknown source type 56")
+        self.fit._removeHolder(holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testCombination(self):
         validInfo = Info()
@@ -81,3 +83,5 @@ class TestSourceTypeUnknown(EosTestCase):
         # Make sure presence of invalid sourceType doesn't screw
         # calculating value using other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)

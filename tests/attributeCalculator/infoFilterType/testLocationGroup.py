@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -60,13 +60,21 @@ class TestFilterLocationGroup(EosTestCase):
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testOtherLocation(self):
         influenceTarget = SpaceItem(Type(None, groupId=35, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(self.influenceSource)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testOtherGroup(self):
         influenceTarget = ShipItem(Type(None, groupId=3, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(self.influenceSource)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)

@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -177,3 +177,13 @@ class TestOperatorAllIn(EosTestCase):
         # Operators shouldn't be penalized and should go in this order
         expValue = ((valuePreAss * valuePreMul / valuePreDiv) + valueModAdd - valueModSub) * valuePostMul / valuePostDiv * (1 + valuePostPerc / 100)
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], expValue)
+        fit._removeHolder(influenceSourcePreAss)
+        fit._removeHolder(influenceSourcePreMul)
+        fit._removeHolder(influenceSourcePreDiv)
+        fit._removeHolder(influenceSourceModAdd)
+        fit._removeHolder(influenceSourceModSub)
+        fit._removeHolder(influenceSourcePostMul)
+        fit._removeHolder(influenceSourcePostDiv)
+        fit._removeHolder(influenceSourcePostPerc)
+        fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(fit), 0)

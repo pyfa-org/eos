@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, ItemWithOther
+from eos.tests.attributeCalculator.environment import Fit, ItemWithOther, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -65,3 +65,8 @@ class TestLocationDirectOtherSwitch(EosTestCase):
         influenceTarget2._other = influenceSource
         fit._addHolder(influenceTarget2)
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)
+        fit._removeHolder(influenceTarget2)
+        influenceSource._other = None
+        influenceTarget2._other = None
+        fit._removeHolder(influenceSource)
+        self.assertEqual(fitTrackedData(fit), 0)

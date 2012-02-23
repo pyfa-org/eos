@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -60,6 +60,8 @@ class TestLocationFilterUnknown(EosTestCase):
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 754: unsupported target location 1972 for filtered modification")
+        self.fit._removeHolder(holder)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testCombination(self):
         validInfo = Info()
@@ -81,3 +83,6 @@ class TestLocationFilterUnknown(EosTestCase):
         self.fit._addHolder(influenceTarget)
         # Invalid location in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(influenceTarget)
+        self.fit._removeHolder(influenceSource)
+        self.assertEqual(fitTrackedData(self.fit), 0)

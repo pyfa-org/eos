@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ItemWithOther
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ItemWithOther, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -67,6 +67,8 @@ class TestLocationDirectOther(EosTestCase):
         self.influenceSource._other = None
         influenceTarget._other = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSelf(self):
         # Check that source holder isn't modified
@@ -75,6 +77,9 @@ class TestLocationDirectOther(EosTestCase):
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(self.influenceSource)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testOtherHolder(self):
         # Here we check some "random" holder, w/o assigning
@@ -82,3 +87,6 @@ class TestLocationDirectOther(EosTestCase):
         influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit._removeHolder(self.influenceSource)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)

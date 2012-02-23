@@ -25,7 +25,7 @@ from eos.eve.const import Category, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -60,6 +60,10 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testCharge(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -69,6 +73,10 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSkill(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
@@ -78,6 +86,10 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testImplant(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
@@ -87,6 +99,10 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testSubsystem(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
@@ -96,6 +112,10 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testMixed(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -105,6 +125,10 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)
 
     def testWithNotImmune(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -114,3 +138,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
         self.fit._addHolder(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
+        self.fit._removeHolder(influenceSource1)
+        self.fit._removeHolder(influenceSource2)
+        self.fit._removeHolder(influenceTarget)
+        self.assertEqual(fitTrackedData(self.fit), 0)

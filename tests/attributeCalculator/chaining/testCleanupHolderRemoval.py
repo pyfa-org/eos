@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem, fitTrackedData
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -77,6 +77,11 @@ class TestCleanupChainRemoval(EosTestCase):
         # When holder1 is removed, attr2 of holder2 and attr3 of holder3
         # must be cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
+        fit._removeHolder(holder1)
+        fit._removeHolder(holder2)
+        fit.ship = None
+        fit._removeHolder(holder3)
+        self.assertEqual(fitTrackedData(fit), 0)
 
     def testValue(self):
         attr1 = Attribute(1)
@@ -125,3 +130,8 @@ class TestCleanupChainRemoval(EosTestCase):
         # case, target attribute on holder3 wouldn't be damaged. Proper way is to
         # rely on affectors of holder removed.
         self.assertAlmostEqual(holder3.attributes[attr2.id], 0.5375)
+        fit._removeHolder(holder1)
+        fit._removeHolder(holder2)
+        fit.ship = None
+        fit._removeHolder(holder3)
+        self.assertEqual(fitTrackedData(fit), 0)
