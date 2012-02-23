@@ -26,21 +26,21 @@ class DataHandlerException(EosException):
     pass
 
 
-class TypeDataException(DataHandlerException):
+class TypeFetchError(DataHandlerException):
     """Raised when data handler can't find type with requested ID."""
     pass
 
 
-class AttributeDataException(DataHandlerException):
+class AttributeFetchError(DataHandlerException):
     """Raised when data handler can't find attribute with requested ID."""
     pass
 
 
-class EffectDataException(DataHandlerException):
+class EffectFetchError(DataHandlerException):
     """Raised when data handler can't find effect with requested ID."""
     pass
 
 
-class ExpressionDataException(DataHandlerException):
+class ExpressionFetchError(DataHandlerException):
     """Raised when data handler can't find expression with requested ID."""
     pass

@@ -29,7 +29,7 @@ from eos.eve.expression import Expression
 from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
 from .dataHandler import DataHandler
-from .exception import TypeDataException, AttributeDataException, EffectDataException, ExpressionDataException
+from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
 
 
 class JsonDataHandler(DataHandler):
@@ -68,7 +68,7 @@ class JsonDataHandler(DataHandler):
             try:
                 data = self.__typeData[jsonTypeId]
             except KeyError as e:
-                raise TypeDataException(typeId) from e
+                raise TypeFetchError(typeId) from e
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
             type_ = Type(typeId,
                          groupId=groupId,
@@ -94,7 +94,7 @@ class JsonDataHandler(DataHandler):
             try:
                 data = self.__attributeData[jsonAttrId]
             except KeyError as e:
-                raise AttributeDataException(attrId) from e
+                raise AttributeFetchError(attrId) from e
             maxValue, defaultValue, highIsGood, stackable = data
             attribute = Attribute(attrId,
                                   maxValue=maxValue,
@@ -114,7 +114,7 @@ class JsonDataHandler(DataHandler):
             try:
                 data = self.__effectData[jsonEffectId]
             except KeyError as e:
-                raise EffectDataException(effectId) from e
+                raise EffectFetchError(effectId) from e
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
             effect = Effect(effectId,
                             categoryId=effCategoryId,
@@ -137,7 +137,7 @@ class JsonDataHandler(DataHandler):
             try:
                 data = self.__expressionData[jsonExpId]
             except KeyError as e:
-                raise ExpressionDataException(expId) from e
+                raise ExpressionFetchError(expId) from e
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
             expression = Expression(expId,
                                     opndId,

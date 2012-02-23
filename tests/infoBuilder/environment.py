@@ -21,7 +21,7 @@
 
 from logging import getLogger, ERROR, WARNING
 
-from eos.dataHandler.exception import ExpressionDataException
+from eos.dataHandler.exception import ExpressionFetchError
 
 
 class DataHandler:
@@ -32,7 +32,7 @@ class DataHandler:
         try:
             expression = self.__expressionData[expId]
         except KeyError:
-            raise ExpressionDataException(expId)
+            raise ExpressionFetchError(expId)
         return expression
 
 
