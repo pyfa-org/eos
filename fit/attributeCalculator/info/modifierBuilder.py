@@ -23,6 +23,7 @@ from copy import deepcopy
 from itertools import combinations
 
 from eos.const import RunTime, SourceType
+from eos.dataHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand
 from .conditionBuilder import ConditionBuilder
 from .exception import ModifierBuilderException, ConditionBuilderException
@@ -82,7 +83,10 @@ class ModifierBuilder:
         # building stage
         self.conditions = None
         # Request tree to parse
-        treeRoot = self.__dataHandler.getExpression(treeRootId)
+        try:
+            treeRoot = self.__dataHandler.getExpression(treeRootId)
+        except ExpressionFetchError as e:
+            raise ModifierBuilderException("unable to fetch expression {}".format(e.args[0])) from e
         # Run parsing process
         self.__generic(treeRoot, None)
         # Unify multiple modifiers which do the same thing, but under different

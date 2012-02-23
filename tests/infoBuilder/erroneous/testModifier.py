@@ -30,6 +30,18 @@ from eos.tests.eosTestCase import EosTestCase
 class TestModifierBuilderError(EosTestCase):
     """Test reaction to errors occurred during modifier building stage"""
 
+    def testData(self):
+        effect = Effect(900, 0, preExpressionId=902, postExpressionId=28)
+        eos = Eos({})
+        infos, status = InfoBuilder().build(effect, eos)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(infos), 0)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.infoBuilder")
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 900: unable to fetch expression 902")
+
     def testGeneric(self):
         ePreStub = Expression(1, 27, value="1")
         ePost = Expression(2, 1009)

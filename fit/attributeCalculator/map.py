@@ -128,7 +128,8 @@ class MutableAttributeMap:
         calculated, as its base value is not available
         """
         # Attribute object for attribute being calculated
-        attrMeta = self.__holder.fit._eos._dataHandler.getAttribute(attrId)
+        dataHandler = self.__holder.fit._eos._dataHandler
+        attrMeta = dataHandler.getAttribute(attrId)
         # Base attribute value which we'll use for modification
         baseAttribDict = self.__holder.item.attributes
         try:
