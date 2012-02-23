@@ -30,6 +30,24 @@ from .exception import BaseValueError, EveAttributeError, OperatorError, SourceT
 # Stacking penalty base constant, used in attribute calculations
 penaltyBase = 1 / exp((1 / 2.67) ** 2)
 
+# Items belonging to these categories never have
+# their effects stacking penalized
+penaltyImmuneCategories = (Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem)
+
+# Tuple with penalizable operators
+penalizableOperators = (Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv)
+
+# Map which helps to normalize modifiers
+normalizationMap = {Operator.preAssignment: lambda val: val,
+                    Operator.preMul: lambda val: val,
+                    Operator.preDiv: lambda val: 1 / val,
+                    Operator.modAdd: lambda val: val,
+                    Operator.modSub: lambda val: -val,
+                    Operator.postMul: lambda val: val,
+                    Operator.postDiv: lambda val: 1 / val,
+                    Operator.postPercent: lambda val: val / 100 + 1,
+                    Operator.postAssignment: lambda val: val}
+
 
 class MutableAttributeMap:
     """
@@ -167,9 +185,7 @@ class MutableAttributeMap:
                 operator = info.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
-                penaltyImmuneCategories = (Category.ship, Category.charge, Category.skill, Category.implant, Category.subsystem)
-                penalizableOperators = (Operator.preMul, Operator.postMul, Operator.postPercent, Operator.preDiv, Operator.postDiv)
-                penalize = (not attrMeta.stackable and sourceHolder.item.categoryId not in penaltyImmuneCategories
+                penalize = (not attrMeta.stackable and not sourceHolder.item.categoryId in penaltyImmuneCategories
                             and operator in penalizableOperators)
                 # If source value is attribute reference, get its value
                 if info.sourceType == SourceType.attribute:
@@ -181,15 +197,7 @@ class MutableAttributeMap:
                     raise SourceTypeError(info.sourceType)
                 # Normalize operations to just three types:
                 # assignments, additions, multiplications
-                normalizationMap = {Operator.preAssignment: lambda val: val,
-                                    Operator.preMul: lambda val: val,
-                                    Operator.preDiv: lambda val: 1 / val,
-                                    Operator.modAdd: lambda val: val,
-                                    Operator.modSub: lambda val: -val,
-                                    Operator.postMul: lambda val: val,
-                                    Operator.postDiv: lambda val: 1 / val,
-                                    Operator.postPercent: lambda val: val / 100 + 1,
-                                    Operator.postAssignment: lambda val: val}
+
                 # Raise error on any unknown operator types
                 try:
                     normalize = normalizationMap[operator]
