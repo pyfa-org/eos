@@ -24,7 +24,7 @@ from math import exp
 from eos.const import Operator, SourceType
 from eos.dataHandler.exception import AttributeFetchError
 from eos.eve.const import Category, Attribute
-from .exception import BaseValueError, EveAttributeError, OperatorError, SourceTypeError
+from .exception import BaseValueError, EveAttributeError, OperatorError, SourceTypeError, SourceValueError
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -200,6 +200,9 @@ class MutableAttributeMap:
                     modValue = info.sourceValue
                 else:
                     raise SourceTypeError(info.sourceType)
+                # Check modValue for correctness
+                if modValue is None:
+                    raise SourceValueError(modValue)
                 # Normalize operations to just three types:
                 # assignments, additions, multiplications
                 try:
@@ -229,6 +232,11 @@ class MutableAttributeMap:
             except SourceTypeError as e:
                 msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
                 signature = (SourceTypeError, sourceHolder.item.id, e.args[0])
+                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+                continue
+            except SourceValueError as e:
+                msg = "malformed source value {} on item {}".format(e.args[0], sourceHolder.item.id)
+                signature = (SourceValueError, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         # When data gathering was finished, process penalized modifiers

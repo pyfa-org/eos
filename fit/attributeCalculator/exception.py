@@ -92,3 +92,11 @@ class SourceTypeError(AttributeCalculatorException):
     to calculate method.
     """
     pass
+
+
+class SourceValueError(AttributeCalculatorException):
+    """
+    Raised during calculation process, if source value cannot
+    be processed by calculate method.
+    """
+    pass
