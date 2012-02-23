@@ -58,8 +58,7 @@ class InfoBuilder:
 
         Positional arguments:
         effect -- effect, for which we're building infos
-        eos -- something belonging in this eos instance
-        requests data
+        eos -- instance of eos, which requests data
 
         Return value:
         Tuple (tuple with Info objects, build status), where build status
