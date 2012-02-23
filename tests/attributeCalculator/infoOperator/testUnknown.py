@@ -32,11 +32,12 @@ from eos.tests.eosTestCase import EosTestCase
 class TestOperatorUnknown(EosTestCase):
     """Test unknown operator type"""
 
-    def setUp(self):
-        EosTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1)
-        self.srcAttr = srcAttr = Attribute(2)
-        self.invalidInfo = invalidInfo = Info()
+    def testLogOther(self):
+        # Check how unknown operator value influences
+        # attribute calculator
+        tgtAttr = Attribute(1)
+        srcAttr = Attribute(2)
+        invalidInfo = Info()
         invalidInfo.state = State.offline
         invalidInfo.context = Context.local
         invalidInfo.runTime = RunTime.duration
@@ -48,21 +49,36 @@ class TestOperatorUnknown(EosTestCase):
         invalidInfo.targetAttributeId = tgtAttr.id
         invalidInfo.sourceType = SourceType.attribute
         invalidInfo.sourceValue = srcAttr.id
-        self.effect = Effect(None, EffectCategory.passive)
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-
-    def testLog(self):
-        self.effect._infos = (self.invalidInfo,)
-        holder = IndependentItem(Type(83, effects=(self.effect,), attributes={self.srcAttr.id: 1.2, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
-        self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
+        effect = Effect(None, EffectCategory.passive)
+        effect._infos = (invalidInfo,)
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        holder = IndependentItem(Type(83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
+        fit._addHolder(holder)
+        self.assertAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator 1008")
 
-    def testCombination(self):
+    def testLogUnorderableCombination(self):
+        # Check how non-orderable operator value influences
+        # attribute calculator. Previously, bug in calculation
+        # method made it to crash
+        tgtAttr = Attribute(1)
+        srcAttr = Attribute(2)
+        invalidInfo = Info()
+        invalidInfo.state = State.offline
+        invalidInfo.context = Context.local
+        invalidInfo.runTime = RunTime.duration
+        invalidInfo.gang = False
+        invalidInfo.location = Location.self_
+        invalidInfo.filterType = None
+        invalidInfo.filterValue = None
+        invalidInfo.operator = None
+        invalidInfo.targetAttributeId = tgtAttr.id
+        invalidInfo.sourceType = SourceType.attribute
+        invalidInfo.sourceValue = srcAttr.id
         validInfo = Info()
         validInfo.state = State.offline
         validInfo.context = Context.local
@@ -72,12 +88,53 @@ class TestOperatorUnknown(EosTestCase):
         validInfo.filterType = None
         validInfo.filterValue = None
         validInfo.operator = Operator.postMul
-        validInfo.targetAttributeId = self.tgtAttr.id
+        validInfo.targetAttributeId = tgtAttr.id
         validInfo.sourceType = SourceType.attribute
-        validInfo.sourceValue = self.srcAttr.id
-        self.effect._infos = (self.invalidInfo, validInfo)
-        holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 1.5, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        validInfo.sourceValue = srcAttr.id
+        effect = Effect(None, EffectCategory.passive)
+        effect._infos = (invalidInfo, validInfo)
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        holder = IndependentItem(Type(83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
+        fit._addHolder(holder)
+        self.assertAlmostEqual(holder.attributes[tgtAttr.id], 120)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
+        self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator None")
+
+    def testCombination(self):
+        tgtAttr = Attribute(1)
+        srcAttr = Attribute(2)
+        invalidInfo = Info()
+        invalidInfo.state = State.offline
+        invalidInfo.context = Context.local
+        invalidInfo.runTime = RunTime.duration
+        invalidInfo.gang = False
+        invalidInfo.location = Location.self_
+        invalidInfo.filterType = None
+        invalidInfo.filterValue = None
+        invalidInfo.operator = 1008
+        invalidInfo.targetAttributeId = tgtAttr.id
+        invalidInfo.sourceType = SourceType.attribute
+        invalidInfo.sourceValue = srcAttr.id
+        validInfo = Info()
+        validInfo.state = State.offline
+        validInfo.context = Context.local
+        validInfo.runTime = RunTime.duration
+        validInfo.gang = False
+        validInfo.location = Location.self_
+        validInfo.filterType = None
+        validInfo.filterValue = None
+        validInfo.operator = Operator.postMul
+        validInfo.targetAttributeId = tgtAttr.id
+        validInfo.sourceType = SourceType.attribute
+        validInfo.sourceValue = srcAttr.id
+        effect = Effect(None, EffectCategory.passive)
+        effect._infos = (invalidInfo, validInfo)
+        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        holder = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
+        fit._addHolder(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid infos
-        self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
+        self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)

@@ -179,16 +179,23 @@ class MutableAttributeMap:
                     modValue = info.sourceValue
                 else:
                     raise SourceTypeError(info.sourceType)
-                # Normalize addition/subtraction, so it's always
-                # acts as addition
-                if operator == Operator.modSub:
-                    modValue = -modValue
-                # Normalize multiplicative modifiers, converting them into form of
-                # multiplier
-                elif operator in (Operator.preDiv, Operator.postDiv):
-                    modValue = 1 / modValue
-                elif operator == Operator.postPercent:
-                    modValue = modValue / 100 + 1
+                # Normalize operations to just three types:
+                # assignments, additions, multiplications
+                normalizationMap = {Operator.preAssignment: lambda val: val,
+                                    Operator.preMul: lambda val: val,
+                                    Operator.preDiv: lambda val: 1 / val,
+                                    Operator.modAdd: lambda val: val,
+                                    Operator.modSub: lambda val: -val,
+                                    Operator.postMul: lambda val: val,
+                                    Operator.postDiv: lambda val: 1 / val,
+                                    Operator.postPercent: lambda val: val / 100 + 1,
+                                    Operator.postAssignment: lambda val: val}
+                # Raise error on any unknown operator types
+                try:
+                    normalize = normalizationMap[operator]
+                except KeyError as e:
+                    raise OperatorError(operator) from e
+                modValue = normalize(modValue)
                 # Add value to appropriate dictionary
                 if penalize is True:
                     try:
@@ -201,7 +208,12 @@ class MutableAttributeMap:
                     except KeyError:
                         modList = normalMods[operator] = []
                 modList.append(modValue)
-            # Handle source type failure
+            # Handle operator and source type failure
+            except OperatorError as e:
+                msg = "malformed info on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
+                signature = (OperatorError, sourceHolder.item.id, e.args[0])
+                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+                continue
             except SourceTypeError as e:
                 msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
                 signature = (SourceTypeError, sourceHolder.item.id, e.args[0])
@@ -218,25 +230,17 @@ class MutableAttributeMap:
             modList.append(penalizedValue)
         # Calculate result of normal dictionary, according to operator order
         for operator in sorted(normalMods):
-            try:
-                modList = normalMods[operator]
-                # Pick best modifier for assignments, based on highIsGood value
-                if operator in (Operator.preAssignment, Operator.postAssignment):
-                    result = max(modList) if attrMeta.highIsGood is True else min(modList)
-                elif operator in (Operator.modAdd, Operator.modSub):
-                    for modVal in modList:
-                        result += modVal
-                elif operator in (Operator.preMul, Operator.preDiv, Operator.postMul,
-                                  Operator.postDiv, Operator.postPercent):
-                    for modVal in modList:
-                        result *= modVal
-                else:
-                    raise OperatorError(operator)
-            except OperatorError as e:
-                msg = "malformed info on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
-                signature = (OperatorError, sourceHolder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
-                continue
+            modList = normalMods[operator]
+            # Pick best modifier for assignments, based on highIsGood value
+            if operator in (Operator.preAssignment, Operator.postAssignment):
+                result = max(modList) if attrMeta.highIsGood is True else min(modList)
+            elif operator in (Operator.modAdd, Operator.modSub):
+                for modVal in modList:
+                    result += modVal
+            elif operator in (Operator.preMul, Operator.preDiv, Operator.postMul,
+                              Operator.postDiv, Operator.postPercent):
+                for modVal in modList:
+                    result *= modVal
         # If attribute has upper cap, do not let
         # its value to grow above it
         if attrMeta.maxValue is not None:

@@ -31,6 +31,7 @@ class TestModifierBuilderError(EosTestCase):
     """Test reaction to errors occurred during modifier building stage"""
 
     def testData(self):
+        # Check reaction to expression data fetch errors
         effect = Effect(900, 0, preExpressionId=902, postExpressionId=28)
         eos = Eos({})
         infos, status = InfoBuilder().build(effect, eos)
@@ -85,6 +86,8 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(logRecord.msg, "failed to parse expressions of effect 92: boolean stub with unexpected value False")
 
     def testUnknown(self):
+        # Check reaction to any errors of modifier builder,
+        # which are not specifically processed by it
         ePreStub = Expression(1, 27, value="0")
         ePost = Expression(2, 23, value="Garbage")
         effect = Effect(66, 0, preExpressionId=ePreStub.id, postExpressionId=ePost.id)
