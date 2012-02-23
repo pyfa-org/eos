@@ -48,6 +48,11 @@ normalizationMap = {Operator.preAssignment: lambda val: val,
                     Operator.postPercent: lambda val: val / 100 + 1,
                     Operator.postAssignment: lambda val: val}
 
+# List operator types, according to their already normalized values
+assignments = (Operator.preAssignment, Operator.postAssignment)
+additions = (Operator.modAdd, Operator.modSub)
+multiplications = (Operator.preMul, Operator.preDiv, Operator.postMul, Operator.postDiv, Operator.postPercent)
+
 
 class MutableAttributeMap:
     """
@@ -197,10 +202,9 @@ class MutableAttributeMap:
                     raise SourceTypeError(info.sourceType)
                 # Normalize operations to just three types:
                 # assignments, additions, multiplications
-
-                # Raise error on any unknown operator types
                 try:
                     normalize = normalizationMap[operator]
+                # Raise error on any unknown operator types
                 except KeyError as e:
                     raise OperatorError(operator) from e
                 modValue = normalize(modValue)
@@ -240,13 +244,12 @@ class MutableAttributeMap:
         for operator in sorted(normalMods):
             modList = normalMods[operator]
             # Pick best modifier for assignments, based on highIsGood value
-            if operator in (Operator.preAssignment, Operator.postAssignment):
+            if operator in assignments:
                 result = max(modList) if attrMeta.highIsGood is True else min(modList)
-            elif operator in (Operator.modAdd, Operator.modSub):
+            elif operator in additions:
                 for modVal in modList:
                     result += modVal
-            elif operator in (Operator.preMul, Operator.preDiv, Operator.postMul,
-                              Operator.postDiv, Operator.postPercent):
+            elif operator in multiplications:
                 for modVal in modList:
                     result *= modVal
         # If attribute has upper cap, do not let
