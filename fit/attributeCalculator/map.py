@@ -22,8 +22,9 @@
 from math import exp
 
 from eos.const import Operator, SourceType
+from eos.dataHandler.exception import AttributeFetchError
 from eos.eve.const import Category, Attribute
-from .exception import BaseValueError, OperatorError, SourceTypeError
+from .exception import BaseValueError, EveAttributeError, OperatorError, SourceTypeError
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -72,6 +73,14 @@ class MutableAttributeMap:
             try:
                 val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
             except BaseValueError as e:
+                msg = "unable to find base value for attribute {} on item {}".format(e.args[0], self.__holder.item.id)
+                signature = (BaseValueError, self.__holder.item.id, e.args[0])
+                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
+                raise KeyError(attrId) from e
+            except EveAttributeError as e:
+                msg = "unable to fetch metadata for attribute {}, requested for item {}".format(e.args[0], self.__holder.item.id)
+                signature = (EveAttributeError, self.__holder.item.id, e.args[0])
+                self.__holder.fit._eos._logger.error(msg, childName="attributeCalculator", signature=signature)
                 raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
@@ -129,7 +138,11 @@ class MutableAttributeMap:
         """
         # Attribute object for attribute being calculated
         dataHandler = self.__holder.fit._eos._dataHandler
-        attrMeta = dataHandler.getAttribute(attrId)
+        try:
+            attrMeta = dataHandler.getAttribute(attrId)
+        # Raise error if it cannot be found
+        except AttributeFetchError as e:
+            raise EveAttributeError(attrId) from e
         # Base attribute value which we'll use for modification
         baseAttribDict = self.__holder.item.attributes
         try:

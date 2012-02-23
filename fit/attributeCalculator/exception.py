@@ -70,6 +70,13 @@ class BaseValueError(AttributeCalculatorException):
     pass
 
 
+class EveAttributeError(AttributeCalculatorException):
+    """
+    Raised when attribute being calculated cannot be found in
+    attribute database.
+    """
+    pass
+
 
 class OperatorError(AttributeCalculatorException):
     """
