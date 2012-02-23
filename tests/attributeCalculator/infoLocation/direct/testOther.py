@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ItemWithOther
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -54,11 +54,11 @@ class TestLocationDirectOther(EosTestCase):
         # We added target attribute to influence source for testSelf;
         # currently, eos cannot calculate attributes which are originally
         # missing on item
-        self.influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
+        self.influenceSource = ItemWithOther(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
         self.fit._addHolder(self.influenceSource)
 
     def testOtherLocation(self):
-        influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ItemWithOther(Type(None, attributes={self.tgtAttr.id: 100}))
         self.influenceSource._other = influenceTarget
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)
@@ -70,7 +70,7 @@ class TestLocationDirectOther(EosTestCase):
 
     def testSelf(self):
         # Check that source holder isn't modified
-        influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ItemWithOther(Type(None, attributes={self.tgtAttr.id: 100}))
         self.influenceSource._other = influenceTarget
         influenceTarget._other = self.influenceSource
         self.fit._addHolder(influenceTarget)

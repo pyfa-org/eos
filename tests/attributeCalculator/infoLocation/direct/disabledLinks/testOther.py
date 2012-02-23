@@ -25,7 +25,7 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, ItemWithOther
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -50,9 +50,9 @@ class TestLocationDirectOtherSwitch(EosTestCase):
         effect = Effect(None, EffectCategory.passive)
         effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
+        influenceSource = ItemWithOther(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
         fit._addHolder(influenceSource)
-        influenceTarget1 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
+        influenceTarget1 = ItemWithOther(Type(None, attributes={tgtAttr.id: 100}))
         influenceSource._other = influenceTarget1
         influenceTarget1._other = influenceSource
         fit._addHolder(influenceTarget1)
@@ -60,7 +60,7 @@ class TestLocationDirectOtherSwitch(EosTestCase):
         fit._removeHolder(influenceTarget1)
         influenceSource._other = None
         influenceTarget1._other = None
-        influenceTarget2 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
+        influenceTarget2 = ItemWithOther(Type(None, attributes={tgtAttr.id: 100}))
         influenceSource._other = influenceTarget2
         influenceTarget2._other = influenceSource
         fit._addHolder(influenceTarget2)

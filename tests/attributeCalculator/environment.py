@@ -104,6 +104,8 @@ class Fit:
 
 class MutableAttributeHolder:
 
+    __slots__ = ("__fit", "item", "attributes", "__state")
+
     def __init__(self, type_):
         self.__fit = None
         self.item = type_
@@ -179,3 +181,19 @@ class SpaceItem(MutableAttributeHolder):
     @property
     def _location(self):
         return Location.space
+
+
+class Skill(IndependentItem):
+    __slots__ = ("level",)
+
+    def __init__(self, type_):
+        CharacterItem.__init__(self, type_)
+        self.level = 0
+
+
+class ItemWithOther(IndependentItem):
+    __slots__ = ("_other",)
+
+    def __init__(self, type_):
+        CharacterItem.__init__(self, type_)
+        self._other = None
