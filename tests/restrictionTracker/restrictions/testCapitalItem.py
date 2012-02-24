@@ -27,7 +27,7 @@ from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
 class TestCapitalItem(RestrictionTestCase):
-    """Check functionality of CapitalItem register"""
+    """Check functionality of capital-sized modules restriction"""
 
     def testFailNoShip(self):
         fit = Fit()
@@ -58,9 +58,40 @@ class TestCapitalItem(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testPassSubcapitalHolder(self):
+    def testFailModifiedVolume(self):
+        fit = Fit()
+        holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
+        holder.state = State.offline
+        # Set volume below 500 to check that even when
+        # modified attributes are available, raw attributes
+        # are taken
+        holder.attributes[Attribute.volume] = 100
+        fit._addHolder(holder)
+        ship = IndependentItem(Type(None))
+        fit.ship = ship
+        fit._addHolder(ship)
+        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.allowedVolume, 500)
+        self.assertEqual(restrictionError.holderVolume, 501)
+        fit._removeHolder(holder)
+        fit._removeHolder(ship)
+        fit.ship = None
+        self.assertBuffersEmpty(fit)
+
+    def testPassSubcapitalShipHolder(self):
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 500}))
+        holder.state = State.offline
+        fit._addHolder(holder)
+        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        self.assertIsNone(restrictionError)
+        fit._removeHolder(holder)
+        self.assertBuffersEmpty(fit)
+
+    def testPassNonShipHolder(self):
+        fit = Fit()
+        holder = IndependentItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
         fit._addHolder(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
@@ -74,6 +105,21 @@ class TestCapitalItem(RestrictionTestCase):
         holder.state = State.offline
         fit._addHolder(holder)
         ship = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: ConstType.capitalShips}))
+        fit.ship = ship
+        fit._addHolder(ship)
+        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        self.assertIsNone(restrictionError)
+        fit._removeHolder(holder)
+        fit._removeHolder(ship)
+        fit.ship = None
+        self.assertBuffersEmpty(fit)
+
+    def testPassNoneVolume(self):
+        fit = Fit()
+        holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
+        holder.state = State.offline
+        fit._addHolder(holder)
+        ship = IndependentItem(Type(None))
         fit.ship = ship
         fit._addHolder(ship)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
