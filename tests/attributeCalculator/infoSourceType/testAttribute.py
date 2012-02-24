@@ -25,11 +25,11 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 
 
-class TestSourceTypeAttribute(EosTestCase):
+class TestSourceTypeAttribute(AttrCalcTestCase):
     """Test that attribute reference can be used as source"""
 
     def testAttribute(self):
@@ -55,4 +55,4 @@ class TestSourceTypeAttribute(EosTestCase):
         # Check that source attribute is properly modified by 20 percent
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 60)
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

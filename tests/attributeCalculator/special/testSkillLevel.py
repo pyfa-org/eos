@@ -22,11 +22,11 @@
 from eos.eve.attribute import Attribute
 from eos.eve.const import Attribute as ConstAttribute
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, Skill, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, Skill
 
 
-class TestSkillLevel(EosTestCase):
+class TestSkillLevel(AttrCalcTestCase):
     """Test return value when requesting attribute which isn't set"""
 
     def testSpecialAttrAccess(self):
@@ -38,7 +38,7 @@ class TestSkillLevel(EosTestCase):
         # If holder has level attribute, it must be returned despite of holder contents
         self.assertAlmostEqual(skill.attributes[ConstAttribute.skillLevel], 5)
         fit._removeHolder(skill)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)
 
     def testStandardAttrAccess(self):
         attr = Attribute(ConstAttribute.skillLevel)
@@ -50,4 +50,4 @@ class TestSkillLevel(EosTestCase):
         # be returned
         self.assertAlmostEqual(holder.attributes[ConstAttribute.skillLevel], 3)
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

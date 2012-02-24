@@ -25,15 +25,15 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestOperatorPostMul(EosTestCase):
+class TestOperatorPostMul(AttrCalcTestCase):
     """Test post-multiplication operator"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -73,7 +73,7 @@ class TestOperatorPostMul(EosTestCase):
         self.fit._removeHolder(self.influenceSource4)
         self.fit._removeHolder(self.influenceSource5)
         self.fit._removeHolder(self.influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testPenalized(self):
         self.tgtAttr.stackable = False
@@ -84,4 +84,4 @@ class TestOperatorPostMul(EosTestCase):
         self.fit._removeHolder(self.influenceSource4)
         self.fit._removeHolder(self.influenceSource5)
         self.fit._removeHolder(self.influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

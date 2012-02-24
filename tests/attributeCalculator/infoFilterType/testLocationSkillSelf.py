@@ -25,18 +25,18 @@ from eos.eve.const import Attribute as AttributeIDs, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestFilterLocationSkillrqSelf(EosTestCase):
+class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
     """
     Test location-skill requirement filter, where skill
     requirement references typeID of info carrier
     """
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -64,7 +64,7 @@ class TestFilterLocationSkillrqSelf(EosTestCase):
         self.fit._removeHolder(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testOtherSkill(self):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, AttributeIDs.requiredSkill1: 51}))
@@ -72,4 +72,4 @@ class TestFilterLocationSkillrqSelf(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

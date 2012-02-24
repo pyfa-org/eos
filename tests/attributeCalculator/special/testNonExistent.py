@@ -21,11 +21,12 @@
 
 from eos.eve.attribute import Attribute
 from eos.eve.type import Type
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.environment import Logger
 
 
-class TestNonExistent(EosTestCase):
+class TestNonExistent(AttrCalcTestCase):
     """Test return value when requesting attribute which isn't set"""
 
     def testAttributeError(self):
@@ -41,7 +42,7 @@ class TestNonExistent(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.ERROR)
         self.assertEqual(logRecord.msg, "unable to fetch metadata for attribute 105, requested for item 57")
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)
 
     def testBaseValueError(self):
         # Check case when default value of attribute cannot be
@@ -58,7 +59,7 @@ class TestNonExistent(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "unable to find base value for attribute 89 on item 649")
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)
 
 
     def testDefaultValue(self):
@@ -70,4 +71,4 @@ class TestNonExistent(EosTestCase):
         fit._addHolder(holder)
         self.assertAlmostEqual(holder.attributes[1], 5.6)
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

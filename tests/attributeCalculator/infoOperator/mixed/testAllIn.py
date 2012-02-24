@@ -25,11 +25,11 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestOperatorAllIn(EosTestCase):
+class TestOperatorAllIn(AttrCalcTestCase):
     """Test interaction of all operators, besides post-assignment"""
 
     def testAllIn(self):
@@ -186,4 +186,4 @@ class TestOperatorAllIn(EosTestCase):
         fit._removeHolder(influenceSourcePostDiv)
         fit._removeHolder(influenceSourcePostPerc)
         fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

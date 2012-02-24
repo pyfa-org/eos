@@ -25,11 +25,11 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 
 
-class TestLocationDirectCharacterSwitch(EosTestCase):
+class TestLocationDirectCharacterSwitch(AttrCalcTestCase):
     """Test direct modification of character when it's changed"""
 
     def testCharacter(self):
@@ -65,4 +65,4 @@ class TestLocationDirectCharacterSwitch(EosTestCase):
         fit._removeHolder(influenceSource)
         fit._removeHolder(influenceTarget2)
         fit.character = None
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

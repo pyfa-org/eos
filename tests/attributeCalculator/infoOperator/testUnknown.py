@@ -25,11 +25,12 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.environment import Logger
 
 
-class TestOperatorUnknown(EosTestCase):
+class TestOperatorUnknown(AttrCalcTestCase):
     """Test unknown operator type"""
 
     def testLogOther(self):
@@ -61,7 +62,7 @@ class TestOperatorUnknown(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator 1008")
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)
 
     def testLogUnorderableCombination(self):
         # Check how non-orderable operator value influences
@@ -105,7 +106,7 @@ class TestOperatorUnknown(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator None")
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)
 
     def testCombination(self):
         tgtAttr = Attribute(1)
@@ -143,4 +144,4 @@ class TestOperatorUnknown(EosTestCase):
         # from calculating value based on valid infos
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

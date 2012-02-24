@@ -25,15 +25,15 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem
 
 
-class TestLocationFilterCharacter(EosTestCase):
+class TestLocationFilterCharacter(AttrCalcTestCase):
     """Test location.character for massive filtered modifications"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -63,7 +63,7 @@ class TestLocationFilterCharacter(EosTestCase):
         self.fit._removeHolder(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testOtherLocation(self):
         influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
@@ -71,4 +71,4 @@ class TestLocationFilterCharacter(EosTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(self.influenceSource)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

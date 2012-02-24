@@ -25,15 +25,15 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestOperatorPreAssign(EosTestCase):
+class TestOperatorPreAssign(AttrCalcTestCase):
     """Test pre-assignment operator"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -67,7 +67,7 @@ class TestOperatorPreAssign(EosTestCase):
         self.fit._removeHolder(self.influenceSource2)
         self.fit._removeHolder(self.influenceSource3)
         self.fit._removeHolder(self.influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testHighBad(self):
         self.tgtAttr.highIsGood = False
@@ -76,4 +76,4 @@ class TestOperatorPreAssign(EosTestCase):
         self.fit._removeHolder(self.influenceSource2)
         self.fit._removeHolder(self.influenceSource3)
         self.fit._removeHolder(self.influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

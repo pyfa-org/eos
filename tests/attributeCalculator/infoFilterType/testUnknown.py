@@ -25,15 +25,16 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.environment import Logger
 
 
-class TestFilterUnknown(EosTestCase):
+class TestFilterUnknown(AttrCalcTestCase):
     """Test location filter"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         self.srcAttr = srcAttr = Attribute(2)
         self.invalidInfo = invalidInfo = Info()
@@ -61,7 +62,7 @@ class TestFilterUnknown(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 31: invalid filter type 26500")
         self.fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
         validInfo = Info()
@@ -82,4 +83,4 @@ class TestFilterUnknown(EosTestCase):
         # Invalid filter type in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

@@ -25,15 +25,16 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, CharacterItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.environment import Logger
 
 
-class TestLocationFilterSelf(EosTestCase):
+class TestLocationFilterSelf(AttrCalcTestCase):
     """Test location.self (self-reference) for massive filtered modifications"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         srcAttr = Attribute(2)
         info = Info()
@@ -63,7 +64,7 @@ class TestLocationFilterSelf(EosTestCase):
         self.fit.ship = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
@@ -75,7 +76,7 @@ class TestLocationFilterSelf(EosTestCase):
         self.fit.character = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute
@@ -88,4 +89,4 @@ class TestLocationFilterSelf(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 1061: invalid reference to self for filtered modification")
         self.fit._removeHolder(self.influenceSource)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

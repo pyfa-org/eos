@@ -25,15 +25,16 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Logger, Fit, IndependentItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.environment import Logger
 
 
-class TestLocationFilterUnknown(EosTestCase):
+class TestLocationFilterUnknown(AttrCalcTestCase):
     """Test reaction to unknown location specification for filtered modification"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1)
         self.srcAttr = srcAttr = Attribute(2)
         self.invalidInfo = invalidInfo = Info()
@@ -61,7 +62,7 @@ class TestLocationFilterUnknown(EosTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 754: unsupported target location 1972 for filtered modification")
         self.fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
         validInfo = Info()
@@ -85,4 +86,4 @@ class TestLocationFilterUnknown(EosTestCase):
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit._removeHolder(influenceTarget)
         self.fit._removeHolder(influenceSource)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

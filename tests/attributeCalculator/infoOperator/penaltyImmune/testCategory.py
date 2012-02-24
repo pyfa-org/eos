@@ -25,15 +25,15 @@ from eos.eve.const import Category, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
-class TestOperatorPenaltyImmuneCategory(EosTestCase):
+class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
     """Test that items from several categories are immune to stacking penalty"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        AttrCalcTestCase.setUp(self)
         self.tgtAttr = tgtAttr = Attribute(1, stackable=False)
         self.srcAttr = srcAttr = Attribute(2)
         info = Info()
@@ -63,7 +63,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testCharge(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -76,7 +76,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testSkill(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
@@ -89,7 +89,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testImplant(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
@@ -102,7 +102,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testSubsystem(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
@@ -115,7 +115,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testMixed(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -128,7 +128,7 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)
 
     def testWithNotImmune(self):
         influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -141,4 +141,4 @@ class TestOperatorPenaltyImmuneCategory(EosTestCase):
         self.fit._removeHolder(influenceSource1)
         self.fit._removeHolder(influenceSource2)
         self.fit._removeHolder(influenceTarget)
-        self.assertEqual(fitTrackedData(self.fit), 0)
+        self.assertBuffersEmpty(self.fit)

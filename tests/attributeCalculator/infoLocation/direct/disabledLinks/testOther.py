@@ -25,11 +25,11 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, ItemWithOther, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, ItemWithOther
 
 
-class TestLocationDirectOtherSwitch(EosTestCase):
+class TestLocationDirectOtherSwitch(AttrCalcTestCase):
     """Test direct modification of "other" (e.g. module's charge) when it's changed"""
 
     def testOther(self):
@@ -69,4 +69,4 @@ class TestLocationDirectOtherSwitch(EosTestCase):
         influenceSource._other = None
         influenceTarget2._other = None
         fit._removeHolder(influenceSource)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

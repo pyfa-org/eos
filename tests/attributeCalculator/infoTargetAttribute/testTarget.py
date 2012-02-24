@@ -25,11 +25,11 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 
 
-class TestTargetAttribute(EosTestCase):
+class TestTargetAttribute(AttrCalcTestCase):
     """Test that only targeted attributes are modified"""
 
     def testTargetAttributes(self):
@@ -74,4 +74,4 @@ class TestTargetAttribute(EosTestCase):
         # Third should stay unmodified
         self.assertAlmostEqual(holder.attributes[tgtAttr3.id], 100)
         fit._removeHolder(holder)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

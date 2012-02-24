@@ -25,11 +25,11 @@ from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem, fitTrackedData
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
 
 
-class TestCleanupChainChange(EosTestCase):
+class TestCleanupChainChange(AttrCalcTestCase):
     """Check that changed attribute damages all attributes which are relying on it"""
 
     def testAttribute(self):
@@ -81,4 +81,4 @@ class TestCleanupChainChange(EosTestCase):
         fit._removeHolder(holder2)
         fit.ship = None
         fit._removeHolder(holder3)
-        self.assertEqual(fitTrackedData(fit), 0)
+        self.assertBuffersEmpty(fit)

@@ -19,26 +19,11 @@
 #===============================================================================
 
 
-from logging import getLogger, ERROR, WARNING
-
 from eos.const import State, Location
 from eos.dataHandler.exception import AttributeFetchError
 from eos.fit.attributeCalculator.map import MutableAttributeMap
 from eos.fit.attributeCalculator.tracker import LinkTracker
-
-
-def fitTrackedData(fit):
-    data = 0
-    register = fit._linkTracker._LinkTracker__register
-    data += len(register._LinkRegister__affecteeLocation)
-    data += len(register._LinkRegister__affecteeLocationGroup)
-    data += len(register._LinkRegister__affecteeLocationSkill)
-    data += len(register._LinkRegister__affectorLocation)
-    data += len(register._LinkRegister__affectorLocationGroup)
-    data += len(register._LinkRegister__affectorLocationSkill)
-    data += len(register._LinkRegister__activeDirectAffectors)
-    data += len(register._LinkRegister__disabledDirectAffectors)
-    return data
+from eos.tests.environment import Logger
 
 
 class DataHandler:
@@ -51,38 +36,6 @@ class DataHandler:
         except KeyError:
             raise AttributeFetchError(attrId)
         return attr
-
-
-class Logger:
-    def __init__(self):
-        self.__knownSignatures = set()
-        self.__rootLogger = getLogger("eos_test")
-
-    ERROR = ERROR
-    WARNING = WARNING
-
-    def warning(self, msg, childName=None, signature=None):
-        logger = self.__getChildLogger(childName)
-        if signature is None:
-            logger.warning(msg)
-        elif not signature in self.__knownSignatures:
-            logger.warning(msg)
-            self.__knownSignatures.add(signature)
-
-    def error(self, msg, childName=None, signature=None):
-        logger = self.__getChildLogger(childName)
-        if signature is None:
-            logger.error(msg)
-        elif not signature in self.__knownSignatures:
-            logger.error(msg)
-            self.__knownSignatures.add(signature)
-
-    def __getChildLogger(self, childName):
-        if childName is None:
-            logger = self.__rootLogger
-        else:
-            logger = self.__rootLogger.getChild(childName)
-        return logger
 
 
 class Eos:
