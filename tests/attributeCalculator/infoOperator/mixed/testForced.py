@@ -51,7 +51,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPreAss = Effect(None, EffectCategory.passive)
         effectPreAss._infos = (infoPreAss,)
         influenceSourcePreAss = IndependentItem(Type(None, effects=(effectPreAss,), attributes={srcAttr.id: 5}))
-        fit._addHolder(influenceSourcePreAss)
+        fit.items.append(influenceSourcePreAss)
         infoPreMul = Info()
         infoPreMul.state = State.offline
         infoPreMul.context = Context.local
@@ -67,7 +67,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPreMul = Effect(None, EffectCategory.passive)
         effectPreMul._infos = (infoPreMul,)
         influenceSourcePreMul = IndependentItem(Type(None, effects=(effectPreMul,), attributes={srcAttr.id: 50}))
-        fit._addHolder(influenceSourcePreMul)
+        fit.items.append(influenceSourcePreMul)
         infoPreDiv = Info()
         infoPreDiv.state = State.offline
         infoPreDiv.context = Context.local
@@ -83,7 +83,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPreDiv = Effect(None, EffectCategory.passive)
         effectPreDiv._infos = (infoPreDiv,)
         influenceSourcePreDiv = IndependentItem(Type(None, effects=(effectPreDiv,), attributes={srcAttr.id: 0.5}))
-        fit._addHolder(influenceSourcePreDiv)
+        fit.items.append(influenceSourcePreDiv)
         infoModAdd = Info()
         infoModAdd.state = State.offline
         infoModAdd.context = Context.local
@@ -99,7 +99,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectModAdd = Effect(None, EffectCategory.passive)
         effectModAdd._infos = (infoModAdd,)
         influenceSourceModAdd = IndependentItem(Type(None, effects=(effectModAdd,), attributes={srcAttr.id: 10}))
-        fit._addHolder(influenceSourceModAdd)
+        fit.items.append(influenceSourceModAdd)
         infoModSub = Info()
         infoModSub.state = State.offline
         infoModSub.context = Context.local
@@ -115,7 +115,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectModSub = Effect(None, EffectCategory.passive)
         effectModSub._infos = (infoModSub,)
         influenceSourceModSub = IndependentItem(Type(None, effects=(effectModSub,), attributes={srcAttr.id: 63}))
-        fit._addHolder(influenceSourceModSub)
+        fit.items.append(influenceSourceModSub)
         infoPostMul = Info()
         infoPostMul.state = State.offline
         infoPostMul.context = Context.local
@@ -131,7 +131,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostMul = Effect(None, EffectCategory.passive)
         effectPostMul._infos = (infoPostMul,)
         influenceSourcePostMul = IndependentItem(Type(None, effects=(effectPostMul,), attributes={srcAttr.id: 1.35}))
-        fit._addHolder(influenceSourcePostMul)
+        fit.items.append(influenceSourcePostMul)
         infoPostDiv = Info()
         infoPostDiv.state = State.offline
         infoPostDiv.context = Context.local
@@ -147,7 +147,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostDiv = Effect(None, EffectCategory.passive)
         effectPostDiv._infos = (infoPostDiv,)
         influenceSourcePostDiv = IndependentItem(Type(None, effects=(effectPostDiv,), attributes={srcAttr.id: 2.7}))
-        fit._addHolder(influenceSourcePostDiv)
+        fit.items.append(influenceSourcePostDiv)
         infoPostPerc = Info()
         infoPostPerc.state = State.offline
         infoPostPerc.context = Context.local
@@ -163,7 +163,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostPerc = Effect(None, EffectCategory.passive)
         effectPostPerc._infos = (infoPostPerc,)
         influenceSourcePostPerc = IndependentItem(Type(None, effects=(effectPostPerc,), attributes={srcAttr.id: 15}))
-        fit._addHolder(influenceSourcePostPerc)
+        fit.items.append(influenceSourcePostPerc)
         infoPostAss = Info()
         infoPostAss.state = State.offline
         infoPostAss.context = Context.local
@@ -179,19 +179,19 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostAss = Effect(None, EffectCategory.passive)
         effectPostAss._infos = (infoPostAss,)
         influenceSourcePostAss = IndependentItem(Type(None, effects=(effectPostAss,), attributes={srcAttr.id: 68}))
-        fit._addHolder(influenceSourcePostAss)
+        fit.items.append(influenceSourcePostAss)
         influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
-        fit._addHolder(influenceTarget)
+        fit.items.append(influenceTarget)
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 68)
-        fit._removeHolder(influenceSourcePreAss)
-        fit._removeHolder(influenceSourcePreMul)
-        fit._removeHolder(influenceSourcePreDiv)
-        fit._removeHolder(influenceSourceModAdd)
-        fit._removeHolder(influenceSourceModSub)
-        fit._removeHolder(influenceSourcePostMul)
-        fit._removeHolder(influenceSourcePostDiv)
-        fit._removeHolder(influenceSourcePostPerc)
-        fit._removeHolder(influenceSourcePostAss)
-        fit._removeHolder(influenceTarget)
+        fit.items.remove(influenceSourcePreAss)
+        fit.items.remove(influenceSourcePreMul)
+        fit.items.remove(influenceSourcePreDiv)
+        fit.items.remove(influenceSourceModAdd)
+        fit.items.remove(influenceSourceModSub)
+        fit.items.remove(influenceSourcePostMul)
+        fit.items.remove(influenceSourcePostDiv)
+        fit.items.remove(influenceSourcePostPerc)
+        fit.items.remove(influenceSourcePostAss)
+        fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(fit)

@@ -53,8 +53,8 @@ class TestSourceTypeValue(AttrCalcTestCase):
         effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr.id: 50, srcAttr.id: 20}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         # Check that source attribute is properly modified by 50 percent
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 75)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

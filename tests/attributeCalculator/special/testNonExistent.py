@@ -34,14 +34,14 @@ class TestNonExistent(AttrCalcTestCase):
         # data handler doesn't know about such attribute
         fit = Fit({})
         holder = IndependentItem(Type(57, attributes={105: 20}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.ERROR)
         self.assertEqual(logRecord.msg, "unable to fetch metadata for attribute 105, requested for item 57")
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
     def testBaseValueError(self):
@@ -51,14 +51,14 @@ class TestNonExistent(AttrCalcTestCase):
         attr = Attribute(89)
         fit = Fit({attr.id: attr})
         holder = IndependentItem(Type(649))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 89)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "unable to find base value for attribute 89 on item 649")
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
 
@@ -68,7 +68,7 @@ class TestNonExistent(AttrCalcTestCase):
         attr = Attribute(1, defaultValue=5.6)
         fit = Fit({attr.id: attr})
         holder = IndependentItem(Type(None))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[1], 5.6)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

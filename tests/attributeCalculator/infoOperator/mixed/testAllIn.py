@@ -52,7 +52,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPreAss._infos = (infoPreAss,)
         valuePreAss = 5
         influenceSourcePreAss = IndependentItem(Type(None, effects=(effectPreAss,), attributes={srcAttr.id: valuePreAss}))
-        fit._addHolder(influenceSourcePreAss)
+        fit.items.append(influenceSourcePreAss)
         infoPreMul = Info()
         infoPreMul.state = State.offline
         infoPreMul.context = Context.local
@@ -69,7 +69,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPreMul._infos = (infoPreMul,)
         valuePreMul = 50
         influenceSourcePreMul = IndependentItem(Type(None, effects=(effectPreMul,), attributes={srcAttr.id: valuePreMul}))
-        fit._addHolder(influenceSourcePreMul)
+        fit.items.append(influenceSourcePreMul)
         infoPreDiv = Info()
         infoPreDiv.state = State.offline
         infoPreDiv.context = Context.local
@@ -86,7 +86,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPreDiv._infos = (infoPreDiv,)
         valuePreDiv = 0.5
         influenceSourcePreDiv = IndependentItem(Type(None, effects=(effectPreDiv,), attributes={srcAttr.id: valuePreDiv}))
-        fit._addHolder(influenceSourcePreDiv)
+        fit.items.append(influenceSourcePreDiv)
         infoModAdd = Info()
         infoModAdd.state = State.offline
         infoModAdd.context = Context.local
@@ -103,7 +103,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectModAdd._infos = (infoModAdd,)
         valueModAdd = 10
         influenceSourceModAdd = IndependentItem(Type(None, effects=(effectModAdd,), attributes={srcAttr.id: valueModAdd}))
-        fit._addHolder(influenceSourceModAdd)
+        fit.items.append(influenceSourceModAdd)
         infoModSub = Info()
         infoModSub.state = State.offline
         infoModSub.context = Context.local
@@ -120,7 +120,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectModSub._infos = (infoModSub,)
         valueModSub = 63
         influenceSourceModSub = IndependentItem(Type(None, effects=(effectModSub,), attributes={srcAttr.id: valueModSub}))
-        fit._addHolder(influenceSourceModSub)
+        fit.items.append(influenceSourceModSub)
         infoPostMul = Info()
         infoPostMul.state = State.offline
         infoPostMul.context = Context.local
@@ -137,7 +137,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPostMul._infos = (infoPostMul,)
         valuePostMul = 1.35
         influenceSourcePostMul = IndependentItem(Type(None, effects=(effectPostMul,), attributes={srcAttr.id: valuePostMul}))
-        fit._addHolder(influenceSourcePostMul)
+        fit.items.append(influenceSourcePostMul)
         infoPostDiv = Info()
         infoPostDiv.state = State.offline
         infoPostDiv.context = Context.local
@@ -154,7 +154,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPostDiv._infos = (infoPostDiv,)
         valuePostDiv = 2.7
         influenceSourcePostDiv = IndependentItem(Type(None, effects=(effectPostDiv,), attributes={srcAttr.id: valuePostDiv}))
-        fit._addHolder(influenceSourcePostDiv)
+        fit.items.append(influenceSourcePostDiv)
         infoPostPerc = Info()
         infoPostPerc.state = State.offline
         infoPostPerc.context = Context.local
@@ -171,19 +171,19 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPostPerc._infos = (infoPostPerc,)
         valuePostPerc = 15
         influenceSourcePostPerc = IndependentItem(Type(None, effects=(effectPostPerc,), attributes={srcAttr.id: valuePostPerc}))
-        fit._addHolder(influenceSourcePostPerc)
+        fit.items.append(influenceSourcePostPerc)
         influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
-        fit._addHolder(influenceTarget)
+        fit.items.append(influenceTarget)
         # Operators shouldn't be penalized and should go in this order
         expValue = ((valuePreAss * valuePreMul / valuePreDiv) + valueModAdd - valueModSub) * valuePostMul / valuePostDiv * (1 + valuePostPerc / 100)
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], expValue)
-        fit._removeHolder(influenceSourcePreAss)
-        fit._removeHolder(influenceSourcePreMul)
-        fit._removeHolder(influenceSourcePreDiv)
-        fit._removeHolder(influenceSourceModAdd)
-        fit._removeHolder(influenceSourceModSub)
-        fit._removeHolder(influenceSourcePostMul)
-        fit._removeHolder(influenceSourcePostDiv)
-        fit._removeHolder(influenceSourcePostPerc)
-        fit._removeHolder(influenceTarget)
+        fit.items.remove(influenceSourcePreAss)
+        fit.items.remove(influenceSourcePreMul)
+        fit.items.remove(influenceSourcePreDiv)
+        fit.items.remove(influenceSourceModAdd)
+        fit.items.remove(influenceSourceModSub)
+        fit.items.remove(influenceSourcePostMul)
+        fit.items.remove(influenceSourcePostDiv)
+        fit.items.remove(influenceSourcePostPerc)
+        fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(fit)

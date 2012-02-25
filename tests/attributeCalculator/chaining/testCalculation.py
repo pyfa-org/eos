@@ -83,18 +83,16 @@ class TestCalculationChain(AttrCalcTestCase):
         holder2 = IndependentItem(Type(None, effects=(effect3,), attributes={attr3.id: 150}))
         holder3 = ShipItem(Type(None, attributes={attr4.id: 12.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3, attr4.id: attr4})
-        fit._addHolder(holder1)
+        fit.items.append(holder1)
         fit.ship = holder2
-        fit._addHolder(holder2)
-        fit._addHolder(holder3)
+        fit.items.append(holder3)
         # If everything is processed properly, holder1 will multiply attr2 by attr1
         # on self, resulting in 20 * 5 = 100, then apply it as percentage modifier
         # on ship's (holder2) attr3, resulting in 150 + 100% = 300, then it is applied
         # to all entities assigned to ship, including holder3, to theirs attr4 as
         # percentage modifier again - so final result is 12.5 + 300% = 50
         self.assertAlmostEqual(holder3.attributes[attr4.id], 50)
-        fit._removeHolder(holder1)
-        fit._removeHolder(holder2)
+        fit.items.remove(holder1)
         fit.ship = None
-        fit._removeHolder(holder3)
+        fit.items.remove(holder3)
         self.assertBuffersEmpty(fit)

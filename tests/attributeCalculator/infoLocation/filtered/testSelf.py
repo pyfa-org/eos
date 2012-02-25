@@ -56,37 +56,33 @@ class TestLocationFilterSelf(AttrCalcTestCase):
 
     def testShip(self):
         self.fit.ship = self.influenceSource
-        self.fit._addHolder(self.influenceSource)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
         self.fit.ship = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
-        self.fit._addHolder(self.influenceSource)
         influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
         self.fit.character = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)
 
     def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute
         # calculator won't know that source is 'owner' of some location
         # and will log corresponding error
-        self.fit._addHolder(self.influenceSource)
+        self.fit.items.append(self.influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 1061: invalid reference to self for filtered modification")
-        self.fit._removeHolder(self.influenceSource)
+        self.fit.items.remove(self.influenceSource)
         self.assertBuffersEmpty(self.fit)

@@ -51,22 +51,18 @@ class TestLocationDirectOtherSwitch(AttrCalcTestCase):
         effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = ItemWithOther(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
-        fit._addHolder(influenceSource)
+        fit.items.append(influenceSource)
         influenceTarget1 = ItemWithOther(Type(None, attributes={tgtAttr.id: 100}))
-        influenceSource._other = influenceTarget1
-        influenceTarget1._other = influenceSource
-        fit._addHolder(influenceTarget1)
+        influenceSource.makeOtherLink(influenceTarget1)
+        fit.items.append(influenceTarget1)
         self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
-        fit._removeHolder(influenceTarget1)
-        influenceSource._other = None
-        influenceTarget1._other = None
+        fit.items.remove(influenceTarget1)
+        influenceSource.breakOtherLink(influenceTarget1)
         influenceTarget2 = ItemWithOther(Type(None, attributes={tgtAttr.id: 100}))
-        influenceSource._other = influenceTarget2
-        influenceTarget2._other = influenceSource
-        fit._addHolder(influenceTarget2)
+        influenceSource.makeOtherLink(influenceTarget2)
+        fit.items.append(influenceTarget2)
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)
-        fit._removeHolder(influenceTarget2)
-        influenceSource._other = None
-        influenceTarget2._other = None
-        fit._removeHolder(influenceSource)
+        fit.items.remove(influenceTarget2)
+        influenceSource.breakOtherLink(influenceTarget2)
+        fit.items.remove(influenceSource)
         self.assertBuffersEmpty(fit)

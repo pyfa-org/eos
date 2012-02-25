@@ -53,11 +53,11 @@ class TestLocationFilterArea(AttrCalcTestCase):
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(56, effects=(effect,), attributes={srcAttr.id: 20}))
         # This location just isn't used in EVE and unsupported by Eos by design
-        fit._addHolder(influenceSource)
+        fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 56: unsupported target location {} for filtered modification".format(Location.area))
-        fit._removeHolder(influenceSource)
+        fit.items.remove(influenceSource)
         self.assertBuffersEmpty(fit)

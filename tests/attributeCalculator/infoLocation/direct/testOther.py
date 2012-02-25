@@ -55,38 +55,35 @@ class TestLocationDirectOther(AttrCalcTestCase):
         # currently, eos cannot calculate attributes which are originally
         # missing on item
         self.influenceSource = ItemWithOther(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
-        self.fit._addHolder(self.influenceSource)
+        self.fit.items.append(self.influenceSource)
 
     def testOtherLocation(self):
         influenceTarget = ItemWithOther(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.influenceSource._other = influenceTarget
-        influenceTarget._other = self.influenceSource
-        self.fit._addHolder(influenceTarget)
+        self.influenceSource.makeOtherLink(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
-        self.influenceSource._other = None
-        influenceTarget._other = None
+        self.fit.items.remove(self.influenceSource)
+        self.influenceSource.breakOtherLink(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)
 
     def testSelf(self):
         # Check that source holder isn't modified
         influenceTarget = ItemWithOther(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.influenceSource._other = influenceTarget
-        influenceTarget._other = self.influenceSource
-        self.fit._addHolder(influenceTarget)
+        self.influenceSource.makeOtherLink(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(influenceTarget)
+        self.influenceSource.breakOtherLink(influenceTarget)
+        self.fit.items.remove(self.influenceSource)
         self.assertBuffersEmpty(self.fit)
 
     def testOtherHolder(self):
-        # Here we check some "random" holder, w/o assigning
-        # _other attribute
+        # Here we check some "random" holder, w/o linking holders
         influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(self.influenceSource)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)

@@ -51,18 +51,14 @@ class TestLocationDirectShipSwitch(AttrCalcTestCase):
         effect._infos = (info,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
-        fit._addHolder(influenceSource)
+        fit.items.append(influenceSource)
         influenceTarget1 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
         fit.ship = influenceTarget1
-        fit._addHolder(influenceTarget1)
         self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
-        fit._removeHolder(influenceTarget1)
         fit.ship = None
         influenceTarget2 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
         fit.ship = influenceTarget2
-        fit._addHolder(influenceTarget2)
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)
-        fit._removeHolder(influenceSource)
-        fit._removeHolder(influenceTarget2)
+        fit.items.remove(influenceSource)
         fit.ship = None
         self.assertBuffersEmpty(fit)

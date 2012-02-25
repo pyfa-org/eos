@@ -68,19 +68,16 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         holder2 = IndependentItem(Type(None, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(Type(None, attributes={attr3.id: 0.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3})
-        fit._addHolder(holder1)
+        fit.items.append(holder1)
         fit.ship = holder2
-        fit._addHolder(holder2)
-        fit._addHolder(holder3)
+        fit.items.append(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
-        fit._removeHolder(holder1)
+        fit.items.remove(holder1)
         # When holder1 is removed, attr2 of holder2 and attr3 of holder3
         # must be cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
-        fit._removeHolder(holder1)
-        fit._removeHolder(holder2)
         fit.ship = None
-        fit._removeHolder(holder3)
+        fit.items.remove(holder3)
         self.assertBuffersEmpty(fit)
 
     def testValue(self):
@@ -118,20 +115,17 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         holder2 = IndependentItem(Type(None, effects=(effect2,), attributes={attr1.id: 7.5}))
         holder3 = ShipItem(Type(None, attributes={attr2.id: 0.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2})
-        fit._addHolder(holder1)
+        fit.items.append(holder1)
         fit.ship = holder2
-        fit._addHolder(holder2)
-        fit._addHolder(holder3)
+        fit.items.append(holder3)
         self.assertAlmostEqual(holder3.attributes[attr2.id], 0.6875)
-        fit._removeHolder(holder1)
+        fit.items.remove(holder1)
         # This test is almost the same as previous, but holder1 uses info itself
         # as data source; we need to check this special case to avoid attribute
         # "damaging" based on attributes of holder being removed; if it were the
         # case, target attribute on holder3 wouldn't be damaged. Proper way is to
         # rely on affectors of holder removed.
         self.assertAlmostEqual(holder3.attributes[attr2.id], 0.5375)
-        fit._removeHolder(holder1)
-        fit._removeHolder(holder2)
         fit.ship = None
-        fit._removeHolder(holder3)
+        fit.items.remove(holder3)
         self.assertBuffersEmpty(fit)

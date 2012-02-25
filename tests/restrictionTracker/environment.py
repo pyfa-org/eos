@@ -37,10 +37,6 @@ class HolderContainer:
         self.__fit._removeHolder(holder)
         self.__list.remove(holder)
 
-    def insert(self, index, holder):
-        self.__list.insert(index, holder)
-        self.__fit._addHolder(holder)
-
     def __len__(self):
         return self.__list.__len__()
 

@@ -53,11 +53,11 @@ class TestLocationFilterTarget(AttrCalcTestCase):
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         influenceSource = IndependentItem(Type(88, effects=(effect,), attributes={srcAttr.id: 20}))
         # This functionality isn't implemented for now
-        fit._addHolder(influenceSource)
+        fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 88: unsupported target location {} for filtered modification".format(Location.target))
-        fit._removeHolder(influenceSource)
+        fit.items.remove(influenceSource)
         self.assertBuffersEmpty(fit)

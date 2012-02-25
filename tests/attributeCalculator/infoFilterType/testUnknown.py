@@ -55,13 +55,13 @@ class TestFilterUnknown(AttrCalcTestCase):
     def testLog(self):
         self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(31, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 31: invalid filter type 26500")
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
@@ -79,8 +79,8 @@ class TestFilterUnknown(AttrCalcTestCase):
         validInfo.sourceValue = self.srcAttr.id
         self.effect._infos = (self.invalidInfo, validInfo)
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         # Invalid filter type in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)

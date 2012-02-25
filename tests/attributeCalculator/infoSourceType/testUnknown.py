@@ -55,14 +55,14 @@ class TestSourceTypeUnknown(AttrCalcTestCase):
     def testLog(self):
         self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(739, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 739: unknown source type 56")
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
@@ -80,9 +80,9 @@ class TestSourceTypeUnknown(AttrCalcTestCase):
         validInfo.sourceValue = self.srcAttr.id
         self.effect._infos = (self.invalidInfo, validInfo)
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 1.5, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         # Make sure presence of invalid sourceType doesn't screw
         # calculating value using other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)

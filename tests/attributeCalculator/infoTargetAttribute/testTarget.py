@@ -66,12 +66,12 @@ class TestTargetAttribute(AttrCalcTestCase):
         fit = Fit({tgtAttr1.id: tgtAttr1, tgtAttr2.id: tgtAttr2, tgtAttr3.id: tgtAttr3, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
                                                                            tgtAttr3.id: 100, srcAttr.id: 20}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         # First attribute should be modified by info1
         self.assertAlmostEqual(holder.attributes[tgtAttr1.id], 60)
         # Second should be modified by info2
         self.assertAlmostEqual(holder.attributes[tgtAttr2.id], 96)
         # Third should stay unmodified
         self.assertAlmostEqual(holder.attributes[tgtAttr3.id], 100)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

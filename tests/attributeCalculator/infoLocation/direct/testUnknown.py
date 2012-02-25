@@ -55,13 +55,13 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
     def testLog(self):
         self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 754: unsupported target location 1972 for direct modification")
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
@@ -79,8 +79,8 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         validInfo.sourceValue = self.srcAttr.id
         self.effect._infos = (self.invalidInfo, validInfo)
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         # Invalid location in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)

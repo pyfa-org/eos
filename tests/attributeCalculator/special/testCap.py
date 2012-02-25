@@ -53,8 +53,8 @@ class TestCap(AttrCalcTestCase):
         effect._infos = (info,)
         fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr.id: 3, srcAttr.id: 6}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         # Attribute should be capped at 5.2
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 5.2)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

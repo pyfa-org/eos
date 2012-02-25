@@ -55,13 +55,13 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
     def testLog(self):
         self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 754: unsupported target location 1972 for filtered modification")
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
@@ -79,11 +79,11 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         validInfo.sourceValue = self.srcAttr.id
         self.effect._infos = (self.invalidInfo, validInfo)
         influenceSource = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
-        self.fit._addHolder(influenceSource)
+        self.fit.items.append(influenceSource)
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         # Invalid location in info should prevent proper processing of other infos
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(influenceTarget)
-        self.fit._removeHolder(influenceSource)
+        self.fit.items.remove(influenceTarget)
+        self.fit.items.remove(influenceSource)
         self.assertBuffersEmpty(self.fit)

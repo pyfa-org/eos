@@ -54,41 +54,39 @@ class TestLocationDirectSelf(AttrCalcTestCase):
 
     def testIndependent(self):
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         # We do not test attribute value after item removal here, because
         # removed holder (which is both source and target in this test set)
         # essentially becomes detached, which is covered by other tests
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testCharacter(self):
         holder = CharacterItem(Type(None, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testShip(self):
         holder = ShipItem(Type(None, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testSpace(self):
         holder = SpaceItem(Type(None, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testPositioned(self):
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = holder
-        self.fit._addHolder(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
         self.fit.character = None
         self.assertBuffersEmpty(self.fit)
 
@@ -99,11 +97,9 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         # are not affected too
         influenceSource = IndependentItem(Type(None, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = influenceSource
-        self.fit._addHolder(influenceSource)
         influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(influenceSource)
         self.fit.character = None
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)

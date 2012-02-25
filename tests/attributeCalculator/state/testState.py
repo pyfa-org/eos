@@ -98,60 +98,60 @@ class TestStateSwitching(AttrCalcTestCase):
 
     def testFitOffline(self):
         self.holder.state = State.offline
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testFitOnline(self):
         self.holder.state = State.online
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testFitActive(self):
         self.holder.state = State.active
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testFitOverloaded(self):
         self.holder.state = State.overload
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchUpSingle(self):
         self.holder.state = State.offline
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.holder.state = State.online
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchUpMultiple(self):
         self.holder.state = State.online
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.holder.state = State.overload
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchDownSingle(self):
         self.holder.state = State.overload
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.holder.state = State.active
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchDownMultiple(self):
         self.holder.state = State.active
-        self.fit._addHolder(self.holder)
+        self.fit.items.append(self.holder)
         self.holder.state = State.offline
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
-        self.fit._removeHolder(self.holder)
+        self.fit.items.remove(self.holder)
         self.assertBuffersEmpty(self.fit)

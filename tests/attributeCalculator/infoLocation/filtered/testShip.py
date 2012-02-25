@@ -52,21 +52,21 @@ class TestLocationFilterShip(AttrCalcTestCase):
         effect._infos = (info,)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         self.influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
-        self.fit._addHolder(self.influenceSource)
+        self.fit.items.append(self.influenceSource)
 
     def testMatch(self):
         influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
+        self.fit.items.remove(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)
 
     def testOtherLocation(self):
         influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
-        self.fit._addHolder(influenceTarget)
+        self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(self.influenceSource)
-        self.fit._removeHolder(influenceTarget)
+        self.fit.items.remove(self.influenceSource)
+        self.fit.items.remove(influenceTarget)
         self.assertBuffersEmpty(self.fit)

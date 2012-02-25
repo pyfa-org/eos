@@ -26,6 +26,26 @@ from eos.fit.attributeCalculator.tracker import LinkTracker
 from eos.tests.environment import Logger
 
 
+class HolderContainer:
+    def __init__(self, fit):
+        self.__fit = fit
+        self.__list = []
+
+    def append(self, holder):
+        self.__list.append(holder)
+        self.__fit._addHolder(holder)
+
+    def remove(self, holder):
+        self.__fit._removeHolder(holder)
+        self.__list.remove(holder)
+
+    def __len__(self):
+        return self.__list.__len__()
+
+    def __iter__(self):
+        return (item for item in self.__list)
+
+
 class DataHandler:
     def __init__(self, attrMetaData):
         self.__attrMetaData = attrMetaData
@@ -48,16 +68,45 @@ class Fit:
     def __init__(self, attrMetaData):
         self._eos = Eos(attrMetaData)
         self._linkTracker = LinkTracker(self)
-        self.character = None
-        self.ship = None
+        self.__ship = None
+        self.__character = None
+        self.items = HolderContainer(self)
+
+    @property
+    def ship(self):
+        return self.__ship
+
+    @ship.setter
+    def ship(self, ship):
+        if self.__ship is not None:
+            self._removeHolder(self.__ship)
+        self.__ship = ship
+        if ship is not None:
+            self._addHolder(self.__ship)
+
+    @property
+    def character(self):
+        return self.__character
+
+    @character.setter
+    def character(self, character):
+        if self.__character is not None:
+            self._removeHolder(self.__character)
+        self.__character = character
+        if character is not None:
+            self._addHolder(self.__character)
 
     def _addHolder(self, holder):
+        if holder.fit is not None:
+            raise Exception
         holder.fit = self
         self._linkTracker.addHolder(holder)
         enabledStates = set(filter(lambda s: s <= holder.state, State))
         self._linkTracker.enableStates(holder, enabledStates)
 
     def _removeHolder(self, holder):
+        if holder.fit is None:
+            raise Exception
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         self._linkTracker.disableStates(holder, disabledStates)
         self._linkTracker.removeHolder(holder)
@@ -164,3 +213,15 @@ class ItemWithOther(IndependentItem):
     def __init__(self, type_):
         CharacterItem.__init__(self, type_)
         self._other = None
+
+    def makeOtherLink(self, other):
+        if self._other is not None or other._other is not None:
+            raise Exception
+        self._other = other
+        other._other = self
+
+    def breakOtherLink(self, other):
+        if self._other is not other or other._other is not self:
+            raise Exception
+        self._other = None
+        other._other = None

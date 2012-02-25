@@ -69,17 +69,15 @@ class TestCleanupChainAddition(AttrCalcTestCase):
         holder3 = ShipItem(Type(None, attributes={attr3.id: 0.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3})
         fit.ship = holder2
-        fit._addHolder(holder2)
-        fit._addHolder(holder3)
+        fit.items.append(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
-        fit._addHolder(holder1)
+        fit.items.append(holder1)
         # Added holder must clean all already calculated attributes
         # which are now affected by it, to allow recalculation
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
-        fit._removeHolder(holder1)
-        fit._removeHolder(holder2)
+        fit.items.remove(holder1)
         fit.ship = None
-        fit._removeHolder(holder3)
+        fit.items.remove(holder3)
         self.assertBuffersEmpty(fit)
 
     def testValue(self):
@@ -118,16 +116,14 @@ class TestCleanupChainAddition(AttrCalcTestCase):
         holder3 = ShipItem(Type(None, attributes={attr2.id: 0.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2})
         fit.ship = holder2
-        fit._addHolder(holder2)
-        fit._addHolder(holder3)
+        fit.items.append(holder3)
         self.assertAlmostEqual(holder3.attributes[attr2.id], 0.5375)
-        fit._addHolder(holder1)
+        fit.items.append(holder1)
         # Added holder must clean all attributes depending on its affectors,
         # not only attributes; affectors may use both attributes and 'hardcoded'
         # into them values as data source
         self.assertAlmostEqual(holder3.attributes[attr2.id], 0.6875)
-        fit._removeHolder(holder1)
-        fit._removeHolder(holder2)
+        fit.items.remove(holder1)
         fit.ship = None
-        fit._removeHolder(holder3)
+        fit.items.remove(holder3)
         self.assertBuffersEmpty(fit)

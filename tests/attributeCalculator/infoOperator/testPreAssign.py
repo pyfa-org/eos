@@ -55,25 +55,25 @@ class TestOperatorPreAssign(AttrCalcTestCase):
         self.influenceSource2 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: -20}))
         self.influenceSource3 = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 53}))
         self.influenceTarget = ShipItem(Type(None, attributes={tgtAttr.id: 100}))
-        self.fit._addHolder(self.influenceSource1)
-        self.fit._addHolder(self.influenceSource2)
-        self.fit._addHolder(self.influenceSource3)
-        self.fit._addHolder(self.influenceTarget)
+        self.fit.items.append(self.influenceSource1)
+        self.fit.items.append(self.influenceSource2)
+        self.fit.items.append(self.influenceSource3)
+        self.fit.items.append(self.influenceTarget)
 
     def testHighGood(self):
         self.tgtAttr.highIsGood = True
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], 53)
-        self.fit._removeHolder(self.influenceSource1)
-        self.fit._removeHolder(self.influenceSource2)
-        self.fit._removeHolder(self.influenceSource3)
-        self.fit._removeHolder(self.influenceTarget)
+        self.fit.items.remove(self.influenceSource1)
+        self.fit.items.remove(self.influenceSource2)
+        self.fit.items.remove(self.influenceSource3)
+        self.fit.items.remove(self.influenceTarget)
         self.assertBuffersEmpty(self.fit)
 
     def testHighBad(self):
         self.tgtAttr.highIsGood = False
         self.assertAlmostEqual(self.influenceTarget.attributes[self.tgtAttr.id], -20)
-        self.fit._removeHolder(self.influenceSource1)
-        self.fit._removeHolder(self.influenceSource2)
-        self.fit._removeHolder(self.influenceSource3)
-        self.fit._removeHolder(self.influenceTarget)
+        self.fit.items.remove(self.influenceSource1)
+        self.fit.items.remove(self.influenceSource2)
+        self.fit.items.remove(self.influenceSource3)
+        self.fit.items.remove(self.influenceTarget)
         self.assertBuffersEmpty(self.fit)

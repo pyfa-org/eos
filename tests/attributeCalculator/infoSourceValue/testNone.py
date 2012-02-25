@@ -55,14 +55,14 @@ class TestSourceValueNone(AttrCalcTestCase):
     def testLog(self):
         self.effect._infos = (self.invalidInfo,)
         holder = IndependentItem(Type(529, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed source value None on item 529")
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testCombination(self):
@@ -80,8 +80,8 @@ class TestSourceValueNone(AttrCalcTestCase):
         validInfo.sourceValue = self.srcAttr.id
         self.effect._infos = (self.invalidInfo, validInfo)
         holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 1.5, self.tgtAttr.id: 100}))
-        self.fit._addHolder(holder)
+        self.fit.items.append(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
-        self.fit._removeHolder(holder)
+        self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)

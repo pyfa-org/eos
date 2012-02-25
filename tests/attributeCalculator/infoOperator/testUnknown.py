@@ -54,14 +54,14 @@ class TestOperatorUnknown(AttrCalcTestCase):
         effect._infos = (invalidInfo,)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator 1008")
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
     def testLogUnorderableCombination(self):
@@ -98,14 +98,14 @@ class TestOperatorUnknown(AttrCalcTestCase):
         effect._infos = (invalidInfo, validInfo)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 120)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 83: unknown operator None")
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
     def testCombination(self):
@@ -139,9 +139,9 @@ class TestOperatorUnknown(AttrCalcTestCase):
         effect._infos = (invalidInfo, validInfo)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         holder = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
-        fit._addHolder(holder)
+        fit.items.append(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid infos
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

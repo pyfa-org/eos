@@ -54,11 +54,11 @@ class TestLocationDirectSpace(AttrCalcTestCase):
         influenceSource = IndependentItem(Type(34, effects=(effect,), attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
-        fit._addHolder(influenceSource)
+        fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, "malformed info on item 34: unsupported target location {} for direct modification".format(Location.space))
-        fit._removeHolder(influenceSource)
+        fit.items.remove(influenceSource)
         self.assertBuffersEmpty(fit)
