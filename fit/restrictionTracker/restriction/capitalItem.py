@@ -53,9 +53,13 @@ class CapitalItemRegister(RestrictionRegister):
         # Ignore holders which do not belong to ship
         if holder._location != Location.ship:
             return
-        # Ignore non-capital holders
-        holderVolume = holder.item.attributes.get(Attribute.volume)
-        if holderVolume is None or holderVolume <= self.__maxSubcapVolume:
+        # Ignore holders w/o volume attribute and holders
+        # with volume less than 500,  count in the rest
+        try:
+            holderVolume = holder.item.attributes[Attribute.volume]
+        except KeyError:
+            return
+        if holderVolume is not None and holderVolume <= self.__maxSubcapVolume:
             return
         self.__capitalHolders.add(holder)
 
