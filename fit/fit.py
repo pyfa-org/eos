@@ -67,7 +67,8 @@ class Fit:
         if self.__ship is not None:
             self._removeHolder(self.__ship)
         self.__ship = ship
-        self._addHolder(self.__ship)
+        if ship is not None:
+            self._addHolder(self.__ship)
 
     @property
     def character(self):
@@ -80,7 +81,8 @@ class Fit:
         if self.__character is not None:
             self._removeHolder(self.__character)
         self.__character = character
-        self._addHolder(self.__character)
+        if character is not None:
+            self._addHolder(self.__character)
 
     def validate(self, skipChecks=()):
         """

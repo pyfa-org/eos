@@ -34,17 +34,12 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=56))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 4}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 4}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (4,))
         self.assertEqual(restrictionError.droneGroup, 56)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -53,17 +48,12 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=797))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup2: 69}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup2: 69}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (69,))
         self.assertEqual(restrictionError.droneGroup, 797)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -72,17 +62,12 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=803))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 48, Attribute.allowedDroneGroup2: 106}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 48, Attribute.allowedDroneGroup2: 106}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (48, 106))
         self.assertEqual(restrictionError.droneGroup, 803)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -91,18 +76,14 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=37))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
         ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 59}))
         ship.attributes = {Attribute.allowedDroneGroup1: 37}
         fit.ship = ship
-        fit._addHolder(ship)
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (59,))
         self.assertEqual(restrictionError.droneGroup, 37)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -111,17 +92,12 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=408))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: None, Attribute.allowedDroneGroup2: None}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: None, Attribute.allowedDroneGroup2: None}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, ())
         self.assertEqual(restrictionError.droneGroup, 408)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -130,17 +106,12 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=None))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 1896}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 1896}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (1896,))
         self.assertEqual(restrictionError.droneGroup, None)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -149,10 +120,8 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=None))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
         self.assertBuffersEmpty(fit)
 
@@ -161,15 +130,10 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=71))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -178,15 +142,10 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=22))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 22}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 22}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -195,15 +154,10 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=67))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup2: 67}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup2: 67}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -212,14 +166,9 @@ class TestDroneGroup(RestrictionTestCase):
         holder = IndependentItem(Type(None, groupId=53))
         holder.state = State.offline
         fit.drones.append(holder)
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 907, Attribute.allowedDroneGroup2: 53}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 907, Attribute.allowedDroneGroup2: 53}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
         fit.drones.remove(holder)
-        fit._removeHolder(ship)
         fit.ship = None
         self.assertBuffersEmpty(fit)

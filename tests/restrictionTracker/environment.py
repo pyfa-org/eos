@@ -24,12 +24,61 @@ from eos.fit.restrictionTracker.exception import ValidationError
 from eos.fit.restrictionTracker.tracker import RestrictionTracker
 
 
+class HolderContainer:
+    def __init__(self, fit):
+        self.__fit = fit
+        self.__list = []
+
+    def append(self, holder):
+        self.__list.append(holder)
+        self.__fit._addHolder(holder)
+
+    def remove(self, holder):
+        self.__fit._removeHolder(holder)
+        self.__list.remove(holder)
+
+    def insert(self, index, holder):
+        self.__list.insert(index, holder)
+        self.__fit._addHolder(holder)
+
+    def __len__(self):
+        return self.__list.__len__()
+
+    def __iter__(self):
+        return (item for item in self.__list)
+
+
 class Fit:
     def __init__(self):
         self._restrictionTracker = RestrictionTracker(self)
-        self.character = None
-        self.ship = None
-        self.drones = []
+        self.__ship = None
+        self.__character = None
+        self.items = HolderContainer(self)
+        self.drones = HolderContainer(self)
+
+    @property
+    def ship(self):
+        return self.__ship
+
+    @ship.setter
+    def ship(self, ship):
+        if self.__ship is not None:
+            self._removeHolder(self.__ship)
+        self.__ship = ship
+        if ship is not None:
+            self._addHolder(self.__ship)
+
+    @property
+    def character(self):
+        return self.__character
+
+    @character.setter
+    def character(self, character):
+        if self.__character is not None:
+            self._removeHolder(self.__character)
+        self.__character = character
+        if character is not None:
+            self._addHolder(self.__character)
 
     def _addHolder(self, holder):
         holder.fit = self

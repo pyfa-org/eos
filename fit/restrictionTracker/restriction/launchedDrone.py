@@ -76,8 +76,7 @@ class LaunchedDroneRegister(RestrictionRegister):
         # of allowed drones, raise error
         if len(self.__restrictedHolders) > maxLaunchedDrones:
             taintedHolders = {}
-            # Make new frozen set, so we can re-use data for each launched holder
-            launchedDrones = frozenset(self.__restrictedHolders)
+            launchedDrones = len(self.__restrictedHolders)
             for holder in self.__restrictedHolders:
                 taintedHolders[holder] = LaunchedDroneErrorData(maxLaunchedDrones=maxLaunchedDrones,
                                                                 launchedDrones=launchedDrones)
@@ -85,4 +84,4 @@ class LaunchedDroneRegister(RestrictionRegister):
 
     @property
     def restrictionType(self):
-        return Restriction.droneNumber
+        return Restriction.launchedDrone

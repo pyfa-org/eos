@@ -33,28 +33,25 @@ class TestCapitalItem(RestrictionTestCase):
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
-        fit._addHolder(holder)
+        fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
     def testFailSubcapitalShip(self):
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.items.append(holder)
+        fit.ship = IndependentItem(Type(None))
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
-        fit._removeHolder(holder)
-        fit._removeHolder(ship)
+        fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -66,16 +63,13 @@ class TestCapitalItem(RestrictionTestCase):
         # modified attributes are available, raw attributes
         # are taken
         holder.attributes[Attribute.volume] = 100
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.items.append(holder)
+        fit.ship = IndependentItem(Type(None))
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
-        fit._removeHolder(holder)
-        fit._removeHolder(ship)
+        fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -83,34 +77,31 @@ class TestCapitalItem(RestrictionTestCase):
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 500}))
         holder.state = State.offline
-        fit._addHolder(holder)
+        fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
     def testPassNonShipHolder(self):
         fit = Fit()
         holder = IndependentItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
-        fit._addHolder(holder)
+        fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
+        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
     def testPassCapitalShip(self):
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: ConstType.capitalShips}))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.items.append(holder)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: ConstType.capitalShips}))
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
-        fit._removeHolder(ship)
+        fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
@@ -118,13 +109,10 @@ class TestCapitalItem(RestrictionTestCase):
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
         holder.state = State.offline
-        fit._addHolder(holder)
-        ship = IndependentItem(Type(None))
-        fit.ship = ship
-        fit._addHolder(ship)
+        fit.items.append(holder)
+        fit.ship = IndependentItem(Type(None))
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit._removeHolder(holder)
-        fit._removeHolder(ship)
+        fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
