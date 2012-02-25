@@ -25,6 +25,7 @@ from eos.fit.restrictionTracker.tracker import RestrictionTracker
 
 
 class HolderContainer:
+
     def __init__(self, fit):
         self.__fit = fit
         self.__list = []
@@ -45,6 +46,7 @@ class HolderContainer:
 
 
 class Fit:
+
     def __init__(self):
         self._restrictionTracker = RestrictionTracker(self)
         self.__ship = None
@@ -77,11 +79,15 @@ class Fit:
             self._addHolder(self.__character)
 
     def _addHolder(self, holder):
+        if holder.fit is not None:
+            raise Exception
         holder.fit = self
         enabledStates = set(filter(lambda s: s <= holder.state, State))
         self._restrictionTracker.enableStates(holder, enabledStates)
 
     def _removeHolder(self, holder):
+        if holder.fit is None:
+            raise Exception
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         self._restrictionTracker.disableStates(holder, disabledStates)
         holder.fit = None

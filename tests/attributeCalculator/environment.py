@@ -27,6 +27,7 @@ from eos.tests.environment import Logger
 
 
 class HolderContainer:
+
     def __init__(self, fit):
         self.__fit = fit
         self.__list = []
@@ -47,6 +48,7 @@ class HolderContainer:
 
 
 class DataHandler:
+
     def __init__(self, attrMetaData):
         self.__attrMetaData = attrMetaData
 
@@ -59,12 +61,14 @@ class DataHandler:
 
 
 class Eos:
+
     def __init__(self, attrMetaData):
         self._dataHandler = DataHandler(attrMetaData)
         self._logger = Logger()
 
 
 class Fit:
+
     def __init__(self, attrMetaData):
         self._eos = Eos(attrMetaData)
         self._linkTracker = LinkTracker(self)
@@ -200,6 +204,7 @@ class SpaceItem(MutableAttributeHolder):
 
 
 class Skill(IndependentItem):
+
     __slots__ = ("level",)
 
     def __init__(self, type_):
@@ -208,6 +213,7 @@ class Skill(IndependentItem):
 
 
 class ItemWithOther(IndependentItem):
+
     __slots__ = ("_other",)
 
     def __init__(self, type_):

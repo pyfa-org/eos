@@ -24,6 +24,7 @@ from eos.tests.environment import Logger
 
 
 class DataHandler:
+
     def __init__(self, expressionData):
         self.__expressionData = expressionData
 
@@ -36,6 +37,7 @@ class DataHandler:
 
 
 class Eos:
+
     def __init__(self, expressionData):
         self._dataHandler = DataHandler(expressionData)
         self._logger = Logger()

@@ -23,6 +23,7 @@ from logging import getLogger, ERROR, WARNING
 
 
 class Logger:
+
     def __init__(self):
         self.__knownSignatures = set()
         self.__rootLogger = getLogger("eos_test")
