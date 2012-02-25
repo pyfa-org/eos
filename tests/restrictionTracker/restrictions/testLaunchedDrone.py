@@ -131,10 +131,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         # not 'launched'
         fit = Fit()
         holder1 = IndependentItem(Type(None))
-        holder1.state = State.offline
         fit.drones.append(holder1)
         holder2 = IndependentItem(Type(None))
-        holder2.state = State.offline
         fit.drones.append(holder2)
         char = IndependentItem(Type(None))
         char.attributes[Attribute.maxActiveDrones] = 1
