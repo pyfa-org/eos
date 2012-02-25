@@ -125,3 +125,15 @@ class TestCapitalItem(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
+
+    def testPassCapitalShipNoneVolume(self):
+        # Check that items with None volume are
+        # accepted on capital ships
+        fit = Fit()
+        holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
+        fit.items.append(holder)
+        fit.ship = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: ConstType.capitalShips}))
+        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        self.assertIsNone(restrictionError)
+        fit.ship = None
+        self.assertBuffersEmpty(fit)

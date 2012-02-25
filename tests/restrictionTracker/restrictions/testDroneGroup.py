@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Restriction
+from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem
