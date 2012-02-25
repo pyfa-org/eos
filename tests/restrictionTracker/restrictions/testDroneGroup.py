@@ -86,6 +86,26 @@ class TestDroneGroup(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
+    def testFailMismatchModified(self):
+        fit = Fit()
+        holder = IndependentItem(Type(None, groupId=37))
+        holder.state = State.offline
+        fit.drones.append(holder)
+        fit._addHolder(holder)
+        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 59}))
+        ship.attributes = {Attribute.allowedDroneGroup1: 37}
+        fit.ship = ship
+        fit._addHolder(ship)
+        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        self.assertIsNotNone(restrictionError)
+        self.assertCountEqual(restrictionError.allowedGroups, (59,))
+        self.assertEqual(restrictionError.droneGroup, 37)
+        fit._removeHolder(holder)
+        fit.drones.remove(holder)
+        fit._removeHolder(ship)
+        fit.ship = None
+        self.assertBuffersEmpty(fit)
+
     def testFailAllowedNone(self):
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=408))
