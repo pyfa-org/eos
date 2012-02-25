@@ -128,7 +128,6 @@ class MutableAttributeHolder:
 
     @fit.setter
     def fit(self, newFit):
-        self.attributes.clear()
         self.__fit = newFit
 
     @property

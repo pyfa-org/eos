@@ -30,6 +30,8 @@ class TestCapitalItem(RestrictionTestCase):
     """Check functionality of capital-sized modules restriction"""
 
     def testFailNoShip(self):
+        # Check that error is raised on attempt
+        # to add capital item to fit w/o ship
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
@@ -42,6 +44,9 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailSubcapitalShip(self):
+        # Check that error is raised on attempt
+        # to add capital item to fit with subcapital
+        # ship
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
@@ -56,6 +61,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailModifiedVolume(self):
+        # Make sure original volume value is taken
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
@@ -74,6 +80,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassSubcapitalShipHolder(self):
+        # Make sure no error raised when non-capital
+        # item is added to fit
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 500}))
         holder.state = State.offline
@@ -84,6 +92,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassNonShipHolder(self):
+        # Check that non-ship holders are not affected
+        # by restriction
         fit = Fit()
         holder = IndependentItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
@@ -94,6 +104,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassCapitalShip(self):
+        # Check that capital holders can be added to
+        # capital ship
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
         holder.state = State.offline
@@ -106,6 +118,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassNoneVolume(self):
+        # Check that items with None volume are not restricted
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
         holder.state = State.offline

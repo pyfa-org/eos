@@ -30,6 +30,9 @@ class TestDroneGroup(RestrictionTestCase):
     """Check functionality of drone group restriction"""
 
     def testFailMismatch1(self):
+        # Check that error is returned on attempt
+        # to add drone from group mismatching to
+        # first restriction attribute
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=56))
         holder.state = State.offline
@@ -44,6 +47,9 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailMismatch2(self):
+        # Check that error is returned on attempt
+        # to add drone from group mismatching to
+        # second restriction attribute
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=797))
         holder.state = State.offline
@@ -58,6 +64,9 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailMismatchCombined(self):
+        # Check that error is returned on attempt
+        # to add drone from group mismatching to
+        # both restriction attributes
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=803))
         holder.state = State.offline
@@ -72,12 +81,17 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailMismatchModified(self):
+        # Check that error is returned on attempt
+        # to add drone from group mismatching to
+        # original restriction attribute, but matching
+        # to modified restriction attribute. Effectively
+        # we check that original attribute value is taken
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=37))
         holder.state = State.offline
         fit.drones.append(holder)
         ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 59}))
-        ship.attributes = {Attribute.allowedDroneGroup1: 37}
+        ship.attributes[Attribute.allowedDroneGroup1] = 37
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
@@ -88,20 +102,25 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailAllowedNone(self):
+        # Check that None-valued restriction attributes
+        # result in inability to fit any drone, even from
+        # matching group
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=408))
+        holder = IndependentItem(Type(None, groupId=None))
         holder.state = State.offline
         fit.drones.append(holder)
         fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: None, Attribute.allowedDroneGroup2: None}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, ())
-        self.assertEqual(restrictionError.droneGroup, 408)
+        self.assertEqual(restrictionError.droneGroup, None)
         fit.drones.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
     def testFailDroneNone(self):
+        # Check that drone from None group is subject
+        # to restriction
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=None))
         holder.state = State.offline
@@ -116,6 +135,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassNoShip(self):
+        # Check that restriction isn't applied
+        # when fit doesn't have ship
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=None))
         holder.state = State.offline
@@ -126,6 +147,9 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassShipNoRestriction(self):
+        # Check that restriction isn't applied
+        # when fit has ship, but without restriction
+        # attribute
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=71))
         holder.state = State.offline
@@ -138,6 +162,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassMatch1(self):
+        # Check that no error raised when drone of group
+        # matching to first restriction attribute is added
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=22))
         holder.state = State.offline
@@ -150,6 +176,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassMatch2(self):
+        # Check that no error raised when drone of group
+        # matching to second restriction attribute is added
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=67))
         holder.state = State.offline
@@ -162,6 +190,9 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testPassMatchCombination(self):
+        # Check that no error raised when drone of group
+        # matching to any of two restriction attributes
+        # is added
         fit = Fit()
         holder = IndependentItem(Type(None, groupId=53))
         holder.state = State.offline
