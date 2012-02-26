@@ -76,21 +76,6 @@ class TestCapitalItem(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testFailNoneVolume(self):
-        # Check that items with None volume are always restricted
-        # on non-capital ships
-        fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
-        fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None))
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.allowedVolume, 500)
-        self.assertEqual(restrictionError.holderVolume, None)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
     def testPassSubcapitalShipHolder(self):
         # Make sure no error raised when non-capital
         # item is added to fit
@@ -126,14 +111,26 @@ class TestCapitalItem(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testPassCapitalShipNoneVolume(self):
-        # Check that items with None volume are
-        # accepted on capital ships
+    def testPassNoneVolume(self):
+        # Check that items with None volume are not restricted
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
         fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: ConstType.capitalShips}))
+        fit.ship = IndependentItem(Type(None))
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertBuffersEmpty(fit)
+
+    def testPassNoVolume(self):
+        # Check that items with no volume attribute are not restricted
+        fit = Fit()
+        holder = ShipItem(Type(None))
+        fit.items.append(holder)
+        fit.ship = IndependentItem(Type(None))
+        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        self.assertIsNone(restrictionError)
+        fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)

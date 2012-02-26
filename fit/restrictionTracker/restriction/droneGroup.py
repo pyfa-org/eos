@@ -38,12 +38,10 @@ class DroneGroupRegister(RestrictionRegister):
 
     Details:
     Only holders located in drone container are tracked.
-    If holder has at least one restriction attribute, it is enabled
-    for tracking by this register. Please note that None-values of
-    attributes enable restriction, but do not allow to fit holder to
-    any ship, even if its type or group are None.
     For validation, original values of allowedDroneGroupX attributes
-    are taken.
+    are taken. Validation fails if ship's original attributes have
+    any restriction attribute, and drone group doesn't match to
+    restriction. None-valued restriction attributes on ship are ignored.
     """
 
     def __init__(self, tracker):
@@ -69,20 +67,15 @@ class DroneGroupRegister(RestrictionRegister):
             shipItem = shipHolder.item
         except AttributeError:
             return
-        # Flag which describes if ship restricts
-        # drone groups, and set with allowed groups
-        droneRestriction = False
+        # Set with allowed groups
         allowedGroups = set()
         # Find out if we have restriction, and which drone groups it allowes
         for restrictionAttr in (Attribute.allowedDroneGroup1, Attribute.allowedDroneGroup2):
-            if restrictionAttr in shipItem.attributes:
-                droneRestriction = True
-                allowedGroup = shipItem.attributes[restrictionAttr]
-                if allowedGroup is not None:
-                    allowedGroups.add(allowedGroup)
-        # No restriction attributes - no restriction,
-        # obviously
-        if droneRestriction is not True:
+            allowedGroup = shipItem.attributes.get(restrictionAttr)
+            if allowedGroup is not None:
+                allowedGroups.add(allowedGroup)
+        # No allowed group attributes - no restriction
+        if not allowedGroups:
             return
         taintedHolders = {}
         # Freeze set so it can't be modified, this way we can use it

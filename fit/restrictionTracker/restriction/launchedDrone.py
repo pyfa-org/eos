@@ -59,6 +59,10 @@ class LaunchedDroneRegister(RestrictionRegister):
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
+        launchedDrones = len(self.__restrictedHolders)
+        # Do not check anything if we don't have any launched drones
+        if not launchedDrones:
+            return
         # Get number of drones fit can have in space; assign
         # it to None if fitting doesn't have character, or
         # attribute isn't available
@@ -74,9 +78,8 @@ class LaunchedDroneRegister(RestrictionRegister):
                 maxLaunchedDrones = 0
         # If number of registered drones exceeds number of maximum number
         # of allowed drones, raise error
-        if len(self.__restrictedHolders) > maxLaunchedDrones:
+        if launchedDrones > maxLaunchedDrones:
             taintedHolders = {}
-            launchedDrones = len(self.__restrictedHolders)
             for holder in self.__restrictedHolders:
                 taintedHolders[holder] = LaunchedDroneErrorData(maxLaunchedDrones=maxLaunchedDrones,
                                                                 launchedDrones=launchedDrones)
