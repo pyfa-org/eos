@@ -45,6 +45,23 @@ class TestRigSize(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
+    def testFailOriginal(self):
+        # Original value must be taken
+        fit = Fit()
+        holder = IndependentItem(Type(None, attributes={Attribute.rigSize: 10}))
+        holder.attributes[Attribute.rigSize] = 5
+        fit.items.append(holder)
+        ship = IndependentItem(Type(None, attributes={Attribute.rigSize: 6}))
+        ship.attributes[Attribute.rigSize] = 5
+        fit.ship = ship
+        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.allowedSize, 6)
+        self.assertEqual(restrictionError.holderSize, 10)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertBuffersEmpty(fit)
+
     def testPassNoShip(self):
         # When no ship is assigned, no restriction
         # should be applied to ships

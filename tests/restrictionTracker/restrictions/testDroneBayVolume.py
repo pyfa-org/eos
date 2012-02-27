@@ -129,12 +129,12 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
-        # Make sure modified drone bay volume value is taken
+        # Make sure modified drone bay volume values are taken
         fit = Fit()
         holder = IndependentItem(Type(None, attributes={Attribute.volume: 40}))
         holder.attributes[Attribute.volume] = 100
         fit.drones.append(holder)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type(None, attributes={Attribute.droneCapacity: 45}))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)

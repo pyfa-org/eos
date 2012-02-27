@@ -77,7 +77,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testFailMismatchModified(self):
+    def testFailMismatchOriginal(self):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # original restriction attribute, but matching

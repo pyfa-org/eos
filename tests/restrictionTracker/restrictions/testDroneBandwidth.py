@@ -135,13 +135,13 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
-        # Make sure modified drone bandwidth value is taken
+        # Make sure modified drone bandwidth values are taken
         fit = Fit()
         holder = IndependentItem(Type(None, attributes={Attribute.droneBandwidthUsed: 40}))
         holder.attributes[Attribute.droneBandwidthUsed] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type(None, attributes={Attribute.droneBandwidth: 45}))
         ship.attributes[Attribute.droneBandwidth] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBandwidth)

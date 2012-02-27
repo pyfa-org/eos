@@ -135,13 +135,13 @@ class TestCpu(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
-        # Make sure modified cpu value is taken
+        # Make sure modified cpu values are taken
         fit = Fit()
         holder = IndependentItem(Type(None, attributes={Attribute.cpu: 40}))
         holder.attributes[Attribute.cpu] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type(None, attributes={Attribute.cpuOutput: 45}))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)

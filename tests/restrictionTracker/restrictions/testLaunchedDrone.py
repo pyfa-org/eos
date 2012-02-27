@@ -96,7 +96,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.drones.remove(holder2)
         self.assertBuffersEmpty(fit)
 
-    def testFailExcessOriginal(self):
+    def testFailExcessModified(self):
         # Check that modified attribute value is taken, not original
         fit = Fit()
         holder1 = IndependentItem(Type(None))

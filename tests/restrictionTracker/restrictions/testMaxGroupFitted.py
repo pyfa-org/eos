@@ -70,7 +70,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
 
-    def testMixExcessModified(self):
+    def testMixExcessOriginal(self):
         # Check that original item attributes are used
         fit = Fit()
         holder1 = ShipItem(Type(None, groupId=61, attributes={Attribute.maxGroupFitted: 1}))

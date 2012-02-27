@@ -129,12 +129,12 @@ class TestCalibration(RestrictionTestCase):
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
-        # Make sure modified calibration value is taken
+        # Make sure modified calibration values are taken
         fit = Fit()
         holder = IndependentItem(Type(None, attributes={Attribute.upgradeCost: 40}))
         holder.attributes[Attribute.upgradeCost] = 100
         fit.items.append(holder)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type(None, attributes={Attribute.upgradeCapacity: 45}))
         ship.attributes[Attribute.upgradeCapacity] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.calibration)

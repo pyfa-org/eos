@@ -58,7 +58,7 @@ class TestCapitalItem(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testFailModifiedVolume(self):
+    def testFailOriginalVolume(self):
         # Make sure original volume value is taken
         fit = Fit()
         holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
