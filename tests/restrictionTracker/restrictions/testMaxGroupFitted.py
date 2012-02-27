@@ -22,7 +22,7 @@
 from eos.const import Restriction
 from eos.eve.const import Attribute
 from eos.eve.type import Type
-from eos.tests.restrictionTracker.environment import Fit, ShipItem
+from eos.tests.restrictionTracker.environment import Fit, IndependentItem, ShipItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -131,6 +131,21 @@ class TestMaxGroupFitted(RestrictionTestCase):
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupFitted)
         self.assertIsNone(restrictionError1)
         restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupFitted)
+        self.assertIsNone(restrictionError2)
+        fit.items.remove(holder1)
+        fit.items.remove(holder2)
+        self.assertBuffersEmpty(fit)
+
+    def testPassHolderNonShip(self):
+        # Non-ship holders shouldn't be affected
+        fit = Fit()
+        holder1 = IndependentItem(Type(None, groupId=12, attributes={Attribute.maxGroupActive: 1}))
+        fit.items.append(holder1)
+        holder2 = IndependentItem(Type(None, groupId=12, attributes={Attribute.maxGroupActive: 1}))
+        fit.items.append(holder2)
+        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
+        self.assertIsNone(restrictionError1)
+        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupActive)
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
