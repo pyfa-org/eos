@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-ResourceErrorData = namedtuple("ResourceErrorData", ("output", "holderConsumption", "consumerHolders"))
+ResourceErrorData = namedtuple("ResourceErrorData", ("output", "totalUsage", "holderConsumption"))
 
 
 class ResourceRegister(RestrictionRegister):
@@ -71,10 +71,7 @@ class ResourceRegister(RestrictionRegister):
         except AttributeError:
             resourceOutput = 0
         else:
-            try:
-                resourceOutput = shipHolderAttribs[self.__outputAttr]
-            except KeyError:
-                resourceOutput = 0
+            resourceOutput = shipHolderAttribs.get(self.__outputAttr) or 0
         # Calculate resource consumption of all holders on ship
         totalResourceConsumption = 0
         # Also use the same loop to compose set of holders,
@@ -82,19 +79,18 @@ class ResourceRegister(RestrictionRegister):
         # usage), and consumption value
         resourceConsumerData = {}
         for resourceUser in self.__resourceUsers:
-            resourceUse = resourceUser.attributes[self.__usageAttr]
+            resourceUse = resourceUser.attributes.get(self.__usageAttr) or 0
             totalResourceConsumption += resourceUse
             if resourceUse > 0:
                 resourceConsumerData[resourceUser] = resourceUse
         # If we're out of resource, raise error
         # with holders-resource-consumers
         if totalResourceConsumption > resourceOutput:
-            resourceConsumers = frozenset(resourceConsumerData)
             taintedHolders = {}
-            for holder in resourceConsumers:
+            for holder in resourceConsumerData:
                 taintedHolders[holder] = ResourceErrorData(output=resourceOutput,
-                                                           holderConsumption=resourceConsumerData[holder],
-                                                           consumerHolders=resourceConsumers)
+                                                           totalUsage=totalResourceConsumption,
+                                                           holderConsumption=resourceConsumerData[holder])
             raise RegisterValidationError(taintedHolders)
 
     @property
