@@ -49,8 +49,8 @@ class RigSizeRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Register only holders which have attribute,
-        # which restricts rig size
-        if not Attribute.rigSize in holder.item.attributes:
+        # which restricts rig size, and have it as not None
+        if holder.item.attributes.get(Attribute.rigSize) is None:
             return
         self.__restrictedHolders.add(holder)
 
@@ -65,18 +65,17 @@ class RigSizeRegister(RestrictionRegister):
             shipItem = shipHolder.item
         except AttributeError:
             return
-        # If ship doesn't have restriction attribute,
+        # If ship doesn't have restriction attribute or it's None,
         # allow all rigs - skip validation
-        try:
-            allowedRigSize = shipItem.attributes[Attribute.rigSize]
-        except KeyError:
+        allowedRigSize = shipItem.attributes.get(Attribute.rigSize)
+        if allowedRigSize is None:
             return
         taintedHolders = {}
         for holder in self.__restrictedHolders:
             holderRigSize = holder.item.attributes[Attribute.rigSize]
-            # If both rig and ship do not have value for attribute
-            # (it's None), ship still can't use rig
-            if holderRigSize != allowedRigSize or allowedRigSize is None:
+            # If rig size specification on holder and ship differs,
+            # then holder is tainted
+            if holderRigSize != allowedRigSize:
                 taintedHolders[holder] = RigSizeErrorData(allowedSize=allowedRigSize,
                                                           holderSize=holderRigSize)
         if taintedHolders:
