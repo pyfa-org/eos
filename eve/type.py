@@ -126,7 +126,8 @@ class Type:
                 srq = self.attributes.get(srqAttrId)
                 if srq is not None:
                     srqLvl = self.attributes.get(skillRqAttrs[srqAttrId])
-                    self.__requiredSkills[int(srq)] = int(srqLvl) if srqLvl is not None else None
+                    if srqLvl is not None:
+                        self.__requiredSkills[int(srq)] = int(srqLvl)
         return self.__requiredSkills
 
     @property

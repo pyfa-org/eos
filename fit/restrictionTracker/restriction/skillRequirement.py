@@ -36,8 +36,7 @@ class SkillRequirementRegister(RestrictionRegister):
     To use holder, all its skill requirements must be met.
 
     Details:
-    Only holders belonging to character and having level attribute
-    are tracked.
+    Only holders having level attribute are tracked.
     Original item attributes are taken to determine skill and
     skill level requirements.
     If required skill level is None, skill requirement check
@@ -58,7 +57,7 @@ class SkillRequirementRegister(RestrictionRegister):
     def registerHolder(self, holder):
         # Only holders which belong to character and have
         # level attribute are tracked as skills
-        if holder._location == Location.character and hasattr(holder, "level") is True:
+        if hasattr(holder, "level") is True:
             self.__skillHolders.addData(holder.item.id, holder)
         # Holders which have any skill requirement are tracked
         if holder.item.requiredSkills:
@@ -72,6 +71,8 @@ class SkillRequirementRegister(RestrictionRegister):
         taintedHolders = {}
         # Go through restricted holders
         for holder in self.__restrictedHolders:
+            # Container for skill requirement errors
+            skillRequirementErrors = []
             # Check each skill requirement
             for requiredSkillId in holder.item.requiredSkills:
                 requiredSkillLevel = holder.item.requiredSkills[requiredSkillId]
@@ -88,9 +89,12 @@ class SkillRequirementRegister(RestrictionRegister):
                 # Last check - if skill level is lower than expected, current holder
                 # is tainted; mark it so and move to the next one
                 if skillLevel is None or requiredSkillLevel is None or skillLevel < requiredSkillLevel:
-                    taintedHolders[holder] = SkillRequirementErrorData(skill=requiredSkillId,
+                    skillRequirementError = SkillRequirementErrorData(skill=requiredSkillId,
                                                                        level=skillLevel,
                                                                        requiredLevel=requiredSkillLevel)
+                    skillRequirementErrors.append(skillRequirementError)
+            if skillRequirementErrors:
+                taintedHolders[holder] = tuple(skillRequirementErrors)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

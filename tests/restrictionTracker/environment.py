@@ -190,3 +190,11 @@ class SpaceItem(MutableAttributeHolder):
     @property
     def _location(self):
         return Location.space
+
+class Skill(IndependentItem):
+
+    __slots__ = ("level",)
+
+    def __init__(self, type_):
+        CharacterItem.__init__(self, type_)
+        self.level = 0

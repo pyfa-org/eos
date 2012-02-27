@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType, InvType
 from eos.eve.attribute import Attribute
-from eos.eve.const import Attribute as AttributeIDs, EffectCategory
+from eos.eve.const import Attribute as ConstAttribute, EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
@@ -57,8 +57,53 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         self.fit.items.append(self.influenceSource)
 
-    def testMatch(self):
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, AttributeIDs.requiredSkill1: 772}))
+    def testMatch1(self):
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill1: 772, ConstAttribute.requiredSkill1Level: 1}))
+        self.fit.items.append(influenceTarget)
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(self.influenceSource)
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(influenceTarget)
+        self.assertBuffersEmpty(self.fit)
+
+    def testMatch2(self):
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill2: 772, ConstAttribute.requiredSkill2Level: 1}))
+        self.fit.items.append(influenceTarget)
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(self.influenceSource)
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(influenceTarget)
+        self.assertBuffersEmpty(self.fit)
+
+    def testMatch3(self):
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill3: 772, ConstAttribute.requiredSkill3Level: 1}))
+        self.fit.items.append(influenceTarget)
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(self.influenceSource)
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(influenceTarget)
+        self.assertBuffersEmpty(self.fit)
+
+    def testMatch4(self):
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill4: 772, ConstAttribute.requiredSkill4Level: 1}))
+        self.fit.items.append(influenceTarget)
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(self.influenceSource)
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(influenceTarget)
+        self.assertBuffersEmpty(self.fit)
+
+    def testMatch5(self):
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill5: 772, ConstAttribute.requiredSkill5Level: 1}))
+        self.fit.items.append(influenceTarget)
+        self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(self.influenceSource)
+        self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
+        self.fit.items.remove(influenceTarget)
+        self.assertBuffersEmpty(self.fit)
+
+    def testMatch6(self):
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill6: 772, ConstAttribute.requiredSkill6Level: 1}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
@@ -67,7 +112,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherSkill(self):
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, AttributeIDs.requiredSkill1: 51}))
+        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100, ConstAttribute.requiredSkill1: 51, ConstAttribute.requiredSkill1Level: 1}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
