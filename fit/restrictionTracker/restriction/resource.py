@@ -105,7 +105,8 @@ class CpuRegister(ResourceRegister):
 
     Details:
     For validation, modified values of CPU usage and
-    CPU output are taken.
+    CPU output are taken. Absence of required attribute
+    or its None value are considered as 0 value.
     """
 
     def __init__(self, tracker):
@@ -120,7 +121,8 @@ class PowerGridRegister(ResourceRegister):
 
     Details:
     For validation, modified values of power grid usage and
-    power grid output are taken.
+    power grid output are taken. Absence of required attribute
+    or its None value are considered as 0 value.
     """
 
     def __init__(self, tracker):
@@ -135,7 +137,8 @@ class CalibrationRegister(ResourceRegister):
 
     Details:
     For validation, modified values of calibration usage and
-    calibration output are taken.
+    calibration output are taken. Absence of required attribute
+    or its None value are considered as 0 value.
     """
 
     def __init__(self, tracker):
@@ -151,7 +154,8 @@ class DroneBayVolumeRegister(ResourceRegister):
     Details:
     Only holders located in drone container are tracked.
     For validation, modified values of drone bay volume usage and
-    drone bay volume are taken.
+    drone bay volume are taken. Absence of required attribute
+    or its None value are considered as 0 value.
     """
 
     def __init__(self, tracker):
@@ -171,7 +175,8 @@ class DroneBandwidthRegister(ResourceRegister):
 
     Details:
     For validation, modified values of drone bandwidth usage and
-    drone bandwidth output are taken.
+    drone bandwidth output are taken. Absence of required attribute
+    or its None value are considered as 0 value.
     """
 
     def __init__(self, tracker):

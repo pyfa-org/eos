@@ -66,9 +66,6 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # Ignore all holders which do not belong to ship
         if holder._location != Location.ship:
             return
-        # Flag which is set to True if item has any of
-        # the restriction attributes
-        restricted = False
         # Containers for typeIDs and groupIDs of ships, to
         # which holder is allowed to fit
         allowedData = AllowedData(types=set(), groups=set())
@@ -83,19 +80,14 @@ class ShipTypeGroupRegister(RestrictionRegister):
                                                    (allowedData.groups, groupRestrictionAttrs)):
             # Cycle through IDs of known restriction attributes
             for restrictionAttr in restrictionAttrs:
-                # Check, if restricted attribute resides in
-                # original item of our holder
-                if restrictionAttr in holder.item.attributes:
-                    # We set restricted flag in any case, if there's
-                    # any restricted attribute, regardless of its value
-                    restricted = True
-                    # And add its value to corresponding set, but only
-                    # if value is None
-                    allowed = holder.item.attributes[restrictionAttr]
-                    if allowed is not None:
-                        allowedContainer.add(allowed)
+                # Fill allowed data container only if holder's
+                # original item has required attribute and its
+                # value has some meaningful data
+                allowed = holder.item.attributes.get(restrictionAttr)
+                if allowed is not None:
+                    allowedContainer.add(allowed)
         # Ignore non-restricted holders
-        if restricted is not True:
+        if not allowedData.types and not allowedData.groups:
             return
         # Finally, register holders which made it into here
         self.__restrictedHolders[holder] = allowedData
@@ -125,8 +117,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
             # If ship's type isn't in allowed types and ship's
             # group isn't in allowed groups, holder is tainted
             if not shipTypeId in allowedData.types and not shipGroupId in allowedData.groups:
-                allowedTypes = frozenset(allowedData.types)
-                allowedGroups = frozenset(allowedData.groups)
+                allowedTypes = tuple(allowedData.types)
+                allowedGroups = tuple(allowedData.groups)
                 taintedHolders[holder] = ShipTypeGroupErrorData(allowedTypes=allowedTypes,
                                                                 allowedGroups=allowedGroups,
                                                                 shipType=shipTypeId,
