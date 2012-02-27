@@ -29,61 +29,13 @@ from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 class TestSkillRequirement(RestrictionTestCase):
     """Check functionality of skill requirement restriction"""
 
-    def testFailSingle1(self):
+    def testFailSingle(self):
         # Check that error is raised when single skill requirement
         # is not met
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 3}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNotNone(restrictionError)
-        self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
-
-    def testFailSingle2(self):
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill2: 50, Attribute.requiredSkill2Level: 3}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNotNone(restrictionError)
-        self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
-
-    def testFailSingle3(self):
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill3: 50, Attribute.requiredSkill3Level: 3}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNotNone(restrictionError)
-        self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
-
-    def testFailSingle4(self):
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill4: 50, Attribute.requiredSkill4Level: 3}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNotNone(restrictionError)
-        self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
-
-    def testFailSingle5(self):
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill5: 50, Attribute.requiredSkill5Level: 3}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNotNone(restrictionError)
-        self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
-
-    def testFailSingle6(self):
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill6: 50, Attribute.requiredSkill6Level: 3}))
+        item = Type(None)
+        item._Type__requiredSkills = {50: 3}
+        holder = IndependentItem(item)
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
@@ -95,8 +47,9 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check error raised when multiple skill requirements
         # are not met
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 5,
-                                                        Attribute.requiredSkill2: 48, Attribute.requiredSkill2Level: 1}))
+        item = Type(None)
+        item._Type__requiredSkills = {48: 1, 50: 5}
+        holder = IndependentItem(item)
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
@@ -108,8 +61,9 @@ class TestSkillRequirement(RestrictionTestCase):
         # Make sure satisfied skill requirements are not shown
         # up in error
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 5,
-                                                        Attribute.requiredSkill2: 48, Attribute.requiredSkill2Level: 1}))
+        item = Type(None)
+        item._Type__requiredSkills = {48: 1, 50: 5}
+        holder = IndependentItem(item)
         fit.items.append(holder)
         skill = Skill(Type(48))
         skill.level = 5
@@ -124,7 +78,9 @@ class TestSkillRequirement(RestrictionTestCase):
     def testFailOriginal(self):
         # make sure original attributes are used
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 3}))
+        item = Type(None)
+        item._Type__requiredSkills = {50: 3}
+        holder = IndependentItem(item)
         holder.attributes[Attribute.requiredSkill1] = 47
         holder.attributes[Attribute.requiredSkill1Level] = 1
         fit.items.append(holder)
@@ -142,7 +98,9 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that error isn't raised when all skill requirements
         # are met
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 3}))
+        item = Type(None)
+        item._Type__requiredSkills = {50: 3}
+        holder = IndependentItem(item)
         fit.items.append(holder)
         skill = Skill(Type(50))
         skill.level = 3
@@ -156,7 +114,9 @@ class TestSkillRequirement(RestrictionTestCase):
     def testPassMultiSkill(self):
         # Make sure max skill level is taken
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 4}))
+        item = Type(None)
+        item._Type__requiredSkills = {50: 4}
+        holder = IndependentItem(item)
         fit.items.append(holder)
         skill1 = Skill(Type(50))
         skill1.level = 1
@@ -173,7 +133,9 @@ class TestSkillRequirement(RestrictionTestCase):
     def testPassMultiSkillNone(self):
         # Make sure that None-leveled skills are overridden
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: 50, Attribute.requiredSkill1Level: 0}))
+        item = Type(None)
+        item._Type__requiredSkills = {50: 0}
+        holder = IndependentItem(item)
         fit.items.append(holder)
         skill1 = Skill(Type(50))
         skill1.level = None
@@ -186,15 +148,4 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(holder)
         fit.items.remove(skill1)
         fit.items.remove(skill2)
-        self.assertBuffersEmpty(fit)
-
-    def testPassNoneSkill(self):
-        # When skill requirement ID is None, no actual
-        # skill requirements should be generated
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.requiredSkill1: None, Attribute.requiredSkill1Level: 5}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
