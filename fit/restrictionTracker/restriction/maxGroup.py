@@ -65,9 +65,12 @@ class MaxGroupRegister(RestrictionRegister):
         # to enter container of all fitted holders
         self.__groupAll.addData(groupId, holder)
         # To enter restriction container, original
-        # item must have restriction attribute
-        if self.__maxGroupAttr in holder.item.attributes:
-            self.__maxGroupRestricted.add(holder)
+        # item must have restriction attribute with
+        # non-None value
+        maxGroupRestriction = holder.item.attributes.get(self.__maxGroupAttr)
+        if maxGroupRestriction is None:
+            return
+        self.__maxGroupRestricted.add(holder)
 
     def unregisterHolder(self, holder):
         # Just clear data containers
@@ -83,14 +86,14 @@ class MaxGroupRegister(RestrictionRegister):
             # Get number of registered holders, assigned to group of current
             # restricted holder, and holder's restriction value
             groupId = holder.item.groupId
-            groupRegistered = len(self.__groupAll.get(groupId) or ())
-            maxGroupRestriction = holder.attributes[self.__maxGroupAttr]
+            groupHolders = len(self.__groupAll.get(groupId) or ())
+            maxGroupRestriction = holder.item.attributes[self.__maxGroupAttr]
             # If number of registered holders from this group is bigger,
             # then current holder is tainted
-            if groupRegistered > maxGroupRestriction:
-                groupHolders = frozenset(self.__groupAll[groupId])
+            if groupHolders > maxGroupRestriction:
                 taintedHolders[holder] = MaxGroupErrorData(maxGroup=maxGroupRestriction,
-                                                           holderGroup=groupId, groupHolders=groupHolders)
+                                                           holderGroup=groupId,
+                                                           groupHolders=groupHolders)
         # Raise error if we detected any tainted holders
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
@@ -109,8 +112,9 @@ class MaxGroupFittedRegister(MaxGroupRegister):
 
     Details:
     Only holders belonging to ship are tracked.
-    Only holders whose items have restriction attribute are tracked.
     For validation, modified value of restriction attribute is taken.
+    None value of restriction attribute or group makes holder to pass
+    validation.
     """
 
     def __init__(self):
@@ -126,8 +130,9 @@ class MaxGroupOnlineRegister(MaxGroupRegister):
 
     Details:
     Only holders belonging to ship are tracked.
-    Only holders whose items have restriction attribute are tracked.
     For validation, modified value of restriction attribute is taken.
+    None value of restriction attribute or group makes holder to pass
+    validation.
     """
 
     def __init__(self):
@@ -143,8 +148,9 @@ class MaxGroupActiveRegister(MaxGroupRegister):
 
     Details:
     Only holders belonging to ship are tracked.
-    Only holders whose items have restriction attribute are tracked.
     For validation, modified value of restriction attribute is taken.
+    None value of restriction attribute or group makes holder to pass
+    validation.
     """
 
     def __init__(self):
