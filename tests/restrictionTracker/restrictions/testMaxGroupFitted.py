@@ -51,7 +51,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
 
-    def testFailExcessOne(self):
+    def testMixExcessOne(self):
         # Make sure error is raised for just holders which excess
         # restriction,even if they're from the same group
         fit = Fit()
@@ -70,7 +70,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
 
-    def testFailExcessModified(self):
+    def testMixExcessModified(self):
         # Check that original item attributes are used
         fit = Fit()
         holder1 = ShipItem(Type(None, groupId=61, attributes={Attribute.maxGroupFitted: 1}))
