@@ -19,11 +19,16 @@
 #===============================================================================
 
 
+from eos.const import EffectBuildStatus
 from eos.eve.const import Effect
 
 
-# Dictionary with infos which override any other
-# infos effects may have
-# Format: {effect: (infos)}
-infoOverrides = {Effect.launcherFitted: (),
-                 Effect.turretFitted: ()}
+# Following infos get their infos purged
+purgeInfos = (Effect.launcherFitted, Effect.turretFitted)
+
+# Function which controls all customizations performed
+# on effect
+def customizeEffect(effect):
+    if effect.id in purgeInfos:
+        effect._infos = ()
+        effect.infoStatus = EffectBuildStatus.override

@@ -48,6 +48,8 @@ charMissileDmgEffect = Effect(None, EffectCategory.passive)
 charMissileDmgEffect.infoStatus = EffectBuildStatus.override
 charMissileDmgEffect._infos = tuple(charMissileDamageInfos)
 
+# Function which controls all customizations performed
+# on type
 def customizeType(type_):
     if type_.groupId == Group.character:
         type_.effects = tuple(chain(type_.effects, (charMissileDmgEffect,)))

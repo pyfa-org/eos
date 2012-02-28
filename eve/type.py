@@ -21,7 +21,7 @@
 
 from .const import nulls, Attribute, Effect, EffectCategory
 from eos.const import Slot, State
-from eos.override.type import customizeType
+from .override.type import customizeType
 
 
 class Type:

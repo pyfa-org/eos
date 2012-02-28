@@ -22,6 +22,7 @@
 from eos.const import EffectBuildStatus
 from eos.eve.const import nulls
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from .override.effect import customizeEffect
 
 
 class Effect:
@@ -57,6 +58,9 @@ class Effect:
 
         # Stores parsing status of info objects
         self.infoStatus = EffectBuildStatus.notParsed
+
+        # Replace some data according to eos needs
+        customizeEffect(self)
 
     def getInfos(self, eos):
         """
