@@ -19,8 +19,10 @@
 #===============================================================================
 
 
+from itertools import chain
+
 from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
-from eos.eve.const import Type, Attribute, EffectCategory
+from eos.eve.const import Type, Group, Attribute, EffectCategory
 from eos.eve.effect import Effect
 from eos.fit.attributeCalculator.info.info import Info
 
@@ -46,6 +48,6 @@ charMissileDmgEffect = Effect(None, EffectCategory.passive)
 charMissileDmgEffect.infoStatus = EffectBuildStatus.override
 charMissileDmgEffect._infos = tuple(charMissileDamageInfos)
 
-# Dictionary with custom effects, which are added to some items
-# Format: {type: (effects)}
-additionalEffects = {Type.characterStatic: (charMissileDmgEffect,)}
+def customizeType(type_):
+    if type_.groupId == Group.character:
+        type_.effects = tuple(chain(type_.effects, (charMissileDmgEffect,)))

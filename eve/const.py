@@ -97,6 +97,11 @@ class Type(metaclass=Enum):
     capitalShips = 20533  # Skill
 
 
+class Group(metaclass=Enum):
+    """Group ID holder"""
+    character = 1
+
+
 class Category(metaclass=Enum):
     """Category ID holder"""
     ship = 6

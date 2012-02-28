@@ -138,6 +138,12 @@ class MutableAttributeMap:
         self.__modifiedAttributes[attrId] = value
         self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
+    def get(self, attrId, default=None):
+        try:
+            return self[attrId]
+        except KeyError:
+            return default
+
     def keys(self):
         keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
         return keys
