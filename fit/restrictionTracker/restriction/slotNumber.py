@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-SlotNumberErrorData = namedtuple("SlotNumberErrorData", ("slotNumber", "slotHolders"))
+SlotNumberErrorData = namedtuple("SlotNumberErrorData", ("slotsMax", "slotsUsed"))
 
 
 class SlotNumberRegister(RestrictionRegister):
@@ -56,7 +56,7 @@ class SlotNumberRegister(RestrictionRegister):
             return
         # Ignore all holders which do not occupy slot type
         # we're dealing with
-        if (self.__slotType in holder.item.slots) is not True:
+        if not self.__slotType in holder.item.slots:
             return
         self.__slotConsumers.add(holder)
 
@@ -72,22 +72,19 @@ class SlotNumberRegister(RestrictionRegister):
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
-            providedSlots = 0
+            slotsMax = 0
         else:
-            try:
-                providedSlots = shipHolderAttribs[self.__slotAmountAttr]
-            except KeyError:
-                providedSlots = 0
+            slotsMax = shipHolderAttribs.get(self.__slotAmountAttr) or 0
         # Assuming each holder takes exactly one slot, check
         # if we have enough of them; if number of holders which
         # take this slot is bigger than number of available slots,
         # then all holders in container are tainted
-        if len(self.__slotConsumers) > providedSlots:
+        slotsUsed = len(self.__slotConsumers)
+        if slotsUsed > slotsMax:
             taintedHolders = {}
-            slotHolders = frozenset(self.__slotConsumers)
-            for holder in slotHolders:
-                taintedHolders[holder] = SlotNumberErrorData(slotNumber=providedSlots,
-                                                             slotHolders=slotHolders)
+            for holder in self.__slotConsumers:
+                taintedHolders[holder] = SlotNumberErrorData(slotsMax=slotsMax,
+                                                             slotsUsed=slotsUsed)
             raise RegisterValidationError(taintedHolders)
 
     @property
@@ -104,7 +101,9 @@ class HighSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of high slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):
@@ -120,7 +119,9 @@ class MediumSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of medium slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):
@@ -136,7 +137,9 @@ class LowSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of low slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):
@@ -152,7 +155,9 @@ class RigSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of rig slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):
@@ -168,7 +173,9 @@ class SubsystemSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of subsystem slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):
@@ -184,7 +191,9 @@ class TurretSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of turret slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):
@@ -200,7 +209,9 @@ class LauncherSlotRegister(SlotNumberRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified amount of launcher slots is taken
-    from ship holder.
+    from ship holder. None value or absence of corresponding
+    attribute or absence of ship are considered as 0 slot
+    output.
     """
 
     def __init__(self, tracker):

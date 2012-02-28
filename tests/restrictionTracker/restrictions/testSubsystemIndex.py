@@ -46,6 +46,25 @@ class TestSubsystemIndex(RestrictionTestCase):
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
 
+    def testFailOriginal(self):
+        # Make sure that original attributes are used
+        fit = Fit()
+        holder1 = IndependentItem(Type(None, attributes={Attribute.subSystemSlot: 120}))
+        holder1.attributes[Attribute.subSystemSlot] = 119
+        fit.items.append(holder1)
+        holder2 = IndependentItem(Type(None, attributes={Attribute.subSystemSlot: 120}))
+        holder2.attributes[Attribute.subSystemSlot] = 121
+        fit.items.append(holder2)
+        restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemIndex)
+        self.assertIsNotNone(restrictionError1)
+        self.assertEqual(restrictionError1.holderSlotIndex, 120)
+        restrictionError2 = fit.getRestrictionError(holder2, Restriction.subsystemIndex)
+        self.assertIsNotNone(restrictionError2)
+        self.assertEqual(restrictionError2.holderSlotIndex, 120)
+        fit.items.remove(holder1)
+        fit.items.remove(holder2)
+        self.assertBuffersEmpty(fit)
+
     def testPass(self):
         # Single holder which takes some slot shouldn't
         # trigger any errors
