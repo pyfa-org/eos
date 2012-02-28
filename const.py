@@ -44,8 +44,7 @@ class State(metaclass=Enum):
 
 
 class Slot(metaclass=Enum):
-    # TODO: add more sensible docstring here
-    """All slot types items can take"""
+    """Slot types item can take"""
     moduleHigh = 1  #
     moduleMed = 2
     moduleLow = 3
@@ -53,6 +52,7 @@ class Slot(metaclass=Enum):
     subsystem = 5
     turret = 6
     launcher = 7
+
 
 # Class used by Infos and Item definitions
 class Location(metaclass=Enum):

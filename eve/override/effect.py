@@ -26,9 +26,9 @@ from eos.eve.const import Effect
 # Following infos get their infos purged
 purgeInfos = (Effect.launcherFitted, Effect.turretFitted)
 
-# Function which controls all customizations performed
-# on effect
 def customizeEffect(effect):
+    """Control all customizations performed on effect"""
+    # Clean infos of specified effects
     if effect.id in purgeInfos:
         effect._infos = ()
         effect.infoStatus = EffectBuildStatus.override

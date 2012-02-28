@@ -145,7 +145,7 @@ class MutableAttributeMap:
             return default
 
     def keys(self):
-        keys = set(self.__modifiedAttributes.keys()).intersection(self.__holder.item.attributes.keys())
+        keys = set(self.__modifiedAttributes.keys()).union(self.__holder.item.attributes.keys())
         return keys
 
     def clear(self):
