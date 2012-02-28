@@ -145,8 +145,8 @@ class MutableAttributeMap:
             return default
 
     def keys(self):
-        keys = set(self.__modifiedAttributes.keys()).union(self.__holder.item.attributes.keys())
-        return keys
+        # Return union of both keys which are already calculated in
+        return self.__modifiedAttributes.keys() | self.__holder.item.attributes.keys()
 
     def clear(self):
         self.__modifiedAttributes.clear()

@@ -61,7 +61,6 @@ class TestNonExistent(AttrCalcTestCase):
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
-
     def testDefaultValue(self):
         # Default value should be used if attribute
         # value is not available on item
