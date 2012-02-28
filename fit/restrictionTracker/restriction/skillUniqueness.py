@@ -21,13 +21,13 @@
 
 from collections import namedtuple
 
-from eos.const import Location, Restriction
+from eos.const import Restriction
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-SkillUniquenessErrorData = namedtuple("SkillUniquenessErrorData", ("skill", "skillHolders"))
+SkillUniquenessErrorData = namedtuple("SkillUniquenessErrorData", ("skill",))
 
 
 class SkillUniquenessRegister(RestrictionRegister):
@@ -36,8 +36,8 @@ class SkillUniquenessRegister(RestrictionRegister):
     Fit can't have more than one skill based on the same type.
 
     Details:
-    Only holders belonging to character and having level attribute
-    are tracked.
+    Only holders having level attribute and item typeID other
+    than None are tracked.
     """
 
     def __init__(self):
@@ -46,9 +46,8 @@ class SkillUniquenessRegister(RestrictionRegister):
         self.__skillHolders = KeyedSet()
 
     def registerHolder(self, holder):
-        # Only holders which belong to character and have
-        # level attribute are tracked as skills
-        if holder._location == Location.character and hasattr(holder, "level") is True:
+        # Only holders which have level attribute are tracked as skills
+        if hasattr(holder, "level") is True and holder.item.id is not None:
             self.__skillHolders.addData(holder.item.id, holder)
 
     def unregisterHolder(self, holder):
@@ -62,10 +61,8 @@ class SkillUniquenessRegister(RestrictionRegister):
             # If there's at least two skills with the same ID,
             # taint these holders
             if len(skillHolders) > 1:
-                skillHolders = frozenset(skillHolders)
                 for holder in skillHolders:
-                    taintedHolders[holder] = SkillUniquenessErrorData(skill=skillId,
-                                                                      skillHolders=skillHolders)
+                    taintedHolders[holder] = SkillUniquenessErrorData(skill=skillId)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

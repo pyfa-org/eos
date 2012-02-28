@@ -21,7 +21,7 @@
 
 from collections import namedtuple
 
-from eos.const import Location, Restriction
+from eos.const import Restriction
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet

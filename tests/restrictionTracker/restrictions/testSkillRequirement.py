@@ -75,25 +75,6 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(skill)
         self.assertBuffersEmpty(fit)
 
-    def testFailOriginal(self):
-        # make sure original attributes are used
-        fit = Fit()
-        item = Type(None)
-        item._Type__requiredSkills = {50: 3}
-        holder = IndependentItem(item)
-        holder.attributes[Attribute.requiredSkill1] = 47
-        holder.attributes[Attribute.requiredSkill1Level] = 1
-        fit.items.append(holder)
-        skill = Skill(Type(47))
-        skill.level = 1
-        fit.items.append(skill)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
-        self.assertIsNotNone(restrictionError)
-        self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
-        fit.items.remove(skill)
-        self.assertBuffersEmpty(fit)
-
     def testPassSatisfied(self):
         # Check that error isn't raised when all skill requirements
         # are met
