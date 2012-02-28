@@ -28,7 +28,7 @@ from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-SlotIndexErrorData = namedtuple("SlotIndexErrorData", ("holderSlotIndex", "slotIndexHolders"))
+SlotIndexErrorData = namedtuple("SlotIndexErrorData", ("holderSlotIndex",))
 
 
 class SlotIndexRegister(RestrictionRegister):
@@ -70,10 +70,8 @@ class SlotIndexRegister(RestrictionRegister):
             # If more than one item occupies the same slot, all
             # holders in this slot are tainted
             if len(slotIndexHolders) > 1:
-                slotIndexHolders = frozenset(slotIndexHolders)
                 for holder in slotIndexHolders:
-                    taintedHolders[holder] = SlotIndexErrorData(holderSlotIndex=slotIndex,
-                                                                slotIndexHolders=slotIndexHolders)
+                    taintedHolders[holder] = SlotIndexErrorData(holderSlotIndex=slotIndex)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

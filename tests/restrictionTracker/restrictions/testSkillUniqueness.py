@@ -38,7 +38,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         restrictionError1 = fit.getRestrictionError(skill1, Restriction.skillUniqueness)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.skill, 56)
-        restrictionError2 = fit.getRestrictionError(skill1, Restriction.skillUniqueness)
+        restrictionError2 = fit.getRestrictionError(skill2, Restriction.skillUniqueness)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.skill, 56)
         fit.items.remove(skill1)
