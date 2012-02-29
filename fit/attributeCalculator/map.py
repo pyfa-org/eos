@@ -75,7 +75,7 @@ class MutableAttributeMap:
         # something, and attributes capped by them. Initialized
         # to None to not waste memory, will be changed to dict
         # when needed.
-        # Format {cap attribute ID: {capped attribute IDs}}
+        # Format {capping attribute ID: {capped attribute IDs}}
         self._capMap = None
 
     def __getitem__(self, attrId):
@@ -288,7 +288,7 @@ class MutableAttributeMap:
                 # restricts current attribute
                 if self._capMap is None:
                     self._capMap = KeyedSet()
-                # Fill cap map with data
+                # Fill cap map with data: capping attribute and capped attribute
                 self._capMap.addData(attrMeta.maxAttributeId, attrId)
         return result
 
