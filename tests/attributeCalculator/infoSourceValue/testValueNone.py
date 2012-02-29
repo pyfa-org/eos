@@ -31,7 +31,7 @@ from eos.tests.environment import Logger
 
 
 class TestSourceValueNone(AttrCalcTestCase):
-    """Test how calculator reacts to source attribute which is set to None"""
+    """Test how calculator reacts to source value which is set to None"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)

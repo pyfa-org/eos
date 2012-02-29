@@ -187,9 +187,11 @@ class MutableAttributeMap:
         # base off its default value
         except KeyError:
             result = attrMeta.defaultValue
-            # If no default value is available, raise error
-            if result is None:
-                raise BaseValueError(attrId)
+        # If original attribute value or it is not specified
+        # and default value isn't available, raise error - as
+        # without valid base we can't go on with calculation
+        if result is None:
+            raise BaseValueError(attrId)
         # Container for non-penalized modifiers
         # Format: {operator: [values]}
         normalMods = {}
@@ -207,7 +209,7 @@ class MutableAttributeMap:
                             and operator in penalizableOperators)
                 # If source value is attribute reference, get its value
                 if info.sourceType == SourceType.attribute:
-                    modValue = sourceHolder.attributes[info.sourceValue]
+                    modValue = sourceHolder.attributes.get(info.sourceValue)
                 # For value modifications, just use stored in info value
                 elif info.sourceType == SourceType.value:
                     modValue = info.sourceValue
