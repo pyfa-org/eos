@@ -19,22 +19,24 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, RunTime, Operator, SourceType
+from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
 from eos.fit.attributeCalculator.info.info import Info
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
 
 class TestCap(AttrCalcTestCase):
-    """Test return value when requesting attribute which isn't set"""
+    """Test how capped attribute values are processed"""
 
-    def testValue(self):
-        srcAttr = Attribute(1)
-        tgtAttr = Attribute(2, maxValue=5.2)
+    def setUp(self):
+        AttrCalcTestCase.setUp(self)
+        self.cappedAttr = cappedAttr = Attribute(1, maxAttributeId=2)
+        self.cappingAttr = cappingAttr = Attribute(2, defaultValue=5)
+        self.sourceAttr = sourceAttr = Attribute(3)
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification info
         info = Info()
@@ -46,15 +48,85 @@ class TestCap(AttrCalcTestCase):
         info.filterType = None
         info.filterValue = None
         info.operator = Operator.postMul
-        info.targetAttributeId = tgtAttr.id
+        info.targetAttributeId = cappedAttr.id
         info.sourceType = SourceType.attribute
-        info.sourceValue = srcAttr.id
+        info.sourceValue = sourceAttr.id
+        self.effect = Effect(None, EffectCategory.passive)
+        self.effect._infos = (info,)
+        self.fit = Fit({cappedAttr.id: cappedAttr, cappingAttr.id: cappingAttr, sourceAttr.id: sourceAttr})
+
+    def testCapDefault(self):
+        # Check that cap is applied properly when holder
+        # doesn't have base value of capping attribute
+        holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.cappedAttr.id: 3, self.sourceAttr.id: 6}))
+        self.fit.items.append(holder)
+        self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 5)
+        self.fit.items.remove(holder)
+        self.assertBuffersEmpty(self.fit)
+
+    def testCapOriginal(self):
+        # Make sure that holder's own specified attribute
+        # value is taken as cap
+        holder = IndependentItem(Type(None, effects=(self.effect,), attributes={self.cappedAttr.id: 3, self.sourceAttr.id: 6,
+                                                                                self.cappingAttr.id: 2}))
+        self.fit.items.append(holder)
+        self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 2)
+        self.fit.items.remove(holder)
+        self.assertBuffersEmpty(self.fit)
+
+    def testCapModified(self):
+        # Make sure that holder's own specified attribute
+        # value is taken as cap, and it's taken with all
+        # modifications applied onto it
+        info = Info()
+        info.state = State.offline
+        info.context = Context.local
+        info.runTime = RunTime.duration
+        info.gang = False
+        info.location = Location.self_
+        info.filterType = None
+        info.filterValue = None
+        info.operator = Operator.postMul
+        info.targetAttributeId = self.cappingAttr.id
+        info.sourceType = SourceType.attribute
+        info.sourceValue = self.sourceAttr.id
         effect = Effect(None, EffectCategory.passive)
         effect._infos = (info,)
-        fit = Fit({srcAttr.id: srcAttr, tgtAttr.id: tgtAttr})
-        holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr.id: 3, srcAttr.id: 6}))
-        fit.items.append(holder)
-        # Attribute should be capped at 5.2
-        self.assertAlmostEqual(holder.attributes[tgtAttr.id], 5.2)
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
+        holder = IndependentItem(Type(None, effects=(self.effect, effect), attributes={self.cappedAttr.id: 3, self.sourceAttr.id: 6,
+                                                                                       self.cappingAttr.id: 0.1}))
+        self.fit.items.append(holder)
+        # Attr value is 3 * 6 = 18, but cap value is 0.1 * 6 = 0.6
+        self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 0.6)
+        self.fit.items.remove(holder)
+        self.assertBuffersEmpty(self.fit)
+
+    def testCapUpdate(self):
+        # If cap updates, capped attributes should
+        # be updated too
+        holder = ShipItem(Type(None, effects=(self.effect,), attributes={self.cappedAttr.id: 3, self.sourceAttr.id: 6,
+                                                                         self.cappingAttr.id: 2}))
+        self.fit.items.append(holder)
+        # Check attribute vs original cap
+        self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 2)
+        # Add something which changes capping attribute
+        info = Info()
+        info.state = State.offline
+        info.context = Context.local
+        info.runTime = RunTime.duration
+        info.gang = False
+        info.location = Location.ship
+        info.filterType = FilterType.all_
+        info.filterValue = None
+        info.operator = Operator.postMul
+        info.targetAttributeId = self.cappingAttr.id
+        info.sourceType = SourceType.attribute
+        info.sourceValue = self.sourceAttr.id
+        effect = Effect(None, EffectCategory.passive)
+        effect._infos = (info,)
+        capUpdater = IndependentItem(Type(None, effects=(effect,), attributes={self.sourceAttr.id: 3.5}))
+        self.fit.items.append(capUpdater)
+        # As capping attribute is updated, capped attribute must be updated too
+        self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 7)
+        self.fit.items.remove(holder)
+        self.fit.items.remove(capUpdater)
+        self.assertBuffersEmpty(self.fit)

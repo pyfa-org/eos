@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from .const import nulls, Attribute, Effect, EffectCategory
 from eos.const import Slot, State
+from .const import nulls, Attribute, Effect, EffectCategory
 from .override.type import customizeType
 
 

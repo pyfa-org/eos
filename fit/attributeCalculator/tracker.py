@@ -165,6 +165,12 @@ class LinkTracker:
         holder -- holder, which carries attribute in question
         attrId -- ID of attribute
         """
+        # Clear attributes capped by this attribute
+        capMap = holder.attributes._capMap
+        if capMap is not None:
+            for cappedAttrId in (capMap.get(attrId) or ()):
+                del holder.attributes[cappedAttrId]
+        # Clear attributes using this attribute as data source
         for affector in self.__generateDurationAffectors(holder):
             info = affector.info
             # Skip affectors which do not use attribute being damaged as source

@@ -24,6 +24,7 @@ from math import exp
 from eos.const import Operator, SourceType
 from eos.dataHandler.exception import AttributeFetchError
 from eos.eve.const import Category, Attribute
+from eos.util.keyedSet import KeyedSet
 from .exception import BaseValueError, EveAttributeError, OperatorError, SourceTypeError, SourceValueError
 
 
@@ -62,7 +63,7 @@ class MutableAttributeMap:
     holder -- holder, to which this map is assigned
     """
 
-    __slots__ = ("__holder", "__modifiedAttributes")
+    __slots__ = ("__holder", "__modifiedAttributes", "_capMap")
 
     def __init__(self, holder):
         # Reference to holder for internal needs
@@ -70,6 +71,12 @@ class MutableAttributeMap:
         # Actual container of calculated attributes
         # Format: {attribute ID: value}
         self.__modifiedAttributes = {}
+        # This variable stores map of attributes which cap
+        # something, and attributes capped by them. Initialized
+        # to None to not waste memory, will be changed to dict
+        # when needed.
+        # Format {cap attribute ID: {capped attribute IDs}}
+        self._capMap = None
 
     def __getitem__(self, attrId):
         # Special handling for skill level attribute
@@ -268,8 +275,21 @@ class MutableAttributeMap:
                     result *= modVal
         # If attribute has upper cap, do not let
         # its value to grow above it
-        if attrMeta.maxValue is not None:
-            result = min(result, attrMeta.maxValue)
+        if attrMeta.maxAttributeId is not None:
+            try:
+                maxValue = self[attrMeta.maxAttributeId]
+            # If max value isn't available, don't
+            # cap anything
+            except KeyError:
+                pass
+            else:
+                result = min(result, maxValue)
+                # Let map know that capping attribute
+                # restricts current attribute
+                if self._capMap is None:
+                    self._capMap = KeyedSet()
+                # Fill cap map with data
+                self._capMap.addData(attrMeta.maxAttributeId, attrId)
         return result
 
     def __penalizeValues(self, modList):

@@ -80,12 +80,7 @@ with bz2.BZ2File(args.types, "wb") as f:
 print("dumping attributes")
 attributes = {}
 for row in conn.execute("SELECT attributeID, maxAttributeID, defaultValue, highIsGood, stackable FROM dgmattribs"):
-    maxAttribRow = conn.execute("SELECT defaultValue FROM dgmattribs WHERE attributeID = ?", (row["maxAttributeID"],)).fetchone()
-    if maxAttribRow is not None:
-        maxValue = maxAttribRow["defaultValue"]
-    else:
-        maxValue = None
-    attributes[row["attributeID"]] = (maxValue,
+    attributes[row["attributeID"]] = (row["maxAttributeID"],
                                       row["defaultValue"],
                                       row["highIsGood"],
                                       row["stackable"])

@@ -20,8 +20,8 @@
 
 
 from eos.const import EffectBuildStatus
-from eos.eve.const import nulls
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
+from .const import nulls
 from .override.effect import customizeEffect
 
 
