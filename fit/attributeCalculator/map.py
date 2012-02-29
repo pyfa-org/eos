@@ -187,9 +187,9 @@ class MutableAttributeMap:
         # base off its default value
         except KeyError:
             result = attrMeta.defaultValue
-        # If original attribute value or it is not specified
-        # and default value isn't available, raise error - as
-        # without valid base we can't go on with calculation
+        # If original attribute is specified and its value is None
+        # or it is not specified and default value isn't available,
+        # raise error -  without valid base we can't go on
         if result is None:
             raise BaseValueError(attrId)
         # Container for non-penalized modifiers
