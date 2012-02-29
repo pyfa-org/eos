@@ -38,6 +38,17 @@ class TestMapMethods(AttrCalcTestCase):
         self.fit.items.append(self.holder)
         self.holder.attributes._MutableAttributeMap__modifiedAttributes = {self.attr2.id: 20, self.attr3.id: 40}
 
+    def testGet(self):
+        # Make sure map's get method replicates functionality
+        # of dictionary get method
+        self.assertEqual(self.holder.attributes.get(self.attr1.id), 5)
+        self.assertEqual(self.holder.attributes.get(self.attr2.id), 20)
+        self.assertEqual(self.holder.attributes.get(self.attr3.id), 40)
+        self.assertIsNone(self.holder.attributes.get(1008))
+        self.assertEqual(self.holder.attributes.get(1008, 60), 60)
+        self.fit.items.remove(self.holder)
+        self.assertBuffersEmpty(self.fit)
+
     def testLen(self):
         # Length should return length, counting unique
         # IDs from both attribute containers
