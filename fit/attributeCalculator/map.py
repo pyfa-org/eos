@@ -180,16 +180,14 @@ class MutableAttributeMap:
         except AttributeFetchError as e:
             raise EveAttributeError(attrId) from e
         # Base attribute value which we'll use for modification
-        baseAttribDict = self.__holder.item.attributes
-        try:
-            result = baseAttribDict[attrId]
-        # If attribute isn't available on base item,
-        # base off its default value
-        except KeyError:
+        result = self.__holder.item.attributes.get(attrId)
+        # If attribute isn't available on base item
+        # or equal None, base off its default value
+        if result is None:
             result = attrMeta.defaultValue
         # If original attribute is specified and its value is None
         # or it is not specified and default value isn't available,
-        # raise error -  without valid base we can't go on
+        # raise error - without valid base we can't go on
         if result is None:
             raise BaseValueError(attrId)
         # Container for non-penalized modifiers

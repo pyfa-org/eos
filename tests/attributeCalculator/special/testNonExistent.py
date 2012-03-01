@@ -29,7 +29,7 @@ from eos.tests.environment import Logger
 class TestNonExistent(AttrCalcTestCase):
     """Test return value when requesting attribute which isn't set"""
 
-    def testAttributeError(self):
+    def testAttributeDataError(self):
         # Check case when attribute value is available, but
         # data handler doesn't know about such attribute
         fit = Fit({})
@@ -44,7 +44,7 @@ class TestNonExistent(AttrCalcTestCase):
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
-    def testBaseValueError(self):
+    def testAbsentBaseValueError(self):
         # Check case when default value of attribute cannot be
         # determined. and item itself doesn't define any value
         # either
@@ -61,12 +61,23 @@ class TestNonExistent(AttrCalcTestCase):
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
-    def testDefaultValue(self):
+    def testAbsentDefaultValue(self):
         # Default value should be used if attribute
         # value is not available on item
         attr = Attribute(1, defaultValue=5.6)
         fit = Fit({attr.id: attr})
         holder = IndependentItem(Type(None))
+        fit.items.append(holder)
+        self.assertAlmostEqual(holder.attributes[1], 5.6)
+        fit.items.remove(holder)
+        self.assertBuffersEmpty(fit)
+
+    def testNoneDefaultValue(self):
+        # Make sure default value is taken when attribute
+        # original value is None
+        attr = Attribute(1, defaultValue=5.6)
+        fit = Fit({attr.id: attr})
+        holder = IndependentItem(Type(None, attributes={attr.id: None}))
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[1], 5.6)
         fit.items.remove(holder)

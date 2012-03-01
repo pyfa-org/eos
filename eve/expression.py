@@ -30,6 +30,7 @@ class Expression:
 
     def __init__(self, id_, operandId, arg1=None, arg2=None, value=None,
                  expressionTypeId=None, expressionGroupId=None, expressionAttributeId=None):
+        # Unique ID of expression
         self.id = int(id_) if id_ is not None else None
 
         # Operand of expression, field which each expression must have.
