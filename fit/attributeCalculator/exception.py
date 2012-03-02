@@ -70,7 +70,7 @@ class BaseValueError(AttributeCalculatorException):
     pass
 
 
-class EveAttributeError(AttributeCalculatorException):
+class AttributeMetaError(AttributeCalculatorException):
     """
     Raised when attribute being calculated cannot be found in
     attribute database.
@@ -90,13 +90,5 @@ class SourceTypeError(AttributeCalculatorException):
     """
     Raised during calculation process, if source type is unknown
     to calculate method.
-    """
-    pass
-
-
-class SourceValueError(AttributeCalculatorException):
-    """
-    Raised during calculation process, if source value cannot
-    be processed by calculate method.
     """
     pass

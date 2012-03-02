@@ -71,14 +71,3 @@ class TestNonExistent(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[1], 5.6)
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
-
-    def testNoneDefaultValue(self):
-        # Make sure default value is taken when attribute
-        # original value is None
-        attr = Attribute(1, defaultValue=5.6)
-        fit = Fit({attr.id: attr})
-        holder = IndependentItem(Type(None, attributes={attr.id: None}))
-        fit.items.append(holder)
-        self.assertAlmostEqual(holder.attributes[1], 5.6)
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)

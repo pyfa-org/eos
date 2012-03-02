@@ -25,7 +25,7 @@ from eos.const import Operator, SourceType
 from eos.dataHandler.exception import AttributeFetchError
 from eos.eve.const import Category, Attribute
 from eos.util.keyedSet import KeyedSet
-from .exception import BaseValueError, EveAttributeError, OperatorError, SourceTypeError, SourceValueError
+from .exception import BaseValueError, AttributeMetaError, OperatorError, SourceTypeError
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -107,9 +107,9 @@ class MutableAttributeMap:
                 signature = (BaseValueError, self.__holder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 raise KeyError(attrId) from e
-            except EveAttributeError as e:
+            except AttributeMetaError as e:
                 msg = "unable to fetch metadata for attribute {}, requested for item {}".format(e.args[0], self.__holder.item.id)
-                signature = (EveAttributeError, self.__holder.item.id, e.args[0])
+                signature = (AttributeMetaError, self.__holder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.error(msg, childName="attributeCalculator", signature=signature)
                 raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
@@ -178,18 +178,19 @@ class MutableAttributeMap:
             attrMeta = dataHandler.getAttribute(attrId)
         # Raise error if it cannot be found
         except AttributeFetchError as e:
-            raise EveAttributeError(attrId) from e
+            raise AttributeMetaError(attrId) from e
         # Base attribute value which we'll use for modification
-        result = self.__holder.item.attributes.get(attrId)
-        # If attribute isn't available on base item
-        # or equal None, base off its default value
-        if result is None:
+        try:
+            result = self.__holder.item.attributes[attrId]
+        # If attribute isn't available on base item,
+        # base off its default value
+        except KeyError:
             result = attrMeta.defaultValue
-        # If original attribute is specified and its value is None
-        # or it is not specified and default value isn't available,
-        # raise error - without valid base we can't go on
-        if result is None:
-            raise BaseValueError(attrId)
+            # If original attribute is not specified and default
+            # value isn't available, raise error - without valid
+            # base we can't go on
+            if result is None:
+                raise BaseValueError(attrId)
         # Container for non-penalized modifiers
         # Format: {operator: [values]}
         normalMods = {}
@@ -207,23 +208,25 @@ class MutableAttributeMap:
                             and operator in penalizableOperators)
                 # If source value is attribute reference, get its value
                 if info.sourceType == SourceType.attribute:
-                    modValue = sourceHolder.attributes.get(info.sourceValue)
+                    try:
+                        modValue = sourceHolder.attributes[info.sourceValue]
+                    # Skip current affector, error should already be
+                    # logged by map before it raised KeyError
+                    except KeyError:
+                        continue
                 # For value modifications, just use stored in info value
                 elif info.sourceType == SourceType.value:
                     modValue = info.sourceValue
                 else:
                     raise SourceTypeError(info.sourceType)
-                # Check modValue for correctness
-                if modValue is None:
-                    raise SourceValueError(modValue)
                 # Normalize operations to just three types:
                 # assignments, additions, multiplications
                 try:
-                    normalize = normalizationMap[operator]
+                    normalizationFunc = normalizationMap[operator]
                 # Raise error on any unknown operator types
                 except KeyError as e:
                     raise OperatorError(operator) from e
-                modValue = normalize(modValue)
+                modValue = normalizationFunc(modValue)
                 # Add value to appropriate dictionary
                 if penalize is True:
                     try:
@@ -245,11 +248,6 @@ class MutableAttributeMap:
             except SourceTypeError as e:
                 msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
                 signature = (SourceTypeError, sourceHolder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
-                continue
-            except SourceValueError as e:
-                msg = "malformed source value {} on item {}".format(e.args[0], sourceHolder.item.id)
-                signature = (SourceValueError, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         # When data gathering was finished, process penalized modifiers
