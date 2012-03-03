@@ -37,7 +37,11 @@ class EosChecker(object):
         self.__typeSelfReference()
         # Check if items have multiple default effects
         self.__multipleDefaultEffects()
+        # Check if module has multiple effects which assign it to
+        # high/med/low slot
         self.__collidingModuleRacks()
+        # Check that all attributes have sensible values
+        self.__attributeValueType()
 
     def __typeSelfReference(self):
         """Type ID of -1 is reserved to reference carrier of entity in Eos"""
@@ -105,3 +109,23 @@ class EosChecker(object):
             plu = "" if corrupted_types == 1 else "s"
             corrupted_list = ", ".join(str(typeid) for typeid in sorted(corrupted_types))
             print("  Check failed: {0} type{1} with multiple slot effects detected ({2})".format(corrupted_num, plu, corrupted_list))
+
+    def __attributeValueType(self):
+        """
+        Eos assumes that all attributes on all items contain some numerical
+        value.
+        """
+        corrupted_types = set()
+        typeattribs_table = self.evedb["dgmtypeeffects"]
+        typeid_idx = typeattribs_table.index_by_name("typeID")
+        value_idx = typeattribs_table.index_by_name("value")
+        for datarow in typeattribs_table.datarows:
+            # All values which cannot be represented by
+            # integer or floats are considered as invalid
+            if isinstance(datarow[value_idx], (int, float)) is not True:
+                corrupted_types.add(datarow[typeid_idx])
+        corrupted_num = len(corrupted_types)
+        if corrupted_num > 0:
+            plu = "" if corrupted_types == 1 else "s"
+            corrupted_list = ", ".join(str(typeid) for typeid in sorted(corrupted_types))
+            print("  Check failed: {0} type{1} with invalid attribute values detected ({2})".format(corrupted_num, plu, corrupted_list))
