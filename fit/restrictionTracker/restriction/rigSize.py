@@ -37,8 +37,6 @@ class RigSizeRegister(RestrictionRegister):
     be used.
 
     Details:
-    If required rig size is None, holders which specify any rig size
-    cannot be added to fit.
     For validation, original value of rigSize attribute is taken.
     """
 
@@ -49,8 +47,8 @@ class RigSizeRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Register only holders which have attribute,
-        # which restricts rig size, and have it as not None
-        if holder.item.attributes.get(Attribute.rigSize) is None:
+        # which restricts rig size
+        if not Attribute.rigSize in holder.item.attributes:
             return
         self.__restrictedHolders.add(holder)
 
@@ -65,10 +63,11 @@ class RigSizeRegister(RestrictionRegister):
             shipItem = shipHolder.item
         except AttributeError:
             return
-        # If ship doesn't have restriction attribute or it's None,
+        # If ship doesn't have restriction attribute,
         # allow all rigs - skip validation
-        allowedRigSize = shipItem.attributes.get(Attribute.rigSize)
-        if allowedRigSize is None:
+        try:
+            allowedRigSize = shipItem.attributes[Attribute.rigSize]
+        except KeyError:
             return
         taintedHolders = {}
         for holder in self.__restrictedHolders:

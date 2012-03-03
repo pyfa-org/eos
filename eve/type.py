@@ -120,11 +120,17 @@ class Type:
                             Attribute.requiredSkill6: Attribute.requiredSkill6Level}
             self.__requiredSkills = {}
             for srqAttrId in skillRqAttrs:
-                srq = self.attributes.get(srqAttrId)
-                if srq is not None:
-                    srqLvl = self.attributes.get(skillRqAttrs[srqAttrId])
-                    if srqLvl is not None:
-                        self.__requiredSkills[int(srq)] = int(srqLvl)
+                # Skip skill requirement attribute pair if any
+                # of them is not available
+                try:
+                    srq = self.attributes[srqAttrId]
+                except KeyError:
+                    continue
+                try:
+                    srqLvl = self.attributes[skillRqAttrs[srqAttrId]]
+                except KeyError:
+                    continue
+                self.__requiredSkills[int(srq)] = int(srqLvl)
         return self.__requiredSkills
 
     @property

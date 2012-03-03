@@ -41,7 +41,7 @@ class DroneGroupRegister(RestrictionRegister):
     For validation, original values of allowedDroneGroupX attributes
     are taken. Validation fails if ship's original attributes have
     any restriction attribute, and drone group doesn't match to
-    restriction. None-valued restriction attributes on ship are ignored.
+    restriction.
     """
 
     def __init__(self, tracker):
@@ -69,18 +69,21 @@ class DroneGroupRegister(RestrictionRegister):
             return
         # Set with allowed groups
         allowedGroups = set()
-        # Find out if we have restriction, and which drone groups it allowes
+        # Find out if we have restriction, and which drone groups it allows
         for restrictionAttr in (Attribute.allowedDroneGroup1, Attribute.allowedDroneGroup2):
-            allowedGroup = shipItem.attributes.get(restrictionAttr)
-            if allowedGroup is not None:
-                allowedGroups.add(allowedGroup)
+            try:
+                allowedGroup = shipItem.attributes[restrictionAttr]
+            except KeyError:
+                continue
+            allowedGroups.add(allowedGroup)
         # No allowed group attributes - no restriction
         if not allowedGroups:
             return
         taintedHolders = {}
-        # Freeze set so it can't be modified, this way we can use it
-        # multiple times in error data
-        allowedGroups = frozenset(allowedGroups)
+        # Convert set to tuple, this way we can use it
+        # multiple times in error data, making sure that
+        # it can't be modified by validation caller
+        allowedGroups = tuple(allowedGroups)
         for holder in self.__restrictedHolders:
             # Taint holders, whose group is not allowed
             holderGroup = holder.item.groupId

@@ -63,8 +63,8 @@ class LaunchedDroneRegister(RestrictionRegister):
         # Do not check anything if we don't have any launched drones
         if not launchedDrones:
             return
-        # Get number of drones fit can have in space; assign
-        # it to None if fitting doesn't have character, or
+        # Get number of drones fit can have in space; consider
+        # it as 0 if fitting doesn't have character, or
         # attribute isn't available
         characterHolder = self._tracker._fit.character
         try:

@@ -131,23 +131,6 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
 
-    def testPassRestrictionNoneGroup(self):
-        # None value doesn't restrict anything
-        fit = Fit()
-        holder1 = ShipItem(Type(None, groupId=1093, attributes={Attribute.maxGroupOnline: None}))
-        holder1.state = State.online
-        fit.items.append(holder1)
-        holder2 = ShipItem(Type(None, groupId=1093, attributes={Attribute.maxGroupOnline: None}))
-        holder2.state = State.online
-        fit.items.append(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
-        self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
-        self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        self.assertBuffersEmpty(fit)
-
     def testPassState(self):
         # No errors should occur if holders are not online+
         fit = Fit()

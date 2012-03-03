@@ -20,7 +20,6 @@
 
 
 from eos.const import Restriction
-from eos.eve.const import Attribute
 from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem, Skill
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
@@ -113,6 +112,7 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def testPassMultiSkillNone(self):
         # Make sure that None-leveled skills are overridden
+        # by skills which have some skill level
         fit = Fit()
         item = Type(None)
         item._Type__requiredSkills = {50: 0}

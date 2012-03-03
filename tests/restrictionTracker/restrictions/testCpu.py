@@ -32,7 +32,7 @@ class TestCpu(RestrictionTestCase):
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -48,31 +48,11 @@ class TestCpu(RestrictionTestCase):
         # When ship is assigned, but doesn't have cpu output
         # attribute, error should be raised for cpu consumers too
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
         fit.items.append(holder)
         ship = IndependentItem(Type(None))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.output, 0)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
-    def testFailExcessShipAttrNone(self):
-        # When ship is assigned and cpu output attribute is None,
-        # it must be considered as zero output too
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
-        holder.attributes[Attribute.cpu] = 50
-        holder.state = State.online
-        fit.items.append(holder)
-        ship = IndependentItem(Type(None))
-        ship.attributes[Attribute.cpuOutput] = None
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
         self.assertIsNotNone(restrictionError)
@@ -87,7 +67,7 @@ class TestCpu(RestrictionTestCase):
         # When ship provides cpu output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -108,11 +88,11 @@ class TestCpu(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder1.attributes[Attribute.cpu] = 25
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder2.attributes[Attribute.cpu] = 20
         holder2.state = State.online
         fit.items.append(holder2)
@@ -158,11 +138,11 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder1.attributes[Attribute.cpu] = 100
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder2.attributes[Attribute.cpu] = -10
         holder2.state = State.online
         fit.items.append(holder2)
@@ -186,40 +166,12 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder1.attributes[Attribute.cpu] = 100
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder2.attributes[Attribute.cpu] = 0
-        holder2.state = State.online
-        fit.items.append(holder2)
-        ship = IndependentItem(Type(None))
-        ship.attributes[Attribute.cpuOutput] = 50
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.cpu)
-        self.assertIsNotNone(restrictionError1)
-        self.assertEqual(restrictionError1.output, 50)
-        self.assertEqual(restrictionError1.totalUsage, 100)
-        self.assertEqual(restrictionError1.holderConsumption, 100)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.cpu)
-        self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
-    def testMixUsageNone(self):
-        # If some holder has None-valued usage attribute and cpu
-        # error is still raised, check it's not raised for holder with
-        # None usage, also check that it doesn't impact cpu use
-        fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
-        holder1.attributes[Attribute.cpu] = 100
-        holder1.state = State.online
-        fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
-        holder2.attributes[Attribute.cpu] = None
         holder2.state = State.online
         fit.items.append(holder2)
         ship = IndependentItem(Type(None))
@@ -241,11 +193,11 @@ class TestCpu(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder1.attributes[Attribute.cpu] = 25
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder2.attributes[Attribute.cpu] = 20
         holder2.state = State.online
         fit.items.append(holder2)
@@ -284,11 +236,11 @@ class TestCpu(RestrictionTestCase):
         # cpu output, negative use of other holder may help
         # to avoid raising error
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder1.attributes[Attribute.cpu] = 50
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder2.attributes[Attribute.cpu] = -15
         holder2.state = State.online
         fit.items.append(holder2)
@@ -307,7 +259,7 @@ class TestCpu(RestrictionTestCase):
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.cpu: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         fit.items.append(holder)
         ship = IndependentItem(Type(None))

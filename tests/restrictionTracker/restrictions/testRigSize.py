@@ -86,31 +86,3 @@ class TestRigSize(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertBuffersEmpty(fit)
-
-    def testPassShipAttrNone(self):
-        # If ship rig size attribute value is None,
-        # no restriction is applied onto holders
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.rigSize: 10}))
-        fit.items.append(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.rigSize: None}))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
-        self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
-    def testPassHolderAttrNone(self):
-        # Holders which have rig size specification None
-        # are not subjects for restriction
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.rigSize: None}))
-        fit.items.append(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.rigSize: 6}))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
-        self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)

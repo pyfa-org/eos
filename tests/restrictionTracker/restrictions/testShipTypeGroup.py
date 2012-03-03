@@ -283,20 +283,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testPassHolderAttrNone(self):
-        # When restriction attribute is None, it shouldn't
-        # be taken into account
-        fit = Fit()
-        ship = IndependentItem(Type(772, groupId=31))
-        fit.ship = ship
-        holder = ShipItem(Type(None, attributes={Attribute.canFitShipType1: None}))
-        fit.items.append(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
-        self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
     def testPassNonShipHolder(self):
         # Holders not belonging to ship shouldn't be affected
         fit = Fit()

@@ -113,18 +113,6 @@ class TestCapitalItem(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testPassNoneVolume(self):
-        # Check that items with None volume are not restricted
-        fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: None}))
-        fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None))
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
-        self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
     def testPassNoVolume(self):
         # Check that items with no volume attribute are not restricted
         fit = Fit()

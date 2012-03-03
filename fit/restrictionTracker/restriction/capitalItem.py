@@ -39,8 +39,7 @@ class CapitalItemRegister(RestrictionRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, unmodified volume value is taken. If
-    volume attribute is None or absent, holder passes
-    validation.
+    volume attribute is absent, holder is not validated.
     """
 
     def __init__(self, tracker):
@@ -57,8 +56,11 @@ class CapitalItemRegister(RestrictionRegister):
             return
         # Ignore holders with no volume attribute and holder with
         # volume which satisfies us regardless of ship type
-        holderVolume = holder.item.attributes.get(Attribute.volume)
-        if holderVolume is None or holderVolume <= self.__maxSubcapVolume:
+        try:
+            holderVolume = holder.item.attributes[Attribute.volume]
+        except KeyError:
+            return
+        if holderVolume <= self.__maxSubcapVolume:
             return
         self.__capitalHolders.add(holder)
 

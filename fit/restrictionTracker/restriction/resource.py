@@ -71,15 +71,18 @@ class ResourceRegister(RestrictionRegister):
         except AttributeError:
             resourceOutput = 0
         else:
-            resourceOutput = shipHolderAttribs.get(self.__outputAttr) or 0
+            try:
+                resourceOutput = shipHolderAttribs[self.__outputAttr]
+            except KeyError:
+                resourceOutput = 0
         # Calculate resource consumption of all holders on ship
         totalResourceConsumption = 0
         # Also use the same loop to compose set of holders,
         # which actually consume resource (have positive non-null
-        # usage), and consumption value
+        # usage)
         resourceConsumerData = {}
         for resourceUser in self.__resourceUsers:
-            resourceUse = resourceUser.attributes.get(self.__usageAttr) or 0
+            resourceUse = resourceUser.attributes[self.__usageAttr]
             totalResourceConsumption += resourceUse
             if resourceUse > 0:
                 resourceConsumerData[resourceUser] = resourceUse
@@ -105,8 +108,8 @@ class CpuRegister(ResourceRegister):
 
     Details:
     For validation, modified values of CPU usage and
-    CPU output are taken. Absence of required attribute
-    or its None value are considered as 0 value.
+    CPU output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
     """
 
     def __init__(self, tracker):
@@ -121,8 +124,8 @@ class PowerGridRegister(ResourceRegister):
 
     Details:
     For validation, modified values of power grid usage and
-    power grid output are taken. Absence of required attribute
-    or its None value are considered as 0 value.
+    power grid output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
     """
 
     def __init__(self, tracker):
@@ -137,8 +140,8 @@ class CalibrationRegister(ResourceRegister):
 
     Details:
     For validation, modified values of calibration usage and
-    calibration output are taken. Absence of required attribute
-    or its None value are considered as 0 value.
+    calibration output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
     """
 
     def __init__(self, tracker):
@@ -154,8 +157,8 @@ class DroneBayVolumeRegister(ResourceRegister):
     Details:
     Only holders located in drone container are tracked.
     For validation, modified values of drone bay volume usage and
-    drone bay volume are taken. Absence of required attribute
-    or its None value are considered as 0 value.
+    drone bay volume are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
     """
 
     def __init__(self, tracker):
@@ -175,8 +178,8 @@ class DroneBandwidthRegister(ResourceRegister):
 
     Details:
     For validation, modified values of drone bandwidth usage and
-    drone bandwidth output are taken. Absence of required attribute
-    or its None value are considered as 0 value.
+    drone bandwidth output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
     """
 
     def __init__(self, tracker):

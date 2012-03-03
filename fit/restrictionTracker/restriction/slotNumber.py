@@ -74,7 +74,10 @@ class SlotNumberRegister(RestrictionRegister):
         except AttributeError:
             slotsMax = 0
         else:
-            slotsMax = shipHolderAttribs.get(self.__slotAmountAttr) or 0
+            try:
+                slotsMax = shipHolderAttribs[self.__slotAmountAttr]
+            except KeyError:
+                slotsMax = 0
         # Assuming each holder takes exactly one slot, check
         # if we have enough of them; if number of holders which
         # take this slot is bigger than number of available slots,

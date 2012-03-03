@@ -68,7 +68,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
             return
         # Containers for typeIDs and groupIDs of ships, to
         # which holder is allowed to fit
-        allowedData = AllowedData(types=set(), groups=set())
+        allowedTypes = set()
+        allowedGroups = set()
         # Containers for attribute IDs which
         # are used to restrict fitting
         typeRestrictionAttrs = (Attribute.canFitShipType1, Attribute.canFitShipType2,
@@ -76,21 +77,22 @@ class ShipTypeGroupRegister(RestrictionRegister):
                                 Attribute.fitsToShipType)
         groupRestrictionAttrs = (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
                                  Attribute.canFitShipGroup3, Attribute.canFitShipGroup4)
-        for allowedContainer, restrictionAttrs in ((allowedData.types, typeRestrictionAttrs),
-                                                   (allowedData.groups, groupRestrictionAttrs)):
+        for allowedContainer, restrictionAttrs in ((allowedTypes, typeRestrictionAttrs),
+                                                   (allowedGroups, groupRestrictionAttrs)):
             # Cycle through IDs of known restriction attributes
             for restrictionAttr in restrictionAttrs:
                 # Fill allowed data container only if holder's
-                # original item has required attribute and its
-                # value has some meaningful data
-                allowed = holder.item.attributes.get(restrictionAttr)
-                if allowed is not None:
-                    allowedContainer.add(allowed)
+                # original item has required attribute
+                try:
+                    allowed = holder.item.attributes[restrictionAttr]
+                except KeyError:
+                    continue
+                allowedContainer.add(allowed)
         # Ignore non-restricted holders
-        if not allowedData.types and not allowedData.groups:
+        if not allowedTypes and not allowedGroups:
             return
         # Finally, register holders which made it into here
-        self.__restrictedHolders[holder] = allowedData
+        self.__restrictedHolders[holder] = AllowedData(types=tuple(allowedTypes), groups=tuple(allowedGroups))
 
     def unregisterHolder(self, holder):
         if holder in self.__restrictedHolders:

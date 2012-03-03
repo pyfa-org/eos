@@ -65,10 +65,8 @@ class MaxGroupRegister(RestrictionRegister):
         # to enter container of all fitted holders
         self.__groupAll.addData(groupId, holder)
         # To enter restriction container, original
-        # item must have restriction attribute with
-        # non-None value
-        maxGroupRestriction = holder.item.attributes.get(self.__maxGroupAttr)
-        if maxGroupRestriction is None:
+        # item must have restriction attribute
+        if not self.__maxGroupAttr in holder.item.attributes:
             return
         self.__maxGroupRestricted.add(holder)
 
@@ -113,8 +111,6 @@ class MaxGroupFittedRegister(MaxGroupRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
-    None value of restriction attribute or group makes holder to pass
-    validation.
     """
 
     def __init__(self):
@@ -131,8 +127,6 @@ class MaxGroupOnlineRegister(MaxGroupRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
-    None value of restriction attribute or group makes holder to pass
-    validation.
     """
 
     def __init__(self):
@@ -149,8 +143,6 @@ class MaxGroupActiveRegister(MaxGroupRegister):
     Details:
     Only holders belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
-    None value of restriction attribute or group makes holder to pass
-    validation.
     """
 
     def __init__(self):

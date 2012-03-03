@@ -54,25 +54,6 @@ class TestLowSlot(RestrictionTestCase):
         fit.ship = None
         self.assertBuffersEmpty(fit)
 
-    def testFailShipAttrNone(self):
-        # Make sure that specifier of slot output equal to
-        # none is considered as 0
-        fit = Fit()
-        item = Type(None)
-        item._Type__slots = {Slot.moduleLow}
-        holder = ShipItem(item)
-        fit.items.append(holder)
-        ship = IndependentItem(Type(None))
-        ship.attributes[Attribute.lowSlots] = None
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.lowSlot)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.slotsMax, 0)
-        self.assertEqual(restrictionError.slotsUsed, 1)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
     def testFailShipNoAttr(self):
         # Make sure that absence of specifier of slot output
         # is considered as 0 output

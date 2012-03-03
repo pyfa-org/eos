@@ -32,7 +32,7 @@ class TestPowerGrid(RestrictionTestCase):
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -48,31 +48,11 @@ class TestPowerGrid(RestrictionTestCase):
         # When ship is assigned, but doesn't have power grid output
         # attribute, error should be raised for power grid consumers too
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
         fit.items.append(holder)
         ship = IndependentItem(Type(None))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.output, 0)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
-        fit.items.remove(holder)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
-    def testFailExcessShipAttrNone(self):
-        # When ship is assigned and power grid output attribute is None,
-        # it must be considered as zero output too
-        fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.power: None}))
-        holder.attributes[Attribute.power] = 50
-        holder.state = State.online
-        fit.items.append(holder)
-        ship = IndependentItem(Type(None))
-        ship.attributes[Attribute.powerOutput] = None
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
@@ -87,7 +67,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When ship provides power grid output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -108,11 +88,11 @@ class TestPowerGrid(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder1.attributes[Attribute.power] = 25
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder2.attributes[Attribute.power] = 20
         holder2.state = State.online
         fit.items.append(holder2)
@@ -158,11 +138,11 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder1.attributes[Attribute.power] = 100
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder2.attributes[Attribute.power] = -10
         holder2.state = State.online
         fit.items.append(holder2)
@@ -186,40 +166,12 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder1.attributes[Attribute.power] = 100
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder2.attributes[Attribute.power] = 0
-        holder2.state = State.online
-        fit.items.append(holder2)
-        ship = IndependentItem(Type(None))
-        ship.attributes[Attribute.powerOutput] = 50
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
-        self.assertIsNotNone(restrictionError1)
-        self.assertEqual(restrictionError1.output, 50)
-        self.assertEqual(restrictionError1.totalUsage, 100)
-        self.assertEqual(restrictionError1.holderConsumption, 100)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.powerGrid)
-        self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
-        self.assertBuffersEmpty(fit)
-
-    def testMixUsageNone(self):
-        # If some holder has None-valued usage attribute and power grid
-        # error is still raised, check it's not raised for holder with
-        # None usage, also check that it doesn't impact power grid use
-        fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.power: None}))
-        holder1.attributes[Attribute.power] = 100
-        holder1.state = State.online
-        fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.power: None}))
-        holder2.attributes[Attribute.power] = None
         holder2.state = State.online
         fit.items.append(holder2)
         ship = IndependentItem(Type(None))
@@ -241,11 +193,11 @@ class TestPowerGrid(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder1.attributes[Attribute.power] = 25
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder2.attributes[Attribute.power] = 20
         holder2.state = State.online
         fit.items.append(holder2)
@@ -284,11 +236,11 @@ class TestPowerGrid(RestrictionTestCase):
         # power grid output, negative use of other holder may help
         # to avoid raising error
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder1 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder1.attributes[Attribute.power] = 50
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder2 = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder2.attributes[Attribute.power] = -15
         holder2.state = State.online
         fit.items.append(holder2)
@@ -307,7 +259,7 @@ class TestPowerGrid(RestrictionTestCase):
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.power: None}))
+        holder = IndependentItem(Type(None, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         fit.items.append(holder)
         ship = IndependentItem(Type(None))

@@ -39,8 +39,6 @@ class SkillRequirementRegister(RestrictionRegister):
     Only holders having level attribute are tracked.
     Original item attributes are taken to determine skill and
     skill level requirements.
-    If required skill level is None, skill requirement check
-    is failed.
     If corresponding skill is found, but its skill level is None,
     check for holder is failed.
     """
@@ -88,10 +86,10 @@ class SkillRequirementRegister(RestrictionRegister):
                         skillLevel = max(skillLevel, skillHolderLevel)
                 # Last check - if skill level is lower than expected, current holder
                 # is tainted; mark it so and move to the next one
-                if skillLevel is None or requiredSkillLevel is None or skillLevel < requiredSkillLevel:
+                if skillLevel is None or skillLevel < requiredSkillLevel:
                     skillRequirementError = SkillRequirementErrorData(skill=requiredSkillId,
-                                                                       level=skillLevel,
-                                                                       requiredLevel=requiredSkillLevel)
+                                                                      level=skillLevel,
+                                                                      requiredLevel=requiredSkillLevel)
                     skillRequirementErrors.append(skillRequirementError)
             if skillRequirementErrors:
                 taintedHolders[holder] = tuple(skillRequirementErrors)

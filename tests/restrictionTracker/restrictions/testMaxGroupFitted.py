@@ -121,21 +121,6 @@ class TestMaxGroupFitted(RestrictionTestCase):
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
 
-    def testPassRestrictionNoneGroup(self):
-        # None value doesn't restrict anything
-        fit = Fit()
-        holder1 = ShipItem(Type(None, groupId=1093, attributes={Attribute.maxGroupFitted: None}))
-        fit.items.append(holder1)
-        holder2 = ShipItem(Type(None, groupId=1093, attributes={Attribute.maxGroupFitted: None}))
-        fit.items.append(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupFitted)
-        self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupFitted)
-        self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        self.assertBuffersEmpty(fit)
-
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
         fit = Fit()

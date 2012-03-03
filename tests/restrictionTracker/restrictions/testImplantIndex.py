@@ -90,19 +90,3 @@ class TestImplantIndex(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertBuffersEmpty(fit)
-
-    def testPassAttrNone(self):
-        # WHen holder slot index is None, no errors
-        # should be generated
-        fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.implantness: None}))
-        fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.implantness: None}))
-        fit.items.append(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.implantIndex)
-        self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.implantIndex)
-        self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        self.assertBuffersEmpty(fit)
