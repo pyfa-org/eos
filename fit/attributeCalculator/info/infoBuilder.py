@@ -20,9 +20,10 @@
 
 
 from eos.const import Location, State, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType, AtomType
+from eos.dataHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand, EffectCategory
-from .exception import TreeDataError, TreeParsingError, TreeParsingUnexpectedError, UnusedModifierError, ModifierValidationError
-from .exception import ModifierBuilderException, TreeFetchError
+from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedModifierError, ModifierValidationError
+from .exception import ModifierBuilderException
 from .helpers import operandData, OperandType
 from .info import Info
 from .modifierBuilder import ModifierBuilder
@@ -51,13 +52,13 @@ class InfoBuilder:
     """
 
     @classmethod
-    def build(cls, effect, eos):
+    def build(cls, effect, logger):
         """
         Generate Info objects out of passed data.
 
         Positional arguments:
         effect -- effect, for which we're building infos
-        eos -- instance of eos, which requests data
+        logger -- instance of logger to use for error reporting
 
         Return value:
         Tuple (tuple with Info objects, build status), where build status
@@ -70,19 +71,28 @@ class InfoBuilder:
             preMods = set()
             postMods = set()
             # Make instance of modifier builder
-            modBuilder = ModifierBuilder(eos)
+            modBuilder = ModifierBuilder()
+            try:
+                preTree = effect.preExpression
+                postTree = effect.postExpression
+            except ExpressionFetchError as e:
+                raise TreeFetchingError(*e.args)
+            # As we already store expressions in local variable,
+            # remove reference to them from effect object by
+            # deleting corresponding attribute - to not consume
+            # memory if they're not used elsewhere
+            del effect.preExpression
+            del effect.postExpression
             # Get modifiers out of both trees
-            for treeRootId, runTime, modSet in ((effect.preExpressionId, RunTime.pre, preMods),
-                                                (effect.postExpressionId, RunTime.post, postMods)):
+            for treeRoot, runTime, modSet in ((preTree, RunTime.pre, preMods),
+                                              (postTree, RunTime.post, postMods)):
                 # If there's no tree, then there's
                 # nothing to build
-                if treeRootId is None:
+                if treeRoot is None:
                     continue
                 try:
-                    modifiers, skippedData = modBuilder.build(treeRootId, runTime, effect.categoryId)
+                    modifiers, skippedData = modBuilder.build(treeRoot, runTime, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
-                except TreeFetchError as e:
-                    raise TreeDataError(*e.args) from e
                 except ModifierBuilderException as e:
                     raise TreeParsingError(*e.args) from e
                 except Exception as e:
@@ -169,29 +179,29 @@ class InfoBuilder:
             except UnusedModifierError:
                 msg = "unused modifiers left after generating infos for effect {}".format(effect.id)
                 signature = (UnusedModifierError, effect.id)
-                eos._logger.warning(msg, childName="infoBuilder", signature=signature)
+                logger.warning(msg, childName="infoBuilder", signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
-        except TreeDataError as e:
-            msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
-            signature = (TreeDataError, effect.id)
-            eos._logger.error(msg, childName="infoBuilder", signature=signature)
+        except TreeFetchingError as e:
+            msg = "failed to parse expressions of effect {}: unable to fetch expression {}".format(effect.id, e.args[0])
+            signature = (TreeFetchingError, effect.id)
+            logger.error(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingError as e:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
             signature = (TreeParsingError, effect.id)
-            eos._logger.warning(msg, childName="infoBuilder", signature=signature)
+            logger.warning(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError:
             msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
             signature = (TreeParsingUnexpectedError, effect.id)
-            eos._logger.error(msg, childName="infoBuilder", signature=signature)
+            logger.error(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
         except ModifierValidationError:
             msg = "failed to validate modifiers for effect {}".format(effect.id)
             signature = (ModifierValidationError, effect.id)
-            eos._logger.warning(msg, childName="infoBuilder", signature=signature)
+            logger.warning(msg, childName="infoBuilder", signature=signature)
             return (), EffectBuildStatus.error
 
         return tuple(infos), buildStatus

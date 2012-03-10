@@ -213,7 +213,7 @@ class LinkTracker:
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        for info in holder.item.getInfos(self._fit._eos):
+        for info in holder.item.getInfos(self._fit._eos._logger):
             if stateFilter is not None and not info.state in stateFilter:
                 continue
             if contextFilter is not None and not info.context in contextFilter:

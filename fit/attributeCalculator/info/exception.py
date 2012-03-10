@@ -30,9 +30,9 @@ class InfoBuilderException(EosException):
     pass
 
 
-class TreeDataError(InfoBuilderException):
+class TreeFetchingError(InfoBuilderException):
     """
-    Raised when modifier builder encounters data fetching error.
+    Raised when info builder encounters expression fetching error.
     """
     pass
 
@@ -72,14 +72,6 @@ class ModifierBuilderException(EosException):
     """
     All exceptions raised by modifier builder are either represented
     by this class or based on it.
-    """
-    pass
-
-
-class TreeFetchError(ModifierBuilderException):
-    """
-    Raised when modifier builder cannot get expression
-    tree from data handler.
     """
     pass
 

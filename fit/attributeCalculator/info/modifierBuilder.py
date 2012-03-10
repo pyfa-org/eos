@@ -23,33 +23,25 @@ from copy import deepcopy
 from itertools import combinations
 
 from eos.const import RunTime, SourceType
-from eos.dataHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand
 from .conditionBuilder import ConditionBuilder
-from .exception import ModifierBuilderException, TreeFetchError, ConditionBuilderException
+from .exception import ModifierBuilderException, ConditionBuilderException
 from .helpers import ExpressionData, operandData, OperandType
 from .modifier import Modifier
 
 
 class ModifierBuilder:
     """
-    Class is responsible for converting two trees (pre and post) of Expression objects (which
-    aren't directly useful to us) into Modifier objects.
-
-    Positional arguments:
-    eos -- eos instance which uses builder
+    Class is responsible for converting two trees (pre and post) of Expression
+    objects (which aren't directly useful to us) into Modifier objects.
     """
 
-    def __init__(self, eos):
-        # Used to request expression tree
-        self.__dataHandler = eos._dataHandler
-
-    def build(self, treeRootId, treeRunTime, effectCategoryId):
+    def build(self, treeRoot, treeRunTime, effectCategoryId):
         """
         Generate Modifier objects out of passed data.
 
         Positional arguments:
-        treeRootId -- ID of root expression of expression tree
+        treeRoot -- root expression of expression tree
         treeRunTime -- is it pre- or post-expression tree, used
         to define type of instant modifiers, must be RunTime.pre
         or RunTime.post
@@ -82,11 +74,6 @@ class ModifierBuilder:
         # Conditions applied to all expressions found on current
         # building stage
         self.conditions = None
-        # Request tree to parse
-        try:
-            treeRoot = self.__dataHandler.getExpression(treeRootId)
-        except ExpressionFetchError as e:
-            raise TreeFetchError("unable to fetch expression {} from tree with root {}".format(e.args[0], treeRootId)) from e
         # Run parsing process
         self.__generic(treeRoot, None)
         # Unify multiple modifiers which do the same thing, but under different

@@ -28,6 +28,7 @@ from eos.eve.type import Type
 from eos.eve.expression import Expression
 from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
+from eos.util.callableData import CallableData
 from .dataHandler import DataHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
 
@@ -116,13 +117,15 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise EffectFetchError(effectId) from e
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
+            preExpData = CallableData(callable=self.getExpression, args=(preExpId,), kwargs={})
+            postExpData = CallableData(callable=self.getExpression, args=(postExpId,), kwargs={})
             effect = Effect(effectId,
                             categoryId=effCategoryId,
                             isOffensive=isOffence,
                             isAssistance=isAssist,
                             fittingUsageChanceAttributeID=fitChanceId,
-                            preExpressionId=preExpId,
-                            postExpressionId=postExpId)
+                            preExpressionData=preExpData,
+                            postExpressionData=postExpData)
             self.__effectsCache[effectId] = effect
 
         return effect

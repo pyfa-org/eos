@@ -18,6 +18,7 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 """
 Classes in this module represent eve's objects. Eos' objects are built on top
 of their instances, and often they're reused, thus make sure to not store any
