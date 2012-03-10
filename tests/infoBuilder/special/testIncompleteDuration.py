@@ -23,8 +23,9 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Eos
+from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import callize
 
 
 class TestIncompleteDuration(EosTestCase):
@@ -44,16 +45,14 @@ class TestIncompleteDuration(EosTestCase):
 
     def testPre(self):
         eAddMod = Expression(2, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpressionId=eAddMod.id, postExpressionId=self.stub.id)
-        eos = Eos({eAddMod.id: eAddMod, self.stub.id: self.stub})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(eAddMod), postExpressionData=callize(self.stub))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
 
     def testPost(self):
         eRmMod = Expression(2, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpressionId=self.stub.id, postExpressionId=eRmMod.id)
-        eos = Eos({self.stub.id: self.stub, eRmMod.id: eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(self.stub), postExpressionData=callize(eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)

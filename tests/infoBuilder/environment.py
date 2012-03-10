@@ -20,7 +20,7 @@
 
 
 from eos.dataHandler.exception import ExpressionFetchError
-from eos.tests.environment import Logger
+from eos.util.callableData import CallableData
 
 
 class DataHandler:
@@ -36,8 +36,6 @@ class DataHandler:
         return expression
 
 
-class Eos:
-
-    def __init__(self, expressionData):
-        self._dataHandler = DataHandler(expressionData)
-        self._logger = Logger()
+def callize(expression):
+    dataHandler = DataHandler({expression.id: expression})
+    return CallableData(callable=dataHandler.getExpression, args=(expression.id,), kwargs={})

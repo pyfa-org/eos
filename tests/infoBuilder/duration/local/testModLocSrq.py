@@ -23,8 +23,9 @@ from eos.const import State, Location, EffectBuildStatus, Context, RunTime, Filt
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Eos
+from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import callize
 
 
 class TestModLocSrq(EosTestCase):
@@ -44,9 +45,8 @@ class TestModLocSrq(EosTestCase):
         self.eRmMod = Expression(2, 61, arg1=eOptrTgt, arg2=eSrcAttr)
 
     def testGenericBuildSuccess(self):
-        effect = Effect(None, 0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -62,9 +62,8 @@ class TestModLocSrq(EosTestCase):
         self.assertIsNone(info.conditions)
 
     def testEffCategoryPassive(self):
-        effect = Effect(None, 0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -72,9 +71,8 @@ class TestModLocSrq(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryActive(self):
-        effect = Effect(None, 1, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 1, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -82,9 +80,8 @@ class TestModLocSrq(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryTarget(self):
-        effect = Effect(None, 2, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 2, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -92,16 +89,14 @@ class TestModLocSrq(EosTestCase):
         self.assertEqual(info.context, Context.projected)
 
     def testEffCategoryArea(self):
-        effect = Effect(None, 3, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 3, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategoryOnline(self):
-        effect = Effect(None, 4, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 4, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -109,9 +104,8 @@ class TestModLocSrq(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryOverload(self):
-        effect = Effect(None, 5, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 5, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -119,16 +113,14 @@ class TestModLocSrq(EosTestCase):
         self.assertEqual(info.context, Context.local)
 
     def testEffCategoryDungeon(self):
-        effect = Effect(None, 6, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 6, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
 
     def testEffCategorySystem(self):
-        effect = Effect(None, 7, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({self.eAddMod.id: self.eAddMod, self.eRmMod.id: self.eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 7, preExpressionData=callize(self.eAddMod), postExpressionData=callize(self.eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]

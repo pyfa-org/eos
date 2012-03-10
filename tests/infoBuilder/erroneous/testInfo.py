@@ -24,8 +24,8 @@ from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
 from eos.tests.environment import Logger
-from eos.tests.infoBuilder.environment import Eos
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import callize
 
 
 class TestInfoBuilderError(EosTestCase):
@@ -45,9 +45,8 @@ class TestInfoBuilderError(EosTestCase):
         eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(1, 6, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(2, 58, arg1=eOptrTgt, arg2=eSrcAttr)
-        effect = Effect(20807, 0, preExpressionId=eAddMod.id, postExpressionId=eRmMod.id)
-        eos = Eos({eAddMod.id: eAddMod, eRmMod.id: eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(20807, 0, preExpressionData=callize(eAddMod), postExpressionData=callize(eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)
@@ -67,9 +66,8 @@ class TestInfoBuilderError(EosTestCase):
         eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(1, 6, arg1=eOptrTgt, arg2=eSrcAttr)
         ePostStub = Expression(2, 27, value="1")
-        effect = Effect(799, 0, preExpressionId=eAddMod.id, postExpressionId=ePostStub.id)
-        eos = Eos({eAddMod.id: eAddMod, ePostStub.id: ePostStub})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(799, 0, preExpressionData=callize(eAddMod), postExpressionData=callize(ePostStub))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
         self.assertEqual(len(self.log), 1)

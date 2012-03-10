@@ -23,8 +23,9 @@ from eos.const import EffectBuildStatus
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Eos
+from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import callize
 
 
 class TestStubInt0(EosTestCase):
@@ -33,9 +34,8 @@ class TestStubInt0(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(1, 27, value="0")
         ePostStub = Expression(2, 27, value="0")
-        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
-        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -46,9 +46,8 @@ class TestStubInt1(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(1, 27, value="1")
         ePostStub = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
-        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -59,9 +58,8 @@ class TestStubBoolTrue(EosTestCase):
     def tesBuildSuccess(self):
         ePreStub = Expression(1, 23, value="True")
         ePostStub = Expression(2, 23, value="True")
-        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
-        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
 
@@ -72,8 +70,7 @@ class TestStubMixed(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(1, 23, value="True")
         ePostStub = Expression(2, 27, value="0")
-        effect = Effect(None, 0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
-        eos = Eos({ePreStub.id: ePreStub, ePostStub.id: ePostStub})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)

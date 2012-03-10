@@ -23,8 +23,9 @@ from eos.const import EffectBuildStatus, FilterType, InvType
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Eos
+from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import callize
 
 
 class TestSelfType(EosTestCase):
@@ -42,9 +43,8 @@ class TestSelfType(EosTestCase):
         eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(1, 11, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(2, 62, arg1=eOptrTgt, arg2=eSrcAttr)
-        effect = Effect(None, 0, preExpressionId=eAddMod.id, postExpressionId=eRmMod.id)
-        eos = Eos({eAddMod.id: eAddMod, eRmMod.id: eRmMod})
-        infos, status = InfoBuilder().build(effect, eos)
+        effect = Effect(None, 0, preExpressionData=callize(eAddMod), postExpressionData=callize(eRmMod))
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]

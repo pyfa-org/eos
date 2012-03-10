@@ -23,8 +23,9 @@ from eos.const import Location, EffectBuildStatus, AtomType, AtomLogicOperator, 
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.info.infoBuilder import InfoBuilder
-from eos.tests.infoBuilder.environment import Eos
+from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
+from eos.tests.infoBuilder.environment import callize
 
 
 class TestCondition(EosTestCase):
@@ -59,10 +60,9 @@ class TestCondition(EosTestCase):
         eIfThen = Expression(None, 41, arg1=eLogic2, arg2=self.eAddMod)
         eElseStub = Expression(None, 27, value="1")
         eIfElse = Expression(3, 52, arg1=eIfThen, arg2=eElseStub)
-        effect = Effect(None, 0, preExpressionId=eIfElse.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eIfElse.id: eIfElse, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eIfElse), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -96,10 +96,9 @@ class TestCondition(EosTestCase):
         eIfThen = Expression(None, 41, arg1=eComparison, arg2=self.eAddMod)
         eElseStub = Expression(None, 27, value="1")
         eIfElse = Expression(3, 52, arg1=eIfThen, arg2=eElseStub)
-        effect = Effect(None, 0, preExpressionId=eIfElse.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eIfElse.id: eIfElse, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eIfElse), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -132,10 +131,9 @@ class TestCondition(EosTestCase):
         eIfThen = Expression(None, 41, arg1=eComparison, arg2=self.eAddMod)
         eElseStub = Expression(None, 27, value="1")
         eIfElse = Expression(3, 52, arg1=eIfThen, arg2=eElseStub)
-        effect = Effect(None, 0, preExpressionId=eIfElse.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eIfElse.id: eIfElse, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eIfElse), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -175,10 +173,9 @@ class TestCondition(EosTestCase):
         eIfThen = Expression(None, 41, arg1=eComparison, arg2=self.eAddMod)
         eElseStub = Expression(None, 27, value="1")
         eIfElse = Expression(3, 52, arg1=eIfThen, arg2=eElseStub)
-        effect = Effect(None, 0, preExpressionId=eIfElse.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eIfElse.id: eIfElse, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eIfElse), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -215,10 +212,9 @@ class TestCondition(EosTestCase):
         eSplicedCondStub = Expression(None, 17, arg1=eIfElse1, arg2=eStub)
         eIfThen2 = Expression(None, 41, arg1=eComp2, arg2=eSplicedCondStub)
         eIfElse2 = Expression(3, 52, arg1=eIfThen2, arg2=eStub)
-        effect = Effect(None, 0, preExpressionId=eIfElse2.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eIfElse2.id: eIfElse2, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eIfElse2), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -259,10 +255,9 @@ class TestCondition(EosTestCase):
         eSplicedCondStub = Expression(None, 17, arg1=eIfElse1, arg2=eStub)
         eIfThen2 = Expression(None, 41, arg1=eComp3, arg2=eSplicedCondStub)
         eIfElse2 = Expression(3, 52, arg1=eIfThen2, arg2=eStub)
-        effect = Effect(None, 0, preExpressionId=eIfElse2.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eIfElse2.id: eIfElse2, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eIfElse2), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -311,10 +306,9 @@ class TestCondition(EosTestCase):
         eIfThen2 = Expression(None, 41, arg1=eComp2, arg2=self.eAddMod)
         eIfElse2 = Expression(None, 52, arg1=eIfThen2, arg2=eStub)
         eSplicedIfs = Expression(3, 17, arg1=eIfElse1, arg2=eIfElse2)
-        effect = Effect(None, 0, preExpressionId=eSplicedIfs.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eSplicedIfs.id: eSplicedIfs, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eSplicedIfs), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
@@ -344,10 +338,9 @@ class TestCondition(EosTestCase):
         eIfThen = Expression(None, 41, arg1=eComp, arg2=self.eAddMod)
         eIfElse = Expression(None, 52, arg1=eIfThen, arg2=eStub)
         eSplicedPre = Expression(3, 17, arg1=eIfElse, arg2=self.eAddMod)
-        effect = Effect(None, 0, preExpressionId=eSplicedPre.id, postExpressionId=self.eRmMod.id)
-        eos = Eos({eSplicedPre.id: eSplicedPre, self.eRmMod.id: self.eRmMod})
+        effect = Effect(None, 0, preExpressionData=callize(eSplicedPre), postExpressionData=callize(self.eRmMod))
 
-        infos, status = InfoBuilder().build(effect, eos)
+        infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
         info = infos[0]
