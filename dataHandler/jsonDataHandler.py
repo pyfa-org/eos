@@ -117,15 +117,15 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise EffectFetchError(effectId) from e
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
-            preExpData = CallableData(callable=self.getExpression, args=(preExpId,), kwargs={})
-            postExpData = CallableData(callable=self.getExpression, args=(postExpId,), kwargs={})
+            preExpCallData = CallableData(callable=self.getExpression, args=(preExpId,), kwargs={})
+            postExpCallData = CallableData(callable=self.getExpression, args=(postExpId,), kwargs={})
             effect = Effect(effectId,
                             categoryId=effCategoryId,
                             isOffensive=isOffence,
                             isAssistance=isAssist,
                             fittingUsageChanceAttributeID=fitChanceId,
-                            preExpressionData=preExpData,
-                            postExpressionData=postExpData)
+                            preExpressionCallData=preExpCallData,
+                            postExpressionCallData=postExpCallData)
             self.__effectsCache[effectId] = effect
 
         return effect

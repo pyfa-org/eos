@@ -32,7 +32,7 @@ class Effect:
     """
 
     def __init__(self, id_, categoryId, isOffensive=None, isAssistance=None,
-                 fittingUsageChanceAttributeID=None, preExpressionData=None, postExpressionData=None):
+                 fittingUsageChanceAttributeID=None, preExpressionCallData=None, postExpressionCallData=None):
         # The unique ID of an effect
         self.id = int(id_) if id_ is not None else None
 
@@ -47,10 +47,10 @@ class Effect:
         self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # Data necessary to get preExpression of the effect
-        self._preExpressionData = preExpressionData
+        self._preExpressionCallData = preExpressionCallData
 
         # Data necessary to get postExpression of the effect
-        self._postExpressionData = postExpressionData
+        self._postExpressionCallData = postExpressionCallData
 
         # Stores EffectInfos which are assigned to given effect
         self._infos = None
@@ -71,8 +71,10 @@ class Effect:
         ExpressionFetchError -- raised when data handler fails
         to fetch any expression in tree
         """
-        method, args, kwargs = self._preExpressionData
-        expression = method(*args, **kwargs)
+        callable_ = self._preExpressionCallData
+        if callable_ is None:
+            return None
+        expression = callable_.callable(*callable_.args, **callable_.kwargs)
         return expression
 
     @cachedproperty
@@ -84,8 +86,10 @@ class Effect:
         ExpressionFetchError -- raised when data handler fails
         to fetch any expression in tree
         """
-        method, args, kwargs = self._postExpressionData
-        expression = method(*args, **kwargs)
+        callable_ = self._postExpressionCallData
+        if callable_ is None:
+            return None
+        expression = callable_.callable(*callable_.args, **callable_.kwargs)
         return expression
 
     def getInfos(self, logger):

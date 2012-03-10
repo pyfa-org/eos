@@ -58,7 +58,7 @@ class TestSplicing(EosTestCase):
         eAddSplice2 = Expression(1, 17, arg1=eAddMod2, arg2=eAddSplice1)
         eRmSplice1 = Expression(None, 17, arg1=eRmMod1, arg2=eRmMod3)
         eRmSplice2 = Expression(2, 17, arg1=eRmMod2, arg2=eRmSplice1)
-        effect = Effect(None, 0, preExpressionData=callize(eAddSplice2), postExpressionData=callize(eRmSplice2))
+        effect = Effect(None, 0, preExpressionCallData=callize(eAddSplice2), postExpressionCallData=callize(eRmSplice2))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 3)

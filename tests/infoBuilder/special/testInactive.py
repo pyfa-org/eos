@@ -34,7 +34,7 @@ class TestInactive(EosTestCase):
     def testAttack(self):
         disabledPre = Expression(1, 13)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -42,7 +42,7 @@ class TestInactive(EosTestCase):
     def testCargoScan(self):
         disabledPre = Expression(1, 14)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -50,7 +50,7 @@ class TestInactive(EosTestCase):
     def testCheatTeleDock(self):
         disabledPre = Expression(1, 15)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -58,7 +58,7 @@ class TestInactive(EosTestCase):
     def testCheatTeleGate(self):
         disabledPre = Expression(1, 16)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -66,7 +66,7 @@ class TestInactive(EosTestCase):
     def testAoeDecloak(self):
         disabledPre = Expression(1, 19)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -74,7 +74,7 @@ class TestInactive(EosTestCase):
     def testEcmBurst(self):
         disabledPre = Expression(1, 30)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -82,7 +82,7 @@ class TestInactive(EosTestCase):
     def testAoeDmg(self):
         disabledPre = Expression(1, 32)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -90,7 +90,7 @@ class TestInactive(EosTestCase):
     def testMissileLaunch(self):
         disabledPre = Expression(1, 44)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -98,7 +98,7 @@ class TestInactive(EosTestCase):
     def testDefenderLaunch(self):
         disabledPre = Expression(1, 45)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -106,7 +106,7 @@ class TestInactive(EosTestCase):
     def testFofLaunch(self):
         disabledPre = Expression(1, 47)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -114,7 +114,7 @@ class TestInactive(EosTestCase):
     def testMine(self):
         disabledPre = Expression(1, 50)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -122,7 +122,7 @@ class TestInactive(EosTestCase):
     def testPowerBooster(self):
         disabledPre = Expression(1, 53)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -130,7 +130,7 @@ class TestInactive(EosTestCase):
     def testShipScan(self):
         disabledPre = Expression(1, 66)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -138,7 +138,7 @@ class TestInactive(EosTestCase):
     def testSurveyScan(self):
         disabledPre = Expression(1, 69)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -146,7 +146,7 @@ class TestInactive(EosTestCase):
     def testTgtHostile(self):
         disabledPre = Expression(1, 70)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -154,7 +154,7 @@ class TestInactive(EosTestCase):
     def testTgtSilent(self):
         disabledPre = Expression(1, 71)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -162,7 +162,7 @@ class TestInactive(EosTestCase):
     def testToolTgtSkills(self):
         disabledPre = Expression(1, 72)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -170,7 +170,7 @@ class TestInactive(EosTestCase):
     def testUserError(self):
         disabledPre = Expression(1, 73)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
@@ -178,7 +178,7 @@ class TestInactive(EosTestCase):
     def testVrfTgtGrp(self):
         disabledPre = Expression(1, 74)
         stubPost = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(disabledPre), postExpressionData=callize(stubPost))
+        effect = Effect(None, 0, preExpressionCallData=callize(disabledPre), postExpressionCallData=callize(stubPost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)

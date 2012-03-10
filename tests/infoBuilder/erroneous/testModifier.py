@@ -36,7 +36,7 @@ class TestModifierBuilderError(EosTestCase):
         # Check reaction to expression data fetch errors
         callablePre = CallableData(callable=DataHandler({}).getExpression, args=(902,), kwargs={})
         callablePost = CallableData(callable=DataHandler({}).getExpression, args=(28,), kwargs={})
-        effect = Effect(900, 0, preExpressionData=callablePre, postExpressionData=callablePost)
+        effect = Effect(900, 0, preExpressionCallData=callablePre, postExpressionCallData=callablePost)
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
@@ -49,7 +49,7 @@ class TestModifierBuilderError(EosTestCase):
     def testGeneric(self):
         ePreStub = Expression(1, 27, value="1")
         ePost = Expression(2, 1009)
-        effect = Effect(568, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePost))
+        effect = Effect(568, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
@@ -62,7 +62,7 @@ class TestModifierBuilderError(EosTestCase):
     def testIntStub(self):
         ePreStub = Expression(1, 27, value="0")
         ePost = Expression(2, 27, value="6")
-        effect = Effect(662, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePost))
+        effect = Effect(662, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
@@ -75,7 +75,7 @@ class TestModifierBuilderError(EosTestCase):
     def testBoolStub(self):
         ePreStub = Expression(1, 27, value="0")
         ePost = Expression(2, 23, value="False")
-        effect = Effect(92, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePost))
+        effect = Effect(92, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)
@@ -90,7 +90,7 @@ class TestModifierBuilderError(EosTestCase):
         # which are not specifically processed by it
         ePreStub = Expression(1, 27, value="0")
         ePost = Expression(2, 23, value="Garbage")
-        effect = Effect(66, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePost))
+        effect = Effect(66, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePost))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(infos), 0)

@@ -34,7 +34,7 @@ class TestStubInt0(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(1, 27, value="0")
         ePostStub = Expression(2, 27, value="0")
-        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        effect = Effect(None, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePostStub))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
@@ -46,7 +46,7 @@ class TestStubInt1(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(1, 27, value="1")
         ePostStub = Expression(2, 27, value="1")
-        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        effect = Effect(None, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePostStub))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
@@ -58,7 +58,7 @@ class TestStubBoolTrue(EosTestCase):
     def tesBuildSuccess(self):
         ePreStub = Expression(1, 23, value="True")
         ePostStub = Expression(2, 23, value="True")
-        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        effect = Effect(None, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePostStub))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)
@@ -70,7 +70,7 @@ class TestStubMixed(EosTestCase):
     def testBuildSuccess(self):
         ePreStub = Expression(1, 23, value="True")
         ePostStub = Expression(2, 27, value="0")
-        effect = Effect(None, 0, preExpressionData=callize(ePreStub), postExpressionData=callize(ePostStub))
+        effect = Effect(None, 0, preExpressionCallData=callize(ePreStub), postExpressionCallData=callize(ePostStub))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 0)

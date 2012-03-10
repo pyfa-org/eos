@@ -45,14 +45,14 @@ class TestIncompleteDuration(EosTestCase):
 
     def testPre(self):
         eAddMod = Expression(2, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpressionData=callize(eAddMod), postExpressionData=callize(self.stub))
+        effect = Effect(None, 0, preExpressionCallData=callize(eAddMod), postExpressionCallData=callize(self.stub))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)
 
     def testPost(self):
         eRmMod = Expression(2, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpressionData=callize(self.stub), postExpressionData=callize(eRmMod))
+        effect = Effect(None, 0, preExpressionCallData=callize(self.stub), postExpressionCallData=callize(eRmMod))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(infos), 0)

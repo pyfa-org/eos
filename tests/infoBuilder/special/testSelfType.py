@@ -43,7 +43,7 @@ class TestSelfType(EosTestCase):
         eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
         eAddMod = Expression(1, 11, arg1=eOptrTgt, arg2=eSrcAttr)
         eRmMod = Expression(2, 62, arg1=eOptrTgt, arg2=eSrcAttr)
-        effect = Effect(None, 0, preExpressionData=callize(eAddMod), postExpressionData=callize(eRmMod))
+        effect = Effect(None, 0, preExpressionCallData=callize(eAddMod), postExpressionCallData=callize(eRmMod))
         infos, status = InfoBuilder().build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(infos), 1)
