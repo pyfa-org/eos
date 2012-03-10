@@ -72,20 +72,19 @@ class InfoBuilder:
             postMods = set()
             # Make instance of modifier builder
             modBuilder = ModifierBuilder()
-            try:
-                preTree = effect.preExpression
-                postTree = effect.postExpression
-            except ExpressionFetchError as e:
-                raise TreeFetchingError(*e.args)
-            # As we already store expressions in local variable,
-            # remove reference to them from effect object by
-            # deleting corresponding attribute - to not consume
-            # memory if they're not used elsewhere
-            del effect.preExpression
-            del effect.postExpression
+
             # Get modifiers out of both trees
-            for treeRoot, runTime, modSet in ((preTree, RunTime.pre, preMods),
-                                              (postTree, RunTime.post, postMods)):
+            for treeName, runTime, modSet in (("preExpression", RunTime.pre, preMods),
+                                              ("postExpression", RunTime.post, postMods)):
+                try:
+                    treeRoot = getattr(effect, treeName)
+                except ExpressionFetchError as e:
+                    raise TreeFetchingError(*e.args)
+                # As we already store expressions in local variable,
+                # remove reference to them from effect object by
+                # deleting corresponding attribute - to not consume
+                # memory when building process is finished
+                delattr(effect, treeName)
                 # If there's no tree, then there's
                 # nothing to build
                 if treeRoot is None:
