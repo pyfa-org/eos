@@ -30,5 +30,5 @@ class Enum(type):
         # Get all attribute values, which do not start with
         # at least one underscore, into cached _all attribute
         if getattr(self, "_all", None) is None:
-            self._all = tuple(getattr(self, attr) for attr in filter(lambda attr: attr.startswith("_") is False, dir(self)))
+            self._all = tuple(getattr(self, attr) for attr in filter(lambda attr: attr.startswith("_") is False, self.__dict__))
         return iter(self._all)
