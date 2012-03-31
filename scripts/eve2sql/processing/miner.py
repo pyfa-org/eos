@@ -22,6 +22,7 @@
 import cPickle
 import itertools
 import os.path
+import sqlite3
 import sys
 from ConfigParser import ConfigParser
 
@@ -50,6 +51,9 @@ class DataMiner(object):
         """Controls actual data mining workflow"""
         # Add tables from bulkdata and cache
         self.__get_bulkdata()
+        # Get tables from map bulkdata db
+        map_dbpath = os.path.join(self.eve.getcachemgr().BULK_SYSTEM_PATH, "mapbulk.db")
+        self.__get_sqlite(map_dbpath)
         # Read localization stuff files
         self.__get_localization()
         # Create metadata table
@@ -213,6 +217,30 @@ class DataMiner(object):
                     if header not in headerlist:
                         headerlist.append(header)
                 datarows.append(datarow)
+        return
+
+    def __get_sqlite(self, path):
+        """Get data out of sqlite database"""
+        evedb = self.evedb
+        conn = sqlite3.connect(path, detect_types=sqlite3.PARSE_COLNAMES | sqlite3.PARSE_DECLTYPES)
+        # Go through master table to detect real tables
+        for master_row in conn.execute("SELECT * FROM sqlite_master WHERE type = \"table\""):
+            table_name = master_row[1]
+            # Gather column names
+            column_names = []
+            for column_data in conn.execute(u"PRAGMA table_info({0})".format(table_name)):
+                column_names.append(column_data[1])
+            # Create table and columns in our internal data
+            # representation
+            table = evedb.add_table(table_name)
+            for column_name in column_names:
+                table.add_column(column_name)
+            # Fill it with actual data
+            statement = u"SELECT {0} FROM {1}".format(u", ".join(column_names), table_name)
+            for row in conn.execute(statement):
+                table.datarows.add(row)
+            self.__check_data_presence(table)
+        conn.close()
         return
 
     def __get_localization(self):
