@@ -26,9 +26,28 @@ class Enum(type):
     some additional functionality.
     """
 
+    def __new__(mcs, name, bases, dict_):
+        # Tuple with values
+        values = tuple(dict_[attr] for attr in filter(lambda attr: attr.startswith("_") is False, dict_))
+        # Name map
+        # Format: {value: name}
+        valueNameMap = {}
+        for attrName, val in dict_.items():
+            if attrName.startswith("_") is True:
+                continue
+            if val in valueNameMap.values():
+                raise ValueError("enum contains duplicate values")
+            valueNameMap[val] = attrName
+        # Assign our custom data structures to class dict
+        dict_["_values"] = values
+        dict_["_valueNameMap"] = valueNameMap
+        return type.__new__(mcs, name, bases, dict_)
+
     def __iter__(self):
-        # Get all attribute values, which do not start with
-        # at least one underscore, into cached _all attribute
-        if getattr(self, "_all", None) is None:
-            self._all = tuple(getattr(self, attr) for attr in filter(lambda attr: attr.startswith("_") is False, self.__dict__))
-        return iter(self._all)
+        return iter(self._values)
+
+    def __contains__(self, value):
+        return self._values.__contains__(value)
+
+    def _getName(self, value):
+        return self._valueNameMap.get(value)
