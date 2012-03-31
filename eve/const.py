@@ -34,6 +34,7 @@ nulls = (0, None)
 
 class Attribute(metaclass=Enum):
     """Attribute ID holder"""
+    mass = 4
     powerOutput = 11
     lowSlots = 12
     medSlots = 13
@@ -41,6 +42,7 @@ class Attribute(metaclass=Enum):
     cpuOutput = 48
     power = 30
     cpu = 50
+    agility = 70
     launcherSlotsLeft = 101
     turretSlotsLeft = 102
     emDamage = 114

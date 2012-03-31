@@ -22,6 +22,7 @@
 from eos.const import State
 from .attributeCalculator.tracker import LinkTracker
 from .restrictionTracker.tracker import RestrictionTracker
+from .stats.calculator import StatsCalculator
 
 
 class Fit:
@@ -38,7 +39,10 @@ class Fit:
         self.__character = None
         # Tracks links between holders assigned to fit
         self._linkTracker = LinkTracker(self)
+        # Tracks various restrictions related to given fitting
         self._restrictionTracker = RestrictionTracker(self)
+        # Access point for all the fitting stats
+        self.stats = StatsCalculator(self)
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._eos = eos
