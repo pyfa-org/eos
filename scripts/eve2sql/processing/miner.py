@@ -222,7 +222,7 @@ class DataMiner(object):
         main = cPickle.loads(self.eve.readstuff("res:/localization/localization_main.pickle"))
 
         # Check for added/removed fields
-        known_main_fields = {"maxRevision", "languages", "labels", "mapping", "registration", "types"}
+        known_main_fields = {"maxRevision", "languages", "labels", "mapping", "registration", "types", "important"}
         main_fields = set(main.iterkeys())
         removed = known_main_fields.difference(main_fields)
         if len(removed) > 0:
@@ -344,6 +344,16 @@ class DataMiner(object):
                 text, _, _ = textdata
                 table.datarows.add((textID, text))
             self.__check_data_presence(table)
+
+        # Process important names table
+        # Simple dictionary
+        main_important = main["important"]
+        table = evedb.add_table("trnimportant")
+        table.add_column("textID")
+        table.add_column("textImportance")
+        for textID, importance in main_important.iteritems():
+            table.datarows.add((textID, importance))
+        self.__check_data_presence(table)
         return
 
     def __add_metadata(self):
