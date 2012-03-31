@@ -100,7 +100,10 @@ class MutableAttributeHolder:
         """Get tracking speed of holder"""
         tsAttrId = self.item._trackingSpeedAttributeId
         if tsAttrId is not None:
-            tracking = self.attributes[tsAttrId]
+            try:
+                tracking = self.attributes[tsAttrId]
+            except KeyError:
+                tracking = None
         else:
             tracking = None
         return tracking
@@ -110,7 +113,10 @@ class MutableAttributeHolder:
         """Get optimal range of holder"""
         orAttrId = self.item._rangeAttributeId
         if orAttrId is not None:
-            optimal = self.attributes[orAttrId]
+            try:
+                optimal = self.attributes[orAttrId]
+            except KeyError:
+                optimal = None
         else:
             optimal = None
         return optimal
@@ -120,7 +126,23 @@ class MutableAttributeHolder:
         """Get falloff range of holder"""
         frAttrId = self.item._falloffAttributeId
         if frAttrId is not None:
-            falloff = self.attributes[frAttrId]
+            try:
+                falloff = self.attributes[frAttrId]
+            except KeyError:
+                falloff = None
         else:
             falloff = None
         return falloff
+
+    @property
+    def cycleTime(self):
+        """Get cycle time of holder"""
+        ctAttrId = self.item._durationAttributeId
+        if ctAttrId is not None:
+            try:
+                cycleTime = self.attributes[ctAttrId]
+            except KeyError:
+                cycleTime = None
+        else:
+            cycleTime = None
+        return cycleTime
