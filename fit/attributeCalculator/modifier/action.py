@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from .helpers import operandData
+from .shared import operandData
 
 
 class Action:

@@ -24,8 +24,8 @@ from eos.dataHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand
 from .actionBuilder import ActionBuilder
 from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, ActionBuilderError
-from .helpers import operandData, stateData
 from .modifier import Modifier
+from .shared import operandData, stateData
 
 
 class ModifierBuilder:

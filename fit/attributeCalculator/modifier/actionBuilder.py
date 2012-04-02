@@ -19,11 +19,11 @@
 #===============================================================================
 
 
-from eos.const import Location, Operator
+from eos.const import Location, Operator, InvType
 from eos.eve.const import Operand
-from .exception import ActionBuilderError, ActionValidationError
-from .helpers import ExpressionData, operandData, stateData
 from .action import Action
+from .exception import ActionBuilderError, ActionValidationError
+from .shared import operandData, stateData
 
 
 class ActionBuilder:
@@ -116,14 +116,14 @@ class ActionBuilder:
         # Request operator and target data, it's always in arg1
         cls.__optrTgt(element.arg1, action)
         # Write down source attribute from arg2
-        action.sourceAttributeId = ExpressionData.getAttribute(element.arg2)
+        action.sourceAttributeId = cls.__getAttribute(element.arg2)
         actionsContainer.add(action)
 
     @classmethod
     def __optrTgt(cls, element, action):
         """Get operator and handle target definition"""
         # Operation is always in arg1
-        action.operator = ExpressionData.getOperator(element.arg1)
+        action.operator = cls.__getOperator(element.arg1)
         # Handling of arg2 depends on its operand
         tgtRouteMap = {Operand.genAttr: cls.__tgtAttr,
                        Operand.grpAttr: cls.__tgtGrpAttr,
@@ -134,19 +134,19 @@ class ActionBuilder:
     @classmethod
     def __tgtAttr(cls, element, action):
         """Get target attribute and store it"""
-        action.targetAttributeId = ExpressionData.getAttribute(element.arg1)
+        action.targetAttributeId = cls.__getAttribute(element.arg1)
 
     @classmethod
     def __tgtGrpAttr(cls, element, action):
         """Get target group and target attribute"""
-        action.targetGroupId = ExpressionData.getGroup(element.arg1)
-        action.targetAttributeId = ExpressionData.getAttribute(element.arg2)
+        action.targetGroupId = cls.__getGroup(element.arg1)
+        action.targetAttributeId = cls.__getAttribute(element.arg2)
 
     @classmethod
     def __tgtSrqAttr(cls, element, action):
         """Get target skill requirement and target attribute"""
-        action.targetSkillRequirementId = ExpressionData.getType(element.arg1)
-        action.targetAttributeId = ExpressionData.getAttribute(element.arg2)
+        action.targetSkillRequirementId = cls.__getType(element.arg1)
+        action.targetAttributeId = cls.__getAttribute(element.arg2)
 
     @classmethod
     def __tgtItmAttr(cls, element, action):
@@ -157,38 +157,102 @@ class ActionBuilder:
                         Operand.locSrq: cls.__tgtLocSrq}
         itmGetterMap[element.arg1.operandId](element.arg1, action)
         # Target attribute is always specified in arg2
-        action.targetAttributeId = ExpressionData.getAttribute(element.arg2)
+        action.targetAttributeId = cls.__getAttribute(element.arg2)
 
     @classmethod
     def __tgtLoc(cls, element, action):
         """Get target location and store it"""
-        action.targetLocation = ExpressionData.getLocation(element)
+        action.targetLocation = cls.__getLocation(element)
 
     @classmethod
     def __tgtLocGrp(cls, element, action):
         """Get target location filter and group filter"""
-        action.targetLocation = ExpressionData.getLocation(element.arg1)
-        action.targetGroupId = ExpressionData.getGroup(element.arg2)
+        action.targetLocation = cls.__getLocation(element.arg1)
+        action.targetGroupId = cls.__getGroup(element.arg2)
 
     @classmethod
     def __tgtLocSrq(cls, element, action):
         """Get target location filter and skill requirement filter"""
-        action.targetLocation = ExpressionData.getLocation(element.arg1)
-        action.targetSkillRequirementId = ExpressionData.getType(element.arg2)
+        action.targetLocation = cls.__getLocation(element.arg1)
+        action.targetSkillRequirementId = cls.__getType(element.arg2)
 
     @classmethod
     def __checkIntStub(cls, element):
         """Check if given expression is stub, returning integer 0 or 1"""
-        value = ExpressionData.getInteger(element)
+        value = cls.__getInteger(element)
         if not value in (0, 1):
             raise ActionBuilderError("integer stub with unexpected value {}".format(value))
 
     @classmethod
     def __checkBoolStub(cls, element):
         """Check if given expression is stub, returning boolean true"""
-        value = ExpressionData.getBoolean(element)
+        value = cls.__getBoolean(element)
         if value is not True:
             raise ActionBuilderError("boolean stub with unexpected value {}".format(value))
+
+    @classmethod
+    def __getOperator(cls, expression):
+        # Format: {operator name: operator ID}
+        conversionMap = {"PreAssignment": Operator.preAssignment,
+                         "PreMul": Operator.preMul,
+                         "PreDiv": Operator.preDiv,
+                         "ModAdd": Operator.modAdd,
+                         "ModSub": Operator.modSub,
+                         "PostMul": Operator.postMul,
+                         "PostDiv": Operator.postDiv,
+                         "PostPercent": Operator.postPercent,
+                         "PostAssignment": Operator.postAssignment}
+        operator = conversionMap[expression.value]
+        return operator
+
+    @classmethod
+    def __getLocation(cls, expression):
+        # Format: {location name: location ID}
+        conversionMap = {"Self": Location.self_,
+                         "Char": Location.character,
+                         "Ship": Location.ship,
+                         "Target": Location.target,
+                         "Other": Location.other,
+                         "Area": Location.area}
+        location = conversionMap[expression.value]
+        return location
+
+    @classmethod
+    def __getAttribute(cls, expression):
+        attribute = int(expression.expressionAttributeId)
+        return attribute
+
+    @classmethod
+    def __getGroup(cls, expression):
+        group = int(expression.expressionGroupId)
+        return group
+
+    @classmethod
+    def __getType(cls, expression):
+        # Type getter function has special handling
+        if expression.operandId == Operand.getType:
+            # Currently, we have only ID representing self type getter, so run
+            # additional check if type getter is for self
+            if cls.__getLocation(expression.arg1) == Location.self_:
+                return InvType.self_
+            else:
+                return None
+        else:
+            type_ = int(expression.expressionTypeId)
+            return type_
+
+    @classmethod
+    def __getInteger(cls, expression):
+        integer = int(expression.value)
+        return integer
+
+    @classmethod
+    def __getBoolean(cls, expression):
+        # Format: {boolean name: boolean value}
+        conversionMap = {"True": True,
+                         "False": False}
+        boolean = conversionMap[expression.value]
+        return boolean
 
     @classmethod
     def validateAction(cls, action, effectCategoryId):
