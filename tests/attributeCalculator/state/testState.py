@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, RunTime, Operator, SourceType
-from eos.fit.attributeCalculator.info.info import Info
+from eos.const import State, Location, Context, Operator
+from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
@@ -30,7 +30,7 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 
 
 class TestStateSwitching(AttrCalcTestCase):
-    """Test holder state switching and info states"""
+    """Test holder state switching and modifier states"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -39,57 +39,45 @@ class TestStateSwitching(AttrCalcTestCase):
         srcAttr2 = Attribute(3)
         srcAttr3 = Attribute(4)
         srcAttr4 = Attribute(5)
-        infoOff = Info()
-        infoOff.state = State.offline
-        infoOff.context = Context.local
-        infoOff.runTime = RunTime.duration
-        infoOff.gang = False
-        infoOff.location = Location.self_
-        infoOff.filterType = None
-        infoOff.filterValue = None
-        infoOff.operator = Operator.postMul
-        infoOff.targetAttributeId = tgtAttr.id
-        infoOff.sourceType = SourceType.attribute
-        infoOff.sourceValue = srcAttr1.id
-        infoOn = Info()
-        infoOn.state = State.online
-        infoOn.context = Context.local
-        infoOn.runTime = RunTime.duration
-        infoOn.gang = False
-        infoOn.location = Location.self_
-        infoOn.filterType = None
-        infoOn.filterValue = None
-        infoOn.operator = Operator.postMul
-        infoOn.targetAttributeId = tgtAttr.id
-        infoOn.sourceType = SourceType.attribute
-        infoOn.sourceValue = srcAttr2.id
-        infoAct = Info()
-        infoAct.state = State.active
-        infoAct.context = Context.local
-        infoAct.runTime = RunTime.duration
-        infoAct.gang = False
-        infoAct.location = Location.self_
-        infoAct.filterType = None
-        infoAct.filterValue = None
-        infoAct.operator = Operator.postMul
-        infoAct.targetAttributeId = tgtAttr.id
-        infoAct.sourceType = SourceType.attribute
-        infoAct.sourceValue = srcAttr3.id
-        infoOver = Info()
-        infoOver.state = State.overload
-        infoOver.context = Context.local
-        infoOver.runTime = RunTime.duration
-        infoOver.gang = False
-        infoOver.location = Location.self_
-        infoOver.filterType = None
-        infoOver.filterValue = None
-        infoOver.operator = Operator.postMul
-        infoOver.targetAttributeId = tgtAttr.id
-        infoOver.sourceType = SourceType.attribute
-        infoOver.sourceValue = srcAttr4.id
+        modifierOff = Modifier()
+        modifierOff.state = State.offline
+        modifierOff.context = Context.local
+        modifierOff.sourceAttributeId = srcAttr1.id
+        modifierOff.operator = Operator.postMul
+        modifierOff.targetAttributeId = tgtAttr.id
+        modifierOff.location = Location.self_
+        modifierOff.filterType = None
+        modifierOff.filterValue = None
+        modifierOn = Modifier()
+        modifierOn.state = State.online
+        modifierOn.context = Context.local
+        modifierOn.sourceAttributeId = srcAttr2.id
+        modifierOn.operator = Operator.postMul
+        modifierOn.targetAttributeId = tgtAttr.id
+        modifierOn.location = Location.self_
+        modifierOn.filterType = None
+        modifierOn.filterValue = None
+        modifierAct = Modifier()
+        modifierAct.state = State.active
+        modifierAct.context = Context.local
+        modifierAct.sourceAttributeId = srcAttr3.id
+        modifierAct.operator = Operator.postMul
+        modifierAct.targetAttributeId = tgtAttr.id
+        modifierAct.location = Location.self_
+        modifierAct.filterType = None
+        modifierAct.filterValue = None
+        modifierOver = Modifier()
+        modifierOver.state = State.overload
+        modifierOver.context = Context.local
+        modifierOver.sourceAttributeId = srcAttr4.id
+        modifierOver.operator = Operator.postMul
+        modifierOver.targetAttributeId = tgtAttr.id
+        modifierOver.location = Location.self_
+        modifierOver.filterType = None
+        modifierOver.filterValue = None
         # Overload category will make sure that holder can enter all states
         effect = Effect(None, EffectCategory.overload)
-        effect._infos = (infoOff, infoOn, infoAct, infoOver)
+        effect._modifiers = (modifierOff, modifierOn, modifierAct, modifierOver)
         self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr1.id: srcAttr1, srcAttr2.id: srcAttr2,
                         srcAttr3.id: srcAttr3, srcAttr4.id: srcAttr4})
         self.holder = IndependentItem(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,

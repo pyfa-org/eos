@@ -21,32 +21,30 @@
 
 from itertools import chain
 
-from eos.const import State, Location, EffectBuildStatus, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, EffectBuildStatus, Context, FilterType, Operator
 from eos.eve.const import Type, Group, Attribute, EffectCategory
 from eos.eve.effect import Effect
-from eos.fit.attributeCalculator.info.info import Info
+from eos.fit.attributeCalculator.modifier.modifier import Modifier
 
 
-# Define effect which applies character's missile damage
+# Define modifiers which apply character's missile damage
 # multiplier onto missiles from its fit
-charMissileDamageInfos = []
+charMissileDamageModifiers = []
 for damageAttr in (Attribute.emDamage, Attribute.thermalDamage,
-                   Attribute.kineticDamage, Attribute.thermalDamage):
-    info = Info()
-    info.state = State.offline
-    info.context = Context.local
-    info.runTime = RunTime.duration
-    info.location = Location.space
-    info.filterType = FilterType.skill
-    info.filterValue = Type.missileLauncherOperation
-    info.operator = Operator.postMul
-    info.targetAttributeId = damageAttr
-    info.sourceType = SourceType.attribute
-    info.sourceValue = Attribute.missileDamageMultiplier
-    charMissileDamageInfos.append(info)
+                   Attribute.kineticDamage, Attribute.explosiveDamage):
+    modifier = Modifier()
+    modifier.state = State.offline
+    modifier.context = Context.local
+    modifier.sourceAttributeId = Attribute.missileDamageMultiplier
+    modifier.operator = Operator.postMul
+    modifier.targetAttributeId = damageAttr
+    modifier.location = Location.space
+    modifier.filterType = FilterType.skill
+    modifier.filterValue = Type.missileLauncherOperation
+    charMissileDamageModifiers.append(modifier)
 charMissileDmgEffect = Effect(None, EffectCategory.passive)
-charMissileDmgEffect.infoStatus = EffectBuildStatus.override
-charMissileDmgEffect._infos = tuple(charMissileDamageInfos)
+charMissileDmgEffect.modifierStatus = EffectBuildStatus.override
+charMissileDmgEffect._modifiers = tuple(charMissileDamageModifiers)
 
 def customizeType(type_):
     """Control all customizations performed on type"""

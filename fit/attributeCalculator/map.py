@@ -21,11 +21,11 @@
 
 from math import exp
 
-from eos.const import Operator, SourceType
+from eos.const import Operator
 from eos.dataHandler.exception import AttributeFetchError
 from eos.eve.const import Category, Attribute
 from eos.util.keyedSet import KeyedSet
-from .exception import BaseValueError, AttributeMetaError, OperatorError, SourceTypeError
+from .exception import BaseValueError, AttributeMetaError, OperatorError
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -169,8 +169,8 @@ class MutableAttributeMap:
         Calculated attribute value
 
         Possible exceptions:
-        AbsentAttributeBaseException -- attribute cannot be
-        calculated, as its base value is not available
+        BaseValueError -- attribute cannot be calculated, as its
+        base value is not available
         """
         # Attribute object for attribute being calculated
         dataHandler = self.__holder.fit._eos._dataHandler
@@ -200,25 +200,18 @@ class MutableAttributeMap:
         # Now, go through all affectors affecting our holder
         for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder, attrId=attrId):
             try:
-                sourceHolder, info = affector
-                operator = info.operator
+                sourceHolder, modifier = affector
+                operator = modifier.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
                 penalize = (not attrMeta.stackable and not sourceHolder.item.categoryId in penaltyImmuneCategories
                             and operator in penalizableOperators)
-                # If source value is attribute reference, get its value
-                if info.sourceType == SourceType.attribute:
-                    try:
-                        modValue = sourceHolder.attributes[info.sourceValue]
-                    # Skip current affector, error should already be
-                    # logged by map before it raised KeyError
-                    except KeyError:
-                        continue
-                # For value modifications, just use stored in info value
-                elif info.sourceType == SourceType.value:
-                    modValue = info.sourceValue
-                else:
-                    raise SourceTypeError(info.sourceType)
+                try:
+                    modValue = sourceHolder.attributes[modifier.sourceAttributeId]
+                # Silently skip current affector: error should already
+                # be logged by map before it raised KeyError
+                except KeyError:
+                    continue
                 # Normalize operations to just three types:
                 # assignments, additions, multiplications
                 try:
@@ -239,18 +232,13 @@ class MutableAttributeMap:
                     except KeyError:
                         modList = normalMods[operator] = []
                 modList.append(modValue)
-            # Handle operator and source type failure
+            # Handle operator type failure
             except OperatorError as e:
-                msg = "malformed info on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
+                msg = "malformed modifier on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
                 signature = (OperatorError, sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
-            except SourceTypeError as e:
-                msg = "malformed info on item {}: unknown source type {}".format(sourceHolder.item.id, e.args[0])
-                signature = (SourceTypeError, sourceHolder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
-                continue
-        # When data gathering was finished, process penalized modifiers
+        # When data gathering is complete, process penalized modifiers
         # They are penalized on per-operator basis
         for operator, modList in penalizedMods.items():
             penalizedValue = self.__penalizeValues(modList)

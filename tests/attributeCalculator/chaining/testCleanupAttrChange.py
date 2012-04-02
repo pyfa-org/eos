@@ -19,12 +19,12 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.fit.attributeCalculator.info.info import Info
+from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
 
@@ -36,35 +36,29 @@ class TestCleanupChainChange(AttrCalcTestCase):
         attr1 = Attribute(1)
         attr2 = Attribute(2)
         attr3 = Attribute(3)
-        info1 = Info()
-        info1.state = State.offline
-        info1.context = Context.local
-        info1.runTime = RunTime.duration
-        info1.gang = False
-        info1.location = Location.ship
-        info1.filterType = None
-        info1.filterValue = None
-        info1.operator = Operator.postMul
-        info1.targetAttributeId = attr2.id
-        info1.sourceType = SourceType.attribute
-        info1.sourceValue = attr1.id
+        modifier1 = Modifier()
+        modifier1.state = State.offline
+        modifier1.context = Context.local
+        modifier1.sourceAttributeId = attr1.id
+        modifier1.operator = Operator.postMul
+        modifier1.targetAttributeId = attr2.id
+        modifier1.location = Location.ship
+        modifier1.filterType = None
+        modifier1.filterValue = None
         effect1 = Effect(None, EffectCategory.passive)
-        effect1._infos = (info1,)
+        effect1._modifiers = (modifier1,)
         holder1 = CharacterItem(Type(None, effects=(effect1,), attributes={attr1.id: 5}))
-        info2 = Info()
-        info2.state = State.offline
-        info2.context = Context.local
-        info2.runTime = RunTime.duration
-        info2.gang = False
-        info2.location = Location.ship
-        info2.filterType = FilterType.all_
-        info2.filterValue = None
-        info2.operator = Operator.postPercent
-        info2.targetAttributeId = attr3.id
-        info2.sourceType = SourceType.attribute
-        info2.sourceValue = attr2.id
+        modifier2 = Modifier()
+        modifier2.state = State.offline
+        modifier2.context = Context.local
+        modifier2.sourceAttributeId = attr2.id
+        modifier2.operator = Operator.postPercent
+        modifier2.targetAttributeId = attr3.id
+        modifier2.location = Location.ship
+        modifier2.filterType = FilterType.all_
+        modifier2.filterValue = None
         effect2 = Effect(None, EffectCategory.passive)
-        effect2._infos = (info2,)
+        effect2._modifiers = (modifier2,)
         holder2 = IndependentItem(Type(None, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(Type(None, attributes={attr3.id: 0.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3})

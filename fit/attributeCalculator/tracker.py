@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, Context, RunTime, SourceType
+from eos.const import Location, Context
 from .affector import Affector
 from .register import LinkRegister
 
@@ -60,7 +60,7 @@ class LinkTracker:
         else:
             affectors = set()
             for affector in self.__register.getAffectors(holder):
-                if affector.info.targetAttributeId == attrId:
+                if affector.modifier.targetAttributeId == attrId:
                     affectors.add(affector)
         return affectors
 
@@ -134,7 +134,7 @@ class LinkTracker:
         during state switch, except for initial state
         """
         processedContexts = (Context.local,)
-        enabledAffectors = self.__generateDurationAffectors(holder, stateFilter=states, contextFilter=processedContexts)
+        enabledAffectors = self.__generateAffectors(holder, stateFilter=states, contextFilter=processedContexts)
         # Clear attributes only after registration jobs
         for affector in enabledAffectors:
             self.__register.registerAffector(affector)
@@ -150,7 +150,7 @@ class LinkTracker:
         during state switch, except for final state
         """
         processedContexts = (Context.local,)
-        disabledAffectors = self.__generateDurationAffectors(holder, stateFilter=states, contextFilter=processedContexts)
+        disabledAffectors = self.__generateAffectors(holder, stateFilter=states, contextFilter=processedContexts)
         # Clear attributes before unregistering, otherwise
         # we won't clean them up properly
         self.__clearAffectorsDependents(disabledAffectors)
@@ -171,15 +171,15 @@ class LinkTracker:
             for cappedAttrId in (capMap.get(attrId) or ()):
                 del holder.attributes[cappedAttrId]
         # Clear attributes using this attribute as data source
-        for affector in self.__generateDurationAffectors(holder):
-            info = affector.info
+        for affector in self.__generateAffectors(holder):
+            modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
-            if info.sourceValue != attrId or info.sourceType != SourceType.attribute:
+            if modifier.sourceAttributeId != attrId:
                 continue
-            # Go through all holders targeted by info
+            # Go through all holders targeted by modifier
             for targetHolder in self.getAffectees(affector):
                 # And remove target attribute
-                del targetHolder.attributes[info.targetAttributeId]
+                del targetHolder.attributes[modifier.targetAttributeId]
 
     def __clearAffectorsDependents(self, affectors):
         """
@@ -189,14 +189,14 @@ class LinkTracker:
         affectors -- iterable with affectors in question
         """
         for affector in affectors:
-            # Go through all holders targeted by info
+            # Go through all holders targeted by modifier
             for targetHolder in self.getAffectees(affector):
                 # And remove target attribute
-                del targetHolder.attributes[affector.info.targetAttributeId]
+                del targetHolder.attributes[affector.modifier.targetAttributeId]
 
-    def __generateDurationAffectors(self, holder, stateFilter=None, contextFilter=None):
+    def __generateAffectors(self, holder, stateFilter=None, contextFilter=None):
         """
-        Get all duration affectors spawned by holder.
+        Get all affectors spawned by holder.
 
         Positional arguments:
         holder -- holder, for which affectors are generated
@@ -213,13 +213,11 @@ class LinkTracker:
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        for info in holder.item.getInfos(self._fit._eos._logger):
-            if stateFilter is not None and not info.state in stateFilter:
+        for modifier in holder.item.getModifiers(self._fit._eos._logger):
+            if stateFilter is not None and not modifier.state in stateFilter:
                 continue
-            if contextFilter is not None and not info.context in contextFilter:
+            if contextFilter is not None and not modifier.context in contextFilter:
                 continue
-            if info.runTime != RunTime.duration:
-                continue
-            affector = Affector(holder, info)
+            affector = Affector(holder, modifier)
             affectors.add(affector)
         return affectors

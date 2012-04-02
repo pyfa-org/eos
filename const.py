@@ -93,16 +93,6 @@ class Context(metaclass=Enum):
     projected = 3  # Modification which is applied only when its holder is projected onto something
 
 
-class RunTime(metaclass=Enum):
-    """
-    Modification runtime ID holder, used only internally
-    by Info class and classes interacting with it
-    """
-    duration = 1  # Applies modification over duration
-    pre = 2  # Instant modification, applied in the beginning of the cycle
-    post = 3  # Instant modification, applied in the end of the cycle
-
-
 class FilterType(metaclass=Enum):
     """
     Filter type ID holder, used only internally
@@ -132,62 +122,6 @@ class Operator(metaclass=Enum):
     postDiv = 7
     postPercent = 8
     postAssignment = 9
-    # Following operators are for immediate modification
-    increment = 10
-    decrement = 11
-    assignment = 12
-
-
-class SourceType(metaclass=Enum):
-    """
-    Source value type ID holder, used only internally
-    by Info class and classes interacting with it
-    """
-    attribute = 1  # Source value is reference to attribute via ID, whose value should be used for modification
-    value = 2  # Source value is actual value for modification
-
-
-class AtomType(metaclass=Enum):
-    """
-    Describes purpose of condition atom, used only internally
-    by everything which works with info conditions.
-    """
-    logic = 1  # Logical OR or AND
-    comparison = 2  # Comparison of arguments
-    math = 3  # Some math operation applied onto arguments
-    valueReference = 4  # Reference to attribute value
-    value = 5  # Value is enclosed in atom itself
-
-
-class AtomLogicOperator(metaclass=Enum):
-    """
-    Logical operators of condition atom, used only internally
-    by everything which works with info conditions.
-    """
-    and_ = 1  # Logical and
-    or_ = 2  # Logical or
-
-
-class AtomComparisonOperator(metaclass=Enum):
-    """
-    Comparison operators of condition atom, used only internally
-    by everything which works with info conditions.
-    """
-    equal = 1  # ==
-    notEqual = 2  # !=
-    less = 3  # <
-    lessOrEqual = 4  # <=
-    greater = 5  # >
-    greaterOrEqual = 6  # >=
-
-
-class AtomMathOperator(metaclass=Enum):
-    """
-    Math operators of condition atom, used only internally
-    by everything which works with info conditions.
-    """
-    add = 1  # +
-    subtract = 2  # -
 
 
 class InvType(metaclass=Enum):

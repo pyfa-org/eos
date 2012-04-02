@@ -105,25 +105,25 @@ class LinkRegister:
         data set (appropriate to passed affector) in affectorMap
 
         Possible exceptions:
-        FilteredSelfReferenceError -- raised if affector's info specifies filtered
-        modification and target location refers self, but affector's holder
-        isn't in position to be target for filtered modifications
-        DirectLocationError -- raised when affector's info
-        target location is not supported for direct modification
-        FilteredLocationError -- raised when affector's info
-        target location is not supported for filtered modification
-        FilterTypeError -- raised when affector's info filter type
-        is not supported
+        FilteredSelfReferenceError -- raised if affector's modifier specifies
+        filtered modification and target location refers self, but affector's
+        holder isn't in position to be target for filtered modifications
+        DirectLocationError -- raised when affector's modifier target
+        location is not supported for direct modification
+        FilteredLocationError -- raised when affector's modifier target
+        location is not supported for filtered modification
+        FilterTypeError -- raised when affector's modifier filter type is not
+        supported
         """
-        sourceHolder, info = affector
+        sourceHolder, modifier = affector
         # For each filter type, define affector map and key to use
-        if info.filterType is None:
+        if modifier.filterType is None:
             # For single item modifications, we need to properly pick
             # target holder (it's key) based on location
-            if info.location == Location.self_:
+            if modifier.location == Location.self_:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
-            elif info.location == Location.character:
+            elif modifier.location == Location.character:
                 char = self.__tracker._fit.character
                 if char is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -131,7 +131,7 @@ class LinkRegister:
                 else:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
-            elif info.location == Location.ship:
+            elif modifier.location == Location.ship:
                 ship = self.__tracker._fit.ship
                 if ship is not None:
                     affectorMap = self.__activeDirectAffectors
@@ -141,7 +141,7 @@ class LinkRegister:
                     key = sourceHolder
             # When other location is referenced, it means direct reference to module's charge
             # or to charge's module-container
-            elif info.location == Location.other:
+            elif modifier.location == Location.other:
                 try:
                     otherHolder = sourceHolder._other
                 except AttributeError:
@@ -155,47 +155,49 @@ class LinkRegister:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             else:
-                raise DirectLocationError(info.location)
+                raise DirectLocationError(modifier.location)
         # For massive modifications, compose key, making sure reference to self
         # is converted into appropriate real location
-        elif info.filterType == FilterType.all_:
+        elif modifier.filterType == FilterType.all_:
             affectorMap = self.__affectorLocation
             location = self.__contextizeFilterLocation(affector)
             key = location
-        elif info.filterType == FilterType.group:
+        elif modifier.filterType == FilterType.group:
             affectorMap = self.__affectorLocationGroup
             location = self.__contextizeFilterLocation(affector)
-            key = (location, info.filterValue)
-        elif info.filterType == FilterType.skill:
+            key = (location, modifier.filterValue)
+        elif modifier.filterType == FilterType.skill:
             affectorMap = self.__affectorLocationSkill
             location = self.__contextizeFilterLocation(affector)
             skill = self.__contextizeSkillrqId(affector)
             key = (location, skill)
         else:
-            raise FilterTypeError(info.filterType)
+            raise FilterTypeError(modifier.filterType)
         return key, affectorMap
 
     def __contextizeFilterLocation(self, affector):
         """
-        Convert location self-reference to real location, like character or ship.
-        Used only in modifications of multiple filtered holders, direct modifications
-        are processed out of the context of this method.
+        Convert location self-reference to real location, like
+        character or ship. Used only in modifications of multiple
+        filtered holders, direct modifications are processed out
+        of the context of this method.
 
         Positional arguments:
-        affector -- affector, whose info refers location in question
+        affector -- affector, whose modifier refers location in question
 
         Return value:
         Real contextized location
 
         Possible exceptions:
-        FilteredSelfReferenceError -- raised if affector's info refers self, but affector's
-        holder isn't in position to be target for massive filtered modifications
-        FilteredLocationError -- raised when affector's info
+        FilteredSelfReferenceError -- raised if affector's modifier
+        refers self, but affector's holder isn't in position to be
+        target for massive filtered modifications
+        FilteredLocationError -- raised when affector's modifier
         target location is not supported for filtered modification
         """
         sourceHolder = affector.sourceHolder
-        targetLocation = affector.info.location
-        # Reference to self is sparingly used on ship effects, so we must convert
+        targetLocation = affector.modifier.location
+        # Reference to self is sparingly used in ship effects, so we must convert
         # it to real location
         if targetLocation == Location.self_:
             if sourceHolder is self.__tracker._fit.ship:
@@ -216,12 +218,12 @@ class LinkRegister:
         Convert typeID self-reference into real typeID.
 
         Positional arguments:
-        affector -- affector, whose info refers some type via ID
+        affector -- affector, whose modifier refers some type via ID
 
         Return value:
         Real typeID, taken from affector's holder carrier
         """
-        skillId = affector.info.filterValue
+        skillId = affector.modifier.filterValue
         if skillId == InvType.self_:
             skillId = affector.sourceHolder.item.id
         return skillId
@@ -239,11 +241,11 @@ class LinkRegister:
         # Cycle through all disabled direct affectors
         for affectorSet in self.__disabledDirectAffectors.values():
             for affector in affectorSet:
-                info = affector.info
+                modifier = affector.modifier
                 # Mark affector as to-be-enabled only when it specifically
                 # targets passed target location, and not holders assigned
                 # to it
-                if info.location == targetLocation and info.filterType is None:
+                if modifier.location == targetLocation and modifier.filterType is None:
                     affectorsToEnable.add(affector)
         # Bail if we have nothing to do
         if not affectorsToEnable:
@@ -291,8 +293,8 @@ class LinkRegister:
         # Get all disabled affectors which should influence our targetHolder
         affectorsToEnable = set()
         for affector in self.__disabledDirectAffectors.get(otherHolder) or ():
-            info = affector.info
-            if info.location == Location.other and info.filterType is None:
+            modifier = affector.modifier
+            if modifier.location == Location.other and modifier.filterType is None:
                 affectorsToEnable.add(affector)
         # Bail if we have nothing to do
         if not affectorsToEnable:
@@ -394,26 +396,26 @@ class LinkRegister:
         added to fit know that they should be affected by it.
 
         Positional arguments:
-        affector -- duration affector to register
+        affector -- affector to register
         """
         try:
             key, affectorMap = self.__getAffectorMap(affector)
             # Actually add data to map
             affectorMap.addData(key, affector)
         except DirectLocationError as e:
-            msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (DirectLocationError, affector.sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilteredLocationError as e:
-            msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (FilteredLocationError, affector.sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilteredSelfReferenceError:
-            msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
+            msg = "malformed modifier on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (FilteredSelfReferenceError, affector.sourceHolder.item.id)
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilterTypeError as e:
-            msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (FilterTypeError, affector.sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
 
@@ -423,7 +425,7 @@ class LinkRegister:
         holders-affectees "know" that they're no longer affected by it.
 
         Positional arguments:
-        affector -- duration affector to unregister
+        affector -- affector to unregister
         """
         try:
             key, affectorMap = self.__getAffectorMap(affector)
@@ -433,19 +435,19 @@ class LinkRegister:
         # if logger's handler suppresses messages with duplicate
         # signature
         except DirectLocationError as e:
-            msg = "malformed info on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: unsupported target location {} for direct modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (DirectLocationError, affector.sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilteredLocationError as e:
-            msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: unsupported target location {} for filtered modification".format(affector.sourceHolder.item.id, e.args[0])
             signature = (FilteredLocationError, affector.sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilteredSelfReferenceError:
-            msg = "malformed info on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
+            msg = "malformed modifier on item {}: invalid reference to self for filtered modification".format(affector.sourceHolder.item.id)
             signature = (FilteredSelfReferenceError, affector.sourceHolder.item.id)
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilterTypeError as e:
-            msg = "malformed info on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: invalid filter type {}".format(affector.sourceHolder.item.id, e.args[0])
             signature = (FilterTypeError, affector.sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
 
@@ -459,43 +461,43 @@ class LinkRegister:
         Return value:
         Set with holders, being influenced by affector
         """
-        sourceHolder, info = affector
+        sourceHolder, modifier = affector
         affectees = set()
         try:
             # For direct modification, make set out of single target location
-            if info.filterType is None:
-                if info.location == Location.self_:
+            if modifier.filterType is None:
+                if modifier.location == Location.self_:
                     target = {sourceHolder}
-                elif info.location == Location.character:
+                elif modifier.location == Location.character:
                     char = self.__tracker._fit.character
                     target = {char} if char is not None else None
-                elif info.location == Location.ship:
+                elif modifier.location == Location.ship:
                     ship = self.__tracker._fit.ship
                     target = {ship} if ship is not None else None
-                elif info.location == Location.other:
+                elif modifier.location == Location.other:
                     try:
                         otherHolder = sourceHolder._other
                     except AttributeError:
                         otherHolder = None
                     target = {otherHolder} if otherHolder is not None else None
                 else:
-                    raise DirectLocationError(info.location)
+                    raise DirectLocationError(modifier.location)
             # For filtered modifications, pick appropriate dictionary and get set
             # with target holders
-            elif info.filterType == FilterType.all_:
+            elif modifier.filterType == FilterType.all_:
                 key = self.__contextizeFilterLocation(affector)
                 target = self.__affecteeLocation.get(key) or set()
-            elif info.filterType == FilterType.group:
+            elif modifier.filterType == FilterType.group:
                 location = self.__contextizeFilterLocation(affector)
-                key = (location, info.filterValue)
+                key = (location, modifier.filterValue)
                 target = self.__affecteeLocationGroup.get(key) or set()
-            elif info.filterType == FilterType.skill:
+            elif modifier.filterType == FilterType.skill:
                 location = self.__contextizeFilterLocation(affector)
                 skill = self.__contextizeSkillrqId(affector)
                 key = (location, skill)
                 target = self.__affecteeLocationSkill.get(key) or set()
             else:
-                raise FilterTypeError(info.filterType)
+                raise FilterTypeError(modifier.filterType)
             # Add our set to affectees
             if target is not None:
                 affectees.update(target)
@@ -503,19 +505,19 @@ class LinkRegister:
         # to suppress messages with duplicate signatures, following error handling
         # won't produce new log entries
         except DirectLocationError as e:
-            msg = "malformed info on item {}: unsupported target location {} for direct modification".format(sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: unsupported target location {} for direct modification".format(sourceHolder.item.id, e.args[0])
             signature = (DirectLocationError, sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilteredLocationError as e:
-            msg = "malformed info on item {}: unsupported target location {} for filtered modification".format(sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: unsupported target location {} for filtered modification".format(sourceHolder.item.id, e.args[0])
             signature = (FilteredLocationError, sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilteredSelfReferenceError:
-            msg = "malformed info on item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
+            msg = "malformed modifier on item {}: invalid reference to self for filtered modification".format(sourceHolder.item.id)
             signature = (FilteredSelfReferenceError, sourceHolder.item.id)
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         except FilterTypeError as e:
-            msg = "malformed info on item {}: invalid filter type {}".format(sourceHolder.item.id, e.args[0])
+            msg = "malformed modifier on item {}: invalid filter type {}".format(sourceHolder.item.id, e.args[0])
             signature = (FilterTypeError, sourceHolder.item.id, e.args[0])
             self.__tracker._fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
         return affectees

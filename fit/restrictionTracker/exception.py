@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from eos.exception import EosException
+from eos.exception import EosError
 
 
-class RestrictionTrackerException(EosException):
+class RestrictionTrackerError(EosError):
     """
     All restriction tracker exceptions are based on this class.
     """
     pass
 
 
-class RegisterValidationError(RestrictionTrackerException):
+class RegisterValidationError(RestrictionTrackerError):
     """
     All errors raised during validation process on register level
     are instances of this class.
@@ -37,7 +37,7 @@ class RegisterValidationError(RestrictionTrackerException):
     pass
 
 
-class ValidationError(RestrictionTrackerException):
+class ValidationError(RestrictionTrackerError):
     """
     Raised when tracker-wide validation fails.
     """

@@ -19,12 +19,12 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.fit.attributeCalculator.info.info import Info
+from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
@@ -38,21 +38,18 @@ class TestCap(AttrCalcTestCase):
         self.cappingAttr = cappingAttr = Attribute(2, defaultValue=5)
         self.sourceAttr = sourceAttr = Attribute(3)
         # Just to make sure cap is applied to final value, not
-        # base, make some basic modification info
-        info = Info()
-        info.state = State.offline
-        info.context = Context.local
-        info.runTime = RunTime.duration
-        info.gang = False
-        info.location = Location.self_
-        info.filterType = None
-        info.filterValue = None
-        info.operator = Operator.postMul
-        info.targetAttributeId = cappedAttr.id
-        info.sourceType = SourceType.attribute
-        info.sourceValue = sourceAttr.id
+        # base, make some basic modification modifier
+        modifier = Modifier()
+        modifier.state = State.offline
+        modifier.context = Context.local
+        modifier.sourceAttributeId = sourceAttr.id
+        modifier.operator = Operator.postMul
+        modifier.targetAttributeId = cappedAttr.id
+        modifier.location = Location.self_
+        modifier.filterType = None
+        modifier.filterValue = None
         self.effect = Effect(None, EffectCategory.passive)
-        self.effect._infos = (info,)
+        self.effect._modifiers = (modifier,)
         self.fit = Fit({cappedAttr.id: cappedAttr, cappingAttr.id: cappingAttr, sourceAttr.id: sourceAttr})
 
     def testCapDefault(self):
@@ -78,20 +75,17 @@ class TestCap(AttrCalcTestCase):
         # Make sure that holder's own specified attribute
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
-        info = Info()
-        info.state = State.offline
-        info.context = Context.local
-        info.runTime = RunTime.duration
-        info.gang = False
-        info.location = Location.self_
-        info.filterType = None
-        info.filterValue = None
-        info.operator = Operator.postMul
-        info.targetAttributeId = self.cappingAttr.id
-        info.sourceType = SourceType.attribute
-        info.sourceValue = self.sourceAttr.id
+        modifier = Modifier()
+        modifier.state = State.offline
+        modifier.context = Context.local
+        modifier.sourceAttributeId = self.sourceAttr.id
+        modifier.operator = Operator.postMul
+        modifier.targetAttributeId = self.cappingAttr.id
+        modifier.location = Location.self_
+        modifier.filterType = None
+        modifier.filterValue = None
         effect = Effect(None, EffectCategory.passive)
-        effect._infos = (info,)
+        effect._modifiers = (modifier,)
         holder = IndependentItem(Type(None, effects=(self.effect, effect), attributes={self.cappedAttr.id: 3, self.sourceAttr.id: 6,
                                                                                        self.cappingAttr.id: 0.1}))
         self.fit.items.append(holder)
@@ -109,20 +103,17 @@ class TestCap(AttrCalcTestCase):
         # Check attribute vs original cap
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 2)
         # Add something which changes capping attribute
-        info = Info()
-        info.state = State.offline
-        info.context = Context.local
-        info.runTime = RunTime.duration
-        info.gang = False
-        info.location = Location.ship
-        info.filterType = FilterType.all_
-        info.filterValue = None
-        info.operator = Operator.postMul
-        info.targetAttributeId = self.cappingAttr.id
-        info.sourceType = SourceType.attribute
-        info.sourceValue = self.sourceAttr.id
+        modifier = Modifier()
+        modifier.state = State.offline
+        modifier.context = Context.local
+        modifier.sourceAttributeId = self.sourceAttr.id
+        modifier.operator = Operator.postMul
+        modifier.targetAttributeId = self.cappingAttr.id
+        modifier.location = Location.ship
+        modifier.filterType = FilterType.all_
+        modifier.filterValue = None
         effect = Effect(None, EffectCategory.passive)
-        effect._infos = (info,)
+        effect._modifiers = (modifier,)
         capUpdater = IndependentItem(Type(None, effects=(effect,), attributes={self.sourceAttr.id: 3.5}))
         self.fit.items.append(capUpdater)
         # As capping attribute is updated, capped attribute must be updated too

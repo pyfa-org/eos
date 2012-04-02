@@ -19,50 +19,50 @@
 #===============================================================================
 
 
-from eos.exception import EosException
+from eos.exception import EosError
 
 
-class AttributeCalculatorException(EosException):
+class AttributeCalculatorError(EosError):
     """All attribute calculator exceptions are based on this class."""
     pass
 
 
 # Exception classes used by link register
-class DirectLocationError(AttributeCalculatorException):
+class DirectLocationError(AttributeCalculatorError):
     """
-    Raised when location in Info object being processed cannot be
+    Raised when location in Modifier object being processed cannot be
     handled by register (set of unsupported locations is different
     for direct and filtered modifications).
     """
     pass
 
 
-class FilteredLocationError(AttributeCalculatorException):
+class FilteredLocationError(AttributeCalculatorError):
     """
-    Raised when location in Info object being processed cannot be
+    Raised when location in Modifier object being processed cannot be
     handled by register (set of unsupported locations is different
     for direct and filtered modifications).
     """
     pass
 
 
-class FilteredSelfReferenceError(AttributeCalculatorException):
+class FilteredSelfReferenceError(AttributeCalculatorError):
     """
-    Raised when info references itself as holder container, but
+    Raised when Modifier references itself as holder container, but
     actually it can't have any holders assigned to it.
     """
     pass
 
 
-class FilterTypeError(AttributeCalculatorException):
+class FilterTypeError(AttributeCalculatorError):
     """
-    Raised when info specifies uknown to calculator filter type.
+    Raised when Modifier specifies unknown to calculator filter type.
     """
     pass
 
 
 # Exception classes used by map's calculation method
-class BaseValueError(AttributeCalculatorException):
+class BaseValueError(AttributeCalculatorError):
     """
     Raised when value, upon which attribute calculation should be based,
     cannot be determined, thus making it impossible to calculate attribute.
@@ -70,7 +70,7 @@ class BaseValueError(AttributeCalculatorException):
     pass
 
 
-class AttributeMetaError(AttributeCalculatorException):
+class AttributeMetaError(AttributeCalculatorError):
     """
     Raised when attribute being calculated cannot be found in
     attribute database.
@@ -78,17 +78,9 @@ class AttributeMetaError(AttributeCalculatorException):
     pass
 
 
-class OperatorError(AttributeCalculatorException):
+class OperatorError(AttributeCalculatorError):
     """
     Raised during calculation process, if attribute affector is
     using operator which is not supported by calculate method.
-    """
-    pass
-
-
-class SourceTypeError(AttributeCalculatorException):
-    """
-    Raised during calculation process, if source type is unknown
-    to calculate method.
     """
     pass

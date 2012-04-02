@@ -23,12 +23,12 @@ from eos.const import EffectBuildStatus
 from eos.eve.const import Effect
 
 
-# Following infos get their infos purged
-purgeInfos = (Effect.launcherFitted, Effect.turretFitted)
+# Following effects get their modifiers purged
+purgeModifiers = (Effect.launcherFitted, Effect.turretFitted)
 
 def customizeEffect(effect):
     """Control all customizations performed on effect"""
-    # Clean infos of specified effects
-    if effect.id in purgeInfos:
-        effect._infos = ()
-        effect.infoStatus = EffectBuildStatus.override
+    # Clean modifiers of specified effects
+    if effect.id in purgeModifiers:
+        effect._modifiers = ()
+        effect.modifierStatus = EffectBuildStatus.override

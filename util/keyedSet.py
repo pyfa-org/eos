@@ -25,6 +25,8 @@ class KeyedSet(dict):
     make it easier to use it, given that its values are sets with data.
     """
 
+    __slots__ = ()
+
     def addDataSet(self, key, dataSet):
         """
         Add data set to dictionary, with proper creation jobs

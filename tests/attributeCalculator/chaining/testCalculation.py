@@ -19,12 +19,12 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, RunTime, FilterType, Operator, SourceType
+from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
 from eos.eve.effect import Effect
 from eos.eve.type import Type
-from eos.fit.attributeCalculator.info.info import Info
+from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
 
@@ -37,49 +37,40 @@ class TestCalculationChain(AttrCalcTestCase):
         attr2 = Attribute(2)
         attr3 = Attribute(3)
         attr4 = Attribute(4)
-        info1 = Info()
-        info1.state = State.offline
-        info1.context = Context.local
-        info1.runTime = RunTime.duration
-        info1.gang = False
-        info1.location = Location.self_
-        info1.filterType = None
-        info1.filterValue = None
-        info1.operator = Operator.postMul
-        info1.targetAttributeId = attr2.id
-        info1.sourceType = SourceType.attribute
-        info1.sourceValue = attr1.id
+        modifier1 = Modifier()
+        modifier1.state = State.offline
+        modifier1.context = Context.local
+        modifier1.sourceAttributeId = attr1.id
+        modifier1.operator = Operator.postMul
+        modifier1.targetAttributeId = attr2.id
+        modifier1.location = Location.self_
+        modifier1.filterType = None
+        modifier1.filterValue = None
         effect1 = Effect(None, EffectCategory.passive)
-        effect1._infos = (info1,)
-        info2 = Info()
-        info2.state = State.offline
-        info2.context = Context.local
-        info2.runTime = RunTime.duration
-        info2.gang = False
-        info2.location = Location.ship
-        info2.filterType = None
-        info2.filterValue = None
-        info2.operator = Operator.postPercent
-        info2.targetAttributeId = attr3.id
-        info2.sourceType = SourceType.attribute
-        info2.sourceValue = attr2.id
+        effect1._modifiers = (modifier1,)
+        modifier2 = Modifier()
+        modifier2.state = State.offline
+        modifier2.context = Context.local
+        modifier2.sourceAttributeId = attr2.id
+        modifier2.operator = Operator.postPercent
+        modifier2.targetAttributeId = attr3.id
+        modifier2.location = Location.ship
+        modifier2.filterType = None
+        modifier2.filterValue = None
         effect2 = Effect(None, EffectCategory.passive)
-        effect2._infos = (info2,)
+        effect2._modifiers = (modifier2,)
         holder1 = CharacterItem(Type(None, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
-        info3 = Info()
-        info3.state = State.offline
-        info3.context = Context.local
-        info3.runTime = RunTime.duration
-        info3.gang = False
-        info3.location = Location.ship
-        info3.filterType = FilterType.all_
-        info3.filterValue = None
-        info3.operator = Operator.postPercent
-        info3.targetAttributeId = attr4.id
-        info3.sourceType = SourceType.attribute
-        info3.sourceValue = attr3.id
+        modifier3 = Modifier()
+        modifier3.state = State.offline
+        modifier3.context = Context.local
+        modifier3.sourceAttributeId = attr3.id
+        modifier3.operator = Operator.postPercent
+        modifier3.targetAttributeId = attr4.id
+        modifier3.location = Location.ship
+        modifier3.filterType = FilterType.all_
+        modifier3.filterValue = None
         effect3 = Effect(None, EffectCategory.passive)
-        effect3._infos = (info3,)
+        effect3._modifiers = (modifier3,)
         holder2 = IndependentItem(Type(None, effects=(effect3,), attributes={attr3.id: 150}))
         holder3 = ShipItem(Type(None, attributes={attr4.id: 12.5}))
         fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3, attr4.id: attr4})
