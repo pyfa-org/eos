@@ -35,7 +35,7 @@ class AttrCalcTestCase(EosTestCase):
     def assertBuffersEmpty(self, fit):
         entryNum = 0
         register = fit._linkTracker._LinkTracker__register
-        for attrName in dir(register):
+        for attrName in register.__dict__:
             attrVal = getattr(register, attrName)
             if attrName.startswith("__") and attrName.endswith("__"):
                 continue

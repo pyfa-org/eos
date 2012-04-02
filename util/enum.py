@@ -27,19 +27,17 @@ class Enum(type):
     """
 
     def __new__(mcs, name, bases, dict_):
-        # Tuple with values
-        values = tuple(dict_[attr] for attr in filter(lambda attr: attr.startswith("_") is False, dict_))
         # Name map
         # Format: {value: name}
         valueNameMap = {}
         for attrName, val in dict_.items():
             if attrName.startswith("_") is True:
                 continue
-            if val in valueNameMap.values():
+            if val in valueNameMap:
                 raise ValueError("enum contains duplicate values")
             valueNameMap[val] = attrName
         # Assign our custom data structures to class dict
-        dict_["_values"] = values
+        dict_["_values"] = tuple(valueNameMap)
         dict_["_valueNameMap"] = valueNameMap
         return type.__new__(mcs, name, bases, dict_)
 
