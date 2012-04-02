@@ -104,12 +104,12 @@ class MutableAttributeMap:
                 val = self.__modifiedAttributes[attrId] = self.__calculate(attrId)
             except BaseValueError as e:
                 msg = "unable to find base value for attribute {} on item {}".format(e.args[0], self.__holder.item.id)
-                signature = (BaseValueError, self.__holder.item.id, e.args[0])
+                signature = (type(e), self.__holder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 raise KeyError(attrId) from e
             except AttributeMetaError as e:
                 msg = "unable to fetch metadata for attribute {}, requested for item {}".format(e.args[0], self.__holder.item.id)
-                signature = (AttributeMetaError, self.__holder.item.id, e.args[0])
+                signature = (type(e), self.__holder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.error(msg, childName="attributeCalculator", signature=signature)
                 raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
@@ -235,7 +235,7 @@ class MutableAttributeMap:
             # Handle operator type failure
             except OperatorError as e:
                 msg = "malformed modifier on item {}: unknown operator {}".format(sourceHolder.item.id, e.args[0])
-                signature = (OperatorError, sourceHolder.item.id, e.args[0])
+                signature = (type(e), sourceHolder.item.id, e.args[0])
                 self.__holder.fit._eos._logger.warning(msg, childName="attributeCalculator", signature=signature)
                 continue
         # When data gathering is complete, process penalized modifiers

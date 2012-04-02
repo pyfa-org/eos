@@ -118,26 +118,26 @@ class ModifierBuilder:
             try:
                 if preActions.difference(usedPreActions) or postActions.difference(usedPostActions):
                     raise UnusedActionError
-            except UnusedActionError:
+            except UnusedActionError as e:
                 msg = "unused actions left after generating modifiers for effect {}".format(effect.id)
-                signature = (UnusedActionError, effect.id)
+                signature = (type(e), effect.id)
                 logger.warning(msg, childName="modifierBuilder", signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
         except TreeFetchingError as e:
             msg = "failed to parse expressions of effect {}: unable to fetch expression {}".format(effect.id, e.args[0])
-            signature = (TreeFetchingError, effect.id)
+            signature = (type(e), effect.id)
             logger.error(msg, childName="modifierBuilder", signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingError as e:
             msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
-            signature = (TreeParsingError, effect.id)
+            signature = (type(e), effect.id)
             logger.warning(msg, childName="modifierBuilder", signature=signature)
             return (), EffectBuildStatus.error
-        except TreeParsingUnexpectedError:
+        except TreeParsingUnexpectedError as e:
             msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
-            signature = (TreeParsingUnexpectedError, effect.id)
+            signature = (type(e), effect.id)
             logger.error(msg, childName="modifierBuilder", signature=signature)
             return (), EffectBuildStatus.error
 

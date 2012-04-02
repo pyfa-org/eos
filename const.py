@@ -30,13 +30,14 @@ from eos.util.enum import Enum
 class State(metaclass=Enum):
     """
     Possible item states, used as part of public API and
-    internally by Info class and classes interacting with it
+    internally by Modifier class and classes interacting with
+    it
     """
     # Values assigned to states are not deliberate, they must
     # be in ascending order. It means that e.g. online module
     # state, which should trigger modules' online and offline
-    # effects/infos, must have higher value than offline, and
-    # so on.
+    # effects/modifiers, must have higher value than offline,
+    # and so on.
     offline = 1
     online = 2
     active = 3
@@ -54,7 +55,7 @@ class Slot(metaclass=Enum):
     launcher = 7
 
 
-# Class used by Infos and Item definitions
+# Class used by Modifiers and Item definitions
 class Location(metaclass=Enum):
     """
     Location specification, often relative, thus item
@@ -73,12 +74,12 @@ class Location(metaclass=Enum):
 
 class EffectBuildStatus(metaclass=Enum):
     """
-    Statuses which indicate effect->infos conversion result,
+    Statuses which indicate effect->modifiers conversion result,
     part of public API.
     """
-    notParsed = 1  # Expression trees were not parsed into infos yet
+    notParsed = 1  # Expression trees were not parsed into modifiers yet
     error = 2  # Errors occurred during expression trees parsing or validation
-    okPartial = 3  # Infos were generated, but some of modifications were dropped as unsupported
+    okPartial = 3  # Modifiers were generated, but some of elements were dropped as unsupported
     okFull = 4  # All modifications were pulled out of expression tree successfully
     override = 5  # Eos overrides action of this effect
 
@@ -86,7 +87,7 @@ class EffectBuildStatus(metaclass=Enum):
 class Context(metaclass=Enum):
     """
     Describes when modification is applied, used only internally
-    by Info class and classes interacting with it
+    by Modifier class and classes interacting with it
     """
     local = 1  # Fit-local modification
     gang = 2  # Gang-wide modification
@@ -96,7 +97,7 @@ class Context(metaclass=Enum):
 class FilterType(metaclass=Enum):
     """
     Filter type ID holder, used only internally
-    by Info class and classes interacting with it
+    by Modifier class and classes interacting with it
     """
     all_ = 1  # Affects all items in target location
     group = 2  # Affects items in target location with additional filter by group
@@ -106,7 +107,7 @@ class FilterType(metaclass=Enum):
 class Operator(metaclass=Enum):
     """
     Operator ID holder, used only internally
-    by Info class and classes interacting with it
+    by Modifier class and classes interacting with it
     """
     # Following operators are used in modifications
     # applied over some duration. We can deliberately assign
@@ -127,9 +128,9 @@ class Operator(metaclass=Enum):
 class InvType(metaclass=Enum):
     """
     Eos-specific type declarations, used only internally
-    by Info class and classes interacting with it
+    by Modifier class and classes interacting with it
     """
-    self_ = -1  # Refers carrier of info, special type ID, thus it must not overlap with any real type ID
+    self_ = -1  # Refers carrier of modifier, special type ID, thus it must not overlap with any real type ID
 
 
 class Restriction(metaclass=Enum):
