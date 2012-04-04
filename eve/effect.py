@@ -34,17 +34,17 @@ class Effect:
     def __init__(self, id_, categoryId, isOffensive=None, isAssistance=None,
                  fittingUsageChanceAttributeID=None, preExpressionCallData=None, postExpressionCallData=None):
         # The unique ID of an effect
-        self.id = int(id_) if id_ is not None else None
+        self.id = id_
 
         # Effect category actually describes type of effect, which determines
         # when it is applied - always, when item is active, overloaded, etc.
-        self.categoryId = int(categoryId) if categoryId is not None else None
+        self.categoryId = categoryId
 
         # Whether the effect is offensive (e.g. guns)
-        self.isOffensive = bool(isOffensive) if isOffensive is not None else None
+        self.isOffensive = bool(isOffensive)
 
         # Whether the effect is helpful (e.g. remote repairers)
-        self.isAssistance = bool(isAssistance) if isAssistance is not None else None
+        self.isAssistance = bool(isAssistance)
 
         # Data necessary to get preExpression of the effect
         self._preExpressionCallData = preExpressionCallData

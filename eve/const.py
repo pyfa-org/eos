@@ -27,11 +27,6 @@ This file holds IDs of multiple EVE's entities.
 from eos.util.enum import Enum
 
 
-# When some EVE's database row refers another,
-# these values are considered as absence of reference
-nulls = (0, None)
-
-
 class Attribute(metaclass=Enum):
     """Attribute ID holder"""
     mass = 4

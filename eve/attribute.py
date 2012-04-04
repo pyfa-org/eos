@@ -19,29 +19,26 @@
 #===============================================================================
 
 
-from .const import nulls
-
-
 class Attribute:
     """Class-holder for attribute metadata"""
 
     def __init__(self, id_, maxAttributeId=None, defaultValue=None,
                  highIsGood=None, stackable=None):
         # Just ID of attribute, integer
-        self.id = int(id_) if id_ is not None else None
+        self.id = id_
 
         # When value of this attribute is calculated on any item, it cannot
         # be bigger than value of attribute referenced by maxAttributeId
-        self.maxAttributeId = int(maxAttributeId) if not maxAttributeId in nulls else None
+        self.maxAttributeId = maxAttributeId
 
         # Default value of this attribute, used when base attribute value
         # is not available on item during calculation process
-        self.defaultValue = float(defaultValue) if defaultValue is not None else None
+        self.defaultValue = defaultValue
 
         # Boolean describing if it's good when attribute is high or not,
-        # used in calculation process, with default being True
-        self.highIsGood = bool(highIsGood) if highIsGood is not None else True
+        # used in calculation process
+        self.highIsGood = bool(highIsGood)
 
         # Boolean which defines if attribute can be stacking penalized (False)
-        # or not (True), with default being True
-        self.stackable = bool(stackable) if stackable is not None else True
+        # or not (True)
+        self.stackable = bool(stackable)

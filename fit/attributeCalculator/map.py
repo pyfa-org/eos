@@ -204,7 +204,7 @@ class MutableAttributeMap:
                 operator = modifier.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
-                penalize = (not attrMeta.stackable and not sourceHolder.item.categoryId in penaltyImmuneCategories
+                penalize = (attrMeta.stackable is False and not sourceHolder.item.categoryId in penaltyImmuneCategories
                             and operator in penalizableOperators)
                 try:
                     modValue = sourceHolder.attributes[modifier.sourceAttributeId]

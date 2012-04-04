@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #===============================================================================
 # Copyright (C) 2011 Diego Duclos
+# Copyright (C) 2011-2012 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -18,10 +19,12 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 """
 buildJson.py script.
 This script takes a sqlite cache dump as input and outputs several JSON files as bz2 archive.
 """
+
 
 import time
 start = time.clock()
@@ -30,6 +33,7 @@ import argparse
 import bz2
 import json
 import sqlite3
+
 
 parser = argparse.ArgumentParser(description="This script takes a sqlite cache dump as input and outputs several JSON files as bz2 archive.")
 parser.add_argument("dbPath", type=str, help="The path to the sqlite cache dump")
@@ -55,12 +59,12 @@ for typeRow in conn.execute("SELECT typeID, groupID FROM invtypes"):
     statement = "SELECT de.durationAttributeID, de.dischargeAttributeID, de.rangeAttributeID, de.falloffAttributeID, de.trackingSpeedAttributeID FROM dgmeffects AS de INNER JOIN dgmtypeeffects AS dte ON de.effectID = dte.effectID WHERE dte.isDefault = 1 AND dte.typeID = ?"
     defaultEffectRow = conn.execute(statement, (typeRow["typeID"],)).fetchone()
     if defaultEffectRow is None:
-        # If item doesn't have default effect, assign zeros to these values
-        defaultEffectRow = {"durationAttributeID": 0,
-                            "dischargeAttributeID": 0,
-                            "rangeAttributeID": 0,
-                            "falloffAttributeID": 0,
-                            "trackingSpeedAttributeID": 0}
+        # If item doesn't have default effect, assign None to these values
+        defaultEffectRow = {"durationAttributeID": None,
+                            "dischargeAttributeID": None,
+                            "rangeAttributeID": None,
+                            "falloffAttributeID": None,
+                            "trackingSpeedAttributeID": None}
     # Tuple with (attributeID, attributeValue) tuples assigned to type
     statement = "SELECT attributeID, value FROM dgmtypeattribs WHERE typeID = ?"
     typeAttrs = tuple((attrRow["attributeID"], attrRow["value"]) for attrRow in conn.execute(statement, (typeRow["typeID"],)))

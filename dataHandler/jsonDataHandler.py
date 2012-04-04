@@ -23,7 +23,6 @@ from bz2 import BZ2File
 from json import loads
 from weakref import WeakValueDictionary
 
-from eos.eve.const import nulls
 from eos.eve.type import Type
 from eos.eve.expression import Expression
 from eos.eve.effect import Effect
@@ -58,8 +57,6 @@ class JsonDataHandler(DataHandler):
         self.__expressionsCache = WeakValueDictionary()
 
     def getType(self, typeId):
-        if typeId in nulls:
-            return None
         try:
             type_ = self.__typesCache[typeId]
         except KeyError:
@@ -86,8 +83,6 @@ class JsonDataHandler(DataHandler):
         return type_
 
     def getAttribute(self, attrId):
-        if attrId in nulls:
-            return None
         try:
             attribute = self.__attributesCache[attrId]
         except KeyError:
@@ -106,8 +101,6 @@ class JsonDataHandler(DataHandler):
         return attribute
 
     def getEffect(self, effectId):
-        if effectId in nulls:
-            return None
         try:
             effect = self.__effectsCache[effectId]
         except KeyError:
@@ -131,8 +124,6 @@ class JsonDataHandler(DataHandler):
         return effect
 
     def getExpression(self, expId):
-        if expId in nulls:
-            return None
         try:
             expression = self.__expressionsCache[expId]
         except KeyError:
@@ -144,8 +135,8 @@ class JsonDataHandler(DataHandler):
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
             expression = Expression(expId,
                                     opndId,
-                                    arg1=self.getExpression(arg1Id),
-                                    arg2=self.getExpression(arg2Id),
+                                    arg1=self.getExpression(arg1Id) if arg1Id is not None else None,
+                                    arg2=self.getExpression(arg2Id) if arg2Id is not None else None,
                                     value=eVal,
                                     expressionTypeId=eTypeId,
                                     expressionGroupId=eGrpId,

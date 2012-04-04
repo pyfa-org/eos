@@ -34,7 +34,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1, stackable=False)
+        self.tgtAttr = tgtAttr = Attribute(1, stackable=0)
         self.srcAttr = srcAttr = Attribute(2)
         modifier = Modifier()
         modifier.state = State.offline

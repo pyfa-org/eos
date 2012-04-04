@@ -19,9 +19,6 @@
 #===============================================================================
 
 
-from .const import nulls
-
-
 class Expression:
     """
     Each effect, besides few metadata fields, contains two references to expressions
@@ -31,20 +28,20 @@ class Expression:
     def __init__(self, id_, operandId, arg1=None, arg2=None, value=None,
                  expressionTypeId=None, expressionGroupId=None, expressionAttributeId=None):
         # Unique ID of expression
-        self.id = int(id_) if id_ is not None else None
+        self.id = id_
 
         # Operand of expression, field which each expression must have.
         # Describes actual effect of expression
-        self.operandId = int(operandId) if operandId is not None else None
+        self.operandId = operandId
 
         # Value of expression, contains string or integer (in form of string)
-        self.value = str(value) if value is not None else None
+        self.value = value
 
         # Arg attributes contain references to child expressions
         self.arg1 = arg1
         self.arg2 = arg2
 
         # References to type/group/attribute via integer ID
-        self.expressionTypeId = int(expressionTypeId) if not expressionTypeId in nulls else None
-        self.expressionGroupId = int(expressionGroupId) if not expressionGroupId in nulls else None
-        self.expressionAttributeId = int(expressionAttributeId) if not expressionAttributeId in nulls else None
+        self.expressionTypeId = expressionTypeId
+        self.expressionGroupId = expressionGroupId
+        self.expressionAttributeId = expressionAttributeId

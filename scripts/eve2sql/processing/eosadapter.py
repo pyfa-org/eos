@@ -408,8 +408,6 @@ class EosAdapter(object):
             idx_operand = exp_table.index_by_name("operandID")
             idx_expvalue = exp_table.index_by_name("expressionValue")
             idx_expentity = exp_table.index_by_name(idz_data[3])
-            # Values which are considered to be empty
-            nulls = {None, 0}
             for datarow in exp_table.datarows:
                 operand = datarow[idx_operand]
                 # Check if we're dealing with the operand referring entity
@@ -417,7 +415,9 @@ class EosAdapter(object):
                 if operand == idz_data[4]:
                     entity = datarow[idx_expentity]
                     val = datarow[idx_expvalue]
-                    if entity in nulls and val in entity_name_id:
+                    # Check that actual reference to entity type being checked
+                    # is absent, but there's some expression value
+                    if entity is None and val in entity_name_id:
                         if val in entity_name_collisions:
                             print("  Warning: use of colliding {0} {1} detected, expect errors".format(idz_data[2], val))
                         mutablerow = list(datarow)

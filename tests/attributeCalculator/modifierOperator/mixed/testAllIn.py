@@ -33,7 +33,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
     """Test interaction of all operators, besides post-assignment"""
 
     def testAllIn(self):
-        tgtAttr = Attribute(1, stackable=False)
+        tgtAttr = Attribute(1, stackable=0)
         srcAttr = Attribute(2)
         fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
         modifierPreAss = Modifier()

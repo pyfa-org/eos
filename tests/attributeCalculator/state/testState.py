@@ -34,7 +34,7 @@ class TestStateSwitching(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1)
+        self.tgtAttr = tgtAttr = Attribute(1, stackable=1)
         srcAttr1 = Attribute(2)
         srcAttr2 = Attribute(3)
         srcAttr3 = Attribute(4)
