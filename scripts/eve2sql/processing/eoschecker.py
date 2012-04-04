@@ -116,7 +116,7 @@ class EosChecker(object):
         value.
         """
         corrupted_types = set()
-        typeattribs_table = self.evedb["dgmtypeeffects"]
+        typeattribs_table = self.evedb["dgmtypeattribs"]
         typeid_idx = typeattribs_table.index_by_name("typeID")
         value_idx = typeattribs_table.index_by_name("value")
         for datarow in typeattribs_table.datarows:
