@@ -33,7 +33,7 @@ class Effect:
 
     def __init__(self, dataHandler=None, effectId=None, categoryId=None,
                  isOffensive=None, isAssistance=None, fittingUsageChanceAttributeId=None,
-                 preExpressionCallData=None, postExpressionCallData=None):
+                 preExpressionId=None, postExpressionId=None):
         # Data handler which was used to build this effect
         self._dataHandler = dataHandler
 
@@ -51,10 +51,10 @@ class Effect:
         self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # Data necessary to get preExpression of the effect
-        self._preExpressionCallData = preExpressionCallData
+        self._preExpressionId = preExpressionId
 
         # Data necessary to get postExpression of the effect
-        self._postExpressionCallData = postExpressionCallData
+        self._postExpressionId = postExpressionId
 
         # Stores Modifiers which are assigned to given effect
         self._modifiers = None
@@ -75,10 +75,9 @@ class Effect:
         ExpressionFetchError -- raised when data handler fails
         to fetch any expression in tree
         """
-        callable_ = self._preExpressionCallData
-        if callable_ is None:
+        if self._preExpressionId is None:
             return None
-        expression = callable_.callable(*callable_.args, **callable_.kwargs)
+        expression = self._dataHandler.getExpression(self._preExpressionId)
         return expression
 
     @cachedproperty
@@ -90,10 +89,9 @@ class Effect:
         ExpressionFetchError -- raised when data handler fails
         to fetch any expression in tree
         """
-        callable_ = self._postExpressionCallData
-        if callable_ is None:
+        if self._postExpressionId is None:
             return None
-        expression = callable_.callable(*callable_.args, **callable_.kwargs)
+        expression = self._dataHandler.getExpression(self._postExpressionId)
         return expression
 
     def getModifiers(self, logger):
