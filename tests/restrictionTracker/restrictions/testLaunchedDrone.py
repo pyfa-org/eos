@@ -34,7 +34,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         # results in error when no character is assigned
         # to fit
         fit = Fit()
-        holder = IndependentItem(Type(None))
+        holder = IndependentItem(Type())
         holder.state = State.online
         fit.drones.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.launchedDrone)
@@ -49,13 +49,13 @@ class TestLaunchedDrone(RestrictionTestCase):
         # results in error when character is assigned
         # to fit, but no restriction attribute available
         fit = Fit()
-        holder1 = IndependentItem(Type(None))
+        holder1 = IndependentItem(Type())
         holder1.state = State.online
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(None))
+        holder2 = IndependentItem(Type())
         holder2.state = State.online
         fit.drones.append(holder2)
-        char = IndependentItem(Type(None))
+        char = IndependentItem(Type())
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
@@ -75,13 +75,13 @@ class TestLaunchedDrone(RestrictionTestCase):
         # in failure, even when character is assigned to
         # fit and max number attribute is available
         fit = Fit()
-        holder1 = IndependentItem(Type(None))
+        holder1 = IndependentItem(Type())
         holder1.state = State.online
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(None))
+        holder2 = IndependentItem(Type())
         holder2.state = State.online
         fit.drones.append(holder2)
-        char = IndependentItem(Type(None))
+        char = IndependentItem(Type())
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
@@ -99,13 +99,13 @@ class TestLaunchedDrone(RestrictionTestCase):
     def testFailExcessModified(self):
         # Check that modified attribute value is taken, not original
         fit = Fit()
-        holder1 = IndependentItem(Type(None))
+        holder1 = IndependentItem(Type())
         holder1.state = State.online
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(None))
+        holder2 = IndependentItem(Type())
         holder2.state = State.online
         fit.drones.append(holder2)
-        char = IndependentItem(Type(None, attributes={Attribute.maxActiveDrones: 3}))
+        char = IndependentItem(Type(attributes={Attribute.maxActiveDrones: 3}))
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
@@ -123,13 +123,13 @@ class TestLaunchedDrone(RestrictionTestCase):
     def testPass(self):
         # Check non-excessive number of drones
         fit = Fit()
-        holder1 = IndependentItem(Type(None))
+        holder1 = IndependentItem(Type())
         holder1.state = State.online
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(None))
+        holder2 = IndependentItem(Type())
         holder2.state = State.online
         fit.drones.append(holder2)
-        char = IndependentItem(Type(None))
+        char = IndependentItem(Type())
         char.attributes[Attribute.maxActiveDrones] = 5
         fit.character = char
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
@@ -144,11 +144,11 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Check excessive number of drones, which are
         # not 'launched'
         fit = Fit()
-        holder1 = IndependentItem(Type(None))
+        holder1 = IndependentItem(Type())
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(None))
+        holder2 = IndependentItem(Type())
         fit.drones.append(holder2)
-        char = IndependentItem(Type(None))
+        char = IndependentItem(Type())
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
@@ -162,13 +162,13 @@ class TestLaunchedDrone(RestrictionTestCase):
     def testPassNonDrone(self):
         # Check excessive number of non-drone items
         fit = Fit()
-        holder1 = IndependentItem(Type(None))
+        holder1 = IndependentItem(Type())
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None))
+        holder2 = IndependentItem(Type())
         holder2.state = State.online
         fit.items.append(holder2)
-        char = IndependentItem(Type(None))
+        char = IndependentItem(Type())
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)

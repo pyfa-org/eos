@@ -20,7 +20,8 @@
 
 
 from eos.const import Restriction
-from eos.eve.type import Type, Attribute
+from eos.eve.const import Attribute
+from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -32,9 +33,9 @@ class TestImplantIndex(RestrictionTestCase):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.implantness: 120}))
+        holder1 = IndependentItem(Type(attributes={Attribute.implantness: 120}))
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.implantness: 120}))
+        holder2 = IndependentItem(Type(attributes={Attribute.implantness: 120}))
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.implantIndex)
         self.assertIsNotNone(restrictionError1)
@@ -49,10 +50,10 @@ class TestImplantIndex(RestrictionTestCase):
     def testFailOriginal(self):
         # Make sure that original attributes are used
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.implantness: 120}))
+        holder1 = IndependentItem(Type(attributes={Attribute.implantness: 120}))
         holder1.attributes[Attribute.implantness] = 119
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.implantness: 120}))
+        holder2 = IndependentItem(Type(attributes={Attribute.implantness: 120}))
         holder2.attributes[Attribute.implantness] = 121
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.implantIndex)
@@ -69,7 +70,7 @@ class TestImplantIndex(RestrictionTestCase):
         # Single holder which takes some slot shouldn't
         # trigger any errors
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.implantness: 120}))
+        holder = IndependentItem(Type(attributes={Attribute.implantness: 120}))
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.implantIndex)
         self.assertIsNone(restrictionError)
@@ -79,9 +80,9 @@ class TestImplantIndex(RestrictionTestCase):
     def testPassDifferent(self):
         # Holders taking different slots shouldn't trigger any errors
         fit = Fit()
-        holder1 = IndependentItem(Type(None, attributes={Attribute.implantness: 120}))
+        holder1 = IndependentItem(Type(attributes={Attribute.implantness: 120}))
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(None, attributes={Attribute.implantness: 121}))
+        holder2 = IndependentItem(Type(attributes={Attribute.implantness: 121}))
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.implantIndex)
         self.assertIsNone(restrictionError1)

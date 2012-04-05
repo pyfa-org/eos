@@ -34,9 +34,9 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # first restriction attribute
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=56))
+        holder = IndependentItem(Type(groupId=56))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 4}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 4}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (4,))
@@ -50,9 +50,9 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # second restriction attribute
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=797))
+        holder = IndependentItem(Type(groupId=797))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup2: 69}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup2: 69}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (69,))
@@ -66,9 +66,9 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # both restriction attributes
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=803))
+        holder = IndependentItem(Type(groupId=803))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 48, Attribute.allowedDroneGroup2: 106}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 48, Attribute.allowedDroneGroup2: 106}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (48, 106))
@@ -84,9 +84,9 @@ class TestDroneGroup(RestrictionTestCase):
         # to modified restriction attribute. Effectively
         # we check that original attribute value is taken
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=37))
+        holder = IndependentItem(Type(groupId=37))
         fit.drones.append(holder)
-        ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 59}))
+        ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 59}))
         ship.attributes[Attribute.allowedDroneGroup1] = 37
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
@@ -101,9 +101,9 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that drone from None group is subject
         # to restriction
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=None))
+        holder = IndependentItem(Type(groupId=None))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 1896}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 1896}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (1896,))
@@ -116,7 +116,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction isn't applied
         # when fit doesn't have ship
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=None))
+        holder = IndependentItem(Type(groupId=None))
         fit.drones.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
@@ -128,9 +128,9 @@ class TestDroneGroup(RestrictionTestCase):
         # when fit has ship, but without restriction
         # attribute
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=71))
+        holder = IndependentItem(Type(groupId=71))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None))
+        fit.ship = IndependentItem(Type())
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
@@ -141,9 +141,9 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction is not applied
         # to holders which are not drones
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=56))
+        holder = IndependentItem(Type(groupId=56))
         fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 4}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 4}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -154,9 +154,9 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to first restriction attribute is added
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=22))
+        holder = IndependentItem(Type(groupId=22))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 22}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 22}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
@@ -167,9 +167,9 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to second restriction attribute is added
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=67))
+        holder = IndependentItem(Type(groupId=67))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup2: 67}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup2: 67}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
@@ -181,9 +181,9 @@ class TestDroneGroup(RestrictionTestCase):
         # matching to any of two restriction attributes
         # is added
         fit = Fit()
-        holder = IndependentItem(Type(None, groupId=53))
+        holder = IndependentItem(Type(groupId=53))
         fit.drones.append(holder)
-        fit.ship = IndependentItem(Type(None, attributes={Attribute.allowedDroneGroup1: 907, Attribute.allowedDroneGroup2: 53}))
+        fit.ship = IndependentItem(Type(attributes={Attribute.allowedDroneGroup1: 907, Attribute.allowedDroneGroup2: 53}))
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)

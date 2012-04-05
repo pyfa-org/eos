@@ -33,7 +33,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Check that error is raised on attempt
         # to add capital item to fit w/o ship
         fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
+        holder = ShipItem(Type(attributes={Attribute.volume: 501}))
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
@@ -47,9 +47,9 @@ class TestCapitalItem(RestrictionTestCase):
         # to add capital item to fit with subcapital
         # ship
         fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
+        holder = ShipItem(Type(attributes={Attribute.volume: 501}))
         fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None))
+        fit.ship = IndependentItem(Type())
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
@@ -61,13 +61,13 @@ class TestCapitalItem(RestrictionTestCase):
     def testFailOriginalVolume(self):
         # Make sure original volume value is taken
         fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
+        holder = ShipItem(Type(attributes={Attribute.volume: 501}))
         # Set volume below 500 to check that even when
         # modified attributes are available, raw attributes
         # are taken
         holder.attributes[Attribute.volume] = 100
         fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None))
+        fit.ship = IndependentItem(Type())
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
@@ -80,7 +80,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Make sure no error raised when non-capital
         # item is added to fit
         fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: 500}))
+        holder = ShipItem(Type(attributes={Attribute.volume: 500}))
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
@@ -91,7 +91,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Check that non-ship holders are not affected
         # by restriction
         fit = Fit()
-        holder = IndependentItem(Type(None, attributes={Attribute.volume: 501}))
+        holder = IndependentItem(Type(attributes={Attribute.volume: 501}))
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
@@ -102,9 +102,9 @@ class TestCapitalItem(RestrictionTestCase):
         # Check that capital holders can be added to
         # capital ship
         fit = Fit()
-        holder = ShipItem(Type(None, attributes={Attribute.volume: 501}))
+        holder = ShipItem(Type(attributes={Attribute.volume: 501}))
         fit.items.append(holder)
-        shipItem = Type(None)
+        shipItem = Type()
         shipItem._Type__requiredSkills = {ConstType.capitalShips: 1}
         fit.ship = IndependentItem(shipItem)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
@@ -116,9 +116,9 @@ class TestCapitalItem(RestrictionTestCase):
     def testPassNoVolume(self):
         # Check that items with no volume attribute are not restricted
         fit = Fit()
-        holder = ShipItem(Type(None))
+        holder = ShipItem(Type())
         fit.items.append(holder)
-        fit.ship = IndependentItem(Type(None))
+        fit.ship = IndependentItem(Type())
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)

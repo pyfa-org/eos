@@ -19,8 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Restriction
-from eos.eve.type import Type, Attribute, Slot
+from eos.const import Slot, Restriction
+from eos.eve.const import Attribute
+from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, ShipItem, IndependentItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -32,13 +33,13 @@ class TestRigSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
-        item = Type(None)
+        item = Type()
         item._Type__slots = {Slot.rig}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type())
         ship.attributes[Attribute.rigSlots] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
@@ -58,11 +59,11 @@ class TestRigSlot(RestrictionTestCase):
         # Make sure that absence of specifier of slot output
         # is considered as 0 output
         fit = Fit()
-        item = Type(None)
+        item = Type()
         item._Type__slots = {Slot.rig}
         holder = ShipItem(item)
         fit.items.append(holder)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type())
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError)
@@ -76,7 +77,7 @@ class TestRigSlot(RestrictionTestCase):
         # Make sure that absence of ship
         # is considered as 0 output
         fit = Fit()
-        item = Type(None)
+        item = Type()
         item._Type__slots = {Slot.rig}
         holder = ShipItem(item)
         fit.items.append(holder)
@@ -91,13 +92,13 @@ class TestRigSlot(RestrictionTestCase):
         # Make sure that modified number of slot output
         # is taken
         fit = Fit()
-        item = Type(None)
+        item = Type()
         item._Type__slots = {Slot.rig}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type(None, attributes={Attribute.rigSlots: 5}))
+        ship = IndependentItem(Type(attributes={Attribute.rigSlots: 5}))
         ship.attributes[Attribute.rigSlots] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
@@ -117,13 +118,13 @@ class TestRigSlot(RestrictionTestCase):
         # No error is raised when slot users do not
         # exceed slot output
         fit = Fit()
-        item = Type(None)
+        item = Type()
         item._Type__slots = {Slot.rig}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type())
         ship.attributes[Attribute.rigSlots] = 3
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
@@ -138,13 +139,13 @@ class TestRigSlot(RestrictionTestCase):
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
         fit = Fit()
-        item = Type(None)
+        item = Type()
         item._Type__slots = {Slot.rig}
         holder1 = IndependentItem(item)
         fit.items.append(holder1)
         holder2 = IndependentItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type())
         ship.attributes[Attribute.rigSlots] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
@@ -160,11 +161,11 @@ class TestRigSlot(RestrictionTestCase):
         # If holders don't use slot, no error should
         # be raised
         fit = Fit()
-        holder1 = ShipItem(Type(None))
+        holder1 = ShipItem(Type())
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(None))
+        holder2 = ShipItem(Type())
         fit.items.append(holder2)
-        ship = IndependentItem(Type(None))
+        ship = IndependentItem(Type())
         ship.attributes[Attribute.rigSlots] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
