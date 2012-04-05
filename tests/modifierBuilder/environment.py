@@ -20,13 +20,18 @@
 
 
 from eos.dataHandler.exception import ExpressionFetchError
-from eos.util.callableData import CallableData
 
 
 class DataHandler:
 
-    def __init__(self, expressionData):
-        self.__expressionData = expressionData
+    def __init__(self):
+        self.__expressionData = {}
+
+    def addExpressions(self, expressions):
+        for expression in expressions:
+            if expression.id in self.__expressionData:
+                raise KeyError(expression.id)
+            self.__expressionData[expression.id] = expression
 
     def getExpression(self, expId):
         try:
@@ -36,6 +41,3 @@ class DataHandler:
         return expression
 
 
-def callize(expression):
-    dataHandler = DataHandler({expression.id: expression})
-    return CallableData(callable=dataHandler.getExpression, args=(expression.id,), kwargs={})

@@ -25,7 +25,7 @@ from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from eos.tests.modifierBuilder.environment import callize
+from eos.tests.modifierBuilder.environment import DataHandler
 
 
 class TestModGangGrp(EosTestCase):
@@ -33,18 +33,20 @@ class TestModGangGrp(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
+        self.dh = dh = DataHandler()
         # Manually composed example, as CCP doesn't use this modification type in any effect
-        eTgtGrp = Expression(None, 26, expressionGroupId=80)
-        eTgtAttr = Expression(None, 22, expressionAttributeId=158)
-        eOptr = Expression(None, 21, value="PostPercent")
-        eSrcAttr = Expression(None, 22, expressionAttributeId=349)
-        eTgtSpec = Expression(None, 34, arg1=eTgtGrp, arg2=eTgtAttr)
-        eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        self.eAddMod = Expression(1, 2, arg1=eOptrTgt, arg2=eSrcAttr)
-        self.eRmMod = Expression(2, 54, arg1=eOptrTgt, arg2=eSrcAttr)
+        eTgtGrp = Expression(dataHandler=dh, expressionId=1, operandId=26, expressionGroupId=80)
+        eTgtAttr = Expression(dataHandler=dh, expressionId=2, operandId=22, expressionAttributeId=158)
+        eOptr = Expression(dataHandler=dh, expressionId=3, operandId=21, value="PostPercent")
+        eSrcAttr = Expression(dataHandler=dh, expressionId=4, operandId=22, expressionAttributeId=349)
+        eTgtSpec = Expression(dataHandler=dh, expressionId=5, operandId=34, arg1Id=eTgtGrp.id, arg2Id=eTgtAttr.id)
+        eOptrTgt = Expression(dataHandler=dh, expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
+        self.eAddMod = Expression(dataHandler=dh, expressionId=7, operandId=2, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        self.eRmMod = Expression(dataHandler=dh, expressionId=8, operandId=54, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        dh.addExpressions((eTgtGrp, eTgtAttr, eOptr, eSrcAttr, eTgtSpec, eOptrTgt, self.eAddMod, self.eRmMod))
 
     def testGenericBuildSuccess(self):
-        effect = Effect(None, 0, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -58,7 +60,7 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(modifier.filterValue, 80)
 
     def testEffCategoryPassive(self):
-        effect = Effect(None, 0, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -67,7 +69,7 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryActive(self):
-        effect = Effect(None, 1, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=1, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -76,19 +78,19 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryTarget(self):
-        effect = Effect(692, 2, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=2, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
 
     def testEffCategoryArea(self):
-        effect = Effect(None, 3, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=3, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
 
     def testEffCategoryOnline(self):
-        effect = Effect(None, 4, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=4, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -97,7 +99,7 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryOverload(self):
-        effect = Effect(None, 5, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=5, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -106,13 +108,13 @@ class TestModGangGrp(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryDungeon(self):
-        effect = Effect(None, 6, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=6, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
 
     def testEffCategorySystem(self):
-        effect = Effect(None, 7, preExpressionCallData=callize(self.eAddMod), postExpressionCallData=callize(self.eRmMod))
+        effect = Effect(dataHandler=self.dh, categoryId=7, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
