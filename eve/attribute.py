@@ -22,10 +22,13 @@
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self, id_, maxAttributeId=None, defaultValue=None,
-                 highIsGood=None, stackable=None):
+    def __init__(self, dataHandler=None, attributeId=None, maxAttributeId=None,
+                 defaultValue=None, highIsGood=None, stackable=None):
+        # Data handler which was used to build this attribute
+        self._dataHandler = dataHandler
+
         # Just ID of attribute, integer
-        self.id = id_
+        self.id = attributeId
 
         # When value of this attribute is calculated on any item, it cannot
         # be bigger than value of attribute referenced by maxAttributeId
@@ -37,8 +40,8 @@ class Attribute:
 
         # Boolean describing if it's good when attribute is high or not,
         # used in calculation process
-        self.highIsGood = bool(highIsGood)
+        self.highIsGood = bool(highIsGood) if highIsGood is not None else None
 
         # Boolean which defines if attribute can be stacking penalized (False)
         # or not (True)
-        self.stackable = bool(stackable)
+        self.stackable = bool(stackable) if stackable is not None else None

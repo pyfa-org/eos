@@ -30,9 +30,13 @@ class Type:
     incursion system-wide effects are actually items.
     """
 
-    def __init__(self, typeId, groupId=None, categoryId=None, durationAttributeId=None, dischargeAttributeId=None,
-                 rangeAttributeId=None, falloffAttributeId=None, trackingSpeedAttributeId=None, fittableNonSingleton=None,
-                 attributes={}, effects=()):
+    def __init__(self, dataHandler=None, typeId=None, groupId=None,
+                 categoryId=None, durationAttributeId=None, dischargeAttributeId=None,
+                 rangeAttributeId=None, falloffAttributeId=None, trackingSpeedAttributeId=None,
+                 fittableNonSingleton=None, attributes={}, effects=()):
+        # Data handler which was used to build this type
+        self._dataHandler = dataHandler
+
         # The ID of the type
         self.id = typeId
 
@@ -60,7 +64,7 @@ class Type:
 
         # Defines if multiple items of this type can be added to fit without packaging.
         # We use it to see if charge can be loaded into anything or not.
-        self._fittableNonSingleton = bool(fittableNonSingleton)
+        self._fittableNonSingleton = bool(fittableNonSingleton) if fittableNonSingleton is not None else None
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable

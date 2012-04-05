@@ -68,7 +68,8 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise TypeFetchError(typeId) from e
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
-            type_ = Type(typeId,
+            type_ = Type(dataHandler=self,
+                         typeId=typeId,
                          groupId=groupId,
                          categoryId=catId,
                          durationAttributeId=duration,
@@ -92,7 +93,8 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise AttributeFetchError(attrId) from e
             maxAttributeId, defaultValue, highIsGood, stackable = data
-            attribute = Attribute(attrId,
+            attribute = Attribute(dataHandler=self,
+                                  attributeId=attrId,
                                   maxAttributeId=maxAttributeId,
                                   defaultValue=defaultValue,
                                   highIsGood=highIsGood,
@@ -112,11 +114,12 @@ class JsonDataHandler(DataHandler):
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
             preExpCallData = CallableData(callable=self.getExpression, args=(preExpId,), kwargs={})
             postExpCallData = CallableData(callable=self.getExpression, args=(postExpId,), kwargs={})
-            effect = Effect(effectId,
+            effect = Effect(dataHandler=self,
+                            effectId=effectId,
                             categoryId=effCategoryId,
                             isOffensive=isOffence,
                             isAssistance=isAssist,
-                            fittingUsageChanceAttributeID=fitChanceId,
+                            fittingUsageChanceAttributeId=fitChanceId,
                             preExpressionCallData=preExpCallData,
                             postExpressionCallData=postExpCallData)
             self.__effectsCache[effectId] = effect
@@ -133,8 +136,9 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise ExpressionFetchError(expId) from e
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
-            expression = Expression(expId,
-                                    opndId,
+            expression = Expression(dataHandler=self,
+                                    expressionId=expId,
+                                    operandId=opndId,
                                     arg1=self.getExpression(arg1Id) if arg1Id is not None else None,
                                     arg2=self.getExpression(arg2Id) if arg2Id is not None else None,
                                     value=eVal,

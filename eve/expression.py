@@ -25,10 +25,14 @@ class Expression:
     (roots of expression tree), which actually describe how effect should affect other items.
     """
 
-    def __init__(self, id_, operandId, arg1=None, arg2=None, value=None,
-                 expressionTypeId=None, expressionGroupId=None, expressionAttributeId=None):
+    def __init__(self, dataHandler=None, expressionId=None, operandId=None,
+                 arg1=None, arg2=None, value=None, expressionTypeId=None,
+                 expressionGroupId=None, expressionAttributeId=None):
+        # Data handler which was used to build this expression
+        self._dataHandler = dataHandler
+
         # Unique ID of expression
-        self.id = id_
+        self.id = expressionId
 
         # Operand of expression, field which each expression must have.
         # Describes actual effect of expression

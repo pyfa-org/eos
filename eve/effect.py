@@ -31,20 +31,24 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, id_, categoryId, isOffensive=None, isAssistance=None,
-                 fittingUsageChanceAttributeID=None, preExpressionCallData=None, postExpressionCallData=None):
+    def __init__(self, dataHandler=None, effectId=None, categoryId=None,
+                 isOffensive=None, isAssistance=None, fittingUsageChanceAttributeId=None,
+                 preExpressionCallData=None, postExpressionCallData=None):
+        # Data handler which was used to build this effect
+        self._dataHandler = dataHandler
+
         # The unique ID of an effect
-        self.id = id_
+        self.id = effectId
 
         # Effect category actually describes type of effect, which determines
         # when it is applied - always, when item is active, overloaded, etc.
         self.categoryId = categoryId
 
         # Whether the effect is offensive (e.g. guns)
-        self.isOffensive = bool(isOffensive)
+        self.isOffensive = bool(isOffensive) if isOffensive is not None else None
 
         # Whether the effect is helpful (e.g. remote repairers)
-        self.isAssistance = bool(isAssistance)
+        self.isAssistance = bool(isAssistance) if isAssistance is not None else None
 
         # Data necessary to get preExpression of the effect
         self._preExpressionCallData = preExpressionCallData
