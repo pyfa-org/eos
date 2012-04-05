@@ -173,11 +173,11 @@ class MutableAttributeMap:
         base value is not available
         """
         # Attribute object for attribute being calculated
-        dataHandler = self.__holder.fit._eos._dataHandler
         try:
-            attrMeta = dataHandler.getAttribute(attrId)
-        # Raise error if it cannot be found
-        except AttributeFetchError as e:
+            attrMeta = self.__holder.item._dataHandler.getAttribute(attrId)
+        # Raise error if we can't get to getAttribute method
+        # or it can't find requested attribute
+        except (AttributeError, AttributeFetchError) as e:
             raise AttributeMetaError(attrId) from e
         # Base attribute value which we'll use for modification
         try:

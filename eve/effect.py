@@ -73,7 +73,7 @@ class Effect:
 
         Possible exceptions:
         ExpressionFetchError -- raised when data handler fails
-        to fetch any expression in tree
+        to fetch expression
         """
         if self._preExpressionId is None:
             return None
@@ -87,7 +87,7 @@ class Effect:
 
         Possible exceptions:
         ExpressionFetchError -- raised when data handler fails
-        to fetch any expression in tree
+        to fetch expression
         """
         if self._postExpressionId is None:
             return None

@@ -19,6 +19,9 @@
 #===============================================================================
 
 
+from eos.util.cachedProperty import cachedproperty
+
+
 class Expression:
     """
     Each effect, besides few metadata fields, contains two references to expressions
@@ -26,7 +29,7 @@ class Expression:
     """
 
     def __init__(self, dataHandler=None, expressionId=None, operandId=None,
-                 arg1=None, arg2=None, value=None, expressionTypeId=None,
+                 arg1Id=None, arg2Id=None, value=None, expressionTypeId=None,
                  expressionGroupId=None, expressionAttributeId=None):
         # Data handler which was used to build this expression
         self._dataHandler = dataHandler
@@ -42,10 +45,39 @@ class Expression:
         self.value = value
 
         # Arg attributes contain references to child expressions
-        self.arg1 = arg1
-        self.arg2 = arg2
+        self._arg1Id = arg1Id
+        self._arg2Id = arg2Id
 
         # References to type/group/attribute via integer ID
         self.expressionTypeId = expressionTypeId
         self.expressionGroupId = expressionGroupId
         self.expressionAttributeId = expressionAttributeId
+
+
+    @cachedproperty
+    def arg1(self):
+        """
+        First child expression.
+
+        Possible exceptions:
+        ExpressionFetchError -- raised when data handler fails
+        to fetch expression
+        """
+        if self._arg1Id is None:
+            return None
+        expression = self._dataHandler.getExpression(self._arg1Id)
+        return expression
+
+    @cachedproperty
+    def arg2(self):
+        """
+        Second child expression.
+
+        Possible exceptions:
+        ExpressionFetchError -- raised when data handler fails
+        to fetch expression
+        """
+        if self._arg2Id is None:
+            return None
+        expression = self._dataHandler.getExpression(self._arg2Id)
+        return expression

@@ -120,7 +120,6 @@ class JsonDataHandler(DataHandler):
                             preExpressionId=preExpId,
                             postExpressionId=postExpId)
             self.__effectsCache[effectId] = effect
-
         return effect
 
     def getExpression(self, expId):
@@ -136,8 +135,8 @@ class JsonDataHandler(DataHandler):
             expression = Expression(dataHandler=self,
                                     expressionId=expId,
                                     operandId=opndId,
-                                    arg1=self.getExpression(arg1Id) if arg1Id is not None else None,
-                                    arg2=self.getExpression(arg2Id) if arg2Id is not None else None,
+                                    arg1Id=arg1Id,
+                                    arg2Id=arg2Id,
                                     value=eVal,
                                     expressionTypeId=eTypeId,
                                     expressionGroupId=eGrpId,
