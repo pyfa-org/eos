@@ -25,7 +25,7 @@ from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from eos.tests.modifierBuilder.environment import callize
+from eos.tests.modifierBuilder.environment import DataHandler
 
 
 class TestIncomplete(EosTestCase):
@@ -33,26 +33,30 @@ class TestIncomplete(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
+        self.dh = DataHandler()
         # Modifier, except for top-most expression, which
         # is added in test cases
-        eTgt = Expression(None, 24, value="Ship")
-        eTgtAttr = Expression(None, 22, expressionAttributeId=9)
-        eOptr = Expression(None, 21, value="PostPercent")
-        self.eSrcAttr = Expression(None, 22, expressionAttributeId=327)
-        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
-        self.eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        self.stub = Expression(1, 27, value="1")
+        eTgt = Expression(dataHandler=self.dh, expressionId=1, operandId=24, value="Ship")
+        eTgtAttr = Expression(dataHandler=self.dh, expressionId=2, operandId=22, expressionAttributeId=9)
+        eOptr = Expression(dataHandler=self.dh, expressionId=3, operandId=21, value="PostPercent")
+        self.eSrcAttr = Expression(dataHandler=self.dh, expressionId=4, operandId=22, expressionAttributeId=327)
+        eTgtSpec = Expression(dataHandler=self.dh, expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
+        self.eOptrTgt = Expression(dataHandler=self.dh, expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
+        self.stub = Expression(dataHandler=self.dh, expressionId=7, operandId=27, value="1")
+        self.dh.addExpressions((eTgt, eTgtAttr, eOptr, self.eSrcAttr, eTgtSpec, self.eOptrTgt, self.stub))
 
     def testPre(self):
-        eAddMod = Expression(2, 6, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpressionCallData=callize(eAddMod), postExpressionCallData=callize(self.stub))
+        eAddMod = Expression(dataHandler=self.dh, expressionId=8, operandId=6, arg1Id=self.eOptrTgt.id, arg2Id=self.eSrcAttr.id)
+        self.dh.addExpressions((eAddMod,))
+        effect = Effect(dataHandler=self.dh, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testPost(self):
-        eRmMod = Expression(2, 58, arg1=self.eOptrTgt, arg2=self.eSrcAttr)
-        effect = Effect(None, 0, preExpressionCallData=callize(self.stub), postExpressionCallData=callize(eRmMod))
+        eRmMod = Expression(dataHandler=self.dh, expressionId=8, operandId=58, arg1Id=self.eOptrTgt.id, arg2Id=self.eSrcAttr.id)
+        self.dh.addExpressions((eRmMod,))
+        effect = Effect(dataHandler=self.dh, categoryId=0, preExpressionId=self.stub.id, postExpressionId=eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)

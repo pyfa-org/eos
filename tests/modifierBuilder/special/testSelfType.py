@@ -25,25 +25,27 @@ from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from eos.tests.modifierBuilder.environment import callize
+from eos.tests.modifierBuilder.environment import DataHandler
 
 
 class TestSelfType(EosTestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
     def testBuildSuccess(self):
-        eTgtOwn = Expression(None, 24, value="Char")
-        eSelf = Expression(None, 24, value="Self")
-        eSelfType = Expression(None, 36, arg1=eSelf)
-        eTgtAttr = Expression(None, 22, expressionAttributeId=64)
-        eOptr = Expression(None, 21, value="PostPercent")
-        eSrcAttr = Expression(None, 22, expressionAttributeId=292)
-        eTgtItms = Expression(None, 49, arg1=eTgtOwn, arg2=eSelfType)
-        eTgtSpec = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr)
-        eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(1, 11, arg1=eOptrTgt, arg2=eSrcAttr)
-        eRmMod = Expression(2, 62, arg1=eOptrTgt, arg2=eSrcAttr)
-        effect = Effect(None, 0, preExpressionCallData=callize(eAddMod), postExpressionCallData=callize(eRmMod))
+        dh = DataHandler()
+        eTgtOwn = Expression(dataHandler=dh, expressionId=1, operandId=24, value="Char")
+        eSelf = Expression(dataHandler=dh, expressionId=2, operandId=24, value="Self")
+        eSelfType = Expression(dataHandler=dh, expressionId=3, operandId=36, arg1Id=eSelf.id)
+        eTgtAttr = Expression(dataHandler=dh, expressionId=4, operandId=22, expressionAttributeId=64)
+        eOptr = Expression(dataHandler=dh, expressionId=5, operandId=21, value="PostPercent")
+        eSrcAttr = Expression(dataHandler=dh, expressionId=6, operandId=22, expressionAttributeId=292)
+        eTgtItms = Expression(dataHandler=dh, expressionId=7, operandId=49, arg1Id=eTgtOwn.id, arg2Id=eSelfType.id)
+        eTgtSpec = Expression(dataHandler=dh, expressionId=8, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr.id)
+        eOptrTgt = Expression(dataHandler=dh, expressionId=9, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
+        eAddMod = Expression(dataHandler=dh, expressionId=10, operandId=11, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        eRmMod = Expression(dataHandler=dh, expressionId=11, operandId=62, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        dh.addExpressions((eTgtOwn, eSelf, eSelfType, eTgtAttr, eOptr, eSrcAttr, eTgtItms, eTgtSpec, eOptrTgt, eAddMod, eRmMod))
+        effect = Effect(dataHandler=dh, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)

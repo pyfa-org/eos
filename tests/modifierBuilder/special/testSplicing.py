@@ -25,40 +25,44 @@ from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from eos.tests.modifierBuilder.environment import callize
+from eos.tests.modifierBuilder.environment import DataHandler
 
 
 class TestSplicing(EosTestCase):
     """Test parsing of trees describing joins of multiple operations applied onto items"""
 
     def testBuildSuccess(self):
-        eTgtLoc = Expression(None, 24, value="Target")
-        eTgtSrq = Expression(None, 29, expressionTypeId=3300)
-        eTgtAttr1 = Expression(None, 22, expressionAttributeId=54)
-        eTgtAttr2 = Expression(None, 22, expressionAttributeId=158)
-        eTgtAttr3 = Expression(None, 22, expressionAttributeId=160)
-        eOptr = Expression(None, 21, value="PostPercent")
-        eSrcAttr1 = Expression(None, 22, expressionAttributeId=351)
-        eSrcAttr2 = Expression(None, 22, expressionAttributeId=349)
-        eSrcAttr3 = Expression(None, 22, expressionAttributeId=767)
-        eTgtItms = Expression(None, 49, arg1=eTgtLoc, arg2=eTgtSrq)
-        eTgtSpec1 = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr1)
-        eTgtSpec2 = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr2)
-        eTgtSpec3 = Expression(None, 12, arg1=eTgtItms, arg2=eTgtAttr3)
-        eOptrTgt1 = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec1)
-        eOptrTgt2 = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec2)
-        eOptrTgt3 = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec3)
-        eAddMod1 = Expression(None, 9, arg1=eOptrTgt1, arg2=eSrcAttr1)
-        eAddMod2 = Expression(None, 9, arg1=eOptrTgt2, arg2=eSrcAttr2)
-        eAddMod3 = Expression(None, 9, arg1=eOptrTgt3, arg2=eSrcAttr3)
-        eRmMod1 = Expression(None, 61, arg1=eOptrTgt1, arg2=eSrcAttr1)
-        eRmMod2 = Expression(None, 61, arg1=eOptrTgt2, arg2=eSrcAttr2)
-        eRmMod3 = Expression(None, 61, arg1=eOptrTgt3, arg2=eSrcAttr3)
-        eAddSplice1 = Expression(None, 17, arg1=eAddMod1, arg2=eAddMod3)
-        eAddSplice2 = Expression(1, 17, arg1=eAddMod2, arg2=eAddSplice1)
-        eRmSplice1 = Expression(None, 17, arg1=eRmMod1, arg2=eRmMod3)
-        eRmSplice2 = Expression(2, 17, arg1=eRmMod2, arg2=eRmSplice1)
-        effect = Effect(None, 0, preExpressionCallData=callize(eAddSplice2), postExpressionCallData=callize(eRmSplice2))
+        dh = DataHandler()
+        eTgtLoc = Expression(dataHandler=dh, expressionId=1, operandId=24, value="Target")
+        eTgtSrq = Expression(dataHandler=dh, expressionId=2, operandId=29, expressionTypeId=3300)
+        eTgtAttr1 = Expression(dataHandler=dh, expressionId=3, operandId=22, expressionAttributeId=54)
+        eTgtAttr2 = Expression(dataHandler=dh, expressionId=4, operandId=22, expressionAttributeId=158)
+        eTgtAttr3 = Expression(dataHandler=dh, expressionId=5, operandId=22, expressionAttributeId=160)
+        eOptr = Expression(dataHandler=dh, expressionId=6, operandId=21, value="PostPercent")
+        eSrcAttr1 = Expression(dataHandler=dh, expressionId=7, operandId=22, expressionAttributeId=351)
+        eSrcAttr2 = Expression(dataHandler=dh, expressionId=8, operandId=22, expressionAttributeId=349)
+        eSrcAttr3 = Expression(dataHandler=dh, expressionId=9, operandId=22, expressionAttributeId=767)
+        eTgtItms = Expression(dataHandler=dh, expressionId=10, operandId=49, arg1Id=eTgtLoc.id, arg2Id=eTgtSrq.id)
+        eTgtSpec1 = Expression(dataHandler=dh, expressionId=11, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr1.id)
+        eTgtSpec2 = Expression(dataHandler=dh, expressionId=12, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr2.id)
+        eTgtSpec3 = Expression(dataHandler=dh, expressionId=13, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr3.id)
+        eOptrTgt1 = Expression(dataHandler=dh, expressionId=14, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec1.id)
+        eOptrTgt2 = Expression(dataHandler=dh, expressionId=15, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec2.id)
+        eOptrTgt3 = Expression(dataHandler=dh, expressionId=16, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec3.id)
+        eAddMod1 = Expression(dataHandler=dh, expressionId=17, operandId=9, arg1Id=eOptrTgt1.id, arg2Id=eSrcAttr1.id)
+        eAddMod2 = Expression(dataHandler=dh, expressionId=18, operandId=9, arg1Id=eOptrTgt2.id, arg2Id=eSrcAttr2.id)
+        eAddMod3 = Expression(dataHandler=dh, expressionId=19, operandId=9, arg1Id=eOptrTgt3.id, arg2Id=eSrcAttr3.id)
+        eRmMod1 = Expression(dataHandler=dh, expressionId=20, operandId=61, arg1Id=eOptrTgt1.id, arg2Id=eSrcAttr1.id)
+        eRmMod2 = Expression(dataHandler=dh, expressionId=21, operandId=61, arg1Id=eOptrTgt2.id, arg2Id=eSrcAttr2.id)
+        eRmMod3 = Expression(dataHandler=dh, expressionId=22, operandId=61, arg1Id=eOptrTgt3.id, arg2Id=eSrcAttr3.id)
+        eAddSplice1 = Expression(dataHandler=dh, expressionId=23, operandId=17, arg1Id=eAddMod1.id, arg2Id=eAddMod3.id)
+        eAddSplice2 = Expression(dataHandler=dh, expressionId=24, operandId=17, arg1Id=eAddMod2.id, arg2Id=eAddSplice1.id)
+        eRmSplice1 = Expression(dataHandler=dh, expressionId=25, operandId=17, arg1Id=eRmMod1.id, arg2Id=eRmMod3.id)
+        eRmSplice2 = Expression(dataHandler=dh, expressionId=26, operandId=17, arg1Id=eRmMod2.id, arg2Id=eRmSplice1.id)
+        dh.addExpressions((eTgtLoc, eTgtSrq, eTgtAttr1, eTgtAttr2, eTgtAttr3, eOptr, eSrcAttr1, eSrcAttr2, eSrcAttr3, eTgtItms,
+                           eTgtSpec1, eTgtSpec2, eTgtSpec3, eOptrTgt1, eOptrTgt2, eOptrTgt3, eAddMod1, eAddMod2, eAddMod3,
+                           eRmMod1, eRmMod2, eRmMod3, eAddSplice1, eAddSplice2, eRmSplice1, eRmSplice2))
+        effect = Effect(dataHandler=dh, categoryId=0, preExpressionId=eAddSplice2.id, postExpressionId=eRmSplice2.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 3)
