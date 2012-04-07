@@ -21,7 +21,8 @@
 
 from logging import getLogger, ERROR, WARNING
 
-from eos.dataHandler.exception import TypeFetchError, EffectFetchError, ExpressionFetchError
+from eos.dataHandler.exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
+from eos.eve.attribute import Attribute
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
 from eos.eve.type import Type
@@ -64,6 +65,7 @@ class DataHandler:
 
     def __init__(self):
         self.__typeData = {}
+        self.__attributeData = {}
         self.__effectData = {}
         self.__expressionData = {}
 
@@ -75,6 +77,15 @@ class DataHandler:
             raise KeyError(typ.id)
         self.__typeData[typ.id] = typ
         return typ
+
+    def attribute(self, **kwargs):
+        if "dataHandler" in kwargs:
+            raise TypeError("dataHandler")
+        attr = Attribute(dataHandler=self, **kwargs)
+        if attr.id in self.__attributeData:
+            raise KeyError(attr.id)
+        self.__attributeData[attr.id] = attr
+        return attr
 
 
     def effect(self, **kwargs):
@@ -97,21 +108,24 @@ class DataHandler:
 
     def getType(self, typeId):
         try:
-            type_ = self.__typeData[typeId]
+            return self.__typeData[typeId]
         except KeyError:
             raise TypeFetchError(typeId)
-        return type_
+
+    def getAttribute(self, attrId):
+        try:
+            return self.__attributeData[attrId]
+        except KeyError:
+            raise AttributeFetchError(attrId)
 
     def getEffect(self, effId):
         try:
-            effect = self.__effectData[effId]
+            return self.__effectData[effId]
         except KeyError:
             raise EffectFetchError(effId)
-        return effect
 
     def getExpression(self, expId):
         try:
-            expression = self.__expressionData[expId]
+            return self.__expressionData[expId]
         except KeyError:
             raise ExpressionFetchError(expId)
-        return expression

@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
-from eos.eve.const import Attribute as ConstAttribute, EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
+from eos.eve.const import EffectCategory
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem
@@ -34,25 +31,25 @@ class TestFilterLocationSkillrq(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        self.tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
         modifier.sourceAttributeId = srcAttr.id
         modifier.operator = Operator.postPercent
-        modifier.targetAttributeId = tgtAttr.id
+        modifier.targetAttributeId = self.tgtAttr.id
         modifier.location = Location.ship
         modifier.filterType = FilterType.skill
         modifier.filterValue = 56
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        self.influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        self.influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.fit = Fit()
         self.fit.items.append(self.influenceSource)
 
     def testMatch(self):
-        item = Type(None, attributes={self.tgtAttr.id: 100})
+        item = self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100})
         item._Type__requiredSkills = {56: 1}
         influenceTarget = ShipItem(item)
         self.fit.items.append(influenceTarget)
@@ -63,7 +60,7 @@ class TestFilterLocationSkillrq(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherLocation(self):
-        item = Type(None, attributes={self.tgtAttr.id: 100})
+        item = self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100})
         item._Type__requiredSkills = {56: 1}
         influenceTarget = SpaceItem(item)
         self.fit.items.append(influenceTarget)
@@ -73,7 +70,7 @@ class TestFilterLocationSkillrq(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherSkill(self):
-        item = Type(None, attributes={self.tgtAttr.id: 100})
+        item = self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100})
         item._Type__requiredSkills = {87: 1}
         influenceTarget = ShipItem(item)
         self.fit.items.append(influenceTarget)

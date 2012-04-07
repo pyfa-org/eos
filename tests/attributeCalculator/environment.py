@@ -20,7 +20,6 @@
 
 
 from eos.const import State, Location
-from eos.dataHandler.exception import AttributeFetchError
 from eos.fit.attributeCalculator.map import MutableAttributeMap
 from eos.fit.attributeCalculator.tracker import LinkTracker
 from eos.tests.environment import Logger
@@ -47,30 +46,16 @@ class HolderContainer:
         return (item for item in self.__list)
 
 
-class DataHandler:
-
-    def __init__(self, attrMetaData):
-        self.__attrMetaData = attrMetaData
-
-    def getAttribute(self, attrId):
-        try:
-            attr = self.__attrMetaData[attrId]
-        except KeyError:
-            raise AttributeFetchError(attrId)
-        return attr
-
-
 class Eos:
 
-    def __init__(self, attrMetaData):
-        self._dataHandler = DataHandler(attrMetaData)
+    def __init__(self):
         self._logger = Logger()
 
 
 class Fit:
 
-    def __init__(self, attrMetaData):
-        self._eos = Eos(attrMetaData)
+    def __init__(self):
+        self._eos = Eos()
         self._linkTracker = LinkTracker(self)
         self.__ship = None
         self.__character = None

@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
@@ -33,9 +30,9 @@ class TestCleanupChainChange(AttrCalcTestCase):
     """Check that changed attribute damages all attributes which are relying on it"""
 
     def testAttribute(self):
-        attr1 = Attribute(1)
-        attr2 = Attribute(2)
-        attr3 = Attribute(3)
+        attr1 = self.dh.attribute(attributeId=1)
+        attr2 = self.dh.attribute(attributeId=2)
+        attr3 = self.dh.attribute(attributeId=3)
         modifier1 = Modifier()
         modifier1.state = State.offline
         modifier1.context = Context.local
@@ -45,9 +42,9 @@ class TestCleanupChainChange(AttrCalcTestCase):
         modifier1.location = Location.ship
         modifier1.filterType = None
         modifier1.filterValue = None
-        effect1 = Effect(None, EffectCategory.passive)
+        effect1 = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect1._modifiers = (modifier1,)
-        holder1 = CharacterItem(Type(None, effects=(effect1,), attributes={attr1.id: 5}))
+        holder1 = CharacterItem(self.dh.type_(typeId=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
         modifier2.state = State.offline
         modifier2.context = Context.local
@@ -57,11 +54,11 @@ class TestCleanupChainChange(AttrCalcTestCase):
         modifier2.location = Location.ship
         modifier2.filterType = FilterType.all_
         modifier2.filterValue = None
-        effect2 = Effect(None, EffectCategory.passive)
+        effect2 = self.dh.effect(effectId=2, categoryId=EffectCategory.passive)
         effect2._modifiers = (modifier2,)
-        holder2 = IndependentItem(Type(None, effects=(effect2,), attributes={attr2.id: 7.5}))
-        holder3 = ShipItem(Type(None, attributes={attr3.id: 0.5}))
-        fit = Fit({attr1.id: attr1, attr2.id: attr2, attr3.id: attr3})
+        holder2 = IndependentItem(self.dh.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
+        holder3 = ShipItem(self.dh.type_(typeId=3, attributes={attr3.id: 0.5}))
+        fit = Fit()
         fit.items.append(holder1)
         fit.ship = holder2
         fit.items.append(holder3)
