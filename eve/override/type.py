@@ -42,11 +42,11 @@ for damageAttr in (Attribute.emDamage, Attribute.thermalDamage,
     modifier.filterType = FilterType.skill
     modifier.filterValue = Type.missileLauncherOperation
     charMissileDamageModifiers.append(modifier)
-charMissileDmgEffect = Effect(None, EffectCategory.passive)
+charMissileDmgEffect = Effect(categoryId=EffectCategory.passive)
 charMissileDmgEffect.modifierStatus = EffectBuildStatus.override
 charMissileDmgEffect._modifiers = tuple(charMissileDamageModifiers)
 
-def customizeType(type_):
+def customizeType(type_, ):
     """Control all customizations performed on type"""
     # Add missile damage propagation effect to all characters
     if type_.groupId == Group.character:
