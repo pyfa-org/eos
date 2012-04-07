@@ -23,6 +23,8 @@ from logging import getLogger
 from logging.handlers import BufferingHandler
 from unittest import TestCase
 
+from .environment import DataHandler
+
 
 class TestLogHandler(BufferingHandler):
     """
@@ -68,6 +70,8 @@ class EosTestCase(TestCase):
         # Place test logger instead of them
         self.__testLogHandler = TestLogHandler()
         logger.addHandler(self.__testLogHandler)
+        # Add data handler to each test case
+        self.dh = DataHandler()
 
     def tearDown(self):
         # Remove test logger and restore loggers which

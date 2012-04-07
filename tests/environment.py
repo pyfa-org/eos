@@ -21,6 +21,10 @@
 
 from logging import getLogger, ERROR, WARNING
 
+from eos.dataHandler.exception import EffectFetchError, ExpressionFetchError
+from eos.eve.effect import Effect
+from eos.eve.expression import Expression
+
 
 class Logger:
 
@@ -53,3 +57,42 @@ class Logger:
         else:
             logger = self.__rootLogger.getChild(childName)
         return logger
+
+
+class DataHandler:
+
+    def __init__(self):
+        self.__effectData = {}
+        self.__expressionData = {}
+
+    def effect(self, **kwargs):
+        if "dataHandler" in kwargs:
+            raise TypeError("dataHandler")
+        eff = Effect(dataHandler=self, **kwargs)
+        if eff.id in self.__effectData:
+            raise KeyError(eff.id)
+        self.__effectData[eff.id] = eff
+        return eff
+
+    def expression(self, **kwargs):
+        if "dataHandler" in kwargs:
+            raise TypeError("dataHandler")
+        exp = Expression(dataHandler=self, **kwargs)
+        if exp.id in self.__expressionData:
+            raise KeyError(exp.id)
+        self.__expressionData[exp.id] = exp
+        return exp
+
+    def getEffect(self, effId):
+        try:
+            effect = self.__effectData[effId]
+        except KeyError:
+            raise EffectFetchError(effId)
+        return effect
+
+    def getExpression(self, expId):
+        try:
+            expression = self.__expressionData[expId]
+        except KeyError:
+            raise ExpressionFetchError(expId)
+        return expression
