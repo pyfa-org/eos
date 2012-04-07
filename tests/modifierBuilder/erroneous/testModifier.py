@@ -31,6 +31,19 @@ from eos.tests.modifierBuilder.environment import DataHandler
 class TestModifierBuilderError(EosTestCase):
     """Test reaction to errors occurred during modifier building stage"""
 
+    def testDataDirect(self):
+        dh = DataHandler()
+        # Check reaction to expression data fetch errors
+        effect = Effect(dataHandler=dh, effectId=900, categoryId=0, preExpressionId=902, postExpressionId=28)
+        modifiers, status = ModifierBuilder.build(effect, Logger())
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.name, "eos_test.modifierBuilder")
+        self.assertEqual(logRecord.levelno, Logger.ERROR)
+        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 900: unable to fetch expression 902")
+
     def testUnusedActions(self):
         dh = DataHandler()
         # To produce unused actions, we're passing just tree
