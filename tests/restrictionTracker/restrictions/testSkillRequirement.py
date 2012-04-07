@@ -20,7 +20,6 @@
 
 
 from eos.const import Restriction
-from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem, Skill
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -32,7 +31,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that error is raised when single skill requirement
         # is not met
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__requiredSkills = {50: 3}
         holder = IndependentItem(item)
         fit.items.append(holder)
@@ -46,7 +45,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check error raised when multiple skill requirements
         # are not met
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__requiredSkills = {48: 1, 50: 5}
         holder = IndependentItem(item)
         fit.items.append(holder)
@@ -60,11 +59,11 @@ class TestSkillRequirement(RestrictionTestCase):
         # Make sure satisfied skill requirements are not shown
         # up in error
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__requiredSkills = {48: 1, 50: 5}
         holder = IndependentItem(item)
         fit.items.append(holder)
-        skill = Skill(Type(typeId=48))
+        skill = Skill(self.dh.type_(typeId=48))
         skill.level = 5
         fit.items.append(skill)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
@@ -78,11 +77,11 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that error isn't raised when all skill requirements
         # are met
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__requiredSkills = {50: 3}
         holder = IndependentItem(item)
         fit.items.append(holder)
-        skill = Skill(Type(typeId=50))
+        skill = Skill(self.dh.type_(typeId=50))
         skill.level = 3
         fit.items.append(skill)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
@@ -94,14 +93,15 @@ class TestSkillRequirement(RestrictionTestCase):
     def testPassMultiSkill(self):
         # Make sure max skill level is taken
         fit = Fit()
-        item = Type()
-        item._Type__requiredSkills = {50: 4}
-        holder = IndependentItem(item)
+        item1 = self.dh.type_(typeId=1)
+        item1._Type__requiredSkills = {50: 4}
+        holder = IndependentItem(item1)
         fit.items.append(holder)
-        skill1 = Skill(Type(typeId=50))
+        item2 = self.dh.type_(typeId=50)
+        skill1 = Skill(item2)
         skill1.level = 1
         fit.items.append(skill1)
-        skill2 = Skill(Type(typeId=50))
+        skill2 = Skill(item2)
         skill2.level = 5
         fit.items.append(skill2)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
@@ -114,14 +114,15 @@ class TestSkillRequirement(RestrictionTestCase):
         # Make sure that None-leveled skills are overridden
         # by skills which have some skill level
         fit = Fit()
-        item = Type()
-        item._Type__requiredSkills = {50: 0}
-        holder = IndependentItem(item)
+        item1 = self.dh.type_(typeId=1)
+        item1._Type__requiredSkills = {50: 0}
+        holder = IndependentItem(item1)
         fit.items.append(holder)
-        skill1 = Skill(Type(typeId=50))
+        item2 = self.dh.type_(typeId=50)
+        skill1 = Skill(item2)
         skill1.level = None
         fit.items.append(skill1)
-        skill2 = Skill(Type(typeId=50))
+        skill2 = Skill(item2)
         skill2.level = 0
         fit.items.append(skill2)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)

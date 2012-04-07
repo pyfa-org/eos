@@ -21,7 +21,6 @@
 
 from eos.const import Slot, Restriction
 from eos.eve.const import Attribute
-from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, ShipItem, IndependentItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -33,13 +32,13 @@ class TestTurretSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__slots = {Slot.turret}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.turretSlotsLeft] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.turretSlot)
@@ -59,11 +58,11 @@ class TestTurretSlot(RestrictionTestCase):
         # Make sure that absence of specifier of slot output
         # is considered as 0 output
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__slots = {Slot.turret}
         holder = ShipItem(item)
         fit.items.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.turretSlot)
         self.assertIsNotNone(restrictionError)
@@ -77,7 +76,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Make sure that absence of ship
         # is considered as 0 output
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__slots = {Slot.turret}
         holder = ShipItem(item)
         fit.items.append(holder)
@@ -92,13 +91,13 @@ class TestTurretSlot(RestrictionTestCase):
         # Make sure that modified number of slot output
         # is taken
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__slots = {Slot.turret}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type(attributes={Attribute.turretSlotsLeft: 5}))
+        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.turretSlotsLeft: 5}))
         ship.attributes[Attribute.turretSlotsLeft] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.turretSlot)
@@ -118,13 +117,13 @@ class TestTurretSlot(RestrictionTestCase):
         # No error is raised when slot users do not
         # exceed slot output
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__slots = {Slot.turret}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.turretSlotsLeft] = 3
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.turretSlot)
@@ -139,13 +138,13 @@ class TestTurretSlot(RestrictionTestCase):
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
         fit = Fit()
-        item = Type()
+        item = self.dh.type_(typeId=1)
         item._Type__slots = {Slot.turret}
         holder1 = IndependentItem(item)
         fit.items.append(holder1)
         holder2 = IndependentItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.turretSlotsLeft] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.turretSlot)
@@ -161,11 +160,12 @@ class TestTurretSlot(RestrictionTestCase):
         # If holders don't use slot, no error should
         # be raised
         fit = Fit()
-        holder1 = ShipItem(Type())
+        item = self.dh.type_(typeId=1)
+        holder1 = ShipItem(item)
         fit.items.append(holder1)
-        holder2 = ShipItem(Type())
+        holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.turretSlotsLeft] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.turretSlot)

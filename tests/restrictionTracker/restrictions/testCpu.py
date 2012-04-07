@@ -21,7 +21,6 @@
 
 from eos.const import State, Restriction
 from eos.eve.const import Attribute
-from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -32,7 +31,7 @@ class TestCpu(RestrictionTestCase):
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -48,11 +47,11 @@ class TestCpu(RestrictionTestCase):
         # When ship is assigned, but doesn't have cpu output
         # attribute, error should be raised for cpu consumers too
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
         self.assertIsNotNone(restrictionError)
@@ -67,11 +66,11 @@ class TestCpu(RestrictionTestCase):
         # When ship provides cpu output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
@@ -88,15 +87,16 @@ class TestCpu(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.cpu: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 25
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = 20
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.cpu)
@@ -117,11 +117,11 @@ class TestCpu(RestrictionTestCase):
     def testFailExcessModified(self):
         # Make sure modified cpu values are taken
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.cpu: 40}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.cpu: 40}))
         holder.attributes[Attribute.cpu] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(Type(attributes={Attribute.cpuOutput: 45}))
+        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.cpuOutput: 45}))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
@@ -138,15 +138,16 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.cpu: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 100
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = -10
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.cpu)
@@ -166,15 +167,16 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.cpu: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 100
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = 0
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.cpu)
@@ -193,15 +195,16 @@ class TestCpu(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.cpu: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 25
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = 20
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.cpu)
@@ -218,11 +221,11 @@ class TestCpu(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         fit = Fit()
-        holder = IndependentItem(Type())
+        holder = IndependentItem(self.dh.type_(typeId=1))
         holder.attributes[Attribute.cpu] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
@@ -236,15 +239,16 @@ class TestCpu(RestrictionTestCase):
         # cpu output, negative use of other holder may help
         # to avoid raising error
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.cpu: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 50
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = -15
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.cpu)
@@ -259,10 +263,10 @@ class TestCpu(RestrictionTestCase):
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.cpu: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         fit.items.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)

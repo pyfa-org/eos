@@ -21,7 +21,6 @@
 
 from eos.const import State, Restriction
 from eos.eve.const import Attribute
-from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem, ShipItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -33,10 +32,11 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Make sure error is raised for all holders exceeding
         # their group restriction
         fit = Fit()
-        holder1 = ShipItem(Type(groupId=6, attributes={Attribute.maxGroupOnline: 1}))
+        item = self.dh.type_(typeId=1, groupId=6, attributes={Attribute.maxGroupOnline: 1})
+        holder1 = ShipItem(item)
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(groupId=6, attributes={Attribute.maxGroupOnline: 1}))
+        holder2 = ShipItem(item)
         holder2.state = State.online
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
@@ -57,10 +57,10 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Make sure error is raised for just holders which excess
         # restriction,even if they're from the same group
         fit = Fit()
-        holder1 = ShipItem(Type(groupId=92, attributes={Attribute.maxGroupOnline: 1}))
+        holder1 = ShipItem(self.dh.type_(typeId=1, groupId=92, attributes={Attribute.maxGroupOnline: 1}))
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(groupId=92, attributes={Attribute.maxGroupOnline: 2}))
+        holder2 = ShipItem(self.dh.type_(typeId=2, groupId=92, attributes={Attribute.maxGroupOnline: 2}))
         holder2.state = State.online
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
@@ -77,11 +77,11 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def testMixExcessOriginal(self):
         # Check that original item attributes are used
         fit = Fit()
-        holder1 = ShipItem(Type(groupId=61, attributes={Attribute.maxGroupOnline: 1}))
+        holder1 = ShipItem(self.dh.type_(typeId=1, groupId=61, attributes={Attribute.maxGroupOnline: 1}))
         holder1.attributes[Attribute.maxGroupOnline] = 2
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(groupId=61, attributes={Attribute.maxGroupOnline: 2}))
+        holder2 = ShipItem(self.dh.type_(typeId=2, groupId=61, attributes={Attribute.maxGroupOnline: 2}))
         holder2.attributes[Attribute.maxGroupOnline] = 1
         holder2.state = State.online
         fit.items.append(holder2)
@@ -100,10 +100,11 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Make sure no errors are raised when number of added
         # items doesn't exceed any restrictions
         fit = Fit()
-        holder1 = ShipItem(Type(groupId=860, attributes={Attribute.maxGroupOnline: 2}))
+        item = self.dh.type_(typeId=1, groupId=860, attributes={Attribute.maxGroupOnline: 2})
+        holder1 = ShipItem(item)
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(groupId=860, attributes={Attribute.maxGroupOnline: 2}))
+        holder2 = ShipItem(item)
         holder2.state = State.online
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
@@ -117,10 +118,11 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def testPassHolderNoneGroup(self):
         # Check that holders with None group are not affected
         fit = Fit()
-        holder1 = ShipItem(Type(groupId=None, attributes={Attribute.maxGroupOnline: 1}))
+        item = self.dh.type_(typeId=1, groupId=None, attributes={Attribute.maxGroupOnline: 1})
+        holder1 = ShipItem(item)
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(groupId=None, attributes={Attribute.maxGroupOnline: 1}))
+        holder2 = ShipItem(item)
         holder2.state = State.online
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
@@ -134,9 +136,10 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def testPassState(self):
         # No errors should occur if holders are not online+
         fit = Fit()
-        holder1 = ShipItem(Type(groupId=886, attributes={Attribute.maxGroupOnline: 1}))
+        item = self.dh.type_(typeId=1, groupId=886, attributes={Attribute.maxGroupOnline: 1})
+        holder1 = ShipItem(item)
         fit.items.append(holder1)
-        holder2 = ShipItem(Type(groupId=886, attributes={Attribute.maxGroupOnline: 1}))
+        holder2 = ShipItem(item)
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError1)
@@ -149,10 +152,11 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
         fit = Fit()
-        holder1 = IndependentItem(Type(groupId=12, attributes={Attribute.maxGroupActive: 1}))
+        item = self.dh.type_(typeId=1, groupId=12, attributes={Attribute.maxGroupActive: 1})
+        holder1 = IndependentItem(item)
         holder1.state = State.online
         fit.items.append(holder1)
-        holder2 = IndependentItem(Type(groupId=12, attributes={Attribute.maxGroupActive: 1}))
+        holder2 = IndependentItem(item)
         holder2.state = State.online
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)

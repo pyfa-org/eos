@@ -21,7 +21,6 @@
 
 from eos.const import Restriction
 from eos.eve.const import Attribute
-from eos.eve.type import Type
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
@@ -32,7 +31,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
         fit.drones.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
@@ -47,10 +46,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When ship is assigned, but doesn't have drone bay volume output
         # attribute, error should be raised for drone bay volume consumers too
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
         fit.drones.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError)
@@ -65,10 +64,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When ship provides drone bay volume output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
         fit.drones.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
@@ -85,13 +84,14 @@ class TestDroneBayVolume(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.volume: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 25
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = 20
         fit.drones.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBayVolume)
@@ -112,10 +112,10 @@ class TestDroneBayVolume(RestrictionTestCase):
     def testFailExcessModified(self):
         # Make sure modified drone bay volume values are taken
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.volume: 40}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.volume: 40}))
         holder.attributes[Attribute.volume] = 100
         fit.drones.append(holder)
-        ship = IndependentItem(Type(attributes={Attribute.droneCapacity: 45}))
+        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.droneCapacity: 45}))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
@@ -132,13 +132,14 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.volume: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 100
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = -10
         fit.drones.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBayVolume)
@@ -158,13 +159,14 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.volume: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 100
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = 0
         fit.drones.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBayVolume)
@@ -183,13 +185,14 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.volume: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 25
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = 20
         fit.drones.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBayVolume)
@@ -206,10 +209,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         fit = Fit()
-        holder = IndependentItem(Type())
+        holder = IndependentItem(self.dh.type_(typeId=1))
         holder.attributes[Attribute.volume] = 100
         fit.drones.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
@@ -222,13 +225,14 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Check that even if use of one holder exceeds drone bay volume
         # output, negative use of other holder may help to avoid raising error
         fit = Fit()
-        holder1 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        item = self.dh.type_(typeId=1, attributes={Attribute.volume: 0})
+        holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 50
         fit.drones.append(holder1)
-        holder2 = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = -15
         fit.drones.append(holder2)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBayVolume)
@@ -243,10 +247,10 @@ class TestDroneBayVolume(RestrictionTestCase):
     def testPassNonDrone(self):
         # Make sure nothing but drone container is restricted
         fit = Fit()
-        holder = IndependentItem(Type(attributes={Attribute.volume: 0}))
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
         fit.items.append(holder)
-        ship = IndependentItem(Type())
+        ship = IndependentItem(self.dh.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
