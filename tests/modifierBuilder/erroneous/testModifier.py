@@ -25,25 +25,27 @@ from eos.eve.expression import Expression
 from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from eos.tests.modifierBuilder.environment import callize
+from eos.tests.modifierBuilder.environment import DataHandler
 
 
 class TestModifierBuilderError(EosTestCase):
     """Test reaction to errors occurred during modifier building stage"""
 
     def testUnusedActions(self):
+        dh = DataHandler()
         # To produce unused actions, we're passing just tree
         # which describes action which applies something, and
         # stub instead of action undoing it
-        eTgt = Expression(None, 24, value="Ship")
-        eTgtAttr = Expression(None, 22, expressionAttributeId=9)
-        eOptr = Expression(None, 21, value="PostPercent")
-        eSrcAttr = Expression(None, 22, expressionAttributeId=327)
-        eTgtSpec = Expression(None, 12, arg1=eTgt, arg2=eTgtAttr)
-        eOptrTgt = Expression(None, 31, arg1=eOptr, arg2=eTgtSpec)
-        eAddMod = Expression(1, 6, arg1=eOptrTgt, arg2=eSrcAttr)
-        ePostStub = Expression(2, 27, value="1")
-        effect = Effect(799, 0, preExpressionCallData=callize(eAddMod), postExpressionCallData=callize(ePostStub))
+        eTgt = Expression(dataHandler=dh, expressionId=1, operandId=24, value="Ship")
+        eTgtAttr = Expression(dataHandler=dh, expressionId=2, operandId=22, expressionAttributeId=9)
+        eOptr = Expression(dataHandler=dh, expressionId=3, operandId=21, value="PostPercent")
+        eSrcAttr = Expression(dataHandler=dh, expressionId=4, operandId=22, expressionAttributeId=327)
+        eTgtSpec = Expression(dataHandler=dh, expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
+        eOptrTgt = Expression(dataHandler=dh, expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
+        eAddMod = Expression(dataHandler=dh, expressionId=7, operandId=6, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        ePostStub = Expression(dataHandler=dh, expressionId=8, operandId=27, value="1")
+        dh.addExpressions((eTgt, eTgtAttr, eOptr, eSrcAttr, eTgtSpec, eOptrTgt, eAddMod, ePostStub))
+        effect = Effect(dataHandler=dh, effectId=799, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)

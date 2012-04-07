@@ -58,21 +58,21 @@ class ModifierBuilder:
             for treeName, actionSet in (("preExpression", preActions),
                                         ("postExpression", postActions)):
                 try:
+                    # Get root expression
                     treeRoot = getattr(effect, treeName)
-                except ExpressionFetchError as e:
-                    raise TreeFetchingError(*e.args)
-                # As we already store expressions in local variable,
-                # remove reference to them from effect object by
-                # deleting corresponding attribute - to not consume
-                # memory when building process is finished
-                delattr(effect, treeName)
-                # If there's no tree, then there's
-                # nothing to build
-                if treeRoot is None:
-                    continue
-                try:
+                    # As we already store expressions in local variable,
+                    # remove reference to them from effect object by
+                    # deleting corresponding attribute - to not consume
+                    # memory when building process is finished
+                    delattr(effect, treeName)
+                    # If there's no tree, then there's
+                    # nothing to build
+                    if treeRoot is None:
+                        continue
                     actions, skippedData = ActionBuilder.build(treeRoot, effect.categoryId)
                 # If any errors occurred, raise corresponding exceptions
+                except ExpressionFetchError as e:
+                    raise TreeFetchingError(*e.args)
                 except ActionBuilderError as e:
                     raise TreeParsingError(*e.args) from e
                 except Exception as e:
