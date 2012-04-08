@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem
@@ -34,27 +31,27 @@ class TestLocationFilterCharacter(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        self.tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
         modifier.sourceAttributeId = srcAttr.id
         modifier.operator = Operator.postPercent
-        modifier.targetAttributeId = tgtAttr.id
+        modifier.targetAttributeId = self.tgtAttr.id
         modifier.location = Location.character
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        self.fit = Fit()
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit
-        self.influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
         self.fit.items.append(self.influenceSource)
 
     def testMatch(self):
-        influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
@@ -63,7 +60,7 @@ class TestLocationFilterCharacter(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherLocation(self):
-        influenceTarget = IndependentItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = IndependentItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)

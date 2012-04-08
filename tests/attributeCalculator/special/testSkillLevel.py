@@ -19,9 +19,7 @@
 #===============================================================================
 
 
-from eos.eve.attribute import Attribute
-from eos.eve.const import Attribute as ConstAttribute
-from eos.eve.type import Type
+from eos.eve.const import Attribute
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, Skill
 
@@ -30,24 +28,24 @@ class TestSkillLevel(AttrCalcTestCase):
     """Test return value when requesting attribute which isn't set"""
 
     def testSpecialAttrAccess(self):
-        attr = Attribute(ConstAttribute.skillLevel)
-        fit = Fit({attr.id: attr})
-        skill = Skill(Type(None, attributes={attr.id: 3}))
+        attr = self.dh.attribute(attributeId=Attribute.skillLevel)
+        fit = Fit()
+        skill = Skill(self.dh.type_(typeId=1, attributes={attr.id: 3}))
         skill.level = 5
         fit.items.append(skill)
         # If holder has level attribute, it must be returned despite of holder contents
-        self.assertAlmostEqual(skill.attributes[ConstAttribute.skillLevel], 5)
+        self.assertAlmostEqual(skill.attributes[Attribute.skillLevel], 5)
         fit.items.remove(skill)
         self.assertBuffersEmpty(fit)
 
     def testStandardAttrAccess(self):
-        attr = Attribute(ConstAttribute.skillLevel)
-        fit = Fit({attr.id: attr})
-        holder = IndependentItem(Type(None, attributes={attr.id: 3}))
+        attr = self.dh.attribute(attributeId=Attribute.skillLevel)
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=1, attributes={attr.id: 3}))
         fit.items.append(holder)
         # If .skill direct attribute is not available, standard
         # skill level attribute (from item attributes) should
         # be returned
-        self.assertAlmostEqual(holder.attributes[ConstAttribute.skillLevel], 3)
+        self.assertAlmostEqual(holder.attributes[Attribute.skillLevel], 3)
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

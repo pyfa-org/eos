@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
@@ -35,23 +32,23 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1)
-        self.srcAttr = srcAttr = Attribute(2)
+        self.tgtAttr = self.dh.attribute(attributeId=1)
+        self.srcAttr = self.dh.attribute(attributeId=2)
         self.invalidModifier = invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
-        invalidModifier.sourceAttributeId = srcAttr.id
+        invalidModifier.sourceAttributeId = self.srcAttr.id
         invalidModifier.operator = Operator.postPercent
-        invalidModifier.targetAttributeId = tgtAttr.id
+        invalidModifier.targetAttributeId = self.tgtAttr.id
         invalidModifier.location = 1972
         invalidModifier.filterType = FilterType.all_
         invalidModifier.filterValue = None
-        self.effect = Effect(None, EffectCategory.passive)
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        self.effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        self.fit = Fit()
 
     def testLog(self):
         self.effect._modifiers = (self.invalidModifier,)
-        holder = IndependentItem(Type(754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
+        holder = IndependentItem(self.dh.type_(typeId=754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -72,9 +69,9 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         validModifier.filterType = FilterType.all_
         validModifier.filterValue = None
         self.effect._modifiers = (self.invalidModifier, validModifier)
-        influenceSource = IndependentItem(Type(None, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
+        influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit.items.append(influenceSource)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         # Invalid location in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)

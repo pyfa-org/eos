@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
@@ -33,8 +30,8 @@ class TestLocationDirectShipSwitch(AttrCalcTestCase):
     """Test direct modification of ship when it's changed"""
 
     def testShip(self):
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -44,16 +41,17 @@ class TestLocationDirectShipSwitch(AttrCalcTestCase):
         modifier.location = Location.ship
         modifier.filterType = None
         modifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
+        fit = Fit()
+        influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
         fit.items.append(influenceSource)
-        influenceTarget1 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
+        item = self.dh.type_(typeId=None, attributes={tgtAttr.id: 100})
+        influenceTarget1 = IndependentItem(item)
         fit.ship = influenceTarget1
         self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
         fit.ship = None
-        influenceTarget2 = IndependentItem(Type(None, attributes={tgtAttr.id: 100}))
+        influenceTarget2 = IndependentItem(item)
         fit.ship = influenceTarget2
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)
         fit.items.remove(influenceSource)

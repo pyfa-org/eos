@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, ItemWithOther
@@ -33,8 +30,8 @@ class TestLocationDirectOtherSwitch(AttrCalcTestCase):
     """Test direct modification of "other" (e.g. module's charge) when it's changed"""
 
     def testOther(self):
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -44,18 +41,19 @@ class TestLocationDirectOtherSwitch(AttrCalcTestCase):
         modifier.location = Location.other
         modifier.filterType = None
         modifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = ItemWithOther(Type(None, effects=(effect,), attributes={srcAttr.id: 20}))
+        fit = Fit()
+        influenceSource = ItemWithOther(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
         fit.items.append(influenceSource)
-        influenceTarget1 = ItemWithOther(Type(None, attributes={tgtAttr.id: 100}))
+        item = self.dh.type_(typeId=2, attributes={tgtAttr.id: 100})
+        influenceTarget1 = ItemWithOther(item)
         influenceSource.makeOtherLink(influenceTarget1)
         fit.items.append(influenceTarget1)
         self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
         fit.items.remove(influenceTarget1)
         influenceSource.breakOtherLink(influenceTarget1)
-        influenceTarget2 = ItemWithOther(Type(None, attributes={tgtAttr.id: 100}))
+        influenceTarget2 = ItemWithOther(item)
         influenceSource.makeOtherLink(influenceTarget2)
         fit.items.append(influenceTarget2)
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)

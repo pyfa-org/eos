@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
@@ -34,8 +31,8 @@ class TestLocationFilterTarget(AttrCalcTestCase):
     """Test location.target for massive filtered modifications"""
 
     def testError(self):
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -45,10 +42,10 @@ class TestLocationFilterTarget(AttrCalcTestCase):
         modifier.location = Location.target
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        influenceSource = IndependentItem(Type(88, effects=(effect,), attributes={srcAttr.id: 20}))
+        fit = Fit()
+        influenceSource = IndependentItem(self.dh.type_(typeId=88, effects=(effect,), attributes={srcAttr.id: 20}))
         # This functionality isn't implemented for now
         fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)

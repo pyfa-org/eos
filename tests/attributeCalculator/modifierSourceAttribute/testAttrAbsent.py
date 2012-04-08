@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
@@ -33,9 +30,9 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
     """Test how calculator reacts to source attribute which is absent"""
 
     def testCombination(self):
-        tgtAttr = Attribute(1)
-        absAttr = Attribute(2)
-        srcAttr = Attribute(3)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        absAttr = self.dh.attribute(attributeId=2)
+        srcAttr = self.dh.attribute(attributeId=3)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -54,10 +51,10 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier, validModifier)
-        fit = Fit({tgtAttr.id: tgtAttr, absAttr.id: absAttr, srcAttr.id: srcAttr})
-        holder = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
         fit.items.append(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)

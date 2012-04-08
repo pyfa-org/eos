@@ -21,10 +21,7 @@
 
 from eos.const import State, Location, Context, Operator
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 
@@ -34,17 +31,17 @@ class TestStateSwitching(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1, stackable=1)
-        srcAttr1 = Attribute(2)
-        srcAttr2 = Attribute(3)
-        srcAttr3 = Attribute(4)
-        srcAttr4 = Attribute(5)
+        self.tgtAttr = self.dh.attribute(attributeId=1, stackable=1)
+        srcAttr1 = self.dh.attribute(attributeId=2)
+        srcAttr2 = self.dh.attribute(attributeId=3)
+        srcAttr3 = self.dh.attribute(attributeId=4)
+        srcAttr4 = self.dh.attribute(attributeId=5)
         modifierOff = Modifier()
         modifierOff.state = State.offline
         modifierOff.context = Context.local
         modifierOff.sourceAttributeId = srcAttr1.id
         modifierOff.operator = Operator.postMul
-        modifierOff.targetAttributeId = tgtAttr.id
+        modifierOff.targetAttributeId = self.tgtAttr.id
         modifierOff.location = Location.self_
         modifierOff.filterType = None
         modifierOff.filterValue = None
@@ -53,7 +50,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifierOn.context = Context.local
         modifierOn.sourceAttributeId = srcAttr2.id
         modifierOn.operator = Operator.postMul
-        modifierOn.targetAttributeId = tgtAttr.id
+        modifierOn.targetAttributeId = self.tgtAttr.id
         modifierOn.location = Location.self_
         modifierOn.filterType = None
         modifierOn.filterValue = None
@@ -62,7 +59,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifierAct.context = Context.local
         modifierAct.sourceAttributeId = srcAttr3.id
         modifierAct.operator = Operator.postMul
-        modifierAct.targetAttributeId = tgtAttr.id
+        modifierAct.targetAttributeId = self.tgtAttr.id
         modifierAct.location = Location.self_
         modifierAct.filterType = None
         modifierAct.filterValue = None
@@ -71,18 +68,17 @@ class TestStateSwitching(AttrCalcTestCase):
         modifierOver.context = Context.local
         modifierOver.sourceAttributeId = srcAttr4.id
         modifierOver.operator = Operator.postMul
-        modifierOver.targetAttributeId = tgtAttr.id
+        modifierOver.targetAttributeId = self.tgtAttr.id
         modifierOver.location = Location.self_
         modifierOver.filterType = None
         modifierOver.filterValue = None
         # Overload category will make sure that holder can enter all states
-        effect = Effect(None, EffectCategory.overload)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.overload)
         effect._modifiers = (modifierOff, modifierOn, modifierAct, modifierOver)
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr1.id: srcAttr1, srcAttr2.id: srcAttr2,
-                        srcAttr3.id: srcAttr3, srcAttr4.id: srcAttr4})
-        self.holder = IndependentItem(Type(None, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,
-                                                                                srcAttr2.id: 1.3, srcAttr3.id: 1.5,
-                                                                                srcAttr4.id: 1.7}))
+        self.fit = Fit()
+        self.holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,
+                                                                                             srcAttr2.id: 1.3, srcAttr3.id: 1.5,
+                                                                                             srcAttr4.id: 1.7}))
 
     def testFitOffline(self):
         self.holder.state = State.offline

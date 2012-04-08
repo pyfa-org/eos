@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
@@ -35,25 +32,25 @@ class TestLocationFilterSelf(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        self.tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
         modifier.sourceAttributeId = srcAttr.id
         modifier.operator = Operator.postPercent
-        modifier.targetAttributeId = tgtAttr.id
+        modifier.targetAttributeId = self.tgtAttr.id
         modifier.location = Location.self_
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        self.influenceSource = IndependentItem(Type(1061, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.fit = Fit()
+        self.influenceSource = IndependentItem(self.dh.type_(typeId=1061, effects=(effect,), attributes={srcAttr.id: 20}))
 
     def testShip(self):
         self.fit.ship = self.influenceSource
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.ship = None
@@ -63,7 +60,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
-        influenceTarget = CharacterItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.character = None

@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import Category, EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
@@ -34,27 +31,27 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = tgtAttr = Attribute(1, stackable=0)
-        self.srcAttr = srcAttr = Attribute(2)
+        self.tgtAttr = self.dh.attribute(attributeId=1, stackable=0)
+        self.srcAttr = self.dh.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
-        modifier.sourceAttributeId = srcAttr.id
+        modifier.sourceAttributeId = self.srcAttr.id
         modifier.operator = Operator.postPercent
-        modifier.targetAttributeId = tgtAttr.id
+        modifier.targetAttributeId = self.tgtAttr.id
         modifier.location = Location.ship
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        self.effect = Effect(1, EffectCategory.passive)
+        self.effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         self.effect._modifiers = (modifier,)
-        self.fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
+        self.fit = Fit()
 
     def testShip(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)
@@ -63,11 +60,11 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testCharge(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)
@@ -76,11 +73,11 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testSkill(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)
@@ -89,11 +86,11 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testImplant(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)
@@ -102,11 +99,11 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testSubsystem(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)
@@ -115,11 +112,11 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testMixed(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)
@@ -128,11 +125,11 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testWithNotImmune(self):
-        influenceSource1 = IndependentItem(Type(None, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
-        influenceSource2 = IndependentItem(Type(None, effects=(self.effect,), categoryId=None, attributes={self.srcAttr.id: 100}))
+        influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
+        influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(self.effect,), categoryId=None, attributes={self.srcAttr.id: 100}))
         self.fit.items.append(influenceSource1)
         self.fit.items.append(influenceSource2)
-        influenceTarget = ShipItem(Type(None, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.dh.type_(typeId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 300)
         self.fit.items.remove(influenceSource1)

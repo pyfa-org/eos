@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from eos.eve.attribute import Attribute
-from eos.eve.type import Type
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.environment import Logger
@@ -32,8 +30,8 @@ class TestNonExistent(AttrCalcTestCase):
     def testAttributeDataError(self):
         # Check case when attribute value is available, but
         # data handler doesn't know about such attribute
-        fit = Fit({})
-        holder = IndependentItem(Type(57, attributes={105: 20}))
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=57, attributes={105: 20}))
         fit.items.append(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
@@ -48,11 +46,11 @@ class TestNonExistent(AttrCalcTestCase):
         # Check case when default value of attribute cannot be
         # determined. and item itself doesn't define any value
         # either
-        attr = Attribute(89)
-        fit = Fit({attr.id: attr})
-        holder = IndependentItem(Type(649))
+        attr = self.dh.attribute(attributeId=89)
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=649))
         fit.items.append(holder)
-        self.assertRaises(KeyError, holder.attributes.__getitem__, 89)
+        self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
@@ -64,10 +62,10 @@ class TestNonExistent(AttrCalcTestCase):
     def testAbsentDefaultValue(self):
         # Default value should be used if attribute
         # value is not available on item
-        attr = Attribute(1, defaultValue=5.6)
-        fit = Fit({attr.id: attr})
-        holder = IndependentItem(Type(None))
+        attr = self.dh.attribute(attributeId=1, defaultValue=5.6)
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=1))
         fit.items.append(holder)
-        self.assertAlmostEqual(holder.attributes[1], 5.6)
+        self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)

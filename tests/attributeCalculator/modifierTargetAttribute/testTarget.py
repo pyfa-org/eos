@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
@@ -33,10 +30,10 @@ class TestTargetAttribute(AttrCalcTestCase):
     """Test that only targeted attributes are modified"""
 
     def testTargetAttributes(self):
-        tgtAttr1 = Attribute(1)
-        tgtAttr2 = Attribute(2)
-        tgtAttr3 = Attribute(3)
-        srcAttr = Attribute(4)
+        tgtAttr1 = self.dh.attribute(attributeId=1)
+        tgtAttr2 = self.dh.attribute(attributeId=2)
+        tgtAttr3 = self.dh.attribute(attributeId=3)
+        srcAttr = self.dh.attribute(attributeId=4)
         modifier1 = Modifier()
         modifier1.state = State.offline
         modifier1.context = Context.local
@@ -55,11 +52,11 @@ class TestTargetAttribute(AttrCalcTestCase):
         modifier2.location = Location.self_
         modifier2.filterType = None
         modifier2.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier1, modifier2)
-        fit = Fit({tgtAttr1.id: tgtAttr1, tgtAttr2.id: tgtAttr2, tgtAttr3.id: tgtAttr3, srcAttr.id: srcAttr})
-        holder = IndependentItem(Type(None, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
-                                                                           tgtAttr3.id: 100, srcAttr.id: 20}))
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
+                                                                                        tgtAttr3.id: 100, srcAttr.id: 20}))
         fit.items.append(holder)
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(holder.attributes[tgtAttr1.id], 60)

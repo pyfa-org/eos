@@ -20,10 +20,7 @@
 
 
 from eos.const import State, Location, Context, Operator
-from eos.eve.attribute import Attribute
 from eos.eve.const import EffectCategory
-from eos.eve.effect import Effect
-from eos.eve.type import Type
 from eos.fit.attributeCalculator.modifier.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
@@ -36,8 +33,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
     def testLogOther(self):
         # Check how unknown operator value influences
         # attribute calculator
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -47,10 +44,10 @@ class TestOperatorUnknown(AttrCalcTestCase):
         invalidModifier.location = Location.self_
         invalidModifier.filterType = None
         invalidModifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier,)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        holder = IndependentItem(Type(83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
@@ -65,8 +62,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
         # Check how non-orderable operator value influences
         # attribute calculator. Previously, bug in calculation
         # method made it to crash
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -85,10 +82,10 @@ class TestOperatorUnknown(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier, validModifier)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        holder = IndependentItem(Type(83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 120)
         self.assertEqual(len(self.log), 1)
@@ -100,8 +97,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertBuffersEmpty(fit)
 
     def testCombination(self):
-        tgtAttr = Attribute(1)
-        srcAttr = Attribute(2)
+        tgtAttr = self.dh.attribute(attributeId=1)
+        srcAttr = self.dh.attribute(attributeId=2)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -120,10 +117,10 @@ class TestOperatorUnknown(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        effect = Effect(None, EffectCategory.passive)
+        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier, validModifier)
-        fit = Fit({tgtAttr.id: tgtAttr, srcAttr.id: srcAttr})
-        holder = IndependentItem(Type(None, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
+        fit = Fit()
+        holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
         fit.items.append(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers
