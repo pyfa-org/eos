@@ -104,6 +104,8 @@ class Type:
                 modifiers.add(modifier)
         return modifiers
 
+    # Define attributes which describe item skill requirement details
+    # Format: {item attribute ID: level attribute ID}
     __skillRqAttrs = {Attribute.requiredSkill1: Attribute.requiredSkill1Level,
                       Attribute.requiredSkill2: Attribute.requiredSkill2Level,
                       Attribute.requiredSkill3: Attribute.requiredSkill3Level,
@@ -135,7 +137,16 @@ class Type:
             requiredSkills[int(srq)] = int(srqLvl)
         return requiredSkills
 
-    @property
+    # Map effect category onto max state item can take
+    # Format: {effect category ID: state ID}
+    __effectStateMap = {EffectCategory.passive: State.offline,
+                        EffectCategory.active: State.active,
+                        EffectCategory.target: State.active,
+                        EffectCategory.online: State.online,
+                        EffectCategory.overload: State.overload,
+                        EffectCategory.system: State.offline}
+
+    @cachedproperty
     def maxState(self):
         """
         Get highest state this type is allowed to take.
@@ -143,23 +154,15 @@ class Type:
         Return value:
         State class' attribute value, representing highest state
         """
-        if self.__maxState is None:
-            # All types can be at least offline,
-            # even when they have no effects
-            maxState = State.offline
-            for effect in self.effects:
-                # Convert effect category to state
-                # Format: {effect category ID: state ID}
-                conversionMap = {EffectCategory.passive: State.offline,
-                                 EffectCategory.active: State.active,
-                                 EffectCategory.target: State.active,
-                                 EffectCategory.online: State.online,
-                                 EffectCategory.overload: State.overload,
-                                 EffectCategory.system: State.offline}
-                state = conversionMap[effect.categoryId]
-                maxState = max(maxState, state)
-            self.__maxState = maxState
-        return self.__maxState
+        # All types can be at least offline,
+        # even when they have no effects
+        maxState = State.offline
+        # We cycle through effects, because each effect isn't
+        # guaranteed to produce modifier, thus effects are
+        # more reliable data source
+        for effect in self.effects:
+            maxState = max(maxState, self.__effectStateMap[effect.categoryId])
+        return maxState
 
     @property
     def isTargeted(self):
