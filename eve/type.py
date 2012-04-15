@@ -76,15 +76,6 @@ class Type:
         # which this type applies
         self.effects = effects
 
-        # Caches results of max allowed state as integer ID
-        self.__maxState = None
-
-        # Cache targeted flag
-        self.__targeted = None
-
-        # Cached set with slot types
-        self.__slots = None
-
         # Apply eos-specific customizations on type, if any
         customizeType(self)
 
@@ -164,7 +155,7 @@ class Type:
             maxState = max(maxState, self.__effectStateMap[effect.categoryId])
         return maxState
 
-    @property
+    @cachedproperty
     def isTargeted(self):
         """
         Report if type is targeted or not. Targeted types cannot be
@@ -173,17 +164,25 @@ class Type:
         Return value:
         Boolean targeted flag
         """
-        if self.__targeted is None:
-            # Assume type is not targeted by default
-            targeted = False
-            for effect in self.effects:
-                # If any of effects is targeted, then type is targeted
-                if effect.categoryId == EffectCategory.target:
-                    targeted = True
-            self.__targeted = targeted
-        return self.__targeted
+        # Assume type is unable to target by default
+        targeted = False
+        for effect in self.effects:
+            # If any of effects is targeted, then type is targeted
+            if effect.categoryId == EffectCategory.target:
+                targeted = True
+                break
+        return targeted
 
-    @property
+    # Format: {effect ID: slot ID}
+    __effectStateMap = {Effect.loPower: Slot.moduleLow,
+                        Effect.hiPower: Slot.moduleHigh,
+                        Effect.medPower: Slot.moduleMed,
+                        Effect.launcherFitted: Slot.launcher,
+                        Effect.turretFitted: Slot.turret,
+                        Effect.rigSlot: Slot.rig,
+                        Effect.subSystem: Slot.subsystem}
+
+    @cachedproperty
     def slots(self):
         """
         Get types of slots this type occupies.
@@ -191,25 +190,15 @@ class Type:
         Return value:
         Set with slot types
         """
-        if self.__slots is None:
-            # Container for slot types item uses
-            slots = set()
-            for effect in self.effects:
-                # Convert effect ID to slot type item takes
-                # Format: {effect ID: slot ID}
-                conversionMap = {Effect.loPower: Slot.moduleLow,
-                                 Effect.hiPower: Slot.moduleHigh,
-                                 Effect.medPower: Slot.moduleMed,
-                                 Effect.launcherFitted: Slot.launcher,
-                                 Effect.turretFitted: Slot.turret,
-                                 Effect.rigSlot: Slot.rig,
-                                 Effect.subSystem: Slot.subsystem}
-                try:
-                    slot = conversionMap[effect.id]
-                # Silently skip effect if it's not in map
-                except KeyError:
-                    pass
-                else:
-                    slots.add(slot)
-            self.__slots = slots
-        return self.__slots
+        # Container for slot types item uses
+        slots = set()
+        for effect in self.effects:
+            # Convert effect ID to slot type item takes
+            try:
+                slot = self.__effectStateMap[effect.id]
+            # Silently skip effect if it's not in map
+            except KeyError:
+                pass
+            else:
+                slots.add(slot)
+        return slots

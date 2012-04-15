@@ -33,7 +33,7 @@ class TestRigSlot(RestrictionTestCase):
         # slots exceeds slot amount provided by ship
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__slots = {Slot.rig}
+        item.slots = {Slot.rig}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
@@ -59,7 +59,7 @@ class TestRigSlot(RestrictionTestCase):
         # is considered as 0 output
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__slots = {Slot.rig}
+        item.slots = {Slot.rig}
         holder = ShipItem(item)
         fit.items.append(holder)
         ship = IndependentItem(self.dh.type_(typeId=2))
@@ -77,7 +77,7 @@ class TestRigSlot(RestrictionTestCase):
         # is considered as 0 output
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__slots = {Slot.rig}
+        item.slots = {Slot.rig}
         holder = ShipItem(item)
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSlot)
@@ -92,7 +92,7 @@ class TestRigSlot(RestrictionTestCase):
         # is taken
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__slots = {Slot.rig}
+        item.slots = {Slot.rig}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
@@ -118,7 +118,7 @@ class TestRigSlot(RestrictionTestCase):
         # exceed slot output
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__slots = {Slot.rig}
+        item.slots = {Slot.rig}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
@@ -139,7 +139,7 @@ class TestRigSlot(RestrictionTestCase):
         # Non-ship holders shouldn't be affected
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__slots = {Slot.rig}
+        item.slots = {Slot.rig}
         holder1 = IndependentItem(item)
         fit.items.append(holder1)
         holder2 = IndependentItem(item)
