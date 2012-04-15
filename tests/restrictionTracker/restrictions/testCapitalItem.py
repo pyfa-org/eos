@@ -104,7 +104,7 @@ class TestCapitalItem(RestrictionTestCase):
         holder = ShipItem(self.dh.type_(typeId=1, attributes={Attribute.volume: 501}))
         fit.items.append(holder)
         shipItem = self.dh.type_(typeId=2)
-        shipItem._Type__requiredSkills = {ConstType.capitalShips: 1}
+        shipItem.requiredSkills = {ConstType.capitalShips: 1}
         fit.ship = IndependentItem(shipItem)
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)

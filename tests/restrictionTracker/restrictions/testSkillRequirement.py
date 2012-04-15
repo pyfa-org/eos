@@ -32,7 +32,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # is not met
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__requiredSkills = {50: 3}
+        item.requiredSkills = {50: 3}
         holder = IndependentItem(item)
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
@@ -46,7 +46,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # are not met
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__requiredSkills = {48: 1, 50: 5}
+        item.requiredSkills = {48: 1, 50: 5}
         holder = IndependentItem(item)
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
@@ -60,7 +60,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # up in error
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__requiredSkills = {48: 1, 50: 5}
+        item.requiredSkills = {48: 1, 50: 5}
         holder = IndependentItem(item)
         fit.items.append(holder)
         skill = Skill(self.dh.type_(typeId=48))
@@ -78,7 +78,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # are met
         fit = Fit()
         item = self.dh.type_(typeId=1)
-        item._Type__requiredSkills = {50: 3}
+        item.requiredSkills = {50: 3}
         holder = IndependentItem(item)
         fit.items.append(holder)
         skill = Skill(self.dh.type_(typeId=50))
@@ -94,7 +94,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Make sure max skill level is taken
         fit = Fit()
         item1 = self.dh.type_(typeId=1)
-        item1._Type__requiredSkills = {50: 4}
+        item1.requiredSkills = {50: 4}
         holder = IndependentItem(item1)
         fit.items.append(holder)
         item2 = self.dh.type_(typeId=50)
@@ -115,7 +115,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # by skills which have some skill level
         fit = Fit()
         item1 = self.dh.type_(typeId=1)
-        item1._Type__requiredSkills = {50: 0}
+        item1.requiredSkills = {50: 0}
         holder = IndependentItem(item1)
         fit.items.append(holder)
         item2 = self.dh.type_(typeId=50)

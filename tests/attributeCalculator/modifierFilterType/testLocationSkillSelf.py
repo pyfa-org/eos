@@ -53,7 +53,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
 
     def testMatch(self):
         item = self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100})
-        item._Type__requiredSkills = {772: 1}
+        item.requiredSkills = {772: 1}
         influenceTarget = ShipItem(item)
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
@@ -64,7 +64,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
 
     def testOtherSkill(self):
         item = self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100})
-        item._Type__requiredSkills = {51: 1}
+        item.requiredSkills = {51: 1}
         influenceTarget = ShipItem(item)
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)

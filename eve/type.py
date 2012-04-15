@@ -20,6 +20,7 @@
 
 
 from eos.const import Slot, State
+from eos.util.cachedProperty import cachedproperty
 from .const import Attribute, Effect, EffectCategory
 from .override.type import customizeType
 
@@ -75,9 +76,6 @@ class Type:
         # which this type applies
         self.effects = effects
 
-        # Stores required skill IDs and levels as dictionary once calculated
-        self.__requiredSkills = None
-
         # Caches results of max allowed state as integer ID
         self.__maxState = None
 
@@ -106,7 +104,14 @@ class Type:
                 modifiers.add(modifier)
         return modifiers
 
-    @property
+    __skillRqAttrs = {Attribute.requiredSkill1: Attribute.requiredSkill1Level,
+                      Attribute.requiredSkill2: Attribute.requiredSkill2Level,
+                      Attribute.requiredSkill3: Attribute.requiredSkill3Level,
+                      Attribute.requiredSkill4: Attribute.requiredSkill4Level,
+                      Attribute.requiredSkill5: Attribute.requiredSkill5Level,
+                      Attribute.requiredSkill6: Attribute.requiredSkill6Level}
+
+    @cachedproperty
     def requiredSkills(self):
         """
         Get skill requirements.
@@ -115,27 +120,20 @@ class Type:
         Dictionary with IDs of skills and corresponding skill levels,
         which are required to use type
         """
-        if self.__requiredSkills is None:
-            skillRqAttrs = {Attribute.requiredSkill1: Attribute.requiredSkill1Level,
-                            Attribute.requiredSkill2: Attribute.requiredSkill2Level,
-                            Attribute.requiredSkill3: Attribute.requiredSkill3Level,
-                            Attribute.requiredSkill4: Attribute.requiredSkill4Level,
-                            Attribute.requiredSkill5: Attribute.requiredSkill5Level,
-                            Attribute.requiredSkill6: Attribute.requiredSkill6Level}
-            self.__requiredSkills = {}
-            for srqAttrId in skillRqAttrs:
-                # Skip skill requirement attribute pair if any
-                # of them is not available
-                try:
-                    srq = self.attributes[srqAttrId]
-                except KeyError:
-                    continue
-                try:
-                    srqLvl = self.attributes[skillRqAttrs[srqAttrId]]
-                except KeyError:
-                    continue
-                self.__requiredSkills[int(srq)] = int(srqLvl)
-        return self.__requiredSkills
+        requiredSkills = {}
+        for srqAttrId in self.__skillRqAttrs:
+            # Skip skill requirement attribute pair if any
+            # of them is not available
+            try:
+                srq = self.attributes[srqAttrId]
+            except KeyError:
+                continue
+            try:
+                srqLvl = self.attributes[self.__skillRqAttrs[srqAttrId]]
+            except KeyError:
+                continue
+            requiredSkills[int(srq)] = int(srqLvl)
+        return requiredSkills
 
     @property
     def maxState(self):
