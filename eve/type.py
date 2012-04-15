@@ -152,7 +152,8 @@ class Type:
         # guaranteed to produce modifier, thus effects are
         # more reliable data source
         for effect in self.effects:
-            maxState = max(maxState, self.__effectStateMap[effect.categoryId])
+            effectState = self.__effectStateMap[effect.categoryId]
+            maxState = max(maxState, effectState)
         return maxState
 
     @cachedproperty
@@ -174,13 +175,13 @@ class Type:
         return targeted
 
     # Format: {effect ID: slot ID}
-    __effectStateMap = {Effect.loPower: Slot.moduleLow,
-                        Effect.hiPower: Slot.moduleHigh,
-                        Effect.medPower: Slot.moduleMed,
-                        Effect.launcherFitted: Slot.launcher,
-                        Effect.turretFitted: Slot.turret,
-                        Effect.rigSlot: Slot.rig,
-                        Effect.subSystem: Slot.subsystem}
+    __effectSlotMap = {Effect.loPower: Slot.moduleLow,
+                       Effect.hiPower: Slot.moduleHigh,
+                       Effect.medPower: Slot.moduleMed,
+                       Effect.launcherFitted: Slot.launcher,
+                       Effect.turretFitted: Slot.turret,
+                       Effect.rigSlot: Slot.rig,
+                       Effect.subSystem: Slot.subsystem}
 
     @cachedproperty
     def slots(self):
@@ -195,7 +196,7 @@ class Type:
         for effect in self.effects:
             # Convert effect ID to slot type item takes
             try:
-                slot = self.__effectStateMap[effect.id]
+                slot = self.__effectSlotMap[effect.id]
             # Silently skip effect if it's not in map
             except KeyError:
                 pass
