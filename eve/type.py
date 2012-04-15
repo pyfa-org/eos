@@ -34,7 +34,7 @@ class Type:
     def __init__(self, dataHandler=None, typeId=None, groupId=None,
                  categoryId=None, durationAttributeId=None, dischargeAttributeId=None,
                  rangeAttributeId=None, falloffAttributeId=None, trackingSpeedAttributeId=None,
-                 fittableNonSingleton=None, attributes={}, effects=()):
+                 fittableNonSingleton=None, attributes=None, effects=None):
         # Data handler which was used to build this type
         self._dataHandler = dataHandler
 
@@ -70,11 +70,11 @@ class Type:
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
         # Format: {attributeId: attributeValue}
-        self.attributes = attributes
+        self.attributes = attributes if attributes is not None else {}
 
         # Iterable with effects this type has, they describe modifications
         # which this type applies
-        self.effects = effects
+        self.effects = effects if effects is not None else ()
 
         # Apply eos-specific customizations on type, if any
         customizeType(self)
