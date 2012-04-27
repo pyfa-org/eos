@@ -41,7 +41,7 @@ class DataMiner(object):
         try:
             self.eve = blue.EVE(evepath, cachepath=cachepath, server=server)
         except RuntimeError:
-            sys.stderr.write("Unable to find EVE cache or it's corrupted, please log into EVE to fix this.\n")
+            sys.stderr.write("Error: unable to find EVE cache or it's corrupted, please log into EVE to fix this.\n")
             sys.exit()
         self.cfg = self.eve.getconfigmgr()
         # Set storage container for tables
@@ -66,6 +66,8 @@ class DataMiner(object):
         eve = self.eve
         cfg = self.cfg
         evedb = self.evedb
+        # Container for names of corrupted tables
+        corrupted_tables = set()
         # Dictionary with data for custom tables, which are not generally available in cache
         customtables = {"dgmoperands":
                             (eve.RemoteSvc('dogma').GetOperandsForChar,
@@ -83,19 +85,24 @@ class DataMiner(object):
                 try:
                     srcdata = customtables[tablename][0]()
                 except IOError:
-                    print("Warning: processing table {0} failed: {1}.".format(tablename, customtables[tablename][1]))
+                    print("  Warning: processing table {0} failed: {1}.".format(tablename, customtables[tablename][1]))
                     evedb.remove(table)
                     continue
                 except:
-                    sys.stderr.write("Error: unable to get data for one of the tables, most likely due to wrong path to EVE client.\n")
-                    sys.exit()
+                    corrupted_tables.add(tablename)
+                    evedb.remove(table)
+                    continue
             except TypeError:
-                sys.stderr.write("Error: unable to get data for one of the tables, most likely due to wrong path to EVE client.\n")
-                sys.exit()
+                corrupted_tables.add(tablename)
+                evedb.remove(table)
+                continue
             # Get all the data from it
             self.__get_source_data(srcdata, table)
             # If no data was found for this table, remove it
             self.__check_data_presence(table)
+        if len(corrupted_tables) > 0:
+            plu = "s" if len(corrupted_tables) > 1 else ""
+            print("  Warning: failed to process table{0} due to unknown reason: {1}".format(plu, u", ".join(corrupted_tables)))
         return
 
     def __get_source_data(self, sourcedata, table):
