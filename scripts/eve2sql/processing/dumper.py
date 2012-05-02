@@ -241,7 +241,7 @@ class Dumper(object):
                     if field is None:
                         rowdata.append("NULL")
                     # Do extra processing for strings
-                    if isinstance(field, basestring):
+                    elif isinstance(field, basestring):
                         # Replace all text according to replacement map, quote and add to the list
                         rowdata.append(u"'{0}'".format(convre.sub(lambda match: convmap[match.group(0)], field)))
                     # For everything else, just convert to text and add to list
