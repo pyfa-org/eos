@@ -198,8 +198,9 @@ class Dumper(object):
                 # Also store not-null specifications
                 if column.notnull is True:
                     colspec.append("NOT NULL")
-                # And unique
-                if column.unique is True:
+                # MySQL was reported to have max byte length on
+                # UNIQUE columns of 1000 bytes, check it here
+                if column.unique is True and (column.datalen is None or column.datalen.maxbytes <= 1000):
                     colspec.append("UNIQUE")
                 # Combine everything regarding current column and add to general column storage
                 coldefs.append(" ".join(colspec))

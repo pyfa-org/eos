@@ -27,6 +27,9 @@ import re
 from eve2sql.const import DataType
 
 
+DataLen = collections.namedtuple("DataLen", ("maxchars", "maxbytes"))
+
+
 class Preprocessor(object):
     """
     Handle preliminary data processing
@@ -107,7 +110,7 @@ class Preprocessor(object):
                     if value > maxval or maxval is None:
                         maxval = value
                 # Store them in the data length specificator
-                column.datalen = (minval, maxval)
+                column.datalen = DataLen(minval, maxval)
             # String processing
             elif column.datatype == DataType.string:
                 # Start from zero length for both  bytes and characters
@@ -132,7 +135,7 @@ class Preprocessor(object):
                     if valbytes > maxbytes:
                         maxbytes = valbytes
                 # Write data to column length specificator
-                column.datalen = (maxchars, maxbytes)
+                column.datalen = DataLen(maxchars, maxbytes)
         return
 
     def __detect_notnulls(self, table):

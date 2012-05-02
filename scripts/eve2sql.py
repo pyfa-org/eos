@@ -80,7 +80,7 @@ if __name__ == "__main__":
     evedb = EveDB()
 
     # Create data miner and run it, pulling all the data from cache
-    print("Getting data from EVE Client")
+    print("Getting data from EVE client")
     dataminer = DataMiner(evedb, PATH_EVE, PATH_CACHE, server, options.release)
     dataminer.run()
 
