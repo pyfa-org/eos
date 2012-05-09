@@ -674,7 +674,7 @@ class EosAdapter(object):
         for datarow in type_table.datarows:
             groupid = datarow[idx_groupid]
             published = bool(datarow[idx_published])
-            if groupid in strong_groups:
+            if groupid in strong_groups and published is True:
                 rows2pump.add(datarow)
         self.__pump_data(type_table, rows2pump, strong_data)
         return
