@@ -219,7 +219,8 @@ class EosAdapter(object):
         dataspec["dgmattribs"] = TableSpec({}, False)
         dgmattribs = dataspec["dgmattribs"].columns
         dgmattribs["attributeID"] = ColumnSpec(True, None, False, set())
-        dgmattribs["attributeName"] = ColumnSpec(False, None, False, {"mass", "volume", "capacity", "radius"})
+        dgmattribs["attributeName"] = ColumnSpec(False, None, False, {"mass", "volume", "capacity", "radius", "neutReflectAmount",
+                                                                      "neutReflector", "nosReflectAmount", "nosReflector"})
         dgmattribs["description"] = ColumnSpec(False, None, False, set())
         dgmattribs["defaultValue"] = ColumnSpec(False, None, False, set())
         dgmattribs["published"] = ColumnSpec(False, None, False, set())
