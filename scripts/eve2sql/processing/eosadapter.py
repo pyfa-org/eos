@@ -221,6 +221,7 @@ class EosAdapter(object):
         dgmattribs["attributeID"] = ColumnSpec(True, None, False, set())
         dgmattribs["attributeName"] = ColumnSpec(False, None, False, {"mass", "volume", "capacity", "radius"})
         dgmattribs["description"] = ColumnSpec(False, None, False, set())
+        dgmattribs["defaultValue"] = ColumnSpec(False, None, False, set())
         dgmattribs["published"] = ColumnSpec(False, None, False, set())
         dgmattribs["maxAttributeID"] = ColumnSpec(False, "dgmattribs.attributeID", False, set())
         dgmattribs["displayName"] = ColumnSpec(False, None, False, set())
@@ -673,7 +674,7 @@ class EosAdapter(object):
         for datarow in type_table.datarows:
             groupid = datarow[idx_groupid]
             published = bool(datarow[idx_published])
-            if groupid in strong_groups and published is True:
+            if groupid in strong_groups:
                 rows2pump.add(datarow)
         self.__pump_data(type_table, rows2pump, strong_data)
         return
