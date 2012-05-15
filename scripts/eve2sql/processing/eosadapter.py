@@ -213,6 +213,45 @@ class EosAdapter(object):
         return dataspec
 
     def run_old(self):
+        # Fill translations map
+        enus_map = {}
+        enus_table = self.evedb["trntexts_en-us"]
+        textid_idx = enus_table.index_by_name("textID")
+        text_idx = enus_table.index_by_name("text")
+        for datarow in enus_table.datarows:
+            textid = datarow[textid_idx]
+            text = datarow[text_idx]
+            if textid is not None and text is not None:
+                enus_map[textid] = text
+        # Substitute raw names with translation names where possible
+        trn_subs = {("dgmattribs", "displayName"),
+                    ("invtypes", "typeName"),
+                    ("invtypes", "description"),
+                    ("eveunits", "displayName"),
+                    ("invcategories", "categoryName"),
+                    ("invgroups", "groupName"),
+                    ("invmarketgroups", "marketGroupName"),
+                    ("invmarketgroups", "description"),
+                    ("invmetagroups", "metaGroupName")}
+        for subtabname, subcolname in trn_subs:
+            subtable = self.evedb[subtabname]
+            subcolidname = "{}ID".format(subcolname)
+            subcol_idx = subtable.index_by_name(subcolname)
+            subcolid_idx = subtable.index_by_name(subcolidname)
+            replacements = {}
+            for datarow in subtable.datarows:
+                sub_id = datarow[subcolid_idx]
+                if sub_id is None:
+                    continue
+                sub_text = enus_map.get(sub_id)
+                if sub_text is None:
+                    continue
+                newrow = tuple(sub_text if i == subcol_idx else datarow[i] for i in range(len(datarow)))
+                replacements[datarow] = newrow
+            for oldrow, newrow in replacements.iteritems():
+                subtable.datarows.remove(oldrow)
+                subtable.datarows.add(newrow)
+
         """Temporary method to support old database layout"""
         attrcat_attrid_map = self.__define_attrvalue_relationships_hamster()
         dataspec = {}
@@ -308,7 +347,7 @@ class EosAdapter(object):
         self.__synch_dbinfo()
         strong_data = {}
         self.__process_manual_strongs(strong_data)
-        self.__invtypes_pumping(strong_data)
+        self.__invtypes_pumping(strong_data, pubfilter=False)
         self.__metadata_pumping(strong_data)
         trashed_data = {}
         self.__autocleanup(strong_data, trashed_data, attrcat_attrid_map)
@@ -650,7 +689,7 @@ class EosAdapter(object):
             self.__pump_data(table, rows2pump, strong_data)
         return
 
-    def __invtypes_pumping(self, strong_data):
+    def __invtypes_pumping(self, strong_data, pubfilter=True):
         """Mark some hardcoded invtypes as strong"""
         # Set with categoryIDs of published items we want to keep
         strong_categories = {Category.ship, Category.module, Category.charge,
@@ -675,7 +714,11 @@ class EosAdapter(object):
         for datarow in type_table.datarows:
             groupid = datarow[idx_groupid]
             published = bool(datarow[idx_published])
-            if groupid in strong_groups and published is True:
+            if groupid in strong_groups:
+                # TODO: remove pubfilter flag, it's specific to
+                # old Eos only
+                if pubfilter is True and published is not True:
+                    continue
                 rows2pump.add(datarow)
         self.__pump_data(type_table, rows2pump, strong_data)
         return
