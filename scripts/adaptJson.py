@@ -43,77 +43,70 @@ if __name__ == '__main__':
     dest = os.path.expanduser(args.dest)
 
     print('Loading data...')
-    with open(os.path.join(base, 'invtypes.json'), mode='r') as file:
-        invtypes_raw = json.load(file)
-    with open(os.path.join(base, 'invgroups.json'), mode='r') as file:
-        invgroups_raw = json.load(file)
-    with open(os.path.join(base, 'dgmattribs.json'), mode='r') as file:
-        dgmattribs_raw = json.load(file)
-    with open(os.path.join(base, 'dgmtypeattribs.json'), mode='r') as file:
-        dgmtypeattribs_raw = json.load(file)
-    with open(os.path.join(base, 'dgmeffects.json'), mode='r') as file:
-        dgmeffects_raw = json.load(file)
-    with open(os.path.join(base, 'dgmtypeeffects.json'), mode='r') as file:
-        dgmtypeeffects_raw = json.load(file)
-    with open(os.path.join(base, 'dgmexpressions.json'), mode='r') as file:
-        dgmexpressions_raw = json.load(file)
+    # Dictionary for all the data we need
+    database_src = {}
+    # Define what we need to load and do it
+    tables = ('invtypes', 'invgroups', 'dgmattribs', 'dgmtypeattribs', 'dgmeffects', 'dgmtypeeffects', 'dgmexpressions')
+    for table in tables:
+        with open(os.path.join(base, '{}.json'.format(table)), mode='r') as file:
+            database_src[table] = json.load(file)
 
     # Effects ID-keyed dictionary iss used in multiple places,
     # so we create it here
     dgmeffects = {}
-    for row in dgmeffects_raw:
+    for row in database_src['dgmeffects']:
         effectID = row['effectID']
         if effectID in dgmeffects:
-            print("  Warning: duplicate effectID {}".format(effectID))
+            print('  Warning: duplicate effectID {}'.format(effectID))
             continue
         dgmeffects[effectID] = row
 
-    print("Dumping types...")
+    print('Dumping types...')
     types = {}
     # Before actually filling dictionary, collect additional data
     # to avoid looking up lists for each item
     # Format: {groupID: group row}
     invgroups = {}
-    for row in invgroups_raw:
+    for row in database_src['invgroups']:
         groupID = row['groupID']
         if groupID in invgroups:
-            print("  Warning: duplicate groupID {}".format(groupID))
+            print('  Warning: duplicate groupID {}'.format(groupID))
             continue
         invgroups[groupID] = row
     # Format: {typeID: default effect}
     type_defeff = {}
-    for row in dgmtypeeffects_raw:
+    for row in database_src['dgmtypeeffects']:
         # Skip non-default effects
         if not row.get('isDefault'):
             continue
         typeID = row['typeID']
         if typeID in type_defeff:
-            print("  Warning: multiple default effects for type {}".format(typeID))
+            print('  Warning: multiple default effects for type {}'.format(typeID))
             continue
         type_defeff[typeID] = row.get('effectID')
     # Format: {typeID: [effectIDs]}
     type_effects = {}
-    for row in dgmtypeeffects_raw:
+    for row in database_src['dgmtypeeffects']:
         typeID = row['typeID']
         effectID = row['effectID']
         data = type_effects.setdefault(typeID, [])
         if effectID in data:
-            print("  Warning: duplicate effects on type {}".format(typeID))
+            print('  Warning: duplicate effects on type {}'.format(typeID))
         data.append(effectID)
     # Format: {typeID: {attrID: value}}
     type_attribs = {}
-    for row in dgmtypeattribs_raw:
+    for row in database_src['dgmtypeattribs']:
         typeID = row['typeID']
         data = type_attribs.setdefault(typeID, {})
         attrID = row['attributeID']
         if attrID in data:
-            print("  Warning: multiple values of the same attribute on type {}".format(typeID))
+            print('  Warning: multiple values of the same attribute on type {}'.format(typeID))
             continue
         data[attrID] = row.get('value')
-    for row in invtypes_raw:
+    for row in database_src['invtypes']:
         typeID = row['typeID']
         if typeID in types:
-            print("  Warning: duplicate typeID {}".format(typeID))
+            print('  Warning: duplicate typeID {}'.format(typeID))
             continue
         groupID = row.get('groupID')
         # Get effect row of default effect, replacing it
@@ -135,12 +128,12 @@ if __name__ == '__main__':
     with bz2.BZ2File(os.path.join(dest, 'types.json.bz2'), 'wb') as file:
         file.write(json.dumps(types).encode('utf-8'))
 
-    print("Dumping attributes...")
+    print('Dumping attributes...')
     attributes = {}
-    for row in dgmattribs_raw:
+    for row in database_src['dgmattribs']:
         attrID = row['attributeID']
         if attrID in attributes:
-            print("  Warning: duplicate attributeID {}".format(attrID))
+            print('  Warning: duplicate attributeID {}'.format(attrID))
             continue
         attributes[attrID] = (row.get('maxAttributeID'),
                               row.get('defaultValue'),
@@ -149,7 +142,7 @@ if __name__ == '__main__':
     with bz2.BZ2File(os.path.join(dest, 'attributes.json.bz2'), 'wb') as file:
         file.write(json.dumps(attributes).encode('utf-8'))
 
-    print("Dumping effects...")
+    print('Dumping effects...')
     effects = {}
     for effectID, data in dgmeffects.items():
         effects[effectID] = (data.get('effectCategory'),
@@ -161,9 +154,9 @@ if __name__ == '__main__':
     with bz2.BZ2File(os.path.join(dest, 'effects.json.bz2'), 'wb') as file:
         file.write(json.dumps(effects).encode('utf-8'))
 
-    print("Dumping expressions...")
+    print('Dumping expressions...')
     expressions = {}
-    for row in dgmexpressions_raw:
+    for row in database_src['dgmexpressions']:
         expID = row['expressionID']
         if expID in expressions:
             print("  Warning: duplicate expressionID {}".format(expID))
