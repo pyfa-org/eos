@@ -30,7 +30,7 @@ class TestModifierBuilderError(EosTestCase):
 
     def testDataDirect(self):
         # Check reaction to expression data fetch errors
-        effect = self.dh.effect(effectId=900, categoryId=0, preExpressionId=902, postExpressionId=28)
+        effect = self.ch.effect(effectId=900, categoryId=0, preExpressionId=902, postExpressionId=28)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
@@ -44,15 +44,15 @@ class TestModifierBuilderError(EosTestCase):
         # To produce unused actions, we're passing just tree
         # which describes action which applies something, and
         # stub instead of action undoing it
-        eTgt = self.dh.expression(expressionId=1, operandId=24, value="Ship")
-        eTgtAttr = self.dh.expression(expressionId=2, operandId=22, expressionAttributeId=9)
-        eOptr = self.dh.expression(expressionId=3, operandId=21, value="PostPercent")
-        eSrcAttr = self.dh.expression(expressionId=4, operandId=22, expressionAttributeId=327)
-        eTgtSpec = self.dh.expression(expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
-        eOptrTgt = self.dh.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
-        eAddMod = self.dh.expression(expressionId=7, operandId=6, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
-        ePostStub = self.dh.expression(expressionId=8, operandId=27, value="1")
-        effect = self.dh.effect(effectId=799, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=ePostStub.id)
+        eTgt = self.ch.expression(expressionId=1, operandId=24, value="Ship")
+        eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=9)
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostPercent")
+        eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=327)
+        eTgtSpec = self.ch.expression(expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
+        eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
+        eAddMod = self.ch.expression(expressionId=7, operandId=6, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        ePostStub = self.ch.expression(expressionId=8, operandId=27, value="1")
+        effect = self.ch.effect(effectId=799, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)

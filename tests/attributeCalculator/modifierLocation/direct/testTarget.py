@@ -31,8 +31,8 @@ class TestLocationDirectTarget(AttrCalcTestCase):
     """Test location.target for direct modifications"""
 
     def testError(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,10 +42,10 @@ class TestLocationDirectTarget(AttrCalcTestCase):
         modifier.location = Location.target
         modifier.filterType = None
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         fit = Fit()
-        influenceSource = IndependentItem(self.dh.type_(typeId=102, effects=(effect,), attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(self.ch.type_(typeId=102, effects=(effect,), attributes={srcAttr.id: 20}))
         # This functionality isn't implemented for now
         fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)

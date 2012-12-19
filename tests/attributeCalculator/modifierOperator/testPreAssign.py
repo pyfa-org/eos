@@ -31,8 +31,8 @@ class TestOperatorPreAssign(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,13 +42,13 @@ class TestOperatorPreAssign(AttrCalcTestCase):
         modifier.location = Location.ship
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         self.fit = Fit()
-        self.influenceSource1 = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 10}))
-        self.influenceSource2 = IndependentItem(self.dh.type_(typeId=2, effects=(effect,), attributes={srcAttr.id: -20}))
-        self.influenceSource3 = IndependentItem(self.dh.type_(typeId=3, effects=(effect,), attributes={srcAttr.id: 53}))
-        self.influenceTarget = ShipItem(self.dh.type_(typeId=4, attributes={self.tgtAttr.id: 100}))
+        self.influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 10}))
+        self.influenceSource2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect,), attributes={srcAttr.id: -20}))
+        self.influenceSource3 = IndependentItem(self.ch.type_(typeId=3, effects=(effect,), attributes={srcAttr.id: 53}))
+        self.influenceTarget = ShipItem(self.ch.type_(typeId=4, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(self.influenceSource1)
         self.fit.items.append(self.influenceSource2)
         self.fit.items.append(self.influenceSource3)

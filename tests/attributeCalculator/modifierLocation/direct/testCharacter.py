@@ -31,8 +31,8 @@ class TestLocationDirectCharacter(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,14 +42,14 @@ class TestLocationDirectCharacter(AttrCalcTestCase):
         modifier.location = Location.character
         modifier.filterType = None
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         self.fit = Fit()
-        self.influenceSource = IndependentItem(self.dh.type_(typeId=11, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(self.ch.type_(typeId=11, effects=(effect,), attributes={srcAttr.id: 20}))
         self.fit.items.append(self.influenceSource)
 
     def testCharacter(self):
-        influenceTarget = IndependentItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = IndependentItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.character = influenceTarget
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
@@ -58,7 +58,7 @@ class TestLocationDirectCharacter(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOther(self):
-        influenceTarget = CharacterItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)

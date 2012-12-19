@@ -30,137 +30,137 @@ class TestInactive(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        self.stub = self.dh.expression(expressionId=-1, operandId=27, value="1")
+        self.stub = self.ch.expression(expressionId=-1, operandId=27, value="1")
 
     def testAttack(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=13)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=13)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testCargoScan(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=14)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=14)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testCheatTeleDock(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=15)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=15)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testCheatTeleGate(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=16)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=16)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testAoeDecloak(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=19)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=19)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testEcmBurst(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=30)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=30)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testAoeDmg(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=32)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=32)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testMissileLaunch(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=44)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=44)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testDefenderLaunch(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=45)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=45)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testFofLaunch(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=47)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=47)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testMine(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=50)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=50)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testPowerBooster(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=53)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=53)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testShipScan(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=66)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=66)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testSurveyScan(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=69)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=69)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testTgtHostile(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=70)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=70)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testTgtSilent(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=71)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=71)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testToolTgtSkills(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=72)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=72)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testUserError(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=73)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=73)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
 
     def testVrfTgtGrp(self):
-        disabledPre = self.dh.expression(expressionId=1, operandId=74)
-        effect = self.dh.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
+        disabledPre = self.ch.expression(expressionId=1, operandId=74)
+        effect = self.ch.effect(categoryId=0, preExpressionId=disabledPre.id, postExpressionId=self.stub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)

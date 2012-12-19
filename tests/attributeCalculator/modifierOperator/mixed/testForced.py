@@ -30,8 +30,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
     """Test that post-assignment forces value of attribute"""
 
     def testForcedValue(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         fit = Fit()
         modifierPreAss = Modifier()
         modifierPreAss.state = State.offline
@@ -42,9 +42,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPreAss.location = Location.ship
         modifierPreAss.filterType = FilterType.all_
         modifierPreAss.filterValue = None
-        effectPreAss = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effectPreAss = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effectPreAss._modifiers = (modifierPreAss,)
-        influenceSourcePreAss = IndependentItem(self.dh.type_(typeId=1, effects=(effectPreAss,), attributes={srcAttr.id: 5}))
+        influenceSourcePreAss = IndependentItem(self.ch.type_(typeId=1, effects=(effectPreAss,), attributes={srcAttr.id: 5}))
         fit.items.append(influenceSourcePreAss)
         modifierPreMul = Modifier()
         modifierPreMul.state = State.offline
@@ -55,9 +55,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPreMul.location = Location.ship
         modifierPreMul.filterType = FilterType.all_
         modifierPreMul.filterValue = None
-        effectPreMul = self.dh.effect(effectId=2, categoryId=EffectCategory.passive)
+        effectPreMul = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
         effectPreMul._modifiers = (modifierPreMul,)
-        influenceSourcePreMul = IndependentItem(self.dh.type_(typeId=2, effects=(effectPreMul,), attributes={srcAttr.id: 50}))
+        influenceSourcePreMul = IndependentItem(self.ch.type_(typeId=2, effects=(effectPreMul,), attributes={srcAttr.id: 50}))
         fit.items.append(influenceSourcePreMul)
         modifierPreDiv = Modifier()
         modifierPreDiv.state = State.offline
@@ -68,9 +68,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPreDiv.location = Location.ship
         modifierPreDiv.filterType = FilterType.all_
         modifierPreDiv.filterValue = None
-        effectPreDiv = self.dh.effect(effectId=3, categoryId=EffectCategory.passive)
+        effectPreDiv = self.ch.effect(effectId=3, categoryId=EffectCategory.passive)
         effectPreDiv._modifiers = (modifierPreDiv,)
-        influenceSourcePreDiv = IndependentItem(self.dh.type_(typeId=3, effects=(effectPreDiv,), attributes={srcAttr.id: 0.5}))
+        influenceSourcePreDiv = IndependentItem(self.ch.type_(typeId=3, effects=(effectPreDiv,), attributes={srcAttr.id: 0.5}))
         fit.items.append(influenceSourcePreDiv)
         modifierModAdd = Modifier()
         modifierModAdd.state = State.offline
@@ -81,9 +81,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierModAdd.location = Location.ship
         modifierModAdd.filterType = FilterType.all_
         modifierModAdd.filterValue = None
-        effectModAdd = self.dh.effect(effectId=4, categoryId=EffectCategory.passive)
+        effectModAdd = self.ch.effect(effectId=4, categoryId=EffectCategory.passive)
         effectModAdd._modifiers = (modifierModAdd,)
-        influenceSourceModAdd = IndependentItem(self.dh.type_(typeId=4, effects=(effectModAdd,), attributes={srcAttr.id: 10}))
+        influenceSourceModAdd = IndependentItem(self.ch.type_(typeId=4, effects=(effectModAdd,), attributes={srcAttr.id: 10}))
         fit.items.append(influenceSourceModAdd)
         modifierModSub = Modifier()
         modifierModSub.state = State.offline
@@ -94,9 +94,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierModSub.location = Location.ship
         modifierModSub.filterType = FilterType.all_
         modifierModSub.filterValue = None
-        effectModSub = self.dh.effect(effectId=5, categoryId=EffectCategory.passive)
+        effectModSub = self.ch.effect(effectId=5, categoryId=EffectCategory.passive)
         effectModSub._modifiers = (modifierModSub,)
-        influenceSourceModSub = IndependentItem(self.dh.type_(typeId=5, effects=(effectModSub,), attributes={srcAttr.id: 63}))
+        influenceSourceModSub = IndependentItem(self.ch.type_(typeId=5, effects=(effectModSub,), attributes={srcAttr.id: 63}))
         fit.items.append(influenceSourceModSub)
         modifierPostMul = Modifier()
         modifierPostMul.state = State.offline
@@ -107,9 +107,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostMul.location = Location.ship
         modifierPostMul.filterType = FilterType.all_
         modifierPostMul.filterValue = None
-        effectPostMul = self.dh.effect(effectId=6, categoryId=EffectCategory.passive)
+        effectPostMul = self.ch.effect(effectId=6, categoryId=EffectCategory.passive)
         effectPostMul._modifiers = (modifierPostMul,)
-        influenceSourcePostMul = IndependentItem(self.dh.type_(typeId=6, effects=(effectPostMul,), attributes={srcAttr.id: 1.35}))
+        influenceSourcePostMul = IndependentItem(self.ch.type_(typeId=6, effects=(effectPostMul,), attributes={srcAttr.id: 1.35}))
         fit.items.append(influenceSourcePostMul)
         modifierPostDiv = Modifier()
         modifierPostDiv.state = State.offline
@@ -120,9 +120,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostDiv.location = Location.ship
         modifierPostDiv.filterType = FilterType.all_
         modifierPostDiv.filterValue = None
-        effectPostDiv = self.dh.effect(effectId=7, categoryId=EffectCategory.passive)
+        effectPostDiv = self.ch.effect(effectId=7, categoryId=EffectCategory.passive)
         effectPostDiv._modifiers = (modifierPostDiv,)
-        influenceSourcePostDiv = IndependentItem(self.dh.type_(typeId=7, effects=(effectPostDiv,), attributes={srcAttr.id: 2.7}))
+        influenceSourcePostDiv = IndependentItem(self.ch.type_(typeId=7, effects=(effectPostDiv,), attributes={srcAttr.id: 2.7}))
         fit.items.append(influenceSourcePostDiv)
         modifierPostPerc = Modifier()
         modifierPostPerc.state = State.offline
@@ -133,9 +133,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostPerc.location = Location.ship
         modifierPostPerc.filterType = FilterType.all_
         modifierPostPerc.filterValue = None
-        effectPostPerc = self.dh.effect(effectId=8, categoryId=EffectCategory.passive)
+        effectPostPerc = self.ch.effect(effectId=8, categoryId=EffectCategory.passive)
         effectPostPerc._modifiers = (modifierPostPerc,)
-        influenceSourcePostPerc = IndependentItem(self.dh.type_(typeId=8, effects=(effectPostPerc,), attributes={srcAttr.id: 15}))
+        influenceSourcePostPerc = IndependentItem(self.ch.type_(typeId=8, effects=(effectPostPerc,), attributes={srcAttr.id: 15}))
         fit.items.append(influenceSourcePostPerc)
         modifierPostAss = Modifier()
         modifierPostAss.state = State.offline
@@ -146,11 +146,11 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostAss.location = Location.ship
         modifierPostAss.filterType = FilterType.all_
         modifierPostAss.filterValue = None
-        effectPostAss = self.dh.effect(effectId=9, categoryId=EffectCategory.passive)
+        effectPostAss = self.ch.effect(effectId=9, categoryId=EffectCategory.passive)
         effectPostAss._modifiers = (modifierPostAss,)
-        influenceSourcePostAss = IndependentItem(self.dh.type_(typeId=9, effects=(effectPostAss,), attributes={srcAttr.id: 68}))
+        influenceSourcePostAss = IndependentItem(self.ch.type_(typeId=9, effects=(effectPostAss,), attributes={srcAttr.id: 68}))
         fit.items.append(influenceSourcePostAss)
-        influenceTarget = ShipItem(self.dh.type_(typeId=10, attributes={tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.ch.type_(typeId=10, attributes={tgtAttr.id: 100}))
         fit.items.append(influenceTarget)
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 68)

@@ -31,8 +31,8 @@ class TestFilterLocationGroup(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,14 +42,14 @@ class TestFilterLocationGroup(AttrCalcTestCase):
         modifier.location = Location.ship
         modifier.filterType = FilterType.group
         modifier.filterValue = 35
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        self.influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
         self.fit = Fit()
         self.fit.items.append(self.influenceSource)
 
     def testMatch(self):
-        influenceTarget = ShipItem(self.dh.type_(typeId=2, groupId=35, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.ch.type_(typeId=2, groupId=35, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
@@ -58,7 +58,7 @@ class TestFilterLocationGroup(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherLocation(self):
-        influenceTarget = SpaceItem(self.dh.type_(typeId=2, groupId=35, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = SpaceItem(self.ch.type_(typeId=2, groupId=35, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
@@ -66,7 +66,7 @@ class TestFilterLocationGroup(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherGroup(self):
-        influenceTarget = ShipItem(self.dh.type_(typeId=2, groupId=3, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.ch.type_(typeId=2, groupId=3, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)

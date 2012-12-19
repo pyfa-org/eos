@@ -25,58 +25,37 @@ from abc import abstractmethod
 
 class DataHandler(metaclass=ABCMeta):
     """
-    DataHandler abstract baseclass, it handles fetching relevant data
-    from wherever it is stored.
+    Abstract base class, it handles fetching 'raw' data from
+    external source. Its abstract methods are named against
+    data structures (usually tables) they request, returning
+    iterable with rows, each row being dictionary in
+    {field name: field value} format.
     """
 
     @abstractmethod
-    def getType(self, typeId):
-        """
-        Get Type object from data source.
-
-        Positional arguments:
-        typeId -- ID of type to get
-
-        Return value:
-        eve.type.Type object
-        """
+    def getInvtypes(self):
         ...
 
     @abstractmethod
-    def getAttribute(self, attrId):
-        """
-        Get Attribute object from data source.
-
-        Positional arguments:
-        attrId -- ID of attribute to get
-
-        Return value:
-        eve.attribute.Attribute object
-        """
+    def getInvgroups(self):
         ...
 
     @abstractmethod
-    def getEffect(self, effectId):
-        """
-        Get Effect object from data source.
-
-        Positional arguments:
-        effectId -- ID of effect to get
-
-        Return value:
-        eve.effect.Effect object
-        """
+    def getDgmattribs(self):
         ...
 
     @abstractmethod
-    def getExpression(self, expId):
-        """
-        Get Expression object from data source.
+    def getDgmtypeattribs(self):
+        ...
 
-        Positional arguments:
-        expId -- ID of expression to get
+    @abstractmethod
+    def getDgmeffects(self):
+        ...
 
-        Return value:
-        eve.expression.Expression object
-        """
+    @abstractmethod
+    def getDgmtypeeffects(self):
+        ...
+
+    @abstractmethod
+    def getDgmexpressions(self):
         ...

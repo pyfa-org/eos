@@ -32,8 +32,8 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        self.srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        self.srcAttr = self.ch.attribute(attributeId=2)
         self.invalidModifier = invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -43,12 +43,12 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         invalidModifier.location = 1972
         invalidModifier.filterType = None
         invalidModifier.filterValue = None
-        self.effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         self.fit = Fit()
 
     def testLog(self):
         self.effect._modifiers = (self.invalidModifier,)
-        holder = IndependentItem(self.dh.type_(typeId=754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
+        holder = IndependentItem(self.ch.type_(typeId=754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -69,7 +69,7 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         validModifier.filterType = None
         validModifier.filterValue = None
         self.effect._modifiers = (self.invalidModifier, validModifier)
-        holder = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
+        holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
         self.fit.items.append(holder)
         # Invalid location in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)

@@ -31,7 +31,7 @@ class TestDroneBandwidth(RestrictionTestCase):
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
         holder.attributes[Attribute.droneBandwidthUsed] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -47,11 +47,11 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When ship is assigned, but doesn't have drone bandwidth output
         # attribute, error should be raised for drone bandwidth consumers too
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
         holder.attributes[Attribute.droneBandwidthUsed] = 50
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBandwidth)
         self.assertIsNotNone(restrictionError)
@@ -66,11 +66,11 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When ship provides drone bandwidth output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
         holder.attributes[Attribute.droneBandwidthUsed] = 50
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBandwidth)
@@ -87,7 +87,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.droneBandwidthUsed] = 25
         holder1.state = State.online
@@ -96,7 +96,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         holder2.attributes[Attribute.droneBandwidthUsed] = 20
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBandwidth)
@@ -117,11 +117,11 @@ class TestDroneBandwidth(RestrictionTestCase):
     def testFailExcessModified(self):
         # Make sure modified drone bandwidth values are taken
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 40}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 40}))
         holder.attributes[Attribute.droneBandwidthUsed] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.droneBandwidth: 45}))
+        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.droneBandwidth: 45}))
         ship.attributes[Attribute.droneBandwidth] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBandwidth)
@@ -138,7 +138,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.droneBandwidthUsed] = 100
         holder1.state = State.online
@@ -147,7 +147,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         holder2.attributes[Attribute.droneBandwidthUsed] = -10
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBandwidth)
@@ -167,7 +167,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.droneBandwidthUsed] = 100
         holder1.state = State.online
@@ -176,7 +176,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         holder2.attributes[Attribute.droneBandwidthUsed] = 0
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBandwidth)
@@ -195,7 +195,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.droneBandwidthUsed] = 25
         holder1.state = State.online
@@ -204,7 +204,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         holder2.attributes[Attribute.droneBandwidthUsed] = 20
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBandwidth)
@@ -221,11 +221,11 @@ class TestDroneBandwidth(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1))
+        holder = IndependentItem(self.ch.type_(typeId=1))
         holder.attributes[Attribute.droneBandwidthUsed] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBandwidth)
@@ -239,7 +239,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # drone bandwidth output, negative use of other holder may help
         # to avoid raising error
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.droneBandwidthUsed] = 50
         holder1.state = State.online
@@ -248,7 +248,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         holder2.attributes[Attribute.droneBandwidthUsed] = -15
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.droneBandwidth)
@@ -263,10 +263,10 @@ class TestDroneBandwidth(RestrictionTestCase):
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0}))
         holder.attributes[Attribute.droneBandwidthUsed] = 50
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneBandwidth] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBandwidth)

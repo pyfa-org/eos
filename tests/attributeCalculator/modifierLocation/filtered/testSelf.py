@@ -32,8 +32,8 @@ class TestLocationFilterSelf(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -43,14 +43,14 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         modifier.location = Location.self_
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         self.fit = Fit()
-        self.influenceSource = IndependentItem(self.dh.type_(typeId=1061, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(self.ch.type_(typeId=1061, effects=(effect,), attributes={srcAttr.id: 20}))
 
     def testShip(self):
         self.fit.ship = self.influenceSource
-        influenceTarget = ShipItem(self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ShipItem(self.ch.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.ship = None
@@ -60,7 +60,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
-        influenceTarget = CharacterItem(self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(self.ch.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.character = None

@@ -30,10 +30,10 @@ class TestCalculationChain(AttrCalcTestCase):
     """Check that calculation process uses modified attributes as data source"""
 
     def testCalculation(self):
-        attr1 = self.dh.attribute(attributeId=1)
-        attr2 = self.dh.attribute(attributeId=2)
-        attr3 = self.dh.attribute(attributeId=3)
-        attr4 = self.dh.attribute(attributeId=4)
+        attr1 = self.ch.attribute(attributeId=1)
+        attr2 = self.ch.attribute(attributeId=2)
+        attr3 = self.ch.attribute(attributeId=3)
+        attr4 = self.ch.attribute(attributeId=4)
         modifier1 = Modifier()
         modifier1.state = State.offline
         modifier1.context = Context.local
@@ -43,7 +43,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier1.location = Location.self_
         modifier1.filterType = None
         modifier1.filterValue = None
-        effect1 = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect1 = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect1._modifiers = (modifier1,)
         modifier2 = Modifier()
         modifier2.state = State.offline
@@ -54,9 +54,9 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier2.location = Location.ship
         modifier2.filterType = None
         modifier2.filterValue = None
-        effect2 = self.dh.effect(effectId=2, categoryId=EffectCategory.passive)
+        effect2 = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
         effect2._modifiers = (modifier2,)
-        holder1 = CharacterItem(self.dh.type_(typeId=1, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
+        holder1 = CharacterItem(self.ch.type_(typeId=1, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
         modifier3 = Modifier()
         modifier3.state = State.offline
         modifier3.context = Context.local
@@ -66,10 +66,10 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier3.location = Location.ship
         modifier3.filterType = FilterType.all_
         modifier3.filterValue = None
-        effect3 = self.dh.effect(effectId=3, categoryId=EffectCategory.passive)
+        effect3 = self.ch.effect(effectId=3, categoryId=EffectCategory.passive)
         effect3._modifiers = (modifier3,)
-        holder2 = IndependentItem(self.dh.type_(typeId=2, effects=(effect3,), attributes={attr3.id: 150}))
-        holder3 = ShipItem(self.dh.type_(typeId=3, attributes={attr4.id: 12.5}))
+        holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect3,), attributes={attr3.id: 150}))
+        holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr4.id: 12.5}))
         fit = Fit()
         fit.items.append(holder1)
         fit.ship = holder2

@@ -17,30 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-from eos.exception import EosError
-
-
-class DataHandlerError(EosError):
-    """All data handler exceptions are based on this class."""
-    pass
-
-
-class TypeFetchError(DataHandlerError):
-    """Raised when data handler can't find type with requested ID."""
-    pass
-
-
-class AttributeFetchError(DataHandlerError):
-    """Raised when data handler can't find attribute with requested ID."""
-    pass
-
-
-class EffectFetchError(DataHandlerError):
-    """Raised when data handler can't find effect with requested ID."""
-    pass
-
-
-class ExpressionFetchError(DataHandlerError):
-    """Raised when data handler can't find expression with requested ID."""
-    pass

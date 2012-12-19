@@ -32,13 +32,13 @@ class TestSubsystemSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemSlot)
@@ -58,11 +58,11 @@ class TestSubsystemSlot(RestrictionTestCase):
         # Make sure that absence of specifier of slot output
         # is considered as 0 output
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder = ShipItem(item)
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.subsystemSlot)
         self.assertIsNotNone(restrictionError)
@@ -76,7 +76,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         # Make sure that absence of ship
         # is considered as 0 output
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder = ShipItem(item)
         fit.items.append(holder)
@@ -91,13 +91,13 @@ class TestSubsystemSlot(RestrictionTestCase):
         # Make sure that modified number of slot output
         # is taken
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.maxSubSystems: 5}))
+        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.maxSubSystems: 5}))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemSlot)
@@ -117,13 +117,13 @@ class TestSubsystemSlot(RestrictionTestCase):
         # No error is raised when slot users do not
         # exceed slot output
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 3
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemSlot)
@@ -138,13 +138,13 @@ class TestSubsystemSlot(RestrictionTestCase):
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = IndependentItem(item)
         fit.items.append(holder1)
         holder2 = IndependentItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemSlot)
@@ -160,12 +160,12 @@ class TestSubsystemSlot(RestrictionTestCase):
         # If holders don't use slot, no error should
         # be raised
         fit = Fit()
-        item = self.dh.type_(typeId=1)
+        item = self.ch.type_(typeId=1)
         holder1 = ShipItem(item)
         fit.items.append(holder1)
         holder2 = ShipItem(item)
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemSlot)

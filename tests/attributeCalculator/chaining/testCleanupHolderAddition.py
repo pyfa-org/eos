@@ -30,9 +30,9 @@ class TestCleanupChainAddition(AttrCalcTestCase):
     """Check that added item damages all attributes which are now relying on its attributes"""
 
     def testAttribute(self):
-        attr1 = self.dh.attribute(attributeId=1)
-        attr2 = self.dh.attribute(attributeId=2)
-        attr3 = self.dh.attribute(attributeId=3)
+        attr1 = self.ch.attribute(attributeId=1)
+        attr2 = self.ch.attribute(attributeId=2)
+        attr3 = self.ch.attribute(attributeId=3)
         modifier1 = Modifier()
         modifier1.state = State.offline
         modifier1.context = Context.local
@@ -42,9 +42,9 @@ class TestCleanupChainAddition(AttrCalcTestCase):
         modifier1.location = Location.ship
         modifier1.filterType = None
         modifier1.filterValue = None
-        effect1 = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect1 = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect1._modifiers = (modifier1,)
-        holder1 = CharacterItem(self.dh.type_(typeId=1, effects=(effect1,), attributes={attr1.id: 5}))
+        holder1 = CharacterItem(self.ch.type_(typeId=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
         modifier2.state = State.offline
         modifier2.context = Context.local
@@ -54,10 +54,10 @@ class TestCleanupChainAddition(AttrCalcTestCase):
         modifier2.location = Location.ship
         modifier2.filterType = FilterType.all_
         modifier2.filterValue = None
-        effect2 = self.dh.effect(effectId=2, categoryId=EffectCategory.passive)
+        effect2 = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
         effect2._modifiers = (modifier2,)
-        holder2 = IndependentItem(self.dh.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
-        holder3 = ShipItem(self.dh.type_(typeId=3, attributes={attr3.id: 0.5}))
+        holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
+        holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr3.id: 0.5}))
         fit = Fit()
         fit.ship = holder2
         fit.items.append(holder3)

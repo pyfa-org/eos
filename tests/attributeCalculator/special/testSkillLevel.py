@@ -28,9 +28,9 @@ class TestSkillLevel(AttrCalcTestCase):
     """Test return value when requesting attribute which isn't set"""
 
     def testSpecialAttrAccess(self):
-        attr = self.dh.attribute(attributeId=Attribute.skillLevel)
+        attr = self.ch.attribute(attributeId=Attribute.skillLevel)
         fit = Fit()
-        skill = Skill(self.dh.type_(typeId=1, attributes={attr.id: 3}))
+        skill = Skill(self.ch.type_(typeId=1, attributes={attr.id: 3}))
         skill.level = 5
         fit.items.append(skill)
         # If holder has level attribute, it must be returned despite of holder contents
@@ -39,9 +39,9 @@ class TestSkillLevel(AttrCalcTestCase):
         self.assertBuffersEmpty(fit)
 
     def testStandardAttrAccess(self):
-        attr = self.dh.attribute(attributeId=Attribute.skillLevel)
+        attr = self.ch.attribute(attributeId=Attribute.skillLevel)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={attr.id: 3}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={attr.id: 3}))
         fit.items.append(holder)
         # If .skill direct attribute is not available, standard
         # skill level attribute (from item attributes) should

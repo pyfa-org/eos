@@ -29,9 +29,9 @@ class TestNonExistent(AttrCalcTestCase):
 
     def testAttributeDataError(self):
         # Check case when attribute value is available, but
-        # data handler doesn't know about such attribute
+        # cache handler doesn't know about such attribute
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=57, attributes={105: 20}))
+        holder = IndependentItem(self.ch.type_(typeId=57, attributes={105: 20}))
         fit.items.append(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
@@ -46,9 +46,9 @@ class TestNonExistent(AttrCalcTestCase):
         # Check case when default value of attribute cannot be
         # determined. and item itself doesn't define any value
         # either
-        attr = self.dh.attribute(attributeId=89)
+        attr = self.ch.attribute(attributeId=89)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=649))
+        holder = IndependentItem(self.ch.type_(typeId=649))
         fit.items.append(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
@@ -62,9 +62,9 @@ class TestNonExistent(AttrCalcTestCase):
     def testAbsentDefaultValue(self):
         # Default value should be used if attribute
         # value is not available on item
-        attr = self.dh.attribute(attributeId=1, defaultValue=5.6)
+        attr = self.ch.attribute(attributeId=1, defaultValue=5.6)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1))
+        holder = IndependentItem(self.ch.type_(typeId=1))
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
         fit.items.remove(holder)

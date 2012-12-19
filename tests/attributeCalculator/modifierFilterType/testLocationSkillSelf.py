@@ -34,8 +34,8 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -45,14 +45,14 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         modifier.location = Location.ship
         modifier.filterType = FilterType.skill
         modifier.filterValue = InvType.self_
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
-        self.influenceSource = IndependentItem(self.dh.type_(typeId=772, effects=(effect,), attributes={srcAttr.id: 20}))
+        self.influenceSource = IndependentItem(self.ch.type_(typeId=772, effects=(effect,), attributes={srcAttr.id: 20}))
         self.fit = Fit()
         self.fit.items.append(self.influenceSource)
 
     def testMatch(self):
-        item = self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100})
+        item = self.ch.type_(typeId=1, attributes={self.tgtAttr.id: 100})
         item.requiredSkills = {772: 1}
         influenceTarget = ShipItem(item)
         self.fit.items.append(influenceTarget)
@@ -63,7 +63,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testOtherSkill(self):
-        item = self.dh.type_(typeId=1, attributes={self.tgtAttr.id: 100})
+        item = self.ch.type_(typeId=1, attributes={self.tgtAttr.id: 100})
         item.requiredSkills = {51: 1}
         influenceTarget = ShipItem(item)
         self.fit.items.append(influenceTarget)

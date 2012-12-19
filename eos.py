@@ -18,7 +18,9 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
+
 from eos.eve.const import Type
+from eos.data.cacheHandler.jsonCacheHandler import JsonCacheHandler
 from eos.fit.fit import Fit
 from eos.fit.item.character import Character
 from eos.fit.item.ship import Ship
@@ -31,9 +33,10 @@ from eos.fit.item.skill import Skill
 from eos.fit.item.booster import Booster
 from eos.util.logger import Logger
 
+
 class Eos:
-    def __init__(self, dataHandler, name="eos"):
-        self._dataHandler = dataHandler
+    def __init__(self, name="eos"):
+        self._cacheHandler = JsonCacheHandler
         self._logger = Logger(name)
         self._logger.info("session started")
 
@@ -42,46 +45,46 @@ class Eos:
         return fit
 
     def makeCharacter(self):
-        characterType = self._dataHandler.getType(Type.characterStatic)
+        characterType = self._cacheHandler.getType(Type.characterStatic)
         character = Character(characterType)
         return character
 
     def makeShip(self, typeId):
-        shipType = self._dataHandler.getType(typeId)
+        shipType = self._cacheHandler.getType(typeId)
         ship = Ship(shipType)
         return ship
 
     def makeModule(self, typeId):
-        moduleType = self._dataHandler.getType(typeId)
+        moduleType = self._cacheHandler.getType(typeId)
         module = Module(moduleType)
         return module
 
     def makeCharge(self, typeId):
-        chargeType = self._dataHandler.getType(typeId)
+        chargeType = self._cacheHandler.getType(typeId)
         charge = Charge(chargeType)
         return charge
 
     def makeDrone(self, typeId):
-        droneType = self._dataHandler.getType(typeId)
+        droneType = self._cacheHandler.getType(typeId)
         drone = Drone(droneType)
         return drone
 
     def makeImplant(self, typeId):
-        implantType = self._dataHandler.getType(typeId)
+        implantType = self._cacheHandler.getType(typeId)
         implant = Implant(implantType)
         return implant
 
     def makeSkill(self, typeId):
-        skillType = self._dataHandler.getType(typeId)
+        skillType = self._cacheHandler.getType(typeId)
         skill = Skill(skillType)
         return skill
 
     def makeRig(self, typeId):
-        rigType = self._dataHandler.getType(typeId)
+        rigType = self._cacheHandler.getType(typeId)
         rig = Rig(rigType)
         return rig
 
     def makeBooster(self, typeId):
-        boosterType = self._dataHandler.getType(typeId)
+        boosterType = self._cacheHandler.getType(typeId)
         booster = Booster(boosterType)
         return booster

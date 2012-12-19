@@ -30,7 +30,7 @@ class TestSkillUniqueness(RestrictionTestCase):
     def testFail(self):
         # Check that multiple skills with this ID raise error
         fit = Fit()
-        item = self.dh.type_(typeId=56)
+        item = self.ch.type_(typeId=56)
         skill1 = Skill(item)
         fit.items.append(skill1)
         skill2 = Skill(item)
@@ -49,7 +49,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         # No error should be raised when single skill
         # is added to fit
         fit = Fit()
-        skill = Skill(self.dh.type_(typeId=56))
+        skill = Skill(self.ch.type_(typeId=56))
         fit.items.append(skill)
         restrictionError = fit.getRestrictionError(skill, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError)
@@ -59,7 +59,7 @@ class TestSkillUniqueness(RestrictionTestCase):
     def testPassNone(self):
         # When typeIDs of skills are None, they should be ignored
         fit = Fit()
-        item = self.dh.type_(typeId=None)
+        item = self.ch.type_(typeId=None)
         skill1 = Skill(item)
         fit.items.append(skill1)
         skill2 = Skill(item)
@@ -75,7 +75,7 @@ class TestSkillUniqueness(RestrictionTestCase):
     def testPassNonSkills(self):
         # Not-skill holders shouldn't be tracked
         fit = Fit()
-        item = self.dh.type_(typeId=70)
+        item = self.ch.type_(typeId=70)
         holder1 = IndependentItem(item)
         fit.items.append(holder1)
         holder2 = IndependentItem(item)

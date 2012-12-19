@@ -32,7 +32,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.subSystemSlot: 120})
+        item = self.ch.type_(typeId=1, attributes={Attribute.subSystemSlot: 120})
         holder1 = IndependentItem(item)
         fit.items.append(holder1)
         holder2 = IndependentItem(item)
@@ -50,7 +50,7 @@ class TestSubsystemIndex(RestrictionTestCase):
     def testFailOriginal(self):
         # Make sure that original attributes are used
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.subSystemSlot: 120})
+        item = self.ch.type_(typeId=1, attributes={Attribute.subSystemSlot: 120})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.subSystemSlot] = 119
         fit.items.append(holder1)
@@ -71,7 +71,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Single holder which takes some slot shouldn't
         # trigger any errors
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.subSystemSlot: 120}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.subSystemSlot: 120}))
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.subsystemIndex)
         self.assertIsNone(restrictionError)
@@ -81,9 +81,9 @@ class TestSubsystemIndex(RestrictionTestCase):
     def testPassDifferent(self):
         # Holders taking different slots shouldn't trigger any errors
         fit = Fit()
-        holder1 = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.subSystemSlot: 120}))
+        holder1 = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.subSystemSlot: 120}))
         fit.items.append(holder1)
-        holder2 = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.subSystemSlot: 121}))
+        holder2 = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.subSystemSlot: 121}))
         fit.items.append(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.subsystemIndex)
         self.assertIsNone(restrictionError1)

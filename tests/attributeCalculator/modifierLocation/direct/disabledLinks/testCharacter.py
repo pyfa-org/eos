@@ -30,8 +30,8 @@ class TestLocationDirectCharacterSwitch(AttrCalcTestCase):
     """Test direct modification of character when it's changed"""
 
     def testCharacter(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -41,12 +41,12 @@ class TestLocationDirectCharacterSwitch(AttrCalcTestCase):
         modifier.location = Location.character
         modifier.filterType = None
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         fit = Fit()
-        influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
         fit.items.append(influenceSource)
-        item = self.dh.type_(typeId=2, attributes={tgtAttr.id: 100})
+        item = self.ch.type_(typeId=2, attributes={tgtAttr.id: 100})
         influenceTarget1 = IndependentItem(item)
         fit.character = influenceTarget1
         self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)

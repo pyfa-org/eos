@@ -31,8 +31,8 @@ class TestLocationDirectSpace(AttrCalcTestCase):
     """Test location.space for direct modifications"""
 
     def testError(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,10 +42,10 @@ class TestLocationDirectSpace(AttrCalcTestCase):
         modifier.location = Location.space
         modifier.filterType = None
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         fit = Fit()
-        influenceSource = IndependentItem(self.dh.type_(typeId=34, effects=(effect,), attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(self.ch.type_(typeId=34, effects=(effect,), attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
         fit.items.append(influenceSource)

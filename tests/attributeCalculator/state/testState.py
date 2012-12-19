@@ -31,11 +31,11 @@ class TestStateSwitching(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1, stackable=1)
-        srcAttr1 = self.dh.attribute(attributeId=2)
-        srcAttr2 = self.dh.attribute(attributeId=3)
-        srcAttr3 = self.dh.attribute(attributeId=4)
-        srcAttr4 = self.dh.attribute(attributeId=5)
+        self.tgtAttr = self.ch.attribute(attributeId=1, stackable=1)
+        srcAttr1 = self.ch.attribute(attributeId=2)
+        srcAttr2 = self.ch.attribute(attributeId=3)
+        srcAttr3 = self.ch.attribute(attributeId=4)
+        srcAttr4 = self.ch.attribute(attributeId=5)
         modifierOff = Modifier()
         modifierOff.state = State.offline
         modifierOff.context = Context.local
@@ -73,10 +73,10 @@ class TestStateSwitching(AttrCalcTestCase):
         modifierOver.filterType = None
         modifierOver.filterValue = None
         # Overload category will make sure that holder can enter all states
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.overload)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.overload)
         effect._modifiers = (modifierOff, modifierOn, modifierAct, modifierOver)
         self.fit = Fit()
-        self.holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,
+        self.holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,
                                                                                              srcAttr2.id: 1.3, srcAttr3.id: 1.5,
                                                                                              srcAttr4.id: 1.7}))
 

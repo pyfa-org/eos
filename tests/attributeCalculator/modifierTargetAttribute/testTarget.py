@@ -30,10 +30,10 @@ class TestTargetAttribute(AttrCalcTestCase):
     """Test that only targeted attributes are modified"""
 
     def testTargetAttributes(self):
-        tgtAttr1 = self.dh.attribute(attributeId=1)
-        tgtAttr2 = self.dh.attribute(attributeId=2)
-        tgtAttr3 = self.dh.attribute(attributeId=3)
-        srcAttr = self.dh.attribute(attributeId=4)
+        tgtAttr1 = self.ch.attribute(attributeId=1)
+        tgtAttr2 = self.ch.attribute(attributeId=2)
+        tgtAttr3 = self.ch.attribute(attributeId=3)
+        srcAttr = self.ch.attribute(attributeId=4)
         modifier1 = Modifier()
         modifier1.state = State.offline
         modifier1.context = Context.local
@@ -52,10 +52,10 @@ class TestTargetAttribute(AttrCalcTestCase):
         modifier2.location = Location.self_
         modifier2.filterType = None
         modifier2.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier1, modifier2)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
+        holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
                                                                                         tgtAttr3.id: 100, srcAttr.id: 20}))
         fit.items.append(holder)
         # First attribute should be modified by modifier1

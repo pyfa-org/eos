@@ -33,8 +33,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
     def testLogOther(self):
         # Check how unknown operator value influences
         # attribute calculator
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -44,10 +44,10 @@ class TestOperatorUnknown(AttrCalcTestCase):
         invalidModifier.location = Location.self_
         invalidModifier.filterType = None
         invalidModifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier,)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
+        holder = IndependentItem(self.ch.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
@@ -62,8 +62,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
         # Check how non-orderable operator value influences
         # attribute calculator. Previously, bug in calculation
         # method made it to crash
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -82,10 +82,10 @@ class TestOperatorUnknown(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier, validModifier)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
+        holder = IndependentItem(self.ch.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 120)
         self.assertEqual(len(self.log), 1)
@@ -97,8 +97,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertBuffersEmpty(fit)
 
     def testCombination(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -117,10 +117,10 @@ class TestOperatorUnknown(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier, validModifier)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
+        holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
         fit.items.append(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers

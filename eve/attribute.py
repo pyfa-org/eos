@@ -22,10 +22,10 @@
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self, dataHandler=None, attributeId=None, maxAttributeId=None,
+    def __init__(self, cacheHandler=None, attributeId=None, maxAttributeId=None,
                  defaultValue=None, highIsGood=None, stackable=None):
-        # Data handler which was used to build this attribute
-        self._dataHandler = dataHandler
+        # Cache handler which was used to build this attribute
+        self._cacheHandler = cacheHandler
 
         # Just ID of attribute, integer
         self.id = attributeId

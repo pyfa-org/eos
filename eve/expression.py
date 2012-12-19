@@ -28,11 +28,11 @@ class Expression:
     (roots of expression tree), which actually describe how effect should affect other items.
     """
 
-    def __init__(self, dataHandler=None, expressionId=None, operandId=None,
+    def __init__(self, cacheHandler=None, expressionId=None, operandId=None,
                  arg1Id=None, arg2Id=None, value=None, expressionTypeId=None,
                  expressionGroupId=None, expressionAttributeId=None):
-        # Data handler which was used to build this expression
-        self._dataHandler = dataHandler
+        # Cache handler which was used to build this expression
+        self._cacheHandler = cacheHandler
 
         # Unique ID of expression
         self.id = expressionId
@@ -60,12 +60,12 @@ class Expression:
         First child expression.
 
         Possible exceptions:
-        ExpressionFetchError -- raised when data handler fails
+        ExpressionFetchError -- raised when cache handler fails
         to fetch expression
         """
         if self._arg1Id is None:
             return None
-        expression = self._dataHandler.getExpression(self._arg1Id)
+        expression = self._cacheHandler.getExpression(self._arg1Id)
         return expression
 
     @cachedproperty
@@ -74,10 +74,10 @@ class Expression:
         Second child expression.
 
         Possible exceptions:
-        ExpressionFetchError -- raised when data handler fails
+        ExpressionFetchError -- raised when cache handler fails
         to fetch expression
         """
         if self._arg2Id is None:
             return None
-        expression = self._dataHandler.getExpression(self._arg2Id)
+        expression = self._cacheHandler.getExpression(self._arg2Id)
         return expression

@@ -31,8 +31,8 @@ class TestLocationFilterArea(AttrCalcTestCase):
     """Test location.area for massive filtered modifications"""
 
     def testError(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,10 +42,10 @@ class TestLocationFilterArea(AttrCalcTestCase):
         modifier.location = Location.area
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         fit = Fit()
-        influenceSource = IndependentItem(self.dh.type_(typeId=56, effects=(effect,), attributes={srcAttr.id: 20}))
+        influenceSource = IndependentItem(self.ch.type_(typeId=56, effects=(effect,), attributes={srcAttr.id: 20}))
         # This location just isn't used in EVE and unsupported by Eos by design
         fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)

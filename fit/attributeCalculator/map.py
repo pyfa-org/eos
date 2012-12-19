@@ -22,7 +22,7 @@
 from math import exp
 
 from eos.const import Operator
-from eos.dataHandler.exception import AttributeFetchError
+from eos.data.cacheHandler.exception import AttributeFetchError
 from eos.eve.const import Category, Attribute
 from eos.util.keyedSet import KeyedSet
 from .exception import BaseValueError, AttributeMetaError, OperatorError
@@ -174,7 +174,7 @@ class MutableAttributeMap:
         """
         # Attribute object for attribute being calculated
         try:
-            attrMeta = self.__holder.item._dataHandler.getAttribute(attrId)
+            attrMeta = self.__holder.item._cacheHandler.getAttribute(attrId)
         # Raise error if we can't get to getAttribute method
         # or it can't find requested attribute
         except (AttributeError, AttributeFetchError) as e:

@@ -31,8 +31,8 @@ class TestLocationDirectSelf(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        self.srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        self.srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,12 +42,12 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         modifier.location = Location.self_
         modifier.filterType = None
         modifier.filterValue = None
-        self.effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         self.effect._modifiers = (modifier,)
         self.fit = Fit()
 
     def testIndependent(self):
-        holder = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         # We do not test attribute value after item removal here, because
@@ -57,28 +57,28 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.assertBuffersEmpty(self.fit)
 
     def testCharacter(self):
-        holder = CharacterItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = CharacterItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testShip(self):
-        holder = ShipItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = ShipItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testSpace(self):
-        holder = SpaceItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = SpaceItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 
     def testPositioned(self):
-        holder = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = holder
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.character = None
@@ -89,9 +89,9 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         # and nothing else is affected. We position item as character and
         # check character item to also check that items 'belonging' to self
         # are not affected too
-        influenceSource = IndependentItem(self.dh.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
+        influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = influenceSource
-        influenceTarget = CharacterItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = CharacterItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.character = None

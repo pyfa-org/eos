@@ -17,17 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import ShipItem
-
-
-class TestDetached(AttrCalcTestCase):
-    """Test access to item attributes when it's not attached to any fit"""
-
-    def testAttributeAccess(self):
-        type_ = self.ch.type_(typeId=1, attributes={56: 50})
-        module = ShipItem(type_)
-        attrValue = module.attributes[56]
-        self.assertEqual(attrValue, 50)

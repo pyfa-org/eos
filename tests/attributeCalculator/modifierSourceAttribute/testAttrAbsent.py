@@ -30,9 +30,9 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
     """Test how calculator reacts to source attribute which is absent"""
 
     def testCombination(self):
-        tgtAttr = self.dh.attribute(attributeId=1)
-        absAttr = self.dh.attribute(attributeId=2)
-        srcAttr = self.dh.attribute(attributeId=3)
+        tgtAttr = self.ch.attribute(attributeId=1)
+        absAttr = self.ch.attribute(attributeId=2)
+        srcAttr = self.ch.attribute(attributeId=3)
         invalidModifier = Modifier()
         invalidModifier.state = State.offline
         invalidModifier.context = Context.local
@@ -51,10 +51,10 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (invalidModifier, validModifier)
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
+        holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
         fit.items.append(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #===============================================================================
 # Copyright (C) 2012 Anton Vorobyov
 #
@@ -19,20 +18,52 @@
 #===============================================================================
 
 
-"""
-Takes JSON produced by Phobos and adapts it into form acceptable for Eos,
-You can find Phobos at http://fisheye.evefit.org/browse/phobos
-"""
+import argparse
+import bz2
+import json
+import os.path
+
+from .dataHandler import DataHandler
+
+
+class JsonDataHandler(DataHandler):
+    """
+    Implements loading of raw data from compressed JSON
+    files produced by Phobos script, which can be found at
+    http://fisheye.evefit.org/browse/phobos
+    """
+
+    def __init__(self, basepath):
+        self.basepath = os.path.expanduser(basepath)
+
+    def getInvtypes(self):
+        return self.__fetchFile('invtypes')
+
+    def getInvgroups(self):
+        return self.__fetchFile('invgroups')
+
+    def getDgmattribs(self):
+        return self.__fetchFile('dgmattribs')
+
+    def getDgmtypeattribs(self):
+        return self.__fetchFile('dgmtypeattribs')
+
+    def getDgmeffects(self):
+        return self.__fetchFile('dgmeffects')
+
+    def getDgmtypeeffects(self):
+        return self.__fetchFile('dgmtypeeffects')
+
+    def getDgmexpressions(self):
+        return self.__fetchFile('dgmexpressions')
+
+    def __fetchFile(self, filename):
+        with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r') as file:
+            data = json.load(file)
+        return data
 
 
 if __name__ == '__main__':
-
-
-    import argparse
-    import bz2
-    import json
-    import os.path
-
 
     parser = argparse.ArgumentParser(description='This script converts Phobos-produced JSON and converts into Eos-specific form.')
     parser.add_argument('source', type=str, help='path to the folder with source JSON data')
@@ -43,13 +74,19 @@ if __name__ == '__main__':
     dest = os.path.expanduser(args.dest)
 
     print('Loading data...')
+    dataHandler = JsonDataHandler(base)
     # Dictionary for all the data we need
     database_src = {}
     # Define what we need to load and do it
-    tables = ('invtypes', 'invgroups', 'dgmattribs', 'dgmtypeattribs', 'dgmeffects', 'dgmtypeeffects', 'dgmexpressions')
-    for table in tables:
-        with open(os.path.join(base, '{}.json'.format(table)), mode='r') as file:
-            database_src[table] = json.load(file)
+    tables = {'invtypes': dataHandler.getInvtypes,
+              'invgroups': dataHandler.getInvgroups,
+              'dgmattribs': dataHandler.getDgmattribs,
+              'dgmtypeattribs': dataHandler.getDgmtypeattribs,
+              'dgmeffects': dataHandler.getDgmeffects,
+              'dgmtypeeffects': dataHandler.getDgmtypeeffects,
+              'dgmexpressions': dataHandler.getDgmexpressions}
+    for tablename, method in tables.items():
+        database_src[tablename] = method()
 
     # Effects ID-keyed dictionary iss used in multiple places,
     # so we create it here

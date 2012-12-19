@@ -28,11 +28,11 @@ class TestMapMethods(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.attr1 = self.dh.attribute(attributeId=1)
-        self.attr2 = self.dh.attribute(attributeId=2)
-        self.attr3 = self.dh.attribute(attributeId=3)
+        self.attr1 = self.ch.attribute(attributeId=1)
+        self.attr2 = self.ch.attribute(attributeId=2)
+        self.attr3 = self.ch.attribute(attributeId=3)
         self.fit = Fit()
-        self.holder = IndependentItem(self.dh.type_(typeId=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
+        self.holder = IndependentItem(self.ch.type_(typeId=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
         self.fit.items.append(self.holder)
         self.holder.attributes._MutableAttributeMap__modifiedAttributes = {self.attr2.id: 20, self.attr3.id: 40}
 

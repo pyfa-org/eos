@@ -31,7 +31,7 @@ class TestPowerGrid(RestrictionTestCase):
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.power: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
         fit.items.append(holder)
@@ -47,11 +47,11 @@ class TestPowerGrid(RestrictionTestCase):
         # When ship is assigned, but doesn't have power grid output
         # attribute, error should be raised for power grid consumers too
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.power: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
@@ -66,11 +66,11 @@ class TestPowerGrid(RestrictionTestCase):
         # When ship provides power grid output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.power: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
@@ -87,7 +87,7 @@ class TestPowerGrid(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.power: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 25
         holder1.state = State.online
@@ -96,7 +96,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder2.attributes[Attribute.power] = 20
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
@@ -117,11 +117,11 @@ class TestPowerGrid(RestrictionTestCase):
     def testFailExcessModified(self):
         # Make sure modified power grid values are taken
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.power: 40}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 40}))
         holder.attributes[Attribute.power] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.powerOutput: 45}))
+        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.powerOutput: 45}))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
@@ -138,7 +138,7 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.power: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 100
         holder1.state = State.online
@@ -147,7 +147,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder2.attributes[Attribute.power] = -10
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
@@ -167,7 +167,7 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.power: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 100
         holder1.state = State.online
@@ -176,7 +176,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder2.attributes[Attribute.power] = 0
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
@@ -195,7 +195,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.power: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 25
         holder1.state = State.online
@@ -204,7 +204,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder2.attributes[Attribute.power] = 20
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
@@ -221,11 +221,11 @@ class TestPowerGrid(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1))
+        holder = IndependentItem(self.ch.type_(typeId=1))
         holder.attributes[Attribute.power] = 100
         holder.state = State.online
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
@@ -239,7 +239,7 @@ class TestPowerGrid(RestrictionTestCase):
         # power grid output, negative use of other holder may help
         # to avoid raising error
         fit = Fit()
-        item = self.dh.type_(typeId=1, attributes={Attribute.power: 0})
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 50
         holder1.state = State.online
@@ -248,7 +248,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder2.attributes[Attribute.power] = -15
         holder2.state = State.online
         fit.items.append(holder2)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
@@ -263,10 +263,10 @@ class TestPowerGrid(RestrictionTestCase):
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.power: 0}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)

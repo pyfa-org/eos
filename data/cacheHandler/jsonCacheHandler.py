@@ -19,35 +19,33 @@
 #===============================================================================
 
 
-from bz2 import BZ2File
-from json import loads
+import bz2
+import json
 from weakref import WeakValueDictionary
 
 from eos.eve.type import Type
 from eos.eve.expression import Expression
 from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
-from .dataHandler import DataHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
 
 
-class JsonDataHandler(DataHandler):
+class JsonCacheHandler:
     """
-    JSON based dataHandler, this dataHandler will load eve staticdata and expression data into memory at instanciation from json files.
-    Any call to getType or getExpression will be answered using the in-memory dictionaries.
-    By default, files are assumed to be ./eos/data/eve.json.bz2 and ./eos/data/expressions.json.bz2
-    Data is assumed to be encoded as UTF-8
+    Each time Eos is initialized, it loads data from packed JSON
+    (disk cache) and instantiates appropriate objects using this
+    class.
     """
-    def __init__(self, typesPath, attributesPath, effectsPath, expressionsPath, encoding="utf-8"):
+    def __init__(self, dumpPath):
         # Read JSON into data storage
-        with BZ2File(typesPath, "r") as f:
-            self.__typeData = loads(f.read().decode(encoding))
-        with BZ2File(attributesPath, "r") as f:
-            self.__attributeData = loads(f.read().decode(encoding))
-        with BZ2File(effectsPath, "r") as f:
-            self.__effectData = loads(f.read().decode(encoding))
-        with BZ2File(expressionsPath, "r") as f:
-            self.__expressionData = loads(f.read().decode(encoding))
+        with bz2.BZ2File(dumpPath, 'r') as file:
+            self.__typeData = json.load(file)
+        with bz2.BZ2File(dumpPath, 'r') as file:
+            self.__attributeData = json.load(file)
+        with bz2.BZ2File(dumpPath, 'r') as file:
+            self.__effectData = json.load(file)
+        with bz2.BZ2File(dumpPath, 'r') as file:
+            self.__expressionData = json.load(file)
 
         # Weakref cache for objects composed out of data from storage
         self.__typesCache = WeakValueDictionary()
@@ -56,6 +54,15 @@ class JsonDataHandler(DataHandler):
         self.__expressionsCache = WeakValueDictionary()
 
     def getType(self, typeId):
+        """
+        Get Type object from data source.
+
+        Positional arguments:
+        typeId -- ID of type to get
+
+        Return value:
+        eve.type.Type object
+        """
         try:
             type_ = self.__typesCache[typeId]
         except KeyError:
@@ -67,7 +74,7 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise TypeFetchError(typeId) from e
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
-            type_ = Type(dataHandler=self,
+            type_ = Type(cacheHandler=self,
                          typeId=typeId,
                          groupId=groupId,
                          categoryId=catId,
@@ -83,6 +90,15 @@ class JsonDataHandler(DataHandler):
         return type_
 
     def getAttribute(self, attrId):
+        """
+        Get Attribute object from data source.
+
+        Positional arguments:
+        attrId -- ID of attribute to get
+
+        Return value:
+        eve.attribute.Attribute object
+        """
         try:
             attribute = self.__attributesCache[attrId]
         except KeyError:
@@ -92,7 +108,7 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise AttributeFetchError(attrId) from e
             maxAttributeId, defaultValue, highIsGood, stackable = data
-            attribute = Attribute(dataHandler=self,
+            attribute = Attribute(cacheHandler=self,
                                   attributeId=attrId,
                                   maxAttributeId=maxAttributeId,
                                   defaultValue=defaultValue,
@@ -102,6 +118,15 @@ class JsonDataHandler(DataHandler):
         return attribute
 
     def getEffect(self, effectId):
+        """
+        Get Effect object from data source.
+
+        Positional arguments:
+        effectId -- ID of effect to get
+
+        Return value:
+        eve.effect.Effect object
+        """
         try:
             effect = self.__effectsCache[effectId]
         except KeyError:
@@ -111,7 +136,7 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise EffectFetchError(effectId) from e
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
-            effect = Effect(dataHandler=self,
+            effect = Effect(cacheHandler=self,
                             effectId=effectId,
                             categoryId=effCategoryId,
                             isOffensive=isOffence,
@@ -123,6 +148,15 @@ class JsonDataHandler(DataHandler):
         return effect
 
     def getExpression(self, expId):
+        """
+        Get Expression object from data source.
+
+        Positional arguments:
+        expId -- ID of expression to get
+
+        Return value:
+        eve.expression.Expression object
+        """
         try:
             expression = self.__expressionsCache[expId]
         except KeyError:
@@ -132,7 +166,7 @@ class JsonDataHandler(DataHandler):
             except KeyError as e:
                 raise ExpressionFetchError(expId) from e
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
-            expression = Expression(dataHandler=self,
+            expression = Expression(cacheHandler=self,
                                     expressionId=expId,
                                     operandId=opndId,
                                     arg1Id=arg1Id,

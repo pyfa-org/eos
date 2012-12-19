@@ -19,15 +19,29 @@
 #===============================================================================
 
 
-from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import ShipItem
+from eos.exception import EosError
 
 
-class TestDetached(AttrCalcTestCase):
-    """Test access to item attributes when it's not attached to any fit"""
+class CacheHandlerError(EosError):
+    """All cache handler exceptions are based on this class."""
+    pass
 
-    def testAttributeAccess(self):
-        type_ = self.ch.type_(typeId=1, attributes={56: 50})
-        module = ShipItem(type_)
-        attrValue = module.attributes[56]
-        self.assertEqual(attrValue, 50)
+
+class TypeFetchError(CacheHandlerError):
+    """Raised when cache handler can't find type with requested ID."""
+    pass
+
+
+class AttributeFetchError(CacheHandlerError):
+    """Raised when cache handler can't find attribute with requested ID."""
+    pass
+
+
+class EffectFetchError(CacheHandlerError):
+    """Raised when cache handler can't find effect with requested ID."""
+    pass
+
+
+class ExpressionFetchError(CacheHandlerError):
+    """Raised when cache handler can't find expression with requested ID."""
+    pass

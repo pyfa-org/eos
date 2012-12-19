@@ -32,9 +32,9 @@ class TestRigSize(RestrictionTestCase):
         # Error should be raised when mismatching rig size
         # is added to ship
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.rigSize: 10}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.rigSize: 6}))
+        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6}))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNotNone(restrictionError)
@@ -47,10 +47,10 @@ class TestRigSize(RestrictionTestCase):
     def testFailOriginal(self):
         # Original value must be taken
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.rigSize: 10}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
         holder.attributes[Attribute.rigSize] = 5
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2, attributes={Attribute.rigSize: 6}))
+        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6}))
         ship.attributes[Attribute.rigSize] = 5
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
@@ -65,7 +65,7 @@ class TestRigSize(RestrictionTestCase):
         # When no ship is assigned, no restriction
         # should be applied to ships
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.rigSize: 10}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
         fit.items.append(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNone(restrictionError)
@@ -76,9 +76,9 @@ class TestRigSize(RestrictionTestCase):
         # If ship doesn't have rig size attribute,
         # no restriction is applied onto rigs
         fit = Fit()
-        holder = IndependentItem(self.dh.type_(typeId=1, attributes={Attribute.rigSize: 10}))
+        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
         fit.items.append(holder)
-        ship = IndependentItem(self.dh.type_(typeId=2))
+        ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNone(restrictionError)

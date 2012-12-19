@@ -21,7 +21,7 @@
 
 from logging import getLogger, ERROR, WARNING
 
-from eos.dataHandler.exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
+from eos.data.cacheHandler.exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
 from eos.eve.attribute import Attribute
 from eos.eve.effect import Effect
 from eos.eve.expression import Expression
@@ -61,7 +61,7 @@ class Logger:
         return logger
 
 
-class DataHandler:
+class CacheHandler:
 
     def __init__(self):
         self.__typeData = {}
@@ -70,18 +70,18 @@ class DataHandler:
         self.__expressionData = {}
 
     def type_(self, **kwargs):
-        if "dataHandler" in kwargs:
-            raise TypeError("dataHandler")
-        typ = Type(dataHandler=self, **kwargs)
+        if "cacheHandler" in kwargs:
+            raise TypeError("cacheHandler")
+        typ = Type(cacheHandler=self, **kwargs)
         if typ.id in self.__typeData:
             raise KeyError(typ.id)
         self.__typeData[typ.id] = typ
         return typ
 
     def attribute(self, **kwargs):
-        if "dataHandler" in kwargs:
-            raise TypeError("dataHandler")
-        attr = Attribute(dataHandler=self, **kwargs)
+        if "cacheHandler" in kwargs:
+            raise TypeError("cacheHandler")
+        attr = Attribute(cacheHandler=self, **kwargs)
         if attr.id in self.__attributeData:
             raise KeyError(attr.id)
         self.__attributeData[attr.id] = attr
@@ -89,18 +89,18 @@ class DataHandler:
 
 
     def effect(self, **kwargs):
-        if "dataHandler" in kwargs:
-            raise TypeError("dataHandler")
-        eff = Effect(dataHandler=self, **kwargs)
+        if "cacheHandler" in kwargs:
+            raise TypeError("cacheHandler")
+        eff = Effect(cacheHandler=self, **kwargs)
         if eff.id in self.__effectData:
             raise KeyError(eff.id)
         self.__effectData[eff.id] = eff
         return eff
 
     def expression(self, **kwargs):
-        if "dataHandler" in kwargs:
-            raise TypeError("dataHandler")
-        exp = Expression(dataHandler=self, **kwargs)
+        if "cacheHandler" in kwargs:
+            raise TypeError("cacheHandler")
+        exp = Expression(cacheHandler=self, **kwargs)
         if exp.id in self.__expressionData:
             raise KeyError(exp.id)
         self.__expressionData[exp.id] = exp

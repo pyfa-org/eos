@@ -31,17 +31,17 @@ class TestModGangOwnSrq(EosTestCase):
     def setUp(self):
         EosTestCase.setUp(self)
         # Manually composed example, as CCP doesn't use this modification type in any effect
-        eTgtSrq = self.dh.expression(expressionId=1, operandId=29, expressionTypeId=3326)
-        eTgtAttr = self.dh.expression(expressionId=2, operandId=22, expressionAttributeId=654)
-        eOptr = self.dh.expression(expressionId=3, operandId=21, value="PostMul")
-        eSrcAttr = self.dh.expression(expressionId=4, operandId=22, expressionAttributeId=848)
-        eTgtSpec = self.dh.expression(expressionId=5, operandId=64, arg1Id=eTgtSrq.id, arg2Id=eTgtAttr.id)
-        eOptrTgt = self.dh.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
-        self.eAddMod = self.dh.expression(expressionId=7, operandId=4, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
-        self.eRmMod = self.dh.expression(expressionId=8, operandId=56, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        eTgtSrq = self.ch.expression(expressionId=1, operandId=29, expressionTypeId=3326)
+        eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=654)
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostMul")
+        eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=848)
+        eTgtSpec = self.ch.expression(expressionId=5, operandId=64, arg1Id=eTgtSrq.id, arg2Id=eTgtAttr.id)
+        eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
+        self.eAddMod = self.ch.expression(expressionId=7, operandId=4, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
+        self.eRmMod = self.ch.expression(expressionId=8, operandId=56, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
 
     def testGenericBuildSuccess(self):
-        effect = self.dh.effect(categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -55,7 +55,7 @@ class TestModGangOwnSrq(EosTestCase):
         self.assertEqual(modifier.filterValue, 3326)
 
     def testEffCategoryPassive(self):
-        effect = self.dh.effect(categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -64,7 +64,7 @@ class TestModGangOwnSrq(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryActive(self):
-        effect = self.dh.effect(categoryId=1, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=1, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -73,19 +73,19 @@ class TestModGangOwnSrq(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryTarget(self):
-        effect = self.dh.effect(categoryId=2, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=2, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
 
     def testEffCategoryArea(self):
-        effect = self.dh.effect(categoryId=3, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=3, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
 
     def testEffCategoryOnline(self):
-        effect = self.dh.effect(categoryId=4, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=4, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -94,7 +94,7 @@ class TestModGangOwnSrq(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryOverload(self):
-        effect = self.dh.effect(categoryId=5, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=5, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
@@ -103,13 +103,13 @@ class TestModGangOwnSrq(EosTestCase):
         self.assertEqual(modifier.context, Context.gang)
 
     def testEffCategoryDungeon(self):
-        effect = self.dh.effect(categoryId=6, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=6, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
 
     def testEffCategorySystem(self):
-        effect = self.dh.effect(categoryId=7, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
+        effect = self.ch.effect(categoryId=7, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)

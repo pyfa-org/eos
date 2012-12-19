@@ -31,8 +31,8 @@ class TestLocationDirectOther(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.tgtAttr = self.dh.attribute(attributeId=1)
-        srcAttr = self.dh.attribute(attributeId=2)
+        self.tgtAttr = self.ch.attribute(attributeId=1)
+        srcAttr = self.ch.attribute(attributeId=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
@@ -42,17 +42,17 @@ class TestLocationDirectOther(AttrCalcTestCase):
         modifier.location = Location.other
         modifier.filterType = None
         modifier.filterValue = None
-        effect = self.dh.effect(effectId=1, categoryId=EffectCategory.passive)
+        effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect._modifiers = (modifier,)
         self.fit = Fit()
         # We added target attribute to influence source for testSelf;
         # currently, eos cannot calculate attributes which are originally
         # missing on item
-        self.influenceSource = ItemWithOther(self.dh.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
+        self.influenceSource = ItemWithOther(self.ch.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
         self.fit.items.append(self.influenceSource)
 
     def testOtherLocation(self):
-        influenceTarget = ItemWithOther(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ItemWithOther(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.influenceSource.makeOtherLink(influenceTarget)
         self.fit.items.append(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
@@ -64,7 +64,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
 
     def testSelf(self):
         # Check that source holder isn't modified
-        influenceTarget = ItemWithOther(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = ItemWithOther(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.influenceSource.makeOtherLink(influenceTarget)
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], 100)
@@ -75,7 +75,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
 
     def testOtherHolder(self):
         # Here we check some "random" holder, w/o linking holders
-        influenceTarget = IndependentItem(self.dh.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
+        influenceTarget = IndependentItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.fit.items.append(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)

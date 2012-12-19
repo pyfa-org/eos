@@ -20,7 +20,7 @@
 
 
 from eos.const import Location, EffectBuildStatus, FilterType
-from eos.dataHandler.exception import ExpressionFetchError
+from eos.data.cacheHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand
 from .actionBuilder import ActionBuilder
 from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, ActionBuilderError

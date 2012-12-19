@@ -31,11 +31,11 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, dataHandler=None, effectId=None, categoryId=None,
+    def __init__(self, cacheHandler=None, effectId=None, categoryId=None,
                  isOffensive=None, isAssistance=None, fittingUsageChanceAttributeId=None,
                  preExpressionId=None, postExpressionId=None):
-        # Data handler which was used to build this effect
-        self._dataHandler = dataHandler
+        # Cache handler which was used to build this effect
+        self._cacheHandler = cacheHandler
 
         # The unique ID of an effect
         self.id = effectId
@@ -72,12 +72,12 @@ class Effect:
         something is activated.
 
         Possible exceptions:
-        ExpressionFetchError -- raised when data handler fails
+        ExpressionFetchError -- raised when cache handler fails
         to fetch expression
         """
         if self._preExpressionId is None:
             return None
-        expression = self._dataHandler.getExpression(self._preExpressionId)
+        expression = self._cacheHandler.getExpression(self._preExpressionId)
         return expression
 
     @cachedproperty
@@ -86,12 +86,12 @@ class Effect:
         PostExpression gets run when the something becomes disabled.
 
         Possible exceptions:
-        ExpressionFetchError -- raised when data handler fails
+        ExpressionFetchError -- raised when cache handler fails
         to fetch expression
         """
         if self._postExpressionId is None:
             return None
-        expression = self._dataHandler.getExpression(self._postExpressionId)
+        expression = self._cacheHandler.getExpression(self._postExpressionId)
         return expression
 
     def getModifiers(self, logger):
