@@ -21,6 +21,7 @@
 
 import bz2
 import json
+import os.path
 from weakref import WeakValueDictionary
 
 from eos.eve.type import Type
@@ -33,25 +34,42 @@ from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, Ex
 class JsonCacheHandler:
     """
     Each time Eos is initialized, it loads data from packed JSON
-    (disk cache) and instantiates appropriate objects using this
-    class.
-    """
-    def __init__(self, dumpPath):
-        # Read JSON into data storage
-        with bz2.BZ2File(dumpPath, 'r') as file:
-            self.__typeData = json.load(file)
-        with bz2.BZ2File(dumpPath, 'r') as file:
-            self.__attributeData = json.load(file)
-        with bz2.BZ2File(dumpPath, 'r') as file:
-            self.__effectData = json.load(file)
-        with bz2.BZ2File(dumpPath, 'r') as file:
-            self.__expressionData = json.load(file)
+    (disk cache) into memory data cache, and uses it to instantiate
+    objects, which are stored in in-memory weakref object cache.
 
-        # Weakref cache for objects composed out of data from storage
-        self.__typesCache = WeakValueDictionary()
-        self.__attributesCache = WeakValueDictionary()
-        self.__effectsCache = WeakValueDictionary()
-        self.__expressionsCache = WeakValueDictionary()
+    Positional arguments:
+    diskCacheFolder -- folder where on-disk cache files are stored
+    name -- unique indentifier of cache, e.g. Eos instance name
+    """
+    def __init__(self, diskCacheFolder, name):
+        self._diskCacheFile = os.path.join(diskCacheFolder, '{}.json.bz2'.format(name))
+        # Initialize memory data cache
+        self.__typeDataCache = {}
+        self.__attributeDataCache = {}
+        self.__effectDataCache = {}
+        self.__expressionDataCache = {}
+        self.__fingerprint = None
+        # Initialize weakref object cache
+        self.__typeObjCache = WeakValueDictionary()
+        self.__attributeObjCache = WeakValueDictionary()
+        self.__effectObjCache = WeakValueDictionary()
+        self.__expressionObjCache = WeakValueDictionary()
+
+        # Read JSON into local variable
+        try:
+            with bz2.BZ2File(self._diskCacheFile, 'r') as file:
+                jsonData = file.read().decode('utf-8')
+                data = json.loads(jsonData)
+        # If file doesn't exist, JSON load errors occur, or
+        # anything else bad happens, do not load anything
+        # and leave values as initialized
+        except:
+            pass
+        # Load data into data cache, if no errors occurred
+        # during JSON reading/parsing
+        else:
+            self.__updateMemCache(data)
+
 
     def getType(self, typeId):
         """
@@ -64,13 +82,13 @@ class JsonCacheHandler:
         eve.type.Type object
         """
         try:
-            type_ = self.__typesCache[typeId]
+            type_ = self.__typeObjCache[typeId]
         except KeyError:
             # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
             jsonTypeId = str(int(typeId))
             try:
-                data = self.__typeData[jsonTypeId]
+                data = self.__typeDataCache[jsonTypeId]
             except KeyError as e:
                 raise TypeFetchError(typeId) from e
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
@@ -86,7 +104,7 @@ class JsonCacheHandler:
                          fittableNonSingleton=fittable,
                          attributes={attrId: attrVal for attrId, attrVal in attrIds},
                          effects=tuple(self.getEffect(effectId) for effectId in effectIds))
-            self.__typesCache[typeId] = type_
+            self.__typeObjCache[typeId] = type_
         return type_
 
     def getAttribute(self, attrId):
@@ -100,11 +118,11 @@ class JsonCacheHandler:
         eve.attribute.Attribute object
         """
         try:
-            attribute = self.__attributesCache[attrId]
+            attribute = self.__attributeObjCache[attrId]
         except KeyError:
             jsonAttrId = str(int(attrId))
             try:
-                data = self.__attributeData[jsonAttrId]
+                data = self.__attributeDataCache[jsonAttrId]
             except KeyError as e:
                 raise AttributeFetchError(attrId) from e
             maxAttributeId, defaultValue, highIsGood, stackable = data
@@ -114,7 +132,7 @@ class JsonCacheHandler:
                                   defaultValue=defaultValue,
                                   highIsGood=highIsGood,
                                   stackable=stackable)
-            self.__attributesCache[attrId] = attribute
+            self.__attributeObjCache[attrId] = attribute
         return attribute
 
     def getEffect(self, effectId):
@@ -128,11 +146,11 @@ class JsonCacheHandler:
         eve.effect.Effect object
         """
         try:
-            effect = self.__effectsCache[effectId]
+            effect = self.__effectObjCache[effectId]
         except KeyError:
             jsonEffectId = str(int(effectId))
             try:
-                data = self.__effectData[jsonEffectId]
+                data = self.__effectDataCache[jsonEffectId]
             except KeyError as e:
                 raise EffectFetchError(effectId) from e
             effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
@@ -144,7 +162,7 @@ class JsonCacheHandler:
                             fittingUsageChanceAttributeId=fitChanceId,
                             preExpressionId=preExpId,
                             postExpressionId=postExpId)
-            self.__effectsCache[effectId] = effect
+            self.__effectObjCache[effectId] = effect
         return effect
 
     def getExpression(self, expId):
@@ -158,11 +176,11 @@ class JsonCacheHandler:
         eve.expression.Expression object
         """
         try:
-            expression = self.__expressionsCache[expId]
+            expression = self.__expressionObjCache[expId]
         except KeyError:
             jsonExpId = str(int(expId))
             try:
-                data = self.__expressionData[jsonExpId]
+                data = self.__expressionDataCache[jsonExpId]
             except KeyError as e:
                 raise ExpressionFetchError(expId) from e
             opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
@@ -175,5 +193,48 @@ class JsonCacheHandler:
                                     expressionTypeId=eTypeId,
                                     expressionGroupId=eGrpId,
                                     expressionAttributeId=eAttrId)
-            self.__expressionsCache[expId] = expression
+            self.__expressionObjCache[expId] = expression
         return expression
+
+    def getFingerprint(self):
+        """
+        Get disk cache fingerprint.
+        """
+        return self.__fingerprint
+
+    def updateCache(self, data):
+        """
+        Updates on-disk and memory caches.
+
+        Positional arguments:
+        data -- dictionary with data to update
+        """
+        # Update disk cache
+        os.makedirs(os.path.dirname(self._diskCacheFile), mode=0o755, exist_ok=True)
+        #with bz2.BZ2File(args.attributes, "wb") as f:
+        #    f.write(json.dumps(attributes).encode("utf-8"))
+        with bz2.BZ2File(self._diskCacheFile, 'w') as file:
+            jsonData = json.dumps(data).encode('utf-8')
+            file.write(jsonData)
+        # Update data cache
+        self.__updateMemCache(data)
+
+
+    def __updateMemCache(self, data):
+        """
+        Loads data into memory data cache.
+
+        Positional arguments:
+        data -- dictionary with data to load
+        """
+        self.__typeDataCache = data['types']
+        self.__attributeDataCache = data['attributes']
+        self.__effectDataCache = data['effects']
+        self.__expressionDataCache = data['expressions']
+        self.__fingerprint = data['fingerprint']
+        # Also clear object cache to make sure objects composed
+        # from old data are gone
+        self.__typeObjCache.clear()
+        self.__attributeObjCache.clear()
+        self.__effectObjCache.clear()
+        self.__expressionDataCache.clear()

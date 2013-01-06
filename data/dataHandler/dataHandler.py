@@ -59,3 +59,13 @@ class DataHandler(metaclass=ABCMeta):
     @abstractmethod
     def getDgmexpressions(self):
         ...
+
+    @abstractmethod
+    def getVersion(self):
+        """
+        Get version of data.
+
+        Return value:
+        string with version
+        """
+        ...

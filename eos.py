@@ -21,6 +21,7 @@
 
 from eos.eve.const import Type
 from eos.data.cacheHandler.jsonCacheHandler import JsonCacheHandler
+from eos.data.cacheUpdater.updater import CacheUpdater
 from eos.fit.fit import Fit
 from eos.fit.item.character import Character
 from eos.fit.item.ship import Ship
@@ -34,11 +35,32 @@ from eos.fit.item.booster import Booster
 from eos.util.logger import Logger
 
 
+eosVersion = 'git'
+
+
 class Eos:
-    def __init__(self, name="eos"):
-        self._cacheHandler = JsonCacheHandler
+    def __init__(self, dataHandler, name='eos'):
         self._logger = Logger(name)
-        self._logger.info("session started")
+        self._logger.info('session started')
+        self._cacheHandler = JsonCacheHandler('/home/dfx/src/pyfa/eos/dataFolder/cache/', name)
+        # Compare fingerprints from data and cache
+        cacheFp = self._cacheHandler.getFingerprint()
+        dataVersion = dataHandler.getVersion()
+        currentFp = '{}_{}_{}'.format(eosVersion, name, dataVersion)
+        # If data version is corrupt or fingerprints mismatch,
+        # update cache
+        if dataVersion is None or cacheFp != currentFp:
+            if dataVersion is None:
+                msg = 'data version is None, updating cache'
+            else:
+                msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(cacheFp, currentFp)
+            self._logger.info(msg)
+            # Run cache updater to convert data into eos format
+            updater = CacheUpdater(self._logger)
+            cacheData = updater.run(dataHandler)
+            cacheData['fingerprint'] = currentFp
+            self._cacheHandler.updateCache(cacheData)
+        ########
 
     def makeFit(self):
         fit = Fit(self)

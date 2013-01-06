@@ -55,7 +55,7 @@ class Logger:
         logger = self.__getLogger(childName)
         if signature is None:
             logger.info(msg)
-        elif not signature in self.__knownSignatures:
+        elif signature not in self.__knownSignatures:
             logger.info(msg)
             self.__knownSignatures.add(signature)
 
@@ -77,7 +77,7 @@ class Logger:
         logger = self.__getLogger(childName)
         if signature is None:
             logger.warning(msg)
-        elif not signature in self.__knownSignatures:
+        elif signature not in self.__knownSignatures:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
 
@@ -99,7 +99,7 @@ class Logger:
         logger = self.__getLogger(childName)
         if signature is None:
             logger.error(msg)
-        elif not signature in self.__knownSignatures:
+        elif signature not in self.__knownSignatures:
             logger.error(msg)
             self.__knownSignatures.add(signature)
 
@@ -118,13 +118,15 @@ class Logger:
         # Clear any handlers this logger already may have
         for handler in self.__rootLogger.handlers:
             self.__rootLogger.removeHandler(handler)
-        # Define how logger will handle log entries
-        logPath = os.path.expanduser(os.path.join("~", "Desktop", "eos_logs", "{}.log".format(name)))
-        handler = FileHandler(logPath, mode="a", encoding="utf-8", delay=False)
+        # Define log storage options
+        logFolder = '/home/dfx/src/pyfa/eos/dataFolder/logs/'
+        logPath = os.path.join(logFolder, "{}.log".format(name))
+        os.makedirs(os.path.dirname(logPath), mode=0o755, exist_ok=True)
+        handler = FileHandler(logPath, mode='a', encoding='utf-8', delay=False)
         # Set up formatter options
-        msgFormat = "[{asctime}] {name} {levelname}: {message}"
-        timeFormat = "%Y-%m-%d %H:%M:%S"  # Must be specified in old style, as of python 3.2
-        formatter = Formatter(fmt=msgFormat, datefmt=timeFormat, style="{")
+        msgFormat = '[{asctime}] {name} {levelname}: {message}'
+        timeFormat = '%Y-%m-%d %H:%M:%S'  # Must be specified in old style, as of python 3.2
+        formatter = Formatter(fmt=msgFormat, datefmt=timeFormat, style='{')
         handler.setFormatter(formatter)
         self.__rootLogger.addHandler(handler)
 

@@ -19,5 +19,5 @@
 #===============================================================================
 
 
-from .eos import Eos
+from .eos import Eos, eosVersion as __version__
 from .const import State

@@ -36,6 +36,7 @@ class Attribute(metaclass=Enum):
     hiSlots = 14
     cpuOutput = 48
     power = 30
+    capacity = 38
     cpu = 50
     agility = 70
     launcherSlotsLeft = 101
@@ -45,6 +46,7 @@ class Attribute(metaclass=Enum):
     kineticDamage = 117
     thermalDamage = 118
     volume = 161
+    radius = 162
     requiredSkill1 = 182
     requiredSkill2 = 183
     requiredSkill3 = 184
@@ -97,13 +99,16 @@ class Type(metaclass=Enum):
 class Group(metaclass=Enum):
     """Group ID holder"""
     character = 1
+    effectBeacon = 920
 
 
 class Category(metaclass=Enum):
     """Category ID holder"""
     ship = 6
+    module = 7
     charge = 8
     skill = 16
+    drone = 18
     implant = 20
     subsystem = 32
 

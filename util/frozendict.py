@@ -19,4 +19,36 @@
 #===============================================================================
 
 
-from .evedb import EveDB
+"""
+Recipe taken from http://code.activestate.com/recipes/414283-frozen-dictionaries/
+"""
+
+from .cachedProperty import cachedproperty
+
+
+class frozendict(dict):
+
+    def __new__(cls, *args):
+        new = dict.__new__(cls)
+        dict.__init__(new, *args)
+        return new
+
+    def __init__(self, *args):
+        pass
+
+    def _blocked_attribute(self, *args, **kwargs):
+        raise TypeError('frozendict cannot be modified')
+
+    # Prohibit use of methods which modify dictionary
+    __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = _blocked_attribute
+
+    @cachedproperty
+    def _hash(self):
+        return hash(frozenset(self.items()))
+
+    def __hash__(self):
+        return self._hash
+
+
+    def __repr__(self):
+        return 'frozendict({})'.format(dict.__repr__(self))
