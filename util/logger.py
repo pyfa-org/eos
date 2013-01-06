@@ -124,7 +124,7 @@ class Logger:
         os.makedirs(os.path.dirname(logPath), mode=0o755, exist_ok=True)
         handler = FileHandler(logPath, mode='a', encoding='utf-8', delay=False)
         # Set up formatter options
-        msgFormat = '[{asctime}] {name} {levelname}: {message}'
+        msgFormat = '{asctime:19.19} | {levelname:7.7} | {name:23.23} | {message}'
         timeFormat = '%Y-%m-%d %H:%M:%S'  # Must be specified in old style, as of python 3.2
         formatter = Formatter(fmt=msgFormat, datefmt=timeFormat, style='{')
         handler.setFormatter(formatter)
