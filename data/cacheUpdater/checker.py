@@ -82,7 +82,7 @@ class Checker:
         usedKeys = set()
         # Storage for rows which should be removed
         invalidRows = set()
-        for datarow in table:
+        for datarow in sorted(table, key=lambda row: row['tablePos']):
             self._rowPk(keyNames, datarow, usedKeys, invalidRows)
         # If any invalid rows were detected, remove them and
         # write corresponding message to log
@@ -169,7 +169,7 @@ class Checker:
         defeff = set()
         table = self.data['dgmtypeeffects']
         invalidRows = set()
-        for row in table:
+        for row in sorted(table, key=lambda row: row['tablePos']):
             isDefault = row.get('isDefault')
             # We're interested only in default effects
             if isDefault is not True:
@@ -206,7 +206,7 @@ class Checker:
         rackEffects = (Effect.hiPower, Effect.medPower, Effect.loPower)
         rackedItems = set()
         invalidRows = set()
-        for row in table:
+        for row in sorted(table, key=lambda row: row['tablePos']):
             effectId = row['effectID']
             # We're not interested in anything besides
             # rack effects

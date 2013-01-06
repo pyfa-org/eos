@@ -19,6 +19,8 @@
 #===============================================================================
 
 
+from collections import OrderedDict
+
 from eos.eve.const import Attribute
 from eos.util.frozendict import frozendict
 
@@ -151,10 +153,15 @@ class Converter:
         to move them to dgmtypeattribs table.
         """
         # Mapping of column name to attribute ID
-        atrribMap = {'mass': Attribute.mass,
-                     'volume': Attribute.volume,
-                     'capacity': Attribute.capacity,
-                     'radius': Attribute.radius}
+        # Here we have to remember that for ease of several checking
+        # procedures we introduced tablePos to all rows. We cycle through
+        # invtypes sorted by this field, we use ordered dict to cycle through
+        # attributes - to always achieve the same tablePos numbering for all
+        # new rows we add to dgmtypeattribs table
+        atrribMap = OrderedDict((('radius', Attribute.radius),
+                                 ('mass', Attribute.mass),
+                                 ('volume', Attribute.volume),
+                                 ('capacity', Attribute.capacity)))
         attrIds = tuple(atrribMap.values())
         # Here we will store pairs (typeID, attrID) already
         # defined in table
@@ -166,9 +173,12 @@ class Converter:
             definedPairs.add((row['typeID'], row['attributeID']))
         attrsSkipped = 0
         newInvtypes = set()
+        # For all new rows, continue numbering of row position in original table.
+        # Here we get max value of tablePos, according to already existing rows
+        tablePos = max(dgmtypeattribs, key=lambda row: row['tablePos'])['tablePos']
         # Cycle through all invtypes, for each row moving each its field
         # either to different table or container for updated rows
-        for row in self.data['invtypes']:
+        for row in sorted(self.data['invtypes'],  key=lambda row: row['tablePos']):
             typeId = row['typeID']
             newRow = {}
             for field, value in row.items():
@@ -183,8 +193,10 @@ class Converter:
                     if (typeId, attrId) in definedPairs:
                         attrsSkipped += 1
                         continue
+                    tablePos += 1
                     # Generate row and add it to proper attribute table
-                    dgmtypeattribs.add(frozendict({'typeID': typeId, 'attributeID': attrId, 'value': value}))
+                    dgmtypeattribs.add(frozendict({'typeID': typeId, 'attributeID': attrId,
+                                                   'value': value, 'tablePos': tablePos}))
                 else:
                     newRow[field] = value
             newInvtypes.add(frozendict(newRow))

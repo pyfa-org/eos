@@ -59,11 +59,20 @@ class CacheUpdater:
                   'dgmeffects': dataHandler.getDgmeffects,
                   'dgmtypeeffects': dataHandler.getDgmtypeeffects,
                   'dgmexpressions': dataHandler.getDgmexpressions}
+
         for tablename, method in tables.items():
+            tablePos = 0
             # For faster processing of various operations,
             # freeze table rows and put them into set
             table = set()
             for row in method():
+                # During  further updater stages. some of rows
+                # may fall in risk groups, where all rows but one
+                # need to be removed. To deterministically remove rows
+                # based on position in original data, write position
+                # to each row
+                row['tablePos'] = tablePos
+                tablePos += 1
                 table.add(frozendict(row))
             data[tablename] = table
 

@@ -56,8 +56,8 @@ class Eos:
                 msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(cacheFp, currentFp)
             self._logger.info(msg)
             # Run cache updater to convert data into eos format
-            updater = CacheUpdater(self._logger)
-            cacheData = updater.run(dataHandler)
+            cacheUpdater = CacheUpdater(self._logger)
+            cacheData = cacheUpdater.run(dataHandler)
             self._cacheHandler.updateCache(cacheData, currentFp)
 
     def makeFit(self):
