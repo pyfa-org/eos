@@ -213,8 +213,6 @@ class JsonCacheHandler:
         data['fingerprint'] = fingerprint
         # Update disk cache
         os.makedirs(os.path.dirname(self._diskCacheFile), mode=0o755, exist_ok=True)
-        #with bz2.BZ2File(args.attributes, "wb") as f:
-        #    f.write(json.dumps(attributes).encode("utf-8"))
         with bz2.BZ2File(self._diskCacheFile, 'w') as file:
             jsonData = json.dumps(data).encode('utf-8')
             file.write(jsonData)
