@@ -216,7 +216,10 @@ class JsonCacheHandler:
         with bz2.BZ2File(self._diskCacheFile, 'w') as file:
             jsonData = json.dumps(data).encode('utf-8')
             file.write(jsonData)
-        # Update data cache
+        # Update data cache; encode to JSON and decode back
+        # to make sure form of data is the same as after
+        # loading it from cache
+        data = json.loads(json.dumps(data))
         self.__updateMemCache(data)
 
 
@@ -237,4 +240,4 @@ class JsonCacheHandler:
         self.__typeObjCache.clear()
         self.__attributeObjCache.clear()
         self.__effectObjCache.clear()
-        self.__expressionDataCache.clear()
+        self.__expressionObjCache.clear()
