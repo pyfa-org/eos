@@ -59,7 +59,7 @@ class Cleaner:
                             Category.subsystem)
         # Set with groupIDs of items we want to keep
         # It is set because we will need to modify it
-        strongGroups = {Group.effectBeacon}
+        strongGroups = {Group.character, Group.effectBeacon}
         # Go through table data, filling valid groups set according to valid categories
         for datarow in self.data['invgroups']:
             if datarow['categoryID'] in strongCategories:
