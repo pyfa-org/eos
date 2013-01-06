@@ -202,13 +202,15 @@ class JsonCacheHandler:
         """
         return self.__fingerprint
 
-    def updateCache(self, data):
+    def updateCache(self, data, fingerprint):
         """
         Updates on-disk and memory caches.
 
         Positional arguments:
         data -- dictionary with data to update
+        fingerprint -- string with fingerprint
         """
+        data['fingerprint'] = fingerprint
         # Update disk cache
         os.makedirs(os.path.dirname(self._diskCacheFile), mode=0o755, exist_ok=True)
         #with bz2.BZ2File(args.attributes, "wb") as f:

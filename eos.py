@@ -58,9 +58,7 @@ class Eos:
             # Run cache updater to convert data into eos format
             updater = CacheUpdater(self._logger)
             cacheData = updater.run(dataHandler)
-            cacheData['fingerprint'] = currentFp
-            self._cacheHandler.updateCache(cacheData)
-        ########
+            self._cacheHandler.updateCache(cacheData, currentFp)
 
     def makeFit(self):
         fit = Fit(self)
