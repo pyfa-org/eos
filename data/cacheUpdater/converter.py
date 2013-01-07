@@ -19,8 +19,6 @@
 #===============================================================================
 
 
-from collections import OrderedDict
-
 from eos.eve.const import Attribute
 from eos.util.frozendict import frozendict
 
@@ -152,16 +150,10 @@ class Converter:
         We do not need them there, for data consistency it's worth
         to move them to dgmtypeattribs table.
         """
-        # Mapping of column name to attribute ID
-        # Here we have to remember that for ease of several checking
-        # procedures we introduced tablePos to all rows. We cycle through
-        # invtypes sorted by this field, we use ordered dict to cycle through
-        # attributes - to always achieve the same tablePos numbering for all
-        # new rows we add to dgmtypeattribs table
-        atrribMap = OrderedDict((('radius', Attribute.radius),
-                                 ('mass', Attribute.mass),
-                                 ('volume', Attribute.volume),
-                                 ('capacity', Attribute.capacity)))
+        atrribMap = {'radius': Attribute.radius,
+                     'mass': Attribute.mass,
+                     'volume': Attribute.volume,
+                     'capacity': Attribute.capacity}
         attrIds = tuple(atrribMap.values())
         # Here we will store pairs (typeID, attrID) already
         # defined in table
@@ -173,15 +165,9 @@ class Converter:
             definedPairs.add((row['typeID'], row['attributeID']))
         attrsSkipped = 0
         newInvtypes = set()
-        # For all new rows, continue numbering of row position in original table.
-        # Here we get max value of tablePos, according to already existing rows
-        if dgmtypeattribs:
-            tablePos = max(dgmtypeattribs, key=lambda row: row['tablePos'])['tablePos'] + 1
-        else:
-            tablePos = 0
         # Cycle through all invtypes, for each row moving each its field
         # either to different table or container for updated rows
-        for row in sorted(self.data['invtypes'],  key=lambda row: row['tablePos']):
+        for row in self.data['invtypes']:
             typeId = row['typeID']
             newRow = {}
             for field, value in row.items():
@@ -197,9 +183,7 @@ class Converter:
                         attrsSkipped += 1
                         continue
                     # Generate row and add it to proper attribute table
-                    dgmtypeattribs.add(frozendict({'typeID': typeId, 'attributeID': attrId,
-                                                   'value': value, 'tablePos': tablePos}))
-                    tablePos += 1
+                    dgmtypeattribs.add(frozendict({'typeID': typeId, 'attributeID': attrId, 'value': value}))
                 else:
                     newRow[field] = value
             newInvtypes.add(frozendict(newRow))

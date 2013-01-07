@@ -76,16 +76,15 @@ class CacheUpdater:
                 table.add(frozendict(row))
             data[tablename] = table
 
-        # First, we need to normalize data before any checks,
-        # because data which is not normalized may cause check
-        # failures or incomplete checks
-        converter = Converter(self._logger)
-        converter.normalize(data)
-
-        # Now, run pre-cleanup checks, as cleaner relies
-        # on some assumptions about the data
+        # Run pre-cleanup checks, as cleaning and further stages
+        # rely on some assumptions about the data
         checker = Checker(self._logger)
         checker.preCleanup(data)
+
+        # Also normalize the data to make data structure
+        # more consistent, and thus easier to clean properly
+        converter = Converter(self._logger)
+        converter.normalize(data)
 
         # Clean our container out of unwanted data
         cleaner = Cleaner(self._logger)

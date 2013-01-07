@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.const import InvType
 from eos.eve.const import Effect
 from eos.util.frozendict import frozendict
 
@@ -133,7 +134,7 @@ class Checker:
         table = self.data['invtypes']
         invalidRow = None
         for row in table:
-            if row['typeID'] == -1:
+            if row['typeID'] == InvType.self_:
                 invalidRow = row
                 # We already checked PKs for uniqueness, thus
                 # it is safe to assume no such typeIDs will be

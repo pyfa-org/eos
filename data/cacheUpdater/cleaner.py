@@ -62,7 +62,7 @@ class Cleaner:
         strongGroups = {Group.character, Group.effectBeacon}
         # Go through table data, filling valid groups set according to valid categories
         for datarow in self.data['invgroups']:
-            if datarow['categoryID'] in strongCategories:
+            if datarow.get('categoryID') in strongCategories:
                 strongGroups.add(datarow['groupID'])
         rowsToPump = set()
         for datarow in self.data['invtypes']:
