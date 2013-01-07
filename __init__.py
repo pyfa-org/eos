@@ -20,4 +20,4 @@
 
 
 from .eos import Eos, eosVersion as __version__
-from .const import State
+from .const import State, Restriction

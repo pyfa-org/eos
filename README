@@ -1,1 +1,120 @@
+Currently API is not considered to be final (read as, what you see is stub for testing). Currently you can use engine following way:
+-------------------------------------------------------------------------------
 
+from eos import Eos
+from eos import State
+from eos.data.dataHandler.jsonDataHandler import JsonDataHandler
+
+
+dataHandler = JsonDataHandler('/home/user/src/pyfa/eos/dataFolder/phobos/')
+engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/')
+
+fit = engine.makeFit()
+character = engine.makeCharacter()
+fit.character = character
+crow = engine.makeShip(11176)
+fit.ship = crow
+
+for skillID in skills:
+    skill = engine.makeSkill(skillID)
+    skill.level = 5
+    fit.skills.append(skill)
+
+launchDg1 = engine.makeModule(13926)
+missileDg1 = engine.makeCharge(27365)
+launchDg1.charge = missileDg1
+fit.modulesHigh.append(launchDg1)
+launchDg1.state = State.active
+
+launchDg2 = engine.makeModule(13926)
+missileDg2 = engine.makeCharge(27365)
+launchDg2.charge = missileDg2
+fit.modulesHigh.append(launchDg2)
+launchDg2.state = State.active
+
+launchDg3 = engine.makeModule(13926)
+missileDg3 = engine.makeCharge(27365)
+launchDg3.charge = missileDg3
+fit.modulesHigh.append(launchDg3)
+launchDg3.state = State.active
+
+mwdGistA = engine.makeModule(19349)
+fit.modulesMed.append(mwdGistA)
+mwdGistA.state = State.active
+
+webTs = engine.makeModule(14268)
+fit.modulesMed.append(webTs)
+webTs.state = State.active
+
+disDomi = engine.makeModule(14244)
+fit.modulesMed.append(disDomi)
+disDomi.state = State.active
+
+bcsDg1 = engine.makeModule(13937)
+fit.modulesLow.append(bcsDg1)
+bcsDg1.state = State.online
+
+bcsDg2 = engine.makeModule(13937)
+fit.modulesLow.append(bcsDg2)
+bcsDg2.state = State.online
+
+nanoDomi = engine.makeModule(14127)
+fit.modulesLow.append(nanoDomi)
+nanoDomi.state = State.online
+
+rigor1 = engine.makeModule(31650)
+fit.rigs.append(rigor1)
+
+rigor2 = engine.makeModule(31650)
+fit.rigs.append(rigor2)
+
+snakeAlpha = engine.makeImplant(19540)
+fit.implants.append(snakeAlpha)
+
+snakeBeta = engine.makeImplant(19551)
+fit.implants.append(snakeBeta)
+
+snakeGamma = engine.makeImplant(19553)
+fit.implants.append(snakeGamma)
+
+snakeDelta = engine.makeImplant(19554)
+fit.implants.append(snakeDelta)
+
+snakeEpsilon = engine.makeImplant(19555)
+fit.implants.append(snakeEpsilon)
+
+snakeOmega = engine.makeImplant(19556)
+fit.implants.append(snakeOmega)
+
+hwAgi = engine.makeImplant(3095)
+fit.implants.append(hwAgi)
+
+zorHyper = engine.makeImplant(24663)
+fit.implants.append(zorHyper)
+
+hwLights = engine.makeImplant(3172)
+fit.implants.append(hwLights)
+
+hwMissiles = engine.makeImplant(3140)
+fit.implants.append(hwMissiles)
+
+quafeZero = engine.makeBooster(3898)
+fit.boosters.append(quafeZero)
+
+crashSynth = engine.makeBooster(28672)
+fit.boosters.append(crashSynth)
+
+fit.validate()
+
+-------------------------------------------------------------------------------
+
+Attributes of any item are accessible via dictionary-like objects like crow.attributes, e.g.:
+
+>>crow.attributes[37] # maxVelocity
+5759.988204454497
+
+Fit validation method currently raises exception if any fit check fails, its argument contains dictionary which explains what is wrong. If we replace domi nanofiber in above example with yet another BCS, following data will be returned:
+
+{<eos.fit.item.module.Module object at 0x432ba10>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331050>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x4331410>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x432bcb0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=25.0)}, <eos.fit.item.module.Module object at 0x432b4d0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x432bd10>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=25.0)}, <eos.fit.item.module.Module object at 0x432b950>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331170>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x432bfb0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.0)}}
+
+Keys of dictionary are problematic modules (in this case, all CPU consumers on ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 1 being CPU restriction; values contain detailed data about problem, in this case it's named tuple which shows ship CPU output, total CPU consumption and CPU use by current module. Different resstrictions contain different data, but in general format stays the same.
