@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-SlotNumberErrorData = namedtuple("SlotNumberErrorData", ("slotsMax", "slotsUsed"))
+SlotNumberErrorData = namedtuple('SlotNumberErrorData', ('slotsMax', 'slotsUsed'))
 
 
 class SlotNumberRegister(RestrictionRegister):

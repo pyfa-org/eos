@@ -30,9 +30,9 @@ class TestModItm(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        eTgt = self.ch.expression(expressionId=1, operandId=24, value="Ship")
+        eTgt = self.ch.expression(expressionId=1, operandId=24, value='Ship')
         eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=9)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=327)
         eTgtSpec = self.ch.expression(expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
         eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)

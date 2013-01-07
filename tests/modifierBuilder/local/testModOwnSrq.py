@@ -30,10 +30,10 @@ class TestModOwnSrq(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        eTgtOwn = self.ch.expression(expressionId=1, operandId=24, value="Char")
+        eTgtOwn = self.ch.expression(expressionId=1, operandId=24, value='Char')
         eTgtSrq = self.ch.expression(expressionId=2, operandId=29, expressionTypeId=3412)
         eTgtAttr = self.ch.expression(expressionId=3, operandId=22, expressionAttributeId=1372)
-        eOptr = self.ch.expression(expressionId=4, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=4, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=5, operandId=22, expressionAttributeId=1156)
         eTgtItms = self.ch.expression(expressionId=6, operandId=49, arg1Id=eTgtOwn.id, arg2Id=eTgtSrq.id)
         eTgtSpec = self.ch.expression(expressionId=7, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr.id)

@@ -31,7 +31,7 @@ class TestModGangItm(EosTestCase):
     def setUp(self):
         EosTestCase.setUp(self)
         eTgtAttr = self.ch.expression(expressionId=1, operandId=22, expressionAttributeId=70)
-        eOptr = self.ch.expression(expressionId=2, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=2, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=3, operandId=22, expressionAttributeId=151)
         eTgtSpec = self.ch.expression(expressionId=4, operandId=40, arg1Id=eTgtAttr.id)
         eOptrTgt = self.ch.expression(expressionId=5, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)

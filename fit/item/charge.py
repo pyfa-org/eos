@@ -31,7 +31,7 @@ class Charge(MutableAttributeHolder):
     type_ -- type (item), on which charge is based
     """
 
-    __slots__ = ("container",)
+    __slots__ = ('container',)
 
     def __init__(self, type_):
         MutableAttributeHolder.__init__(self, type_)

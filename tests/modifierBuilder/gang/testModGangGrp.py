@@ -33,7 +33,7 @@ class TestModGangGrp(EosTestCase):
         # Manually composed example, as CCP doesn't use this modification type in any effect
         eTgtGrp = self.ch.expression(expressionId=1, operandId=26, expressionGroupId=80)
         eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=158)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=349)
         eTgtSpec = self.ch.expression(expressionId=5, operandId=34, arg1Id=eTgtGrp.id, arg2Id=eTgtAttr.id)
         eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)

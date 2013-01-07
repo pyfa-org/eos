@@ -28,7 +28,7 @@ from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-SlotIndexErrorData = namedtuple("SlotIndexErrorData", ("holderSlotIndex",))
+SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('holderSlotIndex',))
 
 
 class SlotIndexRegister(RestrictionRegister):

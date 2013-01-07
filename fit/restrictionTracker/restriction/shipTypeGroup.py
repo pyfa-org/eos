@@ -27,12 +27,12 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-ShipTypeGroupErrorData = namedtuple("ShipTypeGroupErrorData", ("allowedTypes", "allowedGroups", "shipType", "shipGroup"))
+ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('allowedTypes', 'allowedGroups', 'shipType', 'shipGroup'))
 
 
 # Helper class-container for metadata regarding allowed
 # types and groups
-AllowedData = namedtuple("AllowedData", ("types", "groups"))
+AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 
 
 class ShipTypeGroupRegister(RestrictionRegister):

@@ -52,9 +52,9 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "malformed modifier on item 754: unsupported target location 1972 for filtered modification")
+        self.assertEqual(logRecord.msg, 'malformed modifier on item 754: unsupported target location 1972 for filtered modification')
         self.fit.items.remove(holder)
         self.assertBuffersEmpty(self.fit)
 

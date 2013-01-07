@@ -32,13 +32,13 @@ class TestIncomplete(EosTestCase):
         EosTestCase.setUp(self)
         # Modifier, except for top-most expression, which
         # is added in test cases
-        eTgt = self.ch.expression(expressionId=1, operandId=24, value="Ship")
+        eTgt = self.ch.expression(expressionId=1, operandId=24, value='Ship')
         eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=9)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostPercent')
         self.eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=327)
         eTgtSpec = self.ch.expression(expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
         self.eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
-        self.stub = self.ch.expression(expressionId=7, operandId=27, value="1")
+        self.stub = self.ch.expression(expressionId=7, operandId=27, value='1')
 
     def testPre(self):
         eAddMod = self.ch.expression(expressionId=8, operandId=6, arg1Id=self.eOptrTgt.id, arg2Id=self.eSrcAttr.id)

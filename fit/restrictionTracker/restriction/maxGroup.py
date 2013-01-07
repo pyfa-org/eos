@@ -28,7 +28,7 @@ from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-MaxGroupErrorData = namedtuple("MaxGroupErrorData", ("maxGroup", "holderGroup", "groupHolders"))
+MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('maxGroup', 'holderGroup', 'groupHolders'))
 
 
 class MaxGroupRegister(RestrictionRegister):

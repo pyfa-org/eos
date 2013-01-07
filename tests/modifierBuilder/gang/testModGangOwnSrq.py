@@ -33,7 +33,7 @@ class TestModGangOwnSrq(EosTestCase):
         # Manually composed example, as CCP doesn't use this modification type in any effect
         eTgtSrq = self.ch.expression(expressionId=1, operandId=29, expressionTypeId=3326)
         eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=654)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostMul")
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostMul')
         eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=848)
         eTgtSpec = self.ch.expression(expressionId=5, operandId=64, arg1Id=eTgtSrq.id, arg2Id=eTgtAttr.id)
         eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)

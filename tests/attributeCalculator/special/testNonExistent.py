@@ -36,9 +36,9 @@ class TestNonExistent(AttrCalcTestCase):
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.ERROR)
-        self.assertEqual(logRecord.msg, "unable to fetch metadata for attribute 105, requested for item 57")
+        self.assertEqual(logRecord.msg, 'unable to fetch metadata for attribute 105, requested for item 57')
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
@@ -53,9 +53,9 @@ class TestNonExistent(AttrCalcTestCase):
         self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "unable to find base value for attribute 89 on item 649")
+        self.assertEqual(logRecord.msg, 'unable to find base value for attribute 89 on item 649')
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 

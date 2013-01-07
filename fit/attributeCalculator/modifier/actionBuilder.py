@@ -64,7 +64,7 @@ class ActionBuilder:
         # Validate generated actions
         for action in actionsContainer:
             if cls.validateAction(action, effectCategoryId) is not True:
-                raise ActionValidationError("failed to validate action")
+                raise ActionValidationError('failed to validate action')
         return actionsContainer, skippedData
 
     @classmethod
@@ -95,7 +95,7 @@ class ActionBuilder:
             try:
                 method = genericOpnds[element.operandId]
             except KeyError as e:
-                raise ActionBuilderError("unknown generic operand {}".format(element.operandId)) from e
+                raise ActionBuilderError('unknown generic operand {}'.format(element.operandId)) from e
             method(element)
         return skippedData
 
@@ -181,39 +181,39 @@ class ActionBuilder:
         """Check if given expression is stub, returning integer 0 or 1"""
         value = cls.__getInteger(element)
         if not value in (0, 1):
-            raise ActionBuilderError("integer stub with unexpected value {}".format(value))
+            raise ActionBuilderError('integer stub with unexpected value {}'.format(value))
 
     @classmethod
     def __checkBoolStub(cls, element):
         """Check if given expression is stub, returning boolean true"""
         value = cls.__getBoolean(element)
         if value is not True:
-            raise ActionBuilderError("boolean stub with unexpected value {}".format(value))
+            raise ActionBuilderError('boolean stub with unexpected value {}'.format(value))
 
     @classmethod
     def __getOperator(cls, expression):
         # Format: {operator name: operator ID}
-        conversionMap = {"PreAssignment": Operator.preAssignment,
-                         "PreMul": Operator.preMul,
-                         "PreDiv": Operator.preDiv,
-                         "ModAdd": Operator.modAdd,
-                         "ModSub": Operator.modSub,
-                         "PostMul": Operator.postMul,
-                         "PostDiv": Operator.postDiv,
-                         "PostPercent": Operator.postPercent,
-                         "PostAssignment": Operator.postAssignment}
+        conversionMap = {'PreAssignment': Operator.preAssignment,
+                         'PreMul': Operator.preMul,
+                         'PreDiv': Operator.preDiv,
+                         'ModAdd': Operator.modAdd,
+                         'ModSub': Operator.modSub,
+                         'PostMul': Operator.postMul,
+                         'PostDiv': Operator.postDiv,
+                         'PostPercent': Operator.postPercent,
+                         'PostAssignment': Operator.postAssignment}
         operator = conversionMap[expression.value]
         return operator
 
     @classmethod
     def __getLocation(cls, expression):
         # Format: {location name: location ID}
-        conversionMap = {"Self": Location.self_,
-                         "Char": Location.character,
-                         "Ship": Location.ship,
-                         "Target": Location.target,
-                         "Other": Location.other,
-                         "Area": Location.area}
+        conversionMap = {'Self': Location.self_,
+                         'Char': Location.character,
+                         'Ship': Location.ship,
+                         'Target': Location.target,
+                         'Other': Location.other,
+                         'Area': Location.area}
         location = conversionMap[expression.value]
         return location
 
@@ -249,8 +249,8 @@ class ActionBuilder:
     @classmethod
     def __getBoolean(cls, expression):
         # Format: {boolean name: boolean value}
-        conversionMap = {"True": True,
-                         "False": False}
+        conversionMap = {'True': True,
+                         'False': False}
         boolean = conversionMap[expression.value]
         return boolean
 

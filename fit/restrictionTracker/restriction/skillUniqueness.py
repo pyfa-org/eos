@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-SkillUniquenessErrorData = namedtuple("SkillUniquenessErrorData", ("skill",))
+SkillUniquenessErrorData = namedtuple('SkillUniquenessErrorData', ('skill',))
 
 
 class SkillUniquenessRegister(RestrictionRegister):
@@ -47,7 +47,7 @@ class SkillUniquenessRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Only holders which have level attribute are tracked as skills
-        if hasattr(holder, "level") is True and holder.item.id is not None:
+        if hasattr(holder, 'level') is True and holder.item.id is not None:
             self.__skillHolders.addData(holder.item.id, holder)
 
     def unregisterHolder(self, holder):

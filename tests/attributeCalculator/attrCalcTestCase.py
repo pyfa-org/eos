@@ -47,6 +47,6 @@ class AttrCalcTestCase(EosTestCase):
                 entryNum += attrLen
         # Raise error if we found any data in any register
         if entryNum > 0:
-            plu = "y" if entryNum == 1 else "ies"
-            msg = "{} entr{} in buffers: buffers must be empty".format(entryNum, plu)
+            plu = 'y' if entryNum == 1 else 'ies'
+            msg = '{} entr{} in buffers: buffers must be empty'.format(entryNum, plu)
             self.fail(msg=msg)

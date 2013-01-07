@@ -114,7 +114,7 @@ class Fit:
 
 class MutableAttributeHolder:
 
-    __slots__ = ("__fit", "item", "attributes", "__state")
+    __slots__ = ('__fit', 'item', 'attributes', '__state')
 
     def __init__(self, type_):
         self.__fit = None
@@ -193,7 +193,7 @@ class SpaceItem(MutableAttributeHolder):
 
 class Skill(IndependentItem):
 
-    __slots__ = ("level",)
+    __slots__ = ('level',)
 
     def __init__(self, type_):
         CharacterItem.__init__(self, type_)

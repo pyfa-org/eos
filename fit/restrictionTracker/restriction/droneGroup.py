@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-DroneGroupErrorData = namedtuple("DroneGroupErrorData", ("allowedGroups", "droneGroup"))
+DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('allowedGroups', 'droneGroup'))
 
 
 class DroneGroupRegister(RestrictionRegister):

@@ -77,8 +77,8 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         self.fit.items.append(self.influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "malformed modifier on item 1061: invalid reference to self for filtered modification")
+        self.assertEqual(logRecord.msg, 'malformed modifier on item 1061: invalid reference to self for filtered modification')
         self.fit.items.remove(self.influenceSource)
         self.assertBuffersEmpty(self.fit)

@@ -29,12 +29,12 @@ class TestSplicing(EosTestCase):
     """Test parsing of trees describing joins of multiple operations applied onto items"""
 
     def testBuildSuccess(self):
-        eTgtLoc = self.ch.expression(expressionId=1, operandId=24, value="Target")
+        eTgtLoc = self.ch.expression(expressionId=1, operandId=24, value='Target')
         eTgtSrq = self.ch.expression(expressionId=2, operandId=29, expressionTypeId=3300)
         eTgtAttr1 = self.ch.expression(expressionId=3, operandId=22, expressionAttributeId=54)
         eTgtAttr2 = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=158)
         eTgtAttr3 = self.ch.expression(expressionId=5, operandId=22, expressionAttributeId=160)
-        eOptr = self.ch.expression(expressionId=6, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=6, operandId=21, value='PostPercent')
         eSrcAttr1 = self.ch.expression(expressionId=7, operandId=22, expressionAttributeId=351)
         eSrcAttr2 = self.ch.expression(expressionId=8, operandId=22, expressionAttributeId=349)
         eSrcAttr3 = self.ch.expression(expressionId=9, operandId=22, expressionAttributeId=767)

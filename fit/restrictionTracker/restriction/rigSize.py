@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-RigSizeErrorData = namedtuple("RigSizeErrorData", ("allowedSize", "holderSize"))
+RigSizeErrorData = namedtuple('RigSizeErrorData', ('allowedSize', 'holderSize'))
 
 
 class RigSizeRegister(RestrictionRegister):

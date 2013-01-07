@@ -30,10 +30,10 @@ class TestModLocGrp(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        eTgtLoc = self.ch.expression(expressionId=1, operandId=24, value="Ship")
+        eTgtLoc = self.ch.expression(expressionId=1, operandId=24, value='Ship')
         eTgtGrp = self.ch.expression(expressionId=2, operandId=26, expressionGroupId=46)
         eTgtAttr = self.ch.expression(expressionId=3, operandId=22, expressionAttributeId=6)
-        eOptr = self.ch.expression(expressionId=4, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=4, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=5, operandId=22, expressionAttributeId=1576)
         eTgtItms = self.ch.expression(expressionId=6, operandId=48, arg1Id=eTgtLoc.id, arg2Id=eTgtGrp.id)
         eTgtSpec = self.ch.expression(expressionId=7, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr.id)

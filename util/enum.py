@@ -31,14 +31,14 @@ class Enum(type):
         # Format: {value: name}
         valueNameMap = {}
         for attrName, val in dict_.items():
-            if attrName.startswith("_") is True:
+            if attrName.startswith('_') is True:
                 continue
             if val in valueNameMap:
-                raise ValueError("enum contains duplicate values")
+                raise ValueError('enum contains duplicate values')
             valueNameMap[val] = attrName
         # Assign our custom data structures to class dict
-        dict_["_values"] = tuple(valueNameMap)
-        dict_["_valueNameMap"] = valueNameMap
+        dict_['_values'] = tuple(valueNameMap)
+        dict_['_valueNameMap'] = valueNameMap
         return type.__new__(mcs, name, bases, dict_)
 
     def __iter__(self):

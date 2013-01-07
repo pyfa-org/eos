@@ -63,7 +63,7 @@ class EosTestCase(TestCase):
     def setUp(self):
         # Save existing loggers for eos_test loggers
         self.__removedLogHandlers = []
-        logger = getLogger("eos_test")
+        logger = getLogger('eos_test')
         for handler in logger.handlers:
             self.__removedLogHandlers.append(handler)
             logger.removeHandler(handler)
@@ -76,7 +76,7 @@ class EosTestCase(TestCase):
     def tearDown(self):
         # Remove test logger and restore loggers which
         # were removed during setup
-        logger = getLogger("eos_test")
+        logger = getLogger('eos_test')
         logger.removeHandler(self.__testLogHandler)
         self.__testLogHandler.close()
         for handler in self.__removedLogHandlers:

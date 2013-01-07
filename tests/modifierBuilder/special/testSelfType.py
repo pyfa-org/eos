@@ -29,11 +29,11 @@ class TestSelfType(EosTestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
     def testBuildSuccess(self):
-        eTgtOwn = self.ch.expression(expressionId=1, operandId=24, value="Char")
-        eSelf = self.ch.expression(expressionId=2, operandId=24, value="Self")
+        eTgtOwn = self.ch.expression(expressionId=1, operandId=24, value='Char')
+        eSelf = self.ch.expression(expressionId=2, operandId=24, value='Self')
         eSelfType = self.ch.expression(expressionId=3, operandId=36, arg1Id=eSelf.id)
         eTgtAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=64)
-        eOptr = self.ch.expression(expressionId=5, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=5, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=6, operandId=22, expressionAttributeId=292)
         eTgtItms = self.ch.expression(expressionId=7, operandId=49, arg1Id=eTgtOwn.id, arg2Id=eSelfType.id)
         eTgtSpec = self.ch.expression(expressionId=8, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr.id)

@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-ResourceErrorData = namedtuple("ResourceErrorData", ("output", "totalUsage", "holderConsumption"))
+ResourceErrorData = namedtuple('ResourceErrorData', ('output', 'totalUsage', 'holderConsumption'))
 
 
 class ResourceRegister(RestrictionRegister):

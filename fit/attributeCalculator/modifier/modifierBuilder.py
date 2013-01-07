@@ -55,8 +55,8 @@ class ModifierBuilder:
             postActions = set()
 
             # Get actions out of both trees
-            for treeName, actionSet in (("preExpression", preActions),
-                                        ("postExpression", postActions)):
+            for treeName, actionSet in (('preExpression', preActions),
+                                        ('postExpression', postActions)):
                 try:
                     # Get root expression
                     treeRoot = getattr(effect, treeName)
@@ -119,26 +119,26 @@ class ModifierBuilder:
                 if preActions.difference(usedPreActions) or postActions.difference(usedPostActions):
                     raise UnusedActionError
             except UnusedActionError as e:
-                msg = "unused actions left after generating modifiers for effect {}".format(effect.id)
+                msg = 'unused actions left after generating modifiers for effect {}'.format(effect.id)
                 signature = (type(e), effect.id)
-                logger.warning(msg, childName="modifierBuilder", signature=signature)
+                logger.warning(msg, childName='modifierBuilder', signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
         except TreeFetchingError as e:
-            msg = "failed to parse expressions of effect {}: unable to fetch expression {}".format(effect.id, e.args[0])
+            msg = 'failed to parse expressions of effect {}: unable to fetch expression {}'.format(effect.id, e.args[0])
             signature = (type(e), effect.id)
-            logger.error(msg, childName="modifierBuilder", signature=signature)
+            logger.error(msg, childName='modifierBuilder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingError as e:
-            msg = "failed to parse expressions of effect {}: {}".format(effect.id, e.args[0])
+            msg = 'failed to parse expressions of effect {}: {}'.format(effect.id, e.args[0])
             signature = (type(e), effect.id)
-            logger.warning(msg, childName="modifierBuilder", signature=signature)
+            logger.warning(msg, childName='modifierBuilder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError as e:
-            msg = "failed to parse expressions of effect {} due to unknown reason".format(effect.id)
+            msg = 'failed to parse expressions of effect {} due to unknown reason'.format(effect.id)
             signature = (type(e), effect.id)
-            logger.error(msg, childName="modifierBuilder", signature=signature)
+            logger.error(msg, childName='modifierBuilder', signature=signature)
             return (), EffectBuildStatus.error
 
         return tuple(modifiers), buildStatus

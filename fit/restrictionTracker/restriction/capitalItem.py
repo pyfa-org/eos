@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-CapitalItemErrorData = namedtuple("CapitalItemErrorData", ("allowedVolume", "holderVolume"))
+CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('allowedVolume', 'holderVolume'))
 
 
 class CapitalItemRegister(RestrictionRegister):

@@ -30,7 +30,7 @@ class TestInactive(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        self.stub = self.ch.expression(expressionId=-1, operandId=27, value="1")
+        self.stub = self.ch.expression(expressionId=-1, operandId=27, value='1')
 
     def testAttack(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=13)

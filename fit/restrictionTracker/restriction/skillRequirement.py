@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
 
 
-SkillRequirementErrorData = namedtuple("SkillRequirementErrorData", ("skill", "level", "requiredLevel"))
+SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'level', 'requiredLevel'))
 
 
 class SkillRequirementRegister(RestrictionRegister):
@@ -55,7 +55,7 @@ class SkillRequirementRegister(RestrictionRegister):
     def registerHolder(self, holder):
         # Only holders which belong to character and have
         # level attribute are tracked as skills
-        if hasattr(holder, "level") is True:
+        if hasattr(holder, 'level') is True:
             self.__skillHolders.addData(holder.item.id, holder)
         # Holders which have any skill requirement are tracked
         if holder.item.requiredSkills:

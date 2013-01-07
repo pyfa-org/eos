@@ -32,7 +32,7 @@ class TestModGangSrq(EosTestCase):
         EosTestCase.setUp(self)
         eTgtSrq = self.ch.expression(expressionId=1, operandId=29, expressionTypeId=3435)
         eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=54)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=833)
         eTgtSpec = self.ch.expression(expressionId=5, operandId=64, arg1Id=eTgtSrq.id, arg2Id=eTgtAttr.id)
         eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)

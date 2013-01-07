@@ -35,7 +35,7 @@ from eos.eve.const import EffectCategory, Operand
 # type -- OperandType class' attribute value
 # gang -- boolean, indicating if it is local or gang modifier
 # mirror -- contains ID of operand which is "mirror"
-OperandMeta = namedtuple("OperandMeta", ("enabled", "gang", "mirror"))
+OperandMeta = namedtuple('OperandMeta', ('enabled', 'gang', 'mirror'))
 
 
 # Map which holds data auxiliary for builder

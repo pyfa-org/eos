@@ -52,9 +52,9 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "malformed modifier on item 83: unknown operator 1008")
+        self.assertEqual(logRecord.msg, 'malformed modifier on item 83: unknown operator 1008')
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 
@@ -90,9 +90,9 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 120)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "malformed modifier on item 83: unknown operator None")
+        self.assertEqual(logRecord.msg, 'malformed modifier on item 83: unknown operator None')
         fit.items.remove(holder)
         self.assertBuffersEmpty(fit)
 

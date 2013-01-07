@@ -32,7 +32,7 @@ class Skill(MutableAttributeHolder):
     type_ -- type (item), on which skill is based
     """
 
-    __slots__ = ("__level",)
+    __slots__ = ('__level',)
 
     def __init__(self, type_):
         MutableAttributeHolder.__init__(self, type_)

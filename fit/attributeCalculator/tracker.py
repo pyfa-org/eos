@@ -96,7 +96,7 @@ class LinkTracker:
             location = Location.character
         # For "other" location, we should've checked for presence
         # of other entity - charge's container or module's charge
-        elif getattr(holder, "_other", None) is not None:
+        elif getattr(holder, '_other', None) is not None:
             location = Location.other
         else:
             location = None

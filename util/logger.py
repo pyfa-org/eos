@@ -121,7 +121,7 @@ class Logger:
         for handler in self.__rootLogger.handlers:
             self.__rootLogger.removeHandler(handler)
         # Define log storage options
-        logPath = os.path.join(logFolder, "{}.log".format(name))
+        logPath = os.path.join(logFolder, '{}.log'.format(name))
         os.makedirs(os.path.dirname(logPath), mode=0o755, exist_ok=True)
         handler = FileHandler(logPath, mode='a', encoding='utf-8', delay=False)
         # Set up formatter options

@@ -29,8 +29,8 @@ class TestStubInt0(EosTestCase):
     """Test parsing of trees describing integer-0 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=27, value="0")
-        ePostStub = self.ch.expression(expressionId=2, operandId=27, value="0")
+        ePreStub = self.ch.expression(expressionId=1, operandId=27, value='0')
+        ePostStub = self.ch.expression(expressionId=2, operandId=27, value='0')
         effect = self.ch.effect(categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
@@ -42,8 +42,8 @@ class TestStubInt1(EosTestCase):
     """Test parsing of trees describing integer-1 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=27, value="1")
-        ePostStub = self.ch.expression(expressionId=2, operandId=27, value="1")
+        ePreStub = self.ch.expression(expressionId=1, operandId=27, value='1')
+        ePostStub = self.ch.expression(expressionId=2, operandId=27, value='1')
         effect = self.ch.effect(categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
@@ -55,8 +55,8 @@ class TestStubBoolTrue(EosTestCase):
     """Test parsing of trees describing boolean-True stub"""
 
     def tesBuildSuccess(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=23, value="True")
-        ePostStub = self.ch.expression(expressionId=2, operandId=23, value="True")
+        ePreStub = self.ch.expression(expressionId=1, operandId=23, value='True')
+        ePostStub = self.ch.expression(expressionId=2, operandId=23, value='True')
         effect = self.ch.effect(categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
@@ -68,8 +68,8 @@ class TestStubMixed(EosTestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def testBuildSuccess(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=23, value="True")
-        ePostStub = self.ch.expression(expressionId=2, operandId=27, value="0")
+        ePreStub = self.ch.expression(expressionId=1, operandId=23, value='True')
+        ePostStub = self.ch.expression(expressionId=2, operandId=27, value='0')
         effect = self.ch.effect(categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)

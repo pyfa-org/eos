@@ -36,28 +36,28 @@ class TestModifierBuilderError(EosTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.modifierBuilder")
+        self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.ERROR)
-        self.assertEqual(logRecord.msg, "failed to parse expressions of effect 900: unable to fetch expression 902")
+        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 900: unable to fetch expression 902')
 
     def testUnusedActions(self):
         # To produce unused actions, we're passing just tree
         # which describes action which applies something, and
         # stub instead of action undoing it
-        eTgt = self.ch.expression(expressionId=1, operandId=24, value="Ship")
+        eTgt = self.ch.expression(expressionId=1, operandId=24, value='Ship')
         eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=9)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value="PostPercent")
+        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostPercent')
         eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=327)
         eTgtSpec = self.ch.expression(expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
         eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
         eAddMod = self.ch.expression(expressionId=7, operandId=6, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
-        ePostStub = self.ch.expression(expressionId=8, operandId=27, value="1")
+        ePostStub = self.ch.expression(expressionId=8, operandId=27, value='1')
         effect = self.ch.effect(effectId=799, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=ePostStub.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.modifierBuilder")
+        self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "unused actions left after generating modifiers for effect 799")
+        self.assertEqual(logRecord.msg, 'unused actions left after generating modifiers for effect 799')

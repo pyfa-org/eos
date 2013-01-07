@@ -32,7 +32,7 @@ class Logger:
 
     def __init__(self):
         self.__knownSignatures = set()
-        self.__rootLogger = getLogger("eos_test")
+        self.__rootLogger = getLogger('eos_test')
         self.__rootLogger.setLevel(INFO)
 
     INFO = INFO
@@ -80,8 +80,8 @@ class CacheHandler:
         self.__expressionData = {}
 
     def type_(self, **kwargs):
-        if "cacheHandler" in kwargs:
-            raise TypeError("cacheHandler")
+        if 'cacheHandler' in kwargs:
+            raise TypeError('cacheHandler')
         typ = Type(cacheHandler=self, **kwargs)
         if typ.id in self.__typeData:
             raise KeyError(typ.id)
@@ -89,8 +89,8 @@ class CacheHandler:
         return typ
 
     def attribute(self, **kwargs):
-        if "cacheHandler" in kwargs:
-            raise TypeError("cacheHandler")
+        if 'cacheHandler' in kwargs:
+            raise TypeError('cacheHandler')
         attr = Attribute(cacheHandler=self, **kwargs)
         if attr.id in self.__attributeData:
             raise KeyError(attr.id)
@@ -99,8 +99,8 @@ class CacheHandler:
 
 
     def effect(self, **kwargs):
-        if "cacheHandler" in kwargs:
-            raise TypeError("cacheHandler")
+        if 'cacheHandler' in kwargs:
+            raise TypeError('cacheHandler')
         eff = Effect(cacheHandler=self, **kwargs)
         if eff.id in self.__effectData:
             raise KeyError(eff.id)
@@ -108,8 +108,8 @@ class CacheHandler:
         return eff
 
     def expression(self, **kwargs):
-        if "cacheHandler" in kwargs:
-            raise TypeError("cacheHandler")
+        if 'cacheHandler' in kwargs:
+            raise TypeError('cacheHandler')
         exp = Expression(cacheHandler=self, **kwargs)
         if exp.id in self.__expressionData:
             raise KeyError(exp.id)

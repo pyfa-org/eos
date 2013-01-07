@@ -51,8 +51,8 @@ class TestLocationDirectSpace(AttrCalcTestCase):
         fit.items.append(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, "eos_test.attributeCalculator")
+        self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, "malformed modifier on item 34: unsupported target location {} for direct modification".format(Location.space))
+        self.assertEqual(logRecord.msg, 'malformed modifier on item 34: unsupported target location {} for direct modification'.format(Location.space))
         fit.items.remove(influenceSource)
         self.assertBuffersEmpty(fit)
