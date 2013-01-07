@@ -40,9 +40,11 @@ class JsonCacheHandler:
     Positional arguments:
     diskCacheFolder -- folder where on-disk cache files are stored
     name -- unique indentifier of cache, e.g. Eos instance name
+    logger -- logger to use for errors
     """
-    def __init__(self, diskCacheFolder, name):
+    def __init__(self, diskCacheFolder, name, logger):
         self._diskCacheFile = os.path.join(diskCacheFolder, '{}.json.bz2'.format(name))
+        self._logger = logger
         # Initialize memory data cache
         self.__typeDataCache = {}
         self.__attributeDataCache = {}
@@ -55,6 +57,9 @@ class JsonCacheHandler:
         self.__effectObjCache = WeakValueDictionary()
         self.__expressionObjCache = WeakValueDictionary()
 
+        # If cache doesn't exist, silently finish initialization
+        if not os.path.exists(self._diskCacheFile):
+            return
         # Read JSON into local variable
         try:
             with bz2.BZ2File(self._diskCacheFile, 'r') as file:
@@ -64,7 +69,8 @@ class JsonCacheHandler:
         # anything else bad happens, do not load anything
         # and leave values as initialized
         except:
-            pass
+            msg = 'error during reading cache'
+            self._logger.error(msg, childName='cacheHandler')
         # Load data into data cache, if no errors occurred
         # during JSON reading/parsing
         else:
@@ -91,7 +97,7 @@ class JsonCacheHandler:
                 data = self.__typeDataCache[jsonTypeId]
             except KeyError as e:
                 raise TypeFetchError(typeId) from e
-            groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effectIds, attrIds = data
+            groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effects, attribs = data
             type_ = Type(cacheHandler=self,
                          typeId=typeId,
                          groupId=groupId,
@@ -102,8 +108,8 @@ class JsonCacheHandler:
                          falloffAttributeId=falloff,
                          trackingSpeedAttributeId=tracking,
                          fittableNonSingleton=fittable,
-                         attributes={attrId: attrVal for attrId, attrVal in attrIds},
-                         effects=tuple(self.getEffect(effectId) for effectId in effectIds))
+                         attributes={attrId: attrVal for attrId, attrVal in attribs},
+                         effects=tuple(self.getEffect(effectId) for effectId in effects))
             self.__typeObjCache[typeId] = type_
         return type_
 

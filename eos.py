@@ -42,11 +42,11 @@ class Eos:
     def __init__(self, dataHandler, name='eos'):
         self._logger = Logger(name)
         self._logger.info('session started')
-        self._cacheHandler = JsonCacheHandler('/home/dfx/src/pyfa/eos/dataFolder/cache/', name)
+        self._cacheHandler = JsonCacheHandler('/home/dfx/src/pyfa/eos/dataFolder/cache/', name, self._logger)
         # Compare fingerprints from data and cache
         cacheFp = self._cacheHandler.getFingerprint()
         dataVersion = dataHandler.getVersion()
-        currentFp = '{}_{}_{}'.format(eosVersion, name, dataVersion)
+        currentFp = '{}_{}_{}'.format(name, dataVersion, eosVersion)
         # If data version is corrupt or fingerprints mismatch,
         # update cache
         if dataVersion is None or cacheFp != currentFp:
