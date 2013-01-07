@@ -78,6 +78,18 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1][0], 920)
 
+    def testSingleCleaned(self):
+        # Make sure check is ran before cleanup
+        self.dh.data['invtypes'].append({'typeID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
+        data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
+        self.assertEqual(logRecord.msg, '1 rows in table invtypes have invalid PKs, removing them')
+        self.assertEqual(len(data['types']), 0)
+
     def testDualProperPk(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
@@ -121,6 +133,19 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(len(data['types'][1][9]), 1)
         self.assertIn((100, 50.0), data['types'][1][9])
 
+    def testDualCleaned(self):
+        # Make sure check is ran before cleanup
+        self.dh.data['invtypes'].append({'typeID': 1})
+        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
+        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
+        data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
+        logRecord = self.log[0]
+        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.levelno, Logger.WARNING)
+        self.assertEqual(logRecord.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
+        self.assertEqual(len(data['types']), 0)
+
     def testDualDuplicateReverse(self):
         # Make sure first fed by dataHandler row is accepted
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -143,6 +168,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invgroups'].append({'groupID': 1, 'categoryID': 7})
         self.dh.data['invgroups'].append({'groupID': 1, 'categoryID': 32})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
@@ -156,6 +182,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 50})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 55})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
@@ -169,6 +196,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 50})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 55})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
@@ -182,6 +210,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 100, 'falloffAttributeID': 70})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
@@ -197,6 +226,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmexpressions'].append({'expressionID': 5, 'operandID': 55})
         self.dh.data['dgmexpressions'].append({'expressionID': 5, 'operandID': 80})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)

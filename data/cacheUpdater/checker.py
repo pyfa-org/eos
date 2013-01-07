@@ -141,7 +141,8 @@ class Checker:
                 # further down the table
                 break
         if invalidRow is not None:
-            self._logger.warning('typeID -1 exists, removing it', childName='cacheUpdater')
+            msg = 'type self-reference (ID {}) exists, removing type'.format(InvType.self_)
+            self._logger.warning(msg, childName='cacheUpdater')
             table.remove(invalidRow)
 
     def _attributeValueType(self):

@@ -66,7 +66,7 @@ class Cleaner:
                 strongGroups.add(datarow['groupID'])
         rowsToPump = set()
         for datarow in self.data['invtypes']:
-            if datarow['groupID'] in strongGroups:
+            if datarow.get('groupID') in strongGroups:
                 rowsToPump.add(datarow)
         self._pumpData('invtypes', rowsToPump)
 
