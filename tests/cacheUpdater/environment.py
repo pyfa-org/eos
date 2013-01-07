@@ -17,3 +17,36 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+
+class DataHandler:
+
+    def __init__(self):
+        self.data = {'invtypes': [],
+                     'invgroups': [],
+                     'dgmattribs': [],
+                     'dgmtypeattribs': [],
+                     'dgmeffects': [],
+                     'dgmtypeeffects': [],
+                     'dgmexpressions': []}
+
+    def getInvtypes(self):
+        return self.data['invtypes']
+
+    def getInvgroups(self):
+        return self.data['invgroups']
+
+    def getDgmattribs(self):
+        return self.data['dgmattribs']
+
+    def getDgmtypeattribs(self):
+        return self.data['dgmtypeattribs']
+
+    def getDgmeffects(self):
+        return self.data['dgmeffects']
+
+    def getDgmtypeeffects(self):
+        return self.data['dgmtypeeffects']
+
+    def getDgmexpressions(self):
+        return self.data['dgmexpressions']

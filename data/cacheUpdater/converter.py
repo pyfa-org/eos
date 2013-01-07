@@ -175,7 +175,10 @@ class Converter:
         newInvtypes = set()
         # For all new rows, continue numbering of row position in original table.
         # Here we get max value of tablePos, according to already existing rows
-        tablePos = max(dgmtypeattribs, key=lambda row: row['tablePos'])['tablePos']
+        if dgmtypeattribs:
+            tablePos = max(dgmtypeattribs, key=lambda row: row['tablePos'])['tablePos'] + 1
+        else:
+            tablePos = 0
         # Cycle through all invtypes, for each row moving each its field
         # either to different table or container for updated rows
         for row in sorted(self.data['invtypes'],  key=lambda row: row['tablePos']):
@@ -193,10 +196,10 @@ class Converter:
                     if (typeId, attrId) in definedPairs:
                         attrsSkipped += 1
                         continue
-                    tablePos += 1
                     # Generate row and add it to proper attribute table
                     dgmtypeattribs.add(frozendict({'typeID': typeId, 'attributeID': attrId,
                                                    'value': value, 'tablePos': tablePos}))
+                    tablePos += 1
                 else:
                     newRow[field] = value
             newInvtypes.add(frozendict(newRow))

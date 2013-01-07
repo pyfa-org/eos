@@ -176,10 +176,15 @@ class Cleaner:
         for tableName in sorted(self.data):
             datalen = len(self.data[tableName])
             trashedlen = len(self.trashedData[tableName])
-            ratio = trashedlen / (datalen + trashedlen)
+            try:
+                ratio = trashedlen / (datalen + trashedlen)
+            # Skip results if table was empty
+            except ZeroDivisionError:
+                continue
             tableMsgs.append('{:.1%} from {}'.format(ratio, tableName))
-        msg = 'cleaned: {}'.format(', '.join(tableMsgs))
-        self._logger.info(msg, childName='cacheUpdater')
+        if tableMsgs:
+            msg = 'cleaned: {}'.format(', '.join(tableMsgs))
+            self._logger.info(msg, childName='cacheUpdater')
 
     def _pumpData(self, tableName, datarows):
         """

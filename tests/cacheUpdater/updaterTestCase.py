@@ -17,3 +17,17 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+
+from eos.data.cacheUpdater.updater import CacheUpdater
+from eos.tests.environment import Logger
+from eos.tests.eosTestCase import EosTestCase
+from .environment import DataHandler
+
+
+class UpdaterTestCase(EosTestCase):
+
+    def setUp(self):
+        EosTestCase.setUp(self)
+        self.dh = DataHandler()
+        self.updater = CacheUpdater(Logger())

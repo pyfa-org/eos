@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from logging import getLogger, ERROR, WARNING
+from logging import getLogger, ERROR, INFO, WARNING
 
 from eos.data.cacheHandler.exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
 from eos.eve.attribute import Attribute
@@ -34,8 +34,17 @@ class Logger:
         self.__knownSignatures = set()
         self.__rootLogger = getLogger("eos_test")
 
-    ERROR = ERROR
+    INFO = INFO
     WARNING = WARNING
+    ERROR = ERROR
+
+    def error(self, msg, childName=None, signature=None):
+        logger = self.__getChildLogger(childName)
+        if signature is None:
+            logger.error(msg)
+        elif not signature in self.__knownSignatures:
+            logger.error(msg)
+            self.__knownSignatures.add(signature)
 
     def warning(self, msg, childName=None, signature=None):
         logger = self.__getChildLogger(childName)
@@ -45,12 +54,12 @@ class Logger:
             logger.warning(msg)
             self.__knownSignatures.add(signature)
 
-    def error(self, msg, childName=None, signature=None):
+    def info(self, msg, childName=None, signature=None):
         logger = self.__getChildLogger(childName)
         if signature is None:
-            logger.error(msg)
+            logger.info(msg)
         elif not signature in self.__knownSignatures:
-            logger.error(msg)
+            logger.info(msg)
             self.__knownSignatures.add(signature)
 
     def __getChildLogger(self, childName):
