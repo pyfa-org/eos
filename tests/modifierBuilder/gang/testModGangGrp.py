@@ -80,12 +80,14 @@ class TestModGangGrp(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def testEffCategoryArea(self):
         effect = self.ch.effect(categoryId=3, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def testEffCategoryOnline(self):
         effect = self.ch.effect(categoryId=4, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
