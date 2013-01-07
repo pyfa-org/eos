@@ -42,6 +42,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertEqual(restrictionError.holderSize, 10)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailOriginal(self):
@@ -59,6 +60,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertEqual(restrictionError.holderSize, 10)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNoShip(self):
@@ -70,6 +72,7 @@ class TestRigSize(RestrictionTestCase):
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassShipNoAttr(self):
@@ -84,4 +87,5 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

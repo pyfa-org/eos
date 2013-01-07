@@ -61,6 +61,7 @@ class TestOperatorAdd(AttrCalcTestCase):
         self.fit.items.remove(self.influenceSource2)
         self.fit.items.remove(self.influenceSource3)
         self.fit.items.remove(self.influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testPenalized(self):
@@ -70,4 +71,5 @@ class TestOperatorAdd(AttrCalcTestCase):
         self.fit.items.remove(self.influenceSource2)
         self.fit.items.remove(self.influenceSource3)
         self.fit.items.remove(self.influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

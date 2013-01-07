@@ -45,6 +45,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertEqual(restrictionError2.holderSlotIndex, 120)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailOriginal(self):
@@ -65,6 +66,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertEqual(restrictionError2.holderSlotIndex, 120)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -76,6 +78,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         restrictionError = fit.getRestrictionError(holder, Restriction.subsystemIndex)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassDifferent(self):
@@ -91,4 +94,5 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

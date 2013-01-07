@@ -69,4 +69,5 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
         fit.ship = None
         fit.items.remove(holder3)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

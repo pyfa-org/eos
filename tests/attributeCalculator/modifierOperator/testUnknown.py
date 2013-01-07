@@ -126,4 +126,5 @@ class TestOperatorUnknown(AttrCalcTestCase):
         # from calculating value based on valid modifiers
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 1)
         self.assertBuffersEmpty(fit)

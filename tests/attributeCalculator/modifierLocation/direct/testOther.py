@@ -60,6 +60,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.influenceSource.breakOtherLink(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSelf(self):
@@ -71,6 +72,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.fit.items.remove(influenceTarget)
         self.influenceSource.breakOtherLink(influenceTarget)
         self.fit.items.remove(self.influenceSource)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testOtherHolder(self):
@@ -80,4 +82,5 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

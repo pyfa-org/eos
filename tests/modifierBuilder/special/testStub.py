@@ -35,6 +35,7 @@ class TestStubInt0(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
 
 class TestStubInt1(EosTestCase):
@@ -47,6 +48,7 @@ class TestStubInt1(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
 
 class TestStubBoolTrue(EosTestCase):
@@ -59,6 +61,7 @@ class TestStubBoolTrue(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
 
 class TestStubMixed(EosTestCase):
@@ -71,3 +74,4 @@ class TestStubMixed(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)

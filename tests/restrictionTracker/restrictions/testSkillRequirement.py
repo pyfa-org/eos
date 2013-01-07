@@ -39,6 +39,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 3),))
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailMultiple(self):
@@ -53,6 +54,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 5), (48, None, 1)))
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailPartial(self):
@@ -71,6 +73,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(restrictionError, ((50, None, 5),))
         fit.items.remove(holder)
         fit.items.remove(skill)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassSatisfied(self):
@@ -88,6 +91,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.items.remove(skill)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassMultiSkill(self):
@@ -109,6 +113,8 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(holder)
         fit.items.remove(skill1)
         fit.items.remove(skill2)
+        self.assertEqual(len(self.log), 0)
+        self.assertBuffersEmpty(fit)
 
     def testPassMultiSkillNone(self):
         # Make sure that None-leveled skills are overridden
@@ -130,4 +136,5 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(holder)
         fit.items.remove(skill1)
         fit.items.remove(skill2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

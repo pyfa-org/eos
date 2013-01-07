@@ -56,6 +56,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         self.fit.ship = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testCharacter(self):
@@ -66,6 +67,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         self.fit.character = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testUnpositionedError(self):

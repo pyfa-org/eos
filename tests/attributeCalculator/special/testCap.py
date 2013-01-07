@@ -56,6 +56,7 @@ class TestCap(AttrCalcTestCase):
         self.fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 5)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testCapOriginal(self):
@@ -66,6 +67,7 @@ class TestCap(AttrCalcTestCase):
         self.fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 2)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testCapModified(self):
@@ -89,6 +91,7 @@ class TestCap(AttrCalcTestCase):
         # Attr value is 3 * 6 = 18, but cap value is 0.1 * 6 = 0.6
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 0.6)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testCapUpdate(self):
@@ -117,4 +120,5 @@ class TestCap(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 7)
         self.fit.items.remove(holder)
         self.fit.items.remove(capUpdater)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

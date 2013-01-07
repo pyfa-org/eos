@@ -39,6 +39,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailSubcapitalShip(self):
@@ -55,6 +56,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restrictionError.holderVolume, 501)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailOriginalVolume(self):
@@ -73,6 +75,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restrictionError.holderVolume, 501)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassSubcapitalShipHolder(self):
@@ -84,6 +87,7 @@ class TestCapitalItem(RestrictionTestCase):
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonShipHolder(self):
@@ -95,6 +99,7 @@ class TestCapitalItem(RestrictionTestCase):
         restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassCapitalShip(self):
@@ -110,6 +115,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNoVolume(self):
@@ -122,4 +128,5 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

@@ -57,6 +57,7 @@ class TestLocationFilterCharacter(AttrCalcTestCase):
         self.fit.items.remove(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testOtherLocation(self):
@@ -65,4 +66,5 @@ class TestLocationFilterCharacter(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

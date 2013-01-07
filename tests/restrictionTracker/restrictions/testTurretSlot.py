@@ -52,6 +52,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailShipNoAttr(self):
@@ -70,6 +71,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(restrictionError.slotsUsed, 1)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailNoShip(self):
@@ -85,6 +87,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(restrictionError.slotsMax, 0)
         self.assertEqual(restrictionError.slotsUsed, 1)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailModified(self):
@@ -111,6 +114,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -133,6 +137,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassHolderNonShip(self):
@@ -154,6 +159,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonSlot(self):
@@ -175,4 +181,5 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

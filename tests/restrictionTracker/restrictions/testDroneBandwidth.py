@@ -41,6 +41,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restrictionError.totalUsage, 50)
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessShipNoAttr(self):
@@ -60,6 +61,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessSingle(self):
@@ -80,6 +82,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessMultiple(self):
@@ -112,6 +115,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
@@ -131,6 +135,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 100)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testMixUsageNegative(self):
@@ -160,6 +165,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testMixUsageZero(self):
@@ -189,6 +195,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -214,6 +221,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNoOriginalAttr(self):
@@ -232,6 +240,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNegativeUse(self):
@@ -258,6 +267,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassState(self):
@@ -273,4 +283,5 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

@@ -54,6 +54,7 @@ class TestModOwnSrq(EosTestCase):
         self.assertEqual(modifier.location, Location.space)
         self.assertEqual(modifier.filterType, FilterType.skill)
         self.assertEqual(modifier.filterValue, 3412)
+        self.assertEqual(len(self.log), 0)
 
     def testEffCategoryPassive(self):
         effect = self.ch.effect(categoryId=0, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
@@ -63,6 +64,7 @@ class TestModOwnSrq(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(len(self.log), 0)
 
     def testEffCategoryActive(self):
         effect = self.ch.effect(categoryId=1, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
@@ -72,6 +74,7 @@ class TestModOwnSrq(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.active)
         self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(len(self.log), 0)
 
     def testEffCategoryTarget(self):
         effect = self.ch.effect(categoryId=2, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
@@ -81,12 +84,14 @@ class TestModOwnSrq(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.active)
         self.assertEqual(modifier.context, Context.projected)
+        self.assertEqual(len(self.log), 0)
 
     def testEffCategoryArea(self):
         effect = self.ch.effect(categoryId=3, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def testEffCategoryOnline(self):
         effect = self.ch.effect(categoryId=4, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
@@ -96,6 +101,7 @@ class TestModOwnSrq(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.online)
         self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(len(self.log), 0)
 
     def testEffCategoryOverload(self):
         effect = self.ch.effect(categoryId=5, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
@@ -105,12 +111,14 @@ class TestModOwnSrq(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.overload)
         self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(len(self.log), 0)
 
     def testEffCategoryDungeon(self):
         effect = self.ch.effect(categoryId=6, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def testEffCategorySystem(self):
         effect = self.ch.effect(categoryId=7, preExpressionId=self.eAddMod.id, postExpressionId=self.eRmMod.id)
@@ -120,3 +128,4 @@ class TestModOwnSrq(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(len(self.log), 0)

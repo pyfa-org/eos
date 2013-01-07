@@ -36,6 +36,7 @@ class TestSkillLevel(AttrCalcTestCase):
         # If holder has level attribute, it must be returned despite of holder contents
         self.assertAlmostEqual(skill.attributes[Attribute.skillLevel], 5)
         fit.items.remove(skill)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testStandardAttrAccess(self):
@@ -48,4 +49,5 @@ class TestSkillLevel(AttrCalcTestCase):
         # be returned
         self.assertAlmostEqual(holder.attributes[Attribute.skillLevel], 3)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

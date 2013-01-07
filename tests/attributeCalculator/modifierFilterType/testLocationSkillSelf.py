@@ -60,6 +60,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         self.fit.items.remove(self.influenceSource)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testOtherSkill(self):
@@ -70,4 +71,5 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

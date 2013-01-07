@@ -45,6 +45,9 @@ class TestMapMethods(AttrCalcTestCase):
         self.assertIsNone(self.holder.attributes.get(1008))
         self.assertEqual(self.holder.attributes.get(1008, 60), 60)
         self.fit.items.remove(self.holder)
+        # Attempt to fetch non-existent attribute generates
+        # error, which is not related to this test
+        self.assertEqual(len(self.log), 1)
         self.assertBuffersEmpty(self.fit)
 
     def testLen(self):
@@ -52,6 +55,7 @@ class TestMapMethods(AttrCalcTestCase):
         # IDs from both attribute containers
         self.assertEqual(len(self.holder.attributes), 3)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testContains(self):
@@ -63,6 +67,7 @@ class TestMapMethods(AttrCalcTestCase):
         self.assertTrue(self.attr3.id in self.holder.attributes)
         self.assertFalse(1008 in self.holder.attributes)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testKeys(self):
@@ -70,6 +75,7 @@ class TestMapMethods(AttrCalcTestCase):
         # attribute IDs w/o duplication
         self.assertCountEqual(self.holder.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr3.id))
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testIter(self):
@@ -78,4 +84,5 @@ class TestMapMethods(AttrCalcTestCase):
         # w/o checking format of returned data
         self.assertCountEqual(self.holder.attributes, (self.attr1.id, self.attr2.id, self.attr3.id))
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

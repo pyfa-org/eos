@@ -83,4 +83,5 @@ class TestCalculationChain(AttrCalcTestCase):
         fit.items.remove(holder1)
         fit.ship = None
         fit.items.remove(holder3)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

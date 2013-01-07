@@ -44,6 +44,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailType2(self):
@@ -62,6 +63,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailType3(self):
@@ -80,6 +82,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailType4(self):
@@ -98,6 +101,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailType5(self):
@@ -116,6 +120,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailGroup1(self):
@@ -134,6 +139,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailGroup2(self):
@@ -152,6 +158,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailGroup3(self):
@@ -170,6 +177,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailGroup4(self):
@@ -188,6 +196,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailCombined(self):
@@ -206,6 +215,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailNoShip(self):
@@ -220,6 +230,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipType, None)
         self.assertEqual(restrictionError.shipGroup, None)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailAttrOriginal(self):
@@ -238,6 +249,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, 31)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassTypeMatch(self):
@@ -252,6 +264,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassGroupMatch(self):
@@ -266,6 +279,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassCombinedMatch(self):
@@ -280,6 +294,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonShipHolder(self):
@@ -293,4 +308,5 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

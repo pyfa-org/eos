@@ -42,6 +42,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.droneGroup, 56)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailMismatch2(self):
@@ -58,6 +59,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.droneGroup, 797)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailMismatchCombined(self):
@@ -74,6 +76,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.droneGroup, 803)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailMismatchOriginal(self):
@@ -94,6 +97,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.droneGroup, 37)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailDroneNone(self):
@@ -109,6 +113,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.droneGroup, None)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNoShip(self):
@@ -120,6 +125,7 @@ class TestDroneGroup(RestrictionTestCase):
         restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassShipNoRestriction(self):
@@ -134,6 +140,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonDrone(self):
@@ -147,6 +154,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassMatch1(self):
@@ -160,6 +168,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassMatch2(self):
@@ -173,6 +182,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassMatchCombination(self):
@@ -187,4 +197,5 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

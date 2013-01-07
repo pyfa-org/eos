@@ -54,6 +54,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         # removed holder (which is both source and target in this test set)
         # essentially becomes detached, which is covered by other tests
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testCharacter(self):
@@ -61,6 +62,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testShip(self):
@@ -68,6 +70,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSpace(self):
@@ -75,6 +78,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.fit.items.append(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testPositioned(self):
@@ -82,6 +86,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.fit.character = holder
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.character = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testOther(self):
@@ -96,4 +101,5 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.character = None
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

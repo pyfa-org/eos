@@ -60,4 +60,5 @@ class TestLocationDirectOtherSwitch(AttrCalcTestCase):
         fit.items.remove(influenceTarget2)
         influenceSource.breakOtherLink(influenceTarget2)
         fit.items.remove(influenceSource)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

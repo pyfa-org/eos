@@ -68,4 +68,5 @@ class TestNonExistent(AttrCalcTestCase):
         fit.items.append(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

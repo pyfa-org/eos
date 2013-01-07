@@ -56,4 +56,5 @@ class TestLocationDirectCharacterSwitch(AttrCalcTestCase):
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)
         fit.items.remove(influenceSource)
         fit.character = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

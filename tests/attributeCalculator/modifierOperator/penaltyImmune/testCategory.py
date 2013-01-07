@@ -57,6 +57,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testCharge(self):
@@ -70,6 +71,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSkill(self):
@@ -83,6 +85,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testImplant(self):
@@ -96,6 +99,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSubsystem(self):
@@ -109,6 +113,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testMixed(self):
@@ -122,6 +127,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testWithNotImmune(self):
@@ -135,4 +141,5 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource1)
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

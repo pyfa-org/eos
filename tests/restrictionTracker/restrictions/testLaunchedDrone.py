@@ -41,6 +41,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restrictionError.maxLaunchedDrones, 0)
         self.assertEqual(restrictionError.launchedDrones, 1)
         fit.drones.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailNoAttr(self):
@@ -68,6 +69,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restrictionError2.launchedDrones, 2)
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcess(self):
@@ -95,6 +97,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restrictionError2.launchedDrones, 2)
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
@@ -120,6 +123,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restrictionError2.launchedDrones, 2)
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -141,6 +145,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassState(self):
@@ -161,6 +166,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonDrone(self):
@@ -182,4 +188,5 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

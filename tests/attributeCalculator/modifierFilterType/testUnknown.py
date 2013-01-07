@@ -74,4 +74,5 @@ class TestFilterUnknown(AttrCalcTestCase):
         # Invalid filter type in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
+        self.assertEqual(len(self.log), 1)
         self.assertBuffersEmpty(self.fit)

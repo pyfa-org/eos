@@ -65,4 +65,5 @@ class TestTargetAttribute(AttrCalcTestCase):
         # Third should stay unmodified
         self.assertAlmostEqual(holder.attributes[tgtAttr3.id], 100)
         fit.items.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

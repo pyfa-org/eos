@@ -38,6 +38,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testCargoScan(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=14)
@@ -45,6 +46,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testCheatTeleDock(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=15)
@@ -52,6 +54,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testCheatTeleGate(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=16)
@@ -59,6 +62,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testAoeDecloak(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=19)
@@ -66,6 +70,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testEcmBurst(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=30)
@@ -73,6 +78,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testAoeDmg(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=32)
@@ -80,6 +86,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testMissileLaunch(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=44)
@@ -87,6 +94,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testDefenderLaunch(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=45)
@@ -94,6 +102,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testFofLaunch(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=47)
@@ -101,6 +110,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testMine(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=50)
@@ -108,6 +118,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testPowerBooster(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=53)
@@ -115,6 +126,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testShipScan(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=66)
@@ -122,6 +134,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testSurveyScan(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=69)
@@ -129,6 +142,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testTgtHostile(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=70)
@@ -136,6 +150,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testTgtSilent(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=71)
@@ -143,6 +158,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testToolTgtSkills(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=72)
@@ -150,6 +166,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testUserError(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=73)
@@ -157,6 +174,7 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)
 
     def testVrfTgtGrp(self):
         disabledPre = self.ch.expression(expressionId=1, operandId=74)
@@ -164,3 +182,4 @@ class TestInactive(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 0)

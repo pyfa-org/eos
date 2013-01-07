@@ -46,6 +46,7 @@ class TestIncomplete(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def testPost(self):
         eRmMod = self.ch.expression(expressionId=8, operandId=58, arg1Id=self.eOptrTgt.id, arg2Id=self.eSrcAttr.id)
@@ -53,3 +54,4 @@ class TestIncomplete(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)

@@ -77,4 +77,5 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
         self.fit.items.remove(influenceSource)
+        self.assertEqual(len(self.log), 1)
         self.assertBuffersEmpty(self.fit)

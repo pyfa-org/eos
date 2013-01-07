@@ -31,3 +31,4 @@ class TestDetached(AttrCalcTestCase):
         module = ShipItem(type_)
         attrValue = module.attributes[56]
         self.assertEqual(attrValue, 50)
+        self.assertEqual(len(self.log), 0)

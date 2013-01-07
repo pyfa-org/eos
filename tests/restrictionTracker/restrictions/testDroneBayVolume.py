@@ -40,6 +40,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restrictionError.totalUsage, 50)
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.drones.remove(holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessShipNoAttr(self):
@@ -58,6 +59,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessSingle(self):
@@ -77,6 +79,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessMultiple(self):
@@ -107,6 +110,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testFailExcessModified(self):
@@ -125,6 +129,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 100)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testMixUsageNegative(self):
@@ -152,6 +157,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testMixUsageZero(self):
@@ -179,6 +185,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -202,6 +209,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNoOriginalAttr(self):
@@ -219,6 +227,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNegativeUse(self):
@@ -242,6 +251,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonDrone(self):
@@ -257,4 +267,5 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

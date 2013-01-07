@@ -43,6 +43,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         self.assertEqual(restrictionError2.skill, 56)
         fit.items.remove(skill1)
         fit.items.remove(skill2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -54,6 +55,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         restrictionError = fit.getRestrictionError(skill, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError)
         fit.items.remove(skill)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNone(self):
@@ -70,6 +72,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(skill1)
         fit.items.remove(skill2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassNonSkills(self):
@@ -86,4 +89,5 @@ class TestSkillUniqueness(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

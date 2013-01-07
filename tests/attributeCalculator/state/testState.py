@@ -85,6 +85,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testFitOnline(self):
@@ -92,6 +93,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testFitActive(self):
@@ -99,6 +101,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testFitOverloaded(self):
@@ -106,6 +109,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.fit.items.append(self.holder)
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchUpSingle(self):
@@ -114,6 +118,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.holder.state = State.online
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 143)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchUpMultiple(self):
@@ -122,6 +127,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.holder.state = State.overload
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 364.65)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchDownSingle(self):
@@ -130,6 +136,7 @@ class TestStateSwitching(AttrCalcTestCase):
         self.holder.state = State.active
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 214.5)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)
 
     def testSwitchDownMultiple(self):
@@ -138,4 +145,5 @@ class TestStateSwitching(AttrCalcTestCase):
         self.holder.state = State.offline
         self.assertAlmostEqual(self.holder.attributes[self.tgtAttr.id], 110)
         self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(self.fit)

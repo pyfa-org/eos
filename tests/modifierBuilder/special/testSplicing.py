@@ -59,3 +59,4 @@ class TestSplicing(EosTestCase):
         modifiers, status = ModifierBuilder.build(effect, Logger())
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 3)
+        self.assertEqual(len(self.log), 0)

@@ -51,6 +51,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertEqual(restrictionError2.groupHolders, 2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testMixExcessOne(self):
@@ -72,6 +73,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testMixExcessOriginal(self):
@@ -94,6 +96,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPass(self):
@@ -113,6 +116,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassHolderNoneGroup(self):
@@ -131,6 +135,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassState(self):
@@ -149,6 +154,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)
 
     def testPassHolderNonShip(self):
@@ -167,4 +173,5 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(restrictionError2)
         fit.items.remove(holder1)
         fit.items.remove(holder2)
+        self.assertEqual(len(self.log), 0)
         self.assertBuffersEmpty(fit)

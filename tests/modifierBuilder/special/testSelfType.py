@@ -47,3 +47,4 @@ class TestSelfType(EosTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.filterType, FilterType.skill)
         self.assertEqual(modifier.filterValue, InvType.self_)
+        self.assertEqual(len(self.log), 0)
