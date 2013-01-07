@@ -20,6 +20,7 @@
 
 
 from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.environment import Logger
 
 
 class TestConversionAttribute(UpdaterTestCase):
@@ -34,7 +35,10 @@ class TestConversionAttribute(UpdaterTestCase):
         self.dh.data['dgmattribs'].append({'maxAttributeID': 84, 'randomField': None, 'stackable': True,
                                            'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
         self.assertIn(111, data['attributes'])
         self.assertEqual(data['attributes'][111], (84, 0.0, False, True))

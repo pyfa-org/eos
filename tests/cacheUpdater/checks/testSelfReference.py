@@ -33,11 +33,14 @@ class TestSelfReference(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': -1, 'groupID': 1})
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'type self-reference (ID -1) exists, removing type')
+        cleanStats = self.log[1]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -46,9 +49,12 @@ class TestSelfReference(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': -1})
         self.dh.data['invtypes'].append({'typeID': 1})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'type self-reference (ID -1) exists, removing type')
+        cleanStats = self.log[1]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)

@@ -20,6 +20,7 @@
 
 
 from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.environment import Logger
 
 
 class TestConversionType(UpdaterTestCase):
@@ -44,7 +45,10 @@ class TestConversionType(UpdaterTestCase):
                                            'durationAttributeID': 781, 'dischargeAttributeID': 752, 'rangeAttributeID': 26,
                                            'falloffAttributeID': 33, 'trackingSpeedAttributeID': 68})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
         item = data['types'][1]

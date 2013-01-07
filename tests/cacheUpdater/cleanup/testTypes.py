@@ -20,6 +20,7 @@
 
 
 from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.environment import Logger
 
 
 class TestCleanupTypes(UpdaterTestCase):
@@ -30,27 +31,43 @@ class TestCleanupTypes(UpdaterTestCase):
     def testGroupCharacter(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
     def testGroupEffectBeacon(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
     def testGroupOther(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 100.0% from invtypes')
         self.assertEqual(len(data['types']), 0)
 
     def testGroupCharacterUnpublished(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'published': False})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -58,7 +75,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 6})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -66,7 +87,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 7})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -74,7 +99,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 8})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -82,7 +111,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 16})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -90,7 +123,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 18})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -98,7 +135,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 20})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -106,7 +147,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 32})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
@@ -114,7 +159,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 51})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 100.0% from invgroups, 100.0% from invtypes')
         self.assertEqual(len(data['types']), 0)
 
     def testMixed(self):
@@ -125,7 +174,11 @@ class TestCleanupTypes(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 4, 'groupID': 80})
         self.dh.data['invgroups'].append({'groupID': 80, 'categoryID': 700})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        self.assertEqual(cleanStats.msg, 'cleaned: 50.0% from invgroups, 50.0% from invtypes')
         self.assertEqual(len(data['types']), 2)
         self.assertIn(1, data['types'])
         self.assertIn(3, data['types'])

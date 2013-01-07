@@ -20,6 +20,7 @@
 
 
 from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.environment import Logger
 
 
 class TestConversionEffect(UpdaterTestCase):
@@ -35,7 +36,10 @@ class TestConversionEffect(UpdaterTestCase):
                                            'isAssistance': False, 'fittingUsageChanceAttributeID': 96, 'preExpression': 24,
                                            'durationAttributeID': 781, 'randomField': 666})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(111, data['effects'])
         self.assertEqual(data['effects'][111], (8, True, False, 96, 24, 979))

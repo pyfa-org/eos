@@ -20,6 +20,7 @@
 
 
 from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.environment import Logger
 
 
 class TestConversionExpression(UpdaterTestCase):
@@ -36,7 +37,10 @@ class TestConversionExpression(UpdaterTestCase):
                                                'operandID': 6, 'arg1': 1009, 'expressionID': 24, 'arg2': 15,
                                                'expressionAttributeID': 90, 'expressionGroupID': 451})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['expressions']), 1)
         self.assertIn(24, data['expressions'])
         self.assertEqual(data['expressions'][24], (6, 1009, 15, None, 502, 451, 90))

@@ -33,7 +33,10 @@ class TestAttrValue(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn((5, 8), data['types'][1][9])
 
@@ -41,7 +44,10 @@ class TestAttrValue(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn((5, 8.5), data['types'][1][9])
 
@@ -49,8 +55,11 @@ class TestAttrValue(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 1)
-        logRecord = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        logRecord = self.log[1]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 attribute rows have non-numeric value, removing them')
@@ -63,5 +72,8 @@ class TestAttrValue(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
         data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.log), 1)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)
