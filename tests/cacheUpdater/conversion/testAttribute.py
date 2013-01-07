@@ -31,7 +31,8 @@ class TestConversionAttribute(UpdaterTestCase):
     def testFields(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 111, 'value': 8.2})
-        self.dh.data['dgmattribs'].append({'maxAttributeID': 84, 'randomField': None, 'stackable': True, 'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False})
+        self.dh.data['dgmattribs'].append({'maxAttributeID': 84, 'randomField': None, 'stackable': True,
+                                           'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 0)
         self.assertEqual(len(data['attributes']), 1)

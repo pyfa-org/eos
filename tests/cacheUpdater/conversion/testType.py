@@ -22,7 +22,7 @@
 from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
 
 
-class TestConversionEffect(UpdaterTestCase):
+class TestConversionType(UpdaterTestCase):
     """
     Appropriate data should be saved into appropriate
     indexes of object representing effect.
