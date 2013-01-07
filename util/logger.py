@@ -30,9 +30,10 @@ class Logger:
     Positional arguments:
     name -- name of root logger for this instance,
     used in log filename
+    logFolder -- path to folder for logs
     """
-    def __init__(self, name):
-        self.__setup(name)
+    def __init__(self, name, logFolder):
+        self.__setup(name, logFolder)
         # Storage for signatures of logged entries,
         # to avoid logging them again when it's not desirable
         self.__knownSignatures = set()
@@ -103,13 +104,14 @@ class Logger:
             logger.error(msg)
             self.__knownSignatures.add(signature)
 
-    def __setup(self, name):
+    def __setup(self, name, logFolder):
         """
         Configure python logging system for our neeeds.
 
         Positional arguments:
         name -- name of root python logger which will be
         used as root for our logger object
+        logFolder -- path to folder for logs
         """
         self.__rootLogger = getLogger(name)
         # Set level to INFO to enable handling of
@@ -119,7 +121,6 @@ class Logger:
         for handler in self.__rootLogger.handlers:
             self.__rootLogger.removeHandler(handler)
         # Define log storage options
-        logFolder = '/home/dfx/src/pyfa/eos/dataFolder/logs/'
         logPath = os.path.join(logFolder, "{}.log".format(name))
         os.makedirs(os.path.dirname(logPath), mode=0o755, exist_ok=True)
         handler = FileHandler(logPath, mode='a', encoding='utf-8', delay=False)

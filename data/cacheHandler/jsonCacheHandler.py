@@ -42,6 +42,7 @@ class JsonCacheHandler:
     name -- unique indentifier of cache, e.g. Eos instance name
     logger -- logger to use for errors
     """
+
     def __init__(self, diskCacheFolder, name, logger):
         self._diskCacheFile = os.path.join(diskCacheFolder, '{}.json.bz2'.format(name))
         self._logger = logger
@@ -75,7 +76,6 @@ class JsonCacheHandler:
         # during JSON reading/parsing
         else:
             self.__updateMemCache(data)
-
 
     def getType(self, typeId):
         """
@@ -227,7 +227,6 @@ class JsonCacheHandler:
         # loading it from cache
         data = json.loads(jsonData)
         self.__updateMemCache(data)
-
 
     def __updateMemCache(self, data):
         """
