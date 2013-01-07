@@ -214,12 +214,12 @@ class JsonCacheHandler:
         # Update disk cache
         os.makedirs(os.path.dirname(self._diskCacheFile), mode=0o755, exist_ok=True)
         with bz2.BZ2File(self._diskCacheFile, 'w') as file:
-            jsonData = json.dumps(data).encode('utf-8')
-            file.write(jsonData)
+            jsonData = json.dumps(data)
+            file.write(jsonData.encode('utf-8'))
         # Update data cache; encode to JSON and decode back
         # to make sure form of data is the same as after
         # loading it from cache
-        data = json.loads(json.dumps(data))
+        data = json.loads(jsonData)
         self.__updateMemCache(data)
 
 
