@@ -88,7 +88,7 @@ class Checker:
         # write corresponding message to log
         if invalidRows:
             msg = '{} rows in table {} have invalid PKs, removing them'.format(len(invalidRows), tableName)
-            self._logger.warning(msg, childName="dataProcessor")
+            self._logger.warning(msg, childName='cacheUpdater')
             table.difference_update(invalidRows)
 
     def _rowPk(self, keyNames, datarow, usedKeys, invalidRows):
@@ -140,7 +140,7 @@ class Checker:
                 # further down the table
                 break
         if invalidRow is not None:
-            self._logger.warning('typeID -1 exists, removing it', childName="dataProcessor")
+            self._logger.warning('typeID -1 exists, removing it', childName='cacheUpdater')
             table.remove(invalidRow)
 
     def _attributeValueType(self):
@@ -156,7 +156,7 @@ class Checker:
                 invalidRows.add(row)
         if invalidRows:
             msg = '{} attribute rows have non-numeric value, removing them'.format(len(invalidRows))
-            self._logger.warning(msg, childName="dataProcessor")
+            self._logger.warning(msg, childName='cacheUpdater')
             table.difference_update(invalidRows)
 
     def _multipleDefaultEffects(self):
@@ -184,7 +184,7 @@ class Checker:
         # Process ivalid rows, if any
         if invalidRows:
             msg = 'data contains {} excessive default effects, marking them as non-default'.format(len(invalidRows))
-            self._logger.warning(msg, childName="dataProcessor")
+            self._logger.warning(msg, childName='cacheUpdater')
             # Replace isDefault field value with False for invalid rows
             table.difference_update(invalidRows)
             for invalidRow in invalidRows:
@@ -219,5 +219,5 @@ class Checker:
                 rackedItems.add(typeId)
         if invalidRows:
             msg = '{} rows contain colliding module racks, removing them'.format(len(invalidRows))
-            self._logger.warning(msg, childName="dataProcessor")
+            self._logger.warning(msg, childName='cacheUpdater')
             table.difference_update(invalidRows)

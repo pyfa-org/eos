@@ -179,7 +179,7 @@ class Cleaner:
             ratio = trashedlen / (datalen + trashedlen)
             tableMsgs.append('{:.1%} from {}'.format(ratio, tableName))
         msg = 'cleaned: {}'.format(', '.join(tableMsgs))
-        self._logger.info(msg, childName="dataProcessor")
+        self._logger.info(msg, childName='cacheUpdater')
 
     def _pumpData(self, tableName, datarows):
         """
