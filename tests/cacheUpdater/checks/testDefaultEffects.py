@@ -23,45 +23,51 @@ from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
 from eos.tests.environment import Logger
 
 
-class TestAttrValue(UpdaterTestCase):
+class TestDefaultEffects(UpdaterTestCase):
     """
-    After cleanup updater should check that all attribute values
-    are integers or floats, other types should be cleaned up.
+    Check that filtering out superfluous default effects
+    occurs after data filtering, and that it occurs at all.
     """
 
-    def testInt(self):
+    def testNormal(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1, 'isDefault': False})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 2, 'isDefault': True})
+        self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
+        self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 0)
         self.assertEqual(len(data['types']), 1)
-        self.assertIn((5, 8), data['types'][1][9])
+        self.assertIn(1, data['types'])
+        self.assertEqual(data['types'][1][5], 20)
 
-    def testFloat(self):
+    def testDuplicate(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
-        data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
-        self.assertEqual(len(data['types']), 1)
-        self.assertIn((5, 8.5), data['types'][1][9])
-
-    def testOther(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1, 'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 2, 'isDefault': True})
+        self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
+        self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, '1 attribute rows have non-numeric value, removing them')
+        self.assertEqual(logRecord.msg, 'data contains 1 excessive default effects, marking them as non-default')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1][9], ())
+        self.assertEqual(data['types'][1][5], 10)
+        # Make sure effects are not removed
+        self.assertEqual(len(data['effects']), 2)
+        self.assertIn(1, data['effects'])
+        self.assertIn(2, data['effects'])
 
     def testCleanup(self):
-        # Make sure cleanup runs before check being tested
         self.dh.data['invtypes'].append({'typeID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1, 'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 2, 'isDefault': True})
+        self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
+        self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 0)
         self.assertEqual(len(data['types']), 0)
+        self.assertEqual(len(data['effects']), 0)

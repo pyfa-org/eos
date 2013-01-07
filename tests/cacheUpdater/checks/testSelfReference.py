@@ -29,7 +29,7 @@ class TestSelfReference(UpdaterTestCase):
     is not allowed to have types with such typeID.
     """
 
-    def testNormal(self):
+    def testTypeId(self):
         self.dh.data['invtypes'].append({'typeID': -1, 'groupID': 1})
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         data = self.updater.run(self.dh)

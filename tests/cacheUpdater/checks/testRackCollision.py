@@ -23,45 +23,40 @@ from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
 from eos.tests.environment import Logger
 
 
-class TestAttrValue(UpdaterTestCase):
+class TestRackCollision(UpdaterTestCase):
     """
-    After cleanup updater should check that all attribute values
-    are integers or floats, other types should be cleaned up.
+    Make sure that rack collision is detected,
+    and it is detected after cleanup.
     """
 
-    def testInt(self):
+    def testCollision(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
-        data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
-        self.assertEqual(len(data['types']), 1)
-        self.assertIn((5, 8), data['types'][1][9])
-
-    def testFloat(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
-        data = self.updater.run(self.dh)
-        self.assertEqual(len(self.log), 0)
-        self.assertEqual(len(data['types']), 1)
-        self.assertIn((5, 8.5), data['types'][1][9])
-
-    def testOther(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
+        self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 50})
+        self.dh.data['dgmeffects'].append({'effectID': 12, 'preExpression': 55})
+        self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, '1 attribute rows have non-numeric value, removing them')
+        self.assertEqual(logRecord.msg, '2 rows contain colliding module racks, removing them')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1][9], ())
+        self.assertEqual(data['types'][1][8], (13,))
+        self.assertEqual(len(data['effects']), 3)
 
-    def testCleanup(self):
-        # Make sure cleanup runs before check being tested
+    def testCleaned(self):
         self.dh.data['invtypes'].append({'typeID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
+        self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 50})
+        self.dh.data['dgmeffects'].append({'effectID': 12, 'preExpression': 55})
+        self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 0)
         self.assertEqual(len(data['types']), 0)
+        self.assertEqual(len(data['effects']), 0)

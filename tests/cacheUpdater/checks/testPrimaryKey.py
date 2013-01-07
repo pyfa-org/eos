@@ -30,6 +30,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 1})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 0)
         self.assertIn(1, data['types'])
         self.assertIn(2, data['types'])
 
@@ -95,6 +96,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 50, 'value': 100.0})
         data = self.updater.run(self.dh)
+        self.assertEqual(len(self.log), 0)
         self.assertIn((100, 50.0), data['types'][1][9])
         self.assertIn((50, 100.0), data['types'][1][9])
 
