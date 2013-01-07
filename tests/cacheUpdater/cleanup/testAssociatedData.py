@@ -29,9 +29,7 @@ class TestAssociatedData(UpdaterTestCase):
     all related data.
     """
 
-    def testStrong(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
+    def __generateData(self):
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
@@ -66,11 +64,16 @@ class TestAssociatedData(UpdaterTestCase):
         self.dh.data['dgmexpressions'].append({'expressionID': 103, 'operandID': 6, 'arg1': None, 'arg2': None,
                                                'expressionValue': None, 'expressionTypeID': None,
                                                'expressionGroupID': None, 'expressionAttributeID': None})
-        # Weak type, but linked through expression
+        # Weak type in any case, but linked through expression
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
         self.dh.data['dgmattribs'].append({'attributeID': 1007, 'maxAttributeID': None, 'defaultValue': 0.0,
                                            'highIsGood': False, 'stackable': False})
+
+    def testStrong(self):
+        self.__generateData()
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
+        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -99,46 +102,9 @@ class TestAssociatedData(UpdaterTestCase):
         self.assertIn(103, data['expressions'])
 
     def testWeak(self):
+        self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'fittableNonSingleton': True})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
-        self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
-                                           'fittingUsageChanceAttributeID': 1000, 'preExpression': 100, 'postExpression': 101,
-                                           'durationAttributeID': 1001, 'dischargeAttributeID': 1002, 'rangeAttributeID': 1003,
-                                           'falloffAttributeID': 1004, 'trackingSpeedAttributeID': 1005})
-        self.dh.data['dgmattribs'].append({'attributeID': 5, 'maxAttributeID': 1006, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': True})
-        self.dh.data['dgmattribs'].append({'attributeID': 1000, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1001, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1002, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1003, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1004, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1005, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1006, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmexpressions'].append({'expressionID': 100, 'operandID': 6, 'arg1': 102, 'arg2': 103,
-                                               'expressionValue': None, 'expressionTypeID': 2,
-                                               'expressionGroupID': 500, 'expressionAttributeID': 1007})
-        self.dh.data['dgmexpressions'].append({'expressionID': 101, 'operandID': 6, 'arg1': 102, 'arg2': 103,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['dgmexpressions'].append({'expressionID': 102, 'operandID': 6, 'arg1': None, 'arg2': None,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['dgmexpressions'].append({'expressionID': 103, 'operandID': 6, 'arg1': None, 'arg2': None,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
-        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
-        self.dh.data['dgmattribs'].append({'attributeID': 1007, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -151,44 +117,7 @@ class TestAssociatedData(UpdaterTestCase):
         self.assertEqual(len(data['expressions']), 0)
 
     def testUnlinked(self):
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
-        self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
-                                           'fittingUsageChanceAttributeID': 1000, 'preExpression': 100, 'postExpression': 101,
-                                           'durationAttributeID': 1001, 'dischargeAttributeID': 1002, 'rangeAttributeID': 1003,
-                                           'falloffAttributeID': 1004, 'trackingSpeedAttributeID': 1005})
-        self.dh.data['dgmattribs'].append({'attributeID': 5, 'maxAttributeID': 1006, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': True})
-        self.dh.data['dgmattribs'].append({'attributeID': 1000, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1001, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1002, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1003, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1004, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1005, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmattribs'].append({'attributeID': 1006, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
-        self.dh.data['dgmexpressions'].append({'expressionID': 100, 'operandID': 6, 'arg1': 102, 'arg2': 103,
-                                               'expressionValue': None, 'expressionTypeID': 2,
-                                               'expressionGroupID': 500, 'expressionAttributeID': 1007})
-        self.dh.data['dgmexpressions'].append({'expressionID': 101, 'operandID': 6, 'arg1': 102, 'arg2': 103,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['dgmexpressions'].append({'expressionID': 102, 'operandID': 6, 'arg1': None, 'arg2': None,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['dgmexpressions'].append({'expressionID': 103, 'operandID': 6, 'arg1': None, 'arg2': None,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
-        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
-        self.dh.data['dgmattribs'].append({'attributeID': 1007, 'maxAttributeID': None, 'defaultValue': 0.0,
-                                           'highIsGood': False, 'stackable': False})
+        self.__generateData()
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]

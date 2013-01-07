@@ -29,12 +29,20 @@ class TestDefaultEffects(UpdaterTestCase):
     occurs after data filtering, and that it occurs at all.
     """
 
-    def testNormal(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1, 'isDefault': False})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 2, 'isDefault': True})
+    def setUp(self):
+        UpdaterTestCase.setUp(self)
+        self.item = {'typeID': 1, 'groupID': 1}
+        self.dh.data['invtypes'].append(self.item)
+        self.effLink1 = {'typeID': 1, 'effectID': 1}
+        self.effLink2 = {'typeID': 1, 'effectID': 2}
+        self.dh.data['dgmtypeeffects'].append(self.effLink1)
+        self.dh.data['dgmtypeeffects'].append(self.effLink2)
         self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
         self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
+
+    def testNormal(self):
+        self.effLink1['isDefault'] = False
+        self.effLink2['isDefault'] = True
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -45,11 +53,8 @@ class TestDefaultEffects(UpdaterTestCase):
         self.assertEqual(data['types'][1][5], 20)
 
     def testDuplicate(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1, 'isDefault': True})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 2, 'isDefault': True})
-        self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
-        self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
+        self.effLink1['isDefault'] = True
+        self.effLink2['isDefault'] = True
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
@@ -68,11 +73,9 @@ class TestDefaultEffects(UpdaterTestCase):
         self.assertIn(2, data['effects'])
 
     def testCleanup(self):
-        self.dh.data['invtypes'].append({'typeID': 1})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1, 'isDefault': True})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 2, 'isDefault': True})
-        self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
-        self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
+        del self.item['groupID']
+        self.effLink1['isDefault'] = True
+        self.effLink2['isDefault'] = True
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]

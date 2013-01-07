@@ -29,14 +29,18 @@ class TestRackCollision(UpdaterTestCase):
     and it is detected after cleanup.
     """
 
-    def testCollision(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+    def setUp(self):
+        UpdaterTestCase.setUp(self)
+        self.item = {'typeID': 1, 'groupID': 1}
+        self.dh.data['invtypes'].append(self.item)
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
         self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 50})
         self.dh.data['dgmeffects'].append({'effectID': 12, 'preExpression': 55})
         self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
+
+    def testCollision(self):
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
@@ -52,13 +56,7 @@ class TestRackCollision(UpdaterTestCase):
         self.assertEqual(len(data['effects']), 3)
 
     def testCleaned(self):
-        self.dh.data['invtypes'].append({'typeID': 1})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
-        self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 50})
-        self.dh.data['dgmeffects'].append({'effectID': 12, 'preExpression': 55})
-        self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
+        del self.item['groupID']
         data = self.updater.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
