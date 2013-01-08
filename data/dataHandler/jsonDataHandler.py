@@ -26,9 +26,9 @@ from .dataHandler import DataHandler
 
 class JsonDataHandler(DataHandler):
     """
-    Implements loading of raw data from compressed JSON
-    files produced by Phobos script, which can be found at
-    http://fisheye.evefit.org/browse/phobos
+    Implements loading of raw data from compressed JSON files produced by Phobos script, which can be found at
+    http://fisheye.evefit.org/browse/phobos. Following command asks Phobos to gather all the data we need:
+    python dumpToJson.py --eve=<eve path> --cache=<cache path> --tables=invtypes,invgroups,dgmtypeattribs,dgmattribs,dgmtypeeffects,dgmeffects,dgmexpressions --output=<output path>
     """
 
     def __init__(self, basepath):
