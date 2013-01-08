@@ -61,9 +61,11 @@ class JsonDataHandler(DataHandler):
         return data
 
     def getVersion(self):
-        # If no version file is found, return None
-        try:
-            version = self.__fetchFile('version')
-        except IOError:
-            version = None
+        metadata = self.__fetchFile('metadata')
+        # If we won't find version field, it will be None
+        version = None
+        for row in metadata:
+            if row['fieldName'] == 'clientBuild':
+                version = row['fieldValue']
+                break
         return version
