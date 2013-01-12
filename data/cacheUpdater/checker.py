@@ -58,7 +58,7 @@ class Checker:
 
     def preConvert(self, data):
         """
-        As data convertor and eos relies on some
+        As data converter and Eos itself relies on some
         assumptions, check that data corresponds to them.
 
         Positional arguments:
@@ -164,8 +164,7 @@ class Checker:
     def _multipleDefaultEffects(self):
         """
         Each type must have one default effect at max. Data
-        conversion (and resulting data structure) relies on
-        this assumption.
+        conversion relies on this assumption.
         """
         # Set with IDs of types, which have default effect
         defeff = set()
@@ -201,8 +200,9 @@ class Checker:
         using module's effects. Engine relies on assumption that
         each module has at max one such effect. This type of check
         is better to be performed after data cleanup, because slot
-        type effects are still used on many other items, and no
-        data needs to be cleaned afterwards.
+        type effects are still used on many other items (and thus
+        are not needed to be removed), and errors for items which
+        won't be actually used won't be printed.
         """
         table = self.data['dgmtypeeffects']
         rackEffects = (Effect.hiPower, Effect.medPower, Effect.loPower)

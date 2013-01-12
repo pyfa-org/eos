@@ -23,6 +23,7 @@ from eos.util.frozendict import frozendict
 from .checker import Checker
 from .cleaner import Cleaner
 from .converter import Converter
+from .refactory import Refactory
 
 
 class CacheUpdater:
@@ -83,17 +84,15 @@ class CacheUpdater:
 
         # Also normalize the data to make data structure
         # more consistent, and thus easier to clean properly
-        converter = Converter(self._logger)
-        converter.normalize(data)
+        Refactory(self._logger).normalize(data)
 
         # Clean our container out of unwanted data
-        cleaner = Cleaner(self._logger)
-        cleaner.clean(data)
+        Cleaner(self._logger).clean(data)
 
         # Verify that our data is ready for conversion
         checker.preConvert(data)
 
         # Convert data into Eos-specific format
-        data = converter.convert(data)
+        data = Converter().convert(data)
 
         return data
