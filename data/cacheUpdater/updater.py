@@ -39,7 +39,7 @@ class CacheUpdater:
 
     def run(self, dataHandler):
         """
-        Refactor data. This module operates
+        Refactor data.
 
         Positional arguments:
         dataHandler - data handler to use for getting data
@@ -50,7 +50,9 @@ class CacheUpdater:
         # Put all the data we need into single dictionary
         # Format, as usual, {table name: table}, where table
         # is set of rows, which are represented by frozendicts
-        # {fieldName: fieldValue}
+        # {fieldName: fieldValue}. Combination of sets and
+        # frozendicts is used to speed up several stages of
+        # the updater.
         data = {}
         tables = {'invtypes': dataHandler.getInvtypes,
                   'invgroups': dataHandler.getInvgroups,
@@ -92,7 +94,10 @@ class CacheUpdater:
         # Verify that our data is ready for conversion
         checker.preConvert(data)
 
-        # Convert data into Eos-specific format
+        # Convert data into Eos-specific format. Here tables are
+        # no longer represented by sets of frozendicts, but by
+        # dictionary in {entity ID: entity row} format, where entity
+        # row is plain dictionary
         data = converter.convert(data)
 
         return data
