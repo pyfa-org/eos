@@ -39,7 +39,7 @@ class CacheUpdater:
 
     def run(self, dataHandler):
         """
-        Refactor data.
+        Refactor data. This module operates
 
         Positional arguments:
         dataHandler - data handler to use for getting data
@@ -87,8 +87,7 @@ class CacheUpdater:
         converter.normalize(data)
 
         # Clean our container out of unwanted data
-        cleaner = Cleaner(self._logger)
-        cleaner.clean(data)
+        Cleaner(self._logger).clean(data)
 
         # Verify that our data is ready for conversion
         checker.preConvert(data)

@@ -201,8 +201,9 @@ class Checker:
         using module's effects. Engine relies on assumption that
         each module has at max one such effect. This type of check
         is better to be performed after data cleanup, because slot
-        type effects are still used on many other items, and no
-        data needs to be cleaned afterwards.
+        type effects are still used on many other items (and thus
+        are not needed to be removed), and errors for items which
+        won't be actually used won't be printed.
         """
         table = self.data['dgmtypeeffects']
         rackEffects = (Effect.hiPower, Effect.medPower, Effect.loPower)

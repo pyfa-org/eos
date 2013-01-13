@@ -52,7 +52,9 @@ class TestRackCollision(UpdaterTestCase):
         self.assertEqual(logRecord.msg, '2 rows contain colliding module racks, removing them')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1][8], (13,))
+        typeEffects = data['types'][1]['effects']
+        self.assertEqual(len(typeEffects), 1)
+        self.assertIn(13, typeEffects)
         self.assertEqual(len(data['effects']), 3)
 
     def testCleaned(self):

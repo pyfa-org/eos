@@ -101,46 +101,46 @@ class Converter:
                 defeff = dgmeffectsKeyed.get(typeDefeffMap[typeId], {})
             else:
                 defeff = {}
-            types[typeId] = (groupId,
-                             invgroupsKeyed.get(groupId, {}).get('categoryID'),
-                             defeff.get('durationAttributeID'),
-                             defeff.get('dischargeAttributeID'),
-                             defeff.get('rangeAttributeID'),
-                             defeff.get('falloffAttributeID'),
-                             defeff.get('trackingSpeedAttributeID'),
-                             invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
-                             tuple(typeEffects.get(typeId, ())),
-                             tuple(typeAttribs.get(typeId, {}).items()))
+            types[typeId] = {'groupId': groupId,
+                             'categoryId': invgroupsKeyed.get(groupId, {}).get('categoryID'),
+                             'durationAttributeId': defeff.get('durationAttributeID'),
+                             'dischargeAttributeId': defeff.get('dischargeAttributeID'),
+                             'rangeAttributeId': defeff.get('rangeAttributeID'),
+                             'falloffAttributeId': defeff.get('falloffAttributeID'),
+                             'trackingSpeedAttributeId': defeff.get('trackingSpeedAttributeID'),
+                             'fittableNonSingleton': invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
+                             'effects': typeEffects.get(typeId, ()),
+                             'attributes': typeAttribs.get(typeId, {})}
 
         attributes = newData['attributes']
         for row in data['dgmattribs']:
             attrId = row['attributeID']
-            attributes[attrId] = (row.get('maxAttributeID'),
-                                  row.get('defaultValue'),
-                                  row.get('highIsGood'),
-                                  row.get('stackable'))
+            attributes[attrId] = {'maxAttributeId': row.get('maxAttributeID'),
+                                  'defaultValue': row.get('defaultValue'),
+                                  'highIsGood': row.get('highIsGood'),
+                                  'stackable': row.get('stackable')}
 
         # Effects
         effects = newData['effects']
         for row in data['dgmeffects']:
             effectId = row['effectID']
-            effects[effectId] = (row.get('effectCategory'),
-                                 row.get('isOffensive'),
-                                 row.get('isAssistance'),
-                                 row.get('fittingUsageChanceAttributeID'),
-                                 row.get('preExpression'),
-                                 row.get('postExpression'))
+            effects[effectId] = {'effectCategory': row.get('effectCategory'),
+                                 'isOffensive': row.get('isOffensive'),
+                                 'isAssistance': row.get('isAssistance'),
+                                 'fittingUsageChanceAttributeId': row.get('fittingUsageChanceAttributeID'),
+                                 'preExpressionId': row.get('preExpression'),
+                                 'postExpressionId': row.get('postExpression')}
 
         expressions = newData['expressions']
         for row in data['dgmexpressions']:
             expId = row['expressionID']
-            expressions[expId] = (row.get('operandID'),
-                                  row.get('arg1'),
-                                  row.get('arg2'),
-                                  row.get('expressionValue'),
-                                  row.get('expressionTypeID'),
-                                  row.get('expressionGroupID'),
-                                  row.get('expressionAttributeID'))
+            expressions[expId] = {'operandId': row.get('operandID'),
+                                  'arg1Id': row.get('arg1'),
+                                  'arg2Id': row.get('arg2'),
+                                  'expressionValue': row.get('expressionValue'),
+                                  'expressionTypeId': row.get('expressionTypeID'),
+                                  'expressionGroupId': row.get('expressionGroupID'),
+                                  'expressionAttributeId': row.get('expressionAttributeID')}
 
         return newData
 

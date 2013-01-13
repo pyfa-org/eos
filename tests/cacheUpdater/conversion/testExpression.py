@@ -43,4 +43,11 @@ class TestConversionExpression(UpdaterTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['expressions']), 1)
         self.assertIn(24, data['expressions'])
-        self.assertEqual(data['expressions'][24], (6, 1009, 15, None, 502, 451, 90))
+        expressionRow = data['expressions'][24]
+        self.assertEqual(expressionRow['operandId'], 6)
+        self.assertEqual(expressionRow['arg1Id'], 1009)
+        self.assertEqual(expressionRow['arg2Id'], 15)
+        self.assertEqual(expressionRow['expressionValue'], None)
+        self.assertEqual(expressionRow['expressionTypeId'], 502)
+        self.assertEqual(expressionRow['expressionGroupId'], 451)
+        self.assertEqual(expressionRow['expressionAttributeId'], 90)

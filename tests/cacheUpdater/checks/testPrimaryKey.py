@@ -70,7 +70,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1][0], 1)
+        self.assertEqual(data['types'][1]['groupId'], 1)
 
     def testSingleDuplicateReverse(self):
         # Make sure first fed by dataHandler row is accepted
@@ -86,7 +86,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1][0], 920)
+        self.assertEqual(data['types'][1]['groupId'], 920)
 
     def testSingleCleaned(self):
         # Make sure check is ran before cleanup
@@ -112,8 +112,9 @@ class TestPrimaryKey(UpdaterTestCase):
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertIn((100, 50.0), data['types'][1][9])
-        self.assertIn((50, 100.0), data['types'][1][9])
+        typeAttributes = data['types'][1]['attributes']
+        self.assertEqual(typeAttributes[100], 50.0)
+        self.assertEqual(typeAttributes[50], 100.0)
 
     def testDualNoPk(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -127,7 +128,7 @@ class TestPrimaryKey(UpdaterTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(data['types'][1][9]), 0)
+        self.assertEqual(len(data['types'][1]['attributes']), 0)
 
     def testDualInvalid(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -141,7 +142,7 @@ class TestPrimaryKey(UpdaterTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(data['types'][1][9]), 0)
+        self.assertEqual(len(data['types'][1]['attributes']), 0)
 
     def testDualDuplicate(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -156,8 +157,9 @@ class TestPrimaryKey(UpdaterTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(data['types'][1][9]), 1)
-        self.assertIn((100, 50.0), data['types'][1][9])
+        typeAttributes = data['types'][1]['attributes']
+        self.assertEqual(len(typeAttributes), 1)
+        self.assertEqual(typeAttributes[100], 50.0)
 
     def testDualCleaned(self):
         # Make sure check is ran before cleanup
@@ -189,8 +191,9 @@ class TestPrimaryKey(UpdaterTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(data['types'][1][9]), 1)
-        self.assertIn((100, 5.0), data['types'][1][9])
+        typeAttributes = data['types'][1]['attributes']
+        self.assertEqual(len(typeAttributes), 1)
+        self.assertEqual(typeAttributes[100], 5.0)
 
     # Now, when PK-related checks cover invtypes (single PK)
     # and dgmtypeattribs (dual PK) tables, run simple tests on
@@ -209,7 +212,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1][1], 7)
+        self.assertEqual(data['types'][1]['categoryId'], 7)
 
     def testDgmattribs(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -226,7 +229,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
-        self.assertEqual(data['attributes'][7][0], 50)
+        self.assertEqual(data['attributes'][7]['maxAttributeId'], 50)
 
     def testDgmeffects(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -243,7 +246,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
-        self.assertEqual(data['effects'][7][4], 50)
+        self.assertEqual(data['effects'][7]['preExpressionId'], 50)
 
     def testDgmtypeeffects(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -260,7 +263,7 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1][5], 70)
+        self.assertEqual(data['types'][1]['falloffAttributeId'], 70)
 
     def testDgmexpressions(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -278,4 +281,4 @@ class TestPrimaryKey(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['expressions']), 1)
-        self.assertEqual(data['expressions'][5][0], 55)
+        self.assertEqual(data['expressions'][5]['operandId'], 55)

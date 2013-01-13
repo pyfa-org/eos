@@ -38,7 +38,7 @@ class TestAttrValue(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertIn((5, 8), data['types'][1][9])
+        self.assertEqual(data['types'][1]['attributes'][5], 8)
 
     def testFloat(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -49,7 +49,7 @@ class TestAttrValue(UpdaterTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertIn((5, 8.5), data['types'][1][9])
+        self.assertEqual(data['types'][1]['attributes'][5], 8.5)
 
     def testOther(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -65,7 +65,7 @@ class TestAttrValue(UpdaterTestCase):
         self.assertEqual(logRecord.msg, '1 attribute rows have non-numeric value, removing them')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1][9], ())
+        self.assertEqual(len(data['types'][1]['attributes']), 0)
 
     def testCleanup(self):
         # Make sure cleanup runs before check being tested

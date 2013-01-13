@@ -42,4 +42,10 @@ class TestConversionEffect(UpdaterTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(111, data['effects'])
-        self.assertEqual(data['effects'][111], (8, True, False, 96, 24, 979))
+        effectRow = data['effects'][111]
+        self.assertEqual(effectRow['effectCategory'], 8)
+        self.assertEqual(effectRow['isOffensive'], True)
+        self.assertEqual(effectRow['isAssistance'], False)
+        self.assertEqual(effectRow['fittingUsageChanceAttributeId'], 96)
+        self.assertEqual(effectRow['preExpressionId'], 24)
+        self.assertEqual(effectRow['postExpressionId'], 979)

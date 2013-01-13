@@ -34,7 +34,7 @@ class TestNormalization(UpdaterTestCase):
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertIn((Attribute.radius, 50.0), data['types'][1][9])
+        self.assertEqual(data['types'][1]['attributes'][Attribute.radius], 50.0)
 
     def testBasicAttrMass(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
@@ -43,7 +43,7 @@ class TestNormalization(UpdaterTestCase):
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertIn((Attribute.mass, 5.0), data['types'][1][9])
+        self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 5.0)
 
     def testBasicAttrVolume(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'volume': 500.0})
@@ -52,7 +52,7 @@ class TestNormalization(UpdaterTestCase):
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertIn((Attribute.volume, 500.0), data['types'][1][9])
+        self.assertEqual(data['types'][1]['attributes'][Attribute.volume], 500.0)
 
     def testBasicAttrCapacity(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'capacity': 0.5})
@@ -61,4 +61,4 @@ class TestNormalization(UpdaterTestCase):
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertIn((Attribute.capacity, 0.5), data['types'][1][9])
+        self.assertEqual(data['types'][1]['attributes'][Attribute.capacity], 0.5)

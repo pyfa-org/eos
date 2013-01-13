@@ -216,6 +216,9 @@ class JsonCacheHandler:
         data -- dictionary with data to update
         fingerprint -- string with fingerprint
         """
+        # Make light version of data and add fingerprint
+        # to it
+        self.__stripData(data)
         data['fingerprint'] = fingerprint
         # Update disk cache
         os.makedirs(os.path.dirname(self._diskCacheFile), mode=0o755, exist_ok=True)
@@ -227,6 +230,54 @@ class JsonCacheHandler:
         # loading it from cache
         data = json.loads(jsonData)
         self.__updateMemCache(data)
+
+    def __stripData(self, data):
+        """
+        Rework passed data, stripping dictionary
+        keys from it to reduce space needed to store it.
+
+        Positional arguments:
+        data -- dictionary with data to refactor
+        """
+        types = data['types']
+        for typeId in types:
+            typeRow = types[typeId]
+            types[typeId] = (typeRow['groupId'],
+                             typeRow['categoryId'],
+                             typeRow['durationAttributeId'],
+                             typeRow['dischargeAttributeId'],
+                             typeRow['rangeAttributeId'],
+                             typeRow['falloffAttributeId'],
+                             typeRow['trackingSpeedAttributeId'],
+                             typeRow['fittableNonSingleton'],
+                             tuple(typeRow['effects']),  # List -> tuple
+                             tuple(typeRow['attributes'].items()))  # Dictionary -> tuple
+        attribs = data['attributes']
+        for attrId in attribs:
+            attrRow = attribs[attrId]
+            attribs[attrId] = (attrRow['maxAttributeId'],
+                               attrRow['defaultValue'],
+                               attrRow['highIsGood'],
+                               attrRow['stackable'])
+        effects = data['effects']
+        for effectId in effects:
+            effectRow = effects[effectId]
+            effects[effectId] = (effectRow['effectCategory'],
+                                 effectRow['isOffensive'],
+                                 effectRow['isAssistance'],
+                                 effectRow['fittingUsageChanceAttributeId'],
+                                 effectRow['preExpressionId'],
+                                 effectRow['postExpressionId'])
+        expressions = data['expressions']
+        for expressionId in expressions:
+            expressionRow = expressions[expressionId]
+            expressions[expressionId] = (expressionRow['operandId'],
+                                         expressionRow['arg1Id'],
+                                         expressionRow['arg2Id'],
+                                         expressionRow['expressionValue'],
+                                         expressionRow['expressionTypeId'],
+                                         expressionRow['expressionGroupId'],
+                                         expressionRow['expressionAttributeId'])
 
     def __updateMemCache(self, data):
         """

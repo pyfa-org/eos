@@ -50,7 +50,7 @@ class TestDefaultEffects(UpdaterTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1][5], 20)
+        self.assertEqual(data['types'][1]['falloffAttributeId'], 20)
 
     def testDuplicate(self):
         self.effLink1['isDefault'] = True
@@ -66,7 +66,7 @@ class TestDefaultEffects(UpdaterTestCase):
         self.assertEqual(logRecord.msg, 'data contains 1 excessive default effects, marking them as non-default')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1][5], 10)
+        self.assertEqual(data['types'][1]['falloffAttributeId'], 10)
         # Make sure effects are not removed
         self.assertEqual(len(data['effects']), 2)
         self.assertIn(1, data['effects'])

@@ -41,4 +41,8 @@ class TestConversionAttribute(UpdaterTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
         self.assertIn(111, data['attributes'])
-        self.assertEqual(data['attributes'][111], (84, 0.0, False, True))
+        attributeRow = data['attributes'][111]
+        self.assertEqual(attributeRow['maxAttributeId'], 84)
+        self.assertEqual(attributeRow['defaultValue'], 0.0)
+        self.assertEqual(attributeRow['highIsGood'], False)
+        self.assertEqual(attributeRow['stackable'], True)
