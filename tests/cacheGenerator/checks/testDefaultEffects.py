@@ -19,18 +19,18 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestDefaultEffects(UpdaterTestCase):
+class TestDefaultEffects(GeneratorTestCase):
     """
     Check that filtering out superfluous default effects
     occurs after data filtering, and that it occurs at all.
     """
 
     def setUp(self):
-        UpdaterTestCase.setUp(self)
+        GeneratorTestCase.setUp(self)
         self.item = {'typeID': 1, 'groupID': 1}
         self.dh.data['invtypes'].append(self.item)
         self.effLink1 = {'typeID': 1, 'effectID': 1}
@@ -43,10 +43,10 @@ class TestDefaultEffects(UpdaterTestCase):
     def testNormal(self):
         self.effLink1['isDefault'] = False
         self.effLink2['isDefault'] = True
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -55,13 +55,13 @@ class TestDefaultEffects(UpdaterTestCase):
     def testDuplicate(self):
         self.effLink1['isDefault'] = True
         self.effLink2['isDefault'] = True
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         logRecord = self.log[1]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'data contains 1 excessive default effects, marking them as non-default')
         self.assertEqual(len(data['types']), 1)
@@ -76,10 +76,10 @@ class TestDefaultEffects(UpdaterTestCase):
         del self.item['groupID']
         self.effLink1['isDefault'] = True
         self.effLink2['isDefault'] = True
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['effects']), 0)

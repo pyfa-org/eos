@@ -192,4 +192,4 @@ class Converter:
         self.data['invtypes'].update(newInvtypes)
         if attrsSkipped > 0:
             msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(attrsSkipped)
-            self._logger.warning(msg, childName='cacheUpdater')
+            self._logger.warning(msg, childName='cacheGenerator')

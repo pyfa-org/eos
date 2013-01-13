@@ -19,11 +19,11 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestConversionExpression(UpdaterTestCase):
+class TestConversionExpression(GeneratorTestCase):
     """
     Appropriate data should be saved into appropriate
     indexes of object representing expression.
@@ -36,10 +36,10 @@ class TestConversionExpression(UpdaterTestCase):
         self.dh.data['dgmexpressions'].append({'expressionTypeID': 502, 'expressionValue': None, 'randomField': 'vals',
                                                'operandID': 6, 'arg1': 1009, 'expressionID': 24, 'arg2': 15,
                                                'expressionAttributeID': 90, 'expressionGroupID': 451})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['expressions']), 1)
         self.assertIn(24, data['expressions'])

@@ -25,7 +25,7 @@ from .cleaner import Cleaner
 from .converter import Converter
 
 
-class CacheUpdater:
+class CacheGenerator:
     """
     Refactors and optimizes data into format suitable
     for Eos.
@@ -39,20 +39,21 @@ class CacheUpdater:
 
     def run(self, dataHandler):
         """
-        Refactor data.
+        Generate cache out of passed data.
 
         Positional arguments:
         dataHandler - data handler to use for getting data
 
         Return value:
-        Dictionary in {table name: {table key: table row}} format
+        Dictionary in {entity type: {entity ID: entity data row}}
+        format
         """
         # Put all the data we need into single dictionary
         # Format, as usual, {table name: table}, where table
         # is set of rows, which are represented by frozendicts
         # {fieldName: fieldValue}. Combination of sets and
         # frozendicts is used to speed up several stages of
-        # the updater.
+        # the generator.
         data = {}
         tables = {'invtypes': dataHandler.getInvtypes,
                   'invgroups': dataHandler.getInvgroups,
@@ -68,7 +69,7 @@ class CacheUpdater:
             # freeze table rows and put them into set
             table = set()
             for row in method():
-                # During  further updater stages. some of rows
+                # During  further generator stages. some of rows
                 # may fall in risk groups, where all rows but one
                 # need to be removed. To deterministically remove rows
                 # based on position in original data, write position

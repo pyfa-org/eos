@@ -19,40 +19,40 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestPrimaryKey(UpdaterTestCase):
+class TestPrimaryKey(GeneratorTestCase):
     """Check that only valid primary keys pass checks"""
 
     def testSingleProperPk(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 1})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertIn(1, data['types'])
         self.assertIn(2, data['types'])
 
     def testSingleNoPk(self):
         self.dh.data['invtypes'].append({'groupID': 1})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table invtypes have invalid PKs, removing them')
         self.assertEqual(len(data['types']), 0)
 
     def testSingleInvalid(self):
         self.dh.data['invtypes'].append({'typeID': 1.5, 'groupID': 1})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table invtypes have invalid PKs, removing them')
         self.assertEqual(len(data['types']), 0)
@@ -60,14 +60,14 @@ class TestPrimaryKey(UpdaterTestCase):
     def testSingleDuplicate(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table invtypes have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['groupId'], 1)
@@ -76,14 +76,14 @@ class TestPrimaryKey(UpdaterTestCase):
         # Make sure first fed by dataHandler row is accepted
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table invtypes have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['groupId'], 920)
@@ -92,14 +92,14 @@ class TestPrimaryKey(UpdaterTestCase):
         # Make sure check is ran before cleanup
         self.dh.data['invtypes'].append({'typeID': 1})
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table invtypes have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)
 
@@ -107,10 +107,10 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 50, 'value': 100.0})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         typeAttributes = data['types'][1]['attributes']
         self.assertEqual(typeAttributes[100], 50.0)
@@ -119,28 +119,28 @@ class TestPrimaryKey(UpdaterTestCase):
     def testDualNoPk(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'value': 50.0})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types'][1]['attributes']), 0)
 
     def testDualInvalid(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100.1, 'value': 50.0})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types'][1]['attributes']), 0)
 
@@ -148,14 +148,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         typeAttributes = data['types'][1]['attributes']
         self.assertEqual(len(typeAttributes), 1)
@@ -166,14 +166,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)
 
@@ -182,14 +182,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         typeAttributes = data['types'][1]['attributes']
         self.assertEqual(len(typeAttributes), 1)
@@ -202,14 +202,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['invgroups'].append({'groupID': 1, 'categoryID': 7})
         self.dh.data['invgroups'].append({'groupID': 1, 'categoryID': 32})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table invgroups have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['categoryId'], 7)
@@ -219,14 +219,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 7, 'value': 8.0})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 50})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 55})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmattribs have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
         self.assertEqual(data['attributes'][7]['maxAttributeId'], 50)
@@ -236,14 +236,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 50})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 55})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmeffects have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
         self.assertEqual(data['effects'][7]['preExpressionId'], 50)
@@ -253,14 +253,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 100, 'falloffAttributeID': 70})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmtypeeffects have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['falloffAttributeId'], 70)
@@ -271,14 +271,14 @@ class TestPrimaryKey(UpdaterTestCase):
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 5})
         self.dh.data['dgmexpressions'].append({'expressionID': 5, 'operandID': 55})
         self.dh.data['dgmexpressions'].append({'expressionID': 5, 'operandID': 80})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 rows in table dgmexpressions have invalid PKs, removing them')
         cleanStats = self.log[1]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['expressions']), 1)
         self.assertEqual(data['expressions'][5]['operandId'], 55)

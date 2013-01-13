@@ -23,7 +23,7 @@ import os.path
 
 from eos.eve.const import Type
 from eos.data.cacheHandler.jsonCacheHandler import JsonCacheHandler
-from eos.data.cacheUpdater.updater import CacheUpdater
+from eos.data.cacheGenerator.generator import CacheGenerator
 from eos.fit.fit import Fit
 from eos.fit.item.character import Character
 from eos.fit.item.ship import Ship
@@ -65,10 +65,8 @@ class Eos:
             else:
                 msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(cacheFp, currentFp)
             self._logger.info(msg)
-            # Run cache updater to convert data into eos format
-            cacheUpdater = CacheUpdater(self._logger)
-            cacheData = cacheUpdater.run(dataHandler)
-            # Write cache
+            # Generate cache and write it
+            cacheData = CacheGenerator(self._logger).run(dataHandler)
             self._cacheHandler.updateCache(cacheData, currentFp)
 
     def makeFit(self):

@@ -19,23 +19,24 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestAttrValue(UpdaterTestCase):
+class TestAttrValue(GeneratorTestCase):
     """
-    After cleanup updater should check that all attribute values
-    are integers or floats, other types should be cleaned up.
+    After cleanup generator should check that all attribute values
+    are integers or floats, rows with other value types should be
+    cleaned up.
     """
 
     def testInt(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['attributes'][5], 8)
@@ -43,10 +44,10 @@ class TestAttrValue(UpdaterTestCase):
     def testFloat(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['attributes'][5], 8.5)
@@ -54,13 +55,13 @@ class TestAttrValue(UpdaterTestCase):
     def testOther(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         logRecord = self.log[1]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '1 attribute rows have non-numeric value, removing them')
         self.assertEqual(len(data['types']), 1)
@@ -71,9 +72,9 @@ class TestAttrValue(UpdaterTestCase):
         # Make sure cleanup runs before check being tested
         self.dh.data['invtypes'].append({'typeID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)

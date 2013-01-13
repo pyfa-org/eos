@@ -19,11 +19,11 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestAssociatedData(UpdaterTestCase):
+class TestAssociatedData(GeneratorTestCase):
     """
     Check that types, which passed filter, pull in
     all related data.
@@ -74,10 +74,10 @@ class TestAssociatedData(UpdaterTestCase):
         self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, 0.0% from dgmexpressions, 0.0% from dgmtypeattribs, 0.0% from dgmtypeeffects, 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 2)
@@ -105,10 +105,10 @@ class TestAssociatedData(UpdaterTestCase):
         self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'fittableNonSingleton': True})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(cleanStats.msg, 'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, 100.0% from dgmexpressions, 100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from invgroups, 100.0% from invtypes')
         self.assertEqual(len(data['types']), 0)
@@ -118,10 +118,10 @@ class TestAssociatedData(UpdaterTestCase):
 
     def testUnlinked(self):
         self.__generateData()
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(cleanStats.msg, 'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, 100.0% from dgmexpressions, 100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from invgroups, 100.0% from invtypes')
         self.assertEqual(len(data['types']), 0)
@@ -146,10 +146,10 @@ class TestAssociatedData(UpdaterTestCase):
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 6})
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(cleanStats.msg, 'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, 0.0% from dgmtypeeffects, 0.0% from invgroups, 33.3% from invtypes')
         self.assertEqual(len(data['types']), 2)

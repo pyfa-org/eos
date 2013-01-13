@@ -184,7 +184,7 @@ class Cleaner:
             tableMsgs.append('{:.1%} from {}'.format(ratio, tableName))
         if tableMsgs:
             msg = 'cleaned: {}'.format(', '.join(tableMsgs))
-            self._logger.info(msg, childName='cacheUpdater')
+            self._logger.info(msg, childName='cacheGenerator')
 
     def _pumpData(self, tableName, datarows):
         """

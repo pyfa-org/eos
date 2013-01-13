@@ -19,15 +19,15 @@
 #===============================================================================
 
 
-from eos.data.cacheUpdater.updater import CacheUpdater
+from eos.data.cacheGenerator.generator import CacheGenerator
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
 from .environment import DataHandler
 
 
-class UpdaterTestCase(EosTestCase):
+class GeneratorTestCase(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
         self.dh = DataHandler()
-        self.updater = CacheUpdater(Logger())
+        self.gen = CacheGenerator(Logger())

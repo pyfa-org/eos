@@ -89,7 +89,7 @@ class Checker:
         # write corresponding message to log
         if invalidRows:
             msg = '{} rows in table {} have invalid PKs, removing them'.format(len(invalidRows), tableName)
-            self._logger.warning(msg, childName='cacheUpdater')
+            self._logger.warning(msg, childName='cacheGenerator')
             table.difference_update(invalidRows)
 
     def _rowPk(self, keyNames, datarow, usedKeys, invalidRows):
@@ -142,7 +142,7 @@ class Checker:
                 break
         if invalidRow is not None:
             msg = 'type self-reference (ID {}) exists, removing type'.format(InvType.self_)
-            self._logger.warning(msg, childName='cacheUpdater')
+            self._logger.warning(msg, childName='cacheGenerator')
             table.remove(invalidRow)
 
     def _attributeValueType(self):
@@ -158,7 +158,7 @@ class Checker:
                 invalidRows.add(row)
         if invalidRows:
             msg = '{} attribute rows have non-numeric value, removing them'.format(len(invalidRows))
-            self._logger.warning(msg, childName='cacheUpdater')
+            self._logger.warning(msg, childName='cacheGenerator')
             table.difference_update(invalidRows)
 
     def _multipleDefaultEffects(self):
@@ -186,7 +186,7 @@ class Checker:
         # Process ivalid rows, if any
         if invalidRows:
             msg = 'data contains {} excessive default effects, marking them as non-default'.format(len(invalidRows))
-            self._logger.warning(msg, childName='cacheUpdater')
+            self._logger.warning(msg, childName='cacheGenerator')
             # Replace isDefault field value with False for invalid rows
             table.difference_update(invalidRows)
             for invalidRow in invalidRows:
@@ -222,5 +222,5 @@ class Checker:
                 rackedItems.add(typeId)
         if invalidRows:
             msg = '{} rows contain colliding module racks, removing them'.format(len(invalidRows))
-            self._logger.warning(msg, childName='cacheUpdater')
+            self._logger.warning(msg, childName='cacheGenerator')
             table.difference_update(invalidRows)

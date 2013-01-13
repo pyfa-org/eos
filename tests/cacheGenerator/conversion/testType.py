@@ -19,11 +19,11 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestConversionType(UpdaterTestCase):
+class TestConversionType(GeneratorTestCase):
     """
     Appropriate data should be saved into appropriate
     indexes of object representing effect.
@@ -44,10 +44,10 @@ class TestConversionType(UpdaterTestCase):
                                            'fittingUsageChanceAttributeID': 41, 'preExpression': 79, 'postExpression': 5,
                                            'durationAttributeID': 781, 'dischargeAttributeID': 752, 'rangeAttributeID': 26,
                                            'falloffAttributeID': 33, 'trackingSpeedAttributeID': 68})
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])

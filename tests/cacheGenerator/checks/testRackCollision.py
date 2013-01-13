@@ -19,18 +19,18 @@
 #===============================================================================
 
 
-from eos.tests.cacheUpdater.updaterTestCase import UpdaterTestCase
+from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestRackCollision(UpdaterTestCase):
+class TestRackCollision(GeneratorTestCase):
     """
     Make sure that rack collision is detected,
     and it is detected after cleanup.
     """
 
     def setUp(self):
-        UpdaterTestCase.setUp(self)
+        GeneratorTestCase.setUp(self)
         self.item = {'typeID': 1, 'groupID': 1}
         self.dh.data['invtypes'].append(self.item)
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
@@ -41,13 +41,13 @@ class TestRackCollision(UpdaterTestCase):
         self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
 
     def testCollision(self):
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         logRecord = self.log[1]
-        self.assertEqual(logRecord.name, 'eos_test.cacheUpdater')
+        self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, '2 rows contain colliding module racks, removing them')
         self.assertEqual(len(data['types']), 1)
@@ -59,10 +59,10 @@ class TestRackCollision(UpdaterTestCase):
 
     def testCleaned(self):
         del self.item['groupID']
-        data = self.updater.run(self.dh)
+        data = self.gen.run(self.dh)
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
-        self.assertEqual(cleanStats.name, 'eos_test.cacheUpdater')
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['effects']), 0)
