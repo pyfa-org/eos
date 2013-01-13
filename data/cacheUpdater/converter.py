@@ -19,25 +19,44 @@
 #===============================================================================
 
 
+from eos.eve.const import Attribute
+from eos.util.frozendict import frozendict
+
+
 class Converter:
     """
-    Class responsible for transforming data
-    into eve objects of several types.
+    Class responsible for transforming data structure,
+    like moving data around or converting whole data
+    structure.
 
     Positional arguments:
     logger -- logger to use
     """
 
+    def __init__(self, logger):
+        self._logger = logger
+
+
+    def normalize(self, data):
+        """
+        Make data more consistent.
+
+        Positional arguments:
+        data -- data to refactor
+        """
+        self.data = data
+        self._moveAttribs()
+
     def convert(self, data):
         """
         Convert database-like data structure to eos-
-        specific objects.
+        specific one.
 
-        data -- data to convert
+        data -- data to refactor
 
         Return value:
-        Dictionary in following format:
-        {object type: {object ID: object}}
+        Dictionary in usual for this module data format,
+        with refactored data
         """
         # We will build new data structure from scratch
         newData = {}
@@ -124,3 +143,53 @@ class Converter:
                                   row.get('expressionAttributeID'))
 
         return newData
+
+    def _moveAttribs(self):
+        """
+        Some of item attributes are defined in invtypes table.
+        We do not need them there, for data consistency it's worth
+        to move them to dgmtypeattribs table.
+        """
+        atrribMap = {'radius': Attribute.radius,
+                     'mass': Attribute.mass,
+                     'volume': Attribute.volume,
+                     'capacity': Attribute.capacity}
+        attrIds = tuple(atrribMap.values())
+        # Here we will store pairs (typeID, attrID) already
+        # defined in table
+        definedPairs = set()
+        dgmtypeattribs = self.data['dgmtypeattribs']
+        for row in dgmtypeattribs:
+            if row['attributeID'] not in attrIds:
+                continue
+            definedPairs.add((row['typeID'], row['attributeID']))
+        attrsSkipped = 0
+        newInvtypes = set()
+        # Cycle through all invtypes, for each row moving each its field
+        # either to different table or container for updated rows
+        for row in self.data['invtypes']:
+            typeId = row['typeID']
+            newRow = {}
+            for field, value in row.items():
+                if field in atrribMap:
+                    # If row didn't have such attribute defined, skip it
+                    if value is None:
+                        continue
+                    # If such attribute already exists in dgmtypeattribs,
+                    # do not modify it - values from dgmtypeattribs table
+                    # have priority
+                    attrId = atrribMap[field]
+                    if (typeId, attrId) in definedPairs:
+                        attrsSkipped += 1
+                        continue
+                    # Generate row and add it to proper attribute table
+                    dgmtypeattribs.add(frozendict({'typeID': typeId, 'attributeID': attrId, 'value': value}))
+                else:
+                    newRow[field] = value
+            newInvtypes.add(frozendict(newRow))
+        # Update invtypes with rows which do not contain attributes
+        self.data['invtypes'].clear()
+        self.data['invtypes'].update(newInvtypes)
+        if attrsSkipped > 0:
+            msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(attrsSkipped)
+            self._logger.warning(msg, childName='cacheUpdater')
