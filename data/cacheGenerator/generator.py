@@ -35,7 +35,10 @@ class CacheGenerator:
     """
 
     def __init__(self, logger):
-        self._logger = logger
+        self._checker = Checker(logger)
+        self._cleaner = Cleaner(logger)
+        self._converter = Converter(logger)
+
 
     def run(self, dataHandler):
         """
@@ -81,24 +84,22 @@ class CacheGenerator:
 
         # Run pre-cleanup checks, as cleaning and further stages
         # rely on some assumptions about the data
-        checker = Checker(self._logger)
-        checker.preCleanup(data)
+        self._checker.preCleanup(data)
 
         # Also normalize the data to make data structure
         # more consistent, and thus easier to clean properly
-        converter = Converter(self._logger)
-        converter.normalize(data)
+        self._converter.normalize(data)
 
         # Clean our container out of unwanted data
-        Cleaner(self._logger).clean(data)
+        self._cleaner.clean(data)
 
         # Verify that our data is ready for conversion
-        checker.preConvert(data)
+        self._checker.preConvert(data)
 
         # Convert data into Eos-specific format. Here tables are
         # no longer represented by sets of frozendicts, but by
         # dictionary in {entity ID: entity row} format, where entity
         # row is plain dictionary
-        data = converter.convert(data)
+        data = self._converter.convert(data)
 
         return data
