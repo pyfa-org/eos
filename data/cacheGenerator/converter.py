@@ -36,7 +36,6 @@ class Converter:
     def __init__(self, logger):
         self._logger = logger
 
-
     def normalize(self, data):
         """
         Make data more consistent.
@@ -46,103 +45,6 @@ class Converter:
         """
         self.data = data
         self._moveAttribs()
-
-    def convert(self, data):
-        """
-        Convert database-like data structure to eos-
-        specific one.
-
-        data -- data to refactor
-
-        Return value:
-        Dictionary in usual for this module data format,
-        with refactored data
-        """
-        # We will build new data structure from scratch
-        newData = {}
-        newData['types'] = {}
-        newData['attributes'] = {}
-        newData['effects'] = {}
-        newData['expressions'] = {}
-
-        # Before actually generating rows, we need to collect
-        # some data in convenient form
-        # Format: {type ID: type row}
-        dgmeffectsKeyed = {}
-        for row in data['dgmeffects']:
-            dgmeffectsKeyed[row['effectID']] = row
-        # Format: {group ID: group row}
-        invgroupsKeyed = {}
-        for row in data['invgroups']:
-            invgroupsKeyed[row['groupID']] = row
-        # Format: {type ID: default effect ID}
-        typeDefeffMap = {}
-        for row in data['dgmtypeeffects']:
-            if row.get('isDefault') is True:
-                typeDefeffMap[row['typeID']] = row['effectID']
-        # Format: {type ID: [effect IDs]}
-        typeEffects = {}
-        for row in data['dgmtypeeffects']:
-            typeEffectsRow = typeEffects.setdefault(row['typeID'], [])
-            typeEffectsRow.append(row['effectID'])
-        # Format: {type ID: {attr ID: value}}
-        typeAttribs = {}
-        for row in data['dgmtypeattribs']:
-            typeAttribsRow = typeAttribs.setdefault(row['typeID'], {})
-            typeAttribsRow[row['attributeID']] = row['value']
-
-        types = newData['types']
-        for row in data['invtypes']:
-            typeId = row['typeID']
-            groupId = row.get('groupID')
-            # Get effect row of default effect, replacing it
-            # with empty dictionary if there's no one
-            if typeId in typeDefeffMap:
-                defeff = dgmeffectsKeyed.get(typeDefeffMap[typeId], {})
-            else:
-                defeff = {}
-            types[typeId] = {'groupId': groupId,
-                             'categoryId': invgroupsKeyed.get(groupId, {}).get('categoryID'),
-                             'durationAttributeId': defeff.get('durationAttributeID'),
-                             'dischargeAttributeId': defeff.get('dischargeAttributeID'),
-                             'rangeAttributeId': defeff.get('rangeAttributeID'),
-                             'falloffAttributeId': defeff.get('falloffAttributeID'),
-                             'trackingSpeedAttributeId': defeff.get('trackingSpeedAttributeID'),
-                             'fittableNonSingleton': invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
-                             'effects': typeEffects.get(typeId, ()),
-                             'attributes': typeAttribs.get(typeId, {})}
-
-        attributes = newData['attributes']
-        for row in data['dgmattribs']:
-            attrId = row['attributeID']
-            attributes[attrId] = {'maxAttributeId': row.get('maxAttributeID'),
-                                  'defaultValue': row.get('defaultValue'),
-                                  'highIsGood': row.get('highIsGood'),
-                                  'stackable': row.get('stackable')}
-
-        # Effects
-        effects = newData['effects']
-        for row in data['dgmeffects']:
-            effectId = row['effectID']
-            effects[effectId] = {'effectCategory': row.get('effectCategory'),
-                                 'isOffensive': row.get('isOffensive'),
-                                 'isAssistance': row.get('isAssistance'),
-                                 'fittingUsageChanceAttributeId': row.get('fittingUsageChanceAttributeID'),
-                                 'preExpressionId': row.get('preExpression'),
-                                 'postExpressionId': row.get('postExpression')}
-
-        expressions = newData['expressions']
-        for row in data['dgmexpressions']:
-            expId = row['expressionID']
-            expressions[expId] = {'operandId': row.get('operandID'),
-                                  'arg1Id': row.get('arg1'),
-                                  'arg2Id': row.get('arg2'),
-                                  'expressionValue': row.get('expressionValue'),
-                                  'expressionTypeId': row.get('expressionTypeID'),
-                                  'expressionGroupId': row.get('expressionGroupID'),
-                                  'expressionAttributeId': row.get('expressionAttributeID')}
-
-        return newData
 
     def _moveAttribs(self):
         """
@@ -193,3 +95,116 @@ class Converter:
         if attrsSkipped > 0:
             msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(attrsSkipped)
             self._logger.warning(msg, childName='cacheGenerator')
+
+    def convert(self, data):
+        """
+        Convert database-like data structure to eos-
+        specific one.
+
+        Positional arguments:
+        data -- source data
+
+        Return value:
+        Dictionary in {entity name: entity keyed table} format,
+        where keyed table is {entity ID: entity row}
+        """
+        data = self._assemble(data)
+        return data
+
+    def _assemble(self, data):
+        """
+        Use passed data to compose object-like data rows,
+        as in, to 'assemble' objects.
+
+        Positional arguments:
+        data -- source data for objects
+
+        Return value:
+        Dictionary in {entity name: entity keyed table} format,
+        where keyed table is {entity ID: entity row}
+        """
+        # We will build new data structure from scratch
+        assembly = {}
+        assembly['types'] = {}
+        assembly['attributes'] = {}
+        assembly['effects'] = {}
+        assembly['expressions'] = {}
+
+        # Before actually generating rows, we need to collect
+        # some data in convenient form
+        # Format: {type ID: type row}
+        dgmeffectsKeyed = {}
+        for row in data['dgmeffects']:
+            dgmeffectsKeyed[row['effectID']] = row
+        # Format: {group ID: group row}
+        invgroupsKeyed = {}
+        for row in data['invgroups']:
+            invgroupsKeyed[row['groupID']] = row
+        # Format: {type ID: default effect ID}
+        typeDefeffMap = {}
+        for row in data['dgmtypeeffects']:
+            if row.get('isDefault') is True:
+                typeDefeffMap[row['typeID']] = row['effectID']
+        # Format: {type ID: [effect IDs]}
+        typeEffects = {}
+        for row in data['dgmtypeeffects']:
+            typeEffectsRow = typeEffects.setdefault(row['typeID'], [])
+            typeEffectsRow.append(row['effectID'])
+        # Format: {type ID: {attr ID: value}}
+        typeAttribs = {}
+        for row in data['dgmtypeattribs']:
+            typeAttribsRow = typeAttribs.setdefault(row['typeID'], {})
+            typeAttribsRow[row['attributeID']] = row['value']
+
+        types = assembly['types']
+        for row in data['invtypes']:
+            typeId = row['typeID']
+            groupId = row.get('groupID')
+            # Get effect row of default effect, replacing it
+            # with empty dictionary if there's no one
+            if typeId in typeDefeffMap:
+                defeff = dgmeffectsKeyed.get(typeDefeffMap[typeId], {})
+            else:
+                defeff = {}
+            types[typeId] = {'groupId': groupId,
+                             'categoryId': invgroupsKeyed.get(groupId, {}).get('categoryID'),
+                             'durationAttributeId': defeff.get('durationAttributeID'),
+                             'dischargeAttributeId': defeff.get('dischargeAttributeID'),
+                             'rangeAttributeId': defeff.get('rangeAttributeID'),
+                             'falloffAttributeId': defeff.get('falloffAttributeID'),
+                             'trackingSpeedAttributeId': defeff.get('trackingSpeedAttributeID'),
+                             'fittableNonSingleton': invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
+                             'effects': typeEffects.get(typeId, ()),
+                             'attributes': typeAttribs.get(typeId, {})}
+
+        attributes = assembly['attributes']
+        for row in data['dgmattribs']:
+            attrId = row['attributeID']
+            attributes[attrId] = {'maxAttributeId': row.get('maxAttributeID'),
+                                  'defaultValue': row.get('defaultValue'),
+                                  'highIsGood': row.get('highIsGood'),
+                                  'stackable': row.get('stackable')}
+
+        # Effects
+        effects = assembly['effects']
+        for row in data['dgmeffects']:
+            effectId = row['effectID']
+            effects[effectId] = {'effectCategory': row.get('effectCategory'),
+                                 'isOffensive': row.get('isOffensive'),
+                                 'isAssistance': row.get('isAssistance'),
+                                 'fittingUsageChanceAttributeId': row.get('fittingUsageChanceAttributeID'),
+                                 'preExpressionId': row.get('preExpression'),
+                                 'postExpressionId': row.get('postExpression')}
+
+        expressions = assembly['expressions']
+        for row in data['dgmexpressions']:
+            expId = row['expressionID']
+            expressions[expId] = {'operandId': row.get('operandID'),
+                                  'arg1Id': row.get('arg1'),
+                                  'arg2Id': row.get('arg2'),
+                                  'expressionValue': row.get('expressionValue'),
+                                  'expressionTypeId': row.get('expressionTypeID'),
+                                  'expressionGroupId': row.get('expressionGroupID'),
+                                  'expressionAttributeId': row.get('expressionAttributeID')}
+
+        return assembly
