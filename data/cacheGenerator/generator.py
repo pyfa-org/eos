@@ -98,8 +98,7 @@ class CacheGenerator:
 
         # Convert data into Eos-specific format. Here tables are
         # no longer represented by sets of frozendicts, but by
-        # dictionary in {entity ID: entity row} format, where entity
-        # row is plain dictionary
+        # list of dicts
         data = self._converter.convert(data)
 
         return data

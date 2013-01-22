@@ -33,7 +33,7 @@ class TestAttrValue(GeneratorTestCase):
     def testInt(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -44,7 +44,7 @@ class TestAttrValue(GeneratorTestCase):
     def testFloat(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -55,7 +55,7 @@ class TestAttrValue(GeneratorTestCase):
     def testOther(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -72,7 +72,7 @@ class TestAttrValue(GeneratorTestCase):
         # Make sure cleanup runs before check being tested
         self.dh.data['invtypes'].append({'typeID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

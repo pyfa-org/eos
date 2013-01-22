@@ -32,7 +32,7 @@ class TestSelfReference(GeneratorTestCase):
     def testTypeId(self):
         self.dh.data['invtypes'].append({'typeID': -1, 'groupID': 1})
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
@@ -48,7 +48,7 @@ class TestSelfReference(GeneratorTestCase):
         # Make sure check is ran before cleanup
         self.dh.data['invtypes'].append({'typeID': -1})
         self.dh.data['invtypes'].append({'typeID': 1})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')

@@ -36,7 +36,7 @@ class TestConversionExpression(GeneratorTestCase):
         self.dh.data['dgmexpressions'].append({'expressionTypeID': 502, 'expressionValue': None, 'randomField': 'vals',
                                                'operandID': 6, 'arg1': 1009, 'expressionID': 24, 'arg2': 15,
                                                'expressionAttributeID': 90, 'expressionGroupID': 451})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

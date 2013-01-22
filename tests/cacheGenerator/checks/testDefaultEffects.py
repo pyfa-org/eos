@@ -43,7 +43,7 @@ class TestDefaultEffects(GeneratorTestCase):
     def testNormal(self):
         self.effLink1['isDefault'] = False
         self.effLink2['isDefault'] = True
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -55,7 +55,7 @@ class TestDefaultEffects(GeneratorTestCase):
     def testDuplicate(self):
         self.effLink1['isDefault'] = True
         self.effLink2['isDefault'] = True
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -76,7 +76,7 @@ class TestDefaultEffects(GeneratorTestCase):
         del self.item['groupID']
         self.effLink1['isDefault'] = True
         self.effLink2['isDefault'] = True
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

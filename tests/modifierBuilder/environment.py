@@ -19,28 +19,22 @@
 #===============================================================================
 
 
-from eos.exception import EosError
+class ExpressionFactory:
+
+    def __init__(self):
+        self._expressions = []
+
+    def make(self, expressionId, operandId=None, arg1Id=None, arg2Id=None,
+             expressionValue=None, expressionTypeId=None, expressionGroupId=None,
+             expressionAttributeId=None):
+        expRow = {'expressionId': expressionId, 'operandId': operandId, 'arg1Id': arg1Id, 'arg2Id': arg2Id,
+                  'expressionValue': expressionValue, 'expressionTypeId': expressionTypeId,
+                  'expressionGroupId': expressionGroupId, 'expressionAttributeId': expressionAttributeId}
+        self._expressions.append(expRow)
+        return expRow
+
+    @property
+    def data(self):
+        return self._expressions
 
 
-class CacheHandlerError(EosError):
-    """All cache handler exceptions are based on this class."""
-    pass
-
-
-class TypeFetchError(CacheHandlerError):
-    """Raised when cache handler can't find type with requested ID."""
-    pass
-
-
-class AttributeFetchError(CacheHandlerError):
-    """Raised when cache handler can't find attribute with requested ID."""
-    pass
-
-
-class EffectFetchError(CacheHandlerError):
-    """Raised when cache handler can't find effect with requested ID."""
-    pass
-
-class ModifierFetchError(CacheHandlerError):
-    """Raised when cache handler can't find modifier with requested ID."""
-    pass

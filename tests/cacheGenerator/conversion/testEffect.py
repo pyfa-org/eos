@@ -35,7 +35,7 @@ class TestConversionEffect(GeneratorTestCase):
         self.dh.data['dgmeffects'].append({'postExpression': 979, 'effectID': 111, 'isOffensive': True, 'effectCategory': 8,
                                            'isAssistance': False, 'fittingUsageChanceAttributeID': 96, 'preExpression': 24,
                                            'durationAttributeID': 781, 'randomField': 666})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

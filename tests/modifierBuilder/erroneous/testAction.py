@@ -20,103 +20,102 @@
 
 
 from eos.const import EffectBuildStatus
-from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
 
-class TestActionBuilderError(EosTestCase):
+class TestActionBuilderError(ModBuilderTestCase):
     """Test reaction to errors occurred during action building stage"""
 
     def testDataIndirect(self):
         # Check reaction to expression data fetch errors,
         # if they occur not for root expression
-        splice = self.ch.expression(expressionId=1, operandId=17, arg1Id=37, arg2Id=105)
-        effect = self.ch.effect(effectId=900, categoryId=0, preExpressionId=splice.id, postExpressionId=splice.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        splice = self.ef.make(1, operandId=17, arg1Id=37, arg2Id=105)
+        modifiers, status = self.runBuilder(splice['expressionId'], splice['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.ERROR)
-        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 900: unable to fetch expression 37')
+        expected = 'failed to parse tree with base 1-1 and effect category 0: unable to fetch expression 37'
+        self.assertEqual(logRecord.msg, expected)
 
     def testGeneric(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=27, value='1')
-        ePost = self.ch.expression(expressionId=2, operandId=1009)
-        effect = self.ch.effect(effectId=568, categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePost.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        ePreStub = self.ef.make(1, operandId=27, expressionValue='1')
+        ePost = self.ef.make(2, operandId=1009)
+        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePost['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 568: unknown generic operand 1009')
+        expected = 'failed to parse tree with base 1-2 and effect category 0: unknown generic operand 1009'
+        self.assertEqual(logRecord.msg, expected)
 
     def testIntStub(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=27, value='0')
-        ePost = self.ch.expression(expressionId=2, operandId=27, value='6')
-        effect = self.ch.effect(effectId=662, categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePost.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        ePreStub = self.ef.make(1, operandId=27, expressionValue='0')
+        ePost = self.ef.make(2, operandId=27, expressionValue='6')
+        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePost['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 662: integer stub with unexpected value 6')
+        expected = 'failed to parse tree with base 1-2 and effect category 0: integer stub with unexpected value 6'
+        self.assertEqual(logRecord.msg, expected)
 
     def testBoolStub(self):
-        ePreStub = self.ch.expression(expressionId=1, operandId=27, value='0')
-        ePost = self.ch.expression(expressionId=2, operandId=23, value='False')
-        effect = self.ch.effect(effectId=92, categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePost.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        ePreStub = self.ef.make(1, operandId=27, expressionValue='0')
+        ePost = self.ef.make(2, operandId=23, expressionValue='False')
+        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePost['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 92: boolean stub with unexpected value False')
+        expected = 'failed to parse tree with base 1-2 and effect category 0: boolean stub with unexpected value False'
+        self.assertEqual(logRecord.msg, expected)
 
     def testUnknown(self):
         # Check reaction to any errors of action builder,
         # which are not specifically processed by it
-        ePreStub = self.ch.expression(expressionId=1, operandId=27, value='0')
-        ePost = self.ch.expression(expressionId=2, operandId=23, value='Garbage')
-        effect = self.ch.effect(effectId=66, categoryId=0, preExpressionId=ePreStub.id, postExpressionId=ePost.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        ePreStub = self.ef.make(1, operandId=27, expressionValue='0')
+        ePost = self.ef.make(2, operandId=23, expressionValue='Garbage')
+        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePost['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.ERROR)
-        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 66 due to unknown reason')
+        expected = 'failed to parse tree with base 1-2 and effect category 0 due to unknown reason'
+        self.assertEqual(logRecord.msg, expected)
 
     def testValidation(self):
         # To make invalid action, we've just took location
         # and group- filtered expression tree and replaced its
         # actual top-level operands with operand describing
         # direct modification
-        eTgtLoc = self.ch.expression(expressionId=1, operandId=24, value='Ship')
-        eTgtGrp = self.ch.expression(expressionId=2, operandId=26, expressionGroupId=46)
-        eTgtAttr = self.ch.expression(expressionId=3, operandId=22, expressionAttributeId=6)
-        eOptr = self.ch.expression(expressionId=4, operandId=21, value='PostPercent')
-        eSrcAttr = self.ch.expression(expressionId=5, operandId=22, expressionAttributeId=1576)
-        eTgtItms = self.ch.expression(expressionId=6, operandId=48, arg1Id=eTgtLoc.id, arg2Id=eTgtGrp.id)
-        eTgtSpec = self.ch.expression(expressionId=7, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr.id)
-        eOptrTgt = self.ch.expression(expressionId=8, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
-        eAddMod = self.ch.expression(expressionId=9, operandId=6, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
-        eRmMod = self.ch.expression(expressionId=10, operandId=58, arg1Id=eOptrTgt.id, arg2Id=eSrcAttr.id)
-        effect = self.ch.effect(effectId=20807, categoryId=0, preExpressionId=eAddMod.id, postExpressionId=eRmMod.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        eTgtLoc = self.ef.make(1, operandId=24, expressionValue='Ship')
+        eTgtGrp = self.ef.make(2, operandId=26, expressionGroupId=46)
+        eTgtAttr = self.ef.make(3, operandId=22, expressionAttributeId=6)
+        eOptr = self.ef.make(4, operandId=21, expressionValue='PostPercent')
+        eSrcAttr = self.ef.make(5, operandId=22, expressionAttributeId=1576)
+        eTgtItms = self.ef.make(6, operandId=48, arg1Id=eTgtLoc['expressionId'], arg2Id=eTgtGrp['expressionId'])
+        eTgtSpec = self.ef.make(7, operandId=12, arg1Id=eTgtItms['expressionId'], arg2Id=eTgtAttr['expressionId'])
+        eOptrTgt = self.ef.make(8, operandId=31, arg1Id=eOptr['expressionId'], arg2Id=eTgtSpec['expressionId'])
+        eAddMod = self.ef.make(9, operandId=6, arg1Id=eOptrTgt['expressionId'], arg2Id=eSrcAttr['expressionId'])
+        eRmMod = self.ef.make(10, operandId=58, arg1Id=eOptrTgt['expressionId'], arg2Id=eSrcAttr['expressionId'])
+        modifiers, status = self.runBuilder(eAddMod['expressionId'], eRmMod['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.modifierBuilder')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
-        self.assertEqual(logRecord.msg, 'failed to parse expressions of effect 20807: failed to validate action')
+        expected = 'failed to parse tree with base 9-10 and effect category 0: failed to validate action'
+        self.assertEqual(logRecord.msg, expected)

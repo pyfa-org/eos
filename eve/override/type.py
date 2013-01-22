@@ -24,7 +24,7 @@ from itertools import chain
 from eos.const import State, Location, EffectBuildStatus, Context, FilterType, Operator
 from eos.eve.const import Type, Group, Attribute, EffectCategory
 from eos.eve.effect import Effect
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 
 
 # Define modifiers which apply character's missile damage

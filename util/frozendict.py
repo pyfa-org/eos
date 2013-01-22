@@ -23,6 +23,7 @@
 Recipe taken from http://code.activestate.com/recipes/414283-frozen-dictionaries/
 """
 
+
 from .cachedProperty import cachedproperty
 
 

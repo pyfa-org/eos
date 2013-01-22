@@ -29,7 +29,7 @@ class TestNormalization(GeneratorTestCase):
 
     def testBasicAttrRadius(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'radius': 50.0})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -38,7 +38,7 @@ class TestNormalization(GeneratorTestCase):
 
     def testBasicAttrMass(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -47,7 +47,7 @@ class TestNormalization(GeneratorTestCase):
 
     def testBasicAttrVolume(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'volume': 500.0})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -56,7 +56,7 @@ class TestNormalization(GeneratorTestCase):
 
     def testBasicAttrCapacity(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'capacity': 0.5})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

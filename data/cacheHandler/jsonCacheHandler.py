@@ -25,10 +25,10 @@ import os.path
 from weakref import WeakValueDictionary
 
 from eos.eve.type import Type
-from eos.eve.expression import Expression
 from eos.eve.effect import Effect
 from eos.eve.attribute import Attribute
-from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ExpressionFetchError
+from eos.eve.modifier import Modifier
+from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 
 
 class JsonCacheHandler:
@@ -50,13 +50,13 @@ class JsonCacheHandler:
         self.__typeDataCache = {}
         self.__attributeDataCache = {}
         self.__effectDataCache = {}
-        self.__expressionDataCache = {}
+        self.__modifierDataCache = {}
         self.__fingerprint = None
         # Initialize weakref object cache
         self.__typeObjCache = WeakValueDictionary()
         self.__attributeObjCache = WeakValueDictionary()
         self.__effectObjCache = WeakValueDictionary()
-        self.__expressionObjCache = WeakValueDictionary()
+        self.__modifierObjCache = WeakValueDictionary()
 
         # If cache doesn't exist, silently finish initialization
         if not os.path.exists(self._diskCacheFile):
@@ -78,15 +78,6 @@ class JsonCacheHandler:
             self.__updateMemCache(data)
 
     def getType(self, typeId):
-        """
-        Get Type object from data source.
-
-        Positional arguments:
-        typeId -- ID of type to get
-
-        Return value:
-        eve.type.Type object
-        """
         try:
             type_ = self.__typeObjCache[typeId]
         except KeyError:
@@ -114,15 +105,6 @@ class JsonCacheHandler:
         return type_
 
     def getAttribute(self, attrId):
-        """
-        Get Attribute object from data source.
-
-        Positional arguments:
-        attrId -- ID of attribute to get
-
-        Return value:
-        eve.attribute.Attribute object
-        """
         try:
             attribute = self.__attributeObjCache[attrId]
         except KeyError:
@@ -132,8 +114,7 @@ class JsonCacheHandler:
             except KeyError as e:
                 raise AttributeFetchError(attrId) from e
             maxAttributeId, defaultValue, highIsGood, stackable = data
-            attribute = Attribute(cacheHandler=self,
-                                  attributeId=attrId,
+            attribute = Attribute(attributeId=attrId,
                                   maxAttributeId=maxAttributeId,
                                   defaultValue=defaultValue,
                                   highIsGood=highIsGood,
@@ -142,15 +123,6 @@ class JsonCacheHandler:
         return attribute
 
     def getEffect(self, effectId):
-        """
-        Get Effect object from data source.
-
-        Positional arguments:
-        effectId -- ID of effect to get
-
-        Return value:
-        eve.effect.Effect object
-        """
         try:
             effect = self.__effectObjCache[effectId]
         except KeyError:
@@ -159,53 +131,41 @@ class JsonCacheHandler:
                 data = self.__effectDataCache[jsonEffectId]
             except KeyError as e:
                 raise EffectFetchError(effectId) from e
-            effCategoryId, isOffence, isAssist, fitChanceId, preExpId, postExpId = data
-            effect = Effect(cacheHandler=self,
-                            effectId=effectId,
+            effCategoryId, isOffence, isAssist, fitChanceId, buildStatus, modifiers = data
+            effect = Effect(effectId=effectId,
                             categoryId=effCategoryId,
                             isOffensive=isOffence,
                             isAssistance=isAssist,
                             fittingUsageChanceAttributeId=fitChanceId,
-                            preExpressionId=preExpId,
-                            postExpressionId=postExpId)
+                            buildStatus=buildStatus,
+                            modifiers=tuple(self.getModifier(modifierId) for modifierId in modifiers))
             self.__effectObjCache[effectId] = effect
         return effect
 
-    def getExpression(self, expId):
-        """
-        Get Expression object from data source.
-
-        Positional arguments:
-        expId -- ID of expression to get
-
-        Return value:
-        eve.expression.Expression object
-        """
+    def getModifier(self, modifierId):
         try:
-            expression = self.__expressionObjCache[expId]
+            modifier = self.__modifierObjCache[modifierId]
         except KeyError:
-            jsonExpId = str(int(expId))
+            jsonModifierId = str(int(modifierId))
             try:
-                data = self.__expressionDataCache[jsonExpId]
+                data = self.__modifierDataCache[jsonModifierId]
             except KeyError as e:
-                raise ExpressionFetchError(expId) from e
-            opndId, arg1Id, arg2Id, eVal, eTypeId, eGrpId, eAttrId = data
-            expression = Expression(cacheHandler=self,
-                                    expressionId=expId,
-                                    operandId=opndId,
-                                    arg1Id=arg1Id,
-                                    arg2Id=arg2Id,
-                                    value=eVal,
-                                    expressionTypeId=eTypeId,
-                                    expressionGroupId=eGrpId,
-                                    expressionAttributeId=eAttrId)
-            self.__expressionObjCache[expId] = expression
-        return expression
+                raise ModifierFetchError(modifierId) from e
+            state, context, srcAttrId, operator, tgtAttrId, location, filType, filValue = data
+            modifier = Modifier(modifierId=modifierId,
+                                state=state,
+                                context=context,
+                                sourceAttributeId=srcAttrId,
+                                operator=operator,
+                                targetAttributeId=tgtAttrId,
+                                location=location,
+                                filterType=filType,
+                                filterValue=filValue)
+            self.__modifierObjCache[modifierId] = modifier
+        return modifier
 
     def getFingerprint(self):
-        """
-        Get disk cache fingerprint.
-        """
+        """Get disk cache fingerprint."""
         return self.__fingerprint
 
     def updateCache(self, data, fingerprint):
@@ -218,7 +178,7 @@ class JsonCacheHandler:
         """
         # Make light version of data and add fingerprint
         # to it
-        self.__stripData(data)
+        data = self.__stripData(data)
         data['fingerprint'] = fingerprint
         # Update disk cache
         os.makedirs(os.path.dirname(self._diskCacheFile), mode=0o755, exist_ok=True)
@@ -235,49 +195,58 @@ class JsonCacheHandler:
         """
         Rework passed data, stripping dictionary
         keys from it to reduce space needed to store it.
-
-        Positional arguments:
-        data -- dictionary with data to refactor
         """
-        types = data['types']
-        for typeId in types:
-            typeRow = types[typeId]
-            types[typeId] = (typeRow['groupId'],
-                             typeRow['categoryId'],
-                             typeRow['durationAttributeId'],
-                             typeRow['dischargeAttributeId'],
-                             typeRow['rangeAttributeId'],
-                             typeRow['falloffAttributeId'],
-                             typeRow['trackingSpeedAttributeId'],
-                             typeRow['fittableNonSingleton'],
-                             tuple(typeRow['effects']),  # List -> tuple
-                             tuple(typeRow['attributes'].items()))  # Dictionary -> tuple
-        attribs = data['attributes']
-        for attrId in attribs:
-            attrRow = attribs[attrId]
-            attribs[attrId] = (attrRow['maxAttributeId'],
-                               attrRow['defaultValue'],
-                               attrRow['highIsGood'],
-                               attrRow['stackable'])
-        effects = data['effects']
-        for effectId in effects:
-            effectRow = effects[effectId]
-            effects[effectId] = (effectRow['effectCategory'],
-                                 effectRow['isOffensive'],
-                                 effectRow['isAssistance'],
-                                 effectRow['fittingUsageChanceAttributeId'],
-                                 effectRow['preExpressionId'],
-                                 effectRow['postExpressionId'])
-        expressions = data['expressions']
-        for expressionId in expressions:
-            expressionRow = expressions[expressionId]
-            expressions[expressionId] = (expressionRow['operandId'],
-                                         expressionRow['arg1Id'],
-                                         expressionRow['arg2Id'],
-                                         expressionRow['expressionValue'],
-                                         expressionRow['expressionTypeId'],
-                                         expressionRow['expressionGroupId'],
-                                         expressionRow['expressionAttributeId'])
+        slimData = {}
+
+        slimTypes = {}
+        for typeRow in data['types']:
+            typeId = typeRow['typeId']
+            slimTypes[typeId] = (typeRow['groupId'],
+                                 typeRow['categoryId'],
+                                 typeRow['durationAttributeId'],
+                                 typeRow['dischargeAttributeId'],
+                                 typeRow['rangeAttributeId'],
+                                 typeRow['falloffAttributeId'],
+                                 typeRow['trackingSpeedAttributeId'],
+                                 typeRow['fittableNonSingleton'],
+                                 tuple(typeRow['effects']),  # List -> tuple
+                                 tuple(typeRow['attributes'].items()))  # Dictionary -> tuple
+        slimData['types'] = slimTypes
+
+        slimAttribs = {}
+        for attrRow in data['attributes']:
+            attrId = attrRow['attributeId']
+            slimAttribs[attrId] = (attrRow['maxAttributeId'],
+                                   attrRow['defaultValue'],
+                                   attrRow['highIsGood'],
+                                   attrRow['stackable'])
+        slimData['attributes'] = slimAttribs
+
+        slimEffects = {}
+        for effectRow in data['effects']:
+            effectId = effectRow['effectId']
+            slimEffects[effectId] = (effectRow['effectCategory'],
+                                     effectRow['isOffensive'],
+                                     effectRow['isAssistance'],
+                                     effectRow['fittingUsageChanceAttributeId'],
+                                     effectRow['buildStatus'],
+                                     tuple(effectRow['modifiers']))  # List -> tuple
+        slimData['effects'] = slimEffects
+
+        slimModifiers = {}
+        for modifierRow in data['modifiers']:
+            modifierId = modifierRow['modifierId']
+            slimModifiers[modifierId] = (modifierRow['state'],
+                                         modifierRow['context'],
+                                         modifierRow['sourceAttributeId'],
+                                         modifierRow['operator'],
+                                         modifierRow['targetAttributeId'],
+                                         modifierRow['location'],
+                                         modifierRow['filterType'],
+                                         modifierRow['filterValue'])
+        slimData['modifiers'] = slimModifiers
+
+        return slimData
 
     def __updateMemCache(self, data):
         """
@@ -289,11 +258,11 @@ class JsonCacheHandler:
         self.__typeDataCache = data['types']
         self.__attributeDataCache = data['attributes']
         self.__effectDataCache = data['effects']
-        self.__expressionDataCache = data['expressions']
+        self.__modifierDataCache = data['modifiers']
         self.__fingerprint = data['fingerprint']
         # Also clear object cache to make sure objects composed
         # from old data are gone
         self.__typeObjCache.clear()
         self.__attributeObjCache.clear()
         self.__effectObjCache.clear()
-        self.__expressionObjCache.clear()
+        self.__modifierObjCache.clear()

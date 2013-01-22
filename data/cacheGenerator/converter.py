@@ -21,6 +21,7 @@
 
 from eos.eve.const import Attribute
 from eos.util.frozendict import frozendict
+from .modifierBuilder.modifierBuilder import ModifierBuilder
 
 
 class Converter:
@@ -28,21 +29,13 @@ class Converter:
     Class responsible for transforming data structure,
     like moving data around or converting whole data
     structure.
-
-    Positional arguments:
-    logger -- logger to use
     """
 
     def __init__(self, logger):
         self._logger = logger
 
     def normalize(self, data):
-        """
-        Make data more consistent.
-
-        Positional arguments:
-        data -- data to refactor
-        """
+        """ Make data more consistent."""
         self.data = data
         self._moveAttribs()
 
@@ -100,36 +93,16 @@ class Converter:
         """
         Convert database-like data structure to eos-
         specific one.
-
-        Positional arguments:
-        data -- source data
-
-        Return value:
-        Dictionary in {entity name: entity keyed table} format,
-        where keyed table is {entity ID: entity row}
         """
         data = self._assemble(data)
+        self._buildModifiers(data)
         return data
 
     def _assemble(self, data):
         """
         Use passed data to compose object-like data rows,
         as in, to 'assemble' objects.
-
-        Positional arguments:
-        data -- source data for objects
-
-        Return value:
-        Dictionary in {entity name: entity keyed table} format,
-        where keyed table is {entity ID: entity row}
         """
-        # We will build new data structure from scratch
-        assembly = {}
-        assembly['types'] = {}
-        assembly['attributes'] = {}
-        assembly['effects'] = {}
-        assembly['expressions'] = {}
-
         # Before actually generating rows, we need to collect
         # some data in convenient form
         # Format: {type ID: type row}
@@ -156,7 +129,10 @@ class Converter:
             typeAttribsRow = typeAttribs.setdefault(row['typeID'], {})
             typeAttribsRow[row['attributeID']] = row['value']
 
-        types = assembly['types']
+        # We will build new data structure from scratch
+        assembly = {}
+
+        types = []
         for row in data['invtypes']:
             typeId = row['typeID']
             groupId = row.get('groupID')
@@ -166,45 +142,128 @@ class Converter:
                 defeff = dgmeffectsKeyed.get(typeDefeffMap[typeId], {})
             else:
                 defeff = {}
-            types[typeId] = {'groupId': groupId,
-                             'categoryId': invgroupsKeyed.get(groupId, {}).get('categoryID'),
-                             'durationAttributeId': defeff.get('durationAttributeID'),
-                             'dischargeAttributeId': defeff.get('dischargeAttributeID'),
-                             'rangeAttributeId': defeff.get('rangeAttributeID'),
-                             'falloffAttributeId': defeff.get('falloffAttributeID'),
-                             'trackingSpeedAttributeId': defeff.get('trackingSpeedAttributeID'),
-                             'fittableNonSingleton': invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
-                             'effects': typeEffects.get(typeId, ()),
-                             'attributes': typeAttribs.get(typeId, {})}
+            type_ = {'typeId': typeId,
+                     'groupId': groupId,
+                     'categoryId': invgroupsKeyed.get(groupId, {}).get('categoryID'),
+                     'durationAttributeId': defeff.get('durationAttributeID'),
+                     'dischargeAttributeId': defeff.get('dischargeAttributeID'),
+                     'rangeAttributeId': defeff.get('rangeAttributeID'),
+                     'falloffAttributeId': defeff.get('falloffAttributeID'),
+                     'trackingSpeedAttributeId': defeff.get('trackingSpeedAttributeID'),
+                     'fittableNonSingleton': invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
+                     'effects': typeEffects.get(typeId, ()),
+                     'attributes': typeAttribs.get(typeId, {})}
+            types.append(type_)
+        assembly['types'] = types
 
-        attributes = assembly['attributes']
+        attributes = []
         for row in data['dgmattribs']:
-            attrId = row['attributeID']
-            attributes[attrId] = {'maxAttributeId': row.get('maxAttributeID'),
-                                  'defaultValue': row.get('defaultValue'),
-                                  'highIsGood': row.get('highIsGood'),
-                                  'stackable': row.get('stackable')}
+            attribute = {'attributeId': row['attributeID'],
+                         'maxAttributeId': row.get('maxAttributeID'),
+                         'defaultValue': row.get('defaultValue'),
+                         'highIsGood': row.get('highIsGood'),
+                         'stackable': row.get('stackable')}
+            attributes.append(attribute)
+        assembly['attributes'] = attributes
 
-        # Effects
-        effects = assembly['effects']
+        effects = []
+        assembly['effects'] = []
         for row in data['dgmeffects']:
-            effectId = row['effectID']
-            effects[effectId] = {'effectCategory': row.get('effectCategory'),
-                                 'isOffensive': row.get('isOffensive'),
-                                 'isAssistance': row.get('isAssistance'),
-                                 'fittingUsageChanceAttributeId': row.get('fittingUsageChanceAttributeID'),
-                                 'preExpressionId': row.get('preExpression'),
-                                 'postExpressionId': row.get('postExpression')}
+            effect = {'effectId': row['effectID'],
+                      'effectCategory': row.get('effectCategory'),
+                      'isOffensive': row.get('isOffensive'),
+                      'isAssistance': row.get('isAssistance'),
+                      'fittingUsageChanceAttributeId': row.get('fittingUsageChanceAttributeID'),
+                      'preExpressionId': row.get('preExpression'),
+                      'postExpressionId': row.get('postExpression')}
+            effects.append(effect)
+        assembly['effects'] = effects
 
-        expressions = assembly['expressions']
+        expressions = []
         for row in data['dgmexpressions']:
-            expId = row['expressionID']
-            expressions[expId] = {'operandId': row.get('operandID'),
-                                  'arg1Id': row.get('arg1'),
-                                  'arg2Id': row.get('arg2'),
-                                  'expressionValue': row.get('expressionValue'),
-                                  'expressionTypeId': row.get('expressionTypeID'),
-                                  'expressionGroupId': row.get('expressionGroupID'),
-                                  'expressionAttributeId': row.get('expressionAttributeID')}
+            expression = {'expressionId': row['expressionID'],
+                          'operandId': row.get('operandID'),
+                          'arg1Id': row.get('arg1'),
+                          'arg2Id': row.get('arg2'),
+                          'expressionValue': row.get('expressionValue'),
+                          'expressionTypeId': row.get('expressionTypeID'),
+                          'expressionGroupId': row.get('expressionGroupID'),
+                          'expressionAttributeId': row.get('expressionAttributeID')}
+            expressions.append(expression)
+        assembly['expressions'] = expressions
 
         return assembly
+
+    def _buildModifiers(self, data):
+        """
+        Replace expressions with generated out of
+        them modifiers.
+        """
+        builder = ModifierBuilder(data['expressions'], self._logger)
+        # Lists effects, which are using given modifier
+        # Format: {modifier row: [effect IDs]}
+        modifierEffectMap = {}
+        # Prepare to give each modifier unique ID
+        # Format: {modifier row: modifier ID}
+        modifierIdMap = {}
+        modifierId = 1
+        # Sort rows by ID so we numerate modifiers in deterministic way
+        for effectRow in sorted(data['effects'], key=lambda row: row['effectId']):
+            modifiers, buildStatus = builder.buildEffect(effectRow['preExpressionId'],
+                                                         effectRow['postExpressionId'],
+                                                         effectRow['effectCategory'])
+            # Update effects: add modifier build status and remove
+            # fields which we needed only for this process
+            effectRow['buildStatus'] = buildStatus
+            del effectRow['preExpressionId']
+            del effectRow['postExpressionId']
+            for modifier in modifiers:
+                # Convert modifiers into frozen datarows to use
+                # them in conversion process
+                frozenModifier = self._freezeModifier(modifier)
+                # Gather data about which effects use which modifier
+                usedByEffects = modifierEffectMap.setdefault(frozenModifier, [])
+                usedByEffects.append(effectRow['effectId'])
+                # Assign ID only to each unique modifier
+                if frozenModifier not in modifierIdMap:
+                    modifierIdMap[frozenModifier] = modifierId
+                    modifierId += 1
+
+        # Compose reverse to modifierEffectMap dictionary
+        # Format: {effect ID: [modifier rows]}
+        effectModifierMap = {}
+        for frozenModifier, effectIds in modifierEffectMap.items():
+            for effectId in effectIds:
+                effectModifiers = effectModifierMap.setdefault(effectId, [])
+                effectModifiers.append(frozenModifier)
+
+        # For each effect, add IDs of each modifiers it uses
+        for effectRow in data['effects']:
+            modifiers = []
+            for frozenModifier in effectModifierMap.get(effectRow['effectId'], ()):
+                modifiers.append(modifierIdMap[frozenModifier])
+            effectRow['modifiers'] = modifiers
+
+        # Replace expressions table with modifiers
+        del data['expressions']
+        modifiers = []
+        for frozenModifier, modifierId in modifierIdMap.items():
+            modifier = {}
+            modifier.update(frozenModifier)
+            modifier['modifierId'] = modifierId
+            modifiers.append(modifier)
+        data['modifiers'] = modifiers
+
+    def _freezeModifier(self, modifier):
+        """
+        Converts modifier into frozendict with its keys and
+        values assigned according to modifier's ones.
+        """
+        # Fields which we need to dump into row
+        fields = ('state', 'context', 'sourceAttributeId', 'operator',
+                  'targetAttributeId', 'location', 'filterType', 'filterValue')
+        modifierRow = {}
+        for field in fields:
+            modifierRow[field] = getattr(modifier, field)
+        frozenRow = frozendict(modifierRow)
+        return frozenRow

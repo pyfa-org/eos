@@ -19,28 +19,18 @@
 #===============================================================================
 
 
-from eos.exception import EosError
+from eos.data.cacheGenerator.modifierBuilder.modifierBuilder import ModifierBuilder
+from eos.tests.environment import Logger
+from eos.tests.eosTestCase import EosTestCase
+from .environment import ExpressionFactory
 
 
-class CacheHandlerError(EosError):
-    """All cache handler exceptions are based on this class."""
-    pass
+class ModBuilderTestCase(EosTestCase):
 
+    def setUp(self):
+        EosTestCase.setUp(self)
+        self.ef = ExpressionFactory()
 
-class TypeFetchError(CacheHandlerError):
-    """Raised when cache handler can't find type with requested ID."""
-    pass
-
-
-class AttributeFetchError(CacheHandlerError):
-    """Raised when cache handler can't find attribute with requested ID."""
-    pass
-
-
-class EffectFetchError(CacheHandlerError):
-    """Raised when cache handler can't find effect with requested ID."""
-    pass
-
-class ModifierFetchError(CacheHandlerError):
-    """Raised when cache handler can't find modifier with requested ID."""
-    pass
+    def runBuilder(self, preExp, postExp, effCat):
+        builder = ModifierBuilder(self.ef.data, Logger())
+        return builder.buildEffect(preExp, postExp, effCat)

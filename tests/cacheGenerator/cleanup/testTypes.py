@@ -30,7 +30,7 @@ class TestCleanupTypes(GeneratorTestCase):
 
     def testGroupCharacter(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -41,7 +41,7 @@ class TestCleanupTypes(GeneratorTestCase):
 
     def testGroupEffectBeacon(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -52,7 +52,7 @@ class TestCleanupTypes(GeneratorTestCase):
 
     def testGroupOther(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -62,7 +62,7 @@ class TestCleanupTypes(GeneratorTestCase):
 
     def testGroupCharacterUnpublished(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'published': False})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -74,7 +74,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategoryShip(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 6})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -86,7 +86,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategoryModule(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 7})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -98,7 +98,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategoryCharge(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 8})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -110,7 +110,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategorySkill(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 16})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -122,7 +122,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategoryDrone(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 18})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -134,7 +134,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategoryImplant(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 20})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -146,7 +146,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategorySubsystem(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 32})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -158,7 +158,7 @@ class TestCleanupTypes(GeneratorTestCase):
     def testCategoryOther(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 51})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -173,7 +173,7 @@ class TestCleanupTypes(GeneratorTestCase):
         self.dh.data['invgroups'].append({'groupID': 20, 'categoryID': 7})
         self.dh.data['invtypes'].append({'typeID': 4, 'groupID': 80})
         self.dh.data['invgroups'].append({'groupID': 80, 'categoryID': 700})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

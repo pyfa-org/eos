@@ -41,7 +41,7 @@ class TestRackCollision(GeneratorTestCase):
         self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
 
     def testCollision(self):
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -59,7 +59,7 @@ class TestRackCollision(GeneratorTestCase):
 
     def testCleaned(self):
         del self.item['groupID']
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

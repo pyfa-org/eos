@@ -44,7 +44,7 @@ class TestConversionType(GeneratorTestCase):
                                            'fittingUsageChanceAttributeID': 41, 'preExpression': 79, 'postExpression': 5,
                                            'durationAttributeID': 781, 'dischargeAttributeID': 752, 'rangeAttributeID': 26,
                                            'falloffAttributeID': 33, 'trackingSpeedAttributeID': 68})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

@@ -20,11 +20,10 @@
 
 
 from eos.const import Location, EffectBuildStatus, FilterType
-from eos.data.cacheHandler.exception import ExpressionFetchError
 from eos.eve.const import Operand
+from eos.eve.modifier import Modifier
 from .actionBuilder import ActionBuilder
-from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, ActionBuilderError
-from .modifier import Modifier
+from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, ActionBuilderError, ExpressionFetchError
 from .shared import operandData, stateData
 
 
@@ -34,19 +33,12 @@ class ModifierBuilder:
     objects, which can then be used in the rest of the engine.
     """
 
-    @classmethod
-    def build(cls, effect, logger):
-        """
-        Generate Modifier objects out of passed data.
+    def __init__(self, expressions, logger):
+        self._actionBuilder = ActionBuilder(expressions)
+        self._logger = logger
 
-        Positional arguments:
-        effect -- effect, for which we're building modifiers
-        logger -- instance of logger to use for error reporting
-
-        Return value:
-        Tuple (tuple with Modifier objects, build status), where build status
-        is eos.const.EffectBuildStatus class' attribute value
-        """
+    def buildEffect(self, preExpressionId, postExpressionId, effectCategoryId):
+        """Generate Modifier objects out of passed data."""
         try:
             # By default, assume that our build is 100% successful
             buildStatus = EffectBuildStatus.okFull
@@ -55,21 +47,13 @@ class ModifierBuilder:
             postActions = set()
 
             # Get actions out of both trees
-            for treeName, actionSet in (('preExpression', preActions),
-                                        ('postExpression', postActions)):
+            for treeRootId, actionSet in ((preExpressionId, preActions),
+                                          (postExpressionId, postActions)):
+                # If there's no tree, then there's nothing to build
+                if treeRootId is None:
+                    continue
                 try:
-                    # Get root expression
-                    treeRoot = getattr(effect, treeName)
-                    # As we already store expressions in local variable,
-                    # remove reference to them from effect object by
-                    # deleting corresponding attribute - to not consume
-                    # memory when building process is finished
-                    delattr(effect, treeName)
-                    # If there's no tree, then there's
-                    # nothing to build
-                    if treeRoot is None:
-                        continue
-                    actions, skippedData = ActionBuilder.build(treeRoot, effect.categoryId)
+                    actions, skippedData = self._actionBuilder.build(treeRootId, effectCategoryId)
                 # If any errors occurred, raise corresponding exceptions
                 except ExpressionFetchError as e:
                     raise TreeFetchingError(*e.args)
@@ -85,7 +69,7 @@ class ModifierBuilder:
                     buildStatus = EffectBuildStatus.okPartial
 
             # Container for actual modifier objects
-            modifiers = set()
+            modifiers = []
             # Helper containers for action->modifier conversion process
             # Contains references to already used for generation
             # of modifiers pre-actions and post-actions
@@ -104,8 +88,8 @@ class ModifierBuilder:
                     # If matching pre- and post-actions were detected
                     if preAction.isMirror(postAction) is True:
                         # Create actual modifier
-                        modifier = cls.actionToModifier(preAction, effect.categoryId)
-                        modifiers.add(modifier)
+                        modifier = self._actionToModifier(preAction, effectCategoryId)
+                        modifiers.append(modifier)
                         # Mark used actions as used
                         usedPreActions.add(preAction)
                         usedPostActions.add(postAction)
@@ -119,32 +103,31 @@ class ModifierBuilder:
                 if preActions.difference(usedPreActions) or postActions.difference(usedPostActions):
                     raise UnusedActionError
             except UnusedActionError as e:
-                msg = 'unused actions left after generating modifiers for effect {}'.format(effect.id)
-                signature = (type(e), effect.id)
-                logger.warning(msg, childName='modifierBuilder', signature=signature)
+                msg = 'unused actions left after parsing tree with base {}-{} and effect category {}'.format(preExpressionId, postExpressionId, effectCategoryId)
+                signature = (type(e), preExpressionId, postExpressionId, effectCategoryId)
+                self._logger.warning(msg, childName='modifierBuilder', signature=signature)
                 buildStatus = EffectBuildStatus.okPartial
 
         # Handle raised exceptions
         except TreeFetchingError as e:
-            msg = 'failed to parse expressions of effect {}: unable to fetch expression {}'.format(effect.id, e.args[0])
-            signature = (type(e), effect.id)
-            logger.error(msg, childName='modifierBuilder', signature=signature)
+            msg = 'failed to parse tree with base {}-{} and effect category {}: unable to fetch expression {}'.format(preExpressionId, postExpressionId, effectCategoryId, e.args[0])
+            signature = (type(e), preExpressionId, postExpressionId, effectCategoryId)
+            self._logger.error(msg, childName='modifierBuilder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingError as e:
-            msg = 'failed to parse expressions of effect {}: {}'.format(effect.id, e.args[0])
-            signature = (type(e), effect.id)
-            logger.warning(msg, childName='modifierBuilder', signature=signature)
+            msg = 'failed to parse tree with base {}-{} and effect category {}: {}'.format(preExpressionId, postExpressionId, effectCategoryId, e.args[0])
+            signature = (type(e), preExpressionId, postExpressionId, effectCategoryId)
+            self._logger.warning(msg, childName='modifierBuilder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError as e:
-            msg = 'failed to parse expressions of effect {} due to unknown reason'.format(effect.id)
-            signature = (type(e), effect.id)
-            logger.error(msg, childName='modifierBuilder', signature=signature)
+            msg = 'failed to parse tree with base {}-{} and effect category {} due to unknown reason'.format(preExpressionId, postExpressionId, effectCategoryId)
+            signature = (type(e), preExpressionId, postExpressionId, effectCategoryId)
+            self._logger.error(msg, childName='modifierBuilder', signature=signature)
             return (), EffectBuildStatus.error
 
-        return tuple(modifiers), buildStatus
+        return modifiers, buildStatus
 
-    @classmethod
-    def actionToModifier(cls, action, effectCategoryId):
+    def _actionToModifier(self, action, effectCategoryId):
         """
         Convert action to Modifier object.
 
@@ -163,73 +146,64 @@ class ModifierBuilder:
         modifier.operator = action.operator
         modifier.targetAttributeId = action.targetAttributeId
         # Fill remaining fields on per-type-of-action basis
-        conversionMap = {Operand.addGangGrpMod: cls.__convertGangGrp,
-                         Operand.rmGangGrpMod: cls.__convertGangGrp,
-                         Operand.addGangItmMod: cls.__convertGangItm,
-                         Operand.rmGangItmMod: cls.__convertGangItm,
-                         Operand.addGangOwnSrqMod: cls.__convertGangOwnSrq,
-                         Operand.rmGangOwnSrqMod: cls.__convertGangOwnSrq,
-                         Operand.addGangSrqMod: cls.__convertGangSrq,
-                         Operand.rmGangSrqMod: cls.__convertGangSrq,
-                         Operand.addItmMod: cls.__convertItm,
-                         Operand.rmItmMod: cls.__convertItm,
-                         Operand.addLocGrpMod: cls.__convertLocGrp,
-                         Operand.rmLocGrpMod: cls.__convertLocGrp,
-                         Operand.addLocMod: cls.__convertLoc,
-                         Operand.rmLocMod: cls.__convertLoc,
-                         Operand.addLocSrqMod: cls.__convertLocSrq,
-                         Operand.rmLocSrqMod: cls.__convertLocSrq,
-                         Operand.addOwnSrqMod: cls.__convertOwnSrq,
-                         Operand.rmOwnSrqMod: cls.__convertOwnSrq}
+        conversionMap = {Operand.addGangGrpMod: self._convertGangGrp,
+                         Operand.rmGangGrpMod: self._convertGangGrp,
+                         Operand.addGangItmMod: self._convertGangItm,
+                         Operand.rmGangItmMod: self._convertGangItm,
+                         Operand.addGangOwnSrqMod: self._convertGangOwnSrq,
+                         Operand.rmGangOwnSrqMod: self._convertGangOwnSrq,
+                         Operand.addGangSrqMod: self._convertGangSrq,
+                         Operand.rmGangSrqMod: self._convertGangSrq,
+                         Operand.addItmMod: self._convertItm,
+                         Operand.rmItmMod: self._convertItm,
+                         Operand.addLocGrpMod: self._convertLocGrp,
+                         Operand.rmLocGrpMod: self._convertLocGrp,
+                         Operand.addLocMod: self._convertLoc,
+                         Operand.rmLocMod: self._convertLoc,
+                         Operand.addLocSrqMod: self._convertLocSrq,
+                         Operand.rmLocSrqMod: self._convertLocSrq,
+                         Operand.addOwnSrqMod: self._convertOwnSrq,
+                         Operand.rmOwnSrqMod: self._convertOwnSrq}
         conversionMap[action.type](action, modifier)
         return modifier
 
     # Block with conversion methods, called depending on action type
-    @classmethod
-    def __convertGangGrp(cls, action, modifier):
+    def _convertGangGrp(self, action, modifier):
         modifier.location = Location.ship
         modifier.filterType = FilterType.group
         modifier.filterValue = action.targetGroupId
 
-    @classmethod
-    def __convertGangItm(cls, action, modifier):
+    def _convertGangItm(self, action, modifier):
         modifier.location = Location.ship
 
-    @classmethod
-    def __convertGangOwnSrq(cls, action, modifier):
+    def _convertGangOwnSrq(self, action, modifier):
         modifier.location = Location.space
         modifier.filterType = FilterType.skill
         modifier.filterValue = action.targetSkillRequirementId
 
-    @classmethod
-    def __convertGangSrq(cls, action, modifier):
+    def _convertGangSrq(self, action, modifier):
         modifier.location = Location.ship
         modifier.filterType = FilterType.skill
         modifier.filterValue = action.targetSkillRequirementId
 
-    @classmethod
-    def __convertItm(cls, action, modifier):
+    def _convertItm(self, action, modifier):
         modifier.location = action.targetLocation
 
-    @classmethod
-    def __convertLocGrp(cls, action, modifier):
+    def _convertLocGrp(self, action, modifier):
         modifier.location = action.targetLocation
         modifier.filterType = FilterType.group
         modifier.filterValue = action.targetGroupId
 
-    @classmethod
-    def __convertLoc(cls, action, modifier):
+    def _convertLoc(self, action, modifier):
         modifier.location = action.targetLocation
         modifier.filterType = FilterType.all_
 
-    @classmethod
-    def __convertLocSrq(cls, action, modifier):
+    def _convertLocSrq(self, action, modifier):
         modifier.location = action.targetLocation
         modifier.filterType = FilterType.skill
         modifier.filterValue = action.targetSkillRequirementId
 
-    @classmethod
-    def __convertOwnSrq(cls, action, modifier):
+    def _convertOwnSrq(self, action, modifier):
         modifier.location = Location.space
         modifier.filterType = FilterType.skill
         modifier.filterValue = action.targetSkillRequirementId

@@ -27,7 +27,7 @@ class Action:
     Internal modifier builder object, serves as intermediate layer between
     expression tree and final modifier objects. Modifiers are composed out
     of two actions: the one which applies modification and the one which
-    undoes it. Action values contain mix of EVE-specific and Eos-specific
+    undoes it. Action fields contain mix of EVE-specific and Eos-specific
     constants, as only some of them are converted into Eos 'format' when
     building action.
     """
@@ -83,7 +83,7 @@ class Action:
         one of them applies something and another one undoes it,
         else false
         """
-        # Check types which must be mirror
+        # Check types which must be mirrorred
         try:
             selfActionData = operandData[self.type]
         except KeyError:

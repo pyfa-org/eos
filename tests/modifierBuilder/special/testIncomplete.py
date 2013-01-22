@@ -20,38 +20,34 @@
 
 
 from eos.const import EffectBuildStatus
-from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
-from eos.tests.environment import Logger
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
 
-class TestIncomplete(EosTestCase):
+class TestIncomplete(ModBuilderTestCase):
     """Test parsing of trees, which include actions, which are not converted into modifiers"""
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        ModBuilderTestCase.setUp(self)
         # Modifier, except for top-most expression, which
         # is added in test cases
-        eTgt = self.ch.expression(expressionId=1, operandId=24, value='Ship')
-        eTgtAttr = self.ch.expression(expressionId=2, operandId=22, expressionAttributeId=9)
-        eOptr = self.ch.expression(expressionId=3, operandId=21, value='PostPercent')
-        self.eSrcAttr = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=327)
-        eTgtSpec = self.ch.expression(expressionId=5, operandId=12, arg1Id=eTgt.id, arg2Id=eTgtAttr.id)
-        self.eOptrTgt = self.ch.expression(expressionId=6, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec.id)
-        self.stub = self.ch.expression(expressionId=7, operandId=27, value='1')
+        eTgt = self.ef.make(1, operandId=24, expressionValue='Ship')
+        eTgtAttr = self.ef.make(2, operandId=22, expressionAttributeId=9)
+        eOptr = self.ef.make(3, operandId=21, expressionValue='PostPercent')
+        self.eSrcAttr = self.ef.make(4, operandId=22, expressionAttributeId=327)
+        eTgtSpec = self.ef.make(5, operandId=12, arg1Id=eTgt['expressionId'], arg2Id=eTgtAttr['expressionId'])
+        self.eOptrTgt = self.ef.make(6, operandId=31, arg1Id=eOptr['expressionId'], arg2Id=eTgtSpec['expressionId'])
+        self.stub = self.ef.make(7, operandId=27, expressionValue='1')
 
     def testPre(self):
-        eAddMod = self.ch.expression(expressionId=8, operandId=6, arg1Id=self.eOptrTgt.id, arg2Id=self.eSrcAttr.id)
-        effect = self.ch.effect(categoryId=0, preExpressionId=eAddMod.id, postExpressionId=self.stub.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        eAddMod = self.ef.make(8, operandId=6, arg1Id=self.eOptrTgt['expressionId'], arg2Id=self.eSrcAttr['expressionId'])
+        modifiers, status = self.runBuilder(eAddMod['expressionId'], self.stub['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
     def testPost(self):
-        eRmMod = self.ch.expression(expressionId=8, operandId=58, arg1Id=self.eOptrTgt.id, arg2Id=self.eSrcAttr.id)
-        effect = self.ch.effect(categoryId=0, preExpressionId=self.stub.id, postExpressionId=eRmMod.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        eRmMod = self.ef.make(8, operandId=58, arg1Id=self.eOptrTgt['expressionId'], arg2Id=self.eSrcAttr['expressionId'])
+        modifiers, status = self.runBuilder(self.stub['expressionId'], eRmMod['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)

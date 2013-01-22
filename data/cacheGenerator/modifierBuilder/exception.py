@@ -67,6 +67,13 @@ class ActionBuilderError(EosError):
     """
     pass
 
+class ExpressionFetchError(ActionBuilderError):
+    """
+    Raised when action builder is unable to find expression
+    requested by any of its components.
+    """
+    pass
+
 class ActionValidationError(ActionBuilderError):
     """
     Raised when some action generated out of expression tree

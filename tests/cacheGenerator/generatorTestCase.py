@@ -30,4 +30,25 @@ class GeneratorTestCase(EosTestCase):
     def setUp(self):
         EosTestCase.setUp(self)
         self.dh = DataHandler()
-        self.gen = CacheGenerator(Logger())
+
+    def runGenerator(self):
+        """
+        Run generator and rework data structure into
+        keyed tables so it's easier to check.
+        """
+        generator = CacheGenerator(Logger())
+        data = generator.run(self.dh)
+        keys = {'types': 'typeId',
+                'attributes': 'attributeId',
+                'effects': 'effectId',
+                'expressions': 'expressionId',
+                'modifiers': 'modifierId'}
+        keyedData = {}
+        for tableName in data:
+            keyedTable = {}
+            keyName = keys[tableName]
+            for row in data[tableName]:
+                key = row[keyName]
+                keyedTable[key] = row
+            keyedData[tableName] = keyedTable
+        return keyedData

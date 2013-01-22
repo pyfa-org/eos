@@ -22,12 +22,8 @@
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self, cacheHandler=None, attributeId=None, maxAttributeId=None,
+    def __init__(self, attributeId=None, maxAttributeId=None,
                  defaultValue=None, highIsGood=None, stackable=None):
-        # Cache handler which was used to build this attribute
-        self._cacheHandler = cacheHandler
-
-        # Just ID of attribute, integer
         self.id = attributeId
 
         # When value of this attribute is calculated on any item, it cannot

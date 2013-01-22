@@ -74,7 +74,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -105,7 +105,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'fittableNonSingleton': True})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -118,7 +118,7 @@ class TestAssociatedData(GeneratorTestCase):
 
     def testUnlinked(self):
         self.__generateData()
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
@@ -146,7 +146,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 6})
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
-        data = self.gen.run(self.dh)
+        data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')

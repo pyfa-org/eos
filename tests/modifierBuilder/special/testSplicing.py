@@ -20,43 +20,40 @@
 
 
 from eos.const import EffectBuildStatus
-from eos.fit.attributeCalculator.modifier.modifierBuilder import ModifierBuilder
-from eos.tests.environment import Logger
-from eos.tests.eosTestCase import EosTestCase
+from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
 
-class TestSplicing(EosTestCase):
+class TestSplicing(ModBuilderTestCase):
     """Test parsing of trees describing joins of multiple operations applied onto items"""
 
     def testBuildSuccess(self):
-        eTgtLoc = self.ch.expression(expressionId=1, operandId=24, value='Target')
-        eTgtSrq = self.ch.expression(expressionId=2, operandId=29, expressionTypeId=3300)
-        eTgtAttr1 = self.ch.expression(expressionId=3, operandId=22, expressionAttributeId=54)
-        eTgtAttr2 = self.ch.expression(expressionId=4, operandId=22, expressionAttributeId=158)
-        eTgtAttr3 = self.ch.expression(expressionId=5, operandId=22, expressionAttributeId=160)
-        eOptr = self.ch.expression(expressionId=6, operandId=21, value='PostPercent')
-        eSrcAttr1 = self.ch.expression(expressionId=7, operandId=22, expressionAttributeId=351)
-        eSrcAttr2 = self.ch.expression(expressionId=8, operandId=22, expressionAttributeId=349)
-        eSrcAttr3 = self.ch.expression(expressionId=9, operandId=22, expressionAttributeId=767)
-        eTgtItms = self.ch.expression(expressionId=10, operandId=49, arg1Id=eTgtLoc.id, arg2Id=eTgtSrq.id)
-        eTgtSpec1 = self.ch.expression(expressionId=11, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr1.id)
-        eTgtSpec2 = self.ch.expression(expressionId=12, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr2.id)
-        eTgtSpec3 = self.ch.expression(expressionId=13, operandId=12, arg1Id=eTgtItms.id, arg2Id=eTgtAttr3.id)
-        eOptrTgt1 = self.ch.expression(expressionId=14, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec1.id)
-        eOptrTgt2 = self.ch.expression(expressionId=15, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec2.id)
-        eOptrTgt3 = self.ch.expression(expressionId=16, operandId=31, arg1Id=eOptr.id, arg2Id=eTgtSpec3.id)
-        eAddMod1 = self.ch.expression(expressionId=17, operandId=9, arg1Id=eOptrTgt1.id, arg2Id=eSrcAttr1.id)
-        eAddMod2 = self.ch.expression(expressionId=18, operandId=9, arg1Id=eOptrTgt2.id, arg2Id=eSrcAttr2.id)
-        eAddMod3 = self.ch.expression(expressionId=19, operandId=9, arg1Id=eOptrTgt3.id, arg2Id=eSrcAttr3.id)
-        eRmMod1 = self.ch.expression(expressionId=20, operandId=61, arg1Id=eOptrTgt1.id, arg2Id=eSrcAttr1.id)
-        eRmMod2 = self.ch.expression(expressionId=21, operandId=61, arg1Id=eOptrTgt2.id, arg2Id=eSrcAttr2.id)
-        eRmMod3 = self.ch.expression(expressionId=22, operandId=61, arg1Id=eOptrTgt3.id, arg2Id=eSrcAttr3.id)
-        eAddSplice1 = self.ch.expression(expressionId=23, operandId=17, arg1Id=eAddMod1.id, arg2Id=eAddMod3.id)
-        eAddSplice2 = self.ch.expression(expressionId=24, operandId=17, arg1Id=eAddMod2.id, arg2Id=eAddSplice1.id)
-        eRmSplice1 = self.ch.expression(expressionId=25, operandId=17, arg1Id=eRmMod1.id, arg2Id=eRmMod3.id)
-        eRmSplice2 = self.ch.expression(expressionId=26, operandId=17, arg1Id=eRmMod2.id, arg2Id=eRmSplice1.id)
-        effect = self.ch.effect(categoryId=0, preExpressionId=eAddSplice2.id, postExpressionId=eRmSplice2.id)
-        modifiers, status = ModifierBuilder.build(effect, Logger())
+        eTgtLoc = self.ef.make(1, operandId=24, expressionValue='Target')
+        eTgtSrq = self.ef.make(2, operandId=29, expressionTypeId=3300)
+        eTgtAttr1 = self.ef.make(3, operandId=22, expressionAttributeId=54)
+        eTgtAttr2 = self.ef.make(4, operandId=22, expressionAttributeId=158)
+        eTgtAttr3 = self.ef.make(5, operandId=22, expressionAttributeId=160)
+        eOptr = self.ef.make(6, operandId=21, expressionValue='PostPercent')
+        eSrcAttr1 = self.ef.make(7, operandId=22, expressionAttributeId=351)
+        eSrcAttr2 = self.ef.make(8, operandId=22, expressionAttributeId=349)
+        eSrcAttr3 = self.ef.make(9, operandId=22, expressionAttributeId=767)
+        eTgtItms = self.ef.make(10, operandId=49, arg1Id=eTgtLoc['expressionId'], arg2Id=eTgtSrq['expressionId'])
+        eTgtSpec1 = self.ef.make(11, operandId=12, arg1Id=eTgtItms['expressionId'], arg2Id=eTgtAttr1['expressionId'])
+        eTgtSpec2 = self.ef.make(12, operandId=12, arg1Id=eTgtItms['expressionId'], arg2Id=eTgtAttr2['expressionId'])
+        eTgtSpec3 = self.ef.make(13, operandId=12, arg1Id=eTgtItms['expressionId'], arg2Id=eTgtAttr3['expressionId'])
+        eOptrTgt1 = self.ef.make(14, operandId=31, arg1Id=eOptr['expressionId'], arg2Id=eTgtSpec1['expressionId'])
+        eOptrTgt2 = self.ef.make(15, operandId=31, arg1Id=eOptr['expressionId'], arg2Id=eTgtSpec2['expressionId'])
+        eOptrTgt3 = self.ef.make(16, operandId=31, arg1Id=eOptr['expressionId'], arg2Id=eTgtSpec3['expressionId'])
+        eAddMod1 = self.ef.make(17, operandId=9, arg1Id=eOptrTgt1['expressionId'], arg2Id=eSrcAttr1['expressionId'])
+        eAddMod2 = self.ef.make(18, operandId=9, arg1Id=eOptrTgt2['expressionId'], arg2Id=eSrcAttr2['expressionId'])
+        eAddMod3 = self.ef.make(19, operandId=9, arg1Id=eOptrTgt3['expressionId'], arg2Id=eSrcAttr3['expressionId'])
+        eRmMod1 = self.ef.make(20, operandId=61, arg1Id=eOptrTgt1['expressionId'], arg2Id=eSrcAttr1['expressionId'])
+        eRmMod2 = self.ef.make(21, operandId=61, arg1Id=eOptrTgt2['expressionId'], arg2Id=eSrcAttr2['expressionId'])
+        eRmMod3 = self.ef.make(22, operandId=61, arg1Id=eOptrTgt3['expressionId'], arg2Id=eSrcAttr3['expressionId'])
+        eAddSplice1 = self.ef.make(23, operandId=17, arg1Id=eAddMod1['expressionId'], arg2Id=eAddMod3['expressionId'])
+        eAddSplice2 = self.ef.make(24, operandId=17, arg1Id=eAddMod2['expressionId'], arg2Id=eAddSplice1['expressionId'])
+        eRmSplice1 = self.ef.make(25, operandId=17, arg1Id=eRmMod1['expressionId'], arg2Id=eRmMod3['expressionId'])
+        eRmSplice2 = self.ef.make(26, operandId=17, arg1Id=eRmMod2['expressionId'], arg2Id=eRmSplice1['expressionId'])
+        modifiers, status = self.runBuilder(eAddSplice2['expressionId'], eRmSplice2['expressionId'], 0)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 3)
         self.assertEqual(len(self.log), 0)

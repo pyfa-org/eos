@@ -19,28 +19,14 @@
 #===============================================================================
 
 
-from eos.exception import EosError
+class AttributeDict(dict):
+    """
+    Allows to refer dictionary values via keys
+    as object attributes.
+    """
 
+    def __getattr__(self, attr):
+        return self[attr]
 
-class CacheHandlerError(EosError):
-    """All cache handler exceptions are based on this class."""
-    pass
-
-
-class TypeFetchError(CacheHandlerError):
-    """Raised when cache handler can't find type with requested ID."""
-    pass
-
-
-class AttributeFetchError(CacheHandlerError):
-    """Raised when cache handler can't find attribute with requested ID."""
-    pass
-
-
-class EffectFetchError(CacheHandlerError):
-    """Raised when cache handler can't find effect with requested ID."""
-    pass
-
-class ModifierFetchError(CacheHandlerError):
-    """Raised when cache handler can't find modifier with requested ID."""
-    pass
+    def __setattr__(self, attr, value):
+        self[attr] = value
