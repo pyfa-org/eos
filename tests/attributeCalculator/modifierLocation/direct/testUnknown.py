@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.environment import Logger
@@ -47,7 +47,7 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         self.fit = Fit()
 
     def testLog(self):
-        self.effect._modifiers = (self.invalidModifier,)
+        self.effect.modifiers = (self.invalidModifier,)
         holder = IndependentItem(self.ch.type_(typeId=754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
@@ -68,7 +68,7 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         validModifier.location = Location.self_
         validModifier.filterType = None
         validModifier.filterValue = None
-        self.effect._modifiers = (self.invalidModifier, validModifier)
+        self.effect.modifiers = (self.invalidModifier, validModifier)
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.srcAttr.id: 20, self.tgtAttr.id: 100}))
         self.fit.items.append(holder)
         # Invalid location in modifier should prevent proper processing of other modifiers

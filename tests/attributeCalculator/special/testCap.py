@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
@@ -46,7 +46,7 @@ class TestCap(AttrCalcTestCase):
         modifier.filterType = None
         modifier.filterValue = None
         self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        self.effect._modifiers = (modifier,)
+        self.effect.modifiers = (modifier,)
         self.fit = Fit()
 
     def testCapDefault(self):
@@ -84,7 +84,7 @@ class TestCap(AttrCalcTestCase):
         modifier.filterType = None
         modifier.filterValue = None
         effect = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
-        effect._modifiers = (modifier,)
+        effect.modifiers = (modifier,)
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect, effect), attributes={self.cappedAttr.id: 3, self.sourceAttr.id: 6,
                                                                                                     self.cappingAttr.id: 0.1}))
         self.fit.items.append(holder)
@@ -113,7 +113,7 @@ class TestCap(AttrCalcTestCase):
         modifier.filterType = FilterType.all_
         modifier.filterValue = None
         effect = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
-        effect._modifiers = (modifier,)
+        effect.modifiers = (modifier,)
         capUpdater = IndependentItem(self.ch.type_(typeId=2, effects=(effect,), attributes={self.sourceAttr.id: 3.5}))
         self.fit.items.append(capUpdater)
         # As capping attribute is updated, capped attribute must be updated too

@@ -30,5 +30,5 @@ def customizeEffect(effect):
     """Control all customizations performed on effect"""
     # Clean modifiers of specified effects
     if effect.id in purgeModifiers:
-        effect._modifiers = ()
+        effect.modifiers = ()
         effect.modifierStatus = EffectBuildStatus.override

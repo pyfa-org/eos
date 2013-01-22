@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 from eos.tests.environment import Logger
@@ -47,7 +47,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.fit = Fit()
 
     def testLog(self):
-        self.effect._modifiers = (self.invalidModifier,)
+        self.effect.modifiers = (self.invalidModifier,)
         holder = IndependentItem(self.ch.type_(typeId=754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit.items.append(holder)
         self.assertEqual(len(self.log), 1)
@@ -68,7 +68,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         validModifier.location = Location.ship
         validModifier.filterType = FilterType.all_
         validModifier.filterValue = None
-        self.effect._modifiers = (self.invalidModifier, validModifier)
+        self.effect.modifiers = (self.invalidModifier, validModifier)
         influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
         self.fit.items.append(influenceSource)
         influenceTarget = ShipItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))

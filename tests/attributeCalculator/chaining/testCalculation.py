@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
 
@@ -44,7 +44,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier1.filterType = None
         modifier1.filterValue = None
         effect1 = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect1._modifiers = (modifier1,)
+        effect1.modifiers = (modifier1,)
         modifier2 = Modifier()
         modifier2.state = State.offline
         modifier2.context = Context.local
@@ -55,7 +55,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier2.filterType = None
         modifier2.filterValue = None
         effect2 = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
-        effect2._modifiers = (modifier2,)
+        effect2.modifiers = (modifier2,)
         holder1 = CharacterItem(self.ch.type_(typeId=1, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
         modifier3 = Modifier()
         modifier3.state = State.offline
@@ -67,7 +67,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier3.filterType = FilterType.all_
         modifier3.filterValue = None
         effect3 = self.ch.effect(effectId=3, categoryId=EffectCategory.passive)
-        effect3._modifiers = (modifier3,)
+        effect3.modifiers = (modifier3,)
         holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect3,), attributes={attr3.id: 150}))
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr4.id: 12.5}))
         fit = Fit()

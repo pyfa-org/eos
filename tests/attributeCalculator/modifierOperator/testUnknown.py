@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.environment import Logger
@@ -45,7 +45,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         invalidModifier.filterType = None
         invalidModifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect._modifiers = (invalidModifier,)
+        effect.modifiers = (invalidModifier,)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
         fit.items.append(holder)
@@ -83,7 +83,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         validModifier.filterType = None
         validModifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect._modifiers = (invalidModifier, validModifier)
+        effect.modifiers = (invalidModifier, validModifier)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
         fit.items.append(holder)
@@ -118,7 +118,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         validModifier.filterType = None
         validModifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect._modifiers = (invalidModifier, validModifier)
+        effect.modifiers = (invalidModifier, validModifier)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
         fit.items.append(holder)

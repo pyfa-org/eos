@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem, SpaceItem
 
@@ -43,7 +43,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         modifier.filterType = None
         modifier.filterValue = None
         self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        self.effect._modifiers = (modifier,)
+        self.effect.modifiers = (modifier,)
         self.fit = Fit()
 
     def testIndependent(self):

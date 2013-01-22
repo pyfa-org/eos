@@ -44,7 +44,7 @@ for damageAttr in (Attribute.emDamage, Attribute.thermalDamage,
     charMissileDamageModifiers.append(modifier)
 charMissileDmgEffect = Effect(categoryId=EffectCategory.passive)
 charMissileDmgEffect.modifierStatus = EffectBuildStatus.override
-charMissileDmgEffect._modifiers = tuple(charMissileDamageModifiers)
+charMissileDmgEffect.modifiers = tuple(charMissileDamageModifiers)
 
 def customizeType(type_, ):
     """Control all customizations performed on type"""

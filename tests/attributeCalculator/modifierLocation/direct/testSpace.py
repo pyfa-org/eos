@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 from eos.tests.environment import Logger
@@ -43,7 +43,7 @@ class TestLocationDirectSpace(AttrCalcTestCase):
         modifier.filterType = None
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect._modifiers = (modifier,)
+        effect.modifiers = (modifier,)
         fit = Fit()
         influenceSource = IndependentItem(self.ch.type_(typeId=34, effects=(effect,), attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space

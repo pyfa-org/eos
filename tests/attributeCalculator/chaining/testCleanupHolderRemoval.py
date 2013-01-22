@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
 
@@ -43,7 +43,7 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         modifier1.filterType = None
         modifier1.filterValue = None
         effect1 = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect1._modifiers = (modifier1,)
+        effect1.modifiers = (modifier1,)
         holder1 = CharacterItem(self.ch.type_(typeId=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
         modifier2.state = State.offline
@@ -55,7 +55,7 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         modifier2.filterType = FilterType.all_
         modifier2.filterValue = None
         effect2 = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
-        effect2._modifiers = (modifier2,)
+        effect2.modifiers = (modifier2,)
         holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr3.id: 0.5}))
         fit = Fit()

@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem
 
@@ -42,7 +42,7 @@ class TestLocationDirectShipSwitch(AttrCalcTestCase):
         modifier.filterType = None
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect._modifiers = (modifier,)
+        effect.modifiers = (modifier,)
         fit = Fit()
         influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
         fit.items.append(influenceSource)

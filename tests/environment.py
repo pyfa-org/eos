@@ -90,7 +90,7 @@ class CacheHandler:
     def attribute(self, **kwargs):
         if 'cacheHandler' in kwargs:
             raise TypeError('cacheHandler')
-        attr = Attribute(cacheHandler=self, **kwargs)
+        attr = Attribute(**kwargs)
         if attr.id in self.__attributeData:
             raise KeyError(attr.id)
         self.__attributeData[attr.id] = attr
@@ -100,20 +100,11 @@ class CacheHandler:
     def effect(self, **kwargs):
         if 'cacheHandler' in kwargs:
             raise TypeError('cacheHandler')
-        eff = Effect(cacheHandler=self, **kwargs)
+        eff = Effect(**kwargs)
         if eff.id in self.__effectData:
             raise KeyError(eff.id)
         self.__effectData[eff.id] = eff
         return eff
-
-    def expression(self, **kwargs):
-        if 'cacheHandler' in kwargs:
-            raise TypeError('cacheHandler')
-        exp = Expression(cacheHandler=self, **kwargs)
-        if exp.id in self.__expressionData:
-            raise KeyError(exp.id)
-        self.__expressionData[exp.id] = exp
-        return exp
 
     def getType(self, typeId):
         try:
@@ -132,9 +123,3 @@ class CacheHandler:
             return self.__effectData[effId]
         except KeyError:
             raise EffectFetchError(effId)
-
-    def getExpression(self, expId):
-        try:
-            return self.__expressionData[expId]
-        except KeyError:
-            raise ExpressionFetchError(expId)

@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, FilterType, Operator, InvType
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
@@ -46,7 +46,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         modifier.filterType = FilterType.skill
         modifier.filterValue = InvType.self_
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effect._modifiers = (modifier,)
+        effect.modifiers = (modifier,)
         self.influenceSource = IndependentItem(self.ch.type_(typeId=772, effects=(effect,), attributes={srcAttr.id: 20}))
         self.fit = Fit()
         self.fit.items.append(self.influenceSource)

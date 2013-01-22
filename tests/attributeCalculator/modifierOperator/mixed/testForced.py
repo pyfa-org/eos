@@ -21,7 +21,7 @@
 
 from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.const import EffectCategory
-from eos.fit.attributeCalculator.modifier.modifier import Modifier
+from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
 
@@ -43,7 +43,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPreAss.filterType = FilterType.all_
         modifierPreAss.filterValue = None
         effectPreAss = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        effectPreAss._modifiers = (modifierPreAss,)
+        effectPreAss.modifiers = (modifierPreAss,)
         influenceSourcePreAss = IndependentItem(self.ch.type_(typeId=1, effects=(effectPreAss,), attributes={srcAttr.id: 5}))
         fit.items.append(influenceSourcePreAss)
         modifierPreMul = Modifier()
@@ -56,7 +56,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPreMul.filterType = FilterType.all_
         modifierPreMul.filterValue = None
         effectPreMul = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
-        effectPreMul._modifiers = (modifierPreMul,)
+        effectPreMul.modifiers = (modifierPreMul,)
         influenceSourcePreMul = IndependentItem(self.ch.type_(typeId=2, effects=(effectPreMul,), attributes={srcAttr.id: 50}))
         fit.items.append(influenceSourcePreMul)
         modifierPreDiv = Modifier()
@@ -69,7 +69,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPreDiv.filterType = FilterType.all_
         modifierPreDiv.filterValue = None
         effectPreDiv = self.ch.effect(effectId=3, categoryId=EffectCategory.passive)
-        effectPreDiv._modifiers = (modifierPreDiv,)
+        effectPreDiv.modifiers = (modifierPreDiv,)
         influenceSourcePreDiv = IndependentItem(self.ch.type_(typeId=3, effects=(effectPreDiv,), attributes={srcAttr.id: 0.5}))
         fit.items.append(influenceSourcePreDiv)
         modifierModAdd = Modifier()
@@ -82,7 +82,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierModAdd.filterType = FilterType.all_
         modifierModAdd.filterValue = None
         effectModAdd = self.ch.effect(effectId=4, categoryId=EffectCategory.passive)
-        effectModAdd._modifiers = (modifierModAdd,)
+        effectModAdd.modifiers = (modifierModAdd,)
         influenceSourceModAdd = IndependentItem(self.ch.type_(typeId=4, effects=(effectModAdd,), attributes={srcAttr.id: 10}))
         fit.items.append(influenceSourceModAdd)
         modifierModSub = Modifier()
@@ -95,7 +95,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierModSub.filterType = FilterType.all_
         modifierModSub.filterValue = None
         effectModSub = self.ch.effect(effectId=5, categoryId=EffectCategory.passive)
-        effectModSub._modifiers = (modifierModSub,)
+        effectModSub.modifiers = (modifierModSub,)
         influenceSourceModSub = IndependentItem(self.ch.type_(typeId=5, effects=(effectModSub,), attributes={srcAttr.id: 63}))
         fit.items.append(influenceSourceModSub)
         modifierPostMul = Modifier()
@@ -108,7 +108,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostMul.filterType = FilterType.all_
         modifierPostMul.filterValue = None
         effectPostMul = self.ch.effect(effectId=6, categoryId=EffectCategory.passive)
-        effectPostMul._modifiers = (modifierPostMul,)
+        effectPostMul.modifiers = (modifierPostMul,)
         influenceSourcePostMul = IndependentItem(self.ch.type_(typeId=6, effects=(effectPostMul,), attributes={srcAttr.id: 1.35}))
         fit.items.append(influenceSourcePostMul)
         modifierPostDiv = Modifier()
@@ -121,7 +121,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostDiv.filterType = FilterType.all_
         modifierPostDiv.filterValue = None
         effectPostDiv = self.ch.effect(effectId=7, categoryId=EffectCategory.passive)
-        effectPostDiv._modifiers = (modifierPostDiv,)
+        effectPostDiv.modifiers = (modifierPostDiv,)
         influenceSourcePostDiv = IndependentItem(self.ch.type_(typeId=7, effects=(effectPostDiv,), attributes={srcAttr.id: 2.7}))
         fit.items.append(influenceSourcePostDiv)
         modifierPostPerc = Modifier()
@@ -134,7 +134,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostPerc.filterType = FilterType.all_
         modifierPostPerc.filterValue = None
         effectPostPerc = self.ch.effect(effectId=8, categoryId=EffectCategory.passive)
-        effectPostPerc._modifiers = (modifierPostPerc,)
+        effectPostPerc.modifiers = (modifierPostPerc,)
         influenceSourcePostPerc = IndependentItem(self.ch.type_(typeId=8, effects=(effectPostPerc,), attributes={srcAttr.id: 15}))
         fit.items.append(influenceSourcePostPerc)
         modifierPostAss = Modifier()
@@ -147,7 +147,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifierPostAss.filterType = FilterType.all_
         modifierPostAss.filterValue = None
         effectPostAss = self.ch.effect(effectId=9, categoryId=EffectCategory.passive)
-        effectPostAss._modifiers = (modifierPostAss,)
+        effectPostAss.modifiers = (modifierPostAss,)
         influenceSourcePostAss = IndependentItem(self.ch.type_(typeId=9, effects=(effectPostAss,), attributes={srcAttr.id: 68}))
         fit.items.append(influenceSourcePostAss)
         influenceTarget = ShipItem(self.ch.type_(typeId=10, attributes={tgtAttr.id: 100}))
