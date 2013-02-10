@@ -234,8 +234,8 @@ class TestPrimaryKey(GeneratorTestCase):
     def testDgmeffects(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
-        self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 50})
-        self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 55})
+        self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 50})
+        self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 55})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
@@ -246,7 +246,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
-        self.assertEqual(data['effects'][7]['preExpressionId'], 50)
+        self.assertEqual(data['effects'][7]['effectCategory'], 50)
 
     def testDgmtypeeffects(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
@@ -268,9 +268,13 @@ class TestPrimaryKey(GeneratorTestCase):
     def testDgmexpressions(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
-        self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 5})
-        self.dh.data['dgmexpressions'].append({'expressionID': 5, 'operandID': 55})
-        self.dh.data['dgmexpressions'].append({'expressionID': 5, 'operandID': 80})
+        self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 123, 'postExpression': 456, 'effectCategory': 789})
+        self.dh.data['dgmexpressions'].append({'expressionID': 456, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
+                                               'expressionValue': None, 'expressionTypeID': 502,
+                                               'expressionGroupID': 451, 'expressionAttributeID': 90})
+        self.dh.data['dgmexpressions'].append({'expressionID': 456, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
+                                               'expressionValue': None, 'expressionTypeID': 502,
+                                               'expressionGroupID': 451, 'expressionAttributeID': 90})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
@@ -280,5 +284,8 @@ class TestPrimaryKey(GeneratorTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(data['expressions']), 1)
-        self.assertEqual(data['expressions'][5]['operandId'], 55)
+        # Check custom build status returned by modifier builder,
+        # which says us if passed expression iis correct one or not
+        self.assertIn(7, data['effects'])
+        effectRow = data['effects'][7]
+        self.assertEqual(effectRow['buildStatus'], 888)

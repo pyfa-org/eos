@@ -25,29 +25,29 @@ from eos.tests.environment import Logger
 
 class TestConversionExpression(GeneratorTestCase):
     """
-    Appropriate data should be saved into appropriate
-    indexes of object representing expression.
+    Expressions generated out of passed data are consumed
+    mid-process to generate modifiers, so we use our fake
+    modifier builder, defined in environment, to check that
+    expressions passed to it are correct.
     """
 
     def testFields(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 24})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 700, 'postExpression': 800})
         self.dh.data['dgmexpressions'].append({'expressionTypeID': 502, 'expressionValue': None, 'randomField': 'vals',
-                                               'operandID': 6, 'arg1': 1009, 'expressionID': 24, 'arg2': 15,
+                                               'operandID': 6, 'arg1': 1009, 'expressionID': 800, 'arg2': 15,
                                                'expressionAttributeID': 90, 'expressionGroupID': 451})
+        self.dh.data['dgmexpressions'].append({'expressionGroupID': 567, 'arg2': 66, 'operandID': 33, 'arg1': 5007,
+                                               'expressionID': 700, 'expressionTypeID': 551, 'randoom': True,
+                                               'expressionAttributeID': 102, 'expressionValue': 'Kurr'})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(data['expressions']), 1)
-        self.assertIn(24, data['expressions'])
-        expressionRow = data['expressions'][24]
-        self.assertEqual(expressionRow['operandId'], 6)
-        self.assertEqual(expressionRow['arg1Id'], 1009)
-        self.assertEqual(expressionRow['arg2Id'], 15)
-        self.assertEqual(expressionRow['expressionValue'], None)
-        self.assertEqual(expressionRow['expressionTypeId'], 502)
-        self.assertEqual(expressionRow['expressionGroupId'], 451)
-        self.assertEqual(expressionRow['expressionAttributeId'], 90)
+        # Check custom build status returned by modifier builder,
+        # which says us if passed expressions were fine or not
+        self.assertIn(111, data['effects'])
+        effectRow = data['effects'][111]
+        self.assertEqual(effectRow['buildStatus'], 8000)

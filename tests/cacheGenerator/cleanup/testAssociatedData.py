@@ -32,7 +32,7 @@ class TestAssociatedData(GeneratorTestCase):
     def __generateData(self):
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
-        self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
+        self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8888, 'isOffensive': True, 'isAssistance': False,
                                            'fittingUsageChanceAttributeID': 1000, 'preExpression': 100, 'postExpression': 101,
                                            'durationAttributeID': 1001, 'dischargeAttributeID': 1002, 'rangeAttributeID': 1003,
                                            'falloffAttributeID': 1004, 'trackingSpeedAttributeID': 1005})
@@ -95,11 +95,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertIn(1007, data['attributes'])
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(100, data['effects'])
-        self.assertEqual(len(data['expressions']), 4)
-        self.assertIn(100, data['expressions'])
-        self.assertIn(101, data['expressions'])
-        self.assertIn(102, data['expressions'])
-        self.assertIn(103, data['expressions'])
+        self.assertEqual(data['effects'][100]['buildStatus'], 8888)
 
     def testWeak(self):
         self.__generateData()
@@ -114,7 +110,6 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 0)
-        self.assertEqual(len(data['expressions']), 0)
 
     def testUnlinked(self):
         self.__generateData()
@@ -127,7 +122,6 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 0)
-        self.assertEqual(len(data['expressions']), 0)
 
     def testReverseTypes(self):
         # Check that single type included into table does not
@@ -135,7 +129,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
-        self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
+        self.dh.data['dgmeffects'].append({'effectID': 100, 'effectCategory': 8888, 'isOffensive': True, 'isAssistance': False,
                                            'fittingUsageChanceAttributeID': None, 'preExpression': 101, 'postExpression': None,
                                            'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
                                            'falloffAttributeID': None, 'trackingSpeedAttributeID': None})
@@ -158,5 +152,4 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(100, data['effects'])
-        self.assertEqual(len(data['expressions']), 1)
-        self.assertIn(101, data['expressions'])
+        self.assertEqual(data['effects'][100]['buildStatus'], 7777)

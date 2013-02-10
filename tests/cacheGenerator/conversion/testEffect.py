@@ -32,8 +32,8 @@ class TestConversionEffect(GeneratorTestCase):
     def testFields(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'postExpression': 979, 'effectID': 111, 'isOffensive': True, 'effectCategory': 8,
-                                           'isAssistance': False, 'fittingUsageChanceAttributeID': 96, 'preExpression': 24,
+        self.dh.data['dgmeffects'].append({'postExpression': 600, 'effectID': 111, 'isOffensive': True, 'effectCategory': 700,
+                                           'isAssistance': False, 'fittingUsageChanceAttributeID': 96, 'preExpression': 500,
                                            'durationAttributeID': 781, 'randomField': 666})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
@@ -43,9 +43,11 @@ class TestConversionEffect(GeneratorTestCase):
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(111, data['effects'])
         effectRow = data['effects'][111]
-        self.assertEqual(effectRow['effectCategory'], 8)
+        self.assertEqual(effectRow['effectCategory'], 700)
         self.assertEqual(effectRow['isOffensive'], True)
         self.assertEqual(effectRow['isAssistance'], False)
         self.assertEqual(effectRow['fittingUsageChanceAttributeId'], 96)
-        self.assertEqual(effectRow['preExpressionId'], 24)
-        self.assertEqual(effectRow['postExpressionId'], 979)
+        self.assertEqual(effectRow['buildStatus'], 29)
+        modifiers = effectRow['modifiers']
+        self.assertEqual(len(modifiers), 1)
+        self.assertIn(1, modifiers)

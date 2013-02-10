@@ -39,7 +39,6 @@ class CacheGenerator:
         self._cleaner = Cleaner(logger)
         self._converter = Converter(logger)
 
-
     def run(self, dataHandler):
         """
         Generate cache out of passed data.

@@ -19,10 +19,12 @@
 #===============================================================================
 
 
+from unittest.mock import patch
+
 from eos.data.cacheGenerator.generator import CacheGenerator
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from .environment import DataHandler
+from .environment import DataHandler, ModifierBuilder
 
 
 class GeneratorTestCase(EosTestCase):
@@ -31,6 +33,8 @@ class GeneratorTestCase(EosTestCase):
         EosTestCase.setUp(self)
         self.dh = DataHandler()
 
+    # Replace real modifier builder with custom class to simplify testing
+    @patch('eos.data.cacheGenerator.converter.ModifierBuilder', new=ModifierBuilder)
     def runGenerator(self):
         """
         Run generator and rework data structure into
