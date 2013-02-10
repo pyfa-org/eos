@@ -71,19 +71,20 @@ class ModifierBuilder:
                                 targetAttributeId=6, location=7, filterType=8, filterValue=9)
             modifiers.append(modifier)
             buildStatus = 29
-        if args == (555, 666, 777):
+        # Generate another single modifier
+        elif args == (100, 200, 300):
+            modifier = Modifier(state=22, context=33, sourceAttributeId=44, operator=55,
+                                targetAttributeId=66, location=77, filterType=88, filterValue=99)
+            modifiers.append(modifier)
+        # Generate multiple duplicate modifiers
+        elif args == (555, 666, 777):
             modifier1 = Modifier(state=32, context=43, sourceAttributeId=54, operator=65,
                                  targetAttributeId=76, location=87, filterType=98, filterValue=90)
             modifiers.append(modifier1)
             modifier2 = Modifier(state=32, context=43, sourceAttributeId=54, operator=65,
                                  targetAttributeId=76, location=87, filterType=98, filterValue=90)
             modifiers.append(modifier2)
-        # Generate another single modifier
-        elif args == (100, 200, 300):
-            modifier = Modifier(state=22, context=33, sourceAttributeId=44, operator=55,
-                                targetAttributeId=66, location=77, filterType=88, filterValue=99)
-            modifiers.append(modifier)
-        # Generate multiple modifiers
+        # Generate multiple different modifiers
         elif args == (5000, 6000, 7000):
             modifier1 = Modifier(state=20, context=30, sourceAttributeId=40, operator=50,
                                 targetAttributeId=60, location=70, filterType=80, filterValue=90)
@@ -91,7 +92,7 @@ class ModifierBuilder:
             modifier2 = Modifier(state=200, context=300, sourceAttributeId=400, operator=500,
                                 targetAttributeId=600, location=700, filterType=800, filterValue=900)
             modifiers.append(modifier2)
-        # Check passed expressions, result is detectable by build status
+        # Check passed expressions, result is detectable in tests by build status
         elif args == (700, 800, None):
             expected1 = {'expressionId': 800, 'operandId': 6, 'arg1Id': 1009, 'arg2Id': 15,
                          'expressionValue': None, 'expressionTypeId': 502,
