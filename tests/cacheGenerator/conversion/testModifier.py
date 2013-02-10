@@ -145,3 +145,18 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertIn(111, data['effects'])
         modifiers = data['effects'][111]['modifiers']
         self.assertEqual(modifiers, [1, 1])
+
+    def testLogger(self):
+        # Check that proper logger is passed to modifier builder
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 555, 'postExpression': 555, 'effectCategory': 555})
+        self.runGenerator()
+        self.assertEqual(len(self.log), 2)
+        cleanStats = self.log[0]
+        self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
+        self.assertEqual(cleanStats.levelno, Logger.INFO)
+        builderWarning = self.log[1]
+        self.assertEqual(builderWarning.name, 'eos_test.modifierBuilder')
+        self.assertEqual(builderWarning.levelno, Logger.WARNING)
+        self.assertEqual(builderWarning.msg, 'modbuilder warning')

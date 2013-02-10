@@ -59,6 +59,7 @@ class ModifierBuilder:
 
     def __init__(self, expressions, logger):
         self.exps = expressions
+        self.logger =  logger
 
     def buildEffect(self, preExpressionId, postExpressionId, effectCategoryId):
         args = (preExpressionId, postExpressionId, effectCategoryId)
@@ -128,4 +129,7 @@ class ModifierBuilder:
                         'expressionGroupId': 451, 'expressionAttributeId': 90}
             if len(self.exps) == 1 and expected in self.exps:
                 buildStatus = 888
+        # Used to check that proper logger is passed to modifier builder
+        elif args == (555, 555, 555):
+            self.logger.warning('modbuilder warning', childName='modifierBuilder')
         return modifiers, buildStatus
