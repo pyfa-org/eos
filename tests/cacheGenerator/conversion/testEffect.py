@@ -42,12 +42,7 @@ class TestConversionEffect(GeneratorTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(112, data['effects'])
-        effectRow = data['effects'][112]
-        self.assertEqual(effectRow['effectCategory'], 111)
-        self.assertEqual(effectRow['isOffensive'], True)
-        self.assertEqual(effectRow['isAssistance'], False)
-        self.assertEqual(effectRow['fittingUsageChanceAttributeId'], 96)
-        self.assertEqual(effectRow['buildStatus'], 29)
-        modifiers = effectRow['modifiers']
-        self.assertEqual(len(modifiers), 1)
-        self.assertIn(1, modifiers)
+        expected = {'effectId': 112, 'effectCategory': 111, 'isOffensive': True,
+                    'isAssistance': False, 'fittingUsageChanceAttributeId': 96,
+                    'buildStatus': 29, 'modifiers': [1]}
+        self.assertEqual(data['effects'][112], expected)

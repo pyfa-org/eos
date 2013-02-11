@@ -41,8 +41,6 @@ class TestConversionAttribute(GeneratorTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
         self.assertIn(111, data['attributes'])
-        attributeRow = data['attributes'][111]
-        self.assertEqual(attributeRow['maxAttributeId'], 84)
-        self.assertEqual(attributeRow['defaultValue'], 0.0)
-        self.assertEqual(attributeRow['highIsGood'], False)
-        self.assertEqual(attributeRow['stackable'], True)
+        expected = {'attributeId': 111, 'maxAttributeId': 84, 'defaultValue': 0.0,
+                    'highIsGood': False, 'stackable': True}
+        self.assertEqual(data['attributes'][111], expected)
