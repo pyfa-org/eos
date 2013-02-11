@@ -268,14 +268,14 @@ class TestPrimaryKey(GeneratorTestCase):
     def testDgmexpressions(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
-        self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 123, 'postExpression': 456, 'effectCategory': 789})
-        self.dh.data['dgmexpressions'].append({'expressionID': 456, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
+        self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 62, 'postExpression': 83})
+        self.dh.data['dgmexpressions'].append({'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
                                                'expressionValue': None, 'expressionTypeID': 502,
                                                'expressionGroupID': 451, 'expressionAttributeID': 90})
-        self.dh.data['dgmexpressions'].append({'expressionID': 456, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
+        self.dh.data['dgmexpressions'].append({'expressionID': 83, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
                                                'expressionValue': None, 'expressionTypeID': 502,
                                                'expressionGroupID': 451, 'expressionAttributeID': 90})
-        data = self.runGenerator()
+        self.runGenerator()
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.cacheGenerator')
@@ -284,8 +284,8 @@ class TestPrimaryKey(GeneratorTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        # Check custom build status returned by modifier builder,
-        # which says us if passed expression iis correct one or not
-        self.assertIn(7, data['effects'])
-        effectRow = data['effects'][7]
-        self.assertEqual(effectRow['buildStatus'], 888)
+        self.assertEqual(len(self.exps), 1)
+        expected = {'expressionId': 83, 'operandId': 75, 'arg1Id': 1009, 'arg2Id': 15,
+                    'expressionValue': None, 'expressionTypeId': 502,
+                    'expressionGroupId': 451, 'expressionAttributeId': 90}
+        self.assertIn(expected, self.exps)

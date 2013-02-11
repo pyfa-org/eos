@@ -32,7 +32,7 @@ class TestConversionModifier(GeneratorTestCase):
     def testFields(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 500, 'postExpression': 600, 'effectCategory': 700})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1, 'postExpression': 11, 'effectCategory': 111})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -51,7 +51,7 @@ class TestConversionModifier(GeneratorTestCase):
         # Check how multiple modifiers generated out of single effect are numbered
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 5000, 'postExpression': 6000, 'effectCategory': 7000})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 21, 'postExpression': 21, 'effectCategory': 21})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -75,8 +75,8 @@ class TestConversionModifier(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 222})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 500, 'postExpression': 600, 'effectCategory': 700})
-        self.dh.data['dgmeffects'].append({'effectID': 222, 'preExpression': 100, 'postExpression': 200, 'effectCategory': 300})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1, 'postExpression': 11, 'effectCategory': 111})
+        self.dh.data['dgmeffects'].append({'effectID': 222, 'preExpression': 111, 'postExpression': 1, 'effectCategory': 111})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -104,8 +104,8 @@ class TestConversionModifier(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 222})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 500, 'postExpression': 600, 'effectCategory': 700})
-        self.dh.data['dgmeffects'].append({'effectID': 222, 'preExpression': 200, 'postExpression': 400, 'effectCategory': 800})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1, 'postExpression': 11, 'effectCategory': 111})
+        self.dh.data['dgmeffects'].append({'effectID': 222, 'preExpression': 111, 'postExpression': 11, 'effectCategory': 1})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -128,10 +128,11 @@ class TestConversionModifier(GeneratorTestCase):
 
     def testMergeSignleEffect(self):
         # Check that if modifiers with the same values are generated on single effect,
-        # they're assigned to single identifier
+        # they're assigned to single identifier and it is listed twice in list of
+        # modifiers
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 555, 'postExpression': 666, 'effectCategory': 777})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 22, 'postExpression': 22, 'effectCategory': 22})
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -150,7 +151,7 @@ class TestConversionModifier(GeneratorTestCase):
         # Check that proper logger is passed to modifier builder
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 555, 'postExpression': 555, 'effectCategory': 555})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 108, 'postExpression': 108, 'effectCategory': 108})
         self.runGenerator()
         self.assertEqual(len(self.log), 2)
         cleanStats = self.log[0]
