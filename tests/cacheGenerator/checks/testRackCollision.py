@@ -36,9 +36,9 @@ class TestRackCollision(GeneratorTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
-        self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 50})
-        self.dh.data['dgmeffects'].append({'effectID': 12, 'preExpression': 55})
-        self.dh.data['dgmeffects'].append({'effectID': 13, 'preExpression': 555})
+        self.dh.data['dgmeffects'].append({'effectID': 11})
+        self.dh.data['dgmeffects'].append({'effectID': 12})
+        self.dh.data['dgmeffects'].append({'effectID': 13})
 
     def testCollision(self):
         data = self.runGenerator()

@@ -19,12 +19,11 @@
 #===============================================================================
 
 
-from unittest.mock import patch
-
 from eos.data.cacheGenerator.generator import CacheGenerator
+from eos.eve.modifier import Modifier
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
-from .environment import DataHandler, ModifierBuilder, builderExpressions
+from .environment import DataHandler
 
 
 class GeneratorTestCase(EosTestCase):
@@ -32,13 +31,7 @@ class GeneratorTestCase(EosTestCase):
     def setUp(self):
         EosTestCase.setUp(self)
         self.dh = DataHandler()
-        # Attribute to access expressions passed to ModifierBuilder;
-        # also clean it up as it persists between the sessions
-        self.exps = builderExpressions
-        self.exps.clear()
 
-    # Replace real modifier builder with custom class to simplify testing
-    @patch('eos.data.cacheGenerator.converter.ModifierBuilder', new=ModifierBuilder)
     def runGenerator(self):
         """
         Run generator and rework data structure into
@@ -60,3 +53,7 @@ class GeneratorTestCase(EosTestCase):
                 keyedTable[key] = row
             keyedData[tableName] = keyedTable
         return keyedData
+
+    def mod(self, *args, **kwargs):
+        """Instantiate and return modifier."""
+        return Modifier(*args, **kwargs)

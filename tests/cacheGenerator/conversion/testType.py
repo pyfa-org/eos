@@ -37,11 +37,11 @@ class TestConversionType(GeneratorTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1111, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
-                                           'fittingUsageChanceAttributeID': 96, 'preExpression': 24, 'postExpression': 979,
+                                           'fittingUsageChanceAttributeID': 96, 'preExpression': None, 'postExpression': None,
                                            'durationAttributeID': 78, 'dischargeAttributeID': 72, 'rangeAttributeID': 2,
                                            'falloffAttributeID': 3, 'trackingSpeedAttributeID': 6})
         self.dh.data['dgmeffects'].append({'effectID': 1111, 'effectCategory': 85, 'isOffensive': False, 'isAssistance': True,
-                                           'fittingUsageChanceAttributeID': 41, 'preExpression': 79, 'postExpression': 5,
+                                           'fittingUsageChanceAttributeID': 41, 'preExpression': None, 'postExpression': None,
                                            'durationAttributeID': 781, 'dischargeAttributeID': 752, 'rangeAttributeID': 26,
                                            'falloffAttributeID': 33, 'trackingSpeedAttributeID': 68})
         data = self.runGenerator()

@@ -19,6 +19,8 @@
 #===============================================================================
 
 
+from unittest.mock import patch
+
 from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
@@ -265,7 +267,8 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['falloffAttributeId'], 70)
 
-    def testDgmexpressions(self):
+    @patch('eos.data.cacheGenerator.converter.ModifierBuilder')
+    def testDgmexpressions(self, modBuilder):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 62, 'postExpression': 83})
@@ -275,6 +278,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['dgmexpressions'].append({'expressionID': 83, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
                                                'expressionValue': None, 'expressionTypeID': 502,
                                                'expressionGroupID': 451, 'expressionAttributeID': 90})
+        modBuilder.return_value.buildEffect.return_value = ([], 0)
         self.runGenerator()
         self.assertEqual(len(self.log), 2)
         logRecord = self.log[0]
@@ -284,8 +288,9 @@ class TestPrimaryKey(GeneratorTestCase):
         cleanStats = self.log[1]
         self.assertEqual(cleanStats.name, 'eos_test.cacheGenerator')
         self.assertEqual(cleanStats.levelno, Logger.INFO)
-        self.assertEqual(len(self.exps), 1)
+        expressions = modBuilder.mock_calls[0][1][0]
+        self.assertEqual(len(expressions), 1)
         expected = {'expressionId': 83, 'operandId': 75, 'arg1Id': 1009, 'arg2Id': 15,
                     'expressionValue': None, 'expressionTypeId': 502,
                     'expressionGroupId': 451, 'expressionAttributeId': 90}
-        self.assertIn(expected, self.exps)
+        self.assertIn(expected, expressions)

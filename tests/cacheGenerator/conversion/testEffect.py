@@ -19,6 +19,8 @@
 #===============================================================================
 
 
+from unittest.mock import patch
+
 from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
@@ -29,12 +31,16 @@ class TestConversionEffect(GeneratorTestCase):
     indexes of object representing effect.
     """
 
-    def testFields(self):
+    @patch('eos.data.cacheGenerator.converter.ModifierBuilder')
+    def testFields(self, modBuilder):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 112})
         self.dh.data['dgmeffects'].append({'postExpression': 11, 'effectID': 112, 'isOffensive': True, 'effectCategory': 111,
                                            'isAssistance': False, 'fittingUsageChanceAttributeID': 96, 'preExpression': 1,
                                            'durationAttributeID': 781, 'randomField': 666})
+        mod = self.mod(state=2, context=3, sourceAttributeId=4, operator=5,
+                       targetAttributeId=6, location=7, filterType=8, filterValue=9)
+        modBuilder.return_value.buildEffect.return_value = ([mod], 29)
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]

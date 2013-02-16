@@ -19,6 +19,8 @@
 #===============================================================================
 
 
+from unittest.mock import patch
+
 from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
@@ -29,7 +31,8 @@ class TestConversionExpression(GeneratorTestCase):
     indexes of object representing expression.
     """
 
-    def testFields(self):
+    @patch('eos.data.cacheGenerator.converter.ModifierBuilder')
+    def testFields(self, modBuilder):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 41})
@@ -39,6 +42,7 @@ class TestConversionExpression(GeneratorTestCase):
         self.dh.data['dgmexpressions'].append({'expressionGroupID': 567, 'arg2': 66, 'operandID': 33, 'arg1': 5007,
                                                'expressionID': 57, 'expressionTypeID': 551, 'randoom': True,
                                                'expressionAttributeID': 102, 'expressionValue': 'Kurr'})
+        modBuilder.return_value.buildEffect.return_value = ([], 0)
         self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -46,12 +50,13 @@ class TestConversionExpression(GeneratorTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         # As expressions are absent in final container,
         # check those which were passed to modifier builder
-        self.assertEqual(len(self.exps), 2)
+        expressions = modBuilder.mock_calls[0][1][0]
+        self.assertEqual(len(expressions), 2)
         expected = {'expressionId': 41, 'operandId': 6, 'arg1Id': 1009, 'arg2Id': 15,
                     'expressionValue': None, 'expressionTypeId': 502,
                     'expressionGroupId': 451, 'expressionAttributeId': 90}
-        self.assertIn(expected, self.exps)
+        self.assertIn(expected, expressions)
         expected = {'expressionId': 57, 'operandId': 33, 'arg1Id': 5007, 'arg2Id': 66,
                     'expressionValue': 'Kurr', 'expressionTypeId': 551,
                     'expressionGroupId': 567, 'expressionAttributeId': 102}
-        self.assertIn(expected, self.exps)
+        self.assertIn(expected, expressions)

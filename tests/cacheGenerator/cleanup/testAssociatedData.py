@@ -19,10 +19,13 @@
 #===============================================================================
 
 
+from unittest.mock import patch
+
 from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
+@patch('eos.data.cacheGenerator.converter.ModifierBuilder')
 class TestAssociatedData(GeneratorTestCase):
     """
     Check that types, which passed filter, pull in
@@ -70,10 +73,11 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['dgmattribs'].append({'attributeID': 1007, 'maxAttributeID': None, 'defaultValue': 0.0,
                                            'highIsGood': False, 'stackable': False})
 
-    def testStrong(self):
+    def testStrong(self, modBuilder):
         self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
+        modBuilder.return_value.buildEffect.return_value = ([], 0)
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -95,19 +99,18 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertIn(1007, data['attributes'])
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(100, data['effects'])
-        self.assertEqual(len(self.exps), 4)
-        expressions = {}
-        for expRow in self.exps:
-            expressions[expRow['expressionId']] = expRow
-        self.assertIn(100, expressions)
-        self.assertIn(101, expressions)
-        self.assertIn(102, expressions)
-        self.assertIn(103, expressions)
+        expressions = modBuilder.mock_calls[0][1][0]
+        self.assertEqual(len(expressions), 4)
+        expressionIds = set()
+        for expRow in expressions:
+            expressionIds.add(expRow['expressionId'])
+        self.assertEqual(expressionIds, {100, 101, 102, 103})
 
-    def testWeak(self):
+    def testWeak(self, modBuilder):
         self.__generateData()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'fittableNonSingleton': True})
+        modBuilder.return_value.buildEffect.return_value = ([], 0)
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -117,9 +120,9 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 0)
-        self.assertEqual(len(self.exps), 0)
+        self.assertEqual(len(modBuilder.mock_calls[0][1][0]), 0)
 
-    def testUnlinked(self):
+    def testUnlinked(self, modBuilder):
         self.__generateData()
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
@@ -130,9 +133,9 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 0)
-        self.assertEqual(len(self.exps), 0)
+        self.assertEqual(len(modBuilder.mock_calls[0][1][0]), 0)
 
-    def testReverseTypes(self):
+    def testReverseTypes(self, modBuilder):
         # Check that single type included into table does not
         # pull other types belonging to same group
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
@@ -149,6 +152,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 6})
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
+        modBuilder.return_value.buildEffect.return_value = ([], 0)
         data = self.runGenerator()
         self.assertEqual(len(self.log), 1)
         cleanStats = self.log[0]
@@ -161,8 +165,9 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(100, data['effects'])
-        self.assertEqual(len(self.exps), 1)
-        expressions = {}
-        for expRow in self.exps:
-            expressions[expRow['expressionId']] = expRow
-        self.assertIn(101, expressions)
+        expressions = modBuilder.mock_calls[0][1][0]
+        self.assertEqual(len(expressions), 1)
+        expressionIds = set()
+        for expRow in expressions:
+            expressionIds.add(expRow['expressionId'])
+        self.assertEqual(expressionIds, {101})
