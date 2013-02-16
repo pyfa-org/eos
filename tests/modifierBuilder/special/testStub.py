@@ -27,9 +27,9 @@ class TestStubInt0(ModBuilderTestCase):
     """Test parsing of trees describing integer-0 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = self.ef.make(1, operandId=27, expressionValue='0')
-        ePostStub = self.ef.make(2, operandId=27, expressionValue='0')
-        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePostStub['expressionId'], 0)
+        ePreStub = self.ef.make(1, operandID=27, expressionValue='0')
+        ePostStub = self.ef.make(2, operandID=27, expressionValue='0')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePostStub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
@@ -39,9 +39,9 @@ class TestStubInt1(ModBuilderTestCase):
     """Test parsing of trees describing integer-1 stub"""
 
     def testBuildSuccess(self):
-        ePreStub = self.ef.make(1, operandId=27, expressionValue='1')
-        ePostStub = self.ef.make(2, operandId=27, expressionValue='1')
-        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePostStub['expressionId'], 0)
+        ePreStub = self.ef.make(1, operandID=27, expressionValue='1')
+        ePostStub = self.ef.make(2, operandID=27, expressionValue='1')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePostStub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
@@ -51,9 +51,9 @@ class TestStubBoolTrue(ModBuilderTestCase):
     """Test parsing of trees describing boolean-True stub"""
 
     def tesBuildSuccess(self):
-        ePreStub = self.ef.make(1, operandId=23, expressionValue='True')
-        ePostStub = self.ef.make(2, operandId=23, expressionValue='True')
-        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePostStub['expressionId'], 0)
+        ePreStub = self.ef.make(1, operandID=23, expressionValue='True')
+        ePostStub = self.ef.make(2, operandID=23, expressionValue='True')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePostStub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
@@ -63,9 +63,9 @@ class TestStubMixed(ModBuilderTestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def testBuildSuccess(self):
-        ePreStub = self.ef.make(1, operandId=23, expressionValue='True')
-        ePostStub = self.ef.make(2, operandId=27, expressionValue='0')
-        modifiers, status = self.runBuilder(ePreStub['expressionId'], ePostStub['expressionId'], 0)
+        ePreStub = self.ef.make(1, operandID=23, expressionValue='True')
+        ePostStub = self.ef.make(2, operandID=27, expressionValue='0')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePostStub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)

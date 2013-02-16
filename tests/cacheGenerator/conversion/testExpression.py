@@ -52,11 +52,13 @@ class TestConversionExpression(GeneratorTestCase):
         # check those which were passed to modifier builder
         expressions = modBuilder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 2)
-        expected = {'expressionId': 41, 'operandId': 6, 'arg1Id': 1009, 'arg2Id': 15,
-                    'expressionValue': None, 'expressionTypeId': 502,
-                    'expressionGroupId': 451, 'expressionAttributeId': 90}
+        # It's fine that additional fields get into final expression set,
+        # because they will be replaced by modifiers anyway
+        expected = {'expressionID': 41, 'operandID': 6, 'arg1': 1009, 'arg2': 15, 'expressionValue': None,
+                    'expressionTypeID': 502, 'expressionGroupID': 451, 'expressionAttributeID': 90,
+                    'tablePos': 0, 'randomField': 'vals'}
         self.assertIn(expected, expressions)
-        expected = {'expressionId': 57, 'operandId': 33, 'arg1Id': 5007, 'arg2Id': 66,
-                    'expressionValue': 'Kurr', 'expressionTypeId': 551,
-                    'expressionGroupId': 567, 'expressionAttributeId': 102}
+        expected = {'expressionID': 57, 'operandID': 33, 'arg1': 5007, 'arg2': 66, 'expressionValue': 'Kurr',
+                    'expressionTypeID': 551, 'expressionGroupID': 567, 'expressionAttributeID': 102,
+                    'tablePos': 1, 'randoom': True}
         self.assertIn(expected, expressions)

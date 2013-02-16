@@ -28,137 +28,137 @@ class TestInactive(ModBuilderTestCase):
 
     def setUp(self):
         ModBuilderTestCase.setUp(self)
-        self.stub = self.ef.make(-1, operandId=27, expressionValue='1')
+        self.stub = self.ef.make(-1, operandID=27, expressionValue='1')
 
     def testAttack(self):
-        disabledPre = self.ef.make(1, operandId=13)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=13)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testCargoScan(self):
-        disabledPre = self.ef.make(1, operandId=14)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=14)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testCheatTeleDock(self):
-        disabledPre = self.ef.make(1, operandId=15)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=15)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testCheatTeleGate(self):
-        disabledPre = self.ef.make(1, operandId=16)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=16)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testAoeDecloak(self):
-        disabledPre = self.ef.make(1, operandId=19)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=19)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testEcmBurst(self):
-        disabledPre = self.ef.make(1, operandId=30)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=30)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testAoeDmg(self):
-        disabledPre = self.ef.make(1, operandId=32)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=32)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testMissileLaunch(self):
-        disabledPre = self.ef.make(1, operandId=44)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=44)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testDefenderLaunch(self):
-        disabledPre = self.ef.make(1, operandId=45)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=45)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testFofLaunch(self):
-        disabledPre = self.ef.make(1, operandId=47)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=47)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testMine(self):
-        disabledPre = self.ef.make(1, operandId=50)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=50)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testPowerBooster(self):
-        disabledPre = self.ef.make(1, operandId=53)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=53)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testShipScan(self):
-        disabledPre = self.ef.make(1, operandId=66)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=66)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testSurveyScan(self):
-        disabledPre = self.ef.make(1, operandId=69)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=69)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testTgtHostile(self):
-        disabledPre = self.ef.make(1, operandId=70)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=70)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testTgtSilent(self):
-        disabledPre = self.ef.make(1, operandId=71)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=71)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testToolTgtSkills(self):
-        disabledPre = self.ef.make(1, operandId=72)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=72)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testUserError(self):
-        disabledPre = self.ef.make(1, operandId=73)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=73)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
     def testVrfTgtGrp(self):
-        disabledPre = self.ef.make(1, operandId=74)
-        modifiers, status = self.runBuilder(disabledPre['expressionId'], self.stub['expressionId'], 0)
+        disabledPre = self.ef.make(1, operandID=74)
+        modifiers, status = self.runBuilder(disabledPre['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)

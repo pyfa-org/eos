@@ -21,7 +21,6 @@
 
 from eos.const import Location, Operator, InvType
 from eos.eve.const import Operand
-from eos.util.attributeDict import AttributeDict
 from .action import Action
 from .exception import ActionBuilderError, ExpressionFetchError, ActionValidationError
 from .shared import operandData, stateData
@@ -38,7 +37,7 @@ class ActionBuilder:
         # via expression IDs, and data in rows is accessible as attributes
         self._expressions = {}
         for expRow in expressions:
-            self._expressions[expRow['expressionId']] = AttributeDict(expRow)
+            self._expressions[expRow['expressionID']] = expRow
 
     def build(self, treeRootId, effectCategoryId):
         """
@@ -68,7 +67,7 @@ class ActionBuilder:
     def _generic(self, expression):
         """Generic entry point, used if we expect passed node to be meaningful"""
         try:
-            operandMeta = operandData[expression.operandId]
+            operandMeta = operandData[expression.get('operandID')]
         except KeyError:
             operandEnabledFlag = None
         else:
@@ -83,23 +82,23 @@ class ActionBuilder:
             self._skippedData = True
         # If multiple actions are spliced here, handle it
         # appropriately
-        elif expression.operandId == Operand.splice:
+        elif expression.get('operandID') == Operand.splice:
             self._skippedData = self._splice(expression)
         # Process expressions with other operands using the map
         else:
             genericOpnds = {Operand.defInt: self._checkIntStub,
                             Operand.defBool: self._checkBoolStub}
             try:
-                method = genericOpnds[expression.operandId]
+                method = genericOpnds[expression.get('operandID')]
             except KeyError as e:
-                raise ActionBuilderError('unknown generic operand {}'.format(expression.operandId)) from e
+                raise ActionBuilderError('unknown generic operand {}'.format(expression.get('operandID'))) from e
             method(expression)
 
     def _splice(self, expression):
         """Reference two expressions from single one"""
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         self._generic(arg1)
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         self._generic(arg2)
 
     def _makeAction(self, expression):
@@ -107,45 +106,45 @@ class ActionBuilder:
         action = Action()
         # Write action type, which corresponds to operand of current
         # expression
-        action.type = expression.operandId
+        action.type = expression.get('operandID')
         # Request operator and target data, it's always in arg1
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         self._optrTgt(arg1, action)
         # Write down source attribute from arg2
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         action.sourceAttributeId = self._getAttribute(arg2)
         self._actions.append(action)
 
     def _optrTgt(self, expression, action):
         """Get operator and handle target definition"""
         # Operation is always in arg1
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         action.operator = self._getOperator(arg1)
         # Handling of arg2 depends on its operand
         tgtRouteMap = {Operand.genAttr: self._tgtAttr,
                        Operand.grpAttr: self._tgtGrpAttr,
                        Operand.srqAttr: self._tgtSrqAttr,
                        Operand.itmAttr: self._tgtItmAttr}
-        arg2 = self._getExp(expression.arg2Id)
-        tgtRouteMap[arg2.operandId](arg2, action)
+        arg2 = self._getExp(expression.get('arg2'))
+        tgtRouteMap[arg2.get('operandID')](arg2, action)
 
     def _tgtAttr(self, expression, action):
         """Get target attribute and store it"""
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         action.targetAttributeId = self._getAttribute(arg1)
 
     def _tgtGrpAttr(self, expression, action):
         """Get target group and target attribute"""
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         action.targetGroupId = self._getGroup(arg1)
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         action.targetAttributeId = self._getAttribute(arg2)
 
     def _tgtSrqAttr(self, expression, action):
         """Get target skill requirement and target attribute"""
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         action.targetSkillRequirementId = self._getType(arg1)
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         action.targetAttributeId = self._getAttribute(arg2)
 
     def _tgtItmAttr(self, expression, action):
@@ -154,10 +153,10 @@ class ActionBuilder:
         itmGetterMap = {Operand.defLoc: self._tgtLoc,
                         Operand.locGrp: self._tgtLocGrp,
                         Operand.locSrq: self._tgtLocSrq}
-        arg1 = self._getExp(expression.arg1Id)
-        itmGetterMap[arg1.operandId](arg1, action)
+        arg1 = self._getExp(expression.get('arg1'))
+        itmGetterMap[arg1.get('operandID')](arg1, action)
         # Target attribute is always specified in arg2
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         action.targetAttributeId = self._getAttribute(arg2)
 
     def _tgtLoc(self, expression, action):
@@ -166,16 +165,16 @@ class ActionBuilder:
 
     def _tgtLocGrp(self, expression, action):
         """Get target location filter and group filter"""
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         action.targetLocation = self._getLocation(arg1)
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         action.targetGroupId = self._getGroup(arg2)
 
     def _tgtLocSrq(self, expression, action):
         """Get target location filter and skill requirement filter"""
-        arg1 = self._getExp(expression.arg1Id)
+        arg1 = self._getExp(expression.get('arg1'))
         action.targetLocation = self._getLocation(arg1)
-        arg2 = self._getExp(expression.arg2Id)
+        arg2 = self._getExp(expression.get('arg2'))
         action.targetSkillRequirementId = self._getType(arg2)
 
     def _checkIntStub(self, expression):
@@ -201,7 +200,7 @@ class ActionBuilder:
                          'PostDiv': Operator.postDiv,
                          'PostPercent': Operator.postPercent,
                          'PostAssignment': Operator.postAssignment}
-        operator = conversionMap[expression.expressionValue]
+        operator = conversionMap[expression.get('expressionValue')]
         return operator
 
     def _getLocation(self, expression):
@@ -212,40 +211,40 @@ class ActionBuilder:
                          'Target': Location.target,
                          'Other': Location.other,
                          'Area': Location.area}
-        location = conversionMap[expression.expressionValue]
+        location = conversionMap[expression.get('expressionValue')]
         return location
 
     def _getAttribute(self, expression):
-        attribute = int(expression.expressionAttributeId)
+        attribute = int(expression.get('expressionAttributeID'))
         return attribute
 
     def _getGroup(self, expression):
-        group = int(expression.expressionGroupId)
+        group = int(expression.get('expressionGroupID'))
         return group
 
     def _getType(self, expression):
         # Type getter function has special handling
-        if expression.operandId == Operand.getType:
+        if expression.get('operandID') == Operand.getType:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
-            arg1 = self._getExp(expression.arg1Id)
+            arg1 = self._getExp(expression.get('arg1'))
             if self._getLocation(arg1) == Location.self_:
                 return InvType.self_
             else:
                 return None
         else:
-            type_ = int(expression.expressionTypeId)
+            type_ = int(expression.get('expressionTypeID'))
             return type_
 
     def _getInteger(self, expression):
-        integer = int(expression.expressionValue)
+        integer = int(expression.get('expressionValue'))
         return integer
 
     def _getBoolean(self, expression):
         # Format: {boolean name: boolean value}
         conversionMap = {'True': True,
                          'False': False}
-        boolean = conversionMap[expression.expressionValue]
+        boolean = conversionMap[expression.get('expressionValue')]
         return boolean
 
     def _getExp(self, expressionId):

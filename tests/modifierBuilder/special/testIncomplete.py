@@ -30,24 +30,24 @@ class TestIncomplete(ModBuilderTestCase):
         ModBuilderTestCase.setUp(self)
         # Modifier, except for top-most expression, which
         # is added in test cases
-        eTgt = self.ef.make(1, operandId=24, expressionValue='Ship')
-        eTgtAttr = self.ef.make(2, operandId=22, expressionAttributeId=9)
-        eOptr = self.ef.make(3, operandId=21, expressionValue='PostPercent')
-        self.eSrcAttr = self.ef.make(4, operandId=22, expressionAttributeId=327)
-        eTgtSpec = self.ef.make(5, operandId=12, arg1Id=eTgt['expressionId'], arg2Id=eTgtAttr['expressionId'])
-        self.eOptrTgt = self.ef.make(6, operandId=31, arg1Id=eOptr['expressionId'], arg2Id=eTgtSpec['expressionId'])
-        self.stub = self.ef.make(7, operandId=27, expressionValue='1')
+        eTgt = self.ef.make(1, operandID=24, expressionValue='Ship')
+        eTgtAttr = self.ef.make(2, operandID=22, expressionAttributeID=9)
+        eOptr = self.ef.make(3, operandID=21, expressionValue='PostPercent')
+        self.eSrcAttr = self.ef.make(4, operandID=22, expressionAttributeID=327)
+        eTgtSpec = self.ef.make(5, operandID=12, arg1=eTgt['expressionID'], arg2=eTgtAttr['expressionID'])
+        self.eOptrTgt = self.ef.make(6, operandID=31, arg1=eOptr['expressionID'], arg2=eTgtSpec['expressionID'])
+        self.stub = self.ef.make(7, operandID=27, expressionValue='1')
 
     def testPre(self):
-        eAddMod = self.ef.make(8, operandId=6, arg1Id=self.eOptrTgt['expressionId'], arg2Id=self.eSrcAttr['expressionId'])
-        modifiers, status = self.runBuilder(eAddMod['expressionId'], self.stub['expressionId'], 0)
+        eAddMod = self.ef.make(8, operandID=6, arg1=self.eOptrTgt['expressionID'], arg2=self.eSrcAttr['expressionID'])
+        modifiers, status = self.runBuilder(eAddMod['expressionID'], self.stub['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
     def testPost(self):
-        eRmMod = self.ef.make(8, operandId=58, arg1Id=self.eOptrTgt['expressionId'], arg2Id=self.eSrcAttr['expressionId'])
-        modifiers, status = self.runBuilder(self.stub['expressionId'], eRmMod['expressionId'], 0)
+        eRmMod = self.ef.make(8, operandID=58, arg1=self.eOptrTgt['expressionID'], arg2=self.eSrcAttr['expressionID'])
+        modifiers, status = self.runBuilder(self.stub['expressionID'], eRmMod['expressionID'], 0)
         self.assertEqual(status, EffectBuildStatus.okPartial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)

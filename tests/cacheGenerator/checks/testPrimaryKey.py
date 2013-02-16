@@ -290,7 +290,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(cleanStats.levelno, Logger.INFO)
         expressions = modBuilder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {'expressionId': 83, 'operandId': 75, 'arg1Id': 1009, 'arg2Id': 15,
-                    'expressionValue': None, 'expressionTypeId': 502,
-                    'expressionGroupId': 451, 'expressionAttributeId': 90}
-        self.assertIn(expected, expressions)
+        expected = {'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
+                    'expressionValue': None, 'expressionTypeID': 502,
+                    'expressionGroupID': 451, 'expressionAttributeID': 90}
+        self.assertDictContainsSubset(expected, expressions[0])

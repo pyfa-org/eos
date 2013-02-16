@@ -179,18 +179,7 @@ class Converter:
             effects.append(effect)
         assembly['effects'] = effects
 
-        expressions = []
-        for row in data['dgmexpressions']:
-            expression = {'expressionId': row['expressionID'],
-                          'operandId': row.get('operandID'),
-                          'arg1Id': row.get('arg1'),
-                          'arg2Id': row.get('arg2'),
-                          'expressionValue': row.get('expressionValue'),
-                          'expressionTypeId': row.get('expressionTypeID'),
-                          'expressionGroupId': row.get('expressionGroupID'),
-                          'expressionAttributeId': row.get('expressionAttributeID')}
-            expressions.append(expression)
-        assembly['expressions'] = expressions
+        assembly['expressions'] = list(data['dgmexpressions'])
 
         return assembly
 

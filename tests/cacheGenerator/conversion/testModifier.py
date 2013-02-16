@@ -202,14 +202,8 @@ class TestConversionModifier(GeneratorTestCase):
         # Expression order isn't stable in passed list, so verify
         # passed argument using membership check
         self.assertEqual(len(expressions), 2)
-        expected = {'expressionId': 56, 'operandId': None, 'arg1Id': None, 'arg2Id': None,
-                    'expressionValue': None, 'expressionTypeId': None,
-                    'expressionGroupId': None, 'expressionAttributeId': None}
-        self.assertIn(expected, expressions)
-        expected = {'expressionId': 107, 'operandId': None, 'arg1Id': None, 'arg2Id': None,
-                    'expressionValue': None, 'expressionTypeId': None,
-                    'expressionGroupId': None, 'expressionAttributeId': None}
-        self.assertIn(expected, expressions)
+        expressionIds = set(row['expressionID'] for row in expressions)
+        self.assertEqual(expressionIds, {56, 107})
         self.assertTrue(isinstance(logger, Logger))
         # Check request for building
         name, args, kwargs = call2

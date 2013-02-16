@@ -101,9 +101,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertIn(100, data['effects'])
         expressions = modBuilder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 4)
-        expressionIds = set()
-        for expRow in expressions:
-            expressionIds.add(expRow['expressionId'])
+        expressionIds = set(row['expressionID'] for row in expressions)
         self.assertEqual(expressionIds, {100, 101, 102, 103})
 
     def testWeak(self, modBuilder):
@@ -167,7 +165,5 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertIn(100, data['effects'])
         expressions = modBuilder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expressionIds = set()
-        for expRow in expressions:
-            expressionIds.add(expRow['expressionId'])
+        expressionIds = set(row['expressionID'] for row in expressions)
         self.assertEqual(expressionIds, {101})
