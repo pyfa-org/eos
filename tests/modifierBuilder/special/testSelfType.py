@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import EffectBuildStatus, FilterType, InvType
+from eos.const import EffectBuildStatus, FilterType
 from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
 
@@ -42,6 +42,6 @@ class TestSelfType(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.filterType, FilterType.skill)
-        self.assertEqual(modifier.filterValue, InvType.self_)
+        self.assertEqual(modifier.filterType, FilterType.skillSelf)
+        self.assertEqual(modifier.filterValue, None)
         self.assertEqual(len(self.log), 0)

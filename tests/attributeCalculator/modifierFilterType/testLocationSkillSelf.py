@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, FilterType, Operator, InvType
+from eos.const import State, Location, Context, FilterType, Operator
 from eos.eve.const import EffectCategory
 from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
@@ -43,8 +43,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         modifier.operator = Operator.postPercent
         modifier.targetAttributeId = self.tgtAttr.id
         modifier.location = Location.ship
-        modifier.filterType = FilterType.skill
-        modifier.filterValue = InvType.self_
+        modifier.filterType = FilterType.skillSelf
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influenceSource = IndependentItem(self.ch.type_(typeId=772, effects=(effect,), attributes={srcAttr.id: 20}))

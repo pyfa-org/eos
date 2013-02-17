@@ -65,10 +65,13 @@ class Action:
         # Items only having this skill requirement will be targeted by
         # action:
         # For action types which include skill requirement filter,
-        # must be integer which refers type via ID, or
-        # eos.const.InvType.self_ to refer type of effect carrier
+        # must be integer which refers type via ID
         # For other action types must be None.
         self.targetSkillRequirementId = None
+
+        # For action types which include skill requirement filter,
+        # set to true if required skill is carrier of modification
+        self.targetSkillRequirementSelf = False
 
 
     def isMirror(self, other):
@@ -95,7 +98,8 @@ class Action:
         # Then, check all other fields of modifier
         if (self.sourceAttributeId != other.sourceAttributeId or self.operator != other.operator or
             self.targetAttributeId != other.targetAttributeId or self.targetLocation != other.targetLocation or
-            self.targetGroupId != other.targetGroupId or self.targetSkillRequirementId != other.targetSkillRequirementId):
+            self.targetGroupId != other.targetGroupId or self.targetSkillRequirementId != other.targetSkillRequirementId or
+            self.targetSkillRequirementSelf is not other.targetSkillRequirementSelf):
             return False
         # If all conditions were met, then it's actually mirror
         return True

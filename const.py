@@ -102,6 +102,7 @@ class FilterType(metaclass=Enum):
     all_ = 1  # Affects all items in target location
     group = 2  # Affects items in target location with additional filter by group
     skill = 3  # Affects items in target location with additional filter by skill requirement
+    skillSelf = 4  # Same as skill, but instead of specifying typeID of skill in filter value always refers typeID of carrier
 
 
 class Operator(metaclass=Enum):
@@ -123,14 +124,6 @@ class Operator(metaclass=Enum):
     postDiv = 7
     postPercent = 8
     postAssignment = 9
-
-
-class InvType(metaclass=Enum):
-    """
-    Eos-specific type declarations, used only internally
-    by Modifier class and classes interacting with it
-    """
-    self_ = -1  # Refers carrier of modifier, special type ID, thus it must not overlap with any real type ID
 
 
 class Restriction(metaclass=Enum):

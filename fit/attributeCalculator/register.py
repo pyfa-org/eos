@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, FilterType, InvType
+from eos.const import Location, FilterType
 from eos.util.keyedSet import KeyedSet
 from .exception import DirectLocationError, FilteredLocationError, FilteredSelfReferenceError, FilterTypeError
 
@@ -169,7 +169,12 @@ class LinkRegister:
         elif modifier.filterType == FilterType.skill:
             affectorMap = self.__affectorLocationSkill
             location = self.__contextizeFilterLocation(affector)
-            skill = self.__contextizeSkillrqId(affector)
+            skill = affector.modifier.filterValue
+            key = (location, skill)
+        elif modifier.filterType == FilterType.skillSelf:
+            affectorMap = self.__affectorLocationSkill
+            location = self.__contextizeFilterLocation(affector)
+            skill = affector.sourceHolder.item.id
             key = (location, skill)
         else:
             raise FilterTypeError(modifier.filterType)
@@ -212,21 +217,6 @@ class LinkRegister:
         # Raise error if location is invalid
         else:
             raise FilteredLocationError(targetLocation)
-
-    def __contextizeSkillrqId(self, affector):
-        """
-        Convert typeID self-reference into real typeID.
-
-        Positional arguments:
-        affector -- affector, whose modifier refers some type via ID
-
-        Return value:
-        Real typeID, taken from affector's holder carrier
-        """
-        skillId = affector.modifier.filterValue
-        if skillId == InvType.self_:
-            skillId = affector.sourceHolder.item.id
-        return skillId
 
     def __enableDirectSpec(self, targetHolder, targetLocation):
         """
@@ -493,7 +483,12 @@ class LinkRegister:
                 target = self.__affecteeLocationGroup.get(key) or set()
             elif modifier.filterType == FilterType.skill:
                 location = self.__contextizeFilterLocation(affector)
-                skill = self.__contextizeSkillrqId(affector)
+                skill = affector.modifier.filterValue
+                key = (location, skill)
+                target = self.__affecteeLocationSkill.get(key) or set()
+            elif modifier.filterType == FilterType.skillSelf:
+                location = self.__contextizeFilterLocation(affector)
+                skill = affector.sourceHolder.item.id
                 key = (location, skill)
                 target = self.__affecteeLocationSkill.get(key) or set()
             else:

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, Operator, InvType
+from eos.const import Location, Operator
 from eos.eve.const import Operand
 from .action import Action
 from .exception import ActionBuilderError, ExpressionFetchError, ActionValidationError
@@ -143,7 +143,7 @@ class ActionBuilder:
     def _tgtSrqAttr(self, expression, action):
         """Get target skill requirement and target attribute"""
         arg1 = self._getExp(expression.get('arg1'))
-        action.targetSkillRequirementId = self._getType(arg1)
+        self._getType(arg1, action)
         arg2 = self._getExp(expression.get('arg2'))
         action.targetAttributeId = self._getAttribute(arg2)
 
@@ -175,7 +175,7 @@ class ActionBuilder:
         arg1 = self._getExp(expression.get('arg1'))
         action.targetLocation = self._getLocation(arg1)
         arg2 = self._getExp(expression.get('arg2'))
-        action.targetSkillRequirementId = self._getType(arg2)
+        self._getType(arg2, action)
 
     def _checkIntStub(self, expression):
         """Check if given expression is stub, returning integer 0 or 1"""
@@ -222,19 +222,16 @@ class ActionBuilder:
         group = int(expression.get('expressionGroupID'))
         return group
 
-    def _getType(self, expression):
+    def _getType(self, expression, action):
         # Type getter function has special handling
         if expression.get('operandID') == Operand.getType:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
             arg1 = self._getExp(expression.get('arg1'))
             if self._getLocation(arg1) == Location.self_:
-                return InvType.self_
-            else:
-                return None
+                action.targetSkillRequirementSelf = True
         else:
-            type_ = int(expression.get('expressionTypeID'))
-            return type_
+            action.targetSkillRequirementId = int(expression.get('expressionTypeID'))
 
     def _getInteger(self, expression):
         integer = int(expression.get('expressionValue'))
@@ -302,7 +299,8 @@ class ActionBuilder:
 
     # Block with validating methods, called depending on action type
     def _validateGangGrp(self, action):
-        if action.targetLocation is not None or action.targetSkillRequirementId is not None:
+        if (action.targetLocation is not None or action.targetSkillRequirementId is not None or
+            action.targetSkillRequirementSelf is not False):
             return False
         if isinstance(action.targetGroupId, int) is not True:
             return False
@@ -310,45 +308,47 @@ class ActionBuilder:
 
     def _validateGangItm(self, action):
         if (action.targetLocation is not None or action.targetGroupId is not None or
-            action.targetSkillRequirementId is not None):
+            action.targetSkillRequirementId is not None or action.targetSkillRequirementSelf is not False):
             return False
         return True
 
     def _validateGangOwnSrq(self, action):
         if action.targetLocation is not None or action.targetGroupId is not None:
             return False
-        if isinstance(action.targetSkillRequirementId, int) is not True:
+        if self._checkSkillReq(action) is not True:
             return False
         return True
 
     def _validateGangSrq(self, action):
         if action.targetLocation is not None or action.targetGroupId is not None:
             return False
-        if isinstance(action.targetSkillRequirementId, int) is not True:
+        if self._checkSkillReq(action) is not True:
             return False
         return True
 
     def _validateItm(self, action):
-        if action.targetGroupId is not None or action.targetSkillRequirementId is not None:
+        if (action.targetGroupId is not None or action.targetSkillRequirementId is not None or
+            action.targetSkillRequirementSelf is not False):
             return False
-        if not action.targetLocation in Location:
+        if action.targetLocation not in Location:
             return False
         return True
 
     def _validateLocGrp(self, action):
-        if action.targetSkillRequirementId is not None:
+        if action.targetSkillRequirementId is not None or action.targetSkillRequirementSelf is not False:
             return False
         validLocs = (Location.character, Location.ship, Location.target, Location.self_)
-        if (not action.targetLocation in validLocs or
+        if (action.targetLocation not in validLocs or
             isinstance(action.targetGroupId, int) is not True):
             return False
         return True
 
     def _validateLoc(self, action):
-        if action.targetGroupId is not None or action.targetSkillRequirementId is not None:
+        if (action.targetGroupId is not None or action.targetSkillRequirementId is not None or
+            action.targetSkillRequirementSelf is not False):
             return False
         validLocs = (Location.character, Location.ship, Location.target, Location.self_)
-        if not action.targetLocation in validLocs:
+        if action.targetLocation not in validLocs:
             return False
         return True
 
@@ -356,8 +356,7 @@ class ActionBuilder:
         if action.targetGroupId is not None:
             return False
         validLocs = (Location.character, Location.ship, Location.target, Location.self_)
-        if (not action.targetLocation in validLocs or
-            isinstance(action.targetSkillRequirementId, int) is not True):
+        if action.targetLocation not in validLocs or self._checkSkillReq(action) is not True:
             return False
         return True
 
@@ -365,7 +364,13 @@ class ActionBuilder:
         if action.targetGroupId is not None:
             return False
         validLocs = (Location.character, Location.ship)
-        if (not action.targetLocation in validLocs or
-            isinstance(action.targetSkillRequirementId, int) is not True):
+        if action.targetLocation not in validLocs or self._checkSkillReq(action) is not True:
             return False
         return True
+
+    def _checkSkillReq(self, action):
+        # We allow to specify skill either via integer ID or via carrier self-reference flag
+        if ((isinstance(action.targetSkillRequirementId, int) is True and action.targetSkillRequirementSelf is False) or
+            (action.targetSkillRequirementId is None and action.targetSkillRequirementSelf is True)):
+            return True
+        return False

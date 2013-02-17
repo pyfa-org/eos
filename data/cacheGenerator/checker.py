@@ -19,7 +19,6 @@
 #===============================================================================
 
 
-from eos.const import InvType
 from eos.eve.const import Effect
 from eos.util.frozendict import frozendict
 
@@ -54,7 +53,6 @@ class Checker:
                        'invtypes': ('typeID',)}
         for tableName, keyNames in primaryKeys.items():
             self._tablePk(tableName, keyNames)
-        self._typeSelfReference()
 
     def preConvert(self, data):
         """
@@ -122,28 +120,6 @@ class Checker:
             invalidRows.add(datarow)
             return
         usedKeys.add(rowKey)
-
-    def _typeSelfReference(self):
-        """
-        In Eos attribute calculator, typeID of -1 in
-        expressions of items means reference to typeID of
-        item itself, thus it is not valid typeID for any item.
-        This check is needed to be done before cleaner, so all
-        of its related attributes will be cleaned too.
-        """
-        table = self.data['invtypes']
-        invalidRow = None
-        for row in table:
-            if row['typeID'] == InvType.self_:
-                invalidRow = row
-                # We already checked PKs for uniqueness, thus
-                # it is safe to assume no such typeIDs will be
-                # further down the table
-                break
-        if invalidRow is not None:
-            msg = 'type self-reference (ID {}) exists, removing type'.format(InvType.self_)
-            self._logger.warning(msg, childName='cacheGenerator')
-            table.remove(invalidRow)
 
     def _attributeValueType(self):
         """

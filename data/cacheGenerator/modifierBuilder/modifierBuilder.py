@@ -178,13 +178,11 @@ class ModifierBuilder:
 
     def _convertGangOwnSrq(self, action, modifier):
         modifier.location = Location.space
-        modifier.filterType = FilterType.skill
-        modifier.filterValue = action.targetSkillRequirementId
+        self._fillSrqFilter(action, modifier)
 
     def _convertGangSrq(self, action, modifier):
         modifier.location = Location.ship
-        modifier.filterType = FilterType.skill
-        modifier.filterValue = action.targetSkillRequirementId
+        self._fillSrqFilter(action, modifier)
 
     def _convertItm(self, action, modifier):
         modifier.location = action.targetLocation
@@ -200,10 +198,15 @@ class ModifierBuilder:
 
     def _convertLocSrq(self, action, modifier):
         modifier.location = action.targetLocation
-        modifier.filterType = FilterType.skill
-        modifier.filterValue = action.targetSkillRequirementId
+        self._fillSrqFilter(action, modifier)
 
     def _convertOwnSrq(self, action, modifier):
         modifier.location = Location.space
-        modifier.filterType = FilterType.skill
-        modifier.filterValue = action.targetSkillRequirementId
+        self._fillSrqFilter(action, modifier)
+
+    def _fillSrqFilter(self, action, modifier):
+        if action.targetSkillRequirementId is None and action.targetSkillRequirementSelf is True:
+            modifier.filterType = FilterType.skillSelf
+        else:
+            modifier.filterType = FilterType.skill
+            modifier.filterValue = action.targetSkillRequirementId
