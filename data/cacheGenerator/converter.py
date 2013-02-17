@@ -151,7 +151,7 @@ class Converter:
                      'falloffAttributeId': defeff.get('falloffAttributeID'),
                      'trackingSpeedAttributeId': defeff.get('trackingSpeedAttributeID'),
                      'fittableNonSingleton': invgroupsKeyed.get(groupId, {}).get('fittableNonSingleton'),
-                     'effects': typeEffects.get(typeId, ()),
+                     'effects': typeEffects.get(typeId, []),
                      'attributes': typeAttribs.get(typeId, {})}
             types.append(type_)
         assembly['types'] = types

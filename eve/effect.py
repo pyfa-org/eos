@@ -19,9 +19,6 @@
 #===============================================================================
 
 
-#from .override.effect import customizeEffect
-
-
 class Effect:
     """
     Represents a single effect. Effects are the building blocks which describe what its carrier
@@ -51,6 +48,3 @@ class Effect:
 
         # Stores Modifiers which are assigned to given effect
         self.modifiers = modifiers
-
-        # Replace some data according to eos needs
-        #customizeEffect(self)

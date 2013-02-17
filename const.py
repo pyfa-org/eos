@@ -81,7 +81,6 @@ class EffectBuildStatus(metaclass=Enum):
     error = 2  # Errors occurred during expression trees parsing or validation
     okPartial = 3  # Modifiers were generated, but some of elements were dropped as unsupported
     okFull = 4  # All modifications were pulled out of expression tree successfully
-    override = 5  # Eos overrides action of this effect
 
 
 class Context(metaclass=Enum):

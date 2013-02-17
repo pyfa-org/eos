@@ -22,7 +22,6 @@
 from eos.const import Slot, State
 from eos.util.cachedProperty import cachedproperty
 from .const import Attribute, Effect, EffectCategory
-#from .override.type import customizeType
 
 
 class Type:
@@ -75,9 +74,6 @@ class Type:
         # Iterable with effects this type has, they describe modifications
         # which this type applies
         self.effects = effects
-
-        # Apply eos-specific customizations on type, if any
-        #customizeType(self)
 
     @property
     def modifiers(self):

@@ -17,18 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from eos.const import EffectBuildStatus
-from eos.eve.const import Effect
-
-
-# Following effects get their modifiers purged
-purgeModifiers = (Effect.launcherFitted, Effect.turretFitted)
-
-def customizeEffect(effect):
-    """Control all customizations performed on effect"""
-    # Clean modifiers of specified effects
-    if effect.id in purgeModifiers:
-        effect.modifiers = ()
-        effect.modifierStatus = EffectBuildStatus.override

@@ -22,6 +22,7 @@
 import os.path
 
 from eos.eve.const import Type
+from eos.data.cacheCustomizer.customizer import CacheCustomizer
 from eos.data.cacheHandler.jsonCacheHandler import JsonCacheHandler
 from eos.data.cacheGenerator.generator import CacheGenerator
 from eos.fit.fit import Fit
@@ -66,8 +67,9 @@ class Eos:
             else:
                 msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(cacheFp, currentFp)
             self._logger.info(msg)
-            # Generate cache and write it
+            # Generate cache, apply customizations and write it
             cacheData = CacheGenerator(self._logger).run(dataHandler)
+            CacheCustomizer().runBuiltIn(cacheData)
             self._cacheHandler.updateCache(cacheData, currentFp)
 
     def makeFit(self):
