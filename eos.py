@@ -48,6 +48,7 @@ class Eos:
         storagePath = os.path.expanduser(storagePath)
 
         self._logger = Logger(name, os.path.join(storagePath, 'logs'))
+        self._logger.info('------------------------------------------------------------------------')
         self._logger.info('session started')
 
         self._cacheHandler = JsonCacheHandler(os.path.join(storagePath, 'cache'), name, self._logger)

@@ -315,14 +315,14 @@ class ActionBuilder:
     def _validateGangOwnSrq(self, action):
         if action.targetLocation is not None or action.targetGroupId is not None:
             return False
-        if self._checkSkillReq(action) is not True:
+        if self._validateSkillReq(action) is not True:
             return False
         return True
 
     def _validateGangSrq(self, action):
         if action.targetLocation is not None or action.targetGroupId is not None:
             return False
-        if self._checkSkillReq(action) is not True:
+        if self._validateSkillReq(action) is not True:
             return False
         return True
 
@@ -356,7 +356,7 @@ class ActionBuilder:
         if action.targetGroupId is not None:
             return False
         validLocs = (Location.character, Location.ship, Location.target, Location.self_)
-        if action.targetLocation not in validLocs or self._checkSkillReq(action) is not True:
+        if action.targetLocation not in validLocs or self._validateSkillReq(action) is not True:
             return False
         return True
 
@@ -364,11 +364,11 @@ class ActionBuilder:
         if action.targetGroupId is not None:
             return False
         validLocs = (Location.character, Location.ship)
-        if action.targetLocation not in validLocs or self._checkSkillReq(action) is not True:
+        if action.targetLocation not in validLocs or self._validateSkillReq(action) is not True:
             return False
         return True
 
-    def _checkSkillReq(self, action):
+    def _validateSkillReq(self, action):
         # We allow to specify skill either via integer ID or via carrier self-reference flag
         if ((isinstance(action.targetSkillRequirementId, int) is True and action.targetSkillRequirementSelf is False) or
             (action.targetSkillRequirementId is None and action.targetSkillRequirementSelf is True)):
