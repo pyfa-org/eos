@@ -34,7 +34,8 @@ class LinkRegister:
     """
 
     def __init__(self, tracker):
-        # The fit we're keeping track of things for
+        # Link tracker which is assigned to fit we're
+        # keeping data for
         self.__tracker = tracker
 
         # Keep track of holders belonging to certain location
@@ -65,8 +66,8 @@ class LinkRegister:
         # Format: {targetHolder: {affectors}}
         self.__activeDirectAffectors = KeyedSet()
 
-        # Keep track of affectors which influence locOther, but are disabled
-        # as their target location is not available
+        # Keep track of affectors which influence something directly,
+        # but are disabled as their target location is not available
         # Format: {sourceHolder: {affectors}}
         self.__disabledDirectAffectors = KeyedSet()
 
@@ -227,22 +228,24 @@ class LinkRegister:
         targetHolder -- holder which is being registered
         targetLocation -- location, to which holder is being registered
         """
-        affectorsToEnable = set()
+        # Format: {sourceHolder: [affectors]}
+        affectorsToEnable = {}
         # Cycle through all disabled direct affectors
-        for affectorSet in self.__disabledDirectAffectors.values():
+        for sourceHolder, affectorSet in self.__disabledDirectAffectors.items():
             for affector in affectorSet:
                 modifier = affector.modifier
-                # Mark affector as to-be-enabled only when it specifically
-                # targets passed target location, and not holders assigned
-                # to it
-                if modifier.location == targetLocation and modifier.filterType is None:
-                    affectorsToEnable.add(affector)
+                # Mark affector as to-be-enabled only when it
+                # targets passed target location
+                if modifier.location == targetLocation:
+                    sourceAffectors = affectorsToEnable.setdefault(sourceHolder, [])
+                    sourceAffectors.append(affector)
         # Bail if we have nothing to do
         if not affectorsToEnable:
             return
         # Move all of them to direct modification dictionary
-        self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
-        self.__disabledDirectAffectors.rmDataSet(affector.sourceHolder, affectorsToEnable)
+        for sourceHolder, affectors in affectorsToEnable.items():
+            self.__disabledDirectAffectors.rmDataSet(sourceHolder, affectors)
+            self.__activeDirectAffectors.addDataSet(targetHolder, affectors)
 
     def __disableDirectSpec(self, targetHolder):
         """
@@ -251,18 +254,21 @@ class LinkRegister:
         Positional arguments:
         targetHolder -- holder which is being unregistered
         """
-        affectorsToDisable = set()
+        # Format: {sourceHolder: [affectors]}
+        affectorsToDisable = {}
         # Check all affectors, targeting passed holder
         for affector in self.__activeDirectAffectors.get(targetHolder) or ():
             # Mark them as to-be-disabled only if they originate from
             # other holder, else they should be removed with passed holder
             if affector.sourceHolder is not targetHolder:
-                affectorsToDisable.add(affector)
+                sourceAffectors = affectorsToDisable.setdefault(affector.sourceHolder, [])
+                sourceAffectors.append(affector)
         if not affectorsToDisable:
             return
         # Move data from map to map
-        self.__disabledDirectAffectors.addDataSet(affector.sourceHolder, affectorsToDisable)
-        self.__activeDirectAffectors.rmDataSet(targetHolder, affectorsToDisable)
+        for sourceHolder, affectors in affectorsToDisable.items():
+            self.__disabledDirectAffectors.addDataSet(sourceHolder, affectors)
+            self.__activeDirectAffectors.rmDataSet(targetHolder, affectors)
 
     def __enableDirectOther(self, targetHolder):
         """
@@ -284,7 +290,7 @@ class LinkRegister:
         affectorsToEnable = set()
         for affector in self.__disabledDirectAffectors.get(otherHolder) or ():
             modifier = affector.modifier
-            if modifier.location == Location.other and modifier.filterType is None:
+            if modifier.location == Location.other:
                 affectorsToEnable.add(affector)
         # Bail if we have nothing to do
         if not affectorsToEnable:
