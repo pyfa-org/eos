@@ -28,8 +28,9 @@ class LinkTracker:
     """
     Serve as intermediate layer between fit and holder link register.
     Implements methods which make it easier for fit to add, modify and
-    remove holders, and exposes two main register getters for external
-    use.
+    remove holders (by implementing higher-level logic which deals with
+    state, context and attribute filters), and exposes two main register
+    getters for external use.
 
     Positional arguments:
     fit -- Fit object to which tracker is assigned

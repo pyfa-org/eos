@@ -26,8 +26,8 @@ from .exception import DirectLocationError, FilteredLocationError, FilteredSelfR
 
 class LinkRegister:
     """
-    Keep track of links between holders, which is required for efficient
-    partial attribute recalculation.
+    Keep track of currently existing links between holders. This is hard
+    requirement for efficient partial attribute recalculation.
 
     Positional arguments:
     tracker -- LinkTracker object, which uses this register
@@ -267,8 +267,8 @@ class LinkRegister:
             return
         # Move data from map to map
         for sourceHolder, affectors in affectorsToDisable.items():
-            self.__disabledDirectAffectors.addDataSet(sourceHolder, affectors)
             self.__activeDirectAffectors.rmDataSet(targetHolder, affectors)
+            self.__disabledDirectAffectors.addDataSet(sourceHolder, affectors)
 
     def __enableDirectOther(self, targetHolder):
         """
@@ -346,16 +346,13 @@ class LinkRegister:
             # Add data to map
             affecteeMap.addData(key, targetHolder)
         # Check if we have affectors which should directly influence passed holder,
-        # but are disabled
-        directEnablers = {Location.ship: (self.__enableDirectSpec, (targetHolder, Location.ship), {}),
-                          Location.character: (self.__enableDirectSpec, (targetHolder, Location.character), {}),
-                          Location.other: (self.__enableDirectOther, (targetHolder,), {})}
-        try:
-            method, args, kwargs = directEnablers[enableDirect]
-        except KeyError:
-            pass
-        else:
-            method(*args, **kwargs)
+        # but are disabled; enable them if there're any
+        if enableDirect is None:
+            return
+        if enableDirect == Location.other:
+            self.__enableDirectOther(targetHolder)
+        elif enableDirect in (Location.character, Location.ship):
+            self.__enableDirectSpec(targetHolder, enableDirect)
 
     def unregisterAffectee(self, targetHolder, disableDirect=None):
         """
@@ -374,17 +371,16 @@ class LinkRegister:
         """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             affecteeMap.rmData(key, targetHolder)
+        if disableDirect is None:
+            return
         # When removing holder from register, make sure to move modifiers which
-        # originate from other holders and directly affect it to disabled map
-        directEnablers = {Location.ship: (self.__disableDirectSpec, (targetHolder,), {}),
-                          Location.character: (self.__disableDirectSpec, (targetHolder,), {}),
-                          Location.other: (self.__disableDirectOther, (targetHolder,), {})}
-        try:
-            method, args, kwargs = directEnablers[disableDirect]
-        except KeyError:
-            pass
-        else:
-            method(*args, **kwargs)
+        # originate from 'other' holders and directly affect it to disabled map
+        if disableDirect is None:
+            return
+        if disableDirect == Location.other:
+            self.__disableDirectOther(targetHolder)
+        elif disableDirect in (Location.character, Location.ship):
+            self.__disableDirectSpec(targetHolder)
 
     def registerAffector(self, affector):
         """
