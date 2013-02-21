@@ -394,22 +394,8 @@ class LinkRegister:
             key, affectorMap = self.__getAffectorMap(affector)
             # Actually add data to map
             affectorMap.addData(key, affector)
-        except DirectLocationError as e:
-            msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(affector.sourceHolder.item.id, e.args[0])
-            signature = (type(e), affector.sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilteredLocationError as e:
-            msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(affector.sourceHolder.item.id, e.args[0])
-            signature = (type(e), affector.sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilteredSelfReferenceError as e:
-            msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(affector.sourceHolder.item.id)
-            signature = (type(e), affector.sourceHolder.item.id)
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilterTypeError as e:
-            msg = 'malformed modifier on item {}: invalid filter type {}'.format(affector.sourceHolder.item.id, e.args[0])
-            signature = (type(e), affector.sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        except Exception as e:
+            self.__handleAffectorErrors(e, affector)
 
     def unregisterAffector(self, affector):
         """
@@ -426,22 +412,8 @@ class LinkRegister:
         # when registering affector too, thus they won't appear in log
         # if logger's handler suppresses messages with duplicate
         # signature
-        except DirectLocationError as e:
-            msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(affector.sourceHolder.item.id, e.args[0])
-            signature = (type(e), affector.sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilteredLocationError as e:
-            msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(affector.sourceHolder.item.id, e.args[0])
-            signature = (type(e), affector.sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilteredSelfReferenceError as e:
-            msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(affector.sourceHolder.item.id)
-            signature = (type(e), affector.sourceHolder.item.id)
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilterTypeError as e:
-            msg = 'malformed modifier on item {}: invalid filter type {}'.format(affector.sourceHolder.item.id, e.args[0])
-            signature = (type(e), affector.sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        except Exception as e:
+            self.__handleAffectorErrors(e, affector)
 
     def getAffectees(self, affector):
         """
@@ -501,22 +473,8 @@ class LinkRegister:
         # If passed affector has already been registered and logger prefers
         # to suppress messages with duplicate signatures, following error handling
         # won't produce new log entries
-        except DirectLocationError as e:
-            msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(sourceHolder.item.id, e.args[0])
-            signature = (type(e), sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilteredLocationError as e:
-            msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(sourceHolder.item.id, e.args[0])
-            signature = (type(e), sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilteredSelfReferenceError as e:
-            msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(sourceHolder.item.id)
-            signature = (type(e), sourceHolder.item.id)
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
-        except FilterTypeError as e:
-            msg = 'malformed modifier on item {}: invalid filter type {}'.format(sourceHolder.item.id, e.args[0])
-            signature = (type(e), sourceHolder.item.id, e.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        except Exception as e:
+            self.__handleAffectorErrors(e, affector)
         return affectees
 
     def getAffectors(self, targetHolder):
@@ -543,3 +501,33 @@ class LinkRegister:
         for skill in targetHolder.item.requiredSkills:
             affectors.update(self.__affectorLocationSkill.get((location, skill)) or set())
         return affectors
+
+    def __handleAffectorErrors(self, error, affector):
+        """
+        Multiple register methods which get data based on passed affector
+        raise similar exception classes. To handle them in consistent fashion,
+        it is done from centralized place - this method. If error cannot be
+        handled by method, it is re-raised.
+
+        Positional arguments:
+        error -- Exception instance which was caught and needs to be handled
+        affector -- affector object, which was being processed when error occurred
+        """
+        if isinstance(error, DirectLocationError):
+            msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(affector.sourceHolder.item.id, error.args[0])
+            signature = (type(error), affector.sourceHolder.item.id, error.args[0])
+            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        elif isinstance(error, FilteredLocationError):
+            msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(affector.sourceHolder.item.id, error.args[0])
+            signature = (type(error), affector.sourceHolder.item.id, error.args[0])
+            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        elif isinstance(error, FilteredSelfReferenceError):
+            msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(affector.sourceHolder.item.id)
+            signature = (type(error), affector.sourceHolder.item.id)
+            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        elif isinstance(error, FilterTypeError):
+            msg = 'malformed modifier on item {}: invalid filter type {}'.format(affector.sourceHolder.item.id, error.args[0])
+            signature = (type(error), affector.sourceHolder.item.id, error.args[0])
+            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+        else:
+            raise error
