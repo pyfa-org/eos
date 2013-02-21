@@ -204,7 +204,7 @@ class MutableAttributeMap:
                 operator = modifier.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
                 # source item category and operator
-                penalize = (attrMeta.stackable is False and not sourceHolder.item.categoryId in penaltyImmuneCategories
+                penalize = (attrMeta.stackable is False and sourceHolder.item.categoryId not in penaltyImmuneCategories
                             and operator in penalizableOperators)
                 try:
                     modValue = sourceHolder.attributes[modifier.sourceAttributeId]
@@ -222,15 +222,9 @@ class MutableAttributeMap:
                 modValue = normalizationFunc(modValue)
                 # Add value to appropriate dictionary
                 if penalize is True:
-                    try:
-                        modList = penalizedMods[operator]
-                    except KeyError:
-                        modList = penalizedMods[operator] = []
+                    modList = penalizedMods.setdefault(operator, [])
                 else:
-                    try:
-                        modList = normalMods[operator]
-                    except KeyError:
-                        modList = normalMods[operator] = []
+                    modList = normalMods.setdefault(operator, [])
                 modList.append(modValue)
             # Handle operator type failure
             except OperatorError as e:
@@ -242,10 +236,7 @@ class MutableAttributeMap:
         # They are penalized on per-operator basis
         for operator, modList in penalizedMods.items():
             penalizedValue = self.__penalizeValues(modList)
-            try:
-                modList = normalMods[operator]
-            except KeyError:
-                modList = normalMods[operator] = []
+            modList = normalMods.setdefault(operator, [])
             modList.append(penalizedValue)
         # Calculate result of normal dictionary, according to operator order
         for operator in sorted(normalMods):
