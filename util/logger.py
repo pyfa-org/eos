@@ -122,14 +122,7 @@ class Logger:
             self.__rootLogger.removeHandler(handler)
         # Define log storage options
         logPath = os.path.join(logFolder, '{}.log'.format(name))
-        # Use try-except instead of exist_ok keyword argument because on
-        # some windows machines folders are forcefully created with mode
-        # 777, and with actual and desired mode mismatch makedirs raises
-        # exception even when exists_ok=True was passed
-        try:
-            os.makedirs(os.path.dirname(logPath), mode=0o755)
-        except FileExistsError:
-            pass
+        os.makedirs(os.path.dirname(logPath), mode=0o755, exist_ok=True)
         handler = FileHandler(logPath, mode='a', encoding='utf-8', delay=False)
         # Set up formatter options
         msgFormat = '{asctime:19.19} | {levelname:7.7} | {name:23.23} | {message}'
