@@ -20,6 +20,6 @@
 
 
 """
-Tests in this module check that massive modification
-filters are applied onto appropriate holders only.
+Tests in this module check that filtered modifications
+are applied onto appropriate holders only.
 """

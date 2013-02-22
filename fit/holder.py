@@ -55,7 +55,7 @@ class MutableAttributeHolder:
     def fit(self, newFit):
         """Assign holder to fit"""
         # Our modified attributes have some value only within
-        # fit context; when fit changes, theey must be cleaned
+        # fit context; when fit changes, they must be cleaned
         self.attributes.clear()
         self.__fit = newFit
 

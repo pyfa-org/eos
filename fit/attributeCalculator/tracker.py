@@ -48,7 +48,7 @@ class LinkTracker:
         holder -- holder, for which we're getting affectors
 
         Keyword arguments:
-        attrId -- target attribute ID filters; only affectors
+        attrId -- target attribute ID filter; only affectors
         which influence attribute with this ID will be returned.
         If None, all affectors influencing holder are returned
         (default None)

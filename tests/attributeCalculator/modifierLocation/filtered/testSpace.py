@@ -27,7 +27,7 @@ from eos.tests.attributeCalculator.environment import Fit, IndependentItem, Char
 
 
 class TestLocationFilterSpace(AttrCalcTestCase):
-    """Test location.space for massive filtered modifications"""
+    """Test location.space for filtered modifications"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)

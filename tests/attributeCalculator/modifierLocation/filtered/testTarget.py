@@ -28,7 +28,7 @@ from eos.tests.environment import Logger
 
 
 class TestLocationFilterTarget(AttrCalcTestCase):
-    """Test location.target for massive filtered modifications"""
+    """Test location.target for filtered modifications"""
 
     def testError(self):
         tgtAttr = self.ch.attribute(attributeId=1)

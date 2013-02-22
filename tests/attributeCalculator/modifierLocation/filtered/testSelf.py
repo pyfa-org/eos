@@ -28,7 +28,7 @@ from eos.tests.environment import Logger
 
 
 class TestLocationFilterSelf(AttrCalcTestCase):
-    """Test location.self (self-reference) for massive filtered modifications"""
+    """Test location.self (self-reference) for filtered modifications"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)

@@ -119,7 +119,7 @@ class LinkRegister:
         sourceHolder, modifier = affector
         # For each filter type, define affector map and key to use
         if modifier.filterType is None:
-            # For single item modifications, we need to properly pick
+            # For direct modifications, we need to properly pick
             # target holder (it's key) based on location
             if modifier.location == Location.self_:
                 affectorMap = self.__activeDirectAffectors
@@ -157,7 +157,7 @@ class LinkRegister:
                     key = sourceHolder
             else:
                 raise DirectLocationError(modifier.location)
-        # For massive modifications, compose key, making sure reference to self
+        # For filtered modifications, compose key, making sure reference to self
         # is converted into appropriate real location
         elif modifier.filterType == FilterType.all_:
             affectorMap = self.__affectorLocation
@@ -197,7 +197,7 @@ class LinkRegister:
         Possible exceptions:
         FilteredSelfReferenceError -- raised if affector's modifier
         refers self, but affector's holder isn't in position to be
-        target for massive filtered modifications
+        target for filtered modifications
         FilteredLocationError -- raised when affector's modifier
         target location is not supported for filtered modification
         """
