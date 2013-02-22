@@ -126,7 +126,7 @@ class Logger:
         # some windows machines folders are forcefully created with mode
         # 777, and with actual and desired mode mismatch makedirs raises
         # exception even when exists_ok=True was passed
-	try:
+        try:
             os.makedirs(os.path.dirname(logPath), mode=0o755)
         except FileExistsError:
             pass
