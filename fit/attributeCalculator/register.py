@@ -26,17 +26,21 @@ from .exception import DirectLocationError, FilteredLocationError, FilteredSelfR
 
 class LinkRegister:
     """
-    Keep track of currently existing links between holders. This is hard
+    Keep track of currently existing links between affectors
+    (Affector objects) and affectees (holders). This is hard
     requirement for efficient partial attribute recalculation.
+    Register is not aware of links between specific attributes,
+    doesn't know anything about states and contexts, just
+    affectors and affectees.
 
     Positional arguments:
-    tracker -- LinkTracker object, which uses this register
+    fit -- fit, to which this register is bound to
     """
 
-    def __init__(self, tracker):
+    def __init__(self, fit):
         # Link tracker which is assigned to fit we're
         # keeping data for
-        self.__tracker = tracker
+        self.__fit = fit
 
         # Keep track of holders belonging to certain location
         # Format: {location: {targetHolders}}
@@ -125,7 +129,7 @@ class LinkRegister:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
             elif modifier.location == Location.character:
-                char = self.__tracker._fit.character
+                char = self.__fit.character
                 if char is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = char
@@ -133,7 +137,7 @@ class LinkRegister:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             elif modifier.location == Location.ship:
-                ship = self.__tracker._fit.ship
+                ship = self.__fit.ship
                 if ship is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = ship
@@ -206,9 +210,9 @@ class LinkRegister:
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real location
         if targetLocation == Location.self_:
-            if sourceHolder is self.__tracker._fit.ship:
+            if sourceHolder is self.__fit.ship:
                 return Location.ship
-            elif sourceHolder is self.__tracker._fit.character:
+            elif sourceHolder is self.__fit.character:
                 return Location.character
             else:
                 raise FilteredSelfReferenceError
@@ -433,10 +437,10 @@ class LinkRegister:
                 if modifier.location == Location.self_:
                     target = {sourceHolder}
                 elif modifier.location == Location.character:
-                    char = self.__tracker._fit.character
+                    char = self.__fit.character
                     target = {char} if char is not None else None
                 elif modifier.location == Location.ship:
-                    ship = self.__tracker._fit.ship
+                    ship = self.__fit.ship
                     target = {ship} if ship is not None else None
                 elif modifier.location == Location.other:
                     try:
@@ -516,18 +520,18 @@ class LinkRegister:
         if isinstance(error, DirectLocationError):
             msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(affector.sourceHolder.item.id, error.args[0])
             signature = (type(error), affector.sourceHolder.item.id, error.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         elif isinstance(error, FilteredLocationError):
             msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(affector.sourceHolder.item.id, error.args[0])
             signature = (type(error), affector.sourceHolder.item.id, error.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         elif isinstance(error, FilteredSelfReferenceError):
             msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(affector.sourceHolder.item.id)
             signature = (type(error), affector.sourceHolder.item.id)
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         elif isinstance(error, FilterTypeError):
             msg = 'malformed modifier on item {}: invalid filter type {}'.format(affector.sourceHolder.item.id, error.args[0])
             signature = (type(error), affector.sourceHolder.item.id, error.args[0])
-            self.__tracker._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         else:
             raise error

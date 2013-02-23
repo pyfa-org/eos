@@ -38,7 +38,7 @@ class LinkTracker:
 
     def __init__(self, fit):
         self._fit = fit
-        self.__register = LinkRegister(self)
+        self.__register = LinkRegister(fit)
 
     def getAffectors(self, holder, attrId=None):
         """
