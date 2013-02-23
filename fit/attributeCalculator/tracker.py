@@ -38,7 +38,7 @@ class LinkTracker:
 
     def __init__(self, fit):
         self._fit = fit
-        self.__register = LinkRegister(fit)
+        self._register = LinkRegister(fit)
 
     def getAffectors(self, holder, attrId=None):
         """
@@ -57,10 +57,10 @@ class LinkTracker:
         Set with Affector objects
         """
         if attrId is None:
-            affectors = self.__register.getAffectors(holder)
+            affectors = self._register.getAffectors(holder)
         else:
             affectors = set()
-            for affector in self.__register.getAffectors(holder):
+            for affector in self._register.getAffectors(holder):
                 if affector.modifier.targetAttributeId == attrId:
                     affectors.add(affector)
         return affectors
@@ -75,7 +75,7 @@ class LinkTracker:
         Return value:
         Set with holders
         """
-        return self.__register.getAffectees(affector)
+        return self._register.getAffectees(affector)
 
     def __getHolderDirectLocation(self, holder):
         """
@@ -112,7 +112,7 @@ class LinkTracker:
         holder -- holder which is added to tracker
         """
         enabledDirectLocation = self.__getHolderDirectLocation(holder)
-        self.__register.registerAffectee(holder, enableDirect=enabledDirectLocation)
+        self._register.registerAffectee(holder, enableDirect=enabledDirectLocation)
 
     def removeHolder(self, holder):
         """
@@ -123,7 +123,7 @@ class LinkTracker:
         holder -- holder which is removed from tracker
         """
         disabledDirectLocation = self.__getHolderDirectLocation(holder)
-        self.__register.unregisterAffectee(holder, disableDirect=disabledDirectLocation)
+        self._register.unregisterAffectee(holder, disableDirect=disabledDirectLocation)
 
     def enableStates(self, holder, states):
         """
@@ -138,7 +138,7 @@ class LinkTracker:
         enabledAffectors = self.__generateAffectors(holder, stateFilter=states, contextFilter=processedContexts)
         # Clear attributes only after registration jobs
         for affector in enabledAffectors:
-            self.__register.registerAffector(affector)
+            self._register.registerAffector(affector)
         self.__clearAffectorsDependents(enabledAffectors)
 
     def disableStates(self, holder, states):
@@ -156,7 +156,7 @@ class LinkTracker:
         # we won't clean them up properly
         self.__clearAffectorsDependents(disabledAffectors)
         for affector in disabledAffectors:
-            self.__register.unregisterAffector(affector)
+            self._register.unregisterAffector(affector)
 
     def clearHolderAttributeDependents(self, holder, attrId):
         """

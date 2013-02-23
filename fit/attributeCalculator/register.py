@@ -40,7 +40,7 @@ class LinkRegister:
     def __init__(self, fit):
         # Link tracker which is assigned to fit we're
         # keeping data for
-        self.__fit = fit
+        self._fit = fit
 
         # Keep track of holders belonging to certain location
         # Format: {location: {targetHolders}}
@@ -129,7 +129,7 @@ class LinkRegister:
                 affectorMap = self.__activeDirectAffectors
                 key = sourceHolder
             elif modifier.location == Location.character:
-                char = self.__fit.character
+                char = self._fit.character
                 if char is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = char
@@ -137,7 +137,7 @@ class LinkRegister:
                     affectorMap = self.__disabledDirectAffectors
                     key = sourceHolder
             elif modifier.location == Location.ship:
-                ship = self.__fit.ship
+                ship = self._fit.ship
                 if ship is not None:
                     affectorMap = self.__activeDirectAffectors
                     key = ship
@@ -210,9 +210,9 @@ class LinkRegister:
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real location
         if targetLocation == Location.self_:
-            if sourceHolder is self.__fit.ship:
+            if sourceHolder is self._fit.ship:
                 return Location.ship
-            elif sourceHolder is self.__fit.character:
+            elif sourceHolder is self._fit.character:
                 return Location.character
             else:
                 raise FilteredSelfReferenceError
@@ -437,10 +437,10 @@ class LinkRegister:
                 if modifier.location == Location.self_:
                     target = {sourceHolder}
                 elif modifier.location == Location.character:
-                    char = self.__fit.character
+                    char = self._fit.character
                     target = {char} if char is not None else None
                 elif modifier.location == Location.ship:
-                    ship = self.__fit.ship
+                    ship = self._fit.ship
                     target = {ship} if ship is not None else None
                 elif modifier.location == Location.other:
                     try:
@@ -520,18 +520,18 @@ class LinkRegister:
         if isinstance(error, DirectLocationError):
             msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(affector.sourceHolder.item.id, error.args[0])
             signature = (type(error), affector.sourceHolder.item.id, error.args[0])
-            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         elif isinstance(error, FilteredLocationError):
             msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(affector.sourceHolder.item.id, error.args[0])
             signature = (type(error), affector.sourceHolder.item.id, error.args[0])
-            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         elif isinstance(error, FilteredSelfReferenceError):
             msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(affector.sourceHolder.item.id)
             signature = (type(error), affector.sourceHolder.item.id)
-            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         elif isinstance(error, FilterTypeError):
             msg = 'malformed modifier on item {}: invalid filter type {}'.format(affector.sourceHolder.item.id, error.args[0])
             signature = (type(error), affector.sourceHolder.item.id, error.args[0])
-            self.__fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+            self._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         else:
             raise error
