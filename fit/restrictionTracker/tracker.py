@@ -21,19 +21,7 @@
 
 from eos.const import State
 from .exception import RegisterValidationError, ValidationError
-from .restriction.capitalItem import CapitalItemRegister
-from .restriction.droneGroup import DroneGroupRegister
-from .restriction.launchedDrone import LaunchedDroneRegister
-from .restriction.maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
-from .restriction.resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
-DroneBandwidthRegister
-from .restriction.rigSize import RigSizeRegister
-from .restriction.shipTypeGroup import ShipTypeGroupRegister
-from .restriction.skillRequirement import SkillRequirementRegister
-from .restriction.skillUniqueness import SkillUniquenessRegister
-from .restriction.slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
-from .restriction.slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
-SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
+from .restriction import *
 
 
 class RestrictionTracker:

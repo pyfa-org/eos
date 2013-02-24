@@ -22,9 +22,7 @@
 from logging import getLogger, ERROR, INFO, WARNING
 
 from eos.data.cacheHandler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
-from eos.eve.attribute import Attribute
-from eos.eve.effect import Effect
-from eos.eve.type import Type
+from eos.eve import Attribute, Effect, Type
 
 
 class Logger:

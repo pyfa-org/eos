@@ -18,11 +18,3 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-
-"""
-Modifier builder tests use manually built expression objects
-as input (please note they must use raw values for instantiation,
-not data from any const files), output is checked against set of
-criteria depending on test purpose (this time, using const files
-where appropriate).
-"""

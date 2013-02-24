@@ -24,10 +24,7 @@ import json
 import os.path
 from weakref import WeakValueDictionary
 
-from eos.eve.type import Type
-from eos.eve.effect import Effect
-from eos.eve.attribute import Attribute
-from eos.eve.modifier import Modifier
+from eos.eve import *
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 
 

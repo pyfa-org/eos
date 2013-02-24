@@ -21,7 +21,7 @@
 
 from eos.const import State, Location
 from eos.fit.restrictionTracker.exception import ValidationError
-from eos.fit.restrictionTracker.tracker import RestrictionTracker
+from eos.fit.restrictionTracker import RestrictionTracker
 
 
 class HolderContainer:

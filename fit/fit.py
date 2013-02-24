@@ -20,8 +20,8 @@
 
 
 from eos.const import State
-from .attributeCalculator.tracker import LinkTracker
-from .restrictionTracker.tracker import RestrictionTracker
+from .attributeCalculator import LinkTracker
+from .restrictionTracker import RestrictionTracker
 from .stats.calculator import StatsCalculator
 
 

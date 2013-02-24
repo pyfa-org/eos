@@ -17,3 +17,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+
+from .booster import Booster
+from .character import Character
+from .charge import Charge
+from .drone import Drone
+from .implant import Implant
+from .module import Module
+from .rig import Rig
+from .ship import Ship
+from .skill import Skill
+from .subsystem import Subsystem
+
+
+__all__ = ['Booster', 'Character', 'Charge', 'Drone', 'Implant', 'Module',
+           'Rig', 'Ship', 'Skill', 'Subsystem']

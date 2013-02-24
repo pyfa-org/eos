@@ -23,3 +23,6 @@
 This module contains modifier object builder and all facilities
 which help it to work with raw data.
 """
+
+
+from .modifierBuilder import ModifierBuilder

@@ -21,7 +21,7 @@
 
 from eos.eve.const import Attribute
 from eos.util.frozendict import frozendict
-from .modifierBuilder.modifierBuilder import ModifierBuilder
+from .modifierBuilder import ModifierBuilder
 
 
 class Converter:

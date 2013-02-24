@@ -17,3 +17,27 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+
+from .capitalItem import CapitalItemRegister
+from .droneGroup import DroneGroupRegister
+from .launchedDrone import LaunchedDroneRegister
+from .maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
+from .resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
+DroneBandwidthRegister
+from .rigSize import RigSizeRegister
+from .shipTypeGroup import ShipTypeGroupRegister
+from .skillRequirement import SkillRequirementRegister
+from .skillUniqueness import SkillUniquenessRegister
+from .slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
+from .slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
+SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
+
+
+__all__ = ['CapitalItemRegister', 'DroneGroupRegister', 'LaunchedDroneRegister', 'MaxGroupFittedRegister',
+           'MaxGroupOnlineRegister', 'MaxGroupActiveRegister', 'CpuRegister', 'PowerGridRegister',
+           'CalibrationRegister', 'DroneBayVolumeRegister', 'DroneBandwidthRegister', 'RigSizeRegister',
+           'ShipTypeGroupRegister', 'SkillRequirementRegister', 'SkillUniquenessRegister', 'SubsystemIndexRegister',
+           'ImplantIndexRegister', 'BoosterIndexRegister', 'HighSlotRegister', 'MediumSlotRegister',
+           'LowSlotRegister', 'RigSlotRegister', 'SubsystemSlotRegister', 'TurretSlotRegister',
+           'LauncherSlotRegister']

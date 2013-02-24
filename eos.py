@@ -22,19 +22,11 @@
 import os.path
 
 from eos.eve.const import Type
-from eos.data.cacheCustomizer.customizer import CacheCustomizer
-from eos.data.cacheHandler.jsonCacheHandler import JsonCacheHandler
-from eos.data.cacheGenerator.generator import CacheGenerator
-from eos.fit.fit import Fit
-from eos.fit.item.character import Character
-from eos.fit.item.ship import Ship
-from eos.fit.item.module import Module
-from eos.fit.item.charge import Charge
-from eos.fit.item.drone import Drone
-from eos.fit.item.implant import Implant
-from eos.fit.item.rig import Rig
-from eos.fit.item.skill import Skill
-from eos.fit.item.booster import Booster
+from eos.data.cacheCustomizer import CacheCustomizer
+from eos.data.cacheHandler import JsonCacheHandler
+from eos.data.cacheGenerator import CacheGenerator
+from eos.fit import Fit
+from eos.fit.item import *
 from eos.util.logger import Logger
 
 
@@ -120,3 +112,8 @@ class Eos:
         boosterType = self._cacheHandler.getType(typeId)
         booster = Booster(boosterType)
         return booster
+
+    def makeSubsystem(self, typeId):
+        subsystemType = self._cacheHandler.getType(typeId)
+        subsystem = Subsystem(subsystemType)
+        return subsystem
