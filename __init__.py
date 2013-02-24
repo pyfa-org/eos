@@ -22,4 +22,4 @@
 from .eos import Eos, eosVersion as __version__
 from .const import State, Restriction
 from .fit.restrictionTracker.exception import ValidationError
-from .data.cacheHandler import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
+from .data.cacheHandler import TypeFetchError
