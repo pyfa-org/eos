@@ -223,6 +223,32 @@ class LinkRegister:
         else:
             raise FilteredLocationError(targetLocation)
 
+    def __getHolderDirectLocation(self, holder):
+        """
+        Get location which you need to target to apply
+        direct modification to passed holder.
+
+        Positional arguments:
+        holder -- holder in question
+
+        Return value:
+        Location specification, if holder can be targeted directly
+        from the outside, or None if it can't
+        """
+        # For ship and character it's easy, we're just picking
+        # corresponding location
+        if holder is self._fit.ship:
+            location = Location.ship
+        elif holder is self._fit.character:
+            location = Location.character
+        # For "other" location, we should've checked for presence
+        # of other entity - charge's container or module's charge
+        elif getattr(holder, '_other', None) is not None:
+            location = Location.other
+        else:
+            location = None
+        return location
+
     def __enableDirectSpec(self, targetHolder, targetLocation):
         """
         Enable temporarily disabled affectors, directly targeting holder in
@@ -331,26 +357,20 @@ class LinkRegister:
         self.__disabledDirectAffectors.addDataSet(otherHolder, affectorsToDisable)
         self.__activeDirectAffectors.rmDataSet(targetHolder, affectorsToDisable)
 
-    def registerAffectee(self, targetHolder, enableDirect=None):
+    def registerAffectee(self, targetHolder):
         """
         Add passed target holder to register's maps, so it can be affected by
         other holders properly.
 
         Positional arguments:
         targetHolder -- holder to register
-
-        Keyword arguments:
-        enableDirect -- when some location specification is passed, register
-        checks if there're any modifications which should directly apply to
-        holder in that location (or, in case with "other" location, originate
-        from holder in that location and apply to passed targetHolder) and
-        enables them (default None)
         """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             # Add data to map
             affecteeMap.addData(key, targetHolder)
         # Check if we have affectors which should directly influence passed holder,
         # but are disabled; enable them if there're any
+        enableDirect = self.__getHolderDirectLocation(targetHolder)
         if enableDirect is None:
             return
         if enableDirect == Location.other:
@@ -358,27 +378,21 @@ class LinkRegister:
         elif enableDirect in (Location.character, Location.ship):
             self.__enableDirectSpec(targetHolder, enableDirect)
 
-    def unregisterAffectee(self, targetHolder, disableDirect=None):
+    def unregisterAffectee(self, targetHolder):
         """
         Remove passed target holder from register's maps, so holders affecting
         it "know" that its modification is no longer needed.
 
         Positional arguments:
         targetHolder -- holder to unregister
-
-        Keyword arguments:
-        disableDirect -- when some location specification is passed, register
-        checks if there're any modifications which are directly applied to
-        holder in that location (or, in case with "other" location, originate
-        from holder in that location and apply to passed targetHolder) and
-        disables them (default None)
         """
         for key, affecteeMap in self.__getAffecteeMaps(targetHolder):
             affecteeMap.rmData(key, targetHolder)
-        if disableDirect is None:
-            return
         # When removing holder from register, make sure to move modifiers which
         # originate from 'other' holders and directly affect it to disabled map
+        disableDirect = self.__getHolderDirectLocation(targetHolder)
+        if disableDirect is None:
+            return
         if disableDirect is None:
             return
         if disableDirect == Location.other:

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, Context
+from eos.const import Context
 from .affector import Affector
 from .register import LinkRegister
 
@@ -77,32 +77,6 @@ class LinkTracker:
         """
         return self._register.getAffectees(affector)
 
-    def __getHolderDirectLocation(self, holder):
-        """
-        Get location which you need to target to apply
-        direct holder modification.
-
-        Positional arguments:
-        holder -- holder in question
-
-        Return value:
-        Location specification, if holder can be targeted directly
-        from the outside, or None if it can't
-        """
-        # For ship and character it's easy, we're just picking
-        # corresponding location
-        if holder is self._fit.ship:
-            location = Location.ship
-        elif holder is self._fit.character:
-            location = Location.character
-        # For "other" location, we should've checked for presence
-        # of other entity - charge's container or module's charge
-        elif getattr(holder, '_other', None) is not None:
-            location = Location.other
-        else:
-            location = None
-        return location
-
     def addHolder(self, holder):
         """
         Track links between passed holder and already
@@ -111,8 +85,7 @@ class LinkTracker:
         Positional arguments:
         holder -- holder which is added to tracker
         """
-        enabledDirectLocation = self.__getHolderDirectLocation(holder)
-        self._register.registerAffectee(holder, enableDirect=enabledDirectLocation)
+        self._register.registerAffectee(holder)
 
     def removeHolder(self, holder):
         """
@@ -122,8 +95,7 @@ class LinkTracker:
         Positional arguments:
         holder -- holder which is removed from tracker
         """
-        disabledDirectLocation = self.__getHolderDirectLocation(holder)
-        self._register.unregisterAffectee(holder, disableDirect=disabledDirectLocation)
+        self._register.unregisterAffectee(holder)
 
     def enableStates(self, holder, states):
         """
