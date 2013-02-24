@@ -75,288 +75,6 @@ class LinkRegister:
         # Format: {sourceHolder: {affectors}}
         self.__disabledDirectAffectors = KeyedSet()
 
-    def __getAffecteeMaps(self, targetHolder):
-        """
-        Helper for affectee register/unregister methods.
-
-        Positional arguments:
-        targetHolder -- holder, for which affectee maps are requested
-
-        Return value:
-        List of (key, affecteeMap) tuples, where key should be used to access
-        data set (appropriate to passed targetHolder) in affecteeMap
-        """
-        # Container which temporarily holds (key, map) tuples
-        affecteeMaps = []
-        location = targetHolder._location
-        if location is not None:
-            affecteeMaps.append((location, self.__affecteeLocation))
-            group = targetHolder.item.groupId
-            if group is not None:
-                affecteeMaps.append(((location, group), self.__affecteeLocationGroup))
-            for skill in targetHolder.item.requiredSkills:
-                affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
-        return affecteeMaps
-
-    def __getAffectorMap(self, affector):
-        """
-        Helper for affector register/unregister methods.
-
-        Positional arguments:
-        affector -- affector, for which affector map are requested
-
-        Return value:
-        (key, affectorMap) tuple, where key should be used to access
-        data set (appropriate to passed affector) in affectorMap
-
-        Possible exceptions:
-        FilteredSelfReferenceError -- raised if affector's modifier specifies
-        filtered modification and target location refers self, but affector's
-        holder isn't in position to be target for filtered modifications
-        DirectLocationError -- raised when affector's modifier target
-        location is not supported for direct modification
-        FilteredLocationError -- raised when affector's modifier target
-        location is not supported for filtered modification
-        FilterTypeError -- raised when affector's modifier filter type is not
-        supported
-        """
-        sourceHolder, modifier = affector
-        # For each filter type, define affector map and key to use
-        if modifier.filterType is None:
-            # For direct modifications, we need to properly pick
-            # target holder (it's key) based on location
-            if modifier.location == Location.self_:
-                affectorMap = self.__activeDirectAffectors
-                key = sourceHolder
-            elif modifier.location == Location.character:
-                char = self._fit.character
-                if char is not None:
-                    affectorMap = self.__activeDirectAffectors
-                    key = char
-                else:
-                    affectorMap = self.__disabledDirectAffectors
-                    key = sourceHolder
-            elif modifier.location == Location.ship:
-                ship = self._fit.ship
-                if ship is not None:
-                    affectorMap = self.__activeDirectAffectors
-                    key = ship
-                else:
-                    affectorMap = self.__disabledDirectAffectors
-                    key = sourceHolder
-            # When other location is referenced, it means direct reference to module's charge
-            # or to charge's module-container
-            elif modifier.location == Location.other:
-                try:
-                    otherHolder = sourceHolder._other
-                except AttributeError:
-                    otherHolder = None
-                if otherHolder is not None:
-                    affectorMap = self.__activeDirectAffectors
-                    key = otherHolder
-                # When no reference available, it means that e.g. charge may be
-                # unavailable for now; use disabled affectors map for these
-                else:
-                    affectorMap = self.__disabledDirectAffectors
-                    key = sourceHolder
-            else:
-                raise DirectLocationError(modifier.location)
-        # For filtered modifications, compose key, making sure reference to self
-        # is converted into appropriate real location
-        elif modifier.filterType == FilterType.all_:
-            affectorMap = self.__affectorLocation
-            location = self.__contextizeFilterLocation(affector)
-            key = location
-        elif modifier.filterType == FilterType.group:
-            affectorMap = self.__affectorLocationGroup
-            location = self.__contextizeFilterLocation(affector)
-            key = (location, modifier.filterValue)
-        elif modifier.filterType == FilterType.skill:
-            affectorMap = self.__affectorLocationSkill
-            location = self.__contextizeFilterLocation(affector)
-            skill = affector.modifier.filterValue
-            key = (location, skill)
-        elif modifier.filterType == FilterType.skillSelf:
-            affectorMap = self.__affectorLocationSkill
-            location = self.__contextizeFilterLocation(affector)
-            skill = affector.sourceHolder.item.id
-            key = (location, skill)
-        else:
-            raise FilterTypeError(modifier.filterType)
-        return key, affectorMap
-
-    def __contextizeFilterLocation(self, affector):
-        """
-        Convert location self-reference to real location, like
-        character or ship. Used only in modifications of multiple
-        filtered holders, direct modifications are processed out
-        of the context of this method.
-
-        Positional arguments:
-        affector -- affector, whose modifier refers location in question
-
-        Return value:
-        Real contextized location
-
-        Possible exceptions:
-        FilteredSelfReferenceError -- raised if affector's modifier
-        refers self, but affector's holder isn't in position to be
-        target for filtered modifications
-        FilteredLocationError -- raised when affector's modifier
-        target location is not supported for filtered modification
-        """
-        sourceHolder = affector.sourceHolder
-        targetLocation = affector.modifier.location
-        # Reference to self is sparingly used in ship effects, so we must convert
-        # it to real location
-        if targetLocation == Location.self_:
-            if sourceHolder is self._fit.ship:
-                return Location.ship
-            elif sourceHolder is self._fit.character:
-                return Location.character
-            else:
-                raise FilteredSelfReferenceError
-        # Just return untouched location for all other valid cases
-        elif targetLocation in (Location.character, Location.ship, Location.space):
-            return targetLocation
-        # Raise error if location is invalid
-        else:
-            raise FilteredLocationError(targetLocation)
-
-    def __getHolderDirectLocation(self, holder):
-        """
-        Get location which you need to target to apply
-        direct modification to passed holder.
-
-        Positional arguments:
-        holder -- holder in question
-
-        Return value:
-        Location specification, if holder can be targeted directly
-        from the outside, or None if it can't
-        """
-        # For ship and character it's easy, we're just picking
-        # corresponding location
-        if holder is self._fit.ship:
-            location = Location.ship
-        elif holder is self._fit.character:
-            location = Location.character
-        # For "other" location, we should've checked for presence
-        # of other entity - charge's container or module's charge
-        elif getattr(holder, '_other', None) is not None:
-            location = Location.other
-        else:
-            location = None
-        return location
-
-    def __enableDirectSpec(self, targetHolder, targetLocation):
-        """
-        Enable temporarily disabled affectors, directly targeting holder in
-        specific location.
-
-        Positional arguments:
-        targetHolder -- holder which is being registered
-        targetLocation -- location, to which holder is being registered
-        """
-        # Format: {sourceHolder: [affectors]}
-        affectorsToEnable = {}
-        # Cycle through all disabled direct affectors
-        for sourceHolder, affectorSet in self.__disabledDirectAffectors.items():
-            for affector in affectorSet:
-                modifier = affector.modifier
-                # Mark affector as to-be-enabled only when it
-                # targets passed target location
-                if modifier.location == targetLocation:
-                    sourceAffectors = affectorsToEnable.setdefault(sourceHolder, [])
-                    sourceAffectors.append(affector)
-        # Bail if we have nothing to do
-        if not affectorsToEnable:
-            return
-        # Move all of them to direct modification dictionary
-        for sourceHolder, affectors in affectorsToEnable.items():
-            self.__disabledDirectAffectors.rmDataSet(sourceHolder, affectors)
-            self.__activeDirectAffectors.addDataSet(targetHolder, affectors)
-
-    def __disableDirectSpec(self, targetHolder):
-        """
-        Disable affectors, directly targeting holder in specific location.
-
-        Positional arguments:
-        targetHolder -- holder which is being unregistered
-        """
-        # Format: {sourceHolder: [affectors]}
-        affectorsToDisable = {}
-        # Check all affectors, targeting passed holder
-        for affector in self.__activeDirectAffectors.get(targetHolder) or ():
-            # Mark them as to-be-disabled only if they originate from
-            # other holder, else they should be removed with passed holder
-            if affector.sourceHolder is not targetHolder:
-                sourceAffectors = affectorsToDisable.setdefault(affector.sourceHolder, [])
-                sourceAffectors.append(affector)
-        if not affectorsToDisable:
-            return
-        # Move data from map to map
-        for sourceHolder, affectors in affectorsToDisable.items():
-            self.__activeDirectAffectors.rmDataSet(targetHolder, affectors)
-            self.__disabledDirectAffectors.addDataSet(sourceHolder, affectors)
-
-    def __enableDirectOther(self, targetHolder):
-        """
-        Enable temporarily disabled affectors, directly targeting passed holder,
-        originating from holder in "other" location.
-
-        Positional arguments:
-        targetHolder -- holder which is being registered
-        """
-        try:
-            otherHolder = targetHolder._other
-        except AttributeError:
-            otherHolder = None
-        # If passed holder doesn't have other location (charge's module
-        # or module's charge), do nothing
-        if otherHolder is None:
-            return
-        # Get all disabled affectors which should influence our targetHolder
-        affectorsToEnable = set()
-        for affector in self.__disabledDirectAffectors.get(otherHolder) or ():
-            modifier = affector.modifier
-            if modifier.location == Location.other:
-                affectorsToEnable.add(affector)
-        # Bail if we have nothing to do
-        if not affectorsToEnable:
-            return
-        # Move all of them to direct modification dictionary
-        self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
-        self.__disabledDirectAffectors.rmDataSet(otherHolder, affectorsToEnable)
-
-    def __disableDirectOther(self, targetHolder):
-        """
-        Disable affectors, directly targeting passed holder, originating from
-        holder in "other" location.
-
-        Positional arguments:
-        targetHolder -- holder which is being unregistered
-        """
-        try:
-            otherHolder = targetHolder._other
-        except AttributeError:
-            otherHolder = None
-        if otherHolder is None:
-            return
-        affectorsToDisable = set()
-        # Go through all affectors influencing holder being unregistered
-        for affector in self.__activeDirectAffectors.get(targetHolder) or ():
-            # If affector originates from otherHolder, mark it as
-            # to-be-disabled
-            if affector.sourceHolder is otherHolder:
-                affectorsToDisable.add(affector)
-        # Do nothing if we have no such affectors
-        if not affectorsToDisable:
-            return
-        # If we have, move them from map to map
-        self.__disabledDirectAffectors.addDataSet(otherHolder, affectorsToDisable)
-        self.__activeDirectAffectors.rmDataSet(targetHolder, affectorsToDisable)
-
     def registerAffectee(self, targetHolder):
         """
         Add passed target holder to register's maps, so it can be affected by
@@ -520,6 +238,117 @@ class LinkRegister:
             affectors.update(self.__affectorLocationSkill.get((location, skill)) or set())
         return affectors
 
+    # General-purpose auxiliary methods
+    def __getAffecteeMaps(self, targetHolder):
+        """
+        Helper for affectee register/unregister methods.
+
+        Positional arguments:
+        targetHolder -- holder, for which affectee maps are requested
+
+        Return value:
+        List of (key, affecteeMap) tuples, where key should be used to access
+        data set (appropriate to passed targetHolder) in affecteeMap
+        """
+        # Container which temporarily holds (key, map) tuples
+        affecteeMaps = []
+        location = targetHolder._location
+        if location is not None:
+            affecteeMaps.append((location, self.__affecteeLocation))
+            group = targetHolder.item.groupId
+            if group is not None:
+                affecteeMaps.append(((location, group), self.__affecteeLocationGroup))
+            for skill in targetHolder.item.requiredSkills:
+                affecteeMaps.append(((location, skill), self.__affecteeLocationSkill))
+        return affecteeMaps
+
+    def __getAffectorMap(self, affector):
+        """
+        Helper for affector register/unregister methods.
+
+        Positional arguments:
+        affector -- affector, for which affector map are requested
+
+        Return value:
+        (key, affectorMap) tuple, where key should be used to access
+        data set (appropriate to passed affector) in affectorMap
+
+        Possible exceptions:
+        FilteredSelfReferenceError -- raised if affector's modifier specifies
+        filtered modification and target location refers self, but affector's
+        holder isn't in position to be target for filtered modifications
+        DirectLocationError -- raised when affector's modifier target
+        location is not supported for direct modification
+        FilteredLocationError -- raised when affector's modifier target
+        location is not supported for filtered modification
+        FilterTypeError -- raised when affector's modifier filter type is not
+        supported
+        """
+        sourceHolder, modifier = affector
+        # For each filter type, define affector map and key to use
+        if modifier.filterType is None:
+            # For direct modifications, we need to properly pick
+            # target holder (it's key) based on location
+            if modifier.location == Location.self_:
+                affectorMap = self.__activeDirectAffectors
+                key = sourceHolder
+            elif modifier.location == Location.character:
+                char = self._fit.character
+                if char is not None:
+                    affectorMap = self.__activeDirectAffectors
+                    key = char
+                else:
+                    affectorMap = self.__disabledDirectAffectors
+                    key = sourceHolder
+            elif modifier.location == Location.ship:
+                ship = self._fit.ship
+                if ship is not None:
+                    affectorMap = self.__activeDirectAffectors
+                    key = ship
+                else:
+                    affectorMap = self.__disabledDirectAffectors
+                    key = sourceHolder
+            # When other location is referenced, it means direct reference to module's charge
+            # or to charge's module-container
+            elif modifier.location == Location.other:
+                try:
+                    otherHolder = sourceHolder._other
+                except AttributeError:
+                    otherHolder = None
+                if otherHolder is not None:
+                    affectorMap = self.__activeDirectAffectors
+                    key = otherHolder
+                # When no reference available, it means that e.g. charge may be
+                # unavailable for now; use disabled affectors map for these
+                else:
+                    affectorMap = self.__disabledDirectAffectors
+                    key = sourceHolder
+            else:
+                raise DirectLocationError(modifier.location)
+        # For filtered modifications, compose key, making sure reference to self
+        # is converted into appropriate real location
+        elif modifier.filterType == FilterType.all_:
+            affectorMap = self.__affectorLocation
+            location = self.__contextizeFilterLocation(affector)
+            key = location
+        elif modifier.filterType == FilterType.group:
+            affectorMap = self.__affectorLocationGroup
+            location = self.__contextizeFilterLocation(affector)
+            key = (location, modifier.filterValue)
+        elif modifier.filterType == FilterType.skill:
+            affectorMap = self.__affectorLocationSkill
+            location = self.__contextizeFilterLocation(affector)
+            skill = affector.modifier.filterValue
+            key = (location, skill)
+        elif modifier.filterType == FilterType.skillSelf:
+            affectorMap = self.__affectorLocationSkill
+            location = self.__contextizeFilterLocation(affector)
+            skill = affector.sourceHolder.item.id
+            key = (location, skill)
+        else:
+            raise FilterTypeError(modifier.filterType)
+        return key, affectorMap
+
     def __handleAffectorErrors(self, error, affector):
         """
         Multiple register methods which get data based on passed affector
@@ -549,3 +378,177 @@ class LinkRegister:
             self._fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
         else:
             raise error
+
+    # Methods which help to process filtered modifications
+    def __contextizeFilterLocation(self, affector):
+        """
+        Convert location self-reference to real location, like
+        character or ship. Used only in modifications of multiple
+        filtered holders, direct modifications are processed out
+        of the context of this method.
+
+        Positional arguments:
+        affector -- affector, whose modifier refers location in question
+
+        Return value:
+        Real contextized location
+
+        Possible exceptions:
+        FilteredSelfReferenceError -- raised if affector's modifier
+        refers self, but affector's holder isn't in position to be
+        target for filtered modifications
+        FilteredLocationError -- raised when affector's modifier
+        target location is not supported for filtered modification
+        """
+        sourceHolder = affector.sourceHolder
+        targetLocation = affector.modifier.location
+        # Reference to self is sparingly used in ship effects, so we must convert
+        # it to real location
+        if targetLocation == Location.self_:
+            if sourceHolder is self._fit.ship:
+                return Location.ship
+            elif sourceHolder is self._fit.character:
+                return Location.character
+            else:
+                raise FilteredSelfReferenceError
+        # Just return untouched location for all other valid cases
+        elif targetLocation in (Location.character, Location.ship, Location.space):
+            return targetLocation
+        # Raise error if location is invalid
+        else:
+            raise FilteredLocationError(targetLocation)
+
+    # Methods which help to process direct modifications
+    def __getHolderDirectLocation(self, holder):
+        """
+        Get location which you need to target to apply
+        direct modification to passed holder.
+
+        Positional arguments:
+        holder -- holder in question
+
+        Return value:
+        Location specification, if holder can be targeted directly
+        from the outside, or None if it can't
+        """
+        # For ship and character it's easy, we're just picking
+        # corresponding location
+        if holder is self._fit.ship:
+            location = Location.ship
+        elif holder is self._fit.character:
+            location = Location.character
+        # For "other" location, we should've checked for presence
+        # of other entity - charge's container or module's charge
+        elif getattr(holder, '_other', None) is not None:
+            location = Location.other
+        else:
+            location = None
+        return location
+
+    def __enableDirectSpec(self, targetHolder, targetLocation):
+        """
+        Enable temporarily disabled affectors, directly targeting holder in
+        specific location.
+
+        Positional arguments:
+        targetHolder -- holder which is being registered
+        targetLocation -- location, to which holder is being registered
+        """
+        # Format: {sourceHolder: [affectors]}
+        affectorsToEnable = {}
+        # Cycle through all disabled direct affectors
+        for sourceHolder, affectorSet in self.__disabledDirectAffectors.items():
+            for affector in affectorSet:
+                modifier = affector.modifier
+                # Mark affector as to-be-enabled only when it
+                # targets passed target location
+                if modifier.location == targetLocation:
+                    sourceAffectors = affectorsToEnable.setdefault(sourceHolder, [])
+                    sourceAffectors.append(affector)
+        # Bail if we have nothing to do
+        if not affectorsToEnable:
+            return
+        # Move all of them to direct modification dictionary
+        for sourceHolder, affectors in affectorsToEnable.items():
+            self.__disabledDirectAffectors.rmDataSet(sourceHolder, affectors)
+            self.__activeDirectAffectors.addDataSet(targetHolder, affectors)
+
+    def __disableDirectSpec(self, targetHolder):
+        """
+        Disable affectors, directly targeting holder in specific location.
+
+        Positional arguments:
+        targetHolder -- holder which is being unregistered
+        """
+        # Format: {sourceHolder: [affectors]}
+        affectorsToDisable = {}
+        # Check all affectors, targeting passed holder
+        for affector in self.__activeDirectAffectors.get(targetHolder) or ():
+            # Mark them as to-be-disabled only if they originate from
+            # other holder, else they should be removed with passed holder
+            if affector.sourceHolder is not targetHolder:
+                sourceAffectors = affectorsToDisable.setdefault(affector.sourceHolder, [])
+                sourceAffectors.append(affector)
+        if not affectorsToDisable:
+            return
+        # Move data from map to map
+        for sourceHolder, affectors in affectorsToDisable.items():
+            self.__activeDirectAffectors.rmDataSet(targetHolder, affectors)
+            self.__disabledDirectAffectors.addDataSet(sourceHolder, affectors)
+
+    def __enableDirectOther(self, targetHolder):
+        """
+        Enable temporarily disabled affectors, directly targeting passed holder,
+        originating from holder in "other" location.
+
+        Positional arguments:
+        targetHolder -- holder which is being registered
+        """
+        try:
+            otherHolder = targetHolder._other
+        except AttributeError:
+            otherHolder = None
+        # If passed holder doesn't have other location (charge's module
+        # or module's charge), do nothing
+        if otherHolder is None:
+            return
+        # Get all disabled affectors which should influence our targetHolder
+        affectorsToEnable = set()
+        for affector in self.__disabledDirectAffectors.get(otherHolder) or ():
+            modifier = affector.modifier
+            if modifier.location == Location.other:
+                affectorsToEnable.add(affector)
+        # Bail if we have nothing to do
+        if not affectorsToEnable:
+            return
+        # Move all of them to direct modification dictionary
+        self.__activeDirectAffectors.addDataSet(targetHolder, affectorsToEnable)
+        self.__disabledDirectAffectors.rmDataSet(otherHolder, affectorsToEnable)
+
+    def __disableDirectOther(self, targetHolder):
+        """
+        Disable affectors, directly targeting passed holder, originating from
+        holder in "other" location.
+
+        Positional arguments:
+        targetHolder -- holder which is being unregistered
+        """
+        try:
+            otherHolder = targetHolder._other
+        except AttributeError:
+            otherHolder = None
+        if otherHolder is None:
+            return
+        affectorsToDisable = set()
+        # Go through all affectors influencing holder being unregistered
+        for affector in self.__activeDirectAffectors.get(targetHolder) or ():
+            # If affector originates from otherHolder, mark it as
+            # to-be-disabled
+            if affector.sourceHolder is otherHolder:
+                affectorsToDisable.add(affector)
+        # Do nothing if we have no such affectors
+        if not affectorsToDisable:
+            return
+        # If we have, move them from map to map
+        self.__disabledDirectAffectors.addDataSet(otherHolder, affectorsToDisable)
+        self.__activeDirectAffectors.rmDataSet(targetHolder, affectorsToDisable)
