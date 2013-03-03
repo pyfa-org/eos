@@ -20,7 +20,7 @@
 
 
 from eos.const import State
-from .attributeCalculator import MutableAttributeMap
+from eos.fit.attributeCalculator import MutableAttributeMap
 
 
 class MutableAttributeHolder:

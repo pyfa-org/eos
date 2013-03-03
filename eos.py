@@ -26,7 +26,7 @@ from eos.data.cacheCustomizer import CacheCustomizer
 from eos.data.cacheHandler import JsonCacheHandler
 from eos.data.cacheGenerator import CacheGenerator
 from eos.fit import Fit
-from eos.fit.item import *
+from eos.fit.item import Character, Ship, Charge
 from eos.util.logger import Logger
 
 
@@ -78,42 +78,7 @@ class Eos:
         ship = Ship(shipType)
         return ship
 
-    def makeModule(self, typeId):
-        moduleType = self._cacheHandler.getType(typeId)
-        module = Module(moduleType)
-        return module
-
     def makeCharge(self, typeId):
         chargeType = self._cacheHandler.getType(typeId)
         charge = Charge(chargeType)
         return charge
-
-    def makeDrone(self, typeId):
-        droneType = self._cacheHandler.getType(typeId)
-        drone = Drone(droneType)
-        return drone
-
-    def makeImplant(self, typeId):
-        implantType = self._cacheHandler.getType(typeId)
-        implant = Implant(implantType)
-        return implant
-
-    def makeSkill(self, typeId):
-        skillType = self._cacheHandler.getType(typeId)
-        skill = Skill(skillType)
-        return skill
-
-    def makeRig(self, typeId):
-        rigType = self._cacheHandler.getType(typeId)
-        rig = Rig(rigType)
-        return rig
-
-    def makeBooster(self, typeId):
-        boosterType = self._cacheHandler.getType(typeId)
-        booster = Booster(boosterType)
-        return booster
-
-    def makeSubsystem(self, typeId):
-        subsystemType = self._cacheHandler.getType(typeId)
-        subsystem = Subsystem(subsystemType)
-        return subsystem

@@ -21,6 +21,8 @@
 
 from eos.const import State
 from .attributeCalculator import LinkTracker
+from .holder.container import HolderList, HolderSet
+from .item import *
 from .restrictionTracker import RestrictionTracker
 from .stats.calculator import StatsCalculator
 
@@ -47,18 +49,18 @@ class Fit:
         # objects when requesting them by ID
         self._eos = eos
         # Character-related holder containers
-        self.skills = HolderContainer(self)
-        self.implants = HolderContainer(self)
-        self.boosters = HolderContainer(self)
+        self.skills = HolderSet(self, Skill)
+        self.implants = HolderSet(self, Implant)
+        self.boosters = HolderSet(self, Booster)
         # Ship-related containers
-        self.subsystems = HolderContainer(self)
-        self.modulesHigh = HolderContainer(self)
-        self.modulesMed = HolderContainer(self)
-        self.modulesLow = HolderContainer(self)
-        self.rigs = HolderContainer(self)
-        self.drones = HolderContainer(self)
+        self.subsystems = HolderSet(self, Subsystem)
+        self.modulesHigh = HolderList(self, Module)
+        self.modulesMed = HolderList(self, Module)
+        self.modulesLow = HolderList(self, Module)
+        self.rigs = HolderList(self, Rig)
+        self.drones = HolderSet(self, Drone)
         # Celestial container
-        self.systemWide = HolderContainer(self)
+        #self.systemWide = HolderSet(self, Celestial)
 
     @property
     def ship(self):
@@ -108,6 +110,7 @@ class Fit:
         holder -- holder to be added
         """
         # Make sure the holder isn't used already
+        # TODO: replace with some custom exception class
         assert(holder.fit is None)
         # Assign fit to holder first
         holder.fit = self
@@ -133,6 +136,7 @@ class Fit:
         """
         # Check that removed holder belongs to fit
         # it's removed from
+        # TODO: replace with some custom exception class
         assert(holder.fit is self)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
@@ -170,64 +174,3 @@ class Fit:
         if len(disabledStates) > 0:
             self._linkTracker.disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
-
-
-class HolderContainer:
-    """
-    Keep holders in plain list-like form It makes sure
-    added/removed holders are registered/unregistered
-    properly.
-
-    Positional arguments:
-    fit -- fit, to which list is assigned
-    """
-    def __init__(self, fit):
-        self.__fit = fit
-        self.__list = []
-
-    # All methods which add/remove items from container
-    # must perform data addition/removal to internal list
-    # before/after holder fit-specific processing, as it
-    # sometimes relies on presence of holder in internal
-    # list (e.g. drone volume restriction register)
-    def append(self, holder):
-        """
-        Add holder to the end of the list.
-
-        Positional arguments:
-        holder -- holder to add
-        """
-        self.__list.append(holder)
-        self.__fit._addHolder(holder)
-
-    def remove(self, holder):
-        """
-        Remove holder to from the list.
-
-        Positional arguments:
-        holder -- holder to remove
-
-        Possible exceptions:
-        ValueError -- raised when no matching holder
-        is found in list
-        """
-        self.__fit._removeHolder(holder)
-        self.__list.remove(holder)
-
-    def insert(self, index, holder):
-        """
-        Insert holder to given position in list.
-
-        Positional arguments:
-        index -- position to which holder should be inserted,
-        if it's out of range, holder is appended to end of list
-        holder -- holder to insert
-        """
-        self.__list.insert(index, holder)
-        self.__fit._addHolder(holder)
-
-    def __len__(self):
-        return self.__list.__len__()
-
-    def __iter__(self):
-        return (item for item in self.__list)

@@ -78,7 +78,7 @@ class Cleaner:
         self._changed = True
         # Cycle as long as we have changes during previous iteration.
         # We need this because contents of even invtypes may change, which,
-        # in turn, will need to pull additional data into other tables
+        # by turn, will need to pull additional data into other tables
         while self._changed is True:
             self._changed = False
             self._reanimateAuxiliaryFriends()

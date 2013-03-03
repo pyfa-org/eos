@@ -38,7 +38,7 @@ class CacheCustomizer:
         """
         Some modules, like ballistic control systems, do not affect
         missile attributes directly; instead, they affect attribute
-        on character, which, in turn, should affect missiles. The
+        on character, which, by turn, should affect missiles. The
         problem is that it doesn't affect missiles (probably some
         hardcoding on CCP's part), so we're adding it manually.
         """

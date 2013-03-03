@@ -16,93 +16,54 @@ crow = engine.makeShip(11176)
 fit.ship = crow
 
 for skillID in skills:
-    skill = engine.makeSkill(skillID)
+    skill = fit.skills.add(skillID)
     skill.level = 5
-    fit.skills.append(skill)
 
-launchDg1 = engine.makeModule(13926)
+launchDg1 = fit.modulesHigh.append(13926)
 missileDg1 = engine.makeCharge(27365)
 launchDg1.charge = missileDg1
-fit.modulesHigh.append(launchDg1)
 launchDg1.state = State.active
 
-launchDg2 = engine.makeModule(13926)
+launchDg2 = fit.modulesHigh.append(13926)
 missileDg2 = engine.makeCharge(27365)
 launchDg2.charge = missileDg2
-fit.modulesHigh.append(launchDg2)
 launchDg2.state = State.active
 
-launchDg3 = engine.makeModule(13926)
+launchDg3 = fit.modulesHigh.append(13926)
 missileDg3 = engine.makeCharge(27365)
 launchDg3.charge = missileDg3
-fit.modulesHigh.append(launchDg3)
 launchDg3.state = State.active
 
-mwdGistA = engine.makeModule(19349)
-fit.modulesMed.append(mwdGistA)
+mwdGistA = fit.modulesMed.append(19349)
 mwdGistA.state = State.active
-
-webTs = engine.makeModule(14268)
-fit.modulesMed.append(webTs)
+webTs = fit.modulesMed.append(14268)
 webTs.state = State.active
-
-disDomi = engine.makeModule(14244)
-fit.modulesMed.append(disDomi)
+disDomi = fit.modulesMed.append(14244)
 disDomi.state = State.active
 
-bcsDg1 = engine.makeModule(13937)
-fit.modulesLow.append(bcsDg1)
+bcsDg1 = fit.modulesLow.append(13937)
 bcsDg1.state = State.online
-
-bcsDg2 = engine.makeModule(13937)
-fit.modulesLow.append(bcsDg2)
+bcsDg2 = fit.modulesLow.append(13937)
 bcsDg2.state = State.online
-
-nanoDomi = engine.makeModule(14127)
-fit.modulesLow.append(nanoDomi)
+nanoDomi = fit.modulesLow.append(14127)
 nanoDomi.state = State.online
 
-rigor1 = engine.makeModule(31650)
-fit.rigs.append(rigor1)
+rigor1 = fit.rigs.append(31650)
+rigor2 = fit.rigs.append(31650)
 
-rigor2 = engine.makeModule(31650)
-fit.rigs.append(rigor2)
+snakeAlpha = fit.implants.add(19540)
+snakeBeta = fit.implants.add(19551)
+snakeGamma = fit.implants.add(19553)
+snakeDelta = fit.implants.add(19554)
+snakeEpsilon = fit.implants.add(19555)
+snakeOmega = fit.implants.add(19556)
+hwAgi = fit.implants.add(3095)
+zorHyper = fit.implants.add(24663)
+hwLights = fit.implants.add(3172)
+hwMissiles = fit.implants.add(3140)
 
-snakeAlpha = engine.makeImplant(19540)
-fit.implants.append(snakeAlpha)
-
-snakeBeta = engine.makeImplant(19551)
-fit.implants.append(snakeBeta)
-
-snakeGamma = engine.makeImplant(19553)
-fit.implants.append(snakeGamma)
-
-snakeDelta = engine.makeImplant(19554)
-fit.implants.append(snakeDelta)
-
-snakeEpsilon = engine.makeImplant(19555)
-fit.implants.append(snakeEpsilon)
-
-snakeOmega = engine.makeImplant(19556)
-fit.implants.append(snakeOmega)
-
-hwAgi = engine.makeImplant(3095)
-fit.implants.append(hwAgi)
-
-zorHyper = engine.makeImplant(24663)
-fit.implants.append(zorHyper)
-
-hwLights = engine.makeImplant(3172)
-fit.implants.append(hwLights)
-
-hwMissiles = engine.makeImplant(3140)
-fit.implants.append(hwMissiles)
-
-quafeZero = engine.makeBooster(3898)
-fit.boosters.append(quafeZero)
-
-crashSynth = engine.makeBooster(28672)
-fit.boosters.append(crashSynth)
+quafeZero = fit.boosters.add(3898)
+synthCrash = fit.boosters.add(28672)
 
 fit.validate()
 
