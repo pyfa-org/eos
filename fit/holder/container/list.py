@@ -31,44 +31,59 @@ class HolderList(HolderContainerBase):
     def __getitem__(self, index):
         return self.__list[index]
 
-    def __setitem__(self, index, thing):
-        # If none was assigned, we consider it as
-        # request to remove element at given position
-        if thing is None:
-            try:
-                self._handleRemove(index)
-            except IndexError:
-                pass
-            return
-        # Else, we replace old holder (if there was any)
-        # with new one
-        try:
-            self._handleRemove(index)
-        except IndexError:
-            pass
+    def insert(self, index, thing):
         holder = self.new(thing)
-        self._handleAdd(holder, index)
-
-    def __delitem__(self, index):
-        self._handleRemove(index)
-        del self.__list[index]
+        self._allocate(index - 1)
+        self.__list.insert(index, holder)
+        self._handleAdd(holder)
+        return holder
 
     def append(self, thing):
         index = len(self.__list)
-        holder = self.new(thing)
-        self._handleAdd(holder, index)
-        return holder
+        return self.insert(index, thing)
 
-    def insert(self, index, thing):
-        holder = self.new(thing)
-        self.__list.insert(index, None)
-        self._handleAdd(holder, index)
-        return holder
-
-    def remove(self, holder):
-        index = self.__list.index(holder)
-        self._handleRemove(index)
+    def remove(self, thing):
+        if isinstance(thing, int):
+            index = thing
+            holder = self.__list[index]
+        else:
+            holder = thing
+            index = self.__list.index(holder)
+        self._handleRemove(self, holder)
         del self.__list[index]
+        self._cleanup()
+
+    def place(self, index, thing):
+        try:
+            oldHolder = self.__list[index]
+        except IndexError:
+            pass
+        else:
+            self._handleRemove(self, oldHolder)
+            self.__list[index] = None
+        newHolder = self.new(thing)
+        self._allocate(index)
+        self.__list[index] = newHolder
+        self._handleAdd(newHolder)
+        return newHolder
+
+    def fill(self, thing):
+        try:
+            index = self.__list.index(None)
+        except ValueError:
+            index = len(self.__list)
+        return self.place(index, thing)
+
+    def free(self, thing):
+        if isinstance(thing, int):
+            index = thing
+            holder = self.__list[index]
+        else:
+            holder = thing
+            index = self.__list.index(holder)
+        self._handleRemove(self, holder)
+        self.__list[index] = None
+        self._cleanup()
 
     def index(self, holder):
         return self.__list.index(holder)
@@ -81,17 +96,6 @@ class HolderList(HolderContainerBase):
 
     def __len__(self):
         return len(self.__list)
-
-    def _handleAdd(self, holder, index):
-        self._allocate(index)
-        self.__list[index] = holder
-        HolderContainerBase._handleAdd(self, holder)
-
-    def _handleRemove(self, index):
-        holder = self[index]
-        HolderContainerBase._handleRemove(self, holder)
-        self.__list[index] = None
-        self._cleanup()
 
     def _allocate(self, index):
         """Fill list with Nones, up to and including specified position."""
