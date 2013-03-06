@@ -36,10 +36,6 @@ class Fit:
     """
 
     def __init__(self, eos):
-        # Variables used by properties
-        self._ship = None
-        self._character = None
-        self._systemWide = None
         # Tracks links between holders assigned to fit
         self._linkTracker = LinkTracker(self)
         # Tracks various restrictions related to given fitting
@@ -49,6 +45,10 @@ class Fit:
         # Attribute metadata getter, which returns Attribute
         # objects when requesting them by ID
         self._eos = eos
+        # Attributes to store holders directly assigned to fit
+        self._ship = None
+        self._character = None
+        self._systemWide = None
         # Character-related holder containers
         self.skills = HolderSet(self, Skill)
         self.implants = HolderSet(self, Implant)
@@ -67,7 +67,7 @@ class Fit:
 
     @character.setter
     def character(self, value):
-        self._setSingleHolder('_character', Character, value)
+        self.__setSingleHolder('_character', Character, value)
 
     @property
     def ship(self):
@@ -75,7 +75,7 @@ class Fit:
 
     @ship.setter
     def ship(self, value):
-        self._setSingleHolder('_ship', Ship, value)
+        self.__setSingleHolder('_ship', Ship, value)
 
     @property
     def systemWide(self):
@@ -83,7 +83,7 @@ class Fit:
 
     @systemWide.setter
     def systemWide(self, value):
-        self._setSingleHolder('_systemWide', Celestial, value)
+        self.__setSingleHolder('_systemWide', Celestial, value)
 
     def validate(self, skipChecks=()):
         """
@@ -170,7 +170,18 @@ class Fit:
             self._linkTracker.disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
 
-    def _setSingleHolder(self, attrName, holderClass, value):
+    def __setSingleHolder(self, attrName, holderClass, value):
+        """
+        Handle setting of holder as fit's attribute,
+        including removal of old holder assigned to it.
+
+        attrName -- attribute name which is used to store
+        actual holder assigned to fit
+        holderClass -- class which should be used for
+        instantiation of new holder if necessary
+        value -- holder to set or typeID to generate
+        one on the fly
+        """
         attrValue = getattr(self, attrName)
         if attrValue is not None:
             self._removeHolder(attrValue)

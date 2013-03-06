@@ -36,20 +36,20 @@ class HolderSet(HolderContainerBase):
         self.__set = set()
         HolderContainerBase.__init__(self, fit, holderClass)
 
-    def add(self, thing):
+    def add(self, value):
         """
         Add holder to container.
 
         Positional arguments:
-        thing -- can be holder or typeID, which is used
+        value -- can be holder or typeID, which is used
         to generate new holder
 
         Return value:
         Holder which was added to container.
         """
-        if thing in self.__set:
-            return thing
-        holder = self.new(thing)
+        if value in self.__set:
+            return value
+        holder = self.new(value)
         self.__set.add(holder)
         self._handleAdd(holder)
         return holder
@@ -65,6 +65,12 @@ class HolderSet(HolderContainerBase):
             raise KeyError(holder)
         self._handleRemove(holder)
         self.__set.remove(holder)
+
+    def clear(self):
+        """Remove everything from container."""
+        for holder in self.__set:
+            self._handleRemove(holder)
+        self.__set.clear()
 
     def __iter__(self):
         return iter(self.__set)

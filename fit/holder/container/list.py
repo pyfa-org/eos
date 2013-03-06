@@ -36,10 +36,7 @@ class HolderList(HolderContainerBase):
         self.__list = []
         HolderContainerBase.__init__(self, fit, holderClass)
 
-    def __getitem__(self, index):
-        return self.__list[index]
-
-    def insert(self, index, thing):
+    def insert(self, index, value):
         """
         Insert holder to given position; if position is
         out of range of container, fill it with Nones up
@@ -47,53 +44,53 @@ class HolderList(HolderContainerBase):
 
         Positional arguments:
         index -- position to take
-        thing -- can be holder or typeID, which is used
+        value -- can be holder or typeID, which is used
         to generate new holder
 
         Return value:
         Holder which was inserted to container.
         """
-        holder = self.new(thing)
+        holder = self.new(value)
         self._allocate(index - 1)
         self.__list.insert(index, holder)
         self._handleAdd(holder)
         return holder
 
-    def append(self, thing):
+    def append(self, value):
         """
         Append holder to the end of container.
 
         Positional arguments:
-        thing -- can be holder or typeID, which is used
+        value -- can be holder or typeID, which is used
         to generate new holder
 
         Return value:
         Holder which was appended to container.
         """
-        holder = self.new(thing)
+        holder = self.new(value)
         self.__list.append(holder)
         self._handleAdd(holder)
         return holder
 
-    def remove(self, thing):
+    def remove(self, value):
         """
         Remove holder from container. Also clean container's
         tail if it's filled with Nones.
 
         Positional arguments:
-        thing -- holder or index of holder to remove
+        value -- holder or index of holder to remove
         """
-        if isinstance(thing, int):
-            index = thing
+        if isinstance(value, int):
+            index = value
             holder = self.__list[index]
         else:
-            holder = thing
+            holder = value
             index = self.__list.index(holder)
         self._handleRemove(self, holder)
         del self.__list[index]
         self._cleanup()
 
-    def place(self, index, thing):
+    def place(self, index, value):
         """
         Put holder to given position; if position is taken
         by another holder, remove it before taking its place;
@@ -102,13 +99,13 @@ class HolderList(HolderContainerBase):
 
         Positional arguments:
         index -- position to take
-        thing -- can be holder or typeID, which is used
+        value -- can be holder or typeID, which is used
         to generate new holder
 
         Return value:
         Holder which was placed to container.
         """
-        newHolder = self.new(thing)
+        newHolder = self.new(value)
         try:
             oldHolder = self.__list[index]
         except IndexError:
@@ -119,7 +116,7 @@ class HolderList(HolderContainerBase):
         self._handleAdd(newHolder)
         return newHolder
 
-    def fill(self, thing):
+    def fill(self, value):
         """
         Put holder to first free slot in container; if
         container doesn't have free slots, append holder
@@ -127,13 +124,13 @@ class HolderList(HolderContainerBase):
 
         Positional arguments:
         index -- position to take
-        thing -- can be holder or typeID, which is used
+        value -- can be holder or typeID, which is used
         to generate new holder
 
         Return value:
         Holder which was placed to container.
         """
-        holder = self.new(thing)
+        holder = self.new(value)
         try:
             index = self.__list.index(None)
         except ValueError:
@@ -143,28 +140,39 @@ class HolderList(HolderContainerBase):
         self._handleAdd(holder)
         return holder
 
-    def free(self, thing):
+    def free(self, value):
         """
         Free holder's slot (replace it with None). Also
         clean container's tail if it's filled with Nones.
 
         Positional arguments:
-        thing -- holder or index of slot to free
+        value -- holder or index of slot to free
         """
-        if isinstance(thing, int):
-            index = thing
+        if isinstance(value, int):
+            index = value
             holder = self.__list[index]
             if holder is None:
                 return
         else:
-            holder = thing
+            holder = value
             index = self.__list.index(holder)
         self._handleRemove(self, holder)
         self.__list[index] = None
         self._cleanup()
 
+    def clear(self):
+        """Remove everything from container."""
+        for holder in self.__list:
+            if holder is not None:
+                self._handleRemove(holder)
+        self.__list.clear()
+
+    def __getitem__(self, index):
+        """Get holder by index."""
+        return self.__list[index]
+
     def index(self, holder):
-        """Get index of holder."""
+        """Get index by holder."""
         return self.__list.index(holder)
 
     def __iter__(self):

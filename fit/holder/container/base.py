@@ -37,23 +37,23 @@ class HolderContainerBase:
         self.__fit = fit
         self.__holderClass = holderClass
 
-    def new(self, thing):
+    def new(self, value):
         """
         Create instance of holder (if needed) and return it.
 
         Positional arguments:
-        thing -- if integer, item is fetched using it
+        value -- if integer, item is fetched using it
         as ID, and holder is instantiated based on this
         item; else, should be holder instance.
 
         Return value:
         Holder instance.
         """
-        if isinstance(thing, int):
-            type_ = self.__fit._eos._cacheHandler.getType(thing)
+        if isinstance(value, int):
+            type_ = self.__fit._eos._cacheHandler.getType(value)
             holder = self.__holderClass(type_)
         else:
-            holder = thing
+            holder = value
         return holder
 
     def _handleAdd(self, holder):
