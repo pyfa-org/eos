@@ -32,7 +32,7 @@ class MutableAttributeHolder:
     type_ -- type (item), on which this holder is based
     """
 
-    __slots__ = ("__fit", "item", "attributes", "__state", "__target")
+    __slots__ = ('__fit', 'item', 'attributes', '__state', '__target')
 
     def __init__(self, type_):
         # Which fit this holder is bound to
