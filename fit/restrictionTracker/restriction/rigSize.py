@@ -40,8 +40,6 @@ class RigSizeRegister(RestrictionRegister):
     For validation, original value of rigSize attribute is taken.
     """
 
-    __slots__ = ('_tracker', '__restrictedHolders')
-
     def __init__(self, tracker):
         self._tracker = tracker
         # Container for holders which have rig size restriction

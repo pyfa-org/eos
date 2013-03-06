@@ -38,8 +38,6 @@ class MaxGroupRegister(RestrictionRegister):
     ship holders in certain state on per-group basis.
     """
 
-    __slots__ = ('__maxGroupAttr', '__restrictionType', '__groupAll', '__maxGroupRestricted')
-
     def __init__(self, maxGroupAttr, restrictionType):
         # Attribute ID whose value contains group restriction
         # of holder
@@ -115,8 +113,6 @@ class MaxGroupFittedRegister(MaxGroupRegister):
     For validation, modified value of restriction attribute is taken.
     """
 
-    __slots__ = ()
-
     def __init__(self):
         MaxGroupRegister.__init__(self, Attribute.maxGroupFitted, Restriction.maxGroupFitted)
 
@@ -133,8 +129,6 @@ class MaxGroupOnlineRegister(MaxGroupRegister):
     For validation, modified value of restriction attribute is taken.
     """
 
-    __slots__ = ()
-
     def __init__(self):
         MaxGroupRegister.__init__(self, Attribute.maxGroupOnline, Restriction.maxGroupOnline)
 
@@ -150,8 +144,6 @@ class MaxGroupActiveRegister(MaxGroupRegister):
     Only holders belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
     """
-
-    __slots__ = ()
 
     def __init__(self):
         MaxGroupRegister.__init__(self, Attribute.maxGroupActive, Restriction.maxGroupActive)

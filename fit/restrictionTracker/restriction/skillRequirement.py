@@ -43,8 +43,6 @@ class SkillRequirementRegister(RestrictionRegister):
     check for holder is failed.
     """
 
-    __slots__ = ('__skillHolders', '__restrictedHolders')
-
     def __init__(self):
         # Container for skill holders, for ease of
         # access

@@ -40,8 +40,6 @@ class SkillUniquenessRegister(RestrictionRegister):
     than None are tracked.
     """
 
-    __slots__ = ('__skillHolders')
-
     def __init__(self):
         # Container for skill holders
         # Format: {holder id: {holders}}

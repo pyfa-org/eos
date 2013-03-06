@@ -55,8 +55,6 @@ class ShipTypeGroupRegister(RestrictionRegister):
     canFitShipGroupX attributes are taken.
     """
 
-    __slots__ = ('_tracker', '__restrictedHolders')
-
     def __init__(self, tracker):
         self._tracker = tracker
         # Container for holders which possess
