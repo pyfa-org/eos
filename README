@@ -63,7 +63,7 @@ fit.validate()
 
 Attributes of any item are accessible via dictionary-like objects like crow.attributes, e.g.:
 
->>crow.attributes[37] # maxVelocity
+>>fit.ship.attributes[37] # maxVelocity
 5759.988204454497
 
 Fit validation method currently raises exception if any fit check fails, its argument contains dictionary which explains what is wrong. If we replace domi nanofiber in above example with yet another BCS, following data will be returned:
