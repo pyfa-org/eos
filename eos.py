@@ -21,12 +21,10 @@
 
 import os.path
 
-from eos.eve.const import Type
 from eos.data.cacheCustomizer import CacheCustomizer
 from eos.data.cacheHandler import JsonCacheHandler
 from eos.data.cacheGenerator import CacheGenerator
 from eos.fit import Fit
-from eos.fit.item import Character, Ship, Charge
 from eos.util.logger import Logger
 
 
@@ -67,18 +65,3 @@ class Eos:
     def makeFit(self):
         fit = Fit(self)
         return fit
-
-    def makeCharacter(self):
-        characterType = self._cacheHandler.getType(Type.characterStatic)
-        character = Character(characterType)
-        return character
-
-    def makeShip(self, typeId):
-        shipType = self._cacheHandler.getType(typeId)
-        ship = Ship(shipType)
-        return ship
-
-    def makeCharge(self, typeId):
-        chargeType = self._cacheHandler.getType(typeId)
-        charge = Charge(chargeType)
-        return charge

@@ -10,46 +10,39 @@ dataHandler = JsonDataHandler('/home/user/src/pyfa/eos/dataFolder/phobos/')
 engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/')
 
 fit = engine.makeFit()
-character = engine.makeCharacter()
-fit.character = character
-crow = engine.makeShip(11176)
-fit.ship = crow
+fit.character = 1381  # characterStatic
+fit.ship = 11176  # Crow
 
 for skillID in skills:
     skill = fit.skills.add(skillID)
     skill.level = 5
 
-launchDg1 = fit.modulesHigh.append(13926)
-missileDg1 = engine.makeCharge(27365)
-launchDg1.charge = missileDg1
+launchDg1 = fit.modulesHigh.fill(13926)
+launchDg1.charge = 27365
 launchDg1.state = State.active
-
-launchDg2 = fit.modulesHigh.append(13926)
-missileDg2 = engine.makeCharge(27365)
-launchDg2.charge = missileDg2
+launchDg2 = fit.modulesHigh.fill(13926)
+launchDg2.charge = 27365
 launchDg2.state = State.active
-
-launchDg3 = fit.modulesHigh.append(13926)
-missileDg3 = engine.makeCharge(27365)
-launchDg3.charge = missileDg3
+launchDg3 = fit.modulesHigh.fill(13926)
+launchDg3.charge = 27365
 launchDg3.state = State.active
 
-mwdGistA = fit.modulesMed.append(19349)
+mwdGistA = fit.modulesMed.fill(19349)
 mwdGistA.state = State.active
-webTs = fit.modulesMed.append(14268)
+webTs = fit.modulesMed.fill(14268)
 webTs.state = State.active
-disDomi = fit.modulesMed.append(14244)
+disDomi = fit.modulesMed.fill(14244)
 disDomi.state = State.active
 
-bcsDg1 = fit.modulesLow.append(13937)
+bcsDg1 = fit.modulesLow.fill(13937)
 bcsDg1.state = State.online
-bcsDg2 = fit.modulesLow.append(13937)
+bcsDg2 = fit.modulesLow.fill(13937)
 bcsDg2.state = State.online
-nanoDomi = fit.modulesLow.append(14127)
+nanoDomi = fit.modulesLow.fill(14127)
 nanoDomi.state = State.online
 
-rigor1 = fit.rigs.append(31650)
-rigor2 = fit.rigs.append(31650)
+rigor1 = fit.rigs.fill(31650)
+rigor2 = fit.rigs.fill(31650)
 
 snakeAlpha = fit.implants.add(19540)
 snakeBeta = fit.implants.add(19551)

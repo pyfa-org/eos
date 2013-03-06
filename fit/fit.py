@@ -22,7 +22,7 @@
 from eos.const import State
 from .attributeCalculator import LinkTracker
 from .holder.container import HolderList, HolderSet
-from .item import *
+from .holder.item import Booster, Celestial, Character, Drone, Implant, Module, Rig, Ship, Skill, Subsystem
 from .restrictionTracker import RestrictionTracker
 from .stats.calculator import StatsCalculator
 
@@ -37,8 +37,9 @@ class Fit:
 
     def __init__(self, eos):
         # Variables used by properties
-        self.__ship = None
-        self.__character = None
+        self._ship = None
+        self._character = None
+        self._systemWide = None
         # Tracks links between holders assigned to fit
         self._linkTracker = LinkTracker(self)
         # Tracks various restrictions related to given fitting
@@ -59,36 +60,30 @@ class Fit:
         self.modulesLow = HolderList(self, Module)
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
-        # Celestial container
-        #self.systemWide = HolderSet(self, Celestial)
-
-    @property
-    def ship(self):
-        """Get ship holder of fit"""
-        return self.__ship
-
-    @ship.setter
-    def ship(self, ship):
-        """Set ship holder of fit"""
-        if self.__ship is not None:
-            self._removeHolder(self.__ship)
-        self.__ship = ship
-        if ship is not None:
-            self._addHolder(self.__ship)
 
     @property
     def character(self):
-        """Get character holder of fit"""
-        return self.__character
+        return self._character
 
     @character.setter
-    def character(self, character):
-        """Set character holder of fit"""
-        if self.__character is not None:
-            self._removeHolder(self.__character)
-        self.__character = character
-        if character is not None:
-            self._addHolder(self.__character)
+    def character(self, value):
+        self._setSingleHolder('_character', Character, value)
+
+    @property
+    def ship(self):
+        return self._ship
+
+    @ship.setter
+    def ship(self, value):
+        self._setSingleHolder('_ship', Ship, value)
+
+    @property
+    def systemWide(self):
+        return self._systemWide
+
+    @systemWide.setter
+    def systemWide(self, value):
+        self._setSingleHolder('_systemWide', Celestial, value)
 
     def validate(self, skipChecks=()):
         """
@@ -174,3 +169,18 @@ class Fit:
         if len(disabledStates) > 0:
             self._linkTracker.disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
+
+    def _setSingleHolder(self, attrName, holderClass, value):
+        attrValue = getattr(self, attrName)
+        if attrValue is not None:
+            self._removeHolder(attrValue)
+        if value is None:
+            setattr(self, attrName, None)
+            return
+        if isinstance(value, int):
+            type_ = self._eos._cacheHandler.getType(value)
+            holder = holderClass(type_)
+        else:
+            holder = value
+        setattr(self, attrName, holder)
+        self._addHolder(holder)

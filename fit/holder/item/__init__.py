@@ -19,23 +19,18 @@
 #===============================================================================
 
 
-from eos.const import Location
-from eos.fit.holder import MutableAttributeHolder
+from .booster import Booster
+from .celestial import Celestial
+from .character import Character
+from .charge import Charge
+from .drone import Drone
+from .implant import Implant
+from .module import Module
+from .rig import Rig
+from .ship import Ship
+from .skill import Skill
+from .subsystem import Subsystem
 
 
-class Rig(MutableAttributeHolder):
-    """
-    Represents rig with all its special properties.
-
-    Positional arguments:
-    type_ -- type (item), on which rig is based
-    """
-
-    __slots__ = ()
-
-    def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
-
-    @property
-    def _location(self):
-        return Location.ship
+__all__ = ['Booster', 'Celestial', 'Character', 'Charge', 'Drone', 'Implant',
+           'Module', 'Rig', 'Ship', 'Skill', 'Subsystem']

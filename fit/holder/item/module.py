@@ -21,21 +21,48 @@
 
 from eos.const import Location
 from eos.fit.holder import MutableAttributeHolder
+from .charge import Charge
 
 
-class Booster(MutableAttributeHolder):
-    """
-    Represents booster with all its special properties
+class Module(MutableAttributeHolder):
+    """Ship's module from any slot."""
 
-    Positional arguments:
-    type_ -- type (item), on which booster is based
-    """
-
-    __slots__ = ()
+    __slots__ = ('__charge',)
 
     def __init__(self, type_):
         MutableAttributeHolder.__init__(self, type_)
+        self.__charge = None
 
     @property
     def _location(self):
-        return Location.character
+        return Location.ship
+
+    @property
+    def _other(self):
+        """Purely service property, used in fit link tracker registry"""
+        return self.charge
+
+    @property
+    def charge(self):
+        return self.__charge
+
+    @charge.setter
+    def charge(self, value):
+        oldCharge = self.charge
+        if oldCharge is not None:
+            if self.fit is not None:
+                self.fit._removeHolder(oldCharge)
+            self.__charge = None
+            oldCharge.container = None
+        if value is None:
+            return
+        if isinstance(value, int):
+            type_ = self.fit._eos._cacheHandler.getType(value)
+            newCharge = Charge(type_)
+        else:
+            newCharge = value
+        if newCharge is not None:
+            newCharge.container = self
+            self.__charge = newCharge
+            if self.fit is not None:
+                self.fit._addHolder(newCharge)

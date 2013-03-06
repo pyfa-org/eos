@@ -19,16 +19,13 @@
 #===============================================================================
 
 
-from eos.const import Location
 from eos.fit.holder import MutableAttributeHolder
 
 
-class Drone(MutableAttributeHolder):
+class Character(MutableAttributeHolder):
     """
-    Class represents single drone.
-
-    Positional arguments:
-    type_ -- type (item), on which drone is based
+    Represents a character. Must be holder, as EVE tracks
+    some attributes on it.
     """
 
     __slots__ = ()
@@ -38,4 +35,6 @@ class Drone(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return Location.space
+        # As character is self-sufficient entity,
+        # it's not assigned to anything
+        return None

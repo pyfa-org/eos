@@ -19,16 +19,12 @@
 #===============================================================================
 
 
+from eos.const import Location
 from eos.fit.holder import MutableAttributeHolder
 
 
-class Character(MutableAttributeHolder):
-    """
-    Represents a character. Must be holder, as EVE tracks some attributes on it.
-
-    Positional arguments:
-    type_ -- type (item), on which character is based
-    """
+class Booster(MutableAttributeHolder):
+    """Booster with all its special properties."""
 
     __slots__ = ()
 
@@ -37,6 +33,4 @@ class Character(MutableAttributeHolder):
 
     @property
     def _location(self):
-        # As character is self-sufficient entity,
-        # it's not assigned to anything
-        return None
+        return Location.character

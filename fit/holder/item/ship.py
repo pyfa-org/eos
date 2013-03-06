@@ -23,12 +23,7 @@ from eos.fit.holder import MutableAttributeHolder
 
 
 class Ship(MutableAttributeHolder):
-    """
-    Represents ship with all its special properties.
-
-    Positional arguments:
-    type_ -- type (item), on which ship is based
-    """
+    """Ship with all its special properties."""
 
     __slots__ = ()
 

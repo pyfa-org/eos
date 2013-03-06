@@ -19,17 +19,36 @@
 #===============================================================================
 
 
-from .booster import Booster
-from .character import Character
-from .charge import Charge
-from .drone import Drone
-from .implant import Implant
-from .module import Module
-from .rig import Rig
-from .ship import Ship
-from .skill import Skill
-from .subsystem import Subsystem
+from eos.const import Location
+from eos.eve.const import Attribute
+from eos.fit.holder import MutableAttributeHolder
 
 
-__all__ = ['Booster', 'Character', 'Charge', 'Drone', 'Implant', 'Module',
-           'Rig', 'Ship', 'Skill', 'Subsystem']
+class Skill(MutableAttributeHolder):
+    """Skill with all its special properties."""
+
+    __slots__ = ('__level',)
+
+    def __init__(self, type_):
+        MutableAttributeHolder.__init__(self, type_)
+        self.__level = 0
+
+    @property
+    def _location(self):
+        return Location.character
+
+    @property
+    def level(self):
+        return self.__level
+
+    @level.setter
+    def level(self, value):
+        # Skip everything if level isn't actually
+        # changed
+        if self.__level == value:
+            return
+        self.__level = value
+        # Clear everything relying on skill level,
+        # if skill is assigned to fit
+        if self.fit is not None:
+            self.fit._linkTracker.clearHolderAttributeDependents(self, Attribute.skillLevel)

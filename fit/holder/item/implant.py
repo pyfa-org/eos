@@ -23,13 +23,8 @@ from eos.const import Location
 from eos.fit.holder import MutableAttributeHolder
 
 
-class Subsystem(MutableAttributeHolder):
-    """
-    Represents t3 ship's subsystem with all its special properties.
-
-    Positional arguments:
-    type_ -- type (item), on which subsystem is based
-    """
+class Implant(MutableAttributeHolder):
+    """Implant with all its special properties."""
 
     __slots__ = ()
 
@@ -38,4 +33,4 @@ class Subsystem(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return Location.ship
+        return Location.character

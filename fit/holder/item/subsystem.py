@@ -23,13 +23,8 @@ from eos.const import Location
 from eos.fit.holder import MutableAttributeHolder
 
 
-class Implant(MutableAttributeHolder):
-    """
-    Represents single implant with all its special properties.
-
-    Positional arguments:
-    type_ -- type (item), on which implant is based
-    """
+class Subsystem(MutableAttributeHolder):
+    """Tech 3 ship's subsystem."""
 
     __slots__ = ()
 
@@ -38,4 +33,4 @@ class Implant(MutableAttributeHolder):
 
     @property
     def _location(self):
-        return Location.character
+        return Location.ship

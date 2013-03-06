@@ -24,12 +24,7 @@ from eos.fit.holder import MutableAttributeHolder
 
 
 class Charge(MutableAttributeHolder):
-    """
-    Represents ammo - crystals, probes, bombs, etc.
-
-    Positional arguments:
-    type_ -- type (item), on which charge is based
-    """
+    """Ammo - crystals, probes, bombs, etc."""
 
     __slots__ = ('container',)
 

@@ -23,47 +23,14 @@ from eos.const import Location
 from eos.fit.holder import MutableAttributeHolder
 
 
-class Module(MutableAttributeHolder):
-    """
-    Represents single module.
+class Rig(MutableAttributeHolder):
+    """Rig with all its special properties."""
 
-    Positional arguments:
-    type_ -- type (item), on which module is based
-    """
-
-    __slots__ = ('__charge',)
+    __slots__ = ()
 
     def __init__(self, type_):
         MutableAttributeHolder.__init__(self, type_)
-        self.__charge = None
 
     @property
     def _location(self):
         return Location.ship
-
-    @property
-    def _other(self):
-        """Purely service property, used in fit link tracker registry"""
-        return self.charge
-
-    @property
-    def charge(self):
-        """Get charge holder of module"""
-        return self.__charge
-
-    @charge.setter
-    def charge(self, newCharge):
-        """Set charge holder of module"""
-        # Way of processing it is exactly the same as with fit's ship or
-        # character: unset old charge, and set new one
-        oldCharge = self.charge
-        if oldCharge is not None:
-            if self.fit is not None:
-                self.fit._removeHolder(oldCharge)
-            self.__charge = None
-            oldCharge.container = None
-        if newCharge is not None:
-            newCharge.container = self
-            self.__charge = newCharge
-            if self.fit is not None:
-                self.fit._addHolder(newCharge)
