@@ -17,28 +17,28 @@ for skillID in skills:
     skill = fit.skills.add(skillID)
     skill.level = 5
 
-launchDg1 = fit.modulesHigh.fill(13926)
+launchDg1 = fit.modules.high.fill(13926)
 launchDg1.charge = 27365
 launchDg1.state = State.active
-launchDg2 = fit.modulesHigh.fill(13926)
+launchDg2 = fit.modules.high.fill(13926)
 launchDg2.charge = 27365
 launchDg2.state = State.active
-launchDg3 = fit.modulesHigh.fill(13926)
+launchDg3 = fit.modules.high.fill(13926)
 launchDg3.charge = 27365
 launchDg3.state = State.active
 
-mwdGistA = fit.modulesMed.fill(19349)
+mwdGistA = fit.modules.med.fill(19349)
 mwdGistA.state = State.active
-webTs = fit.modulesMed.fill(14268)
+webTs = fit.modules.med.fill(14268)
 webTs.state = State.active
-disDomi = fit.modulesMed.fill(14244)
+disDomi = fit.modules.med.fill(14244)
 disDomi.state = State.active
 
-bcsDg1 = fit.modulesLow.fill(13937)
+bcsDg1 = fit.modules.low.fill(13937)
 bcsDg1.state = State.online
-bcsDg2 = fit.modulesLow.fill(13937)
+bcsDg2 = fit.modules.low.fill(13937)
 bcsDg2.state = State.online
-nanoDomi = fit.modulesLow.fill(14127)
+nanoDomi = fit.modules.low.fill(14127)
 nanoDomi.state = State.online
 
 rigor1 = fit.rigs.fill(31650)

@@ -21,7 +21,7 @@
 
 from eos.const import State
 from .attributeCalculator import LinkTracker
-from .holder.container import HolderList, HolderSet
+from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Booster, Celestial, Character, Drone, Implant, Module, Rig, Ship, Skill, Subsystem
 from .restrictionTracker import RestrictionTracker
 from .stats.calculator import StatsCalculator
@@ -55,9 +55,9 @@ class Fit:
         self.boosters = HolderSet(self, Booster)
         # Ship-related containers
         self.subsystems = HolderSet(self, Subsystem)
-        self.modulesHigh = HolderList(self, Module)
-        self.modulesMed = HolderList(self, Module)
-        self.modulesLow = HolderList(self, Module)
+        self.modules = ModuleRacks(high=HolderList(self, Module),
+                                   med=HolderList(self, Module),
+                                   low=HolderList(self, Module))
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
 

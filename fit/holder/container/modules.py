@@ -19,6 +19,8 @@
 #===============================================================================
 
 
-from .list import HolderList
-from .modules import ModuleRacks
-from .set import HolderSet
+from collections import namedtuple
+
+
+# Parent object to hold containers for all module racks
+ModuleRacks = namedtuple('ModuleRacks', ('high', 'med', 'low'))
