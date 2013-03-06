@@ -44,6 +44,8 @@ class DroneGroupRegister(RestrictionRegister):
     restriction.
     """
 
+    __slots__ = ('_tracker', '__restrictedHolders')
+
     def __init__(self, tracker):
         self._tracker = tracker
         # Container for holders which can be subject

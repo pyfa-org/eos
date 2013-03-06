@@ -39,6 +39,8 @@ class SlotIndexRegister(RestrictionRegister):
     same index.
     """
 
+    __slots__ = ('__slotIndexAttr', '__restrictionType', '__slottedHolders')
+
     def __init__(self, slotIndexAttr, restrictionType):
         # This attribute's value on holder
         # represents their index of slot
@@ -90,6 +92,8 @@ class SubsystemIndexRegister(SlotIndexRegister):
     Slot to fill is determined by original item attributes.
     """
 
+    __slots__ = ()
+
     def __init__(self):
         SlotIndexRegister.__init__(self, Attribute.subSystemSlot, Restriction.subsystemIndex)
 
@@ -103,6 +107,8 @@ class ImplantIndexRegister(SlotIndexRegister):
     Slot to fill is determined by original item attributes.
     """
 
+    __slots__ = ()
+
     def __init__(self):
         SlotIndexRegister.__init__(self, Attribute.implantness, Restriction.implantIndex)
 
@@ -115,6 +121,8 @@ class BoosterIndexRegister(SlotIndexRegister):
     Details:
     Slot to fill is determined by original item attributes.
     """
+
+    __slots__ = ()
 
     def __init__(self):
         SlotIndexRegister.__init__(self, Attribute.boosterness, Restriction.boosterIndex)

@@ -37,6 +37,8 @@ class SlotNumberRegister(RestrictionRegister):
     against number of available ship slots.
     """
 
+    __slots__ = ('_tracker', '__slotType', '__slotAmountAttr', '__restrictionType', '__slotConsumers')
+
     def __init__(self, tracker, slotType, slotAmountAttr, restrictionType):
         self._tracker = tracker
         # Keeps slot type we're tracking
@@ -109,6 +111,8 @@ class HighSlotRegister(SlotNumberRegister):
     output.
     """
 
+    __slots__ = ()
+
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.moduleHigh, Attribute.hiSlots, Restriction.highSlot)
 
@@ -126,6 +130,8 @@ class MediumSlotRegister(SlotNumberRegister):
     attribute or absence of ship are considered as 0 slot
     output.
     """
+
+    __slots__ = ()
 
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.moduleMed, Attribute.medSlots, Restriction.mediumSlot)
@@ -145,6 +151,8 @@ class LowSlotRegister(SlotNumberRegister):
     output.
     """
 
+    __slots__ = ()
+
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.moduleLow, Attribute.lowSlots, Restriction.lowSlot)
 
@@ -162,6 +170,8 @@ class RigSlotRegister(SlotNumberRegister):
     attribute or absence of ship are considered as 0 slot
     output.
     """
+
+    __slots__ = ()
 
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.rig, Attribute.rigSlots, Restriction.rigSlot)
@@ -181,6 +191,8 @@ class SubsystemSlotRegister(SlotNumberRegister):
     output.
     """
 
+    __slots__ = ()
+
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.subsystem, Attribute.maxSubSystems, Restriction.subsystemSlot)
 
@@ -199,6 +211,8 @@ class TurretSlotRegister(SlotNumberRegister):
     output.
     """
 
+    __slots__ = ()
+
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.turret, Attribute.turretSlotsLeft, Restriction.turretSlot)
 
@@ -216,6 +230,8 @@ class LauncherSlotRegister(SlotNumberRegister):
     attribute or absence of ship are considered as 0 slot
     output.
     """
+
+    __slots__ = ()
 
     def __init__(self, tracker):
         SlotNumberRegister.__init__(self, tracker, Slot.launcher, Attribute.launcherSlotsLeft, Restriction.launcherSlot)

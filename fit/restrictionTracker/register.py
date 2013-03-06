@@ -26,6 +26,8 @@ from abc import abstractmethod, abstractproperty
 class RestrictionRegister(metaclass=ABCMeta):
     """Base class for all restriction registers."""
 
+    __slots__ = ()
+
     @abstractmethod
     def registerHolder(self, holder):
         """

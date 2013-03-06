@@ -42,13 +42,16 @@ class CapitalItemRegister(RestrictionRegister):
     volume attribute is absent, holder is not validated.
     """
 
+    __slots__ = ('_tracker', '__capitalHolders')
+
+    # Holders of volume bigger than this
+    # are considered as capital
+    _maxSubcapVolume = 500
+
     def __init__(self, tracker):
         self._tracker = tracker
         # Container for all tracked holders
         self.__capitalHolders = set()
-        # Holders of volume bigger than this
-        # are considered as capital
-        self.__maxSubcapVolume = 500
 
     def registerHolder(self, holder):
         # Ignore holders which do not belong to ship
@@ -60,7 +63,7 @@ class CapitalItemRegister(RestrictionRegister):
             holderVolume = holder.item.attributes[Attribute.volume]
         except KeyError:
             return
-        if holderVolume <= self.__maxSubcapVolume:
+        if holderVolume <= self._maxSubcapVolume:
             return
         self.__capitalHolders.add(holder)
 
@@ -84,7 +87,7 @@ class CapitalItemRegister(RestrictionRegister):
             taintedHolders = {}
             for holder in self.__capitalHolders:
                 holderVolume = holder.item.attributes[Attribute.volume]
-                taintedHolders[holder] = CapitalItemErrorData(allowedVolume=self.__maxSubcapVolume,
+                taintedHolders[holder] = CapitalItemErrorData(allowedVolume=self._maxSubcapVolume,
                                                               holderVolume=holderVolume)
             raise RegisterValidationError(taintedHolders)
 

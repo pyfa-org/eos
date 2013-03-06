@@ -38,6 +38,8 @@ class ResourceRegister(RestrictionRegister):
     by ship itself.
     """
 
+    __slots__ = ('_tracker', '__outputAttr', '__usageAttr', '__restrictionType', '__resourceUsers')
+
     def __init__(self, tracker, outputAttr, usageAttr, restrictionType):
         self._tracker = tracker
         # On ship holder, attribute with this ID
@@ -112,6 +114,8 @@ class CpuRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
+    __slots__ = ()
+
     def __init__(self, tracker):
         ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, Restriction.cpu)
 
@@ -127,6 +131,8 @@ class PowerGridRegister(ResourceRegister):
     power grid output are taken. Absence of ship or absence of
     required attribute on ship are considered as zero output.
     """
+
+    __slots__ = ()
 
     def __init__(self, tracker):
         ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, Restriction.powerGrid)
@@ -144,6 +150,8 @@ class CalibrationRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
+    __slots__ = ()
+
     def __init__(self, tracker):
         ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, Restriction.calibration)
 
@@ -160,6 +168,8 @@ class DroneBayVolumeRegister(ResourceRegister):
     drone bay volume are taken. Absence of ship or absence of
     required attribute on ship are considered as zero output.
     """
+
+    __slots__ = ()
 
     def __init__(self, tracker):
         ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, Restriction.droneBayVolume)
@@ -181,6 +191,8 @@ class DroneBandwidthRegister(ResourceRegister):
     drone bandwidth output are taken. Absence of ship or absence of
     required attribute on ship are considered as zero output.
     """
+
+    __slots__ = ()
 
     def __init__(self, tracker):
         ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, Restriction.droneBandwidth)
