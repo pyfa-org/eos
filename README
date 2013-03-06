@@ -10,7 +10,6 @@ dataHandler = JsonDataHandler('/home/user/src/pyfa/eos/dataFolder/phobos/')
 engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/')
 
 fit = engine.makeFit()
-fit.character = 1381  # characterStatic
 fit.ship = 11176  # Crow
 
 for skillID in skills:

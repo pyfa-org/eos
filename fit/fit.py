@@ -20,6 +20,7 @@
 
 
 from eos.const import State
+from eos.eve.const import Type
 from .attributeCalculator import LinkTracker
 from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Booster, Celestial, Character, Drone, Implant, Module, Rig, Ship, Skill, Subsystem
@@ -60,6 +61,9 @@ class Fit:
                                    low=HolderList(self, Module))
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
+        # As character object shouldn't change in any sane
+        # cases, initialize it here
+        self.character = Type.characterStatic
 
     @property
     def character(self):
