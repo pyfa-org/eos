@@ -33,7 +33,7 @@ class Fit:
     Fit holds all fit items and facilities to calculate their attributes.
 
     Positional arguments:
-    eos -- eos instance within which fit is created
+    eos -- eos instance within which fit will operate
     """
 
     def __init__(self, eos):
@@ -43,8 +43,8 @@ class Fit:
         self._restrictionTracker = RestrictionTracker(self)
         # Access point for all the fitting stats
         self.stats = StatsCalculator(self)
-        # Attribute metadata getter, which returns Attribute
-        # objects when requesting them by ID
+        # Used for multiple purposes: to fetch attribute metadata and
+        # types when necessary, for logging, and so on
         self._eos = eos
         # Attributes to store holders directly assigned to fit
         self._ship = None

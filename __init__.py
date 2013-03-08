@@ -21,5 +21,6 @@
 
 from .eos import Eos, eosVersion as __version__
 from .const import State, Restriction
+from .fit import Fit
 from .fit.restrictionTracker.exception import ValidationError
 from .data.cacheHandler import TypeFetchError

@@ -24,7 +24,6 @@ import os.path
 from eos.data.cacheCustomizer import CacheCustomizer
 from eos.data.cacheHandler import JsonCacheHandler
 from eos.data.cacheGenerator import CacheGenerator
-from eos.fit import Fit
 from eos.util.logger import Logger
 
 
@@ -61,7 +60,3 @@ class Eos:
             cacheData = CacheGenerator(self._logger).run(dataHandler)
             CacheCustomizer().runBuiltIn(cacheData)
             self._cacheHandler.updateCache(cacheData, currentFp)
-
-    def makeFit(self):
-        fit = Fit(self)
-        return fit
