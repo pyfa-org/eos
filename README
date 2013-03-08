@@ -1,7 +1,7 @@
 Currently API is not considered to be final (read as, what you see is stub for testing). Currently you can use engine following way:
 -------------------------------------------------------------------------------
 
-from eos import Eos, Fit, State
+from eos import *
 from eos.data.dataHandler.jsonDataHandler import JsonDataHandler
 
 
@@ -9,52 +9,64 @@ dataHandler = JsonDataHandler('/home/user/src/pyfa/eos/dataFolder/phobos/')
 engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/')
 
 fit = Fit(engine)
-fit.ship = 11176  # Crow
+fit.ship = Ship(11176)  # Crow
 
-for skillID in skills:
-    skill = fit.skills.add(skillID)
+for skillId in skills:
+    skill = Skill(skillId)
     skill.level = 5
+    fit.skills.add(skill)
 
-launchDg1 = fit.modules.high.fill(13926)
-launchDg1.charge = 27365
+launchDg1 = Module(13926)
+launchDg1.charge = Charge(27365)
 launchDg1.state = State.active
-launchDg2 = fit.modules.high.fill(13926)
-launchDg2.charge = 27365
+fit.modules.high.fill(launchDg1)
+launchDg2 = Module(13926)
+launchDg2.charge = Charge(27365)
 launchDg2.state = State.active
-launchDg3 = fit.modules.high.fill(13926)
-launchDg3.charge = 27365
+fit.modules.high.fill(launchDg2)
+launchDg3 = Module(13926)
+launchDg3.charge = Charge(27365)
 launchDg3.state = State.active
+fit.modules.high.fill(launchDg3)
 
-mwdGistA = fit.modules.med.fill(19349)
+mwdGistA = Module(19349)
 mwdGistA.state = State.active
-webTs = fit.modules.med.fill(14268)
+fit.modules.med.fill(mwdGistA)
+webTs = Module(14268)
 webTs.state = State.active
-disDomi = fit.modules.med.fill(14244)
+fit.modules.med.fill(webTs)
+disDomi = Module(14244)
 disDomi.state = State.active
+fit.modules.med.fill(disDomi)
 
-bcsDg1 = fit.modules.low.fill(13937)
+
+bcsDg1 = Module(13937)
+fit.modules.low.fill(bcsDg1)
 bcsDg1.state = State.online
-bcsDg2 = fit.modules.low.fill(13937)
+bcsDg2 = Module(13937)
 bcsDg2.state = State.online
-nanoDomi = fit.modules.low.fill(14127)
+fit.modules.low.fill(bcsDg2)
+nanoDomi = Module(14127)
 nanoDomi.state = State.online
+fit.modules.low.fill(nanoDomi)
 
-rigor1 = fit.rigs.fill(31650)
-rigor2 = fit.rigs.fill(31650)
 
-snakeAlpha = fit.implants.add(19540)
-snakeBeta = fit.implants.add(19551)
-snakeGamma = fit.implants.add(19553)
-snakeDelta = fit.implants.add(19554)
-snakeEpsilon = fit.implants.add(19555)
-snakeOmega = fit.implants.add(19556)
-hwAgi = fit.implants.add(3095)
-zorHyper = fit.implants.add(24663)
-hwLights = fit.implants.add(3172)
-hwMissiles = fit.implants.add(3140)
+fit.rigs.fill(Rig(31650))  # t2 rigor
+fit.rigs.fill(Rig(31650))  # t2 rigor
 
-quafeZero = fit.boosters.add(3898)
-synthCrash = fit.boosters.add(28672)
+fit.implants.add(Implant(19540))  # Snake Alpha
+fit.implants.add(Implant(19551))  # Snake Beta
+fit.implants.add(Implant(19553))  # Snake Gamma
+fit.implants.add(Implant(19554))  # Snake Delta
+fit.implants.add(Implant(19555))  # Snake Epsilon
+fit.implants.add(Implant(19556))  # Snake Omega
+fit.implants.add(Implant(3095))  # Agility hardwiring
+fit.implants.add(Implant(24663))  # Zor Hyper-Link
+fit.implants.add(Implant(3172))  # Light Missile damage hardwiring
+fit.implants.add(Implant(3140))  # Missile launcher rof hardwiring
+
+fit.boosters.add(Booster(3898))  # Quafe Zero
+fit.boosters.add(Booster(28672))  # Synth Crash
 
 fit.validate()
 

@@ -156,7 +156,9 @@ class MutableAttributeMap:
         return self.__modifiedAttributes.keys() | self.__holder.item.attributes.keys()
 
     def clear(self):
+        """Reset map to its initial state."""
         self.__modifiedAttributes.clear()
+        self._capMap = None
 
     def __calculate(self, attrId):
         """

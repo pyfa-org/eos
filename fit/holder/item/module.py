@@ -21,7 +21,6 @@
 
 from eos.const import Location
 from eos.fit.holder import Holder
-from .charge import Charge
 
 
 class Module(Holder):
@@ -29,8 +28,8 @@ class Module(Holder):
 
     __slots__ = ('__charge',)
 
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
+    def __init__(self, typeId):
+        Holder.__init__(self, typeId)
         self.__charge = None
 
     @property
@@ -47,22 +46,14 @@ class Module(Holder):
         return self.__charge
 
     @charge.setter
-    def charge(self, value):
+    def charge(self, newCharge):
         oldCharge = self.charge
         if oldCharge is not None:
             if self.fit is not None:
                 self.fit._removeHolder(oldCharge)
-            self.__charge = None
             oldCharge.container = None
-        if value is None:
-            return
-        if isinstance(value, int):
-            type_ = self.fit._eos._cacheHandler.getType(value)
-            newCharge = Charge(type_)
-        else:
-            newCharge = value
+        self.__charge = newCharge
         if newCharge is not None:
             newCharge.container = self
-            self.__charge = newCharge
             if self.fit is not None:
                 self.fit._addHolder(newCharge)

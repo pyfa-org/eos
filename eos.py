@@ -42,7 +42,7 @@ class Eos:
     interface (returns data rows for several table as
     dicts and is able to get data version)
 
-    Optional arguments:
+    Keyword arguments:
     name -- name of this eos instance, used as key to
     log and cache files, thus should be unique for all
     running eos instances. Default is 'eos'.

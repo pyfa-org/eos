@@ -23,7 +23,7 @@ from eos.const import State
 from eos.eve.const import Type
 from .attributeCalculator import LinkTracker
 from .holder.container import HolderList, HolderSet, ModuleRacks
-from .holder.item import Booster, Celestial, Character, Drone, Implant, Module, Rig, Ship, Skill, Subsystem
+from .holder.item import Character
 from .restrictionTracker import RestrictionTracker
 from .stats.calculator import StatsCalculator
 
@@ -37,57 +37,75 @@ class Fit:
     """
 
     def __init__(self, eos):
+        # Eos instance within which this fit exists
+        self.__eos = eos
         # Tracks links between holders assigned to fit
         self._linkTracker = LinkTracker(self)
         # Tracks various restrictions related to given fitting
         self._restrictionTracker = RestrictionTracker(self)
         # Access point for all the fitting stats
         self.stats = StatsCalculator(self)
-        # Used for multiple purposes: to fetch attribute metadata and
-        # types when necessary, for logging, and so on
-        self._eos = eos
         # Attributes to store holders directly assigned to fit
         self._ship = None
         self._character = None
         self._systemWide = None
         # Character-related holder containers
-        self.skills = HolderSet(self, Skill)
-        self.implants = HolderSet(self, Implant)
-        self.boosters = HolderSet(self, Booster)
+        self.skills = HolderSet(self)
+        self.implants = HolderSet(self)
+        self.boosters = HolderSet(self)
         # Ship-related containers
-        self.subsystems = HolderSet(self, Subsystem)
-        self.modules = ModuleRacks(high=HolderList(self, Module),
-                                   med=HolderList(self, Module),
-                                   low=HolderList(self, Module))
-        self.rigs = HolderList(self, Rig)
-        self.drones = HolderSet(self, Drone)
+        self.subsystems = HolderSet(self)
+        self.modules = ModuleRacks(high=HolderList(self), med=HolderList(self), low=HolderList(self))
+        self.rigs = HolderList(self)
+        self.drones = HolderSet(self)
+        # Contains all holders currently attached to fit
+        self._holders = set()
         # As character object shouldn't change in any sane
         # cases, initialize it here
-        self.character = Type.characterStatic
+        self.character = Character(Type.characterStatic)
+
+    @property
+    def eos(self):
+        return self.__eos
+
+    @eos.setter
+    def eos(self, newEos):
+        # Disable everything dependent on old eos prior to switch
+        if self.__eos is not None:
+            for holder in self._holders:
+                self._holderDisableServices(holder)
+        # Reassign new eos and feed new data to all holders
+        self.__eos = newEos
+        for holder in self._holders:
+            holder._refreshContext()
+        # Enable eos-dependent services for new instance
+        if newEos is not None:
+            for holder in self._holders:
+                self._holderEnableServices(holder)
 
     @property
     def character(self):
         return self._character
 
     @character.setter
-    def character(self, value):
-        self.__setSingleHolder('_character', Character, value)
+    def character(self, newCharacter):
+        self.__setSingleHolder('_character', newCharacter)
 
     @property
     def ship(self):
         return self._ship
 
     @ship.setter
-    def ship(self, value):
-        self.__setSingleHolder('_ship', Ship, value)
+    def ship(self, newShip):
+        self.__setSingleHolder('_ship', newShip)
 
     @property
     def systemWide(self):
         return self._systemWide
 
     @systemWide.setter
-    def systemWide(self, value):
-        self.__setSingleHolder('_systemWide', Celestial, value)
+    def systemWide(self, newSystemWide):
+        self.__setSingleHolder('_systemWide', newSystemWide)
 
     def validate(self, skipChecks=()):
         """
@@ -102,37 +120,22 @@ class Fit:
         self._restrictionTracker.validate(skipChecks=skipChecks)
 
     def _addHolder(self, holder):
-        """
-        Handle adding of holder to fit.
-
-        Positional arguments:
-        holder -- holder to be added
-        """
+        """Handle adding of holder to fit."""
         # Make sure the holder isn't used already
         # TODO: replace with some custom exception class
         assert(holder.fit is None)
         # Assign fit to holder first
         holder.fit = self
-        # Only after add it to register
-        self._linkTracker.addHolder(holder)
-        # Trigger attribute links and restrictions according
-        # to holder's state
-        enabledStates = set(filter(lambda s: s <= holder.state, State))
-        if len(enabledStates) > 0:
-            self._linkTracker.enableStates(holder, enabledStates)
-            self._restrictionTracker.enableStates(holder, enabledStates)
+        self._holders.add(holder)
+        if self.eos is not None:
+            self._holderEnableServices(holder)
         # If holder had charge, register it too
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._addHolder(charge)
 
     def _removeHolder(self, holder):
-        """
-        Handle removal of holder from fit.
-
-        Positional arguments:
-        holder -- holder to be removed
-        """
+        """Handle removal of holder from fit."""
         # Check that removed holder belongs to fit
         # it's removed from
         # TODO: replace with some custom exception class
@@ -141,15 +144,32 @@ class Fit:
         charge = getattr(holder, "charge", None)
         if charge is not None:
             self._removeHolder(charge)
-        # Turn off its effects by disabling all of its active states
-        # and remove holder from fit altogether
+        if self.eos is not None:
+            self._holderDisableServices(holder)
+        self._holders.remove(holder)
+        holder.fit = None
+
+    def _holderEnableServices(self, holder):
+        """
+        Make all of the fit services aware of passed holder.
+        Should be called when fit has valid Eos instance,
+        as services cannot work without it.
+        """
+        self._linkTracker.addHolder(holder)
+        # Switch states upwards up to holder's state
+        enabledStates = set(filter(lambda s: s <= holder.state, State))
+        if len(enabledStates) > 0:
+            self._linkTracker.enableStates(holder, enabledStates)
+            self._restrictionTracker.enableStates(holder, enabledStates)
+
+    def _holderDisableServices(self, holder):
+        """Remove holder from all Eos-relying services."""
+        # Switch states downwards from current holder's state
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         if len(disabledStates) > 0:
             self._restrictionTracker.disableStates(holder, disabledStates)
             self._linkTracker.disableStates(holder, disabledStates)
         self._linkTracker.removeHolder(holder)
-        # Unset holder's fit
-        holder.fit = None
 
     def _holderStateSwitch(self, holder, newState):
         """
@@ -159,6 +179,11 @@ class Fit:
         holder -- holder, for which state should be switched
         newState -- state, which holder should take
         """
+        # At the moment only Eos-dependent services are affected
+        # by state switch, thus we have nothing to do if fit
+        # doesn't have Eos assigned
+        if self.eos is None:
+            return
         # Get states which are passed during enabling/disabling
         # into single set (other should stay empty)
         enabledStates = set(filter(lambda s: s > holder.state and s <= newState, State))
@@ -174,28 +199,14 @@ class Fit:
             self._linkTracker.disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
 
-    def __setSingleHolder(self, attrName, holderClass, value):
+    def __setSingleHolder(self, attrName, newHolder):
         """
         Handle setting of holder as fit's attribute,
         including removal of old holder assigned to it.
-
-        attrName -- attribute name which is used to store
-        actual holder assigned to fit
-        holderClass -- class which should be used for
-        instantiation of new holder if necessary
-        value -- holder to set or typeID to generate
-        one on the fly
         """
-        attrValue = getattr(self, attrName)
-        if attrValue is not None:
-            self._removeHolder(attrValue)
-        if value is None:
-            setattr(self, attrName, None)
-            return
-        if isinstance(value, int):
-            type_ = self._eos._cacheHandler.getType(value)
-            holder = holderClass(type_)
-        else:
-            holder = value
-        setattr(self, attrName, holder)
-        self._addHolder(holder)
+        oldHolder = getattr(self, attrName)
+        if oldHolder is not None:
+            self._removeHolder(oldHolder)
+        setattr(self, attrName, newHolder)
+        if newHolder is not None:
+            self._addHolder(newHolder)

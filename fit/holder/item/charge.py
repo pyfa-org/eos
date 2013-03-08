@@ -28,8 +28,8 @@ class Charge(Holder):
 
     __slots__ = ('container',)
 
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
+    def __init__(self, typeId):
+        Holder.__init__(self, typeId)
         # Holder-container, into which our charge holder is
         # "loaded"
         self.container = None

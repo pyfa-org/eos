@@ -19,8 +19,10 @@
 #===============================================================================
 
 
-from .eos import Eos, eosVersion as __version__
 from .const import State, Restriction
-from .fit import Fit
-from .fit.restrictionTracker.exception import ValidationError
+from .eos import Eos, eosVersion as __version__
 from .data.cacheHandler import TypeFetchError
+from .fit import Fit
+from .fit.holder.item import *
+from .fit.restrictionTracker.exception import ValidationError
+

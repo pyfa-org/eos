@@ -29,51 +29,64 @@ class Holder:
     need to keep track of modified attributes.
 
     Positional arguments:
-    type_ -- type (item), on which this holder is based
+    typeId -- typeID of item, which is supposed to be
+    base item for holder
+
+    Keyword arguments:
+    state -- state which this holder takes during initialization
     """
 
-    __slots__ = ('__fit', 'item', 'attributes', '__state', '__target')
+    __slots__ = ('__typeId', '__state', 'attributes', '__fit', '__type')
 
-    def __init__(self, type_):
+    def __init__(self, typeId, state=State.offline):
+        # TypeID of item this holder is supposed to wrap
+        self.__typeId = typeId
+        # Keeps current state of the holder
+        self.__state = state
+        # Special dictionary subclass that holds modified attributes
+        # and data related to their calculation
+        self.attributes = MutableAttributeMap(self)
         # Which fit this holder is bound to
         self.__fit = None
         # Which type this holder wraps
-        self.item = type_
-        # Special dictionary subclass that holds modified attributes and data related to their calculation
-        self.attributes = MutableAttributeMap(self)
-        # Keeps current state of the holder
-        self.__state = State.offline
-        # Keeps current target of holder
-        self.__target = None
+        self.__type = None
+        ## Keeps current target of holder
+        #self.__target = None
+
+    @property
+    def item(self):
+        return self.__type
 
     @property
     def fit(self):
-        """Get fit to which holder is assigned"""
         return self.__fit
 
     @fit.setter
     def fit(self, newFit):
-        """Assign holder to fit"""
-        # Our modified attributes have some value only within
-        # fit context; when fit changes, they must be cleaned
-        self.attributes.clear()
         self.__fit = newFit
+        self._refreshContext()
+
+    def _refreshContext(self):
+        """
+        Each time holder's context is changed (holder's
+        fit or fit's eos), this method should be called;
+        it will refresh data which belongs to certain
+        context and which is not actual outside of it.
+        """
+        self.attributes.clear()
+        try:
+            cacheHandler = self.__fit.eos._cacheHandler
+        except AttributeError:
+            self.__type = None
+        else:
+            self.__type = cacheHandler.getType(self.__typeId)
 
     @property
     def state(self):
-        """Get state of holder"""
         return self.__state
 
     @state.setter
     def state(self, newState):
-        """Set state of holder"""
-        # First, check if holder's item can have this
-        # state at all
-        # TODO: probably move this check to restriction tracker,
-        # or throw custom exception
-        validStates = filter(lambda state: state <= self.item.maxState, State)
-        if not newState in validStates:
-            raise RuntimeError("invalid state")
         if newState == self.state:
             return
         # When holder is assigned to some fit, ask fit to perform

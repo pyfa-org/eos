@@ -29,8 +29,8 @@ class Skill(Holder):
 
     __slots__ = ('__level',)
 
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
+    def __init__(self, typeId):
+        Holder.__init__(self, typeId)
         self.__level = 0
 
     @property
