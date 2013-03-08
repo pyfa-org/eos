@@ -60,6 +60,14 @@ class Eos:
     def name(self):
         return self.__name
 
+    # Context manager methods
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    # Initialization methods
     def __initializePath(self, path):
         """Process path we've received from user and return it."""
         if path is None:
