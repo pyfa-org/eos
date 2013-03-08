@@ -28,9 +28,9 @@ class Module(Holder):
 
     __slots__ = ('__charge',)
 
-    def __init__(self, typeId, state=State.offline):
+    def __init__(self, typeId, state=State.offline, charge=None):
         Holder.__init__(self, typeId, state)
-        self.__charge = None
+        self.__charge = charge
 
     @property
     def _location(self):

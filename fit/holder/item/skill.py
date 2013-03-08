@@ -29,9 +29,9 @@ class Skill(Holder):
 
     __slots__ = ('__level',)
 
-    def __init__(self, typeId):
+    def __init__(self, typeId, level=0):
         Holder.__init__(self, typeId, State.offline)
-        self.__level = 0
+        self.__level = level
 
     @property
     def _location(self):

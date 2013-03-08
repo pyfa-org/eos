@@ -12,35 +12,20 @@ fit = Fit(engine)
 fit.ship = Ship(11176)  # Crow
 
 for skillId in skills:
-    skill = Skill(skillId)
-    skill.level = 5
-    fit.skills.add(skill)
+    fit.skills.add(Skill(skillId, level=5))
 
-launchDg1 = Module(13926, state=State.active)
-launchDg1.charge = Charge(27365)
-fit.modules.high.fill(launchDg1)
-launchDg2 = Module(13926, state=State.active)
-launchDg2.charge = Charge(27365)
-fit.modules.high.fill(launchDg2)
-launchDg3 = Module(13926, state=State.active)
-launchDg3.charge = Charge(27365)
-fit.modules.high.fill(launchDg3)
+fit.modules.high.fill(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
+fit.modules.high.fill(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
+fit.modules.high.fill(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
 
-mwdGistA = Module(19349, state=State.active)
-fit.modules.med.fill(mwdGistA)
-webTs = Module(14268, state=State.active)
-fit.modules.med.fill(webTs)
-disDomi = Module(14244, state=State.active)
-fit.modules.med.fill(disDomi)
+fit.modules.med.fill(Module(19349, state=State.active))  # Gistii A-Type MWD
+fit.modules.med.fill(Module(14268, state=State.active))  # TS Web
+fit.modules.med.fill(Module(14244, state=State.active))  # Domi disruptor
 
 
-bcsDg1 = Module(13937, state=State.online)
-fit.modules.low.fill(bcsDg1)
-bcsDg2 = Module(13937, state=State.online)
-fit.modules.low.fill(bcsDg2)
-nanoDomi = Module(14127, state=State.online)
-fit.modules.low.fill(nanoDomi)
-
+fit.modules.low.fill(Module(13937, state=State.online))  # DG ballistic control
+fit.modules.low.fill(Module(13937, state=State.online))  # DG ballistic control
+fit.modules.low.fill(Module(14127, state=State.online))  # Domi nanofiber
 
 fit.rigs.fill(Rig(31650))  # t2 rigor
 fit.rigs.fill(Rig(31650))  # t2 rigor
@@ -58,8 +43,6 @@ fit.implants.add(Implant(3140))  # Missile launcher rof hardwiring
 
 fit.boosters.add(Booster(3898))  # Quafe Zero
 fit.boosters.add(Booster(28672))  # Synth Crash
-
-fit.validate()
 
 fit.validate()
 
