@@ -19,10 +19,10 @@
 #===============================================================================
 
 
-from eos.fit.holder import MutableAttributeHolder
+from eos.fit.holder import Holder
 
 
-class Character(MutableAttributeHolder):
+class Character(Holder):
     """
     Represents a character. Must be holder, as EVE tracks
     some attributes on it.
@@ -31,7 +31,7 @@ class Character(MutableAttributeHolder):
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):

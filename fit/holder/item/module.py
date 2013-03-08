@@ -20,17 +20,17 @@
 
 
 from eos.const import Location
-from eos.fit.holder import MutableAttributeHolder
+from eos.fit.holder import Holder
 from .charge import Charge
 
 
-class Module(MutableAttributeHolder):
+class Module(Holder):
     """Ship's module from any slot."""
 
     __slots__ = ('__charge',)
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
         self.__charge = None
 
     @property

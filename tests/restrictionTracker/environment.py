@@ -112,7 +112,7 @@ class Fit:
         else:
             return None
 
-class MutableAttributeHolder:
+class Holder:
 
     __slots__ = ('__fit', 'item', 'attributes', '__state')
 
@@ -144,48 +144,48 @@ class MutableAttributeHolder:
         self.__state = newState
 
 
-class IndependentItem(MutableAttributeHolder):
+class IndependentItem(Holder):
 
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):
         return None
 
 
-class CharacterItem(MutableAttributeHolder):
+class CharacterItem(Holder):
 
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):
         return Location.character
 
 
-class ShipItem(MutableAttributeHolder):
+class ShipItem(Holder):
 
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):
         return Location.ship
 
 
-class SpaceItem(MutableAttributeHolder):
+class SpaceItem(Holder):
 
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):

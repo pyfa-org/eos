@@ -23,9 +23,9 @@ from eos.const import State
 from eos.fit.attributeCalculator import MutableAttributeMap
 
 
-class MutableAttributeHolder:
+class Holder:
     """
-    Base attribute holder class inherited by all classes that
+    Base holder class inherited by all classes that
     need to keep track of modified attributes.
 
     Positional arguments:

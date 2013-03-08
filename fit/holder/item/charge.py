@@ -20,16 +20,16 @@
 
 
 from eos.const import Location
-from eos.fit.holder import MutableAttributeHolder
+from eos.fit.holder import Holder
 
 
-class Charge(MutableAttributeHolder):
+class Charge(Holder):
     """Ammo - crystals, probes, bombs, etc."""
 
     __slots__ = ('container',)
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
         # Holder-container, into which our charge holder is
         # "loaded"
         self.container = None

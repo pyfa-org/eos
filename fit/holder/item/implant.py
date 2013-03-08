@@ -20,16 +20,16 @@
 
 
 from eos.const import Location
-from eos.fit.holder import MutableAttributeHolder
+from eos.fit.holder import Holder
 
 
-class Implant(MutableAttributeHolder):
+class Implant(Holder):
     """Implant with all its special properties."""
 
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):

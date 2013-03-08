@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.fit.holder import MutableAttributeHolder
+from eos.fit.holder import Holder
 
 
-class Ship(MutableAttributeHolder):
+class Ship(Holder):
     """Ship with all its special properties."""
 
     __slots__ = ()
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
 
     @property
     def _location(self):

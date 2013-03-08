@@ -19,4 +19,4 @@
 #===============================================================================
 
 
-from .holder import MutableAttributeHolder
+from .holder import Holder

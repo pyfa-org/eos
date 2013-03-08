@@ -21,16 +21,16 @@
 
 from eos.const import Location
 from eos.eve.const import Attribute
-from eos.fit.holder import MutableAttributeHolder
+from eos.fit.holder import Holder
 
 
-class Skill(MutableAttributeHolder):
+class Skill(Holder):
     """Skill with all its special properties."""
 
     __slots__ = ('__level',)
 
     def __init__(self, type_):
-        MutableAttributeHolder.__init__(self, type_)
+        Holder.__init__(self, type_)
         self.__level = 0
 
     @property
