@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos import eos as eosModule
 from eos.const import State
 from eos.eve.const import Type
 from .attributeCalculator import LinkTracker
@@ -32,13 +33,18 @@ class Fit:
     """
     Fit holds all fit items and facilities to calculate their attributes.
 
-    Positional arguments:
-    eos -- eos instance within which fit will operate
+    Keyword arguments:
+    eos -- eos instance within which fit will operate. If not specified,
+    eos.defaultInstance is used.
     """
 
-    def __init__(self, eos):
-        # Eos instance within which this fit exists
-        self.__eos = eos
+    def __init__(self, eos=None):
+        # Eos instance within which this fit exists; use default
+        # if not specified explicitly
+        if eos is None:
+            self.__eos = eosModule.defaultInstance
+        else:
+            self.__eos = eos
         # Tracks links between holders assigned to fit
         self._linkTracker = LinkTracker(self)
         # Tracks various restrictions related to given fitting

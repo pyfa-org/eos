@@ -5,10 +5,10 @@ from eos import *
 from eos.data.dataHandler.jsonDataHandler import JsonDataHandler
 
 
-dataHandler = JsonDataHandler('/home/user/src/pyfa/eos/dataFolder/phobos/')
-engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/')
+dataHandler = JsonDataHandler('/home/dfx/src/pyfa/eos/dataFolder/phobos/')
+engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/', makeDefault=True)
 
-fit = Fit(engine)
+fit = Fit()
 fit.ship = Ship(11176)  # Crow
 
 for skillId in skills:

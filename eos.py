@@ -29,6 +29,10 @@ from eos.util.logger import Logger
 
 eosVersion = 'git'
 
+# Keeps instance of Eos which will be used when new fits are
+# created without passing Eos instance explicitly
+defaultInstance = None
+
 
 class Eos:
     """
@@ -50,11 +54,14 @@ class Eos:
     is ~/.eos
     """
 
-    def __init__(self, dataHandler, name='eos', storagePath=None):
+    def __init__(self, dataHandler, name='eos', storagePath=None, makeDefault=False):
         self.__name = name
         self.__path = self.__initializePath(storagePath)
         self._logger = self.__initializeLogger()
         self._cacheHandler = self.__initializeData(dataHandler)
+        if makeDefault is True:
+            global defaultInstance
+            defaultInstance = self
 
     @property
     def name(self):
