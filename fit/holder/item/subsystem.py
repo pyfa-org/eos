@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location
+from eos.const import Location, State
 from eos.fit.holder import Holder
 
 
@@ -29,7 +29,7 @@ class Subsystem(Holder):
     __slots__ = ()
 
     def __init__(self, typeId):
-        Holder.__init__(self, typeId)
+        Holder.__init__(self, typeId, State.offline)
 
     @property
     def _location(self):

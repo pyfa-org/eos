@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location
+from eos.const import Location, State
 from eos.fit.holder import Holder
 
 
@@ -28,8 +28,8 @@ class Module(Holder):
 
     __slots__ = ('__charge',)
 
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId)
+    def __init__(self, typeId, state=State.offline):
+        Holder.__init__(self, typeId, state)
         self.__charge = None
 
     @property

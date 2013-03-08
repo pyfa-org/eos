@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.const import State
 from eos.fit.holder import Holder
 
 
@@ -31,7 +32,7 @@ class Character(Holder):
     __slots__ = ()
 
     def __init__(self, typeId):
-        Holder.__init__(self, typeId)
+        Holder.__init__(self, typeId, State.offline)
 
     @property
     def _location(self):

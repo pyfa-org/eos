@@ -19,7 +19,6 @@
 #===============================================================================
 
 
-from eos.const import State
 from eos.fit.attributeCalculator import MutableAttributeMap
 
 
@@ -31,14 +30,12 @@ class Holder:
     Positional arguments:
     typeId -- typeID of item, which is supposed to be
     base item for holder
-
-    Keyword arguments:
     state -- state which this holder takes during initialization
     """
 
     __slots__ = ('__typeId', '__state', 'attributes', '__fit', '__type')
 
-    def __init__(self, typeId, state=State.offline):
+    def __init__(self, typeId, state):
         # TypeID of item this holder is supposed to wrap
         self.__typeId = typeId
         # Keeps current state of the holder

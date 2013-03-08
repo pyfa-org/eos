@@ -16,38 +16,29 @@ for skillId in skills:
     skill.level = 5
     fit.skills.add(skill)
 
-launchDg1 = Module(13926)
+launchDg1 = Module(13926, state=State.active)
 launchDg1.charge = Charge(27365)
-launchDg1.state = State.active
 fit.modules.high.fill(launchDg1)
-launchDg2 = Module(13926)
+launchDg2 = Module(13926, state=State.active)
 launchDg2.charge = Charge(27365)
-launchDg2.state = State.active
 fit.modules.high.fill(launchDg2)
-launchDg3 = Module(13926)
+launchDg3 = Module(13926, state=State.active)
 launchDg3.charge = Charge(27365)
-launchDg3.state = State.active
 fit.modules.high.fill(launchDg3)
 
-mwdGistA = Module(19349)
-mwdGistA.state = State.active
+mwdGistA = Module(19349, state=State.active)
 fit.modules.med.fill(mwdGistA)
-webTs = Module(14268)
-webTs.state = State.active
+webTs = Module(14268, state=State.active)
 fit.modules.med.fill(webTs)
-disDomi = Module(14244)
-disDomi.state = State.active
+disDomi = Module(14244, state=State.active)
 fit.modules.med.fill(disDomi)
 
 
-bcsDg1 = Module(13937)
+bcsDg1 = Module(13937, state=State.online)
 fit.modules.low.fill(bcsDg1)
-bcsDg1.state = State.online
-bcsDg2 = Module(13937)
-bcsDg2.state = State.online
+bcsDg2 = Module(13937, state=State.online)
 fit.modules.low.fill(bcsDg2)
-nanoDomi = Module(14127)
-nanoDomi.state = State.online
+nanoDomi = Module(14127, state=State.online)
 fit.modules.low.fill(nanoDomi)
 
 
@@ -67,6 +58,8 @@ fit.implants.add(Implant(3140))  # Missile launcher rof hardwiring
 
 fit.boosters.add(Booster(3898))  # Quafe Zero
 fit.boosters.add(Booster(28672))  # Synth Crash
+
+fit.validate()
 
 fit.validate()
 

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location
+from eos.const import Location, State
 from eos.eve.const import Attribute
 from eos.fit.holder import Holder
 
@@ -30,7 +30,7 @@ class Skill(Holder):
     __slots__ = ('__level',)
 
     def __init__(self, typeId):
-        Holder.__init__(self, typeId)
+        Holder.__init__(self, typeId, State.offline)
         self.__level = 0
 
     @property
