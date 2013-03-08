@@ -30,6 +30,3 @@ from .attribute import Attribute
 from .effect import Effect
 from .modifier import Modifier
 from .type import Type
-
-
-__all__ = ['Attribute', 'Effect', 'Modifier', 'Type']

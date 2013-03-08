@@ -14,21 +14,21 @@ fit.ship = Ship(11176)  # Crow
 for skillId in skills:
     fit.skills.add(Skill(skillId, level=5))
 
-fit.modules.high.fill(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
-fit.modules.high.fill(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
-fit.modules.high.fill(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
+fit.modules.high.equip(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
+fit.modules.high.equip(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
+fit.modules.high.equip(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
 
-fit.modules.med.fill(Module(19349, state=State.active))  # Gistii A-Type MWD
-fit.modules.med.fill(Module(14268, state=State.active))  # TS Web
-fit.modules.med.fill(Module(14244, state=State.active))  # Domi disruptor
+fit.modules.med.equip(Module(19349, state=State.active))  # Gistii A-Type MWD
+fit.modules.med.equip(Module(14268, state=State.active))  # TS Web
+fit.modules.med.equip(Module(14244, state=State.active))  # Domi disruptor
 
 
-fit.modules.low.fill(Module(13937, state=State.online))  # DG ballistic control
-fit.modules.low.fill(Module(13937, state=State.online))  # DG ballistic control
-fit.modules.low.fill(Module(14127, state=State.online))  # Domi nanofiber
+fit.modules.low.equip(Module(13937, state=State.online))  # DG ballistic control
+fit.modules.low.equip(Module(13937, state=State.online))  # DG ballistic control
+fit.modules.low.equip(Module(14127, state=State.online))  # Domi nanofiber
 
-fit.rigs.fill(Rig(31650))  # t2 rigor
-fit.rigs.fill(Rig(31650))  # t2 rigor
+fit.rigs.equip(Rig(31650))  # t2 rigor
+fit.rigs.equip(Rig(31650))  # t2 rigor
 
 fit.implants.add(Implant(19540))  # Snake Alpha
 fit.implants.add(Implant(19551))  # Snake Beta

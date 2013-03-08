@@ -85,7 +85,7 @@ class HolderList(HolderContainerBase):
         self.__list[index] = holder
         self._handleAdd(holder)
 
-    def fill(self, holder):
+    def equip(self, holder):
         """
         Put holder to first free slot in container; if
         container doesn't have free slots, append holder
