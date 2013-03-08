@@ -5,8 +5,8 @@ from eos import *
 from eos.data.dataHandler.jsonDataHandler import JsonDataHandler
 
 
-dataHandler = JsonDataHandler('/home/dfx/src/pyfa/eos/dataFolder/phobos/')
-engine = Eos(dataHandler, name='eos', storagePath='~/src/pyfa/eos/dataFolder/', makeDefault=True)
+dataHandler = JsonDataHandler('/path/to/phobos/data/dump/')
+engine = Eos(dataHandler, storagePath='~/path/to/logs/and/cache/', makeDefault=True)
 
 fit = Fit()
 fit.ship = Ship(11176)  # Crow
