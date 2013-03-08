@@ -1,8 +1,7 @@
 Currently API is not considered to be final (read as, what you see is stub for testing). Currently you can use engine following way:
 -------------------------------------------------------------------------------
 
-from eos import Eos
-from eos import State
+from eos import Eos, Fit, State
 from eos.data.dataHandler.jsonDataHandler import JsonDataHandler
 
 

@@ -31,23 +31,63 @@ eosVersion = 'git'
 
 
 class Eos:
+    """
+    Top-level object to glue multiple things together.
+    Used internally as contact point to get logger and
+    fetch necessary data, thus should be passed to top-
+    level objects like Fit.
+
+    Positional arguments:
+    dataHandler -- object which implements standard data
+    interface (returns data rows for several table as
+    dicts and is able to get data version)
+
+    Optional arguments:
+    name -- name of this eos instance, used as key to
+    log and cache files, thus should be unique for all
+    running eos instances. Default is 'eos'.
+    storagePath -- path to store various files. Default
+    is ~/.eos
+    """
 
     def __init__(self, dataHandler, name='eos', storagePath=None):
-        if storagePath is None:
-            storagePath = os.path.join('~', '.eos')
-        storagePath = os.path.expanduser(storagePath)
+        self.__name = name
+        self.__path = self.__initializePath(storagePath)
+        self._logger = self.__initializeLogger()
+        self._cacheHandler = self.__initializeData(dataHandler)
 
-        self._logger = Logger(name, os.path.join(storagePath, 'logs'))
-        self._logger.info('------------------------------------------------------------------------')
-        self._logger.info('session started')
+    @property
+    def name(self):
+        return self.__name
 
-        self._cacheHandler = JsonCacheHandler(os.path.join(storagePath, 'cache'), name, self._logger)
+    def __initializePath(self, path):
+        """Process path we've received from user and return it."""
+        if path is None:
+            path = os.path.join('~', '.eos')
+        path = os.path.expanduser(path)
+        return path
 
+    def __initializeLogger(self):
+        """
+        Initialize logging facilities, log few initial messages,
+        and return logger.
+        """
+        logger = Logger(self.name, os.path.join(self.__path, 'logs'))
+        logger.info('------------------------------------------------------------------------')
+        logger.info('session started')
+        return logger
+
+    def __initializeData(self, dataHandler):
+        """
+        Using passed dataHandler, compose on-disk cache if
+        necessary, load this cache in memory and return
+        cache handler which deals with it.
+        """
+        cacheHandler = JsonCacheHandler(os.path.join(self.__path, 'cache'), self.name, self._logger)
         # Compare fingerprints from data and cache
-        cacheFp = self._cacheHandler.getFingerprint()
+        cacheFp = cacheHandler.getFingerprint()
         dataVersion = dataHandler.getVersion()
-        currentFp = '{}_{}_{}'.format(name, dataVersion, eosVersion)
-
+        currentFp = '{}_{}_{}'.format(self.name, dataVersion, eosVersion)
         # If data version is corrupt or fingerprints mismatch,
         # update cache
         if dataVersion is None or cacheFp != currentFp:
@@ -59,4 +99,5 @@ class Eos:
             # Generate cache, apply customizations and write it
             cacheData = CacheGenerator(self._logger).run(dataHandler)
             CacheCustomizer().runBuiltIn(cacheData)
-            self._cacheHandler.updateCache(cacheData, currentFp)
+            cacheHandler.updateCache(cacheData, currentFp)
+        return cacheHandler
