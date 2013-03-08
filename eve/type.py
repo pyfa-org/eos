@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Slot, State
+from eos.const.eos import Slot, State
+from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.util.cachedProperty import cachedproperty
-from .const import Attribute, Effect, EffectCategory
 
 
 class Type:

@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import State, Location, EffectBuildStatus, Context, FilterType, Operator
-from eos.eve.const import Type, Group, Attribute, EffectCategory
+from eos.const.eos import State, Location, EffectBuildStatus, Context, FilterType, Operator
+from eos.const.eve import Type, Group, Attribute, EffectCategory
 
 
 class CacheCustomizer:

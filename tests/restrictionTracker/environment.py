@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Location
+from eos.const.eos import State, Location
 from eos.fit.restrictionTracker.exception import ValidationError
 from eos.fit.restrictionTracker import RestrictionTracker
 

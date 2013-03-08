@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Location, FilterType
+from eos.const.eos import Location, FilterType
 from eos.util.keyedSet import KeyedSet
 from .exception import DirectLocationError, FilteredLocationError, FilteredSelfReferenceError, FilterTypeError
 

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State, Location
+from eos.const.eos import State, Location
 from eos.fit.attributeCalculator import LinkTracker, MutableAttributeMap
 from eos.tests.environment import Logger
 

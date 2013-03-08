@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State
+from eos.const.eos import State
 from .exception import RegisterValidationError, ValidationError
 from .restriction import *
 

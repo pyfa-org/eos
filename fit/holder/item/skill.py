@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import Location, State
-from eos.eve.const import Attribute
+from eos.const.eos import Location, State
+from eos.const.eve import Attribute
 from eos.fit.holder import Holder
 
 

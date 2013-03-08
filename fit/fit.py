@@ -20,8 +20,8 @@
 
 
 from eos import eos as eosModule
-from eos.const import State
-from eos.eve.const import Type
+from eos.const.eos import State
+from eos.const.eve import Type
 from .attributeCalculator import LinkTracker
 from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Character

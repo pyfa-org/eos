@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.eve.const import Effect
+from eos.const.eve import Effect
 from eos.util.frozendict import frozendict
 
 

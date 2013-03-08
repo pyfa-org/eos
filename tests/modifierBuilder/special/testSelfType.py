@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import EffectBuildStatus, FilterType
+from eos.const.eos import EffectBuildStatus, FilterType
 from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
 

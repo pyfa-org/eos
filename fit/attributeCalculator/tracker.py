@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Context
+from eos.const.eos import Context
 from .affector import Affector
 from .register import LinkRegister
 

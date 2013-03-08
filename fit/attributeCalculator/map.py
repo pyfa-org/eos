@@ -21,9 +21,9 @@
 
 from math import exp
 
-from eos.const import Operator
+from eos.const.eos import Operator
+from eos.const.eve import Category, Attribute
 from eos.data.cacheHandler.exception import AttributeFetchError
-from eos.eve.const import Category, Attribute
 from eos.util.keyedSet import KeyedSet
 from .exception import BaseValueError, AttributeMetaError, OperatorError
 

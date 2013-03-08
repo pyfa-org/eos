@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.eve.const import Attribute
+from eos.const.eve import Attribute
 from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 

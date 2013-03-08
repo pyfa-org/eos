@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from .const import State, Restriction
+from .const.eos import State, Restriction
 from .eos import Eos, eosVersion as __version__
 from .data.cacheHandler import TypeFetchError
 from .fit import Fit

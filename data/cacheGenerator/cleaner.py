@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.eve.const import Group, Category
+from eos.const.eve import Group, Category
 
 
 class Cleaner:

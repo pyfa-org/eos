@@ -21,7 +21,7 @@
 
 import math
 
-from eos.eve.const import Attribute
+from eos.const.eve import Attribute
 
 
 class StatsCalculator:

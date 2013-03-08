@@ -33,7 +33,7 @@ class Action:
     """
 
     def __init__(self):
-        # Type of action, must be eos.eve.const.Operand class'
+        # Type of action, must be eos.const.eve.Operand class'
         # attribute value, only those which describe some operation
         # applied onto item.
         self.type = None
@@ -43,7 +43,7 @@ class Action:
         self.sourceAttributeId = None
 
         # Which operation should be applied onto target attribute,
-        # must be eos.const.Operator class' attribute value.
+        # must be eos.const.eos.Operator class' attribute value.
         self.operator = None
 
         # Which attribute will be affected by operator on the target,
@@ -52,7 +52,7 @@ class Action:
 
         # Target location to change:
         # For action types belonging to gang group, must be None
-        # For other action types must be eos.const.Location
+        # For other action types must be eos.const.eos.Location
         # class' attribute value.
         self.targetLocation = None
 

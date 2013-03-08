@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import Location, Operator
-from eos.eve.const import Operand
+from eos.const.eos import Location, Operator
+from eos.const.eve import Operand
 from .action import Action
 from .exception import ActionBuilderError, ExpressionFetchError, ActionValidationError
 from .shared import operandData, stateData

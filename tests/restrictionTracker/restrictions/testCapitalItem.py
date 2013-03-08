@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import Restriction
-from eos.eve.const import Attribute, Type as ConstType
+from eos.const.eos import Restriction
+from eos.const.eve import Attribute, Type as ConstType
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem, ShipItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 

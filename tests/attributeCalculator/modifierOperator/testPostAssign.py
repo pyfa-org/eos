@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import State, Location, Context, FilterType, Operator
-from eos.eve.const import EffectCategory
+from eos.const.eos import State, Location, Context, FilterType, Operator
+from eos.const.eve import EffectCategory
 from eos.eve.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem

@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.const import Restriction
-from eos.eve.const import Attribute
+from eos.const.eos import Restriction
+from eos.const.eve import Attribute
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem, ShipItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 

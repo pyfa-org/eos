@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import EffectBuildStatus
+from eos.const.eos import EffectBuildStatus
 from eos.tests.environment import Logger
 from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 

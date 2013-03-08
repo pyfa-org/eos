@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.eve.const import Attribute
+from eos.const.eve import Attribute
 from eos.util.frozendict import frozendict
 from .modifierBuilder import ModifierBuilder
 

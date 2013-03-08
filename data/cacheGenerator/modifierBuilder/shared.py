@@ -27,8 +27,8 @@ is used by several builders.
 
 from collections import namedtuple
 
-from eos.const import State, Context
-from eos.eve.const import EffectCategory, Operand
+from eos.const.eos import State, Context
+from eos.const.eve import EffectCategory, Operand
 
 
 # Named tuple for ease of access of operand metadata, where:

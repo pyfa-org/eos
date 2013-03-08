@@ -17,20 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from eos.const.eos import State
-from eos.fit.holder import Holder
-
-
-class Celestial(Holder):
-    """System-wide anomaly with all its special properties."""
-
-    __slots__ = ()
-
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId, State.offline)
-
-    @property
-    def _location(self):
-        return None

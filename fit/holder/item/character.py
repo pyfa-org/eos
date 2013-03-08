@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import State
+from eos.const.eos import State
 from eos.fit.holder import Holder
 
 

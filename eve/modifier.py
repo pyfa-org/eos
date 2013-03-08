@@ -35,12 +35,12 @@ class Modifier:
         self.id = modifierId
 
         # Modifier can be applied only when its carrier holder
-        # is in this or greater state, must be eos.const.State
+        # is in this or greater state, must be eos.const.eos.State
         # class' attribute value.
         self.state = state
 
         # Describes context in which modifier is applied, must
-        # be eos.const.Context class' attribute value.
+        # be eos.const.eos.Context class' attribute value.
         self.context = context
 
         # Which attribute will be taken as source value,
@@ -48,24 +48,23 @@ class Modifier:
         self.sourceAttributeId = sourceAttributeId
 
         # Which operation should be applied during modification,
-        # must be eos.const.Operator class' attribute value.
+        # must be eos.const.eos.Operator class' attribute value.
         self.operator = operator
 
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
         self.targetAttributeId = targetAttributeId
 
-        # Target location to change, must be eos.const.Location
+        # Target location to change, must be eos.const.eos.Location
         # class' attribute value.
         self.location = location
 
         # Filter type of the modification, must be None or
-        # eos.const.FilterType class' attribute value.
+        # eos.const.eos.FilterType class' attribute value.
         self.filterType = filterType
 
         # Filter value of the modification:
-        # For filterType.all_ or filterType.None must be None;
+        # For filterType.all_, filterType.None or filterType.skillSelf must be None;
         # For filterType.group must be some integer, referring group via ID;
-        # For filterType.skill must be some integer, referring type via ID,
-        # or eos.const.InvType.self_ to reference type of modifier carrier.
+        # For filterType.skill must be some integer, referring type via ID
         self.filterValue = filterValue

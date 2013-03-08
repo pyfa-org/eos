@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const import Restriction
+from eos.const.eos import Restriction
 from eos.tests.restrictionTracker.environment import Fit, IndependentItem, Skill
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 

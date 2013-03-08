@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.eve.const import Attribute
+from eos.const.eve import Attribute
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
 from eos.tests.attributeCalculator.environment import Fit, IndependentItem, Skill
 

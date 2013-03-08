@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from eos.const import Location, EffectBuildStatus, FilterType
+from eos.const.eos import Location, EffectBuildStatus, FilterType
+from eos.const.eve import Operand
 from eos.eve import Modifier
-from eos.eve.const import Operand
 from .actionBuilder import ActionBuilder
 from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, ActionBuilderError, ExpressionFetchError
 from .shared import operandData, stateData
