@@ -17,12 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from .const.eos import State, Restriction
-from .eos import Eos, eosVersion as __version__
-from .data.cache.handler import TypeFetchError
-from .fit import Fit
-from .fit.holder.item import *
-from .fit.restrictionTracker.exception import ValidationError
-

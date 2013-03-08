@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.data.cacheGenerator.modifierBuilder import ModifierBuilder
+from eos.data.cache.generator.modifierBuilder import ModifierBuilder
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
 from .environment import ExpressionFactory

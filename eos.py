@@ -21,9 +21,9 @@
 
 import os.path
 
-from eos.data.cacheCustomizer import CacheCustomizer
-from eos.data.cacheHandler import JsonCacheHandler
-from eos.data.cacheGenerator import CacheGenerator
+from eos.data.cache.customizer import CacheCustomizer
+from eos.data.cache.generator import CacheGenerator
+from eos.data.cache.handler import JsonCacheHandler
 from eos.util.logger import Logger
 
 

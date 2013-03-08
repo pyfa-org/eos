@@ -25,7 +25,7 @@ from eos.tests.cacheGenerator.generatorTestCase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-@patch('eos.data.cacheGenerator.converter.ModifierBuilder')
+@patch('eos.data.cache.generator.converter.ModifierBuilder')
 class TestAssociatedData(GeneratorTestCase):
     """
     Check that types, which passed filter, pull in

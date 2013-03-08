@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import Restriction
-from eos.data.cacheObjects.type import Attribute, Slot
+from eos.data.cache.object.type import Attribute, Slot
 from eos.tests.restrictionTracker.environment import Fit, ShipItem, IndependentItem
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 

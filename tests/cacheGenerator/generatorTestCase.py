@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.data.cacheGenerator import CacheGenerator
-from eos.data.cacheObjects import Modifier
+from eos.data.cache.generator import CacheGenerator
+from eos.data.cache.object import Modifier
 from eos.tests.environment import Logger
 from eos.tests.eosTestCase import EosTestCase
 from .environment import DataHandler
