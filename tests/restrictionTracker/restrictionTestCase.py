@@ -24,12 +24,10 @@ from eos.tests.eosTestCase import EosTestCase
 
 class RestrictionTestCase(EosTestCase):
     """
-    Special test case class, which should be used to test
-    just restriction tracker and nothing else. Additional
-    functionality provided:
+    Additional functionality provided:
 
     self.assertBuffersEmpty -- checks if restriction tracker
-    buffers of passed fit are clear.
+    buffers of passed fit are clear
     """
 
     def assertBuffersEmpty(self, fit):

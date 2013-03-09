@@ -27,6 +27,11 @@ from .environment import DataHandler
 
 
 class GeneratorTestCase(EosTestCase):
+    """
+    Additional functionality provided:
+
+    self.dh -- default data handler
+    """
 
     def setUp(self):
         EosTestCase.setUp(self)

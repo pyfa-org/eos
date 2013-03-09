@@ -25,9 +25,7 @@ from .environment import Fit
 
 class AttrCalcTestCase(EosTestCase):
     """
-    Special test case class, which should be used to test
-    just attribute calculator and nothing else. Additional
-    functionality provided:
+    Additional functionality provided:
 
     self.fit -- precreated fit with self.ch used as cache handler
     self.assertBuffersEmpty -- checks if link tracker buffers
