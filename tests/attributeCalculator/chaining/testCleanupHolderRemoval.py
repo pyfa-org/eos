@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, CharacterItem, ShipItem
 
 
 class TestCleanupChainRemoval(AttrCalcTestCase):
@@ -58,16 +58,15 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         effect2.modifiers = (modifier2,)
         holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr3.id: 0.5}))
-        fit = Fit()
-        fit.items.add(holder1)
-        fit.ship = holder2
-        fit.items.add(holder3)
+        self.fit.items.add(holder1)
+        self.fit.ship = holder2
+        self.fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
-        fit.items.remove(holder1)
+        self.fit.items.remove(holder1)
         # When holder1 is removed, attr2 of holder2 and attr3 of holder3
         # must be cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
-        fit.ship = None
-        fit.items.remove(holder3)
+        self.fit.ship = None
+        self.fit.items.remove(holder3)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)

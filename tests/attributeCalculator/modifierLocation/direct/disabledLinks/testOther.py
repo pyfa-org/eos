@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, ItemWithOther
+from eos.tests.attributeCalculator.environment import ItemWithOther
 
 
 class TestLocationDirectOtherSwitch(AttrCalcTestCase):
@@ -43,22 +43,21 @@ class TestLocationDirectOtherSwitch(AttrCalcTestCase):
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        fit = Fit()
         influenceSource = ItemWithOther(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
-        fit.items.add(influenceSource)
+        self.fit.items.add(influenceSource)
         item = self.ch.type_(typeId=2, attributes={tgtAttr.id: 100})
         influenceTarget1 = ItemWithOther(item)
         influenceSource.makeOtherLink(influenceTarget1)
-        fit.items.add(influenceTarget1)
+        self.fit.items.add(influenceTarget1)
         self.assertNotAlmostEqual(influenceTarget1.attributes[tgtAttr.id], 100)
-        fit.items.remove(influenceTarget1)
+        self.fit.items.remove(influenceTarget1)
         influenceSource.breakOtherLink(influenceTarget1)
         influenceTarget2 = ItemWithOther(item)
         influenceSource.makeOtherLink(influenceTarget2)
-        fit.items.add(influenceTarget2)
+        self.fit.items.add(influenceTarget2)
         self.assertNotAlmostEqual(influenceTarget2.attributes[tgtAttr.id], 100)
-        fit.items.remove(influenceTarget2)
+        self.fit.items.remove(influenceTarget2)
         influenceSource.breakOtherLink(influenceTarget2)
-        fit.items.remove(influenceSource)
+        self.fit.items.remove(influenceSource)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)

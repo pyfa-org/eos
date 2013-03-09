@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 
 
 class TestStateSwitching(AttrCalcTestCase):
@@ -75,7 +75,6 @@ class TestStateSwitching(AttrCalcTestCase):
         # Overload category will make sure that holder can enter all states
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.overload)
         effect.modifiers = (modifierOff, modifierOn, modifierAct, modifierOver)
-        self.fit = Fit()
         self.holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr1.id: 1.1,
                                                                                              srcAttr2.id: 1.3, srcAttr3.id: 1.5,
                                                                                              srcAttr4.id: 1.7}))

@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import Category, EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem
 
 
 class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
@@ -44,7 +44,6 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         modifier.filterValue = None
         self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
-        self.fit = Fit()
 
     def testShip(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.ship, attributes={self.srcAttr.id: 50}))

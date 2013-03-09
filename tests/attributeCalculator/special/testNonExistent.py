@@ -20,7 +20,7 @@
 
 
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
@@ -30,43 +30,40 @@ class TestNonExistent(AttrCalcTestCase):
     def testAttributeDataError(self):
         # Check case when attribute value is available, but
         # cache handler doesn't know about such attribute
-        fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=57, attributes={105: 20}))
-        fit.items.add(holder)
+        self.fit.items.add(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.ERROR)
         self.assertEqual(logRecord.msg, 'unable to fetch metadata for attribute 105, requested for item 57')
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
+        self.fit.items.remove(holder)
+        self.assertBuffersEmpty(self.fit)
 
     def testAbsentBaseValueError(self):
         # Check case when default value of attribute cannot be
         # determined. and item itself doesn't define any value
         # either
         attr = self.ch.attribute(attributeId=89)
-        fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=649))
-        fit.items.add(holder)
+        self.fit.items.add(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'unable to find base value for attribute 89 on item 649')
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
+        self.fit.items.remove(holder)
+        self.assertBuffersEmpty(self.fit)
 
     def testAbsentDefaultValue(self):
         # Default value should be used if attribute
         # value is not available on item
         attr = self.ch.attribute(attributeId=1, defaultValue=5.6)
-        fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1))
-        fit.items.add(holder)
+        self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
-        fit.items.remove(holder)
+        self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)

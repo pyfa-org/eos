@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem
 
 
 class TestCap(AttrCalcTestCase):
@@ -47,7 +47,6 @@ class TestCap(AttrCalcTestCase):
         modifier.filterValue = None
         self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
-        self.fit = Fit()
 
     def testCapDefault(self):
         # Check that cap is applied properly when holder

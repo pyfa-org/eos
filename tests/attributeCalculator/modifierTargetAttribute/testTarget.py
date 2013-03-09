@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 
 
 class TestTargetAttribute(AttrCalcTestCase):
@@ -54,16 +54,15 @@ class TestTargetAttribute(AttrCalcTestCase):
         modifier2.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier1, modifier2)
-        fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
                                                                                         tgtAttr3.id: 100, srcAttr.id: 20}))
-        fit.items.add(holder)
+        self.fit.items.add(holder)
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(holder.attributes[tgtAttr1.id], 60)
         # Second should be modified by modifier2
         self.assertAlmostEqual(holder.attributes[tgtAttr2.id], 96)
         # Third should stay unmodified
         self.assertAlmostEqual(holder.attributes[tgtAttr3.id], 100)
-        fit.items.remove(holder)
+        self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)

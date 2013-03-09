@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem
 
 
 class TestOperatorSub(AttrCalcTestCase):
@@ -44,7 +44,6 @@ class TestOperatorSub(AttrCalcTestCase):
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.fit = Fit()
         self.influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: -10}))
         self.influenceSource2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect,), attributes={srcAttr.id: 20}))
         self.influenceSource3 = IndependentItem(self.ch.type_(typeId=3, effects=(effect,), attributes={srcAttr.id: -53}))

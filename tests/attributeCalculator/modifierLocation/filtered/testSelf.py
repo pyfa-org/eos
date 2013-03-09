@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem, ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, CharacterItem, ShipItem
 from eos.tests.environment import Logger
 
 
@@ -45,7 +45,6 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.fit = Fit()
         self.influenceSource = IndependentItem(self.ch.type_(typeId=1061, effects=(effect,), attributes={srcAttr.id: 20}))
 
     def testShip(self):

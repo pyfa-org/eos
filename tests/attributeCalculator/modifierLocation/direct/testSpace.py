@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
@@ -44,15 +44,14 @@ class TestLocationDirectSpace(AttrCalcTestCase):
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        fit = Fit()
         influenceSource = IndependentItem(self.ch.type_(typeId=34, effects=(effect,), attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
-        fit.items.add(influenceSource)
+        self.fit.items.add(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 34: unsupported target location {} for direct modification'.format(Location.space))
-        fit.items.remove(influenceSource)
-        self.assertBuffersEmpty(fit)
+        self.fit.items.remove(influenceSource)
+        self.assertBuffersEmpty(self.fit)

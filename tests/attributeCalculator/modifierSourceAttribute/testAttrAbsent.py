@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
@@ -54,9 +54,8 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         validModifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (invalidModifier, validModifier)
-        fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
-        fit.items.add(holder)
+        self.fit.items.add(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
@@ -64,5 +63,5 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'unable to find base value for attribute 2 on item 1')
-        fit.items.remove(holder)
-        self.assertBuffersEmpty(fit)
+        self.fit.items.remove(holder)
+        self.assertBuffersEmpty(self.fit)

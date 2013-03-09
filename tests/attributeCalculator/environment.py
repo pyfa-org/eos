@@ -47,14 +47,15 @@ class HolderContainer:
 
 class Eos:
 
-    def __init__(self):
+    def __init__(self, cacheHandler):
         self._logger = Logger()
+        self._cacheHandler = cacheHandler
 
 
 class Fit:
 
-    def __init__(self):
-        self.eos = Eos()
+    def __init__(self, cacheHandler):
+        self.eos = Eos(cacheHandler)
         self._linkTracker = LinkTracker(self)
         self.__ship = None
         self.__character = None

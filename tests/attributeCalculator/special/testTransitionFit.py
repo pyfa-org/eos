@@ -55,9 +55,9 @@ class TestTransitionFit(AttrCalcTestCase):
         ship1 = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 10}))
         ship2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect,), attributes={srcAttr.id: 20}))
         module = ShipItem(self.ch.type_(typeId=3, attributes={tgtAttr.id: 50}))
-        fit1 = Fit()
+        fit1 = Fit(self.ch)
         fit1.ship = ship1
-        fit2 = Fit()
+        fit2 = Fit(self.ch)
         fit2.ship = ship2
         fit1.items.add(module)
         self.assertAlmostEqual(module.attributes.get(tgtAttr.id), 55)
@@ -88,9 +88,9 @@ class TestTransitionFit(AttrCalcTestCase):
         ship1 = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 10}))
         ship2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect,), attributes={srcAttr.id: 20}))
         module = ShipItem(self.ch.type_(typeId=3, attributes={tgtAttr.id: 50}))
-        fit1 = Fit()
+        fit1 = Fit(self.ch)
         fit1.ship = ship1
-        fit2 = Fit()
+        fit2 = Fit(self.ch)
         fit2.ship = ship2
         fit1.items.add(module)
         self.assertAlmostEqual(module.attributes.get(tgtAttr.id), 55)

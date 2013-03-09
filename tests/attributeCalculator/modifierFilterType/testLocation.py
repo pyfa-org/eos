@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem, SpaceItem
+from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem, SpaceItem
 
 
 class TestFilterLocation(AttrCalcTestCase):
@@ -45,7 +45,6 @@ class TestFilterLocation(AttrCalcTestCase):
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
-        self.fit = Fit()
         self.fit.items.add(self.influenceSource)
 
     def testMatch(self):

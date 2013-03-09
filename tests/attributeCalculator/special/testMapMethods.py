@@ -20,7 +20,7 @@
 
 
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 
 
 class TestMapMethods(AttrCalcTestCase):
@@ -31,7 +31,6 @@ class TestMapMethods(AttrCalcTestCase):
         self.attr1 = self.ch.attribute(attributeId=1)
         self.attr2 = self.ch.attribute(attributeId=2)
         self.attr3 = self.ch.attribute(attributeId=3)
-        self.fit = Fit()
         self.holder = IndependentItem(self.ch.type_(typeId=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
         self.fit.items.add(self.holder)
         self.holder.attributes._MutableAttributeMap__modifiedAttributes = {self.attr2.id: 20, self.attr3.id: 40}

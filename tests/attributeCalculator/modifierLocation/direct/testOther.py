@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ItemWithOther
+from eos.tests.attributeCalculator.environment import IndependentItem, ItemWithOther
 
 
 class TestLocationDirectOther(AttrCalcTestCase):
@@ -44,7 +44,6 @@ class TestLocationDirectOther(AttrCalcTestCase):
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.fit = Fit()
         # We added target attribute to influence source for testSelf;
         # currently, eos cannot calculate attributes which are originally
         # missing on item

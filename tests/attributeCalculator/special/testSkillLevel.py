@@ -21,7 +21,7 @@
 
 from eos.const.eve import Attribute
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, Skill
+from eos.tests.attributeCalculator.environment import IndependentItem, Skill
 
 
 class TestSkillLevel(AttrCalcTestCase):
@@ -29,25 +29,23 @@ class TestSkillLevel(AttrCalcTestCase):
 
     def testSpecialAttrAccess(self):
         attr = self.ch.attribute(attributeId=Attribute.skillLevel)
-        fit = Fit()
         skill = Skill(self.ch.type_(typeId=1, attributes={attr.id: 3}))
         skill.level = 5
-        fit.items.add(skill)
+        self.fit.items.add(skill)
         # If holder has level attribute, it must be returned despite of holder contents
         self.assertAlmostEqual(skill.attributes[Attribute.skillLevel], 5)
-        fit.items.remove(skill)
+        self.fit.items.remove(skill)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)
 
     def testStandardAttrAccess(self):
         attr = self.ch.attribute(attributeId=Attribute.skillLevel)
-        fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={attr.id: 3}))
-        fit.items.add(holder)
+        self.fit.items.add(holder)
         # If .skill direct attribute is not available, standard
         # skill level attribute (from item attributes) should
         # be returned
         self.assertAlmostEqual(holder.attributes[Attribute.skillLevel], 3)
-        fit.items.remove(holder)
+        self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)

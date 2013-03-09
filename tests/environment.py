@@ -77,27 +77,20 @@ class CacheHandler:
         self.__expressionData = {}
 
     def type_(self, **kwargs):
-        if 'cacheHandler' in kwargs:
-            raise TypeError('cacheHandler')
-        typ = Type(cacheHandler=self, **kwargs)
-        if typ.id in self.__typeData:
-            raise KeyError(typ.id)
-        self.__typeData[typ.id] = typ
-        return typ
+        type_ = Type(**kwargs)
+        if type_.id in self.__typeData:
+            raise KeyError(type_.id)
+        self.__typeData[type_.id] = type_
+        return type_
 
     def attribute(self, **kwargs):
-        if 'cacheHandler' in kwargs:
-            raise TypeError('cacheHandler')
         attr = Attribute(**kwargs)
         if attr.id in self.__attributeData:
             raise KeyError(attr.id)
         self.__attributeData[attr.id] = attr
         return attr
 
-
     def effect(self, **kwargs):
-        if 'cacheHandler' in kwargs:
-            raise TypeError('cacheHandler')
         eff = Effect(**kwargs)
         if eff.id in self.__effectData:
             raise KeyError(eff.id)

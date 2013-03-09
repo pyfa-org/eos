@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, CharacterItem
+from eos.tests.attributeCalculator.environment import IndependentItem, CharacterItem
 
 
 class TestLocationFilterCharacter(AttrCalcTestCase):
@@ -44,7 +44,6 @@ class TestLocationFilterCharacter(AttrCalcTestCase):
         modifier.filterValue = None
         effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.fit = Fit()
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit
         self.influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))

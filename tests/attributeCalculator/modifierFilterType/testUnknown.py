@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem
+from eos.tests.attributeCalculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
@@ -44,7 +44,6 @@ class TestFilterUnknown(AttrCalcTestCase):
         invalidModifier.filterType = 26500
         invalidModifier.filterValue = None
         self.effect = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
-        self.fit = Fit()
 
     def testLog(self):
         self.effect.modifiers = (self.invalidModifier,)

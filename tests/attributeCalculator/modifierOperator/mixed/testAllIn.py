@@ -23,7 +23,7 @@ from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attributeCalculator.attrCalcTestCase import AttrCalcTestCase
-from eos.tests.attributeCalculator.environment import Fit, IndependentItem, ShipItem
+from eos.tests.attributeCalculator.environment import IndependentItem, ShipItem
 
 
 class TestOperatorAllIn(AttrCalcTestCase):
@@ -32,7 +32,6 @@ class TestOperatorAllIn(AttrCalcTestCase):
     def testAllIn(self):
         tgtAttr = self.ch.attribute(attributeId=1, stackable=0)
         srcAttr = self.ch.attribute(attributeId=2)
-        fit = Fit()
         modifierPreAss = Modifier()
         modifierPreAss.state = State.offline
         modifierPreAss.context = Context.local
@@ -46,7 +45,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPreAss.modifiers = (modifierPreAss,)
         valuePreAss = 5
         influenceSourcePreAss = IndependentItem(self.ch.type_(typeId=1, effects=(effectPreAss,), attributes={srcAttr.id: valuePreAss}))
-        fit.items.add(influenceSourcePreAss)
+        self.fit.items.add(influenceSourcePreAss)
         modifierPreMul = Modifier()
         modifierPreMul.state = State.offline
         modifierPreMul.context = Context.local
@@ -60,7 +59,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPreMul.modifiers = (modifierPreMul,)
         valuePreMul = 50
         influenceSourcePreMul = IndependentItem(self.ch.type_(typeId=2, effects=(effectPreMul,), attributes={srcAttr.id: valuePreMul}))
-        fit.items.add(influenceSourcePreMul)
+        self.fit.items.add(influenceSourcePreMul)
         modifierPreDiv = Modifier()
         modifierPreDiv.state = State.offline
         modifierPreDiv.context = Context.local
@@ -74,7 +73,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPreDiv.modifiers = (modifierPreDiv,)
         valuePreDiv = 0.5
         influenceSourcePreDiv = IndependentItem(self.ch.type_(typeId=3, effects=(effectPreDiv,), attributes={srcAttr.id: valuePreDiv}))
-        fit.items.add(influenceSourcePreDiv)
+        self.fit.items.add(influenceSourcePreDiv)
         modifierModAdd = Modifier()
         modifierModAdd.state = State.offline
         modifierModAdd.context = Context.local
@@ -88,7 +87,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectModAdd.modifiers = (modifierModAdd,)
         valueModAdd = 10
         influenceSourceModAdd = IndependentItem(self.ch.type_(typeId=4, effects=(effectModAdd,), attributes={srcAttr.id: valueModAdd}))
-        fit.items.add(influenceSourceModAdd)
+        self.fit.items.add(influenceSourceModAdd)
         modifierModSub = Modifier()
         modifierModSub.state = State.offline
         modifierModSub.context = Context.local
@@ -102,7 +101,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectModSub.modifiers = (modifierModSub,)
         valueModSub = 63
         influenceSourceModSub = IndependentItem(self.ch.type_(typeId=5, effects=(effectModSub,), attributes={srcAttr.id: valueModSub}))
-        fit.items.add(influenceSourceModSub)
+        self.fit.items.add(influenceSourceModSub)
         modifierPostMul = Modifier()
         modifierPostMul.state = State.offline
         modifierPostMul.context = Context.local
@@ -116,7 +115,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPostMul.modifiers = (modifierPostMul,)
         valuePostMul = 1.35
         influenceSourcePostMul = IndependentItem(self.ch.type_(typeId=6, effects=(effectPostMul,), attributes={srcAttr.id: valuePostMul}))
-        fit.items.add(influenceSourcePostMul)
+        self.fit.items.add(influenceSourcePostMul)
         modifierPostDiv = Modifier()
         modifierPostDiv.state = State.offline
         modifierPostDiv.context = Context.local
@@ -130,7 +129,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPostDiv.modifiers = (modifierPostDiv,)
         valuePostDiv = 2.7
         influenceSourcePostDiv = IndependentItem(self.ch.type_(typeId=7, effects=(effectPostDiv,), attributes={srcAttr.id: valuePostDiv}))
-        fit.items.add(influenceSourcePostDiv)
+        self.fit.items.add(influenceSourcePostDiv)
         modifierPostPerc = Modifier()
         modifierPostPerc.state = State.offline
         modifierPostPerc.context = Context.local
@@ -144,20 +143,20 @@ class TestOperatorAllIn(AttrCalcTestCase):
         effectPostPerc.modifiers = (modifierPostPerc,)
         valuePostPerc = 15
         influenceSourcePostPerc = IndependentItem(self.ch.type_(typeId=8, effects=(effectPostPerc,), attributes={srcAttr.id: valuePostPerc}))
-        fit.items.add(influenceSourcePostPerc)
+        self.fit.items.add(influenceSourcePostPerc)
         influenceTarget = ShipItem(self.ch.type_(typeId=9, attributes={tgtAttr.id: 100}))
-        fit.items.add(influenceTarget)
+        self.fit.items.add(influenceTarget)
         # Operators shouldn't be penalized and should go in this order
         expValue = ((valuePreAss * valuePreMul / valuePreDiv) + valueModAdd - valueModSub) * valuePostMul / valuePostDiv * (1 + valuePostPerc / 100)
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], expValue)
-        fit.items.remove(influenceSourcePreAss)
-        fit.items.remove(influenceSourcePreMul)
-        fit.items.remove(influenceSourcePreDiv)
-        fit.items.remove(influenceSourceModAdd)
-        fit.items.remove(influenceSourceModSub)
-        fit.items.remove(influenceSourcePostMul)
-        fit.items.remove(influenceSourcePostDiv)
-        fit.items.remove(influenceSourcePostPerc)
-        fit.items.remove(influenceTarget)
+        self.fit.items.remove(influenceSourcePreAss)
+        self.fit.items.remove(influenceSourcePreMul)
+        self.fit.items.remove(influenceSourcePreDiv)
+        self.fit.items.remove(influenceSourceModAdd)
+        self.fit.items.remove(influenceSourceModSub)
+        self.fit.items.remove(influenceSourcePostMul)
+        self.fit.items.remove(influenceSourcePostDiv)
+        self.fit.items.remove(influenceSourcePostPerc)
+        self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertBuffersEmpty(self.fit)
