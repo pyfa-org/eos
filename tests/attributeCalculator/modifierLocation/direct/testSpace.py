@@ -48,7 +48,7 @@ class TestLocationDirectSpace(AttrCalcTestCase):
         influenceSource = IndependentItem(self.ch.type_(typeId=34, effects=(effect,), attributes={srcAttr.id: 20}))
         # Space location was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
-        fit.items.append(influenceSource)
+        fit.items.add(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')

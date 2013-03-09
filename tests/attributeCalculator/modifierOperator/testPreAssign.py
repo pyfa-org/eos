@@ -49,10 +49,10 @@ class TestOperatorPreAssign(AttrCalcTestCase):
         self.influenceSource2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect,), attributes={srcAttr.id: -20}))
         self.influenceSource3 = IndependentItem(self.ch.type_(typeId=3, effects=(effect,), attributes={srcAttr.id: 53}))
         self.influenceTarget = ShipItem(self.ch.type_(typeId=4, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(self.influenceSource1)
-        self.fit.items.append(self.influenceSource2)
-        self.fit.items.append(self.influenceSource3)
-        self.fit.items.append(self.influenceTarget)
+        self.fit.items.add(self.influenceSource1)
+        self.fit.items.add(self.influenceSource2)
+        self.fit.items.add(self.influenceSource3)
+        self.fit.items.add(self.influenceTarget)
 
     def testHighGood(self):
         self.tgtAttr.highIsGood = True

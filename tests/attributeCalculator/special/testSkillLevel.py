@@ -32,7 +32,7 @@ class TestSkillLevel(AttrCalcTestCase):
         fit = Fit()
         skill = Skill(self.ch.type_(typeId=1, attributes={attr.id: 3}))
         skill.level = 5
-        fit.items.append(skill)
+        fit.items.add(skill)
         # If holder has level attribute, it must be returned despite of holder contents
         self.assertAlmostEqual(skill.attributes[Attribute.skillLevel], 5)
         fit.items.remove(skill)
@@ -43,7 +43,7 @@ class TestSkillLevel(AttrCalcTestCase):
         attr = self.ch.attribute(attributeId=Attribute.skillLevel)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={attr.id: 3}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         # If .skill direct attribute is not available, standard
         # skill level attribute (from item attributes) should
         # be returned

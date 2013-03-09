@@ -48,7 +48,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
 
     def testIndependent(self):
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit.items.append(holder)
+        self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         # We do not test attribute value after item removal here, because
         # removed holder (which is both source and target in this test set)
@@ -59,7 +59,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
 
     def testCharacter(self):
         holder = CharacterItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit.items.append(holder)
+        self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
@@ -67,7 +67,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
 
     def testShip(self):
         holder = ShipItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit.items.append(holder)
+        self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
@@ -75,7 +75,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
 
     def testSpace(self):
         holder = SpaceItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
-        self.fit.items.append(holder)
+        self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
@@ -97,7 +97,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
         self.fit.character = influenceSource
         influenceTarget = CharacterItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.character = None
         self.fit.items.remove(influenceTarget)

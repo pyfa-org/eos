@@ -49,12 +49,12 @@ class TestLocationDirectOther(AttrCalcTestCase):
         # currently, eos cannot calculate attributes which are originally
         # missing on item
         self.influenceSource = ItemWithOther(self.ch.type_(typeId=1, effects=(effect,), attributes={self.tgtAttr.id: 100, srcAttr.id: 20}))
-        self.fit.items.append(self.influenceSource)
+        self.fit.items.add(self.influenceSource)
 
     def testOtherLocation(self):
         influenceTarget = ItemWithOther(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.influenceSource.makeOtherLink(influenceTarget)
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
         self.influenceSource.breakOtherLink(influenceTarget)
@@ -67,7 +67,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
         # Check that source holder isn't modified
         influenceTarget = ItemWithOther(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
         self.influenceSource.makeOtherLink(influenceTarget)
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertAlmostEqual(self.influenceSource.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
         self.influenceSource.breakOtherLink(influenceTarget)
@@ -78,7 +78,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
     def testOtherHolder(self):
         # Here we check some "random" holder, w/o linking holders
         influenceTarget = IndependentItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
         self.fit.items.remove(influenceTarget)

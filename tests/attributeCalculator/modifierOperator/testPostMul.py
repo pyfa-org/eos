@@ -51,12 +51,12 @@ class TestOperatorPostMul(AttrCalcTestCase):
         self.influenceSource4 = IndependentItem(self.ch.type_(typeId=4, effects=(effect,), attributes={srcAttr.id: 0.75}))
         self.influenceSource5 = IndependentItem(self.ch.type_(typeId=5, effects=(effect,), attributes={srcAttr.id: 5}))
         self.influenceTarget = ShipItem(self.ch.type_(typeId=6, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(self.influenceSource1)
-        self.fit.items.append(self.influenceSource2)
-        self.fit.items.append(self.influenceSource3)
-        self.fit.items.append(self.influenceSource4)
-        self.fit.items.append(self.influenceSource5)
-        self.fit.items.append(self.influenceTarget)
+        self.fit.items.add(self.influenceSource1)
+        self.fit.items.add(self.influenceSource2)
+        self.fit.items.add(self.influenceSource3)
+        self.fit.items.add(self.influenceSource4)
+        self.fit.items.add(self.influenceSource5)
+        self.fit.items.add(self.influenceTarget)
 
     def testUnpenalized(self):
         self.tgtAttr.stackable = True

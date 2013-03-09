@@ -45,7 +45,7 @@ class TestLocationDirectShipSwitch(AttrCalcTestCase):
         effect.modifiers = (modifier,)
         fit = Fit()
         influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
-        fit.items.append(influenceSource)
+        fit.items.add(influenceSource)
         item = self.ch.type_(typeId=None, attributes={tgtAttr.id: 100})
         influenceTarget1 = IndependentItem(item)
         fit.ship = influenceTarget1

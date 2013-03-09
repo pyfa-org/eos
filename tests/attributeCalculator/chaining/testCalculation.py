@@ -71,9 +71,9 @@ class TestCalculationChain(AttrCalcTestCase):
         holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect3,), attributes={attr3.id: 150}))
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr4.id: 12.5}))
         fit = Fit()
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         fit.ship = holder2
-        fit.items.append(holder3)
+        fit.items.add(holder3)
         # If everything is processed properly, holder1 will multiply attr2 by attr1
         # on self, resulting in 20 * 5 = 100, then apply it as percentage modifier
         # on ship's (holder2) attr3, resulting in 150 + 100% = 300, then it is applied

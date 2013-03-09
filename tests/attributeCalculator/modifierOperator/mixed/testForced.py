@@ -45,7 +45,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPreAss = self.ch.effect(effectId=1, categoryId=EffectCategory.passive)
         effectPreAss.modifiers = (modifierPreAss,)
         influenceSourcePreAss = IndependentItem(self.ch.type_(typeId=1, effects=(effectPreAss,), attributes={srcAttr.id: 5}))
-        fit.items.append(influenceSourcePreAss)
+        fit.items.add(influenceSourcePreAss)
         modifierPreMul = Modifier()
         modifierPreMul.state = State.offline
         modifierPreMul.context = Context.local
@@ -58,7 +58,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPreMul = self.ch.effect(effectId=2, categoryId=EffectCategory.passive)
         effectPreMul.modifiers = (modifierPreMul,)
         influenceSourcePreMul = IndependentItem(self.ch.type_(typeId=2, effects=(effectPreMul,), attributes={srcAttr.id: 50}))
-        fit.items.append(influenceSourcePreMul)
+        fit.items.add(influenceSourcePreMul)
         modifierPreDiv = Modifier()
         modifierPreDiv.state = State.offline
         modifierPreDiv.context = Context.local
@@ -71,7 +71,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPreDiv = self.ch.effect(effectId=3, categoryId=EffectCategory.passive)
         effectPreDiv.modifiers = (modifierPreDiv,)
         influenceSourcePreDiv = IndependentItem(self.ch.type_(typeId=3, effects=(effectPreDiv,), attributes={srcAttr.id: 0.5}))
-        fit.items.append(influenceSourcePreDiv)
+        fit.items.add(influenceSourcePreDiv)
         modifierModAdd = Modifier()
         modifierModAdd.state = State.offline
         modifierModAdd.context = Context.local
@@ -84,7 +84,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectModAdd = self.ch.effect(effectId=4, categoryId=EffectCategory.passive)
         effectModAdd.modifiers = (modifierModAdd,)
         influenceSourceModAdd = IndependentItem(self.ch.type_(typeId=4, effects=(effectModAdd,), attributes={srcAttr.id: 10}))
-        fit.items.append(influenceSourceModAdd)
+        fit.items.add(influenceSourceModAdd)
         modifierModSub = Modifier()
         modifierModSub.state = State.offline
         modifierModSub.context = Context.local
@@ -97,7 +97,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectModSub = self.ch.effect(effectId=5, categoryId=EffectCategory.passive)
         effectModSub.modifiers = (modifierModSub,)
         influenceSourceModSub = IndependentItem(self.ch.type_(typeId=5, effects=(effectModSub,), attributes={srcAttr.id: 63}))
-        fit.items.append(influenceSourceModSub)
+        fit.items.add(influenceSourceModSub)
         modifierPostMul = Modifier()
         modifierPostMul.state = State.offline
         modifierPostMul.context = Context.local
@@ -110,7 +110,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostMul = self.ch.effect(effectId=6, categoryId=EffectCategory.passive)
         effectPostMul.modifiers = (modifierPostMul,)
         influenceSourcePostMul = IndependentItem(self.ch.type_(typeId=6, effects=(effectPostMul,), attributes={srcAttr.id: 1.35}))
-        fit.items.append(influenceSourcePostMul)
+        fit.items.add(influenceSourcePostMul)
         modifierPostDiv = Modifier()
         modifierPostDiv.state = State.offline
         modifierPostDiv.context = Context.local
@@ -123,7 +123,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostDiv = self.ch.effect(effectId=7, categoryId=EffectCategory.passive)
         effectPostDiv.modifiers = (modifierPostDiv,)
         influenceSourcePostDiv = IndependentItem(self.ch.type_(typeId=7, effects=(effectPostDiv,), attributes={srcAttr.id: 2.7}))
-        fit.items.append(influenceSourcePostDiv)
+        fit.items.add(influenceSourcePostDiv)
         modifierPostPerc = Modifier()
         modifierPostPerc.state = State.offline
         modifierPostPerc.context = Context.local
@@ -136,7 +136,7 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostPerc = self.ch.effect(effectId=8, categoryId=EffectCategory.passive)
         effectPostPerc.modifiers = (modifierPostPerc,)
         influenceSourcePostPerc = IndependentItem(self.ch.type_(typeId=8, effects=(effectPostPerc,), attributes={srcAttr.id: 15}))
-        fit.items.append(influenceSourcePostPerc)
+        fit.items.add(influenceSourcePostPerc)
         modifierPostAss = Modifier()
         modifierPostAss.state = State.offline
         modifierPostAss.context = Context.local
@@ -149,9 +149,9 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         effectPostAss = self.ch.effect(effectId=9, categoryId=EffectCategory.passive)
         effectPostAss.modifiers = (modifierPostAss,)
         influenceSourcePostAss = IndependentItem(self.ch.type_(typeId=9, effects=(effectPostAss,), attributes={srcAttr.id: 68}))
-        fit.items.append(influenceSourcePostAss)
+        fit.items.add(influenceSourcePostAss)
         influenceTarget = ShipItem(self.ch.type_(typeId=10, attributes={tgtAttr.id: 100}))
-        fit.items.append(influenceTarget)
+        fit.items.add(influenceTarget)
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influenceTarget.attributes[tgtAttr.id], 68)
         fit.items.remove(influenceSourcePreAss)

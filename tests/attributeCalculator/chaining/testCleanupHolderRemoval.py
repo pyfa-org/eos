@@ -59,9 +59,9 @@ class TestCleanupChainRemoval(AttrCalcTestCase):
         holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr3.id: 0.5}))
         fit = Fit()
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         fit.ship = holder2
-        fit.items.append(holder3)
+        fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
         fit.items.remove(holder1)
         # When holder1 is removed, attr2 of holder2 and attr3 of holder3

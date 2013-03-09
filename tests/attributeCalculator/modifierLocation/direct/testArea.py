@@ -47,7 +47,7 @@ class TestLocationDirectArea(AttrCalcTestCase):
         fit = Fit()
         influenceSource = IndependentItem(self.ch.type_(typeId=772, effects=(effect,), attributes={srcAttr.id: 20}))
         # This location just isn't used in EVE and unsupported by Eos by design
-        fit.items.append(influenceSource)
+        fit.items.add(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')

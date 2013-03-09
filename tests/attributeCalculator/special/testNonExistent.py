@@ -32,7 +32,7 @@ class TestNonExistent(AttrCalcTestCase):
         # cache handler doesn't know about such attribute
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=57, attributes={105: 20}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -49,7 +49,7 @@ class TestNonExistent(AttrCalcTestCase):
         attr = self.ch.attribute(attributeId=89)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=649))
-        fit.items.append(holder)
+        fit.items.add(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -65,7 +65,7 @@ class TestNonExistent(AttrCalcTestCase):
         attr = self.ch.attribute(attributeId=1, defaultValue=5.6)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1))
-        fit.items.append(holder)
+        fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)

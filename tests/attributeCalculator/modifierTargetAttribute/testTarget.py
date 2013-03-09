@@ -57,7 +57,7 @@ class TestTargetAttribute(AttrCalcTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={tgtAttr1.id: 50, tgtAttr2.id: 80,
                                                                                         tgtAttr3.id: 100, srcAttr.id: 20}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(holder.attributes[tgtAttr1.id], 60)
         # Second should be modified by modifier2

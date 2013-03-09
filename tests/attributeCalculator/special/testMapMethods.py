@@ -33,7 +33,7 @@ class TestMapMethods(AttrCalcTestCase):
         self.attr3 = self.ch.attribute(attributeId=3)
         self.fit = Fit()
         self.holder = IndependentItem(self.ch.type_(typeId=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
-        self.fit.items.append(self.holder)
+        self.fit.items.add(self.holder)
         self.holder.attributes._MutableAttributeMap__modifiedAttributes = {self.attr2.id: 20, self.attr3.id: 40}
 
     def testGet(self):

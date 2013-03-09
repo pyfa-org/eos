@@ -46,7 +46,7 @@ class TestLocationDirectShip(AttrCalcTestCase):
         effect.modifiers = (modifier,)
         self.fit = Fit()
         self.influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 20}))
-        self.fit.items.append(self.influenceSource)
+        self.fit.items.add(self.influenceSource)
 
     def testShip(self):
         influenceTarget = IndependentItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
@@ -60,7 +60,7 @@ class TestLocationDirectShip(AttrCalcTestCase):
 
     def testOther(self):
         influenceTarget = ShipItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(self.influenceSource)
         self.fit.items.remove(influenceTarget)

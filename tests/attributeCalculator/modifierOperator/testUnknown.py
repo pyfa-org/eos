@@ -48,7 +48,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         effect.modifiers = (invalidModifier,)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -86,7 +86,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         effect.modifiers = (invalidModifier, validModifier)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=83, effects=(effect,), attributes={srcAttr.id: 1.2, tgtAttr.id: 100}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgtAttr.id], 120)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
@@ -121,7 +121,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         effect.modifiers = (invalidModifier, validModifier)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)

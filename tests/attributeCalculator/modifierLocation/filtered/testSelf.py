@@ -51,7 +51,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
     def testShip(self):
         self.fit.ship = self.influenceSource
         influenceTarget = ShipItem(self.ch.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.ship = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
@@ -62,7 +62,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
     def testCharacter(self):
         self.fit.character = self.influenceSource
         influenceTarget = CharacterItem(self.ch.type_(typeId=1, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.character = None
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
@@ -74,7 +74,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         # Here we do not position holder in fit, this way attribute
         # calculator won't know that source is 'owner' of some location
         # and will log corresponding error
-        self.fit.items.append(self.influenceSource)
+        self.fit.items.add(self.influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')

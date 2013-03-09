@@ -49,7 +49,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
     def testLog(self):
         self.effect.modifiers = (self.invalidModifier,)
         holder = IndependentItem(self.ch.type_(typeId=754, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
-        self.fit.items.append(holder)
+        self.fit.items.add(holder)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
@@ -70,9 +70,9 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         validModifier.filterValue = None
         self.effect.modifiers = (self.invalidModifier, validModifier)
         influenceSource = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.srcAttr.id: 20}))
-        self.fit.items.append(influenceSource)
+        self.fit.items.add(influenceSource)
         influenceTarget = ShipItem(self.ch.type_(typeId=2, attributes={self.tgtAttr.id: 100}))
-        self.fit.items.append(influenceTarget)
+        self.fit.items.add(influenceTarget)
         # Invalid location in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)

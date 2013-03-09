@@ -59,9 +59,9 @@ class TestCleanupChainChange(AttrCalcTestCase):
         holder2 = IndependentItem(self.ch.type_(typeId=2, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr3.id: 0.5}))
         fit = Fit()
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         fit.ship = holder2
-        fit.items.append(holder3)
+        fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
         holder1.attributes[attr1.id] = 4
         # Manually changed attribute must trigger damaging whole chain

@@ -56,7 +56,7 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         effect.modifiers = (invalidModifier, validModifier)
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(effect,), attributes={srcAttr.id: 1.5, tgtAttr.id: 100}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.assertEqual(len(self.log), 1)

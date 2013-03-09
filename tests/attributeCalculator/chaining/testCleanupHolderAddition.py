@@ -60,9 +60,9 @@ class TestCleanupChainAddition(AttrCalcTestCase):
         holder3 = ShipItem(self.ch.type_(typeId=3, attributes={attr3.id: 0.5}))
         fit = Fit()
         fit.ship = holder2
-        fit.items.append(holder3)
+        fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         # Added holder must clean all already calculated attributes
         # which are now affected by it, to allow recalculation
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)

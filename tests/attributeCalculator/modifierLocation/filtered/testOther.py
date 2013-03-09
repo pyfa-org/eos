@@ -48,7 +48,7 @@ class TestLocationFilterOther(AttrCalcTestCase):
         influenceSource = IndependentItem(self.ch.type_(typeId=90, effects=(effect,), attributes={srcAttr.id: 20}))
         # Charge's container or module's charge can't be 'owner'
         # of other holders, thus such modification type is unsupported
-        fit.items.append(influenceSource)
+        fit.items.add(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')

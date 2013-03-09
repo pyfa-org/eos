@@ -47,7 +47,7 @@ class TestLocationDirectTarget(AttrCalcTestCase):
         fit = Fit()
         influenceSource = IndependentItem(self.ch.type_(typeId=102, effects=(effect,), attributes={srcAttr.id: 20}))
         # This functionality isn't implemented for now
-        fit.items.append(influenceSource)
+        fit.items.add(influenceSource)
         self.assertEqual(len(self.log), 1)
         logRecord = self.log[0]
         self.assertEqual(logRecord.name, 'eos_test.attributeCalculator')
