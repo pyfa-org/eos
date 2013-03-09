@@ -30,14 +30,11 @@ class Type:
     incursion system-wide effects are actually items.
     """
 
-    def __init__(self, cacheHandler=None, typeId=None, groupId=None,
-                 categoryId=None, durationAttributeId=None,
-                 dischargeAttributeId=None, rangeAttributeId=None,
-                 falloffAttributeId=None, trackingSpeedAttributeId=None,
-                 fittableNonSingleton=None, attributes=None, effects=()):
-        # Cache handler which was used to build this type
-        self._cacheHandler = cacheHandler
-
+    def __init__(self, typeId=None, groupId=None, categoryId=None,
+                 durationAttributeId=None, dischargeAttributeId=None,
+                 rangeAttributeId=None, falloffAttributeId=None,
+                 trackingSpeedAttributeId=None, fittableNonSingleton=None,
+                 attributes=None, effects=()):
         self.id = typeId
 
         # The groupID of the type, integer

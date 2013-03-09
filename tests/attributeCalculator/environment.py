@@ -54,7 +54,7 @@ class Eos:
 class Fit:
 
     def __init__(self):
-        self._eos = Eos()
+        self.eos = Eos()
         self._linkTracker = LinkTracker(self)
         self.__ship = None
         self.__character = None

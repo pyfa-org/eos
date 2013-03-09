@@ -86,8 +86,7 @@ class JsonCacheHandler:
             except KeyError as e:
                 raise TypeFetchError(typeId) from e
             groupId, catId, duration, discharge, optimal, falloff, tracking, fittable, effects, attribs = data
-            type_ = Type(cacheHandler=self,
-                         typeId=typeId,
+            type_ = Type(typeId=typeId,
                          groupId=groupId,
                          categoryId=catId,
                          durationAttributeId=duration,

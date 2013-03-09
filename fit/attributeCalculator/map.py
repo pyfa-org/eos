@@ -105,12 +105,12 @@ class MutableAttributeMap:
             except BaseValueError as e:
                 msg = 'unable to find base value for attribute {} on item {}'.format(e.args[0], self.__holder.item.id)
                 signature = (type(e), self.__holder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+                self.__holder.fit.eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
                 raise KeyError(attrId) from e
             except AttributeMetaError as e:
                 msg = 'unable to fetch metadata for attribute {}, requested for item {}'.format(e.args[0], self.__holder.item.id)
                 signature = (type(e), self.__holder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.error(msg, childName='attributeCalculator', signature=signature)
+                self.__holder.fit.eos._logger.error(msg, childName='attributeCalculator', signature=signature)
                 raise KeyError(attrId) from e
             self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
@@ -176,7 +176,7 @@ class MutableAttributeMap:
         """
         # Attribute object for attribute being calculated
         try:
-            attrMeta = self.__holder.item._cacheHandler.getAttribute(attrId)
+            attrMeta = self.__holder.fit.eos._cacheHandler.getAttribute(attrId)
         # Raise error if we can't get to getAttribute method
         # or it can't find requested attribute
         except (AttributeError, AttributeFetchError) as e:
@@ -232,7 +232,7 @@ class MutableAttributeMap:
             except OperatorError as e:
                 msg = 'malformed modifier on item {}: unknown operator {}'.format(sourceHolder.item.id, e.args[0])
                 signature = (type(e), sourceHolder.item.id, e.args[0])
-                self.__holder.fit._eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+                self.__holder.fit.eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
                 continue
         # When data gathering is complete, process penalized modifiers
         # They are penalized on per-operator basis
