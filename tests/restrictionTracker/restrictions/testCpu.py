@@ -34,7 +34,7 @@ class TestCpu(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 0)
@@ -51,7 +51,7 @@ class TestCpu(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.cpu)
@@ -71,7 +71,7 @@ class TestCpu(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
@@ -94,11 +94,11 @@ class TestCpu(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 25
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = 20
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
@@ -124,7 +124,7 @@ class TestCpu(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.cpu: 40}))
         holder.attributes[Attribute.cpu] = 100
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.cpuOutput: 45}))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
@@ -147,11 +147,11 @@ class TestCpu(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 100
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = -10
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
@@ -177,11 +177,11 @@ class TestCpu(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 100
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = 0
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
@@ -206,11 +206,11 @@ class TestCpu(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 25
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = 20
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
@@ -232,7 +232,7 @@ class TestCpu(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1))
         holder.attributes[Attribute.cpu] = 100
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 50
         fit.ship = ship
@@ -252,11 +252,11 @@ class TestCpu(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.cpu] = 50
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.cpu] = -15
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship
@@ -275,7 +275,7 @@ class TestCpu(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.cpu: 0}))
         holder.attributes[Attribute.cpu] = 50
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.cpuOutput] = 40
         fit.ship = ship

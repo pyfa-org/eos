@@ -28,21 +28,21 @@ class HolderContainer:
 
     def __init__(self, fit):
         self.__fit = fit
-        self.__list = []
+        self.__set = set()
 
-    def append(self, holder):
-        self.__list.append(holder)
+    def add(self, holder):
+        self.__set.add(holder)
         self.__fit._addHolder(holder)
 
     def remove(self, holder):
         self.__fit._removeHolder(holder)
-        self.__list.remove(holder)
+        self.__set.remove(holder)
 
     def __len__(self):
-        return self.__list.__len__()
+        return len(self.__set)
 
     def __iter__(self):
-        return (item for item in self.__list)
+        return iter(self.__set)
 
 
 class Fit:
@@ -86,7 +86,7 @@ class Fit:
         self._restrictionTracker.enableStates(holder, enabledStates)
 
     def _removeHolder(self, holder):
-        if holder.fit is None:
+        if holder.fit is not self:
             raise Exception
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         self._restrictionTracker.disableStates(holder, disabledStates)

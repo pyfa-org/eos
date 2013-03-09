@@ -35,7 +35,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1))
         holder.state = State.online
-        fit.drones.append(holder)
+        fit.drones.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.maxLaunchedDrones, 0)
@@ -52,10 +52,10 @@ class TestLaunchedDrone(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         holder1 = IndependentItem(item)
         holder1.state = State.online
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.state = State.online
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         char = IndependentItem(self.ch.type_(typeId=2))
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
@@ -80,10 +80,10 @@ class TestLaunchedDrone(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         holder1 = IndependentItem(item)
         holder1.state = State.online
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.state = State.online
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         char = IndependentItem(self.ch.type_(typeId=2))
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
@@ -106,10 +106,10 @@ class TestLaunchedDrone(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         holder1 = IndependentItem(item)
         holder1.state = State.online
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.state = State.online
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         char = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.maxActiveDrones: 3}))
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
@@ -132,10 +132,10 @@ class TestLaunchedDrone(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         holder1 = IndependentItem(item)
         holder1.state = State.online
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.state = State.online
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         char = IndependentItem(self.ch.type_(typeId=2))
         char.attributes[Attribute.maxActiveDrones] = 5
         fit.character = char
@@ -154,9 +154,9 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit = Fit()
         item = self.ch.type_(typeId=1)
         holder1 = IndependentItem(item)
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         char = IndependentItem(self.ch.type_(typeId=2))
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char
@@ -175,10 +175,10 @@ class TestLaunchedDrone(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         holder1 = IndependentItem(item)
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         char = IndependentItem(self.ch.type_(typeId=2))
         char.attributes[Attribute.maxActiveDrones] = 1
         fit.character = char

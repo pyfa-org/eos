@@ -34,7 +34,7 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {50: 3}
         holder = IndependentItem(item)
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 3),))
@@ -49,7 +49,7 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {48: 1, 50: 5}
         holder = IndependentItem(item)
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 5), (48, None, 1)))
@@ -64,10 +64,10 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {48: 1, 50: 5}
         holder = IndependentItem(item)
-        fit.items.append(holder)
+        fit.items.add(holder)
         skill = Skill(self.ch.type_(typeId=48))
         skill.level = 5
-        fit.items.append(skill)
+        fit.items.add(skill)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 5),))
@@ -83,10 +83,10 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {50: 3}
         holder = IndependentItem(item)
-        fit.items.append(holder)
+        fit.items.add(holder)
         skill = Skill(self.ch.type_(typeId=50))
         skill.level = 3
-        fit.items.append(skill)
+        fit.items.add(skill)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -100,14 +100,14 @@ class TestSkillRequirement(RestrictionTestCase):
         item1 = self.ch.type_(typeId=1)
         item1.requiredSkills = {50: 4}
         holder = IndependentItem(item1)
-        fit.items.append(holder)
+        fit.items.add(holder)
         item2 = self.ch.type_(typeId=50)
         skill1 = Skill(item2)
         skill1.level = 1
-        fit.items.append(skill1)
+        fit.items.add(skill1)
         skill2 = Skill(item2)
         skill2.level = 5
-        fit.items.append(skill2)
+        fit.items.add(skill2)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -123,14 +123,14 @@ class TestSkillRequirement(RestrictionTestCase):
         item1 = self.ch.type_(typeId=1)
         item1.requiredSkills = {50: 0}
         holder = IndependentItem(item1)
-        fit.items.append(holder)
+        fit.items.add(holder)
         item2 = self.ch.type_(typeId=50)
         skill1 = Skill(item2)
         skill1.level = None
-        fit.items.append(skill1)
+        fit.items.add(skill1)
         skill2 = Skill(item2)
         skill2.level = 0
-        fit.items.append(skill2)
+        fit.items.add(skill2)
         restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)

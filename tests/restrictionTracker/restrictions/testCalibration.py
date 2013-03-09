@@ -33,7 +33,7 @@ class TestCalibration(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0}))
         holder.attributes[Attribute.upgradeCost] = 50
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.calibration)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 0)
@@ -49,7 +49,7 @@ class TestCalibration(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0}))
         holder.attributes[Attribute.upgradeCost] = 50
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.calibration)
@@ -68,7 +68,7 @@ class TestCalibration(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0}))
         holder.attributes[Attribute.upgradeCost] = 50
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 40
         fit.ship = ship
@@ -90,10 +90,10 @@ class TestCalibration(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.upgradeCost] = 25
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.upgradeCost] = 20
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 40
         fit.ship = ship
@@ -118,7 +118,7 @@ class TestCalibration(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 40}))
         holder.attributes[Attribute.upgradeCost] = 100
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.upgradeCapacity: 45}))
         ship.attributes[Attribute.upgradeCapacity] = 50
         fit.ship = ship
@@ -140,10 +140,10 @@ class TestCalibration(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.upgradeCost] = 100
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.upgradeCost] = -10
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 50
         fit.ship = ship
@@ -168,10 +168,10 @@ class TestCalibration(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.upgradeCost] = 100
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.upgradeCost] = 0
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 50
         fit.ship = ship
@@ -195,10 +195,10 @@ class TestCalibration(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.upgradeCost] = 25
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.upgradeCost] = 20
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 50
         fit.ship = ship
@@ -219,7 +219,7 @@ class TestCalibration(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1))
         holder.attributes[Attribute.upgradeCost] = 100
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 50
         fit.ship = ship
@@ -238,10 +238,10 @@ class TestCalibration(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.upgradeCost] = 50
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.upgradeCost] = -15
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.upgradeCapacity] = 40
         fit.ship = ship

@@ -34,7 +34,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 0)
@@ -51,7 +51,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
@@ -71,7 +71,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
@@ -94,11 +94,11 @@ class TestPowerGrid(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 25
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.power] = 20
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
@@ -124,7 +124,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 40}))
         holder.attributes[Attribute.power] = 100
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.powerOutput: 45}))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
@@ -147,11 +147,11 @@ class TestPowerGrid(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 100
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.power] = -10
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
@@ -177,11 +177,11 @@ class TestPowerGrid(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 100
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.power] = 0
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
@@ -206,11 +206,11 @@ class TestPowerGrid(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 25
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.power] = 20
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
@@ -232,7 +232,7 @@ class TestPowerGrid(RestrictionTestCase):
         holder = IndependentItem(self.ch.type_(typeId=1))
         holder.attributes[Attribute.power] = 100
         holder.state = State.online
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 50
         fit.ship = ship
@@ -252,11 +252,11 @@ class TestPowerGrid(RestrictionTestCase):
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.power] = 50
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.power] = -15
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship
@@ -275,7 +275,7 @@ class TestPowerGrid(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
         holder.attributes[Attribute.power] = 50
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.powerOutput] = 40
         fit.ship = ship

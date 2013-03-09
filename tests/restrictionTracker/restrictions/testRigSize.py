@@ -33,7 +33,7 @@ class TestRigSize(RestrictionTestCase):
         # is added to ship
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6}))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
@@ -50,7 +50,7 @@ class TestRigSize(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
         holder.attributes[Attribute.rigSize] = 5
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6}))
         ship.attributes[Attribute.rigSize] = 5
         fit.ship = ship
@@ -68,7 +68,7 @@ class TestRigSize(RestrictionTestCase):
         # should be applied to ships
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -80,7 +80,7 @@ class TestRigSize(RestrictionTestCase):
         # no restriction is applied onto rigs
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)

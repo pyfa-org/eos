@@ -35,7 +35,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -54,7 +54,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType2: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -73,7 +73,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType3: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -92,7 +92,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType4: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -111,7 +111,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.fitsToShipType: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -130,7 +130,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup1: 38}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, ())
@@ -149,7 +149,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup2: 38}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, ())
@@ -168,7 +168,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup3: 38}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, ())
@@ -187,7 +187,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup4: 38}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, ())
@@ -206,7 +206,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 1089, Attribute.canFitShipGroup1: 23}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (1089,))
@@ -222,7 +222,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Absent ship should trigger this error too
         fit = Fit()
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -240,7 +240,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 10}))
         holder.attributes[Attribute.canFitShipType1] = 772
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedTypes, (10,))
@@ -259,7 +259,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=554, groupId=23))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 554}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -274,7 +274,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=554, groupId=23))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup1: 23}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -289,7 +289,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=554, groupId=23))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 1089, Attribute.canFitShipGroup1: 23}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
@@ -303,7 +303,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 10}))
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)

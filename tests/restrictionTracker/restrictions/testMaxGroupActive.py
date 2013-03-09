@@ -35,10 +35,10 @@ class TestMaxGroupActive(RestrictionTestCase):
         item = self.ch.type_(typeId=1, groupId=6, attributes={Attribute.maxGroupActive: 1})
         holder1 = ShipItem(item)
         holder1.state = State.active
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
         holder2.state = State.active
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxGroup, 1)
@@ -60,10 +60,10 @@ class TestMaxGroupActive(RestrictionTestCase):
         fit = Fit()
         holder1 = ShipItem(self.ch.type_(typeId=1, groupId=92, attributes={Attribute.maxGroupActive: 1}))
         holder1.state = State.active
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(self.ch.type_(typeId=2, groupId=92, attributes={Attribute.maxGroupActive: 2}))
         holder2.state = State.active
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxGroup, 1)
@@ -82,11 +82,11 @@ class TestMaxGroupActive(RestrictionTestCase):
         holder1 = ShipItem(self.ch.type_(typeId=1, groupId=61, attributes={Attribute.maxGroupActive: 1}))
         holder1.attributes[Attribute.maxGroupActive] = 2
         holder1.state = State.active
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(self.ch.type_(typeId=2, groupId=61, attributes={Attribute.maxGroupActive: 2}))
         holder2.attributes[Attribute.maxGroupActive] = 1
         holder2.state = State.active
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxGroup, 1)
@@ -106,10 +106,10 @@ class TestMaxGroupActive(RestrictionTestCase):
         item = self.ch.type_(typeId=1, groupId=860, attributes={Attribute.maxGroupActive: 2})
         holder1 = ShipItem(item)
         holder1.state = State.active
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
         holder2.state = State.active
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNone(restrictionError1)
         restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupActive)
@@ -125,10 +125,10 @@ class TestMaxGroupActive(RestrictionTestCase):
         item = self.ch.type_(typeId=1, groupId=None, attributes={Attribute.maxGroupActive: 1})
         holder1 = ShipItem(item)
         holder1.state = State.active
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
         holder2.state = State.active
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNone(restrictionError1)
         restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupActive)
@@ -144,10 +144,10 @@ class TestMaxGroupActive(RestrictionTestCase):
         item = self.ch.type_(typeId=1, groupId=886, attributes={Attribute.maxGroupActive: 1})
         holder1 = ShipItem(item)
         holder1.state = State.online
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
         holder2.state = State.online
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNone(restrictionError1)
         restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupActive)
@@ -163,10 +163,10 @@ class TestMaxGroupActive(RestrictionTestCase):
         item = self.ch.type_(typeId=1, groupId=12, attributes={Attribute.maxGroupActive: 1})
         holder1 = IndependentItem(item)
         holder1.state = State.active
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
         holder2.state = State.active
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
         self.assertIsNone(restrictionError1)
         restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupActive)

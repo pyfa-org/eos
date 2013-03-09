@@ -33,7 +33,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
-        fit.drones.append(holder)
+        fit.drones.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 0)
@@ -49,7 +49,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
-        fit.drones.append(holder)
+        fit.drones.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.droneBayVolume)
@@ -68,7 +68,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
-        fit.drones.append(holder)
+        fit.drones.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
@@ -90,10 +90,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 25
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = 20
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
@@ -118,7 +118,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 40}))
         holder.attributes[Attribute.volume] = 100
-        fit.drones.append(holder)
+        fit.drones.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.droneCapacity: 45}))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
@@ -140,10 +140,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 100
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = -10
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
@@ -168,10 +168,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 100
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = 0
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
@@ -195,10 +195,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 25
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = 20
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
@@ -219,7 +219,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1))
         holder.attributes[Attribute.volume] = 100
-        fit.drones.append(holder)
+        fit.drones.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 50
         fit.ship = ship
@@ -237,10 +237,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = IndependentItem(item)
         holder1.attributes[Attribute.volume] = 50
-        fit.drones.append(holder1)
+        fit.drones.add(holder1)
         holder2 = IndependentItem(item)
         holder2.attributes[Attribute.volume] = -15
-        fit.drones.append(holder2)
+        fit.drones.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship
@@ -259,7 +259,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit = Fit()
         holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 0}))
         holder.attributes[Attribute.volume] = 50
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.droneCapacity] = 40
         fit.ship = ship

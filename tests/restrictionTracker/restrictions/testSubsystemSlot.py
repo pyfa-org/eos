@@ -35,9 +35,9 @@ class TestSubsystemSlot(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = ShipItem(item)
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
@@ -62,7 +62,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder = ShipItem(item)
-        fit.items.append(holder)
+        fit.items.add(holder)
         ship = IndependentItem(self.ch.type_(typeId=2))
         fit.ship = ship
         restrictionError = fit.getRestrictionError(holder, Restriction.subsystemSlot)
@@ -81,7 +81,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder = ShipItem(item)
-        fit.items.append(holder)
+        fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.subsystemSlot)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.slotsMax, 0)
@@ -97,9 +97,9 @@ class TestSubsystemSlot(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = ShipItem(item)
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.maxSubSystems: 5}))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
@@ -124,9 +124,9 @@ class TestSubsystemSlot(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = ShipItem(item)
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 3
         fit.ship = ship
@@ -146,9 +146,9 @@ class TestSubsystemSlot(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.subsystem}
         holder1 = IndependentItem(item)
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = IndependentItem(item)
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
@@ -168,9 +168,9 @@ class TestSubsystemSlot(RestrictionTestCase):
         fit = Fit()
         item = self.ch.type_(typeId=1)
         holder1 = ShipItem(item)
-        fit.items.append(holder1)
+        fit.items.add(holder1)
         holder2 = ShipItem(item)
-        fit.items.append(holder2)
+        fit.items.add(holder2)
         ship = IndependentItem(self.ch.type_(typeId=2))
         ship.attributes[Attribute.maxSubSystems] = 1
         fit.ship = ship
