@@ -30,13 +30,13 @@ class TestUnorderedAdd(HolderContainerTestCase):
 
     def testHolder(self):
         fitMock = Mock()
-        holder = Holder()
+        container = HolderSet(fitMock)
         # To make sure item is properly added to fit, we check that
         # when container asks fit to add holder to services. holder
         # already needs to pass membership check within container
         fitMock._addHolder.side_effect = lambda holder: self.assertIn(holder, container)
         fitMock._removeHolder.side_effect = lambda holder: self.assertIn(holder, container)
-        container = HolderSet(fitMock)
+        holder = Holder()
         container.add(holder)
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertEqual(fitMock.method_calls[0], call._addHolder(holder))
