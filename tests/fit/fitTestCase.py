@@ -22,5 +22,5 @@
 from eos.tests.eosTestCase import EosTestCase
 
 
-class HolderContainerTestCase(EosTestCase):
+class FitTestCase(EosTestCase):
     pass
