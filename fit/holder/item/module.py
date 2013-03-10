@@ -49,11 +49,11 @@ class Module(Holder):
     def charge(self, newCharge):
         oldCharge = self.charge
         if oldCharge is not None:
-            if self.fit is not None:
-                self.fit._removeHolder(oldCharge)
+            if self._fit is not None:
+                self._fit._removeHolder(oldCharge)
             oldCharge.container = None
         self.__charge = newCharge
         if newCharge is not None:
             newCharge.container = self
-            if self.fit is not None:
-                self.fit._addHolder(newCharge)
+            if self._fit is not None:
+                self._fit._addHolder(newCharge)

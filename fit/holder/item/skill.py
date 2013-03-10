@@ -50,5 +50,5 @@ class Skill(Holder):
         self.__level = value
         # Clear everything relying on skill level,
         # if skill is assigned to fit
-        if self.fit is not None:
-            self.fit._linkTracker.clearHolderAttributeDependents(self, Attribute.skillLevel)
+        if self._fit is not None:
+            self._fit._linkTracker.clearHolderAttributeDependents(self, Attribute.skillLevel)

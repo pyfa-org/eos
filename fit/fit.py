@@ -23,6 +23,7 @@ from eos import eos as eosModule
 from eos.const.eos import State
 from eos.const.eve import Type
 from .attributeCalculator import LinkTracker
+from .exception import HolderAddError, HolderRemoveError
 from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Character
 from .restrictionTracker import RestrictionTracker
@@ -128,10 +129,10 @@ class Fit:
     def _addHolder(self, holder):
         """Handle adding of holder to fit."""
         # Make sure the holder isn't used already
-        # TODO: replace with some custom exception class
-        assert(holder.fit is None)
+        if holder._fit is not None:
+            raise HolderAddError(holder)
         # Assign fit to holder first
-        holder.fit = self
+        holder._fit = self
         self._holders.add(holder)
         if self.eos is not None:
             self._holderEnableServices(holder)
@@ -144,8 +145,8 @@ class Fit:
         """Handle removal of holder from fit."""
         # Check that removed holder belongs to fit
         # it's removed from
-        # TODO: replace with some custom exception class
-        assert(holder.fit is self)
+        if holder._fit is not self:
+            raise HolderRemoveError(holder)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
@@ -153,7 +154,7 @@ class Fit:
         if self.eos is not None:
             self._holderDisableServices(holder)
         self._holders.remove(holder)
-        holder.fit = None
+        holder._fit = None
 
     def _holderEnableServices(self, holder):
         """

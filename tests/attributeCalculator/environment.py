@@ -86,20 +86,20 @@ class Fit:
             self._addHolder(self.__character)
 
     def _addHolder(self, holder):
-        if holder.fit is not None:
+        if holder._fit is not None:
             raise Exception
-        holder.fit = self
+        holder._fit = self
         self._linkTracker.addHolder(holder)
         enabledStates = set(filter(lambda s: s <= holder.state, State))
         self._linkTracker.enableStates(holder, enabledStates)
 
     def _removeHolder(self, holder):
-        if holder.fit is not self:
+        if holder._fit is not self:
             raise Exception
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         self._linkTracker.disableStates(holder, disabledStates)
         self._linkTracker.removeHolder(holder)
-        holder.fit = None
+        holder._fit = None
 
     def _holderStateSwitch(self, holder, newState):
         enabledStates = set(filter(lambda s: s > holder.state and s <= newState, State))
@@ -118,11 +118,11 @@ class Holder:
         self.__state = State.offline
 
     @property
-    def fit(self):
+    def _fit(self):
         return self.__fit
 
-    @fit.setter
-    def fit(self, newFit):
+    @_fit.setter
+    def _fit(self, newFit):
         self.attributes.clear()
         self.__fit = newFit
 
@@ -135,8 +135,8 @@ class Holder:
         oldState = self.state
         if newState == oldState:
             return
-        if self.fit is not None:
-            self.fit._holderStateSwitch(self, newState)
+        if self._fit is not None:
+            self._fit._holderStateSwitch(self, newState)
         self.__state = newState
 
 

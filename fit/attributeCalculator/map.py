@@ -92,7 +92,7 @@ class MutableAttributeMap:
                 return val
         # If carrier holder isn't assigned to any fit, then
         # we can use just item's original attributes
-        if self.__holder.fit is None:
+        if self.__holder._fit is None:
             val = self.__holder.item.attributes[attrId]
             return val
         # If value is stored, it's considered valid
@@ -105,14 +105,14 @@ class MutableAttributeMap:
             except BaseValueError as e:
                 msg = 'unable to find base value for attribute {} on item {}'.format(e.args[0], self.__holder.item.id)
                 signature = (type(e), self.__holder.item.id, e.args[0])
-                self.__holder.fit.eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+                self.__holder._fit.eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
                 raise KeyError(attrId) from e
             except AttributeMetaError as e:
                 msg = 'unable to fetch metadata for attribute {}, requested for item {}'.format(e.args[0], self.__holder.item.id)
                 signature = (type(e), self.__holder.item.id, e.args[0])
-                self.__holder.fit.eos._logger.error(msg, childName='attributeCalculator', signature=signature)
+                self.__holder._fit.eos._logger.error(msg, childName='attributeCalculator', signature=signature)
                 raise KeyError(attrId) from e
-            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder._fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
         return val
 
     def __len__(self):
@@ -138,12 +138,12 @@ class MutableAttributeMap:
         # And make sure all other attributes relying on it
         # are cleared too
         else:
-            self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+            self.__holder._fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def __setitem__(self, attrId, value):
         # Write value and clear all attributes relying on it
         self.__modifiedAttributes[attrId] = value
-        self.__holder.fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
+        self.__holder._fit._linkTracker.clearHolderAttributeDependents(self.__holder, attrId)
 
     def get(self, attrId, default=None):
         try:
@@ -176,7 +176,7 @@ class MutableAttributeMap:
         """
         # Attribute object for attribute being calculated
         try:
-            attrMeta = self.__holder.fit.eos._cacheHandler.getAttribute(attrId)
+            attrMeta = self.__holder._fit.eos._cacheHandler.getAttribute(attrId)
         # Raise error if we can't get to getAttribute method
         # or it can't find requested attribute
         except (AttributeError, AttributeFetchError) as e:
@@ -200,7 +200,7 @@ class MutableAttributeMap:
         # Format: {operator: [values]}
         penalizedMods = {}
         # Now, go through all affectors affecting our holder
-        for affector in self.__holder.fit._linkTracker.getAffectors(self.__holder, attrId=attrId):
+        for affector in self.__holder._fit._linkTracker.getAffectors(self.__holder, attrId=attrId):
             try:
                 sourceHolder, modifier = affector
                 operator = modifier.operator
@@ -232,7 +232,7 @@ class MutableAttributeMap:
             except OperatorError as e:
                 msg = 'malformed modifier on item {}: unknown operator {}'.format(sourceHolder.item.id, e.args[0])
                 signature = (type(e), sourceHolder.item.id, e.args[0])
-                self.__holder.fit.eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
+                self.__holder._fit.eos._logger.warning(msg, childName='attributeCalculator', signature=signature)
                 continue
         # When data gathering is complete, process penalized modifiers
         # They are penalized on per-operator basis

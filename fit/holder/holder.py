@@ -55,11 +55,11 @@ class Holder:
         return self.__type
 
     @property
-    def fit(self):
+    def _fit(self):
         return self.__fit
 
-    @fit.setter
-    def fit(self, newFit):
+    @_fit.setter
+    def _fit(self, newFit):
         self.__fit = newFit
         self._refreshContext()
 
@@ -88,8 +88,8 @@ class Holder:
             return
         # When holder is assigned to some fit, ask fit to perform
         # fit-specific state switch of our holder
-        if self.fit is not None:
-            self.fit._holderStateSwitch(self, newState)
+        if self._fit is not None:
+            self._fit._holderStateSwitch(self, newState)
         self.__state = newState
 
 #    @property
