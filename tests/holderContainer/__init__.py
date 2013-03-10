@@ -17,25 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-from eos.tests.eosTestCase import EosTestCase
-from .environment import Fit
-
-
-class AttrCalcTestCase(EosTestCase):
-    """
-    Additional functionality provided:
-
-    self.fit -- precreated fit with self.ch used as cache handler
-    self.assertBuffersEmpty -- checks if link tracker buffers
-    of passed fit are clear
-    """
-
-    def setUp(self):
-        EosTestCase.setUp(self)
-        self.fit = Fit(self.ch)
-
-    def assertBuffersEmpty(self, fit):
-        register = fit._linkTracker._register
-        EosTestCase.assertBuffersEmpty(self, register)
