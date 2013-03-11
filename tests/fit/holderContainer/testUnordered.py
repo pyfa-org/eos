@@ -21,6 +21,7 @@
 
 from unittest.mock import Mock, call
 
+from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderSet
 from eos.tests.fit.fitTestCase import FitTestCase
 from eos.tests.fit.environment import Holder
@@ -50,16 +51,17 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(fitMock.method_calls[1], call._removeHolder(holder))
         self.assertBuffersEmpty(container)
 
-    def testAddAgain(self):
+    def testAddFail(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
-        container.add(holder)
-        container.add(holder)
-        container.remove(holder)
-        # Adding holder to container twice shouldn't
-        # generate additional calls
-        self.assertEqual(len(fitMock.mock_calls), 2)
+        holder1 = Holder()
+        holder2 = Holder()
+        container.add(holder1)
+        fitMock._addHolder.side_effect = HolderAddError(holder2)
+        self.assertRaises(ValueError, container.add, holder2)
+        container.remove(holder1)
+        self.assertEqual(len(fitMock.mock_calls), 3)
+        self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
     def testRemoveFail(self):
@@ -71,10 +73,7 @@ class TestContainerUnordered(FitTestCase):
         container.add(holder2)
         container.remove(holder2)
         self.assertRaises(KeyError, container.remove, holder2)
-        # Make sure holder1 wasn't removed
         container.remove(holder1)
-        # Make sure attempt to remove holder which doesn't
-        # belong to container didn't generate external call
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertBuffersEmpty(container)
 

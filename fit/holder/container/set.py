@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.fit.exception import HolderAddError
 from .base import HolderContainerBase
 
 
@@ -37,16 +38,30 @@ class HolderSet(HolderContainerBase):
         HolderContainerBase.__init__(self, fit)
 
     def add(self, holder):
-        """Add holder to container."""
-        if holder in self.__set:
-            return
+        """
+        Add holder to container.
+
+        Possible exceptions:
+        ValueError -- raised when holder cannot be
+        added to container (e.g. already belongs to some fit)
+        """
         self.__set.add(holder)
-        self._handleAdd(holder)
+        try:
+            self._handleAdd(holder)
+        except HolderAddError as e:
+            self.__set.remove(holder)
+            raise ValueError(holder) from e
 
     def remove(self, holder):
-        """Remove holder from container."""
+        """
+        Remove holder from container.
+
+        Possible exceptions:
+        KeyError -- raised when holder cannot be removed
+        from container (e.g. it doesn't belong to it)
+        """
         if holder not in self.__set:
-            raise KeyError(holder)
+            raise KeyError
         self._handleRemove(holder)
         self.__set.remove(holder)
 
