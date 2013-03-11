@@ -61,7 +61,7 @@ class HolderSet(HolderContainerBase):
         from container (e.g. it doesn't belong to it)
         """
         if holder not in self.__set:
-            raise KeyError
+            raise KeyError(holder)
         self._handleRemove(holder)
         self.__set.remove(holder)
 
