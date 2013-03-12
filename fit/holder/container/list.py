@@ -65,7 +65,7 @@ class HolderList(HolderContainerBase):
         else:
             holder = value
             index = self.__list.index(holder)
-        self._handleRemove(self, holder)
+        self._handleRemove(holder)
         del self.__list[index]
         self._cleanup()
 
