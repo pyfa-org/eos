@@ -59,6 +59,7 @@ class TestContainerUnordered(FitTestCase):
         container.add(holder1)
         fitMock._addHolder.side_effect = HolderAddError(holder2)
         self.assertRaises(ValueError, container.add, holder2)
+        self.assertTrue(holder1 in container)
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 3)
         self.assertEqual(len(container), 0)
@@ -73,8 +74,10 @@ class TestContainerUnordered(FitTestCase):
         container.add(holder2)
         container.remove(holder2)
         self.assertRaises(KeyError, container.remove, holder2)
+        self.assertTrue(holder1 in container)
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 4)
+        self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
     def testLen(self):
