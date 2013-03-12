@@ -42,13 +42,20 @@ class TestContainerUnordered(FitTestCase):
     def testAddRemoveHolder(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
-        container.add(holder)
+        holder1 = Holder()
+        holder2 = Holder()
+        container.add(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
-        self.assertEqual(fitMock.method_calls[0], call._addHolder(holder))
-        container.remove(holder)
+        self.assertEqual(fitMock.method_calls[0], call._addHolder(holder1))
+        container.add(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
-        self.assertEqual(fitMock.method_calls[1], call._removeHolder(holder))
+        self.assertEqual(fitMock.method_calls[1], call._addHolder(holder2))
+        container.remove(holder1)
+        self.assertEqual(len(fitMock.mock_calls), 3)
+        self.assertEqual(fitMock.method_calls[2], call._removeHolder(holder1))
+        container.remove(holder2)
+        self.assertEqual(len(fitMock.mock_calls), 4)
+        self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
         self.assertBuffersEmpty(container)
 
     def testAddFail(self):
