@@ -44,6 +44,7 @@ class TestContainerOrdered(FitTestCase):
         fitMock = self.fitMock
         holder1 = Holder()
         holder2 = Holder()
+        self.assertEqual(len(fitMock.mock_calls), 0)
         container.append(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertEqual(fitMock.method_calls[0], call._addHolder(holder1))
@@ -69,4 +70,126 @@ class TestContainerOrdered(FitTestCase):
         self.assertIs(container[0], holder1)
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 3)
+        self.assertBuffersEmpty(container)
+
+    def testInsertHolderToZero(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder1 = Holder()
+        holder2 = Holder()
+        holder3 = Holder()
+        container.append(holder1)
+        container.append(holder2)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        container.insert(0, holder3)
+        self.assertEqual(len(fitMock.mock_calls), 3)
+        self.assertEqual(fitMock.method_calls[2], call._addHolder(holder3))
+        self.assertEqual(len(container), 3)
+        self.assertIs(container[0], holder3)
+        self.assertIs(container[1], holder1)
+        self.assertIs(container[2], holder2)
+        container.remove(holder1)
+        container.remove(holder2)
+        container.remove(holder3)
+        self.assertEqual(len(container), 0)
+        self.assertBuffersEmpty(container)
+
+    def testInsertHolderToEnd(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder1 = Holder()
+        holder2 = Holder()
+        holder3 = Holder()
+        container.append(holder1)
+        container.append(holder2)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        container.insert(2, holder3)
+        self.assertEqual(len(fitMock.mock_calls), 3)
+        self.assertEqual(fitMock.method_calls[2], call._addHolder(holder3))
+        self.assertEqual(len(container), 3)
+        self.assertIs(container[0], holder1)
+        self.assertIs(container[1], holder2)
+        self.assertIs(container[2], holder3)
+        container.remove(holder1)
+        container.remove(holder2)
+        container.remove(holder3)
+        self.assertEqual(len(container), 0)
+        self.assertBuffersEmpty(container)
+
+    def testInsertHolderOutside(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder1 = Holder()
+        holder2 = Holder()
+        container.append(holder1)
+        self.assertEqual(len(fitMock.mock_calls), 1)
+        container.insert(3, holder2)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        self.assertEqual(fitMock.method_calls[1], call._addHolder(holder2))
+        self.assertEqual(len(container), 4)
+        self.assertIs(container[0], holder1)
+        self.assertIs(container[1], None)
+        self.assertIs(container[2], None)
+        self.assertIs(container[3], holder2)
+        container.remove(holder1)
+        container.remove(holder2)
+        self.assertEqual(len(container), 0)
+        self.assertBuffersEmpty(container)
+
+    def testInsertHolderFailure(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder1 = Holder()
+        holder2 = Holder()
+        holder3 = Holder()
+        container.append(holder1)
+        container.append(holder2)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        fitMock._addHolder.side_effect = HolderAddError(holder3)
+        self.assertRaises(ValueError, container.insert, 1, holder3)
+        self.assertEqual(len(fitMock.mock_calls), 3)
+        self.assertEqual(fitMock.method_calls[2], call._addHolder(holder3))
+        self.assertEqual(len(container), 2)
+        self.assertIs(container[0], holder1)
+        self.assertIs(container[1], holder2)
+        container.remove(holder1)
+        container.remove(holder2)
+        self.assertEqual(len(container), 0)
+        self.assertBuffersEmpty(container)
+
+    def testInsertNoneInside(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder1 = Holder()
+        holder2 = Holder()
+        container.append(holder1)
+        container.append(holder2)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        container.insert(1, None)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        self.assertEqual(len(container), 3)
+        self.assertIs(container[0], holder1)
+        self.assertIs(container[1], None)
+        self.assertIs(container[2], holder2)
+        container.remove(holder1)
+        container.remove(holder2)
+        self.assertEqual(len(container), 0)
+        self.assertBuffersEmpty(container)
+
+    def testInsertNoneOutside(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder1 = Holder()
+        holder2 = Holder()
+        container.append(holder1)
+        container.append(holder2)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        container.insert(6, None)
+        self.assertEqual(len(fitMock.mock_calls), 2)
+        self.assertEqual(len(container), 2)
+        self.assertIs(container[0], holder1)
+        self.assertIs(container[1], holder2)
+        container.remove(holder1)
+        container.remove(holder2)
+        self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)

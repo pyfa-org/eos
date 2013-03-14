@@ -37,18 +37,38 @@ class HolderList(HolderContainerBase):
         self.__list = []
         HolderContainerBase.__init__(self, fit)
 
-    def insert(self, index, holder):
+    def insert(self, index, value):
         """
-        Insert holder to given position; if position is
-        out of range of container, fill it with Nones up
-        to position and put holder there.
+        Insert value to given position; if position is
+        out of range of container and value is holder,
+        fill container with Nones up to position and
+        put holder there. Also value can be None to
+        insert empty slots between holders.
+
+        Possible exceptions:
+        ValueError -- raised when holder is passed as value and
+        it cannot be added to container (e.g. already belongs to
+        some fit)
         """
         self._allocate(index - 1)
-        self.__list.insert(index, holder)
-        self._handleAdd(holder)
+        self.__list.insert(index, value)
+        if value is None:
+            self._cleanup()
+        else:
+            try:
+                self._handleAdd(value)
+            except HolderAddError as e:
+                self.__list.remove(value)
+                raise ValueError(value) from e
 
     def append(self, holder):
-        """Append holder to the end of container."""
+        """
+        Append holder to the end of container.
+
+        Possible exceptions:
+        ValueError -- raised when holder cannot be
+        added to container (e.g. already belongs to some fit)
+        """
         self.__list.append(holder)
         try:
             self._handleAdd(holder)

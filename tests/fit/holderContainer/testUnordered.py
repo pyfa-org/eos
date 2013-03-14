@@ -44,6 +44,7 @@ class TestContainerUnordered(FitTestCase):
         fitMock = self.fitMock
         holder1 = Holder()
         holder2 = Holder()
+        self.assertEqual(len(fitMock.mock_calls), 0)
         container.add(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertEqual(fitMock.method_calls[0], call._addHolder(holder1))
