@@ -58,7 +58,7 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
         self.assertBuffersEmpty(container)
 
-    def testAddFail(self):
+    def testAddHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -72,7 +72,7 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
-    def testRemoveFail(self):
+    def testRemoveHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()

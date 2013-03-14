@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from eos.fit.exception import HolderAddError
 from .base import HolderContainerBase
 
 
@@ -49,7 +50,11 @@ class HolderList(HolderContainerBase):
     def append(self, holder):
         """Append holder to the end of container."""
         self.__list.append(holder)
-        self._handleAdd(holder)
+        try:
+            self._handleAdd(holder)
+        except HolderAddError as e:
+            del self.__list[-1]
+            raise ValueError(holder) from e
 
     def remove(self, value):
         """
