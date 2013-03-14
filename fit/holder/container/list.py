@@ -58,7 +58,7 @@ class HolderList(HolderContainerBase):
             try:
                 self._handleAdd(value)
             except HolderAddError as e:
-                self.__list.remove(value)
+                del self.__list[index]
                 raise ValueError(value) from e
 
     def append(self, holder):
