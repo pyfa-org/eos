@@ -19,25 +19,27 @@
 #===============================================================================
 
 
-from eos.data.cache.generator.modifierBuilder import ModifierBuilder
-from eos.tests.environment import Logger
+from unittest.mock import Mock
+
 from eos.tests.eosTestCase import EosTestCase
-from .environment import ExpressionFactory
 
 
-class ModBuilderTestCase(EosTestCase):
+class ContainerTestCase(EosTestCase):
     """
     Additional functionality provided:
 
-    self.ef -- factory to generate and store expressions
-    self.runBuilder -- run builder using data from
-    expression factory
+    self.fitMock -- mock which replaces real Fit object
+    for testing of holder containers. When holder asks
+    it to register/unregister holder, it also checks if
+    holder belongs to self.container (which should be set
+    in child test cases) at the time of request
     """
 
     def setUp(self):
         EosTestCase.setUp(self)
-        self.ef = ExpressionFactory()
-
-    def runBuilder(self, preExp, postExp, effCat):
-        builder = ModifierBuilder(self.ef.data, Logger())
-        return builder.buildEffect(preExp, postExp, effCat)
+        self.fitMock = Mock()
+        # To make sure item is properly added to fit, we check that
+        # when container asks fit to add holder to services. holder
+        # already needs to pass membership check within container
+        self.fitMock._addHolder.side_effect = lambda holder: self.assertIn(holder, self.container)
+        self.fitMock._removeHolder.side_effect = lambda holder: self.assertIn(holder, self.container)

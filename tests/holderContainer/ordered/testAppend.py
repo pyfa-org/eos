@@ -19,25 +19,19 @@
 #===============================================================================
 
 
-from unittest.mock import Mock, call
+from unittest.mock import call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderList
-from eos.tests.fit.fitTestCase import FitTestCase
-from eos.tests.fit.environment import Holder
+from eos.tests.holderContainer.containerTestCase import ContainerTestCase
+from eos.tests.holderContainer.environment import Holder
 
 
-class TestContainerOrderedAppend(FitTestCase):
+class TestContainerOrderedAppend(ContainerTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
-        self.fitMock = Mock()
+        ContainerTestCase.setUp(self)
         self.container = HolderList(self.fitMock)
-        # To make sure item is properly added to fit, we check that
-        # when container asks fit to add holder to services. holder
-        # already needs to pass membership check within container
-        self.fitMock._addHolder.side_effect = lambda holder: self.assertIn(holder, self.container)
-        self.fitMock._removeHolder.side_effect = lambda holder: self.assertIn(holder, self.container)
 
     def testAppendHolder(self):
         container = self.container

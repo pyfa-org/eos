@@ -106,7 +106,8 @@ class HolderList(HolderContainerBase):
         except IndexError:
             self._allocate(index)
         else:
-            self._handleRemove(self, oldHolder)
+            if oldHolder is not None:
+                self._handleRemove(oldHolder)
         self.__list[index] = holder
         self._handleAdd(holder)
 
