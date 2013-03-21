@@ -118,10 +118,12 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 1)
         fitMock._addHolder.side_effect = raiseOnHolder2
         self.assertRaises(ValueError, container.place, 0, holder2)
+        # Make sure old holder is still there
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(fitMock.method_calls[1], call._removeHolder(holder1))
         self.assertEqual(fitMock.method_calls[2], call._addHolder(holder2))
         self.assertEqual(fitMock.method_calls[3], call._addHolder(holder1))
         self.assertEqual(len(container), 1)
+        self.assertIs(container[0], holder1)
         container.remove(holder1)
         self.assertBuffersEmpty(container)
