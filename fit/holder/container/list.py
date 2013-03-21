@@ -59,6 +59,7 @@ class HolderList(HolderContainerBase):
                 self._handleAdd(value)
             except HolderAddError as e:
                 del self.__list[index]
+                self._cleanup()
                 raise ValueError(value) from e
 
     def append(self, holder):
@@ -100,16 +101,32 @@ class HolderList(HolderContainerBase):
         by another holder, remove it before taking its place;
         if position is out of range of container, fill it with
         Nones up to position and put holder there.
+
+        Possible exceptions:
+        ValueError -- raised when holder cannot be added to
+        container (e.g. already belongs to some fit). If placed
+        over other holder and this failure occurs, older holder
+        is kept in container.
         """
         try:
             oldHolder = self.__list[index]
         except IndexError:
             self._allocate(index)
+            oldHolder = None
         else:
             if oldHolder is not None:
                 self._handleRemove(oldHolder)
         self.__list[index] = holder
-        self._handleAdd(holder)
+        try:
+            self._handleAdd(holder)
+        except HolderAddError as e:
+            if oldHolder is not None:
+                self.__list[index] = oldHolder
+                self._handleAdd(oldHolder)
+            else:
+                del self.__list[index]
+                self._cleanup()
+            raise ValueError(holder) from e
 
     def equip(self, holder):
         """

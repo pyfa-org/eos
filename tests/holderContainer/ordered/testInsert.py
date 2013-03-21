@@ -33,7 +33,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         ContainerTestCase.setUp(self)
         self.container = HolderList(self.fitMock)
 
-    def testInsertHolderToZero(self):
+    def testHolderToZero(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -55,7 +55,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
-    def testInsertHolderToEnd(self):
+    def testHolderToEnd(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -77,7 +77,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
-    def testInsertHolderOutside(self):
+    def testHolderOutside(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -97,7 +97,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
-    def testInsertHolderFailure(self):
+    def testHolderInsideFailure(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -118,7 +118,19 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
-    def testInsertNoneInside(self):
+    def testHolderOutsideFailure(self):
+        container = self.container
+        fitMock = self.fitMock
+        holder = Holder()
+        self.assertEqual(len(fitMock.mock_calls), 0)
+        fitMock._addHolder.side_effect = HolderAddError(holder)
+        self.assertRaises(ValueError, container.insert, 4, holder)
+        self.assertEqual(len(fitMock.mock_calls), 1)
+        self.assertEqual(fitMock.method_calls[0], call._addHolder(holder))
+        self.assertEqual(len(container), 0)
+        self.assertBuffersEmpty(container)
+
+    def testNoneInside(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -137,7 +149,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertEqual(len(container), 0)
         self.assertBuffersEmpty(container)
 
-    def testInsertNoneOutside(self):
+    def testNoneOutside(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()

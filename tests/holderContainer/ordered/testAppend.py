@@ -33,7 +33,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         ContainerTestCase.setUp(self)
         self.container = HolderList(self.fitMock)
 
-    def testAppendHolder(self):
+    def testHolder(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
@@ -51,7 +51,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         container.remove(holder2)
         self.assertBuffersEmpty(container)
 
-    def testAppendHolderFailure(self):
+    def testHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
         holder1 = Holder()
