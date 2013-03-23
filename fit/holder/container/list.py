@@ -119,7 +119,7 @@ class HolderList(HolderContainerBase):
         try:
             self._handleAdd(holder)
         except HolderAddError as e:
-            del self.__list[index]
+            self.__list[index] = None
             self._cleanup()
             raise ValueError(holder) from e
 
@@ -128,15 +128,24 @@ class HolderList(HolderContainerBase):
         Put holder to first free slot in container; if
         container doesn't have free slots, append holder
         to the end of container.
+
+        Possible exceptions:
+        ValueError -- raised when holder cannot be added to
+        container (e.g. already belongs to some fit)
         """
         try:
             index = self.__list.index(None)
         except ValueError:
+            index = len(self.__list)
             self.__list.append(holder)
         else:
             self.__list[index] = holder
-        self._handleAdd(holder)
-        return holder
+        try:
+            self._handleAdd(holder)
+        except HolderAddError as e:
+            self.__list[index] = None
+            self._cleanup()
+            raise ValueError(holder) from e
 
     def free(self, value):
         """
