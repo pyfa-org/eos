@@ -85,6 +85,10 @@ class HolderList(HolderContainerBase):
 
         Positional arguments:
         value -- holder or index of holder to remove
+
+        Possible exceptions:
+        ValueError -- if passed holder cannot be found in container
+        IndexError -- if passed index is out of range of list
         """
         if isinstance(value, int):
             index = value
@@ -92,7 +96,8 @@ class HolderList(HolderContainerBase):
         else:
             holder = value
             index = self.__list.index(holder)
-        self._handleRemove(holder)
+        if holder is not None:
+            self._handleRemove(holder)
         del self.__list[index]
         self._cleanup()
 

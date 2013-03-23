@@ -33,7 +33,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         ContainerTestCase.setUp(self)
         self.container = HolderList(self.fitMock)
 
-    def testHolderZero(self):
+    def testHolderToEmpty(self):
         container = self.container
         fitMock = self.fitMock
         holder = Holder()
