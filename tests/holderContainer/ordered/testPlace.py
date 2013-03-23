@@ -22,7 +22,7 @@
 from unittest.mock import call
 
 from eos.fit.exception import HolderAddError
-from eos.fit.holder.container import HolderList
+from eos.fit.holder.container import HolderList, SlotTakenError
 from eos.tests.holderContainer.containerTestCase import ContainerTestCase
 from eos.tests.holderContainer.environment import Holder
 
@@ -81,12 +81,10 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(container[0], holder1)
         self.assertEqual(len(container), 1)
         self.assertEqual(len(fitMock.mock_calls), 1)
-        container.place(0, holder2)
-        self.assertEqual(len(fitMock.mock_calls), 3)
-        self.assertEqual(fitMock.method_calls[1], call._removeHolder(holder1))
-        self.assertEqual(fitMock.method_calls[2], call._addHolder(holder2))
-        self.assertIs(container[0], holder2)
-        container.remove(holder2)
+        self.assertRaises(SlotTakenError, container.place, 0, holder2)
+        self.assertEqual(len(fitMock.mock_calls), 1)
+        self.assertIs(container[0], holder1)
+        container.remove(holder1)
         self.assertBuffersEmpty(container)
 
     def testHolderOutsideFailure(self):
@@ -98,32 +96,4 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertEqual(fitMock.method_calls[0], call._addHolder(holder))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
-
-    def testHolderOntoHolderFailure(self):
-        container = self.container
-        fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        # Function which raises error only when holder2 is passed,
-        # in the rest of cases processing is done as usual
-        def raiseOnHolder2(holder):
-            if holder is holder2:
-                raise HolderAddError(holder)
-            else:
-                self.assertIn(holder, self.container)
-        container.append(holder1)
-        self.assertIs(container[0], holder1)
-        self.assertEqual(len(container), 1)
-        self.assertEqual(len(fitMock.mock_calls), 1)
-        fitMock._addHolder.side_effect = raiseOnHolder2
-        self.assertRaises(ValueError, container.place, 0, holder2)
-        # Make sure old holder is still there
-        self.assertEqual(len(fitMock.mock_calls), 4)
-        self.assertEqual(fitMock.method_calls[1], call._removeHolder(holder1))
-        self.assertEqual(fitMock.method_calls[2], call._addHolder(holder2))
-        self.assertEqual(fitMock.method_calls[3], call._addHolder(holder1))
-        self.assertEqual(len(container), 1)
-        self.assertIs(container[0], holder1)
-        container.remove(holder1)
         self.assertBuffersEmpty(container)

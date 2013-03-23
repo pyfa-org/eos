@@ -19,7 +19,20 @@
 #===============================================================================
 
 
-from .exception import SlotTakenError
-from .list import HolderList
-from .modules import ModuleRacks
-from .set import HolderSet
+from eos.exception import EosError
+
+
+class HolderContainerError(EosError):
+    """
+    Custom exceptions thrown by holder containers are based
+    on this class.
+    """
+    pass
+
+
+class SlotTakenError(EosError):
+    """
+    When attempt to overwrite another holder in ordered container
+    is detected, this exception is raised.
+    """
+    pass
