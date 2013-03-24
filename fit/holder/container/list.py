@@ -78,29 +78,6 @@ class HolderList(HolderContainerBase):
             del self.__list[-1]
             raise ValueError(holder) from e
 
-    def remove(self, value):
-        """
-        Remove holder from container. Also clean container's
-        tail if it's filled with Nones.
-
-        Positional arguments:
-        value -- holder or index of holder to remove
-
-        Possible exceptions:
-        ValueError -- if passed holder cannot be found in container
-        IndexError -- if passed index is out of range of list
-        """
-        if isinstance(value, int):
-            index = value
-            holder = self.__list[index]
-        else:
-            holder = value
-            index = self.__list.index(holder)
-        if holder is not None:
-            self._handleRemove(holder)
-        del self.__list[index]
-        self._cleanup()
-
     def place(self, index, holder):
         """
         Put holder to given position; if position is out of
@@ -152,13 +129,38 @@ class HolderList(HolderContainerBase):
             self._cleanup()
             raise ValueError(holder) from e
 
+    def remove(self, value):
+        """
+        Remove holder or None from container. Also clean container's
+        tail if it's filled with Nones. Value can be holder, None or
+        integer index.
+
+        Possible exceptions:
+        ValueError -- if passed holder cannot be found in container
+        IndexError -- if passed index is out of range of list
+        """
+        if isinstance(value, int):
+            index = value
+            holder = self.__list[index]
+        else:
+            holder = value
+            index = self.__list.index(holder)
+        if holder is not None:
+            self._handleRemove(holder)
+        del self.__list[index]
+        self._cleanup()
+
     def free(self, value):
         """
         Free holder's slot (replace it with None). Also
         clean container's tail if it's filled with Nones.
 
         Positional arguments:
-        value -- holder or index of slot to free
+        value -- holder or index of holder to remove
+
+        Possible exceptions:
+        ValueError -- if passed holder cannot be found in container
+        IndexError -- if passed index is out of range of list
         """
         if isinstance(value, int):
             index = value
@@ -168,7 +170,7 @@ class HolderList(HolderContainerBase):
         else:
             holder = value
             index = self.__list.index(holder)
-        self._handleRemove(self, holder)
+        self._handleRemove(holder)
         self.__list[index] = None
         self._cleanup()
 
