@@ -174,6 +174,10 @@ class HolderList(HolderContainerBase):
         self.__list[index] = None
         self._cleanup()
 
+    def holders(self):
+        """Return view over container with just holders."""
+        return HolderView(self.__list)
+
     def clear(self):
         """Remove everything from container."""
         for holder in self.__list:
@@ -216,3 +220,21 @@ class HolderList(HolderContainerBase):
         # and we're fine with it
         except IndexError:
             pass
+
+
+class HolderView:
+    """
+    Simple class to implement view-like
+    functionality over passed list.
+    """
+
+    __slots__ = ('__list')
+
+    def __init__(self, list_):
+        self.__list = list_
+
+    def __iter__(self):
+        return (item for item in self.__list if item is not None)
+
+    def __len__(self):
+        return sum(item is not None for item in self.__list)
