@@ -21,7 +21,6 @@
 
 from unittest.mock import call
 
-from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderList
 from eos.tests.holderContainer.containerTestCase import ContainerTestCase
 from eos.tests.holderContainer.environment import Holder
