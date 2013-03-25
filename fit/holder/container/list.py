@@ -152,11 +152,9 @@ class HolderList(HolderContainerBase):
 
     def free(self, value):
         """
-        Free holder's slot (replace it with None). Also
-        clean container's tail if it's filled with Nones.
-
-        Positional arguments:
-        value -- holder or index of holder to remove
+        Free holder's slot (replace it with None). Also clean
+        container's tail if it's filled with Nones. Value can be
+        holder or integer index.
 
         Possible exceptions:
         ValueError -- if passed holder cannot be found in container
