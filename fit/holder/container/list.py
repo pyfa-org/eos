@@ -232,7 +232,7 @@ class HolderView:
         self.__list = list_
 
     def __iter__(self):
-        return iter(item for item in self.__list if item is not None)
+        return (item for item in self.__list if item is not None)
 
     def __contains__(self, value):
         if value is None:
