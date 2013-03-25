@@ -72,10 +72,10 @@ class HolderSet(HolderContainerBase):
         self.__set.clear()
 
     def __iter__(self):
-        return iter(self.__set)
+        return self.__set.__iter__()
 
     def __contains__(self, holder):
-        return holder in self.__set
+        return self.__set.__contains__(holder)
 
     def __len__(self):
-        return len(self.__set)
+        return self.__set.__len__()

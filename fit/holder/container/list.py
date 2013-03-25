@@ -185,20 +185,20 @@ class HolderList(HolderContainerBase):
 
     def __getitem__(self, index):
         """Get holder by index."""
-        return self.__list[index]
+        return self.__list.__getitem__(index)
 
     def index(self, holder):
         """Get index by holder."""
         return self.__list.index(holder)
 
     def __iter__(self):
-        return iter(self.__list)
+        return self.__list.__iter__()
 
-    def __contains__(self, holder):
-        return holder in self.__list
+    def __contains__(self, value):
+        return self.__list.__contains__(value)
 
     def __len__(self):
-        return len(self.__list)
+        return self.__list.__len__()
 
     def _allocate(self, index):
         """
@@ -232,7 +232,12 @@ class HolderView:
         self.__list = list_
 
     def __iter__(self):
-        return (item for item in self.__list if item is not None)
+        return iter(item for item in self.__list if item is not None)
+
+    def __contains__(self, value):
+        if value is None:
+            return False
+        return self.__list.__contains__(value)
 
     def __len__(self):
         return sum(item is not None for item in self.__list)

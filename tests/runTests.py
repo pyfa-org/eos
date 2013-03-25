@@ -26,9 +26,9 @@ import sys
 import unittest
 
 
-currentDir = os.path.dirname(os.path.abspath(__file__))
+scriptDir = os.path.dirname(os.path.abspath(__file__))
 # Add Eos module to python paths
-sys.path.append(os.path.realpath(os.path.join(currentDir, '..', '..')))
+sys.path.append(os.path.realpath(os.path.join(scriptDir, '..', '..')))
 
 if __name__ == '__main__':
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     # Parse command line option (which is optional and positional)
     parser = argparse.ArgumentParser(description='Run Eos tests')
-    parser.add_argument('suite', nargs='?', type=str, help='system or module path to test suite to run, defaults to all tests', default=currentDir)
+    parser.add_argument('suite', nargs='?', type=str, help='system or module path to test suite to run, defaults to all tests', default=scriptDir)
     args = parser.parse_args()
     # Get all tests into suite
     tests = unittest.TestLoader().discover(args.suite, 'test*.py')
