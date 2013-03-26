@@ -174,7 +174,7 @@ class HolderList(HolderContainerBase):
 
     def holders(self):
         """Return view over container with just holders."""
-        return HolderView(self.__list)
+        return ListHolderView(self.__list)
 
     def clear(self):
         """Remove everything from container."""
@@ -220,7 +220,7 @@ class HolderList(HolderContainerBase):
             pass
 
 
-class HolderView:
+class ListHolderView:
     """
     Simple class to implement view-like
     functionality over passed list.

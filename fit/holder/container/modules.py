@@ -19,8 +19,46 @@
 #===============================================================================
 
 
-from collections import namedtuple
+from itertools import chain
 
 
-# Parent object to hold containers for all module racks
-ModuleRacks = namedtuple('ModuleRacks', ('high', 'med', 'low'))
+class ModuleRacks:
+    """
+    Higher-level container for all module racks
+    (which are containers for holders).
+    """
+
+    __slots__ = ('high', 'med', 'low')
+
+    def __init__(self, high, med, low):
+        self.high = high
+        self.med = med
+        self.low = low
+
+    def holders(self):
+        """Return view over all module holders."""
+        return ModuleHolderView(self)
+
+
+class ModuleHolderView:
+    """View over all module holders within all racks."""
+
+    __slots__ = ('__racks')
+
+    def __init__(self, racks):
+        self.__racks = racks
+
+    def __iter__(self):
+        racksChain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
+        return (item for item in racksChain if item is not None)
+
+    def __contains__(self, value):
+        if value is None:
+            return False
+        racks = self.__racks
+        return (racks.high.__contains__(value) or racks.med.__contains__(value) or
+                racks.low.__contains__(value))
+
+    def __len__(self):
+        racksChain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
+        return sum(item is not None for item in racksChain)
