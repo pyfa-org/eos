@@ -54,6 +54,8 @@ class ModifierBuilder:
                     continue
                 try:
                     actions, skippedData = self._actionBuilder.build(treeRootId, effectCategoryId)
+                except KeyboardInterrupt:
+                    raise
                 # If any errors occurred, raise corresponding exceptions
                 except ExpressionFetchError as e:
                     raise TreeFetchingError(*e.args)

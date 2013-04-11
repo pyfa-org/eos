@@ -63,6 +63,8 @@ class JsonCacheHandler:
             with bz2.BZ2File(self._diskCacheFile, 'r') as file:
                 jsonData = file.read().decode('utf-8')
                 data = json.loads(jsonData)
+        except KeyboardInterrupt:
+            raise
         # If file doesn't exist, JSON load errors occur, or
         # anything else bad happens, do not load anything
         # and leave values as initialized

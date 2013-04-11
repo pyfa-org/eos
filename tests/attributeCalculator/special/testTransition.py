@@ -36,7 +36,7 @@ class TestTransitionFit(AttrCalcTestCase):
 
     def testFitAttrUpdate(self):
         # Here we create 2 separate fits with ships affecting it;
-        # eaach ship affects module with different strength. When we
+        # each ship affects module with different strength. When we
         # pass module from one fit to another, its internal attribute
         # storage should be cleared. If it wasn't cleared, we wouldn't
         # be able to get refreshed value of attribute
