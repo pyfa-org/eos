@@ -22,14 +22,15 @@
 from unittest.mock import call
 
 from eos.fit.holder.container import HolderList
-from eos.tests.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.holderContainer.environment import Holder
+from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
+from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedRemove(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
+        self.fitMock = self._fitMockMemberCheck()
         self.container = HolderList(self.fitMock)
 
     def testHolder(self):

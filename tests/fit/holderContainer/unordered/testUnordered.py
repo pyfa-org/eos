@@ -23,14 +23,15 @@ from unittest.mock import call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderSet
-from eos.tests.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.holderContainer.environment import Holder
+from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
+from eos.tests.fit.environment import Holder
 
 
 class TestContainerUnordered(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
+        self.fitMock = self._fitMockMemberCheck()
         self.container = HolderSet(self.fitMock)
 
     def testAddRemoveHolder(self):

@@ -20,8 +20,8 @@
 
 
 from eos.fit.holder.container import ModuleRacks
-from eos.tests.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.holderContainer.environment import Holder
+from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
+from eos.tests.fit.environment import Holder
 
 
 class TestContainerModuleRacks(ContainerTestCase):
