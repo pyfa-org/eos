@@ -19,26 +19,25 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderList, SlotTakenError
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedPlace(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderList(self.fitMock)
 
     def testHolderOutside(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         self.assertEqual(len(container), 1)
         self.assertRaises(IndexError, container.__getitem__, 3)
@@ -55,9 +54,9 @@ class TestContainerOrderedPlace(ContainerTestCase):
     def testHolderOntoNone(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.insert(3, holder2)
         self.assertIsNone(container[1])
@@ -76,8 +75,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
     def testHolderOntoHolder(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         self.assertIs(container[0], holder1)
         self.assertEqual(len(container), 1)
@@ -91,7 +90,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
     def testHolderOutsideFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
+        holder = Mock(spec_set=())
         fitMock._addHolder.side_effect = HolderAddError(holder)
         self.assertRaises(ValueError, container.place, 2, holder)
         self.assertEqual(len(fitMock.mock_calls), 1)
@@ -102,8 +101,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
     def testHolderOntoNoneFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.insert(1, holder1)
         self.assertEqual(len(container), 2)
         self.assertIsNone(container[0])

@@ -19,27 +19,26 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderList
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedInsert(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderList(self.fitMock)
 
     def testHolderToZero(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
@@ -59,9 +58,9 @@ class TestContainerOrderedInsert(ContainerTestCase):
     def testHolderToEnd(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
@@ -81,8 +80,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
     def testHolderOutside(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
         container.insert(3, holder2)
@@ -101,9 +100,9 @@ class TestContainerOrderedInsert(ContainerTestCase):
     def testHolderInsideFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
@@ -122,7 +121,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
     def testHolderOutsideFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
+        holder = Mock(spec_set=())
         self.assertEqual(len(fitMock.mock_calls), 0)
         fitMock._addHolder.side_effect = HolderAddError(holder)
         self.assertRaises(ValueError, container.insert, 4, holder)
@@ -134,8 +133,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
     def testNoneInside(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
@@ -153,8 +152,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
     def testNoneOutside(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)

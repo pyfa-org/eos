@@ -28,15 +28,19 @@ class ContainerTestCase(FitTestCase):
     """
     Additional functionality provided:
 
-    _fitMockMemberCheck -- method which creates
-    self.fitMock, mock which replaces real Fit object
-    for testing of holder containers. When holder asks it
-    to register/unregister holder, it also checks if
-    holder belongs to self.container (which should be set
-    in child test cases) at the time of request
+    _setupContainerCheck -- method which creates fitMock,
+    mock which replaces real Fit object for testing of
+    holder containers. When holder asks it to register/
+    unregister holder, it also checks if holder belongs
+    to self.container (which should be set in child test
+    cases) at the time of request
+    _setupDirectCheck -- method which takes passed fit
+    and attribute name, and when holder is being added
+    to fit, it checks if holder is already assigned to
+    passed attribute.
     """
 
-    def _fitMockMemberCheck(self):
+    def _setupContainerCheck(self):
         fitMock = Mock()
         # To make sure item is properly added to fit, we check that
         # when container asks fit to add holder to services. holder
@@ -45,7 +49,7 @@ class ContainerTestCase(FitTestCase):
         fitMock._removeHolder.side_effect = lambda holder: self.assertIn(holder, self.container)
         return fitMock
 
-    def _fitDirectMockCheck(self, fit, attrName):
+    def _setupDirectCheck(self, fit, attrName):
         fit._addHolder = Mock()
         fit._addHolder.side_effect = lambda holder: self.assertIs(getattr(fit, attrName), holder)
         fit._removeHolder = Mock()

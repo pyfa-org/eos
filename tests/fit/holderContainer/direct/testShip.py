@@ -19,11 +19,10 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit import Fit
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestDirectHolderShip(ContainerTestCase):
@@ -31,7 +30,7 @@ class TestDirectHolderShip(ContainerTestCase):
     def setUp(self):
         ContainerTestCase.setUp(self)
         self.fit = Fit()
-        self._fitDirectMockCheck(self.fit, 'ship')
+        self._setupDirectCheck(self.fit, 'ship')
 
     def testNoneToNone(self):
         fit = self.fit
@@ -45,40 +44,52 @@ class TestDirectHolderShip(ContainerTestCase):
 
     def testNoneToHolder(self):
         fit = self.fit
-        holder = Holder()
+        holder = Mock(spec_set=())
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
+        holderCallsBefore = len(holder.mock_calls)
         fit.ship = holder
         addCallsAfter = len(fit._addHolder.mock_calls)
         removeCallsAfter = len(fit._removeHolder.mock_calls)
+        holderCallsAfter = len(holder.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 1)
         self.assertEqual(fit._addHolder.mock_calls[-1], call(holder))
         self.assertEqual(removeCallsAfter - removeCallsBefore, 0)
+        self.assertEqual(holderCallsAfter - holderCallsBefore, 0)
 
     def testHolderToHolder(self):
         fit = self.fit
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         fit.ship = holder1
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
+        holder1CallsBefore = len(holder1.mock_calls)
+        holder2CallsBefore = len(holder2.mock_calls)
         fit.ship = holder2
         addCallsAfter = len(fit._addHolder.mock_calls)
         removeCallsAfter = len(fit._removeHolder.mock_calls)
+        holder1CallsAfter = len(holder1.mock_calls)
+        holder2CallsAfter = len(holder2.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 1)
         self.assertEqual(fit._addHolder.mock_calls[-1], call(holder2))
         self.assertEqual(removeCallsAfter - removeCallsBefore, 1)
         self.assertEqual(fit._removeHolder.mock_calls[-1], call(holder1))
+        self.assertEqual(holder1CallsAfter - holder1CallsBefore, 0)
+        self.assertEqual(holder2CallsAfter - holder2CallsBefore, 0)
 
     def testHolderToNone(self):
         fit = self.fit
-        holder = Holder()
+        holder = Mock(spec_set=())
         fit.ship = holder
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
+        holderCallsBefore = len(holder.mock_calls)
         fit.ship = None
         addCallsAfter = len(fit._addHolder.mock_calls)
         removeCallsAfter = len(fit._removeHolder.mock_calls)
+        holderCallsAfter = len(holder.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 0)
         self.assertEqual(removeCallsAfter - removeCallsBefore, 1)
         self.assertEqual(fit._removeHolder.mock_calls[-1], call(holder))
+        self.assertEqual(holderCallsAfter - holderCallsBefore, 0)

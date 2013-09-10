@@ -19,25 +19,24 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderList
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedEquip(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderList(self.fitMock)
 
     def testHolderToEmpty(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
+        holder = Mock(spec_set=())
         self.assertEqual(len(container), 0)
         self.assertEqual(len(fitMock.mock_calls), 0)
         container.equip(holder)
@@ -52,9 +51,9 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Check case when all slots of list are filled
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(container), 2)
@@ -73,10 +72,10 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Check that leftmost empty slot is taken
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
-        holder4 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
+        holder4 = Mock(spec_set=())
         container.append(holder1)
         container.insert(3, holder2)
         container.insert(6, holder3)
@@ -100,8 +99,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
     def testHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         self.assertEqual(len(container), 1)
         self.assertEqual(len(fitMock.mock_calls), 1)

@@ -19,21 +19,22 @@
 #===============================================================================
 
 
+from unittest.mock import Mock
+
 from eos.fit.holder.container import ModuleRacks
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerModuleRacks(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.holder1 = Holder()
-        self.holder2 = Holder()
-        self.holder3 = Holder()
-        self.holder4 = Holder()
-        self.holder5 = Holder()
-        self.holder6 = Holder()
+        self.holder1 = Mock(spec_set=())
+        self.holder2 = Mock(spec_set=())
+        self.holder3 = Mock(spec_set=())
+        self.holder4 = Mock(spec_set=())
+        self.holder5 = Mock(spec_set=())
+        self.holder6 = Mock(spec_set=())
         self.highRack = [self.holder1, None, None, self.holder2]
         self.medRack = [None, self.holder3, None, None, self.holder4]
         self.lowRack = [self.holder5, None, None, None, self.holder6]

@@ -17,9 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
-
-
-class Holder:
-
-    def __init__(self):
-        self._fit = None

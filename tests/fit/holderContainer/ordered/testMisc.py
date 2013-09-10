@@ -19,24 +19,23 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.holder.container import HolderList
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedMisc(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderList(self.fitMock)
 
     def testLen(self):
         container = self.container
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(len(container), 0)
         container.append(holder1)
         self.assertEqual(len(container), 1)
@@ -50,8 +49,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def testContains(self):
         container = self.container
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertFalse(holder1 in container)
         self.assertFalse(None in container)
         self.assertFalse(holder2 in container)
@@ -75,8 +74,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def testIter(self):
         container = self.container
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(list(holder for holder in container), [])
         container.append(holder1)
         self.assertEqual(list(holder for holder in container), [holder1])
@@ -91,8 +90,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
     def testClear(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         container.place(3, holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
@@ -107,8 +106,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
     def testHolderView(self):
         container = self.container
         view = container.holders()
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(len(view), 0)
         self.assertEqual(list(view), [])
         self.assertFalse(holder1 in view)

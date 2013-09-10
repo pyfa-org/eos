@@ -19,25 +19,24 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.holder.container import HolderList
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedFree(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderList(self.fitMock)
 
     def testHolder(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(container), 2)
@@ -57,9 +56,9 @@ class TestContainerOrderedFree(ContainerTestCase):
     def testHolderAfterNones(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.place(3, holder2)
         container.place(6, holder3)
@@ -95,8 +94,8 @@ class TestContainerOrderedFree(ContainerTestCase):
     def testHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertRaises(ValueError, container.free, holder2)
@@ -109,8 +108,8 @@ class TestContainerOrderedFree(ContainerTestCase):
     def testIndexHolder(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         container.append(holder2)
         self.assertEqual(len(container), 2)
@@ -132,7 +131,7 @@ class TestContainerOrderedFree(ContainerTestCase):
     def testIndexNone(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
+        holder = Mock(spec_set=())
         container.place(1, holder)
         self.assertEqual(len(container), 2)
         self.assertIsNone(container[0])
@@ -149,9 +148,9 @@ class TestContainerOrderedFree(ContainerTestCase):
     def testIndexAfterNones(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
-        holder3 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        holder3 = Mock(spec_set=())
         container.append(holder1)
         container.place(3, holder2)
         container.place(6, holder3)
@@ -187,7 +186,7 @@ class TestContainerOrderedFree(ContainerTestCase):
     def testIndexOutside(self):
         container = self.container
         fitMock = self.fitMock
-        holder = Holder()
+        holder = Mock(spec_set=())
         container.append(holder)
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder)

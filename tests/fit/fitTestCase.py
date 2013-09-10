@@ -19,8 +19,44 @@
 #===============================================================================
 
 
+from unittest.mock import patch
+
 from eos.tests.eosTestCase import EosTestCase
 
 
 class FitTestCase(EosTestCase):
-    pass
+    """
+    Additional functionality provided:
+
+    self.assertBuffersEmpty -- checks if fit has
+    any holders assigned to it. By default ignores
+    character holder because it's set by fit automatically.
+    """
+
+    def assertFitBuffersEmpty(self, fit, ignoreCharacter=True):
+        holderNum = 0
+        ignoredHolders = set()
+        # Check if we have anything in our single holder  storages
+        singleHolders = ('character', 'ship', 'systemWide')
+        for attrName in singleHolders:
+            holder = getattr(fit, attrName, None)
+            if holder is not None:
+                if ignoreCharacter and attrName == 'character':
+                    ignoredHolders.add(holder)
+                else:
+                    print(attrName)
+                    holderNum += 1
+        # Seek for multiple holder storages
+        for attrName in dir(fit):
+            if attrName.startswith("__") and attrName.endswith("__"):
+                continue
+            buffer = getattr(fit, attrName)
+            if hasattr(buffer, '__iter__'):
+                for holder in buffer:
+                    if holder not in ignoredHolders:
+                        print(attrName)
+                        holderNum += 1
+        if holderNum > 0:
+            plu = 'y' if holderNum == 1 else 'ies'
+            msg = '{} entr{} in buffers: buffers must be empty'.format(holderNum, plu)
+            self.fail(msg=msg)

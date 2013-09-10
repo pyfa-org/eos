@@ -19,26 +19,25 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderList
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerOrderedAppend(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderList(self.fitMock)
 
     def testHolder(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(len(fitMock.mock_calls), 0)
         container.append(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
@@ -55,8 +54,8 @@ class TestContainerOrderedAppend(ContainerTestCase):
     def testHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.append(holder1)
         fitMock._addHolder.side_effect = HolderAddError(holder2)
         self.assertRaises(ValueError, container.append, holder2)

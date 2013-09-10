@@ -19,26 +19,25 @@
 #===============================================================================
 
 
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from eos.fit.exception import HolderAddError
 from eos.fit.holder.container import HolderSet
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
-from eos.tests.fit.environment import Holder
 
 
 class TestContainerUnordered(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.fitMock = self._fitMockMemberCheck()
+        self.fitMock = self._setupContainerCheck()
         self.container = HolderSet(self.fitMock)
 
     def testAddRemoveHolder(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(len(fitMock.mock_calls), 0)
         container.add(holder1)
         self.assertEqual(len(fitMock.mock_calls), 1)
@@ -57,8 +56,8 @@ class TestContainerUnordered(ContainerTestCase):
     def testAddHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.add(holder1)
         fitMock._addHolder.side_effect = HolderAddError(holder2)
         self.assertRaises(ValueError, container.add, holder2)
@@ -71,8 +70,8 @@ class TestContainerUnordered(ContainerTestCase):
     def testRemoveHolderFailure(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.add(holder1)
         container.add(holder2)
         container.remove(holder2)
@@ -85,8 +84,8 @@ class TestContainerUnordered(ContainerTestCase):
 
     def testLen(self):
         container = self.container
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(len(container), 0)
         container.add(holder1)
         self.assertEqual(len(container), 1)
@@ -100,8 +99,8 @@ class TestContainerUnordered(ContainerTestCase):
 
     def testContains(self):
         container = self.container
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertFalse(holder1 in container)
         self.assertFalse(holder2 in container)
         container.add(holder1)
@@ -120,8 +119,8 @@ class TestContainerUnordered(ContainerTestCase):
 
     def testIter(self):
         container = self.container
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         self.assertEqual(set(holder for holder in container), set())
         container.add(holder1)
         self.assertEqual(set(holder for holder in container), {holder1})
@@ -136,8 +135,8 @@ class TestContainerUnordered(ContainerTestCase):
     def testClear(self):
         container = self.container
         fitMock = self.fitMock
-        holder1 = Holder()
-        holder2 = Holder()
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
         container.add(holder1)
         container.add(holder2)
         self.assertEqual(len(fitMock.mock_calls), 2)
