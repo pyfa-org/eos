@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import EffectBuildStatus
+from eos.const.eve import EffectCategory, Operand
 from eos.tests.environment import Logger
 from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
@@ -30,8 +31,8 @@ class TestActionBuilderError(ModBuilderTestCase):
     def testDataIndirect(self):
         # Check reaction to expression data fetch errors,
         # if they occur not for root expression
-        splice = self.ef.make(1, operandID=17, arg1=37, arg2=105)
-        modifiers, status = self.runBuilder(splice['expressionID'], splice['expressionID'], 0)
+        splice = self.ef.make(1, operandID=Operand.splice, arg1=37, arg2=105)
+        modifiers, status = self.runBuilder(splice['expressionID'], splice['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
@@ -42,9 +43,9 @@ class TestActionBuilderError(ModBuilderTestCase):
         self.assertEqual(logRecord.msg, expected)
 
     def testGeneric(self):
-        ePreStub = self.ef.make(1, operandID=27, expressionValue='1')
+        ePreStub = self.ef.make(1, operandID=Operand.defInt, expressionValue='1')
         ePost = self.ef.make(2, operandID=1009)
-        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], 0)
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
@@ -55,9 +56,9 @@ class TestActionBuilderError(ModBuilderTestCase):
         self.assertEqual(logRecord.msg, expected)
 
     def testIntStub(self):
-        ePreStub = self.ef.make(1, operandID=27, expressionValue='0')
-        ePost = self.ef.make(2, operandID=27, expressionValue='6')
-        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], 0)
+        ePreStub = self.ef.make(1, operandID=Operand.defInt, expressionValue='0')
+        ePost = self.ef.make(2, operandID=Operand.defInt, expressionValue='6')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
@@ -68,9 +69,9 @@ class TestActionBuilderError(ModBuilderTestCase):
         self.assertEqual(logRecord.msg, expected)
 
     def testBoolStub(self):
-        ePreStub = self.ef.make(1, operandID=27, expressionValue='0')
-        ePost = self.ef.make(2, operandID=23, expressionValue='False')
-        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], 0)
+        ePreStub = self.ef.make(1, operandID=Operand.defInt, expressionValue='0')
+        ePost = self.ef.make(2, operandID=Operand.defBool, expressionValue='False')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
@@ -83,9 +84,9 @@ class TestActionBuilderError(ModBuilderTestCase):
     def testUnknown(self):
         # Check reaction to any errors of action builder,
         # which are not specifically processed by it
-        ePreStub = self.ef.make(1, operandID=27, expressionValue='0')
-        ePost = self.ef.make(2, operandID=23, expressionValue='Garbage')
-        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], 0)
+        ePreStub = self.ef.make(1, operandID=Operand.defInt, expressionValue='0')
+        ePost = self.ef.make(2, operandID=Operand.defBool, expressionValue='Garbage')
+        modifiers, status = self.runBuilder(ePreStub['expressionID'], ePost['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
@@ -100,17 +101,17 @@ class TestActionBuilderError(ModBuilderTestCase):
         # and group- filtered expression tree and replaced its
         # actual top-level operands with operand describing
         # direct modification
-        eTgtLoc = self.ef.make(1, operandID=24, expressionValue='Ship')
-        eTgtGrp = self.ef.make(2, operandID=26, expressionGroupID=46)
-        eTgtAttr = self.ef.make(3, operandID=22, expressionAttributeID=6)
-        eOptr = self.ef.make(4, operandID=21, expressionValue='PostPercent')
-        eSrcAttr = self.ef.make(5, operandID=22, expressionAttributeID=1576)
-        eTgtItms = self.ef.make(6, operandID=48, arg1=eTgtLoc['expressionID'], arg2=eTgtGrp['expressionID'])
-        eTgtSpec = self.ef.make(7, operandID=12, arg1=eTgtItms['expressionID'], arg2=eTgtAttr['expressionID'])
-        eOptrTgt = self.ef.make(8, operandID=31, arg1=eOptr['expressionID'], arg2=eTgtSpec['expressionID'])
-        eAddMod = self.ef.make(9, operandID=6, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
-        eRmMod = self.ef.make(10, operandID=58, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
-        modifiers, status = self.runBuilder(eAddMod['expressionID'], eRmMod['expressionID'], 0)
+        eTgtLoc = self.ef.make(1, operandID=Operand.defLoc, expressionValue='Ship')
+        eTgtGrp = self.ef.make(2, operandID=Operand.defGrp, expressionGroupID=46)
+        eTgtAttr = self.ef.make(3, operandID=Operand.defAttr, expressionAttributeID=6)
+        eOptr = self.ef.make(4, operandID=Operand.defOptr, expressionValue='PostPercent')
+        eSrcAttr = self.ef.make(5, operandID=Operand.defAttr, expressionAttributeID=1576)
+        eTgtItms = self.ef.make(6, operandID=Operand.locGrp, arg1=eTgtLoc['expressionID'], arg2=eTgtGrp['expressionID'])
+        eTgtSpec = self.ef.make(7, operandID=Operand.itmAttr, arg1=eTgtItms['expressionID'], arg2=eTgtAttr['expressionID'])
+        eOptrTgt = self.ef.make(8, operandID=Operand.optrTgt, arg1=eOptr['expressionID'], arg2=eTgtSpec['expressionID'])
+        eAddMod = self.ef.make(9, operandID=Operand.addItmMod, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
+        eRmMod = self.ef.make(10, operandID=Operand.rmItmMod, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
+        modifiers, status = self.runBuilder(eAddMod['expressionID'], eRmMod['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)

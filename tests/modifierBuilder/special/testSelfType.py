@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import EffectBuildStatus, FilterType
+from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifierBuilder.modBuilderTestCase import ModBuilderTestCase
 
 
@@ -27,18 +28,18 @@ class TestSelfType(ModBuilderTestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
     def testBuildSuccess(self):
-        eTgtOwn = self.ef.make(1, operandID=24, expressionValue='Char')
-        eSelf = self.ef.make(2, operandID=24, expressionValue='Self')
-        eSelfType = self.ef.make(3, operandID=36, arg1=eSelf['expressionID'])
-        eTgtAttr = self.ef.make(4, operandID=22, expressionAttributeID=64)
-        eOptr = self.ef.make(5, operandID=21, expressionValue='PostPercent')
-        eSrcAttr = self.ef.make(6, operandID=22, expressionAttributeID=292)
-        eTgtItms = self.ef.make(7, operandID=49, arg1=eTgtOwn['expressionID'], arg2=eSelfType['expressionID'])
-        eTgtSpec = self.ef.make(8, operandID=12, arg1=eTgtItms['expressionID'], arg2=eTgtAttr['expressionID'])
-        eOptrTgt = self.ef.make(9, operandID=31, arg1=eOptr['expressionID'], arg2=eTgtSpec['expressionID'])
-        eAddMod = self.ef.make(10, operandID=11, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
-        eRmMod = self.ef.make(11, operandID=62, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
-        modifiers, status = self.runBuilder(eAddMod['expressionID'], eRmMod['expressionID'], 0)
+        eTgtOwn = self.ef.make(1, operandID=Operand.defLoc, expressionValue='Char')
+        eSelf = self.ef.make(2, operandID=Operand.defLoc, expressionValue='Self')
+        eSelfType = self.ef.make(3, operandID=Operand.getType, arg1=eSelf['expressionID'])
+        eTgtAttr = self.ef.make(4, operandID=Operand.defAttr, expressionAttributeID=64)
+        eOptr = self.ef.make(5, operandID=Operand.defOptr, expressionValue='PostPercent')
+        eSrcAttr = self.ef.make(6, operandID=Operand.defAttr, expressionAttributeID=292)
+        eTgtItms = self.ef.make(7, operandID=Operand.locSrq, arg1=eTgtOwn['expressionID'], arg2=eSelfType['expressionID'])
+        eTgtSpec = self.ef.make(8, operandID=Operand.itmAttr, arg1=eTgtItms['expressionID'], arg2=eTgtAttr['expressionID'])
+        eOptrTgt = self.ef.make(9, operandID=Operand.optrTgt, arg1=eOptr['expressionID'], arg2=eTgtSpec['expressionID'])
+        eAddMod = self.ef.make(10, operandID=Operand.addOwnSrqMod, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
+        eRmMod = self.ef.make(11, operandID=Operand.rmOwnSrqMod, arg1=eOptrTgt['expressionID'], arg2=eSrcAttr['expressionID'])
+        modifiers, status = self.runBuilder(eAddMod['expressionID'], eRmMod['expressionID'], EffectCategory.passive)
         self.assertEqual(status, EffectBuildStatus.okFull)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
