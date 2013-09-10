@@ -53,7 +53,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailShipNoAttr(self):
         # Make sure that absence of specifier of slot output
@@ -72,7 +72,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailNoShip(self):
         # Make sure that absence of ship
@@ -88,7 +88,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(restrictionError.slotsUsed, 1)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailModified(self):
         # Make sure that modified number of slot output
@@ -115,7 +115,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # No error is raised when slot users do not
@@ -138,7 +138,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
@@ -160,7 +160,7 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonSlot(self):
         # If holders don't use slot, no error should
@@ -182,4 +182,4 @@ class TestTurretSlot(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

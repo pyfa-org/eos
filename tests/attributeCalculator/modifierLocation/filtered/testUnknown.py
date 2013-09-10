@@ -55,7 +55,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 754: unsupported target location 1972 for filtered modification')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCombination(self):
         validModifier = Modifier()
@@ -77,4 +77,4 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.fit.items.remove(influenceTarget)
         self.fit.items.remove(influenceSource)
         self.assertEqual(len(self.log), 1)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

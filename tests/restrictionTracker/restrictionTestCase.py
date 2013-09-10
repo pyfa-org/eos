@@ -26,11 +26,11 @@ class RestrictionTestCase(EosTestCase):
     """
     Additional functionality provided:
 
-    self.assertBuffersEmpty -- checks if restriction tracker
-    buffers of passed fit are clear
+    self.assertRestrictionBuffersEmpty -- checks if
+    restriction tracker buffers of passed fit are clear
     """
 
-    def assertBuffersEmpty(self, fit):
+    def assertRestrictionBuffersEmpty(self, fit):
         entryNum = 0
         # Get dictionary-container with all registers used by tracker,
         # and cycle through all of them

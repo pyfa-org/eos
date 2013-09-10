@@ -52,7 +52,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testMixExcessOne(self):
         # Make sure error is raised for just holders which excess
@@ -74,7 +74,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testMixExcessOriginal(self):
         # Check that original item attributes are used
@@ -97,7 +97,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # Make sure no errors are raised when number of added
@@ -117,7 +117,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassHolderNoneGroup(self):
         # Check that holders with None group are not affected
@@ -136,7 +136,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassState(self):
         # No errors should occur if holders are not online+
@@ -153,7 +153,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
@@ -172,4 +172,4 @@ class TestMaxGroupOnline(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

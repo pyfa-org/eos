@@ -45,7 +45,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertEqual(len(container), 3)
         container.remove(holder2)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testContains(self):
         container = self.container
@@ -70,7 +70,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(holder1 in container)
         self.assertFalse(None in container)
         self.assertFalse(holder2 in container)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIter(self):
         container = self.container
@@ -85,7 +85,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertEqual(list(holder for holder in container), [None, None, holder2])
         container.remove(holder2)
         self.assertEqual(list(holder for holder in container), [])
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testClear(self):
         container = self.container
@@ -101,7 +101,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertIn(call._removeHolder(holder1), newCalls)
         self.assertIn(call._removeHolder(holder2), newCalls)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderView(self):
         container = self.container
@@ -137,4 +137,4 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(holder1 in view)
         self.assertFalse(holder2 in view)
         self.assertFalse(None in view)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

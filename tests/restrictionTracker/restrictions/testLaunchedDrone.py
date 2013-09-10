@@ -42,7 +42,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restrictionError.launchedDrones, 1)
         fit.drones.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailNoAttr(self):
         # Check that any positive number of drones
@@ -70,7 +70,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcess(self):
         # Check that excessive number of drones results
@@ -98,7 +98,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessModified(self):
         # Check that modified attribute value is taken, not original
@@ -124,7 +124,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # Check non-excessive number of drones
@@ -146,7 +146,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassState(self):
         # Check excessive number of drones, which are
@@ -167,7 +167,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.drones.remove(holder1)
         fit.drones.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonDrone(self):
         # Check excessive number of non-drone items
@@ -189,4 +189,4 @@ class TestLaunchedDrone(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

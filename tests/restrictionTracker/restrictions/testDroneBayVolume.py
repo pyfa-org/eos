@@ -41,7 +41,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.drones.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessShipNoAttr(self):
         # When ship is assigned, but doesn't have drone bay volume output
@@ -60,7 +60,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessSingle(self):
         # When ship provides drone bay volume output, but single consumer
@@ -80,7 +80,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessMultiple(self):
         # When multiple consumers require less than drone bay volume output
@@ -111,7 +111,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessModified(self):
         # Make sure modified drone bay volume values are taken
@@ -130,7 +130,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testMixUsageNegative(self):
         # If some holder has negative usage and drone bay volume error is
@@ -158,7 +158,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testMixUsageZero(self):
         # If some holder has zero usage and drone bay volume error is
@@ -186,7 +186,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # When total consumption is less than output,
@@ -210,7 +210,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNoOriginalAttr(self):
         # When added holder's item doesn't have original attribute,
@@ -228,7 +228,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNegativeUse(self):
         # Check that even if use of one holder exceeds drone bay volume
@@ -252,7 +252,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.drones.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonDrone(self):
         # Make sure nothing but drone container is restricted
@@ -268,4 +268,4 @@ class TestDroneBayVolume(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

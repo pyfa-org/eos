@@ -56,7 +56,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCharacter(self):
         self.fit.character = self.influenceSource
@@ -67,7 +67,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testUnpositionedError(self):
         # Here we do not position holder in fit, this way attribute
@@ -80,4 +80,4 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 1061: invalid reference to self for filtered modification')
         self.fit.items.remove(self.influenceSource)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

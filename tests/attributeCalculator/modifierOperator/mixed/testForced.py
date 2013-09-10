@@ -164,4 +164,4 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         self.fit.items.remove(influenceSourcePostAss)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

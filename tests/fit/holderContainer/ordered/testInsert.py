@@ -53,7 +53,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         container.remove(holder2)
         container.remove(holder3)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderToEnd(self):
         container = self.container
@@ -75,7 +75,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         container.remove(holder2)
         container.remove(holder3)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderOutside(self):
         container = self.container
@@ -95,7 +95,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         container.remove(holder1)
         container.remove(holder2)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderInsideFailure(self):
         container = self.container
@@ -116,7 +116,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         container.remove(holder1)
         container.remove(holder2)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderOutsideFailure(self):
         container = self.container
@@ -128,7 +128,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertEqual(fitMock.method_calls[0], call._addHolder(holder))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testNoneInside(self):
         container = self.container
@@ -147,7 +147,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         container.remove(holder1)
         container.remove(holder2)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testNoneOutside(self):
         container = self.container
@@ -165,4 +165,4 @@ class TestContainerOrderedInsert(ContainerTestCase):
         container.remove(holder1)
         container.remove(holder2)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

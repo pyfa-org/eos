@@ -40,7 +40,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restrictionError.holderVolume, 501)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailSubcapitalShip(self):
         # Check that error is raised on attempt
@@ -57,7 +57,7 @@ class TestCapitalItem(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailOriginalVolume(self):
         # Make sure original volume value is taken
@@ -76,7 +76,7 @@ class TestCapitalItem(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassSubcapitalShipHolder(self):
         # Make sure no error raised when non-capital
@@ -88,7 +88,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonShipHolder(self):
         # Check that non-ship holders are not affected
@@ -100,7 +100,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassCapitalShip(self):
         # Check that capital holders can be added to
@@ -116,7 +116,7 @@ class TestCapitalItem(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNoVolume(self):
         # Check that items with no volume attribute are not restricted
@@ -129,4 +129,4 @@ class TestCapitalItem(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

@@ -42,7 +42,7 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restrictionError.holderConsumption, 50)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessShipNoAttr(self):
         # When ship is assigned, but doesn't have cpu output
@@ -62,7 +62,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessSingle(self):
         # When ship provides cpu output, but single consumer
@@ -83,7 +83,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessMultiple(self):
         # When multiple consumers require less than cpu output
@@ -116,7 +116,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailExcessModified(self):
         # Make sure modified cpu values are taken
@@ -136,7 +136,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testMixUsageNegative(self):
         # If some holder has negative usage and cpu error is
@@ -166,7 +166,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testMixUsageZero(self):
         # If some holder has zero usage and cpu error is
@@ -196,7 +196,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # When total consumption is less than output,
@@ -222,7 +222,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNoOriginalAttr(self):
         # When added holder's item doesn't have original attribute,
@@ -241,7 +241,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNegativeUse(self):
         # Check that even if use of one holder exceeds
@@ -268,7 +268,7 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder2)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
@@ -284,4 +284,4 @@ class TestCpu(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

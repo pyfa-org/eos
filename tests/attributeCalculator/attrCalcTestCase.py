@@ -28,7 +28,7 @@ class AttrCalcTestCase(EosTestCase):
     Additional functionality provided:
 
     self.fit -- precreated fit with self.ch used as cache handler
-    self.assertBuffersEmpty -- checks if link tracker buffers
+    self.assertLinkBuffersEmpty -- checks if link tracker buffers
     of passed fit are clear
     """
 
@@ -36,6 +36,6 @@ class AttrCalcTestCase(EosTestCase):
         EosTestCase.setUp(self)
         self.fit = Fit(self.ch)
 
-    def assertBuffersEmpty(self, fit):
+    def assertLinkBuffersEmpty(self, fit):
         register = fit._linkTracker._register
-        EosTestCase.assertBuffersEmpty(self, register)
+        EosTestCase.assertObjectBuffersEmpty(self, register)

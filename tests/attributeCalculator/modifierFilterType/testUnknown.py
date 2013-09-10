@@ -55,7 +55,7 @@ class TestFilterUnknown(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 31: invalid filter type 26500')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCombination(self):
         validModifier = Modifier()
@@ -74,4 +74,4 @@ class TestFilterUnknown(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 1)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

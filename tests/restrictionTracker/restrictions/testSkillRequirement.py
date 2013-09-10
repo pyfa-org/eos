@@ -40,7 +40,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(restrictionError, ((50, None, 3),))
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailMultiple(self):
         # Check error raised when multiple skill requirements
@@ -55,7 +55,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(restrictionError, ((50, None, 5), (48, None, 1)))
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailPartial(self):
         # Make sure satisfied skill requirements are not shown
@@ -74,7 +74,7 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(holder)
         fit.items.remove(skill)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassSatisfied(self):
         # Check that error isn't raised when all skill requirements
@@ -92,7 +92,7 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(holder)
         fit.items.remove(skill)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassMultiSkill(self):
         # Make sure max skill level is taken
@@ -114,7 +114,7 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(skill1)
         fit.items.remove(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassMultiSkillNone(self):
         # Make sure that None-leveled skills are overridden
@@ -137,4 +137,4 @@ class TestSkillRequirement(RestrictionTestCase):
         fit.items.remove(skill1)
         fit.items.remove(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

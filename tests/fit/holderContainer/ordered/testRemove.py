@@ -50,7 +50,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderAfterNones(self):
         container = self.container
@@ -87,7 +87,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder1)
         container.remove(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderFailure(self):
         container = self.container
@@ -101,7 +101,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 2)
         self.assertRaises(ValueError, container.remove, holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testNone(self):
         # Check that first found None is removed
@@ -125,7 +125,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIs(container[2], holder2)
         container.remove(holder1)
         container.remove(holder2)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testNoneFailure(self):
         # Check that first found None is removed
@@ -141,7 +141,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder)
         container.remove(holder)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexHolder(self):
         container = self.container
@@ -163,7 +163,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexNone(self):
         container = self.container
@@ -179,7 +179,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder)
         container.remove(holder)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexAfterNones(self):
         container = self.container
@@ -216,7 +216,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder1)
         container.remove(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexOutside(self):
         container = self.container
@@ -231,4 +231,4 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder)
         container.remove(holder)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

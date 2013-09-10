@@ -44,7 +44,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         fit.items.remove(skill1)
         fit.items.remove(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # No error should be raised when single skill
@@ -56,7 +56,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(skill)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNone(self):
         # When typeIDs of skills are None, they should be ignored
@@ -73,7 +73,7 @@ class TestSkillUniqueness(RestrictionTestCase):
         fit.items.remove(skill1)
         fit.items.remove(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonSkills(self):
         # Not-skill holders shouldn't be tracked
@@ -90,4 +90,4 @@ class TestSkillUniqueness(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

@@ -55,7 +55,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 83: unknown operator 1008')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testLogUnorderableCombination(self):
         # Check how non-orderable operator value influences
@@ -92,7 +92,7 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 83: unknown operator None')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCombination(self):
         tgtAttr = self.ch.attribute(attributeId=1)
@@ -124,4 +124,4 @@ class TestOperatorUnknown(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 1)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

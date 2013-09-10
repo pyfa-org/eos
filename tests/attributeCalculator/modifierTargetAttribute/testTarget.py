@@ -65,4 +65,4 @@ class TestTargetAttribute(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[tgtAttr3.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

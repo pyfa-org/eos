@@ -49,7 +49,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         self.assertIs(container[1], holder2)
         container.remove(holder1)
         container.remove(holder2)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderFailure(self):
         container = self.container
@@ -64,4 +64,4 @@ class TestContainerOrderedAppend(ContainerTestCase):
         self.assertIs(container[0], holder1)
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 3)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

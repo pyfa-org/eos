@@ -57,7 +57,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCharge(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -71,7 +71,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testSkill(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.skill, attributes={self.srcAttr.id: 50}))
@@ -85,7 +85,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testImplant(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.implant, attributes={self.srcAttr.id: 50}))
@@ -99,7 +99,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testSubsystem(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.subsystem, attributes={self.srcAttr.id: 50}))
@@ -113,7 +113,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testMixed(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -127,7 +127,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testWithNotImmune(self):
         influenceSource1 = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), categoryId=Category.charge, attributes={self.srcAttr.id: 50}))
@@ -141,4 +141,4 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         self.fit.items.remove(influenceSource2)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

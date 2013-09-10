@@ -64,4 +64,4 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'unable to find base value for attribute 2 on item 1')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

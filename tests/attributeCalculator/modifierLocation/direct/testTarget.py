@@ -53,4 +53,4 @@ class TestLocationDirectTarget(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 102: unsupported target location {} for direct modification'.format(Location.target))
         self.fit.items.remove(influenceSource)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

@@ -28,7 +28,7 @@ class FitTestCase(EosTestCase):
     """
     Additional functionality provided:
 
-    self.assertBuffersEmpty -- checks if fit has
+    self.assertObjectBuffersEmpty -- checks if fit has
     any holders assigned to it. By default ignores
     character holder because it's set by fit automatically.
     """

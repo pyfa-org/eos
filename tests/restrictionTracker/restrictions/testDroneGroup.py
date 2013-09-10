@@ -43,7 +43,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailMismatch2(self):
         # Check that error is returned on attempt
@@ -60,7 +60,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailMismatchCombined(self):
         # Check that error is returned on attempt
@@ -77,7 +77,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailMismatchOriginal(self):
         # Check that error is returned on attempt
@@ -98,7 +98,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailDroneNone(self):
         # Check that drone from None group is subject
@@ -114,7 +114,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNoShip(self):
         # Check that restriction isn't applied
@@ -126,7 +126,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.drones.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassShipNoRestriction(self):
         # Check that restriction isn't applied
@@ -141,7 +141,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonDrone(self):
         # Check that restriction is not applied
@@ -155,7 +155,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassMatch1(self):
         # Check that no error raised when drone of group
@@ -169,7 +169,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassMatch2(self):
         # Check that no error raised when drone of group
@@ -183,7 +183,7 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassMatchCombination(self):
         # Check that no error raised when drone of group
@@ -198,4 +198,4 @@ class TestDroneGroup(RestrictionTestCase):
         fit.drones.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

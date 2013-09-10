@@ -45,7 +45,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder)
         container.remove(holder)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderSolid(self):
         # Check case when all slots of list are filled
@@ -66,7 +66,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         container.remove(holder1)
         container.remove(holder2)
         container.remove(holder3)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderFirstHole(self):
         # Check that leftmost empty slot is taken
@@ -94,7 +94,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         container.remove(holder2)
         container.remove(holder3)
         container.remove(holder4)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderFailure(self):
         container = self.container
@@ -111,4 +111,4 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder1)
         container.remove(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

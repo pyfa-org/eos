@@ -51,7 +51,7 @@ class TestContainerUnordered(ContainerTestCase):
         container.remove(holder2)
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testAddHolderFailure(self):
         container = self.container
@@ -65,7 +65,7 @@ class TestContainerUnordered(ContainerTestCase):
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 3)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testRemoveHolderFailure(self):
         container = self.container
@@ -80,7 +80,7 @@ class TestContainerUnordered(ContainerTestCase):
         container.remove(holder1)
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testLen(self):
         container = self.container
@@ -95,7 +95,7 @@ class TestContainerUnordered(ContainerTestCase):
         self.assertEqual(len(container), 1)
         container.remove(holder2)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testContains(self):
         container = self.container
@@ -115,7 +115,7 @@ class TestContainerUnordered(ContainerTestCase):
         container.remove(holder2)
         self.assertFalse(holder1 in container)
         self.assertFalse(holder2 in container)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIter(self):
         container = self.container
@@ -130,7 +130,7 @@ class TestContainerUnordered(ContainerTestCase):
         self.assertEqual(set(holder for holder in container), {holder2})
         container.remove(holder2)
         self.assertEqual(set(holder for holder in container), set())
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testClear(self):
         container = self.container
@@ -146,4 +146,4 @@ class TestContainerUnordered(ContainerTestCase):
         self.assertIn(call._removeHolder(holder1), newCalls)
         self.assertIn(call._removeHolder(holder2), newCalls)
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

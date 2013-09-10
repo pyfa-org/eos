@@ -36,7 +36,7 @@ class TestSkillLevel(AttrCalcTestCase):
         self.assertAlmostEqual(skill.attributes[Attribute.skillLevel], 5)
         self.fit.items.remove(skill)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testStandardAttrAccess(self):
         attr = self.ch.attribute(attributeId=Attribute.skillLevel)
@@ -48,4 +48,4 @@ class TestSkillLevel(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[Attribute.skillLevel], 3)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

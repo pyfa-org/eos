@@ -49,7 +49,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertEqual(len(container), 4)
         container.remove(holder1)
         container.remove(holder2)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderOntoNone(self):
         container = self.container
@@ -70,7 +70,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         container.remove(holder1)
         container.remove(holder2)
         container.remove(holder3)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderOntoHolder(self):
         container = self.container
@@ -85,7 +85,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertIs(container[0], holder1)
         container.remove(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderOutsideFailure(self):
         container = self.container
@@ -96,7 +96,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 1)
         self.assertEqual(fitMock.method_calls[0], call._addHolder(holder))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderOntoNoneFailure(self):
         container = self.container
@@ -116,4 +116,4 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIsNone(container[0])
         self.assertIs(container[1], holder1)
         container.remove(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

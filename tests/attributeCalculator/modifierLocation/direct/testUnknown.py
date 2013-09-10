@@ -55,7 +55,7 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 754: unsupported target location 1972 for direct modification')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCombination(self):
         validModifier = Modifier()
@@ -74,4 +74,4 @@ class TestLocationDirectUnknown(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 1)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

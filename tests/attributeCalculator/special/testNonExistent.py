@@ -39,7 +39,7 @@ class TestNonExistent(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.ERROR)
         self.assertEqual(logRecord.msg, 'unable to fetch metadata for attribute 105, requested for item 57')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testAbsentBaseValueError(self):
         # Check case when default value of attribute cannot be
@@ -55,7 +55,7 @@ class TestNonExistent(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'unable to find base value for attribute 89 on item 649')
         self.fit.items.remove(holder)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testAbsentDefaultValue(self):
         # Default value should be used if attribute
@@ -66,4 +66,4 @@ class TestNonExistent(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

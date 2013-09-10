@@ -56,7 +56,7 @@ class TestCap(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 5)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCapOriginal(self):
         # Make sure that holder's own specified attribute
@@ -67,7 +67,7 @@ class TestCap(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 2)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCapModified(self):
         # Make sure that holder's own specified attribute
@@ -91,7 +91,7 @@ class TestCap(AttrCalcTestCase):
         self.assertAlmostEqual(holder.attributes[self.cappedAttr.id], 0.6)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCapUpdate(self):
         # If cap updates, capped attributes should
@@ -120,4 +120,4 @@ class TestCap(AttrCalcTestCase):
         self.fit.items.remove(holder)
         self.fit.items.remove(capUpdater)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

@@ -54,4 +54,4 @@ class TestLocationFilterOther(AttrCalcTestCase):
         self.assertEqual(logRecord.levelno, Logger.WARNING)
         self.assertEqual(logRecord.msg, 'malformed modifier on item 90: unsupported target location {} for filtered modification'.format(Location.other))
         self.fit.items.remove(influenceSource)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

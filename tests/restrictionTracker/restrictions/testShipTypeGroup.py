@@ -45,7 +45,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailType2(self):
         # Check that second type-restriction attribute affects
@@ -64,7 +64,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailType3(self):
         # Check that third type-restriction attribute affects
@@ -83,7 +83,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailType4(self):
         # Check that fourth type-restriction attribute affects
@@ -102,7 +102,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailType5(self):
         # Check that fifth type-restriction attribute affects
@@ -121,7 +121,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailGroup1(self):
         # Check that first group-restriction attribute affects
@@ -140,7 +140,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailGroup2(self):
         # Check that second group-restriction attribute affects
@@ -159,7 +159,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailGroup3(self):
         # Check that third group-restriction attribute affects
@@ -178,7 +178,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailGroup4(self):
         # Check that fourth group-restriction attribute affects
@@ -197,7 +197,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailCombined(self):
         # Check that failure is appropriately generated when
@@ -216,7 +216,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailNoShip(self):
         # Absent ship should trigger this error too
@@ -231,7 +231,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restrictionError.shipGroup, None)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailAttrOriginal(self):
         # Make sure original value is taken
@@ -250,7 +250,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassTypeMatch(self):
         # When type of ship matches type-restriction attribute,
@@ -265,7 +265,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassGroupMatch(self):
         # When type of ship matches group-restriction attribute,
@@ -280,7 +280,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassCombinedMatch(self):
         # Check that it's enough to match any condition
@@ -295,7 +295,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassNonShipHolder(self):
         # Holders not belonging to ship shouldn't be affected
@@ -309,4 +309,4 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit.items.remove(holder)
         fit.ship = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

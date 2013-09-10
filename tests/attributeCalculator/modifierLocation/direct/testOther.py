@@ -60,7 +60,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.assertAlmostEqual(influenceTarget.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testSelf(self):
         # Check that source holder isn't modified
@@ -72,7 +72,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.influenceSource.breakOtherLink(influenceTarget)
         self.fit.items.remove(self.influenceSource)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testOtherHolder(self):
         # Here we check some "random" holder, w/o linking holders
@@ -82,4 +82,4 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.fit.items.remove(self.influenceSource)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

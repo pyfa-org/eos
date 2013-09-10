@@ -46,7 +46,7 @@ class TestImplantIndex(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testFailOriginal(self):
         # Make sure that original attributes are used
@@ -67,7 +67,7 @@ class TestImplantIndex(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPass(self):
         # Single holder which takes some slot shouldn't
@@ -79,7 +79,7 @@ class TestImplantIndex(RestrictionTestCase):
         self.assertIsNone(restrictionError)
         fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)
 
     def testPassDifferent(self):
         # Holders taking different slots shouldn't trigger any errors
@@ -95,4 +95,4 @@ class TestImplantIndex(RestrictionTestCase):
         fit.items.remove(holder1)
         fit.items.remove(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty(fit)

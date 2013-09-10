@@ -47,7 +47,7 @@ class TestMapMethods(AttrCalcTestCase):
         # Attempt to fetch non-existent attribute generates
         # error, which is not related to this test
         self.assertEqual(len(self.log), 1)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testLen(self):
         # Length should return length, counting unique
@@ -55,7 +55,7 @@ class TestMapMethods(AttrCalcTestCase):
         self.assertEqual(len(self.holder.attributes), 3)
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testContains(self):
         # Make sure map reacts positively to holders contained
@@ -67,7 +67,7 @@ class TestMapMethods(AttrCalcTestCase):
         self.assertFalse(1008 in self.holder.attributes)
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testKeys(self):
         # When we request map keys, they should include all unique
@@ -75,7 +75,7 @@ class TestMapMethods(AttrCalcTestCase):
         self.assertCountEqual(self.holder.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr3.id))
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testIter(self):
         # Iter should return the same keys as keys(). CountEqual
@@ -84,4 +84,4 @@ class TestMapMethods(AttrCalcTestCase):
         self.assertCountEqual(self.holder.attributes, (self.attr1.id, self.attr2.id, self.attr3.id))
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

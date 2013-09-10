@@ -64,12 +64,12 @@ class TestTransitionFit(AttrCalcTestCase):
         self.assertAlmostEqual(module.attributes.get(tgtAttr.id), 55)
         fit1.items.remove(module)
         fit1.ship = None
-        self.assertBuffersEmpty(fit1)
+        self.assertLinkBuffersEmpty(fit1)
         fit2.items.add(module)
         self.assertAlmostEqual(module.attributes.get(tgtAttr.id), 60)
         fit2.ship = None
         fit2.items.remove(module)
-        self.assertBuffersEmpty(fit2)
+        self.assertLinkBuffersEmpty(fit2)
 
     def testEosAttrUpdate(self):
         # Here we check if attributes are updated if fit changes
@@ -140,4 +140,4 @@ class TestTransitionFit(AttrCalcTestCase):
         self.assertAlmostEqual(module.attributes.get(tgtAttr2.id), 90)
         fit.ship = None
         fit.items.remove(module)
-        self.assertBuffersEmpty(fit)
+        self.assertLinkBuffersEmpty(fit)

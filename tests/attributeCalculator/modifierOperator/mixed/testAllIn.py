@@ -159,4 +159,4 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.remove(influenceSourcePostPerc)
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)

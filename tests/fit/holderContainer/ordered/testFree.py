@@ -51,7 +51,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderAfterNones(self):
         container = self.container
@@ -89,7 +89,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder1)
         container.free(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testHolderFailure(self):
         container = self.container
@@ -103,7 +103,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         container.free(holder1)
         self.assertEqual(len(fitMock.mock_calls), 2)
         self.assertRaises(ValueError, container.free, holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexHolder(self):
         container = self.container
@@ -126,7 +126,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fitMock.mock_calls), 4)
         self.assertEqual(fitMock.method_calls[3], call._removeHolder(holder2))
         self.assertEqual(len(container), 0)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexNone(self):
         container = self.container
@@ -143,7 +143,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(container[0])
         self.assertIs(container[1], holder)
         container.free(holder)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexAfterNones(self):
         container = self.container
@@ -181,7 +181,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder1)
         container.free(holder1)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)
 
     def testIndexOutside(self):
         container = self.container
@@ -196,4 +196,4 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(container), 1)
         self.assertIs(container[0], holder)
         container.free(holder)
-        self.assertBuffersEmpty(container)
+        self.assertObjectBuffersEmpty(container)

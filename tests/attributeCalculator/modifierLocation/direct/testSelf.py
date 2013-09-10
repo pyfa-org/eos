@@ -54,7 +54,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         # essentially becomes detached, which is covered by other tests
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testCharacter(self):
         holder = CharacterItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
@@ -62,7 +62,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testShip(self):
         holder = ShipItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
@@ -70,7 +70,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testSpace(self):
         holder = SpaceItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
@@ -78,7 +78,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testPositioned(self):
         holder = IndependentItem(self.ch.type_(typeId=1, effects=(self.effect,), attributes={self.tgtAttr.id: 100, self.srcAttr.id: 20}))
@@ -86,7 +86,7 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.assertNotAlmostEqual(holder.attributes[self.tgtAttr.id], 100)
         self.fit.character = None
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
 
     def testOther(self):
         # Here we check that self-reference modifies only carrier-item,
@@ -101,4 +101,4 @@ class TestLocationDirectSelf(AttrCalcTestCase):
         self.fit.character = None
         self.fit.items.remove(influenceTarget)
         self.assertEqual(len(self.log), 0)
-        self.assertBuffersEmpty(self.fit)
+        self.assertLinkBuffersEmpty(self.fit)
