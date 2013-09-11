@@ -31,22 +31,6 @@ from eos.tests.fit.fitTestCase import FitTestCase
 @patch('eos.fit.fit.LinkTracker')
 class TestFitAddHolder(FitTestCase):
 
-    def testAlreadyAssigned(self, *args):
-        fit1 = Fit()
-        fit2 = Fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        fit1._addHolder(holder)
-        ltCallsBefore = len(fit2._linkTracker.mock_calls)
-        rtCallsBefore = len(fit2._restrictionTracker.mock_calls)
-        self.assertRaises(HolderAddError, fit2._addHolder, holder)
-        ltCallsAfter = len(fit2._linkTracker.mock_calls)
-        rtCallsAfter = len(fit2._restrictionTracker.mock_calls)
-        self.assertEqual(ltCallsAfter - ltCallsBefore, 0)
-        self.assertEqual(rtCallsAfter - rtCallsBefore, 0)
-        fit1._removeHolder(holder)
-        self.assertFitBuffersEmpty(fit1)
-        self.assertFitBuffersEmpty(fit2)
-
     def testEosLess(self, *args):
         fit = Fit()
         holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
@@ -57,6 +41,7 @@ class TestFitAddHolder(FitTestCase):
         rtCallsAfter = len(fit._restrictionTracker.mock_calls)
         self.assertEqual(ltCallsAfter - ltCallsBefore, 0)
         self.assertEqual(rtCallsAfter - rtCallsBefore, 0)
+        self.assertIs(holder._fit, fit)
         fit._removeHolder(holder)
         self.assertFitBuffersEmpty(fit)
 
@@ -72,8 +57,27 @@ class TestFitAddHolder(FitTestCase):
         rtCallsAfter = len(fit._restrictionTracker.mock_calls)
         self.assertEqual(ltCallsAfter - ltCallsBefore, 0)
         self.assertEqual(rtCallsAfter - rtCallsBefore, 0)
+        self.assertIs(holder._fit, fit)
+        self.assertIs(charge._fit, fit)
         fit._removeHolder(holder)
         self.assertFitBuffersEmpty(fit)
+
+    def testEosLessAlreadyAssigned(self, *args):
+        fit1 = Fit()
+        fit2 = Fit()
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit1._addHolder(holder)
+        ltCallsBefore = len(fit2._linkTracker.mock_calls)
+        rtCallsBefore = len(fit2._restrictionTracker.mock_calls)
+        self.assertRaises(HolderAddError, fit2._addHolder, holder)
+        ltCallsAfter = len(fit2._linkTracker.mock_calls)
+        rtCallsAfter = len(fit2._restrictionTracker.mock_calls)
+        self.assertEqual(ltCallsAfter - ltCallsBefore, 0)
+        self.assertEqual(rtCallsAfter - rtCallsBefore, 0)
+        self.assertIs(holder._fit, fit1)
+        fit1._removeHolder(holder)
+        self.assertFitBuffersEmpty(fit1)
+        self.assertFitBuffersEmpty(fit2)
 
     def testWithEos(self, *args):
         eos = Mock(spec_set=())
@@ -89,6 +93,7 @@ class TestFitAddHolder(FitTestCase):
         self.assertEqual(fit._linkTracker.mock_calls[-1], call.enableStates(holder, {State.offline, State.online, State.active}))
         self.assertEqual(rtCallsAfter - rtCallsBefore, 1)
         self.assertEqual(fit._restrictionTracker.mock_calls[-1], call.enableStates(holder, {State.offline, State.online, State.active}))
+        self.assertIs(holder._fit, fit)
         fit._removeHolder(holder)
         self.assertFitBuffersEmpty(fit)
 
@@ -111,5 +116,25 @@ class TestFitAddHolder(FitTestCase):
         self.assertEqual(rtCallsAfter - rtCallsBefore, 2)
         self.assertEqual(fit._restrictionTracker.mock_calls[-2], call.enableStates(holder, {State.offline, State.online, State.active}))
         self.assertEqual(fit._restrictionTracker.mock_calls[-1], call.enableStates(charge, {State.offline}))
+        self.assertIs(holder._fit, fit)
+        self.assertIs(charge._fit, fit)
         fit._removeHolder(holder)
         self.assertFitBuffersEmpty(fit)
+
+    def testWithEosAlreadyAssigned(self, *args):
+        eos = Mock(spec_set=())
+        fit1 = Fit(eos)
+        fit2 = Fit(eos)
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit1._addHolder(holder)
+        ltCallsBefore = len(fit2._linkTracker.mock_calls)
+        rtCallsBefore = len(fit2._restrictionTracker.mock_calls)
+        self.assertRaises(HolderAddError, fit2._addHolder, holder)
+        ltCallsAfter = len(fit2._linkTracker.mock_calls)
+        rtCallsAfter = len(fit2._restrictionTracker.mock_calls)
+        self.assertEqual(ltCallsAfter - ltCallsBefore, 0)
+        self.assertEqual(rtCallsAfter - rtCallsBefore, 0)
+        self.assertIs(holder._fit, fit1)
+        fit1._removeHolder(holder)
+        self.assertFitBuffersEmpty(fit1)
+        self.assertFitBuffersEmpty(fit2)
