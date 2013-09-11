@@ -210,6 +210,10 @@ class Fit:
         """
         Handle setting of holder as fit's attribute,
         including removal of old holder assigned to it.
+
+        Possible exceptions:
+        ValueError -- raised when holder cannot be used
+        (e.g. already belongs to some fit)
         """
         oldHolder = getattr(self, attrName)
         if oldHolder is not None:

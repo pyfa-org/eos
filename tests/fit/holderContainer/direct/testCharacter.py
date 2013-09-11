@@ -93,8 +93,19 @@ class TestDirectHolderCharacter(ContainerTestCase):
         holder1 = Mock(spec_set=())
         holder2 = Mock(spec_set=())
         fit.character = holder1
-        oldSideEffect = fit._addHolder.side_effect
-        fit._addHolder.side_effect = (HolderAddError(holder2), oldSideEffect)
+        normalSideEffect = fit._addHolder.side_effect
+        customSideEffect = True
+
+        def customizedSideEffect(holder):
+            nonlocal customSideEffect
+            if customSideEffect is True:
+                customSideEffect = False
+                nonlocal holder2
+                raise(HolderAddError(holder2))
+            else:
+                normalSideEffect(holder)
+
+        fit._addHolder.side_effect = customizedSideEffect
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
         self.assertRaises(ValueError, fit.__setattr__, 'character', holder2)
