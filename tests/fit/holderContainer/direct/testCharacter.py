@@ -101,7 +101,7 @@ class TestDirectHolderCharacter(ContainerTestCase):
             if customSideEffect is True:
                 customSideEffect = False
                 nonlocal holder2
-                raise(HolderAddError(holder2))
+                raise HolderAddError(holder2)
             else:
                 normalSideEffect(holder)
 
