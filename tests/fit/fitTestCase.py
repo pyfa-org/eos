@@ -44,7 +44,6 @@ class FitTestCase(EosTestCase):
                 if ignoreCharacter and attrName == 'character':
                     ignoredHolders.add(holder)
                 else:
-                    print(attrName)
                     holderNum += 1
         # Seek for multiple holder storages
         for attrName in dir(fit):
@@ -54,7 +53,6 @@ class FitTestCase(EosTestCase):
             if hasattr(buffer, '__iter__'):
                 for holder in buffer:
                     if holder not in ignoredHolders:
-                        print(attrName)
                         holderNum += 1
         if holderNum > 0:
             plu = 'y' if holderNum == 1 else 'ies'
