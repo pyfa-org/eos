@@ -94,10 +94,11 @@ class TestContainerOrderedMisc(ContainerTestCase):
         holder2 = Mock(spec_set=())
         container.append(holder1)
         container.place(3, holder2)
-        self.assertEqual(len(fitMock.mock_calls), 2)
+        fitCallsBefore = len(fitMock.mock_calls)
         container.clear()
-        self.assertEqual(len(fitMock.mock_calls), 4)
-        newCalls = fitMock.method_calls[2:4]
+        fitCallsAfter = len(fitMock.mock_calls)
+        self.assertEqual(fitCallsAfter - fitCallsBefore, 2)
+        newCalls = fitMock.method_calls[-2:]
         self.assertIn(call._removeHolder(holder1), newCalls)
         self.assertIn(call._removeHolder(holder2), newCalls)
         self.assertEqual(len(container), 0)
