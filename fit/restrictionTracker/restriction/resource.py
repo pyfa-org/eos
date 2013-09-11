@@ -54,7 +54,7 @@ class ResourceRegister(RestrictionRegister):
     def registerHolder(self, holder):
         # Do not process holders, whose base items don't
         # use resource
-        if not self.__usageAttr in holder.item.attributes:
+        if self.__usageAttr not in holder.item.attributes:
             return
         self.__resourceUsers.add(holder)
 
@@ -165,7 +165,7 @@ class DroneBayVolumeRegister(ResourceRegister):
         ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, Restriction.droneBayVolume)
 
     def registerHolder(self, holder):
-        if not holder in self._tracker._fit.drones:
+        if holder not in self._tracker._fit.drones:
             return
         ResourceRegister.registerHolder(self, holder)
 

@@ -141,10 +141,7 @@ class RestrictionTracker:
                     for holder in exceptionData:
                         holderError = exceptionData[holder]
                         # Fill container for invalid holders
-                        try:
-                            holderErrors = invalidHolders[holder]
-                        except KeyError:
-                            holderErrors = invalidHolders[holder] = {}
+                        holderErrors = invalidHolders.setdefault(holder, {})
                         holderErrors[restrictionType] = holderError
         # Raise validation error only if we got any
         # failures

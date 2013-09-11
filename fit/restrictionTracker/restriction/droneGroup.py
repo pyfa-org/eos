@@ -53,7 +53,7 @@ class DroneGroupRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Ignore everything but drones
-        if not holder in self._tracker._fit.drones:
+        if holder not in self._tracker._fit.drones:
             return
         self.__restrictedHolders.add(holder)
 
@@ -87,7 +87,7 @@ class DroneGroupRegister(RestrictionRegister):
         for holder in self.__restrictedHolders:
             # Taint holders, whose group is not allowed
             holderGroup = holder.item.groupId
-            if not holderGroup in allowedGroups:
+            if holderGroup not in allowedGroups:
                 taintedHolders[holder] = DroneGroupErrorData(allowedGroups=allowedGroups,
                                                              droneGroup=holderGroup)
         if taintedHolders:

@@ -56,7 +56,7 @@ class SlotNumberRegister(RestrictionRegister):
             return
         # Ignore all holders which do not occupy slot type
         # we're dealing with
-        if not self.__slotType in holder.item.slots:
+        if self.__slotType not in holder.item.slots:
             return
         self.__slotConsumers.add(holder)
 

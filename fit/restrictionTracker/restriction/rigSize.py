@@ -48,7 +48,7 @@ class RigSizeRegister(RestrictionRegister):
     def registerHolder(self, holder):
         # Register only holders which have attribute,
         # which restricts rig size
-        if not Attribute.rigSize in holder.item.attributes:
+        if Attribute.rigSize not in holder.item.attributes:
             return
         self.__restrictedHolders.add(holder)
 

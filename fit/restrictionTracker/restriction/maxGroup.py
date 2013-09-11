@@ -66,7 +66,7 @@ class MaxGroupRegister(RestrictionRegister):
         self.__groupAll.addData(groupId, holder)
         # To enter restriction container, original
         # item must have restriction attribute
-        if not self.__maxGroupAttr in holder.item.attributes:
+        if self.__maxGroupAttr not in holder.item.attributes:
             return
         self.__maxGroupRestricted.add(holder)
 

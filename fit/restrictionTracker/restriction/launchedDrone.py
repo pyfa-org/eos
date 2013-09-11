@@ -51,7 +51,7 @@ class LaunchedDroneRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Register only drones
-        if not holder in self._tracker._fit.drones:
+        if holder not in self._tracker._fit.drones:
             return
         self.__restrictedHolders.add(holder)
 
