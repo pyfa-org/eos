@@ -216,4 +216,10 @@ class Fit:
             self._removeHolder(oldHolder)
         setattr(self, attrName, newHolder)
         if newHolder is not None:
-            self._addHolder(newHolder)
+            try:
+                self._addHolder(newHolder)
+            except HolderAddError as e:
+                setattr(self, attrName, oldHolder)
+                if oldHolder is not None:
+                    self._addHolder(oldHolder)
+                raise ValueError(newHolder) from e

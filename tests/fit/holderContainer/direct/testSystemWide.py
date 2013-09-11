@@ -22,6 +22,7 @@
 from unittest.mock import Mock, call
 
 from eos.fit import Fit
+from eos.fit.exception import HolderAddError
 from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
 
 
@@ -41,21 +42,34 @@ class TestDirectHolderSystemWide(ContainerTestCase):
         removeCallsAfter = len(fit._removeHolder.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 0)
         self.assertEqual(removeCallsAfter - removeCallsBefore, 0)
+        self.assertIsNone(fit.systemWide)
 
     def testNoneToHolder(self):
         fit = self.fit
         holder = Mock(spec_set=())
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
-        holderCallsBefore = len(holder.mock_calls)
         fit.systemWide = holder
         addCallsAfter = len(fit._addHolder.mock_calls)
         removeCallsAfter = len(fit._removeHolder.mock_calls)
-        holderCallsAfter = len(holder.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 1)
         self.assertEqual(fit._addHolder.mock_calls[-1], call(holder))
         self.assertEqual(removeCallsAfter - removeCallsBefore, 0)
-        self.assertEqual(holderCallsAfter - holderCallsBefore, 0)
+        self.assertIs(fit.systemWide, holder)
+
+    def testNoneToHolderFailure(self):
+        fit = self.fit
+        holder = Mock(spec_set=())
+        fit._addHolder.side_effect = HolderAddError(holder)
+        addCallsBefore = len(fit._addHolder.mock_calls)
+        removeCallsBefore = len(fit._removeHolder.mock_calls)
+        self.assertRaises(ValueError, fit.__setattr__, 'systemWide', holder)
+        addCallsAfter = len(fit._addHolder.mock_calls)
+        removeCallsAfter = len(fit._removeHolder.mock_calls)
+        self.assertEqual(addCallsAfter - addCallsBefore, 1)
+        self.assertEqual(fit._addHolder.mock_calls[-1], call(holder))
+        self.assertEqual(removeCallsAfter - removeCallsBefore, 0)
+        self.assertIsNone(fit.systemWide)
 
     def testHolderToHolder(self):
         fit = self.fit
@@ -64,19 +78,33 @@ class TestDirectHolderSystemWide(ContainerTestCase):
         fit.systemWide = holder1
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
-        holder1CallsBefore = len(holder1.mock_calls)
-        holder2CallsBefore = len(holder2.mock_calls)
         fit.systemWide = holder2
         addCallsAfter = len(fit._addHolder.mock_calls)
         removeCallsAfter = len(fit._removeHolder.mock_calls)
-        holder1CallsAfter = len(holder1.mock_calls)
-        holder2CallsAfter = len(holder2.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 1)
         self.assertEqual(fit._addHolder.mock_calls[-1], call(holder2))
         self.assertEqual(removeCallsAfter - removeCallsBefore, 1)
         self.assertEqual(fit._removeHolder.mock_calls[-1], call(holder1))
-        self.assertEqual(holder1CallsAfter - holder1CallsBefore, 0)
-        self.assertEqual(holder2CallsAfter - holder2CallsBefore, 0)
+        self.assertIs(fit.systemWide, holder2)
+
+    def testHolderToHolderFailure(self):
+        fit = self.fit
+        holder1 = Mock(spec_set=())
+        holder2 = Mock(spec_set=())
+        fit.systemWide = holder1
+        oldSideEffect = fit._addHolder.side_effect
+        fit._addHolder.side_effect = (HolderAddError(holder2), oldSideEffect)
+        addCallsBefore = len(fit._addHolder.mock_calls)
+        removeCallsBefore = len(fit._removeHolder.mock_calls)
+        self.assertRaises(ValueError, fit.__setattr__, 'systemWide', holder2)
+        addCallsAfter = len(fit._addHolder.mock_calls)
+        removeCallsAfter = len(fit._removeHolder.mock_calls)
+        self.assertEqual(addCallsAfter - addCallsBefore, 2)
+        self.assertEqual(fit._addHolder.mock_calls[-2], call(holder2))
+        self.assertEqual(fit._addHolder.mock_calls[-1], call(holder1))
+        self.assertEqual(removeCallsAfter - removeCallsBefore, 1)
+        self.assertEqual(fit._removeHolder.mock_calls[-1], call(holder1))
+        self.assertIs(fit.systemWide, holder1)
 
     def testHolderToNone(self):
         fit = self.fit
@@ -84,12 +112,10 @@ class TestDirectHolderSystemWide(ContainerTestCase):
         fit.systemWide = holder
         addCallsBefore = len(fit._addHolder.mock_calls)
         removeCallsBefore = len(fit._removeHolder.mock_calls)
-        holderCallsBefore = len(holder.mock_calls)
         fit.systemWide = None
         addCallsAfter = len(fit._addHolder.mock_calls)
         removeCallsAfter = len(fit._removeHolder.mock_calls)
-        holderCallsAfter = len(holder.mock_calls)
         self.assertEqual(addCallsAfter - addCallsBefore, 0)
         self.assertEqual(removeCallsAfter - removeCallsBefore, 1)
         self.assertEqual(fit._removeHolder.mock_calls[-1], call(holder))
-        self.assertEqual(holderCallsAfter - holderCallsBefore, 0)
+        self.assertIsNone(fit.systemWide)
