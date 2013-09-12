@@ -47,6 +47,7 @@ class Module(Holder):
 
     @charge.setter
     def charge(self, newCharge):
+        # All charges getting assigned must be unbound
         if newCharge is not None and newCharge._fit is not None:
             raise ValueError(newCharge)
         oldCharge = self.charge

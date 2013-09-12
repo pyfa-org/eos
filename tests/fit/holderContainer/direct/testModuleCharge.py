@@ -40,6 +40,7 @@ class TestDirectModuleCharge(ContainerTestCase):
         charge = Charge(2)
         module.charge = charge
         self.assertIs(module.charge, charge)
+        self.assertIs(charge.container, module)
 
     def testFreeModuleChargeToFreeCharge(self):
         module = Module(1, charge=None)
@@ -48,6 +49,8 @@ class TestDirectModuleCharge(ContainerTestCase):
         module.charge = charge1
         module.charge = charge2
         self.assertIs(module.charge, charge2)
+        self.assertIsNone(charge1.container)
+        self.assertIs(charge2.container, module)
 
     def testFreeModuleChargeToNone(self):
         module = Module(1, charge=None)
@@ -55,6 +58,7 @@ class TestDirectModuleCharge(ContainerTestCase):
         module.charge = charge
         module.charge = None
         self.assertIsNone(module.charge)
+        self.assertIsNone(charge.container)
 
     def testFreeModuleNoneToBoundCharge(self):
         chargeFit = Mock()
@@ -66,6 +70,7 @@ class TestDirectModuleCharge(ContainerTestCase):
         chargeFitCallsAfter = len(chargeFit.mock_calls)
         self.assertEqual(chargeFitCallsAfter - chargeFitCallsBefore, 0)
         self.assertIsNone(module.charge)
+        self.assertIsNone(charge.container)
 
     def testFreeModuleChargeToBoundCharge(self):
         charge2Fit = Mock()
@@ -79,3 +84,5 @@ class TestDirectModuleCharge(ContainerTestCase):
         charge2FitCallsAfter = len(charge2Fit.mock_calls)
         self.assertEqual(charge2FitCallsAfter - charge2FitCallsBefore, 0)
         self.assertIs(module.charge, charge1)
+        self.assertIs(charge1.container, module)
+        self.assertIsNone(charge2.container)
