@@ -47,6 +47,8 @@ class Module(Holder):
 
     @charge.setter
     def charge(self, newCharge):
+        if newCharge is not None and newCharge._fit is not None:
+            raise ValueError(newCharge)
         oldCharge = self.charge
         if oldCharge is not None:
             if self._fit is not None:
