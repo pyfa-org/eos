@@ -19,107 +19,417 @@
 #===============================================================================
 
 
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
-from eos.fit.exception import HolderAddError
+from eos.const.eos import State
 from eos.fit.holder.container import HolderList, SlotTakenError
-from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
+from eos.tests.fit.fitTestCase import FitTestCase
 
 
-class TestContainerOrderedPlace(ContainerTestCase):
+class TestContainerOrderedPlace(FitTestCase):
 
-    def setUp(self):
-        ContainerTestCase.setUp(self)
-        self.fitMock = self._setupContainerCheck()
-        self.container = HolderList(self.fitMock)
+    def _makeFit(self, *args, **kwargs):
+        fit = super()._makeFit(*args, **kwargs)
+        fit.ordered = HolderList(fit)
+        return fit
 
-    def testHolderOutside(self):
-        container = self.container
-        fitMock = self.fitMock
-        holder1 = Mock(spec_set=())
-        holder2 = Mock(spec_set=())
-        container.append(holder1)
-        self.assertEqual(len(container), 1)
-        self.assertRaises(IndexError, container.__getitem__, 3)
-        fitCallsBefore = len(fitMock.mock_calls)
-        container.place(3, holder2)
-        fitCallsAfter = len(fitMock.mock_calls)
-        self.assertEqual(fitCallsAfter - fitCallsBefore, 1)
-        self.assertEqual(fitMock.method_calls[-1], call._addHolder(holder2))
-        self.assertIs(container[3], holder2)
-        self.assertEqual(len(container), 4)
-        container.remove(holder1)
-        container.remove(holder2)
-        self.assertObjectBuffersEmpty(container)
+    def _customMembershipCheck(self, fit, holder):
+        self.assertIn(holder, fit.ordered)
 
-    def testHolderOntoNone(self):
-        container = self.container
-        fitMock = self.fitMock
-        holder1 = Mock(spec_set=())
-        holder2 = Mock(spec_set=())
-        holder3 = Mock(spec_set=())
-        container.append(holder1)
-        container.insert(3, holder2)
-        self.assertIsNone(container[1])
-        self.assertEqual(len(container), 4)
-        fitCallsBefore = len(fitMock.mock_calls)
-        container.place(1, holder3)
-        fitCallsAfter = len(fitMock.mock_calls)
-        self.assertEqual(fitCallsAfter - fitCallsBefore, 1)
-        self.assertEqual(fitMock.method_calls[-1], call._addHolder(holder3))
-        self.assertIs(container[1], holder3)
-        self.assertEqual(len(container), 4)
-        container.remove(holder1)
-        container.remove(holder2)
-        container.remove(holder3)
-        self.assertObjectBuffersEmpty(container)
+    def testDetachedHolderOutside(self):
+        fit = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        # Action
+        fit.ordered.place(3, holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 4)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIsNone(fit.ordered[1])
+        self.assertIsNone(fit.ordered[2])
+        self.assertIs(fit.ordered[3], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
 
-    def testHolderOntoHolder(self):
-        container = self.container
-        fitMock = self.fitMock
-        holder1 = Mock(spec_set=())
-        holder2 = Mock(spec_set=())
-        container.append(holder1)
-        self.assertIs(container[0], holder1)
-        self.assertEqual(len(container), 1)
-        fitCallsBefore = len(fitMock.mock_calls)
-        self.assertRaises(SlotTakenError, container.place, 0, holder2)
-        fitCallsAfter = len(fitMock.mock_calls)
-        self.assertEqual(fitCallsAfter - fitCallsBefore, 0)
-        self.assertIs(container[0], holder1)
-        container.remove(holder1)
-        self.assertObjectBuffersEmpty(container)
+    def testDetachedNoneOutside(self):
+        fit = self._makeFit()
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 3, None)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 1)
+        self.assertIs(fit.ordered[0], holder)
+        self.assertIs(holder._fit, fit)
+        # Misc
+        fit.ordered.remove(holder)
+        self.assertObjectBuffersEmpty(fit)
 
-    def testHolderOutsideFailure(self):
-        container = self.container
-        fitMock = self.fitMock
-        holder = Mock(spec_set=())
-        fitMock._addHolder.side_effect = HolderAddError(holder)
-        fitCallsBefore = len(fitMock.mock_calls)
-        self.assertRaises(ValueError, container.place, 2, holder)
-        fitCallsAfter = len(fitMock.mock_calls)
-        self.assertEqual(fitCallsAfter - fitCallsBefore, 1)
-        self.assertEqual(fitMock.method_calls[-1], call._addHolder(holder))
-        self.assertEqual(len(container), 0)
-        self.assertObjectBuffersEmpty(container)
+    def testDetachedHolderOntoNone(self):
+        fit = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder3 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        fit.ordered.insert(3, holder2)
+        # Action
+        fit.ordered.place(1, holder3)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 4)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIs(fit.ordered[1], holder3)
+        self.assertIsNone(fit.ordered[2])
+        self.assertIs(fit.ordered[3], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fit)
+        self.assertIs(holder3._fit, fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        fit.ordered.remove(holder3)
+        self.assertObjectBuffersEmpty(fit)
 
-    def testHolderOntoNoneFailure(self):
-        container = self.container
-        fitMock = self.fitMock
-        holder1 = Mock(spec_set=())
-        holder2 = Mock(spec_set=())
-        container.insert(1, holder1)
-        self.assertEqual(len(container), 2)
-        self.assertIsNone(container[0])
-        self.assertIs(container[1], holder1)
-        fitMock._addHolder.side_effect = HolderAddError(holder2)
-        fitCallsBefore = len(fitMock.mock_calls)
-        self.assertRaises(ValueError, container.place, 0, holder2)
-        fitCallsAfter = len(fitMock.mock_calls)
-        self.assertEqual(fitCallsAfter - fitCallsBefore, 1)
-        self.assertEqual(fitMock.method_calls[-1], call._addHolder(holder2))
-        self.assertEqual(len(container), 2)
-        self.assertIsNone(container[0])
-        self.assertIs(container[1], holder1)
-        container.remove(holder1)
-        self.assertObjectBuffersEmpty(container)
+    def testDetachedNoneOntoNone(self):
+        fit = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        fit.ordered.insert(3, holder2)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 1, None)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 4)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIsNone(fit.ordered[1])
+        self.assertIsNone(fit.ordered[2])
+        self.assertIs(fit.ordered[3], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testDetachedHolderOntoHolder(self):
+        fit = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        # Action
+        self.assertRaises(SlotTakenError, fit.ordered.place, 0, holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 1)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIs(holder1._fit, fit)
+        self.assertIsNone(holder2._fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testDetachedNoneOntoHolder(self):
+        fit = self._makeFit()
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 0, None)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 1)
+        self.assertIs(fit.ordered[0], holder)
+        self.assertIs(holder._fit, fit)
+        # Misc
+        fit.ordered.remove(holder)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testDetachedHolderOutsideFailure(self):
+        fit = self._makeFit()
+        fitOther = self._makeFit()
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fitOther.ordered.append(holder)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 2, holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fitOther.lt), 0)
+        self.assertEqual(len(fitOther.rt), 0)
+        self.assertIs(len(fit.ordered), 0)
+        self.assertIs(len(fitOther.ordered), 1)
+        self.assertIs(fitOther.ordered[0], holder)
+        self.assertIs(holder._fit, fitOther)
+        # Misc
+        fitOther.ordered.remove(holder)
+        self.assertObjectBuffersEmpty(fit)
+        self.assertObjectBuffersEmpty(fitOther)
+
+    def testDetachedHolderOntoNoneFailure(self):
+        fit = self._makeFit()
+        fitOther = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.insert(1, holder1)
+        fitOther.ordered.append(holder2)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 0, holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fitOther.lt), 0)
+        self.assertEqual(len(fitOther.rt), 0)
+        self.assertIs(len(fit.ordered), 2)
+        self.assertIsNone(fit.ordered[0])
+        self.assertIs(fit.ordered[1], holder1)
+        self.assertIs(len(fitOther.ordered), 1)
+        self.assertIs(fitOther.ordered[0], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fitOther)
+        # Misc
+        fit.ordered.remove(holder1)
+        fitOther.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
+        self.assertObjectBuffersEmpty(fitOther)
+
+    def testAttachedHolderOutside(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        # Action
+        fit.ordered.place(3, holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 2)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder2, fit.lt)
+        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 2)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder2, fit.rt)
+        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 4)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIsNone(fit.ordered[1])
+        self.assertIsNone(fit.ordered[2])
+        self.assertIs(fit.ordered[3], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedNoneOutside(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 3, None)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder, fit.lt)
+        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder, fit.rt)
+        self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 1)
+        self.assertIs(fit.ordered[0], holder)
+        self.assertIs(holder._fit, fit)
+        # Misc
+        fit.ordered.remove(holder)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedHolderOntoNone(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder3 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        fit.ordered.insert(3, holder2)
+        # Action
+        fit.ordered.place(1, holder3)
+        # Checks
+        self.assertEqual(len(fit.lt), 3)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder2, fit.lt)
+        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertIn(holder3, fit.lt)
+        self.assertEqual(fit.lt[holder3], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 3)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder2, fit.rt)
+        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertIn(holder3, fit.rt)
+        self.assertEqual(fit.rt[holder3], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 4)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIs(fit.ordered[1], holder3)
+        self.assertIsNone(fit.ordered[2])
+        self.assertIs(fit.ordered[3], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fit)
+        self.assertIs(holder3._fit, fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        fit.ordered.remove(holder3)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedNoneOntoNone(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        fit.ordered.insert(3, holder2)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 1, None)
+        # Checks
+        self.assertEqual(len(fit.lt), 2)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder2, fit.lt)
+        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 2)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder2, fit.rt)
+        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 4)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIsNone(fit.ordered[1])
+        self.assertIsNone(fit.ordered[2])
+        self.assertIs(fit.ordered[3], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedHolderOntoHolder(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder1)
+        # Action
+        self.assertRaises(SlotTakenError, fit.ordered.place, 0, holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 1)
+        self.assertIs(fit.ordered[0], holder1)
+        self.assertIs(holder1._fit, fit)
+        self.assertIsNone(holder2._fit)
+        # Misc
+        fit.ordered.remove(holder1)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedNoneOntoHolder(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.append(holder)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 0, None)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder, fit.lt)
+        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder, fit.rt)
+        self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 1)
+        self.assertIs(fit.ordered[0], holder)
+        self.assertIs(holder._fit, fit)
+        # Misc
+        fit.ordered.remove(holder)
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedHolderOutsideFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        fitOther = self._makeFit(eos=eos)
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fitOther.ordered.append(holder)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 2, holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fitOther.lt), 1)
+        self.assertIn(holder, fitOther.lt)
+        self.assertEqual(fitOther.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(len(fitOther.rt), 1)
+        self.assertIn(holder, fitOther.rt)
+        self.assertEqual(fitOther.rt[holder], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 0)
+        self.assertIs(len(fitOther.ordered), 1)
+        self.assertIs(fitOther.ordered[0], holder)
+        self.assertIs(holder._fit, fitOther)
+        # Misc
+        fitOther.ordered.remove(holder)
+        self.assertObjectBuffersEmpty(fit)
+        self.assertObjectBuffersEmpty(fitOther)
+
+    def testAttachedHolderOntoNoneFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        fitOther = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        fit.ordered.insert(1, holder1)
+        fitOther.ordered.append(holder2)
+        # Action
+        self.assertRaises(ValueError, fit.ordered.place, 0, holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(len(fitOther.lt), 1)
+        self.assertIn(holder2, fitOther.lt)
+        self.assertEqual(fitOther.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fitOther.rt), 1)
+        self.assertIn(holder2, fitOther.rt)
+        self.assertEqual(fitOther.rt[holder2], {State.offline, State.online, State.active})
+        self.assertIs(len(fit.ordered), 2)
+        self.assertIsNone(fit.ordered[0])
+        self.assertIs(fit.ordered[1], holder1)
+        self.assertIs(len(fitOther.ordered), 1)
+        self.assertIs(fitOther.ordered[0], holder2)
+        self.assertIs(holder1._fit, fit)
+        self.assertIs(holder2._fit, fitOther)
+        # Misc
+        fit.ordered.remove(holder1)
+        fitOther.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
+        self.assertObjectBuffersEmpty(fitOther)

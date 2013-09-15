@@ -22,13 +22,13 @@
 from unittest.mock import Mock
 
 from eos.fit.holder.container import ModuleRacks
-from eos.tests.fit.holderContainer.containerTestCase import ContainerTestCase
+from eos.tests.fit.fitTestCase import FitTestCase
 
 
-class TestContainerModuleRacks(ContainerTestCase):
+class TestContainerModuleRacks(FitTestCase):
 
     def setUp(self):
-        ContainerTestCase.setUp(self)
+        FitTestCase.setUp(self)
         self.holder1 = Mock(spec_set=())
         self.holder2 = Mock(spec_set=())
         self.holder3 = Mock(spec_set=())

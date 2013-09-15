@@ -71,6 +71,8 @@ class HolderList(HolderContainerBase):
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
+        if holder is None:
+            raise ValueError(holder)
         self.__list.append(holder)
         try:
             self._handleAdd(holder)
@@ -90,6 +92,8 @@ class HolderList(HolderContainerBase):
         SlotTakenError -- raised when slot at specified index
         is already taken by other holder
         """
+        if holder is None:
+            raise ValueError(holder)
         try:
             oldHolder = self.__list[index]
         except IndexError:
@@ -115,6 +119,8 @@ class HolderList(HolderContainerBase):
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         """
+        if holder is None:
+            raise ValueError(holder)
         try:
             index = self.__list.index(None)
         except ValueError:
@@ -163,11 +169,11 @@ class HolderList(HolderContainerBase):
         if isinstance(value, int):
             index = value
             holder = self.__list[index]
-            if holder is None:
-                return
         else:
             holder = value
             index = self.__list.index(holder)
+        if holder is None:
+            return
         self._handleRemove(holder)
         self.__list[index] = None
         self._cleanup()

@@ -45,6 +45,8 @@ class HolderSet(HolderContainerBase):
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
+        if holder is None:
+            raise ValueError(holder)
         self.__set.add(holder)
         try:
             self._handleAdd(holder)
