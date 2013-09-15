@@ -77,7 +77,7 @@ class TestDirectHolderSystemWide(FitTestCase):
 
     def testDetachedHolderToHolder(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.systemWide = holder1
         # Action
@@ -95,8 +95,8 @@ class TestDirectHolderSystemWide(FitTestCase):
     def testDetachedHolderToHolderFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
         fit.systemWide = holder1
         fitOther.systemWide = holder2
         # Action
@@ -145,16 +145,16 @@ class TestDirectHolderSystemWide(FitTestCase):
     def testAttachedNoneToHolder(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
         # Action
         fit.systemWide = holder
         # Checks
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder], {State.offline, State.online})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
-        self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder], {State.offline, State.online})
         self.assertIs(fit.systemWide, holder)
         self.assertIs(holder._fit, fit)
         # Misc
@@ -165,7 +165,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         fitOther.systemWide = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'systemWide', holder)
@@ -174,10 +174,10 @@ class TestDirectHolderSystemWide(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder, fitOther.lt)
-        self.assertEqual(fitOther.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(fitOther.lt[holder], {State.offline})
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder, fitOther.rt)
-        self.assertEqual(fitOther.rt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(fitOther.rt[holder], {State.offline})
         self.assertIsNone(fit.systemWide)
         self.assertIs(fitOther.systemWide, holder)
         self.assertIs(holder._fit, fitOther)
@@ -190,17 +190,17 @@ class TestDirectHolderSystemWide(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
         fit.systemWide = holder1
         # Action
         fit.systemWide = holder2
         # Checks
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active, State.overload})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder2, fit.rt)
-        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active, State.overload})
         self.assertIs(fit.systemWide, holder2)
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
@@ -212,8 +212,8 @@ class TestDirectHolderSystemWide(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
         fit.systemWide = holder1
         fitOther.systemWide = holder2
         # Action
@@ -221,16 +221,16 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder1], {State.offline})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
-        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder1], {State.offline})
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder2, fitOther.lt)
-        self.assertEqual(fitOther.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fitOther.lt[holder2], {State.offline, State.online})
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder2, fitOther.rt)
-        self.assertEqual(fitOther.rt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fitOther.rt[holder2], {State.offline, State.online})
         self.assertIs(fit.systemWide, holder1)
         self.assertIs(fitOther.systemWide, holder2)
         self.assertIs(holder1._fit, fit)

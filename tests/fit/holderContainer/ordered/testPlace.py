@@ -38,7 +38,7 @@ class TestContainerOrderedPlace(FitTestCase):
 
     def testDetachedHolderOutside(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
         holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         # Action
@@ -77,8 +77,8 @@ class TestContainerOrderedPlace(FitTestCase):
     def testDetachedHolderOntoNone(self):
         fit = self._makeFit()
         holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder3 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         # Action
@@ -102,8 +102,8 @@ class TestContainerOrderedPlace(FitTestCase):
 
     def testDetachedNoneOntoNone(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         # Action
@@ -125,7 +125,7 @@ class TestContainerOrderedPlace(FitTestCase):
 
     def testDetachedHolderOntoHolder(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
         holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         # Action
@@ -143,7 +143,7 @@ class TestContainerOrderedPlace(FitTestCase):
 
     def testDetachedNoneOntoHolder(self):
         fit = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         fit.ordered.append(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.place, 0, None)
@@ -160,7 +160,7 @@ class TestContainerOrderedPlace(FitTestCase):
     def testDetachedHolderOutsideFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
         fitOther.ordered.append(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.place, 2, holder)
@@ -181,8 +181,8 @@ class TestContainerOrderedPlace(FitTestCase):
     def testDetachedHolderOntoNoneFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
         fit.ordered.insert(1, holder1)
         fitOther.ordered.append(holder2)
         # Action
@@ -208,22 +208,22 @@ class TestContainerOrderedPlace(FitTestCase):
     def testAttachedHolderOutside(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         # Action
         fit.ordered.place(3, holder2)
         # Checks
         self.assertEqual(len(fit.lt), 2)
         self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active, State.overload})
         self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder2], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(holder1, fit.rt)
-        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active, State.overload})
         self.assertIn(holder2, fit.rt)
-        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder2], {State.offline})
         self.assertIs(len(fit.ordered), 4)
         self.assertIs(fit.ordered[0], holder1)
         self.assertIsNone(fit.ordered[1])
@@ -261,8 +261,8 @@ class TestContainerOrderedPlace(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder3 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder3 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         # Action
@@ -272,16 +272,16 @@ class TestContainerOrderedPlace(FitTestCase):
         self.assertIn(holder1, fit.lt)
         self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
         self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder2], {State.offline, State.online})
         self.assertIn(holder3, fit.lt)
-        self.assertEqual(fit.lt[holder3], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder3], {State.offline, State.online})
         self.assertEqual(len(fit.rt), 3)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
         self.assertIn(holder2, fit.rt)
-        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder2], {State.offline, State.online})
         self.assertIn(holder3, fit.rt)
-        self.assertEqual(fit.rt[holder3], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder3], {State.offline, State.online})
         self.assertIs(len(fit.ordered), 4)
         self.assertIs(fit.ordered[0], holder1)
         self.assertIs(fit.ordered[1], holder3)
@@ -299,8 +299,8 @@ class TestContainerOrderedPlace(FitTestCase):
     def testAttachedNoneOntoNone(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         # Action
@@ -308,14 +308,14 @@ class TestContainerOrderedPlace(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 2)
         self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder1], {State.offline})
         self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder2], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(holder1, fit.rt)
-        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder1], {State.offline})
         self.assertIn(holder2, fit.rt)
-        self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder2], {State.offline})
         self.assertIs(len(fit.ordered), 4)
         self.assertIs(fit.ordered[0], holder1)
         self.assertIsNone(fit.ordered[1])
@@ -332,7 +332,7 @@ class TestContainerOrderedPlace(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
         fit.ordered.append(holder1)
         # Action
         self.assertRaises(SlotTakenError, fit.ordered.place, 0, holder2)
@@ -376,7 +376,7 @@ class TestContainerOrderedPlace(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
         fitOther.ordered.append(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.place, 2, holder)
@@ -385,10 +385,10 @@ class TestContainerOrderedPlace(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder, fitOther.lt)
-        self.assertEqual(fitOther.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(fitOther.lt[holder], {State.offline, State.online})
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder, fitOther.rt)
-        self.assertEqual(fitOther.rt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(fitOther.rt[holder], {State.offline, State.online})
         self.assertIs(len(fit.ordered), 0)
         self.assertIs(len(fitOther.ordered), 1)
         self.assertIs(fitOther.ordered[0], holder)
@@ -402,7 +402,7 @@ class TestContainerOrderedPlace(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.ordered.insert(1, holder1)
         fitOther.ordered.append(holder2)
@@ -411,10 +411,10 @@ class TestContainerOrderedPlace(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.lt[holder1], {State.offline})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
-        self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(fit.rt[holder1], {State.offline})
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder2, fitOther.lt)
         self.assertEqual(fitOther.lt[holder2], {State.offline, State.online, State.active})

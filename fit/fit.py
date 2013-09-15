@@ -124,7 +124,7 @@ class Fit:
         Possible exceptions:
         ValidationError -- raised when validation fails
         """
-        self._restrictionTracker.validate(skipChecks=skipChecks)
+        self._restrictionTracker.validate(skipChecks)
 
     def _addHolder(self, holder):
         """Handle adding of holder to fit."""
@@ -195,14 +195,11 @@ class Fit:
         # into single set (other should stay empty)
         enabledStates = set(filter(lambda s: holder.state < s <= newState, State))
         disabledStates = set(filter(lambda s: newState < s <= holder.state, State))
-        # Only one of sets must be filled, state switch is always performed
-        # either upwards or downwards, but never both
-        assert(not (len(enabledStates) > 0 and len(disabledStates) > 0))
         # Ask trackers to perform corresponding actions
         if len(enabledStates) > 0:
             self._linkTracker.enableStates(holder, enabledStates)
             self._restrictionTracker.enableStates(holder, enabledStates)
-        if len(disabledStates) > 0:
+        elif len(disabledStates) > 0:
             self._linkTracker.disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
 

@@ -100,7 +100,7 @@ class Fit:
 
     def getRestrictionError(self, holder, restriction):
         try:
-            self._restrictionTracker.validate()
+            self._restrictionTracker.validate(())
         except ValidationError as e:
             errorData = e.args[0]
             if not holder in errorData:

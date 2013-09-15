@@ -106,13 +106,13 @@ class RestrictionTracker:
             for register in registers:
                 register.unregisterHolder(holder)
 
-    def validate(self, skipChecks=set()):
+    def validate(self, skipChecks):
         """
         Validate fit.
 
         Keyword arguments:
         skipChecks -- iterable with restriction types, for which
-        checks are skipped (default is empty set)
+        checks are skipped
 
         Possible exceptions:
         ValidationError -- if any failure is occurred during
