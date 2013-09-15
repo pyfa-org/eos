@@ -79,10 +79,6 @@ class Eos:
         return False
 
     # Initialization methods
-    def __initializeCacheHandler(self, cacheHandler):
-        """See what has been passed to"""
-
-
     def __initializePath(self, path):
         """Process path we've received from user and return it."""
         if path is None:
