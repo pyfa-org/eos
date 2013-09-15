@@ -31,9 +31,10 @@ from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, Mo
 
 class JsonCacheHandler(CacheHandler):
     """
-    Each time Eos is initialized, it loads data from packed JSON
-    (disk cache) into memory data cache, and uses it to instantiate
-    objects, which are stored in in-memory weakref object cache.
+    This cache handler implements on-disk cache store in the form
+    of compressed JSON. To improve performance further, it also
+    keeps loads data from on-disk cache to memory, and uses weakref
+    object cache for assembled objects.
 
     Positional arguments:
     diskCacheFolder -- folder where on-disk cache files are stored
@@ -164,17 +165,9 @@ class JsonCacheHandler(CacheHandler):
         return modifier
 
     def getFingerprint(self):
-        """Get disk cache fingerprint."""
         return self.__fingerprint
 
     def updateCache(self, data, fingerprint):
-        """
-        Updates on-disk and memory caches.
-
-        Positional arguments:
-        data -- dictionary with data to update
-        fingerprint -- string with fingerprint
-        """
         # Make light version of data and add fingerprint
         # to it
         data = self.__stripData(data)
@@ -186,14 +179,15 @@ class JsonCacheHandler(CacheHandler):
             file.write(jsonData.encode('utf-8'))
         # Update data cache; encode to JSON and decode back
         # to make sure form of data is the same as after
-        # loading it from cache
+        # loading it from cache (e.g. dictionary keys are
+        # stored as strings in JSON)
         data = json.loads(jsonData)
         self.__updateMemCache(data)
 
     def __stripData(self, data):
         """
-        Rework passed data, stripping dictionary
-        keys from it to reduce space needed to store it.
+        Rework passed data, keying it and stripping dictionary
+        keys from rows for performance.
         """
         slimData = {}
 

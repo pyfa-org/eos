@@ -61,12 +61,6 @@ class Eos:
         self.__path = self.__initializePath(storagePath)
         self._logger = self.__initializeLogger()
 
-        # If we're not provided with a cache handler, use our own.
-        if cacheHandler is None:
-            cacheHandler = JsonCacheHandler(os.path.join(self.__path, 'cache'),
-                self.__name, self._logger)
-        self._cacheHandler = cacheHandler
-
         self.__initializeCache(dataHandler, cacheHandler)
 
         if makeDefault is True:
@@ -85,6 +79,10 @@ class Eos:
         return False
 
     # Initialization methods
+    def __initializeCacheHandler(self, cacheHandler):
+        """See what has been passed to"""
+
+
     def __initializePath(self, path):
         """Process path we've received from user and return it."""
         if path is None:
@@ -104,9 +102,15 @@ class Eos:
 
     def __initializeCache(self, dataHandler, cacheHandler):
         """
-        Check if the cache is outdated and compose it, if necessary, using the
-        passed datahandler and cacheHandler.
+        Check if the cache is outdated and, if necessary, compose it
+        using passed datahandler and cacheHandler. If cacheHandler
+        was specified as None, default on-disk JSON handler is used.
         """
+        if cacheHandler is None:
+            cacheHandler = JsonCacheHandler(os.path.join(self.__path, 'cache'),
+                                            self.__name, self._logger)
+        self._cacheHandler = cacheHandler
+
         # Compare fingerprints from data and cache
         cacheFp = cacheHandler.getFingerprint()
         dataVersion = dataHandler.getVersion()
@@ -123,4 +127,3 @@ class Eos:
             cacheData = CacheGenerator(self._logger).run(dataHandler)
             CacheCustomizer().runBuiltIn(cacheData)
             cacheHandler.updateCache(cacheData, currentFp)
-

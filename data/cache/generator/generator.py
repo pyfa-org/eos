@@ -47,7 +47,7 @@ class CacheGenerator:
         dataHandler - data handler to use for getting data
 
         Return value:
-        Dictionary in {entity type: {entity ID: entity data row}}
+        Dictionary in {entity type: [{field name: field value}]
         format
         """
         # Put all the data we need into single dictionary
