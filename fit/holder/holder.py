@@ -108,51 +108,30 @@ class Holder:
     @property
     def trackingSpeed(self):
         """Get tracking speed of holder"""
-        tsAttrId = self.item._trackingSpeedAttributeId
-        if tsAttrId is not None:
-            try:
-                tracking = self.attributes[tsAttrId]
-            except KeyError:
-                tracking = None
-        else:
-            tracking = None
-        return tracking
+        return self.__getItemSpecificAttr('_trackingSpeedAttributeId')
 
     @property
     def optimalRange(self):
         """Get optimal range of holder"""
-        orAttrId = self.item._rangeAttributeId
-        if orAttrId is not None:
-            try:
-                optimal = self.attributes[orAttrId]
-            except KeyError:
-                optimal = None
-        else:
-            optimal = None
-        return optimal
+        return self.__getItemSpecificAttr('_rangeAttributeId')
 
     @property
     def falloffRange(self):
         """Get falloff range of holder"""
-        frAttrId = self.item._falloffAttributeId
-        if frAttrId is not None:
-            try:
-                falloff = self.attributes[frAttrId]
-            except KeyError:
-                falloff = None
-        else:
-            falloff = None
-        return falloff
+        return self.__getItemSpecificAttr('_falloffAttributeId')
 
     @property
     def cycleTime(self):
-        """Get cycle time of holder"""
-        ctAttrId = self.item._durationAttributeId
-        if ctAttrId is not None:
+        return self.__getItemSpecificAttr('_durationAttributeId')
+
+    def __getItemSpecificAttr(self, attrName):
+        """Get holder attribute, which is referred by item"""
+        attrId = getattr(self.item, attrName, None)
+        if attrId is not None:
             try:
-                cycleTime = self.attributes[ctAttrId]
+                attrValue = self.attributes[attrId]
             except KeyError:
-                cycleTime = None
+                attrValue = None
         else:
-            cycleTime = None
-        return cycleTime
+            attrValue = None
+        return attrValue
