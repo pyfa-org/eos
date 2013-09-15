@@ -56,17 +56,24 @@ class TestModuleCharge(FitTestCase):
                 charge = holder.charge
                 self.assertIsNotNone(charge)
                 self.assertIs(charge.container, holder)
+                other = holder._other
+                self.assertIs(other, charge)
+                self.assertIs(other._other, holder)
             if hasattr(holder, 'container'):
                 self.assertNotIn(holder, fit.ordered)
                 container = holder.container
                 self.assertIsNotNone(container)
                 self.assertIs(container.charge, holder)
+                other = holder._other
+                self.assertIs(other, container)
+                self.assertIs(other._other, holder)
         elif self.expectModuleChargeLink is False:
             self.assertIn(holder, fit.ordered)
             if hasattr(holder, 'charge'):
                 self.assertIsNone(holder.charge)
             if hasattr(holder, 'container'):
                 self.assertIsNone(holder.container)
+            self.assertIsNone(holder._other)
 
 
     def testDetachedModuleNoneToNone(self):
@@ -75,6 +82,7 @@ class TestModuleCharge(FitTestCase):
         module.charge = None
         # Checks
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
 
     def testDetachedModuleNoneToFreeCharge(self):
         module = Module(1, state=State.active, charge=None)
@@ -83,7 +91,9 @@ class TestModuleCharge(FitTestCase):
         module.charge = charge
         # Checks
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
 
     def testDetachedModuleChargeToFreeCharge(self):
         module = Module(1, state=State.active, charge=None)
@@ -94,8 +104,11 @@ class TestModuleCharge(FitTestCase):
         module.charge = charge2
         # Checks
         self.assertIs(module.charge, charge2)
+        self.assertIs(module._other, charge2)
         self.assertIsNone(charge1.container)
+        self.assertIsNone(charge1._other)
         self.assertIs(charge2.container, module)
+        self.assertIs(charge2._other, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge1._fit)
         self.assertIsNone(charge2._fit)
@@ -108,7 +121,9 @@ class TestModuleCharge(FitTestCase):
         module.charge = None
         # Checks
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIsNone(charge.container)
+        self.assertIsNone(charge._other)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
 
@@ -123,7 +138,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIsNone(charge.container)
+        self.assertIsNone(charge._other)
         self.assertIsNone(module._fit)
         self.assertIs(charge._fit, fitOther)
         # Misc
@@ -142,8 +159,11 @@ class TestModuleCharge(FitTestCase):
         # Checks
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
+        self.assertIs(module._other, charge1)
         self.assertIs(module.charge, charge1)
+        self.assertIs(charge1._other, module)
         self.assertIs(charge1.container, module)
+        self.assertIsNone(charge2._other)
         self.assertIsNone(charge2.container)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge1._fit)
@@ -162,6 +182,7 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIs(module._fit, fit)
         # Misc
         fit.ordered.remove(module)
@@ -178,7 +199,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         # Misc
@@ -198,8 +221,11 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertIs(module.charge, charge2)
+        self.assertIs(module._other, charge2)
         self.assertIsNone(charge1.container)
+        self.assertIsNone(charge1._other)
         self.assertIs(charge2.container, module)
+        self.assertIs(charge2._other, module)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge1._fit)
         self.assertIs(charge2._fit, fit)
@@ -219,7 +245,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIsNone(charge.container)
+        self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge._fit)
         # Misc
@@ -241,7 +269,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIsNone(charge.container)
+        self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fitOther)
         # Misc
@@ -267,8 +297,11 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
         self.assertIs(module.charge, charge1)
+        self.assertIs(module._other, charge1)
         self.assertIs(charge1.container, module)
+        self.assertIs(charge1._other, module)
         self.assertIsNone(charge2.container)
+        self.assertIsNone(charge2._other)
         self.assertIs(module._fit, fit)
         self.assertIs(charge1._fit, fit)
         self.assertIs(charge2._fit, fitOther)
@@ -291,7 +324,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.ordered), 1)
         self.assertIs(fit.ordered[0], module)
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         # Misc
@@ -311,7 +346,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.ordered), 0)
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
         # Misc
@@ -332,6 +369,7 @@ class TestModuleCharge(FitTestCase):
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIs(module._fit, fit)
         # Misc
         fit.ordered.remove(module)
@@ -358,7 +396,9 @@ class TestModuleCharge(FitTestCase):
         self.assertIn(charge, fit.rt)
         self.assertEqual(fit.rt[charge], {State.offline})
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         # Misc
@@ -389,8 +429,11 @@ class TestModuleCharge(FitTestCase):
         self.assertIn(charge2, fit.rt)
         self.assertEqual(fit.rt[charge2], {State.offline})
         self.assertIs(module.charge, charge2)
+        self.assertIs(module._other, charge2)
         self.assertIsNone(charge1.container)
+        self.assertIsNone(charge1._other)
         self.assertIs(charge2.container, module)
+        self.assertIs(charge2._other, module)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge1._fit)
         self.assertIs(charge2._fit, fit)
@@ -417,7 +460,9 @@ class TestModuleCharge(FitTestCase):
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIsNone(charge.container)
+        self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge._fit)
         # Misc
@@ -450,7 +495,9 @@ class TestModuleCharge(FitTestCase):
         self.assertIn(charge, fitOther.rt)
         self.assertEqual(fitOther.rt[charge], {State.offline})
         self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
         self.assertIsNone(charge.container)
+        self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fitOther)
         # Misc
@@ -491,8 +538,11 @@ class TestModuleCharge(FitTestCase):
         self.assertIn(charge2, fitOther.rt)
         self.assertEqual(fitOther.rt[charge2], {State.offline})
         self.assertIs(module.charge, charge1)
+        self.assertIs(module._other, charge1)
         self.assertIs(charge1.container, module)
+        self.assertIs(charge1._other, module)
         self.assertIsNone(charge2.container)
+        self.assertIsNone(charge2._other)
         self.assertIs(module._fit, fit)
         self.assertIs(charge1._fit, fit)
         self.assertIs(charge2._fit, fitOther)
@@ -526,7 +576,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.ordered), 1)
         self.assertIs(fit.ordered[0], module)
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         # Misc
@@ -549,7 +601,9 @@ class TestModuleCharge(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.ordered), 0)
         self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
         # Misc
