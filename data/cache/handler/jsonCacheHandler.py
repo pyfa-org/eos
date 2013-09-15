@@ -24,11 +24,12 @@ import json
 import os.path
 from weakref import WeakValueDictionary
 
+from eos.data.cache.handler import CacheHandler
 from eos.data.cache.object import *
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 
 
-class JsonCacheHandler:
+class JsonCacheHandler(CacheHandler):
     """
     Each time Eos is initialized, it loads data from packed JSON
     (disk cache) into memory data cache, and uses it to instantiate

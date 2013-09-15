@@ -43,10 +43,11 @@ class Eos:
 
     Positional arguments:
     dataHandler -- object which implements standard data
-    interface (returns data rows for several table as
+    interface (returns data rows for several tables as
     dicts and is able to get data version)
 
     Keyword arguments:
+    cachedHandler -- cache handler implementation
     name -- name of this eos instance, used as key to
     log and cache files, thus should be unique for all
     running eos instances. Default is 'eos'.
@@ -54,11 +55,20 @@ class Eos:
     is ~/.eos
     """
 
-    def __init__(self, dataHandler, name='eos', storagePath=None, makeDefault=False):
+    def __init__(self, dataHandler, cacheHandler=None, name='eos',
+                 storagePath=None, makeDefault=False):
         self.__name = name
         self.__path = self.__initializePath(storagePath)
         self._logger = self.__initializeLogger()
-        self._cacheHandler = self.__initializeData(dataHandler)
+
+        # If we're not provided with a cache handler, use our own.
+        if cacheHandler is None:
+            cacheHandler = JsonCacheHandler(os.path.join(self.__path, 'cache'),
+                self.__name, self._logger)
+        self._cacheHandler = cacheHandler
+
+        self.__initializeCache(dataHandler, cacheHandler)
+
         if makeDefault is True:
             global defaultInstance
             defaultInstance = self
@@ -92,13 +102,11 @@ class Eos:
         logger.info('session started')
         return logger
 
-    def __initializeData(self, dataHandler):
+    def __initializeCache(self, dataHandler, cacheHandler):
         """
-        Using passed dataHandler, compose on-disk cache if
-        necessary, load this cache in memory and return
-        cache handler which deals with it.
+        Check if the cache is outdated and compose it, if necessary, using the
+        passed datahandler and cacheHandler.
         """
-        cacheHandler = JsonCacheHandler(os.path.join(self.__path, 'cache'), self.name, self._logger)
         # Compare fingerprints from data and cache
         cacheFp = cacheHandler.getFingerprint()
         dataVersion = dataHandler.getVersion()
@@ -115,4 +123,4 @@ class Eos:
             cacheData = CacheGenerator(self._logger).run(dataHandler)
             CacheCustomizer().runBuiltIn(cacheData)
             cacheHandler.updateCache(cacheData, currentFp)
-        return cacheHandler
+
