@@ -48,9 +48,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
     (e.g. ship's group may not satisfy canFitShipGroupX restriction,
     but its type may be suitable to use holder).
     If holder has at least one restriction attribute, it is enabled
-    for tracking by this register. Please note that None-values of
-    attributes enable restriction, but do not allow to fit holder to
-    any ship, even if its type or group are None.
+    for tracking by this register.
     For validation, original values of canFitShipTypeX and
     canFitShipGroupX attributes are taken.
     """

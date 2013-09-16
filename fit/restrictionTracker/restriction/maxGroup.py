@@ -61,7 +61,7 @@ class MaxGroupRegister(RestrictionRegister):
         # to any group
         if groupId is None:
             return
-        # Having group ID is enough condition
+        # Having group ID is sufficient condition
         # to enter container of all fitted holders
         self.__groupAll.addData(groupId, holder)
         # To enter restriction container, original

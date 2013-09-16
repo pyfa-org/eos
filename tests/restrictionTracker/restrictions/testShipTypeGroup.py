@@ -123,6 +123,40 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty(fit)
 
+    def testFailTypeMultipleDifferent(self):
+        fit = Fit()
+        ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
+        fit.ship = ship
+        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 10, Attribute.canFitShipType2: 11}))
+        fit.items.add(holder)
+        restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
+        self.assertIsNotNone(restrictionError)
+        self.assertCountEqual(restrictionError.allowedTypes, (10, 11))
+        self.assertCountEqual(restrictionError.allowedGroups, ())
+        self.assertEqual(restrictionError.shipType, 772)
+        self.assertEqual(restrictionError.shipGroup, 31)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty(fit)
+
+    def testFailTypeMultipleSame(self):
+        fit = Fit()
+        ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
+        fit.ship = ship
+        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 10, Attribute.canFitShipType2: 10}))
+        fit.items.add(holder)
+        restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
+        self.assertIsNotNone(restrictionError)
+        self.assertCountEqual(restrictionError.allowedTypes, (10,))
+        self.assertCountEqual(restrictionError.allowedGroups, ())
+        self.assertEqual(restrictionError.shipType, 772)
+        self.assertEqual(restrictionError.shipGroup, 31)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty(fit)
+
     def testFailGroup1(self):
         # Check that first group-restriction attribute affects
         # holder
@@ -187,6 +221,40 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
         fit.ship = ship
         holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup4: 38}))
+        fit.items.add(holder)
+        restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
+        self.assertIsNotNone(restrictionError)
+        self.assertCountEqual(restrictionError.allowedTypes, ())
+        self.assertCountEqual(restrictionError.allowedGroups, (38,))
+        self.assertEqual(restrictionError.shipType, 772)
+        self.assertEqual(restrictionError.shipGroup, 31)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty(fit)
+
+    def testFailGroupMultipleDifferent(self):
+        fit = Fit()
+        ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
+        fit.ship = ship
+        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup1: 38, Attribute.canFitShipGroup2: 83}))
+        fit.items.add(holder)
+        restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
+        self.assertIsNotNone(restrictionError)
+        self.assertCountEqual(restrictionError.allowedTypes, ())
+        self.assertCountEqual(restrictionError.allowedGroups, (38, 83))
+        self.assertEqual(restrictionError.shipType, 772)
+        self.assertEqual(restrictionError.shipGroup, 31)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty(fit)
+
+    def testFailGroupMultipleSame(self):
+        fit = Fit()
+        ship = IndependentItem(self.ch.type_(typeId=772, groupId=31))
+        fit.ship = ship
+        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipGroup1: 38, Attribute.canFitShipGroup2: 38}))
         fit.items.add(holder)
         restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
         self.assertIsNotNone(restrictionError)
@@ -282,9 +350,24 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty(fit)
 
-    def testPassCombinedMatch(self):
-        # Check that it's enough to match any condition
-        # to be fittable
+    def testPassCombinedTypeMatch(self):
+        # Check that it's enough to match type condition
+        # to be fittable, even if both conditions are specified
+        fit = Fit()
+        ship = IndependentItem(self.ch.type_(typeId=671, groupId=31))
+        fit.ship = ship
+        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.canFitShipType1: 671, Attribute.canFitShipGroup1: 38}))
+        fit.items.add(holder)
+        restrictionError = fit.getRestrictionError(holder, Restriction.shipTypeGroup)
+        self.assertIsNone(restrictionError)
+        fit.items.remove(holder)
+        fit.ship = None
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty(fit)
+
+    def testPassCombinedGroupMatch(self):
+        # Check that it's enough to match group condition
+        # to be fittable, even if both conditions are specified
         fit = Fit()
         ship = IndependentItem(self.ch.type_(typeId=554, groupId=23))
         fit.ship = ship

@@ -55,7 +55,7 @@ class CapitalItemRegister(RestrictionRegister):
         # Ignore holders which do not belong to ship
         if holder._location != Location.ship:
             return
-        # Ignore holders with no volume attribute and holder with
+        # Ignore holders with no volume attribute and holders with
         # volume which satisfies us regardless of ship type
         try:
             holderVolume = holder.item.attributes[Attribute.volume]
