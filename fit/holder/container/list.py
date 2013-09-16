@@ -68,11 +68,12 @@ class HolderList(HolderContainerBase):
         Append holder to the end of container.
 
         Possible exceptions:
+        TypeError -- raised when non-holder class is passed
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
         if holder is None:
-            raise ValueError(holder)
+            raise TypeError(type(holder))
         self.__list.append(holder)
         try:
             self._handleAdd(holder)
@@ -87,13 +88,14 @@ class HolderList(HolderContainerBase):
         and put holder there.
 
         Possible exceptions:
+        TypeError -- raised when non-holder class is passed
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         SlotTakenError -- raised when slot at specified index
         is already taken by other holder
         """
         if holder is None:
-            raise ValueError(holder)
+            raise TypeError(type(holder))
         try:
             oldHolder = self.__list[index]
         except IndexError:
@@ -116,11 +118,12 @@ class HolderList(HolderContainerBase):
         to the end of container.
 
         Possible exceptions:
+        TypeError -- raised when non-holder class is passed
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         """
         if holder is None:
-            raise ValueError(holder)
+            raise TypeError(type(holder))
         try:
             index = self.__list.index(None)
         except ValueError:

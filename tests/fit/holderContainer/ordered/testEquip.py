@@ -39,7 +39,7 @@ class TestContainerOrderedEquip(FitTestCase):
     def testDetachedNoneToEmpty(self):
         fit = self._makeFit()
         # Action
-        self.assertRaises(ValueError, fit.ordered.equip, None)
+        self.assertRaises(TypeError, fit.ordered.equip, None)
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
@@ -133,7 +133,7 @@ class TestContainerOrderedEquip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         # Action
-        self.assertRaises(ValueError, fit.ordered.equip, None)
+        self.assertRaises(TypeError, fit.ordered.equip, None)
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)

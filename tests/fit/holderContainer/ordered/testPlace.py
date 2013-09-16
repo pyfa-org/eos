@@ -63,7 +63,7 @@ class TestContainerOrderedPlace(FitTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.ordered.append(holder)
         # Action
-        self.assertRaises(ValueError, fit.ordered.place, 3, None)
+        self.assertRaises(TypeError, fit.ordered.place, 3, None)
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
@@ -107,7 +107,7 @@ class TestContainerOrderedPlace(FitTestCase):
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         # Action
-        self.assertRaises(ValueError, fit.ordered.place, 1, None)
+        self.assertRaises(TypeError, fit.ordered.place, 1, None)
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
@@ -146,7 +146,7 @@ class TestContainerOrderedPlace(FitTestCase):
         holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
         fit.ordered.append(holder)
         # Action
-        self.assertRaises(ValueError, fit.ordered.place, 0, None)
+        self.assertRaises(TypeError, fit.ordered.place, 0, None)
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
@@ -242,7 +242,7 @@ class TestContainerOrderedPlace(FitTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.ordered.append(holder)
         # Action
-        self.assertRaises(ValueError, fit.ordered.place, 3, None)
+        self.assertRaises(TypeError, fit.ordered.place, 3, None)
         # Checks
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder, fit.lt)
@@ -304,7 +304,7 @@ class TestContainerOrderedPlace(FitTestCase):
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         # Action
-        self.assertRaises(ValueError, fit.ordered.place, 1, None)
+        self.assertRaises(TypeError, fit.ordered.place, 1, None)
         # Checks
         self.assertEqual(len(fit.lt), 2)
         self.assertIn(holder1, fit.lt)
@@ -357,7 +357,7 @@ class TestContainerOrderedPlace(FitTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
         fit.ordered.append(holder)
         # Action
-        self.assertRaises(ValueError, fit.ordered.place, 0, None)
+        self.assertRaises(TypeError, fit.ordered.place, 0, None)
         # Checks
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder, fit.lt)

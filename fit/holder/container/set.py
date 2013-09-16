@@ -42,11 +42,12 @@ class HolderSet(HolderContainerBase):
         Add holder to container.
 
         Possible exceptions:
+        TypeError -- raised when non-holder class is passed
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
         if holder is None:
-            raise ValueError(holder)
+            raise TypeError(type(holder))
         self.__set.add(holder)
         try:
             self._handleAdd(holder)
