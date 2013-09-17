@@ -23,6 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.holder.item import Drone
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
@@ -37,7 +38,7 @@ class LaunchedDroneRegister(RestrictionRegister):
     drones character is able to control.
 
     Details:
-    Only holders located in drone container are tracked.
+    Only holders of Drone class are tracked.
     For validation, modified value of maxActiveDrones attribute
     is taken.
     """
@@ -51,9 +52,8 @@ class LaunchedDroneRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Register only drones
-        if holder not in self._tracker._fit.drones:
-            return
-        self.__restrictedHolders.add(holder)
+        if isinstance(holder, Drone):
+            self.__restrictedHolders.add(holder)
 
     def unregisterHolder(self, holder):
         self.__restrictedHolders.discard(holder)

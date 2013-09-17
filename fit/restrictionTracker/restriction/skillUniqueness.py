@@ -22,6 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
+from eos.fit.holder.item import Skill
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
@@ -36,7 +37,7 @@ class SkillUniquenessRegister(RestrictionRegister):
     Fit can't have more than one skill based on the same type.
 
     Details:
-    Only holders having level attribute and item typeID other
+    Only holders of Skill class and having item typeID other
     than None are tracked.
     """
 
@@ -46,8 +47,7 @@ class SkillUniquenessRegister(RestrictionRegister):
         self.__skillHolders = KeyedSet()
 
     def registerHolder(self, holder):
-        # Only holders which have level attribute are tracked as skills
-        if hasattr(holder, 'level') is True and holder.item.id is not None:
+        if isinstance(holder, Skill) and holder.item.id is not None:
             self.__skillHolders.addData(holder.item.id, holder)
 
     def unregisterHolder(self, holder):

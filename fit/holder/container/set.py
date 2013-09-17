@@ -42,7 +42,7 @@ class HolderSet(HolderContainerBase):
         Add holder to container.
 
         Possible exceptions:
-        TypeError -- raised when non-holder class is passed
+        TypeError -- raised when non-holder is passed
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """

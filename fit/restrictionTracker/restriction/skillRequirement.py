@@ -22,6 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
+from eos.fit.holder.item import Skill
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 from eos.util.keyedSet import KeyedSet
@@ -36,7 +37,8 @@ class SkillRequirementRegister(RestrictionRegister):
     To use holder, all its skill requirements must be met.
 
     Details:
-    Only holders having level attribute are tracked.
+    Only holders of Skill class are able to satisfy skill
+    requirements.
     Original item attributes are taken to determine skill and
     skill level requirements.
     If corresponding skill is found, but its skill level is None,
@@ -44,8 +46,7 @@ class SkillRequirementRegister(RestrictionRegister):
     """
 
     def __init__(self):
-        # Container for skill holders, for ease of
-        # access
+        # Container for skill holders, for ease of access
         # Format: {holder id: {holders}}
         self.__skillHolders = KeyedSet()
         # Set with holders which have any skill requirements
@@ -53,9 +54,7 @@ class SkillRequirementRegister(RestrictionRegister):
         self.__restrictedHolders = set()
 
     def registerHolder(self, holder):
-        # Only holders which belong to character and have
-        # level attribute are tracked as skills
-        if hasattr(holder, 'level') is True:
+        if isinstance(holder, Skill):
             self.__skillHolders.addData(holder.item.id, holder)
         # Holders which have any skill requirement are tracked
         if holder.item.requiredSkills:

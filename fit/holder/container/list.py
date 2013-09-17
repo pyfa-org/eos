@@ -68,7 +68,7 @@ class HolderList(HolderContainerBase):
         Append holder to the end of container.
 
         Possible exceptions:
-        TypeError -- raised when non-holder class is passed
+        TypeError -- raised when non-holder is passed
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
@@ -88,7 +88,7 @@ class HolderList(HolderContainerBase):
         and put holder there.
 
         Possible exceptions:
-        TypeError -- raised when non-holder class is passed
+        TypeError -- raised when non-holder is passed
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         SlotTakenError -- raised when slot at specified index
@@ -118,7 +118,7 @@ class HolderList(HolderContainerBase):
         to the end of container.
 
         Possible exceptions:
-        TypeError -- raised when non-holder class is passed
+        TypeError -- raised when non-holder is passed
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         """
