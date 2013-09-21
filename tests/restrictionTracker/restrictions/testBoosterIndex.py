@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem
+from eos.fit.holder.item import Booster, Module
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -31,68 +33,85 @@ class TestBoosterIndex(RestrictionTestCase):
     def testFail(self):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120})
-        holder1 = IndependentItem(item)
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.boosterIndex)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        self.trackHolder(holder1)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.boosterIndex)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.holderSlotIndex, 120)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.boosterIndex)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.boosterIndex)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.holderSlotIndex, 120)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
+
+    def testFailOtherHolderClass(self):
+        # Make sure holders of all classes are affected
+        item = self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120})
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder1)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.boosterIndex)
+        self.assertIsNotNone(restrictionError1)
+        self.assertEqual(restrictionError1.holderSlotIndex, 120)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.boosterIndex)
+        self.assertIsNotNone(restrictionError2)
+        self.assertEqual(restrictionError2.holderSlotIndex, 120)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailOriginal(self):
         # Make sure that original attributes are used
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120})
-        holder1 = IndependentItem(item)
-        holder1.attributes[Attribute.boosterness] = 119
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.attributes[Attribute.boosterness] = 121
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.boosterIndex)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        holder1.attributes = {Attribute.boosterness: 119}
+        holder2.attributes = {Attribute.boosterness: 121}
+        self.trackHolder(holder1)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.boosterIndex)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.holderSlotIndex, 120)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.boosterIndex)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.boosterIndex)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.holderSlotIndex, 120)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPass(self):
         # Single holder which takes some slot shouldn't
         # trigger any errors
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120}))
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.boosterIndex)
+        item = self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120})
+        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.boosterIndex)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassDifferent(self):
         # Holders taking different slots shouldn't trigger any errors
-        fit = Fit()
-        holder1 = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120}))
-        fit.items.add(holder1)
-        holder2 = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.boosterness: 121}))
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.boosterIndex)
+        item1 = self.ch.type_(typeId=1, attributes={Attribute.boosterness: 120})
+        item2 = self.ch.type_(typeId=2, attributes={Attribute.boosterness: 121})
+        holder1 = Mock(state=State.offline, item=item1, _location=Location.character, spec_set=Booster)
+        holder2 = Mock(state=State.offline, item=item2, _location=Location.character, spec_set=Booster)
+        self.trackHolder(holder1)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.boosterIndex)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.boosterIndex)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.boosterIndex)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

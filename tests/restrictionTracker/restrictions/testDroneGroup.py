@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem
+from eos.fit.holder.item import Drone, Ship, Implant
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -32,52 +34,58 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # first restriction attribute
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=56))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 4}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=56)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 4})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (4,))
         self.assertEqual(restrictionError.droneGroup, 56)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailMismatch2(self):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # second restriction attribute
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=797))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup2: 69}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=797)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup2: 69})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (69,))
         self.assertEqual(restrictionError.droneGroup, 797)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailMismatchCombined(self):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # both restriction attributes
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=803))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 48, Attribute.allowedDroneGroup2: 106}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=803)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 48, Attribute.allowedDroneGroup2: 106})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (48, 106))
         self.assertEqual(restrictionError.droneGroup, 803)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailMismatchOriginal(self):
         # Check that error is returned on attempt
@@ -85,117 +93,130 @@ class TestDroneGroup(RestrictionTestCase):
         # original restriction attribute, but matching
         # to modified restriction attribute. Effectively
         # we check that original attribute value is taken
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=37))
-        fit.drones.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 59}))
-        ship.attributes[Attribute.allowedDroneGroup1] = 37
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=37)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 59})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.allowedDroneGroup1: 37}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (59,))
         self.assertEqual(restrictionError.droneGroup, 37)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailDroneNone(self):
         # Check that drone from None group is subject
         # to restriction
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=None))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 1896}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=None)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 1896})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError.allowedGroups, (1896,))
         self.assertEqual(restrictionError.droneGroup, None)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNoShip(self):
         # Check that restriction isn't applied
         # when fit doesn't have ship
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=None))
-        fit.drones.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=None)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit.drones.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassShipNoRestriction(self):
         # Check that restriction isn't applied
         # when fit has ship, but without restriction
         # attribute
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=71))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=71)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNonDrone(self):
         # Check that restriction is not applied
         # to holders which are not drones
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=56))
-        fit.items.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 4}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=56)
+        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 4})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassMatch1(self):
         # Check that no error raised when drone of group
         # matching to first restriction attribute is added
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=22))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 22}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=22)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 22})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassMatch2(self):
         # Check that no error raised when drone of group
         # matching to second restriction attribute is added
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=67))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup2: 67}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=67)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup2: 67})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassMatchCombination(self):
         # Check that no error raised when drone of group
         # matching to any of two restriction attributes
         # is added
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, groupId=53))
-        fit.drones.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 907, Attribute.allowedDroneGroup2: 53}))
-        restrictionError = fit.getRestrictionError(holder, Restriction.droneGroup)
+        item = self.ch.type_(typeId=1, groupId=53)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.allowedDroneGroup1: 907, Attribute.allowedDroneGroup2: 53})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.droneGroup)
         self.assertIsNone(restrictionError)
-        fit.drones.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

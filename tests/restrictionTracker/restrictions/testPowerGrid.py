@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem
+from eos.fit.holder.item import Module, Ship, Implant
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -30,258 +32,269 @@ class TestPowerGrid(RestrictionTestCase):
 
     def testFailExcessNoShip(self):
         # Make sure error is raised on fits without ship
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
-        holder.attributes[Attribute.power] = 50
-        holder.state = State.online
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 50}
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 0)
         self.assertEqual(restrictionError.totalUsage, 50)
         self.assertEqual(restrictionError.holderConsumption, 50)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailExcessShipNoAttr(self):
-        # When ship is assigned, but doesn't have power grid output
-        # attribute, error should be raised for power grid consumers too
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
-        holder.attributes[Attribute.power] = 50
-        holder.state = State.online
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
+        # When ship is assigned, but doesn't have calibration output
+        # attribute, error should be raised for calibration consumers too
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 50}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 0)
         self.assertEqual(restrictionError.totalUsage, 50)
         self.assertEqual(restrictionError.holderConsumption, 50)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailExcessSingle(self):
-        # When ship provides power grid output, but single consumer
+        # When ship provides calibration output, but single consumer
         # demands for more, error should be raised
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
-        holder.attributes[Attribute.power] = 50
-        holder.state = State.online
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 40
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 50}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 40}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 40)
         self.assertEqual(restrictionError.totalUsage, 50)
         self.assertEqual(restrictionError.holderConsumption, 50)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
+
+    def testFailExcessSingleOtherClass(self):
+        # Make sure holders of all classes are affected
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
+        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=Implant)
+        holder.attributes = {Attribute.power: 50}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 40}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.output, 40)
+        self.assertEqual(restrictionError.totalUsage, 50)
+        self.assertEqual(restrictionError.holderConsumption, 50)
+        self.untrackHolder(holder)
+        self.setShip(None)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailExcessMultiple(self):
-        # When multiple consumers require less than power grid output
+        # When multiple consumers require less than calibration output
         # alone, but in sum want more than total output, it should
         # be erroneous situation
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
-        holder1 = IndependentItem(item)
-        holder1.attributes[Attribute.power] = 25
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.attributes[Attribute.power] = 20
-        holder2.state = State.online
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 40
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1.attributes = {Attribute.power: 25}
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2.attributes = {Attribute.power: 20}
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 40}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 40)
         self.assertEqual(restrictionError1.totalUsage, 45)
         self.assertEqual(restrictionError1.holderConsumption, 25)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.powerGrid)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.output, 40)
         self.assertEqual(restrictionError2.totalUsage, 45)
         self.assertEqual(restrictionError2.holderConsumption, 20)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailExcessModified(self):
-        # Make sure modified power grid values are taken
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 40}))
-        holder.attributes[Attribute.power] = 100
-        holder.state = State.online
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.powerOutput: 45}))
-        ship.attributes[Attribute.powerOutput] = 50
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
+        # Make sure modified calibration values are taken
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 40})
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 100}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.powerOutput: 45})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 50}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 50)
         self.assertEqual(restrictionError.totalUsage, 100)
         self.assertEqual(restrictionError.holderConsumption, 100)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testMixUsageNegative(self):
-        # If some holder has negative usage and power grid error is
+        # If some holder has negative usage and calibration error is
         # still raised, check it's not raised for holder with
         # negative usage
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
-        holder1 = IndependentItem(item)
-        holder1.attributes[Attribute.power] = 100
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.attributes[Attribute.power] = -10
-        holder2.state = State.online
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 50
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1.attributes = {Attribute.power: 100}
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2.attributes = {Attribute.power: -10}
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 50}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 50)
         self.assertEqual(restrictionError1.totalUsage, 90)
         self.assertEqual(restrictionError1.holderConsumption, 100)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.powerGrid)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.powerGrid)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testMixUsageZero(self):
-        # If some holder has zero usage and power grid error is
+        # If some holder has zero usage and calibration error is
         # still raised, check it's not raised for holder with
         # zero usage
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
-        holder1 = IndependentItem(item)
-        holder1.attributes[Attribute.power] = 100
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.attributes[Attribute.power] = 0
-        holder2.state = State.online
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 50
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1.attributes = {Attribute.power: 100}
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2.attributes = {Attribute.power: 0}
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 50}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.powerGrid)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 50)
         self.assertEqual(restrictionError1.totalUsage, 100)
         self.assertEqual(restrictionError1.holderConsumption, 100)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.powerGrid)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.powerGrid)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPass(self):
         # When total consumption is less than output,
         # no errors should be raised
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
-        holder1 = IndependentItem(item)
-        holder1.attributes[Attribute.power] = 25
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.attributes[Attribute.power] = 20
-        holder2.state = State.online
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 50
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1.attributes = {Attribute.power: 25}
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2.attributes = {Attribute.power: 20}
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 50}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.powerGrid)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.powerGrid)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.powerGrid)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNoOriginalAttr(self):
         # When added holder's item doesn't have original attribute,
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1))
-        holder.attributes[Attribute.power] = 100
-        holder.state = State.online
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 50
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
+        item = self.ch.type_(typeId=1)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 100}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 50}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
-    def testPassNegativeUse(self):
+    def testPassNegativeConsumption(self):
         # Check that even if use of one holder exceeds
-        # power grid output, negative use of other holder may help
+        # calibration output, negative use of other holder may help
         # to avoid raising error
-        fit = Fit()
         item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
-        holder1 = IndependentItem(item)
-        holder1.attributes[Attribute.power] = 50
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.attributes[Attribute.power] = -15
-        holder2.state = State.online
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 40
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.powerGrid)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1.attributes = {Attribute.power: 50}
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2.attributes = {Attribute.power: -15}
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 40}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.powerGrid)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.powerGrid)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.powerGrid)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassState(self):
         # When holder isn't online, it shouldn't consume anything
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.power: 0}))
-        holder.attributes[Attribute.power] = 50
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.powerOutput] = 40
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.powerGrid)
+        item = self.ch.type_(typeId=1, attributes={Attribute.power: 0})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 50}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.powerOutput: 40}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.powerGrid)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

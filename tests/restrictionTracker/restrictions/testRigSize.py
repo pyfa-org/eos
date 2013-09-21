@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem
+from eos.fit.holder.item import Rig, Ship
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -31,61 +33,65 @@ class TestRigSize(RestrictionTestCase):
     def testFailMismatch(self):
         # Error should be raised when mismatching rig size
         # is added to ship
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6}))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
+        item = self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedSize, 6)
         self.assertEqual(restrictionError.holderSize, 10)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailOriginal(self):
         # Original value must be taken
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        holder.attributes[Attribute.rigSize] = 5
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6}))
-        ship.attributes[Attribute.rigSize] = 5
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
+        item = self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        holder.attributes = {Attribute.rigSize: 5}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.rigSize: 6})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.rigSize: 5}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedSize, 6)
         self.assertEqual(restrictionError.holderSize, 10)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNoShip(self):
         # When no ship is assigned, no restriction
         # should be applied to ships
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
+        item = self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassShipNoAttr(self):
         # If ship doesn't have rig size attribute,
         # no restriction is applied onto rigs
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10}))
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSize)
+        item = self.ch.type_(typeId=1, attributes={Attribute.rigSize: 10})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.rigSize)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

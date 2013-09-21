@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Restriction, Location, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem, ShipItem
+from eos.fit.holder.item import Module
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -31,145 +33,130 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def testFailExcessAll(self):
         # Make sure error is raised for all holders exceeding
         # their group restriction
-        fit = Fit()
         item = self.ch.type_(typeId=1, groupId=6, attributes={Attribute.maxGroupOnline: 1})
-        holder1 = ShipItem(item)
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        holder2.state = State.online
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxGroup, 1)
         self.assertEqual(restrictionError1.holderGroup, 6)
         self.assertEqual(restrictionError1.groupHolders, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.maxGroup, 1)
         self.assertEqual(restrictionError2.holderGroup, 6)
         self.assertEqual(restrictionError2.groupHolders, 2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testMixExcessOne(self):
         # Make sure error is raised for just holders which excess
-        # restriction,even if they're from the same group
-        fit = Fit()
-        holder1 = ShipItem(self.ch.type_(typeId=1, groupId=92, attributes={Attribute.maxGroupOnline: 1}))
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = ShipItem(self.ch.type_(typeId=2, groupId=92, attributes={Attribute.maxGroupOnline: 2}))
-        holder2.state = State.online
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
+        # restriction, even if both are from the same group
+        item1 = self.ch.type_(typeId=1, groupId=92, attributes={Attribute.maxGroupOnline: 1})
+        holder1 = Mock(state=State.online, item=item1, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder1)
+        item2 = self.ch.type_(typeId=2, groupId=92, attributes={Attribute.maxGroupOnline: 2})
+        holder2 = Mock(state=State.online, item=item2, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxGroup, 1)
         self.assertEqual(restrictionError1.holderGroup, 92)
         self.assertEqual(restrictionError1.groupHolders, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testMixExcessOriginal(self):
         # Check that original item attributes are used
-        fit = Fit()
-        holder1 = ShipItem(self.ch.type_(typeId=1, groupId=61, attributes={Attribute.maxGroupOnline: 1}))
-        holder1.attributes[Attribute.maxGroupOnline] = 2
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = ShipItem(self.ch.type_(typeId=2, groupId=61, attributes={Attribute.maxGroupOnline: 2}))
-        holder2.attributes[Attribute.maxGroupOnline] = 1
-        holder2.state = State.online
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
+        item1 = self.ch.type_(typeId=1, groupId=61, attributes={Attribute.maxGroupOnline: 1})
+        holder1 = Mock(state=State.online, item=item1, _location=Location.ship, spec_set=Module)
+        holder1.attributes = {Attribute.maxGroupOnline: 2}
+        self.trackHolder(holder1)
+        item2 = self.ch.type_(typeId=2, groupId=61, attributes={Attribute.maxGroupOnline: 2})
+        holder2 = Mock(state=State.online, item=item2, _location=Location.ship, spec_set=Module)
+        holder2.attributes = {Attribute.maxGroupOnline: 1}
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxGroup, 1)
         self.assertEqual(restrictionError1.holderGroup, 61)
         self.assertEqual(restrictionError1.groupHolders, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPass(self):
         # Make sure no errors are raised when number of added
         # items doesn't exceed any restrictions
-        fit = Fit()
         item = self.ch.type_(typeId=1, groupId=860, attributes={Attribute.maxGroupOnline: 2})
-        holder1 = ShipItem(item)
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        holder2.state = State.online
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassHolderNoneGroup(self):
         # Check that holders with None group are not affected
-        fit = Fit()
         item = self.ch.type_(typeId=1, groupId=None, attributes={Attribute.maxGroupOnline: 1})
-        holder1 = ShipItem(item)
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        holder2.state = State.online
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassState(self):
-        # No errors should occur if holders are not online+
-        fit = Fit()
+        # No errors should occur if holders are not active+
         item = self.ch.type_(typeId=1, groupId=886, attributes={Attribute.maxGroupOnline: 1})
-        holder1 = ShipItem(item)
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupOnline)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupOnline)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassHolderNonShip(self):
-        # Non-ship holders shouldn't be affected
-        fit = Fit()
-        item = self.ch.type_(typeId=1, groupId=12, attributes={Attribute.maxGroupActive: 1})
-        holder1 = IndependentItem(item)
-        holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.state = State.online
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.maxGroupActive)
+        # Holders not belonging to ship shouldn't be affected
+        item = self.ch.type_(typeId=1, groupId=12, attributes={Attribute.maxGroupOnline: 1})
+        holder1 = Mock(state=State.online, item=item, _location=None, spec_set=Module)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=None, spec_set=Module)
+        self.trackHolder(holder2)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.maxGroupActive)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.maxGroupOnline)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

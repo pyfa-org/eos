@@ -19,6 +19,10 @@
 #===============================================================================
 
 
+from unittest.mock import Mock
+
+from eos.const.eos import Restriction, State
+from eos.fit.restrictionTracker import RestrictionTracker, ValidationError
 from eos.tests.eosTestCase import EosTestCase
 
 
@@ -26,15 +30,59 @@ class RestrictionTestCase(EosTestCase):
     """
     Additional functionality provided:
 
+    self.rt -- restriction tracker instance for tests
+    self.setShip -- set ship to fit which uses self.rt
+    self.setCharacter -- set character to fit whic uses
+    self.rt
+    self.trackHolder -- add holder to restriction tracker
+    self.untrackHolder -- remove holder from restriction
+    tracker
+    self.getRestrictionError -- get restriction error for
+    passed holder of passed restriction type. If no error
+    occurred, return None
     self.assertRestrictionBuffersEmpty -- checks if
-    restriction tracker buffers of passed fit are clear
+    restriction tracker buffers are clear
     """
 
-    def assertRestrictionBuffersEmpty(self, fit):
+    def setUp(self):
+        EosTestCase.setUp(self)
+        fit = Mock()
+        fit.ship = None
+        fit.character = None
+        self.rt = RestrictionTracker(fit)
+
+    def setShip(self, holder):
+        self.rt._fit.ship = holder
+
+    def setCharacter(self, holder):
+        self.rt._fit.character = holder
+
+    def trackHolder(self, holder):
+        self.rt.enableStates(holder, set(filter(lambda s: s <= holder.state, State)))
+
+    def untrackHolder(self, holder):
+        self.rt.disableStates(holder, set(filter(lambda s: s <= holder.state, State)))
+
+    def getRestrictionError(self, holder, restriction):
+        skipChecks = set(Restriction).difference((restriction,))
+        try:
+            self.rt.validate(skipChecks)
+        except ValidationError as e:
+            errorData = e.args[0]
+            if holder not in errorData:
+                return None
+            holderError = errorData[holder]
+            if restriction not in holderError:
+                return None
+            return holderError[restriction]
+        else:
+            return None
+
+    def assertRestrictionBuffersEmpty(self):
         entryNum = 0
         # Get dictionary-container with all registers used by tracker,
         # and cycle through all of them
-        trackerContainer = fit._restrictionTracker._RestrictionTracker__registers
+        trackerContainer = self.rt._RestrictionTracker__registers
         for registerGroup in trackerContainer.values():
             for register in registerGroup:
                 # Cycle through all attributes of each register, besides

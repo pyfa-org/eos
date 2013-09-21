@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute, Type as ConstType
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem, ShipItem
+from eos.fit.holder.item import Module, Ship
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -31,102 +33,109 @@ class TestCapitalItem(RestrictionTestCase):
     def testFailNoShip(self):
         # Check that error is raised on attempt
         # to add capital item to fit w/o ship
-        fit = Fit()
-        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 501}))
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 501})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailSubcapitalShip(self):
         # Check that error is raised on attempt
         # to add capital item to fit with subcapital
         # ship
-        fit = Fit()
-        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 501}))
-        fit.items.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2))
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 501})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailOriginalVolume(self):
         # Make sure original volume value is taken
-        fit = Fit()
-        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 501}))
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 501})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         # Set volume below 500 to check that even when
         # modified attributes are available, raw attributes
         # are taken
-        holder.attributes[Attribute.volume] = 100
-        fit.items.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2))
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        holder.attributes = {Attribute.volume: 100}
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.allowedVolume, 500)
         self.assertEqual(restrictionError.holderVolume, 501)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassSubcapitalShipHolder(self):
         # Make sure no error raised when non-capital
         # item is added to fit
-        fit = Fit()
-        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 500}))
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 500})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNonShipHolder(self):
         # Check that non-ship holders are not affected
         # by restriction
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 501}))
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 501})
+        holder = Mock(state=State.offline, item=item, _location=None, spec_set=Ship)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassCapitalShip(self):
         # Check that capital holders can be added to
         # capital ship
-        fit = Fit()
-        holder = ShipItem(self.ch.type_(typeId=1, attributes={Attribute.volume: 501}))
-        fit.items.add(holder)
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 501})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
         shipItem = self.ch.type_(typeId=2)
         shipItem.requiredSkills = {ConstType.capitalShips: 1}
-        fit.ship = IndependentItem(shipItem)
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNoVolume(self):
         # Check that items with no volume attribute are not restricted
-        fit = Fit()
-        holder = ShipItem(self.ch.type_(typeId=1))
-        fit.items.add(holder)
-        fit.ship = IndependentItem(self.ch.type_(typeId=2))
-        restrictionError = fit.getRestrictionError(holder, Restriction.capitalItem)
+        item = self.ch.type_(typeId=1)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.capitalItem)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

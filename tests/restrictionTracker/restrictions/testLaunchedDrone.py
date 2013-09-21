@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem
+from eos.fit.holder.item import Drone, Character, Implant
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -32,161 +34,152 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Check that any positive number of drones
         # results in error when no character is assigned
         # to fit
-        fit = Fit()
-        holder = IndependentItem(self.ch.type_(typeId=1))
-        holder.state = State.online
-        fit.drones.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.launchedDrone)
+        item = self.ch.type_(typeId=1)
+        holder = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.maxLaunchedDrones, 0)
         self.assertEqual(restrictionError.launchedDrones, 1)
-        fit.drones.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailNoAttr(self):
         # Check that any positive number of drones
         # results in error when character is assigned
         # to fit, but no restriction attribute available
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = IndependentItem(item)
-        holder1.state = State.online
-        fit.drones.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.state = State.online
-        fit.drones.add(holder2)
-        char = IndependentItem(self.ch.type_(typeId=2))
-        char.attributes[Attribute.maxActiveDrones] = 1
-        fit.character = char
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
+        holder1 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder2)
+        charItem = self.ch.type_(typeId=2)
+        charHolder = Mock(state=State.offline, item=charItem, _location=None, spec_set=Character)
+        charHolder.attributes = {Attribute.maxActiveDrones: 1}
+        self.setCharacter(charHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxLaunchedDrones, 1)
         self.assertEqual(restrictionError1.launchedDrones, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.launchedDrone)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.maxLaunchedDrones, 1)
         self.assertEqual(restrictionError2.launchedDrones, 2)
-        fit.drones.remove(holder1)
-        fit.drones.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailExcess(self):
         # Check that excessive number of drones results
         # in failure, even when character is assigned to
         # fit and max number attribute is available
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = IndependentItem(item)
-        holder1.state = State.online
-        fit.drones.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.state = State.online
-        fit.drones.add(holder2)
-        char = IndependentItem(self.ch.type_(typeId=2))
-        char.attributes[Attribute.maxActiveDrones] = 1
-        fit.character = char
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
+        holder1 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder2)
+        charItem = self.ch.type_(typeId=2)
+        charHolder = Mock(state=State.offline, item=charItem, _location=None, spec_set=Character)
+        charHolder.attributes = {Attribute.maxActiveDrones: 1}
+        self.setCharacter(charHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxLaunchedDrones, 1)
         self.assertEqual(restrictionError1.launchedDrones, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.launchedDrone)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.maxLaunchedDrones, 1)
         self.assertEqual(restrictionError2.launchedDrones, 2)
-        fit.drones.remove(holder1)
-        fit.drones.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailExcessModified(self):
         # Check that modified attribute value is taken, not original
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = IndependentItem(item)
-        holder1.state = State.online
-        fit.drones.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.state = State.online
-        fit.drones.add(holder2)
-        char = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.maxActiveDrones: 3}))
-        char.attributes[Attribute.maxActiveDrones] = 1
-        fit.character = char
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
+        holder1 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder2)
+        charItem = self.ch.type_(typeId=2, attributes={Attribute.maxActiveDrones: 3})
+        charHolder = Mock(state=State.offline, item=charItem, _location=None, spec_set=Character)
+        charHolder.attributes = {Attribute.maxActiveDrones: 1}
+        self.setCharacter(charHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.maxLaunchedDrones, 1)
         self.assertEqual(restrictionError1.launchedDrones, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.launchedDrone)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.launchedDrone)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.maxLaunchedDrones, 1)
         self.assertEqual(restrictionError2.launchedDrones, 2)
-        fit.drones.remove(holder1)
-        fit.drones.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPass(self):
         # Check non-excessive number of drones
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = IndependentItem(item)
-        holder1.state = State.online
-        fit.drones.add(holder1)
-        holder2 = IndependentItem(item)
-        holder2.state = State.online
-        fit.drones.add(holder2)
-        char = IndependentItem(self.ch.type_(typeId=2))
-        char.attributes[Attribute.maxActiveDrones] = 5
-        fit.character = char
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
+        holder1 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder2)
+        charItem = self.ch.type_(typeId=2)
+        charHolder = Mock(state=State.offline, item=charItem, _location=None, spec_set=Character)
+        charHolder.attributes = {Attribute.maxActiveDrones: 5}
+        self.setCharacter(charHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.launchedDrone)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.launchedDrone)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.launchedDrone)
         self.assertIsNone(restrictionError2)
-        fit.drones.remove(holder1)
-        fit.drones.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassState(self):
         # Check excessive number of drones, which are
         # not 'launched'
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = IndependentItem(item)
-        fit.drones.add(holder1)
-        holder2 = IndependentItem(item)
-        fit.drones.add(holder2)
-        char = IndependentItem(self.ch.type_(typeId=2))
-        char.attributes[Attribute.maxActiveDrones] = 1
-        fit.character = char
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        self.trackHolder(holder2)
+        charItem = self.ch.type_(typeId=2)
+        charHolder = Mock(state=State.offline, item=charItem, _location=None, spec_set=Character)
+        charHolder.attributes = {Attribute.maxActiveDrones: 1}
+        self.setCharacter(charHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.launchedDrone)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.launchedDrone)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.launchedDrone)
         self.assertIsNone(restrictionError2)
-        fit.drones.remove(holder1)
-        fit.drones.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNonDrone(self):
         # Check excessive number of non-drone items
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = IndependentItem(item)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
         holder1.state = State.online
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
         holder2.state = State.online
-        fit.items.add(holder2)
-        char = IndependentItem(self.ch.type_(typeId=2))
-        char.attributes[Attribute.maxActiveDrones] = 1
-        fit.character = char
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.launchedDrone)
+        self.trackHolder(holder2)
+        charItem = self.ch.type_(typeId=2)
+        charHolder = Mock(state=State.offline, item=charItem, _location=None, spec_set=Character)
+        charHolder.attributes = {Attribute.maxActiveDrones: 1}
+        self.setCharacter(charHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.launchedDrone)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.launchedDrone)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.launchedDrone)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

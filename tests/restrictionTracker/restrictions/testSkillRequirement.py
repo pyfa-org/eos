@@ -19,8 +19,10 @@
 #===============================================================================
 
 
-from eos.const.eos import Restriction
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem, Skill
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
+from eos.fit.holder.item import Module, Skill
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -30,111 +32,107 @@ class TestSkillRequirement(RestrictionTestCase):
     def testFailSingle(self):
         # Check that error is raised when single skill requirement
         # is not met
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {50: 3}
-        holder = IndependentItem(item)
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 3),))
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailMultiple(self):
         # Check error raised when multiple skill requirements
         # are not met
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {48: 1, 50: 5}
-        holder = IndependentItem(item)
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 5), (48, None, 1)))
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailPartial(self):
         # Make sure satisfied skill requirements are not shown
         # up in error
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {48: 1, 50: 5}
-        holder = IndependentItem(item)
-        fit.items.add(holder)
-        skill = Skill(self.ch.type_(typeId=48))
-        skill.level = 5
-        fit.items.add(skill)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        skillItem = self.ch.type_(typeId=48)
+        skillHolder = Mock(state=State.offline, item=skillItem, _location=Location.character, spec_set=Skill)
+        skillHolder.level = 5
+        self.trackHolder(skillHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNotNone(restrictionError)
         self.assertCountEqual(restrictionError, ((50, None, 5),))
-        fit.items.remove(holder)
-        fit.items.remove(skill)
+        self.untrackHolder(holder)
+        self.untrackHolder(skillHolder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassSatisfied(self):
         # Check that error isn't raised when all skill requirements
         # are met
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {50: 3}
-        holder = IndependentItem(item)
-        fit.items.add(holder)
-        skill = Skill(self.ch.type_(typeId=50))
-        skill.level = 3
-        fit.items.add(skill)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        skillItem = self.ch.type_(typeId=50)
+        skillHolder = Mock(state=State.offline, item=skillItem, _location=Location.character, spec_set=Skill)
+        skillHolder.level = 3
+        self.trackHolder(skillHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.items.remove(skill)
+        self.untrackHolder(holder)
+        self.untrackHolder(skillHolder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassMultiSkill(self):
         # Make sure max skill level is taken
-        fit = Fit()
-        item1 = self.ch.type_(typeId=1)
-        item1.requiredSkills = {50: 4}
-        holder = IndependentItem(item1)
-        fit.items.add(holder)
-        item2 = self.ch.type_(typeId=50)
-        skill1 = Skill(item2)
-        skill1.level = 1
-        fit.items.add(skill1)
-        skill2 = Skill(item2)
-        skill2.level = 5
-        fit.items.add(skill2)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
+        item = self.ch.type_(typeId=1)
+        item.requiredSkills = {50: 4}
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        skillItem = self.ch.type_(typeId=50)
+        skillHolder1 = Mock(state=State.offline, item=skillItem, _location=Location.character, spec_set=Skill)
+        skillHolder1.level = 1
+        self.trackHolder(skillHolder1)
+        skillHolder2 = Mock(state=State.offline, item=skillItem, _location=Location.character, spec_set=Skill)
+        skillHolder2.level = 5
+        self.trackHolder(skillHolder2)
+        restrictionError = self.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.items.remove(skill1)
-        fit.items.remove(skill2)
+        self.untrackHolder(holder)
+        self.untrackHolder(skillHolder1)
+        self.untrackHolder(skillHolder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassMultiSkillNone(self):
         # Make sure that None-leveled skills are overridden
         # by skills which have some skill level
-        fit = Fit()
-        item1 = self.ch.type_(typeId=1)
-        item1.requiredSkills = {50: 0}
-        holder = IndependentItem(item1)
-        fit.items.add(holder)
-        item2 = self.ch.type_(typeId=50)
-        skill1 = Skill(item2)
-        skill1.level = None
-        fit.items.add(skill1)
-        skill2 = Skill(item2)
-        skill2.level = 0
-        fit.items.add(skill2)
-        restrictionError = fit.getRestrictionError(holder, Restriction.skillRequirement)
+        item = self.ch.type_(typeId=1)
+        item.requiredSkills = {50: 0}
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.trackHolder(holder)
+        skillItem = self.ch.type_(typeId=50)
+        skillHolder1 = Mock(state=State.offline, item=skillItem, _location=Location.character, spec_set=Skill)
+        skillHolder1.level = None
+        self.trackHolder(skillHolder1)
+        skillHolder2 = Mock(state=State.offline, item=skillItem, _location=Location.character, spec_set=Skill)
+        skillHolder2.level = 0
+        self.trackHolder(skillHolder2)
+        restrictionError = self.getRestrictionError(holder, Restriction.skillRequirement)
         self.assertIsNone(restrictionError)
-        fit.items.remove(holder)
-        fit.items.remove(skill1)
-        fit.items.remove(skill2)
+        self.untrackHolder(holder)
+        self.untrackHolder(skillHolder1)
+        self.untrackHolder(skillHolder2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

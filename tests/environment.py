@@ -74,7 +74,6 @@ class CacheHandler:
         self.__typeData = {}
         self.__attributeData = {}
         self.__effectData = {}
-        self.__expressionData = {}
 
     def type_(self, **kwargs):
         type_ = Type(**kwargs)

@@ -19,9 +19,11 @@
 #===============================================================================
 
 
-from eos.const.eos import Slot, Restriction
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, Slot, State
 from eos.const.eve import Attribute
-from eos.tests.restrictionTracker.environment import Fit, ShipItem, IndependentItem
+from eos.fit.holder.item import Rig, Ship
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -31,155 +33,156 @@ class TestRigSlot(RestrictionTestCase):
     def testFail(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.rig}
-        holder1 = ShipItem(item)
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.rigSlots] = 1
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.rigSlots: 1}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.slotsMax, 1)
         self.assertEqual(restrictionError1.slotsUsed, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.rigSlot)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.slotsMax, 1)
         self.assertEqual(restrictionError2.slotsUsed, 2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailShipNoAttr(self):
         # Make sure that absence of specifier of slot output
         # is considered as 0 output
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.rig}
-        holder = ShipItem(item)
-        fit.items.add(holder)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        fit.ship = ship
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSlot)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {}
+        self.setShip(shipHolder)
+        restrictionError = self.getRestrictionError(holder, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.slotsMax, 0)
         self.assertEqual(restrictionError.slotsUsed, 1)
-        fit.items.remove(holder)
-        fit.ship = None
+        self.untrackHolder(holder)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailNoShip(self):
         # Make sure that absence of ship
         # is considered as 0 output
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.rig}
-        holder = ShipItem(item)
-        fit.items.add(holder)
-        restrictionError = fit.getRestrictionError(holder, Restriction.rigSlot)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.slotsMax, 0)
         self.assertEqual(restrictionError.slotsUsed, 1)
-        fit.items.remove(holder)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testFailModified(self):
         # Make sure that modified number of slot output
         # is taken
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.rig}
-        holder1 = ShipItem(item)
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2, attributes={Attribute.rigSlots: 5}))
-        ship.attributes[Attribute.rigSlots] = 1
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2, attributes={Attribute.rigSlots: 5})
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.rigSlots: 1}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.slotsMax, 1)
         self.assertEqual(restrictionError1.slotsUsed, 2)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.rigSlot)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.rigSlot)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.slotsMax, 1)
         self.assertEqual(restrictionError2.slotsUsed, 2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPass(self):
         # No error is raised when slot users do not
         # exceed slot output
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.rig}
-        holder1 = ShipItem(item)
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.rigSlots] = 3
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.rigSlots: 3}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.rigSlot)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.rigSlot)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.rigSlot)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassHolderNonShip(self):
         # Non-ship holders shouldn't be affected
-        fit = Fit()
         item = self.ch.type_(typeId=1)
         item.slots = {Slot.rig}
-        holder1 = IndependentItem(item)
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.rigSlots] = 1
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
+        holder1 = Mock(state=State.offline, item=item, _location=None, spec_set=Rig)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=None, spec_set=Rig)
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.rigSlots: 1}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.rigSlot)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.rigSlot)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.rigSlot)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNonSlot(self):
         # If holders don't use slot, no error should
         # be raised
-        fit = Fit()
         item = self.ch.type_(typeId=1)
-        holder1 = ShipItem(item)
-        fit.items.add(holder1)
-        holder2 = ShipItem(item)
-        fit.items.add(holder2)
-        ship = IndependentItem(self.ch.type_(typeId=2))
-        ship.attributes[Attribute.rigSlots] = 1
-        fit.ship = ship
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.rigSlot)
+        item.slots = set()
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        self.trackHolder(holder2)
+        shipItem = self.ch.type_(typeId=2)
+        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
+        shipHolder.attributes = {Attribute.rigSlots: 1}
+        self.setShip(shipHolder)
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.rigSlot)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.rigSlot)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.rigSlot)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
-        fit.ship = None
+        self.untrackHolder(holder1)
+        self.untrackHolder(holder2)
+        self.setShip(None)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()

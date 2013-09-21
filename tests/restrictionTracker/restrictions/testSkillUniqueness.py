@@ -19,8 +19,10 @@
 #===============================================================================
 
 
-from eos.const.eos import Restriction
-from eos.tests.restrictionTracker.environment import Fit, IndependentItem, Skill
+from unittest.mock import Mock
+
+from eos.const.eos import Location, Restriction, State
+from eos.fit.holder.item import Implant, Skill
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -29,65 +31,62 @@ class TestSkillUniqueness(RestrictionTestCase):
 
     def testFail(self):
         # Check that multiple skills with this ID raise error
-        fit = Fit()
         item = self.ch.type_(typeId=56)
-        skill1 = Skill(item)
-        fit.items.add(skill1)
-        skill2 = Skill(item)
-        fit.items.add(skill2)
-        restrictionError1 = fit.getRestrictionError(skill1, Restriction.skillUniqueness)
+        skill1 = Mock(state=State.offline, item=item, level=1, _location=Location.character, spec_set=Skill)
+        skill2 = Mock(state=State.offline, item=item, level=2, _location=Location.character, spec_set=Skill)
+        self.trackHolder(skill1)
+        self.trackHolder(skill2)
+        restrictionError1 = self.getRestrictionError(skill1, Restriction.skillUniqueness)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.skill, 56)
-        restrictionError2 = fit.getRestrictionError(skill2, Restriction.skillUniqueness)
+        restrictionError2 = self.getRestrictionError(skill2, Restriction.skillUniqueness)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.skill, 56)
-        fit.items.remove(skill1)
-        fit.items.remove(skill2)
+        self.untrackHolder(skill1)
+        self.untrackHolder(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPass(self):
         # No error should be raised when single skill
         # is added to fit
-        fit = Fit()
-        skill = Skill(self.ch.type_(typeId=56))
-        fit.items.add(skill)
-        restrictionError = fit.getRestrictionError(skill, Restriction.skillUniqueness)
+        item = self.ch.type_(typeId=56)
+        skill = Mock(state=State.offline, item=item, level=1, _location=Location.character, spec_set=Skill)
+        self.trackHolder(skill)
+        restrictionError = self.getRestrictionError(skill, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError)
-        fit.items.remove(skill)
+        self.untrackHolder(skill)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNone(self):
         # When typeIDs of skills are None, they should be ignored
-        fit = Fit()
         item = self.ch.type_(typeId=None)
-        skill1 = Skill(item)
-        fit.items.add(skill1)
-        skill2 = Skill(item)
-        fit.items.add(skill2)
-        restrictionError1 = fit.getRestrictionError(skill1, Restriction.skillUniqueness)
+        skill1 = Mock(state=State.offline, item=item, level=1, _location=Location.character, spec_set=Skill)
+        skill2 = Mock(state=State.offline, item=item, level=2, _location=Location.character, spec_set=Skill)
+        self.trackHolder(skill1)
+        self.trackHolder(skill2)
+        restrictionError1 = self.getRestrictionError(skill1, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(skill2, Restriction.skillUniqueness)
+        restrictionError2 = self.getRestrictionError(skill2, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(skill1)
-        fit.items.remove(skill2)
+        self.untrackHolder(skill1)
+        self.untrackHolder(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
 
     def testPassNonSkills(self):
         # Not-skill holders shouldn't be tracked
-        fit = Fit()
-        item = self.ch.type_(typeId=70)
-        holder1 = IndependentItem(item)
-        fit.items.add(holder1)
-        holder2 = IndependentItem(item)
-        fit.items.add(holder2)
-        restrictionError1 = fit.getRestrictionError(holder1, Restriction.skillUniqueness)
+        item = self.ch.type_(typeId=56)
+        skill1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        skill2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        self.trackHolder(skill1)
+        self.trackHolder(skill2)
+        restrictionError1 = self.getRestrictionError(skill1, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError1)
-        restrictionError2 = fit.getRestrictionError(holder2, Restriction.skillUniqueness)
+        restrictionError2 = self.getRestrictionError(skill2, Restriction.skillUniqueness)
         self.assertIsNone(restrictionError2)
-        fit.items.remove(holder1)
-        fit.items.remove(holder2)
+        self.untrackHolder(skill1)
+        self.untrackHolder(skill2)
         self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty(fit)
+        self.assertRestrictionBuffersEmpty()
