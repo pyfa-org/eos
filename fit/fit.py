@@ -23,7 +23,8 @@ from eos import eos as eosModule
 from eos.const.eos import State
 from eos.const.eve import Type
 from .attributeCalculator import LinkTracker
-from .exception import HolderAddError, HolderRemoveError
+from .exception import HolderAlreadyAssignedError, HolderFitMismatchError, HolderTypeError
+from .holder import Holder
 from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Character
 from .restrictionTracker import RestrictionTracker
@@ -121,16 +122,19 @@ class Fit:
         Keyword arguments:
         skipChecks -- iterable with checks to be skipped
 
-        Possible exceptions:
+        Possible exceptions:HolderFitMismatchError
         ValidationError -- raised when validation fails
         """
         self._restrictionTracker.validate(skipChecks)
 
     def _addHolder(self, holder):
         """Handle adding of holder to fit."""
-        # Make sure the holder isn't used already
+        # Make sure the holder is holder and that it
+        # isn't used already
+        if not isinstance(holder, Holder):
+            raise HolderTypeError(type(holder))
         if holder._fit is not None:
-            raise HolderAddError(holder)
+            raise HolderAlreadyAssignedError(holder)
         # Assign fit to holder first
         holder._fit = self
         self._holders.add(holder)
@@ -146,7 +150,7 @@ class Fit:
         # Check that removed holder belongs to fit
         # it's removed from
         if holder._fit is not self:
-            raise HolderRemoveError(holder)
+            raise HolderFitMismatchError(holder)
         # If there's charge in target holder, unset it first
         charge = getattr(holder, "charge", None)
         if charge is not None:
@@ -209,6 +213,8 @@ class Fit:
         including removal of old holder assigned to it.
 
         Possible exceptions:
+        TypeError -- raised when holder to be set is not
+        None and is not Holder class/subclass instance
         ValueError -- raised when holder cannot be used
         (e.g. already belongs to some fit)
         """
@@ -219,8 +225,10 @@ class Fit:
         if newHolder is not None:
             try:
                 self._addHolder(newHolder)
-            except HolderAddError as e:
+            except (HolderTypeError, HolderAlreadyAssignedError) as e:
                 setattr(self, attrName, oldHolder)
                 if oldHolder is not None:
                     self._addHolder(oldHolder)
-                raise ValueError(newHolder) from e
+                exceptionMap = {HolderTypeError: TypeError,
+                                HolderAlreadyAssignedError: ValueError}
+                raise exceptionMap[type(e)](*e.args) from e

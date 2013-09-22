@@ -22,6 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
+from eos.fit.holder import Holder
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
@@ -43,7 +44,7 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedNoneToHolder(self):
         fit = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         # Action
         fit.character = holder
         # Checks
@@ -55,10 +56,23 @@ class TestDirectHolderCharacter(FitTestCase):
         fit.character = None
         self.assertFitBuffersEmpty(fit)
 
-    def testDetachedNoneToHolderFailure(self):
+    def testDetachedNoneToHolderTypeFailure(self):
+        fit = self._makeFit()
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'character', holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIsNone(fit.character)
+        self.assertIsNone(holder._fit)
+        # Misc
+        self.assertFitBuffersEmpty(fit)
+
+    def testDetachedNoneToHolderValueFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         fitOther.character = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'character', holder)
@@ -77,8 +91,8 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedHolderToHolder(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
         fit.character = holder1
         # Action
         fit.character = holder2
@@ -92,11 +106,28 @@ class TestDirectHolderCharacter(FitTestCase):
         fit.character = None
         self.assertFitBuffersEmpty(fit)
 
-    def testDetachedHolderToHolderFailure(self):
+    def testDetachedHolderToHolderTypeFailure(self):
+        fit = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        fit.character = holder1
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'character', holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(fit.character, holder1)
+        self.assertIs(holder1._fit, fit)
+        self.assertIsNone(holder2._fit)
+        # Misc
+        fit.character = None
+        self.assertFitBuffersEmpty(fit)
+
+    def testDetachedHolderToHolderValueFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fit.character = holder1
         fitOther.character = holder2
         # Action
@@ -118,7 +149,7 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedHolderToNone(self):
         fit = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         fit.character = holder
         # Action
         fit.character = None
@@ -145,7 +176,7 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedNoneToHolder(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.online, spec_set=Holder)
         # Action
         fit.character = holder
         # Checks
@@ -161,11 +192,25 @@ class TestDirectHolderCharacter(FitTestCase):
         fit.character = None
         self.assertFitBuffersEmpty(fit)
 
-    def testAttachedNoneToHolderFailure(self):
+    def testAttachedNoneToHolderTypeFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'character', holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIsNone(fit.character)
+        self.assertIsNone(holder._fit)
+        # Misc
+        self.assertFitBuffersEmpty(fit)
+
+    def testAttachedNoneToHolderValueFailure(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
         fitOther.character = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'character', holder)
@@ -189,8 +234,8 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedHolderToHolder(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fit.character = holder1
         # Action
         fit.character = holder2
@@ -208,12 +253,34 @@ class TestDirectHolderCharacter(FitTestCase):
         fit.character = None
         self.assertFitBuffersEmpty(fit)
 
-    def testAttachedHolderToHolderFailure(self):
+    def testAttachedHolderToHolderTypeFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        fit.character = holder1
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'character', holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline})
+        self.assertIs(fit.character, holder1)
+        self.assertIs(holder1._fit, fit)
+        self.assertIsNone(holder2._fit)
+        # Misc
+        fit.character = None
+        self.assertFitBuffersEmpty(fit)
+
+    def testAttachedHolderToHolderValueeFailure(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
         fit.character = holder1
         fitOther.character = holder2
         # Action
@@ -244,7 +311,7 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedHolderToNone(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         fit.character = holder
         # Action
         fit.character = None

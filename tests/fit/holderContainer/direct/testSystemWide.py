@@ -22,6 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
+from eos.fit.holder import Holder
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
@@ -43,7 +44,7 @@ class TestDirectHolderSystemWide(FitTestCase):
 
     def testDetachedNoneToHolder(self):
         fit = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         # Action
         fit.systemWide = holder
         # Checks
@@ -55,10 +56,23 @@ class TestDirectHolderSystemWide(FitTestCase):
         fit.systemWide = None
         self.assertFitBuffersEmpty(fit)
 
-    def testDetachedNoneToHolderFailure(self):
+    def testDetachedNoneToHolderTypeFailure(self):
+        fit = self._makeFit()
+        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'systemWide', holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIsNone(fit.systemWide)
+        self.assertIsNone(holder._fit)
+        # Misc
+        self.assertFitBuffersEmpty(fit)
+
+    def testDetachedNoneToHolderValueFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         fitOther.systemWide = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'systemWide', holder)
@@ -77,8 +91,8 @@ class TestDirectHolderSystemWide(FitTestCase):
 
     def testDetachedHolderToHolder(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
         fit.systemWide = holder1
         # Action
         fit.systemWide = holder2
@@ -92,11 +106,28 @@ class TestDirectHolderSystemWide(FitTestCase):
         fit.systemWide = None
         self.assertFitBuffersEmpty(fit)
 
-    def testDetachedHolderToHolderFailure(self):
+    def testDetachedHolderToHolderTypeFailure(self):
+        fit = self._makeFit()
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        fit.systemWide = holder1
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'systemWide', holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(fit.systemWide, holder1)
+        self.assertIs(holder1._fit, fit)
+        self.assertIsNone(holder2._fit)
+        # Misc
+        fit.systemWide = None
+        self.assertFitBuffersEmpty(fit)
+
+    def testDetachedHolderToHolderValueFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fit.systemWide = holder1
         fitOther.systemWide = holder2
         # Action
@@ -118,7 +149,7 @@ class TestDirectHolderSystemWide(FitTestCase):
 
     def testDetachedHolderToNone(self):
         fit = self._makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         fit.systemWide = holder
         # Action
         fit.systemWide = None
@@ -145,7 +176,7 @@ class TestDirectHolderSystemWide(FitTestCase):
     def testAttachedNoneToHolder(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.online, spec_set=Holder)
         # Action
         fit.systemWide = holder
         # Checks
@@ -161,11 +192,25 @@ class TestDirectHolderSystemWide(FitTestCase):
         fit.systemWide = None
         self.assertFitBuffersEmpty(fit)
 
-    def testAttachedNoneToHolderFailure(self):
+    def testAttachedNoneToHolderTypeFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'systemWide', holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIsNone(fit.systemWide)
+        self.assertIsNone(holder._fit)
+        # Misc
+        self.assertFitBuffersEmpty(fit)
+
+    def testAttachedNoneToHolderValueFailure(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
         fitOther.systemWide = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'systemWide', holder)
@@ -189,8 +234,8 @@ class TestDirectHolderSystemWide(FitTestCase):
     def testAttachedHolderToHolder(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fit.systemWide = holder1
         # Action
         fit.systemWide = holder2
@@ -208,12 +253,34 @@ class TestDirectHolderSystemWide(FitTestCase):
         fit.systemWide = None
         self.assertFitBuffersEmpty(fit)
 
-    def testAttachedHolderToHolderFailure(self):
+    def testAttachedHolderToHolderTypeFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        fit.systemWide = holder1
+        # Action
+        self.assertRaises(TypeError, fit.__setattr__, 'systemWide', holder2)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder1, fit.lt)
+        self.assertEqual(fit.lt[holder1], {State.offline})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder1, fit.rt)
+        self.assertEqual(fit.rt[holder1], {State.offline})
+        self.assertIs(fit.systemWide, holder1)
+        self.assertIs(holder1._fit, fit)
+        self.assertIsNone(holder2._fit)
+        # Misc
+        fit.systemWide = None
+        self.assertFitBuffersEmpty(fit)
+
+    def testAttachedHolderToHolderValueeFailure(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
         fit.systemWide = holder1
         fitOther.systemWide = holder2
         # Action
@@ -244,7 +311,7 @@ class TestDirectHolderSystemWide(FitTestCase):
     def testAttachedHolderToNone(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
         fit.systemWide = holder
         # Action
         fit.systemWide = None

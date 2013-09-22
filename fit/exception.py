@@ -22,18 +22,42 @@
 from eos.exception import EosError
 
 
-class FitAffiliationError(EosError):
+class HolderAddError(EosError):
     """
-    Exceptions which catch holder inconsistency during operations
-    upon it are based on this class.
+    Base class for exceptions which occur during
+    adding holder to fit.
     """
     pass
 
-class HolderAddError(FitAffiliationError):
-    """Raised when holder to add to fit already belongs to some fit."""
+
+class HolderTypeError(HolderAddError):
+    """
+    Raised on attempt to add non-holder object
+    to fit.
+    """
     pass
 
 
-class HolderRemoveError(FitAffiliationError):
-    """Raised when holder to remove from fit doesn't belong to it."""
+class HolderAlreadyAssignedError(HolderAddError):
+    """
+    Raised on attempt to add holder to fit, when
+    it's already assigned.
+    """
+    pass
+
+
+class HolderRemoveError(EosError):
+    """
+    Base class for exceptions which occur during
+    holder removal from fit.
+    """
+    pass
+
+
+class HolderFitMismatchError(HolderRemoveError):
+    """
+    Raised during removal of holder from fit,
+    when holder's fit reference does not reference
+    fit holder being removed from.
+    """
     pass

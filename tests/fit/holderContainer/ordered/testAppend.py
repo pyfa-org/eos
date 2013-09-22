@@ -22,6 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
+from eos.fit.holder import Holder
 from eos.fit.holder.container import HolderList
 from eos.tests.fit.fitTestCase import FitTestCase
 
@@ -49,8 +50,8 @@ class TestContainerOrderedAppend(FitTestCase):
 
     def testDetachedHolder(self):
         fit = self._makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
         # Action
         fit.ordered.append(holder1)
         # Checks
@@ -75,10 +76,23 @@ class TestContainerOrderedAppend(FitTestCase):
         fit.ordered.remove(holder2)
         self.assertObjectBuffersEmpty(fit)
 
-    def testDetachedHolderFailure(self):
+    def testDetachedHolderTypeFailure(self):
+        fit = self._makeFit()
+        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        # Action
+        self.assertRaises(TypeError, fit.ordered.append, holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 0)
+        self.assertIsNone(holder._fit)
+        # Misc
+        self.assertObjectBuffersEmpty(fit)
+
+    def testDetachedHolderValueFailure(self):
         fit = self._makeFit()
         fitOther = self._makeFit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fitOther.ordered.append(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.append, holder)
@@ -111,8 +125,8 @@ class TestContainerOrderedAppend(FitTestCase):
     def testAttachedHolder(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
         # Action
         fit.ordered.append(holder1)
         # Checks
@@ -149,11 +163,25 @@ class TestContainerOrderedAppend(FitTestCase):
         fit.ordered.remove(holder2)
         self.assertObjectBuffersEmpty(fit)
 
-    def testAttachedHolderFailure(self):
+    def testAttachedHolderTypeFailure(self):
+        eos = Mock(spec_set=())
+        fit = self._makeFit(eos=eos)
+        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        # Action
+        self.assertRaises(TypeError, fit.ordered.append, holder)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertIs(len(fit.ordered), 0)
+        self.assertIsNone(holder._fit)
+        # Misc
+        self.assertObjectBuffersEmpty(fit)
+
+    def testAttachedHolderValueFailure(self):
         eos = Mock(spec_set=())
         fit = self._makeFit(eos=eos)
         fitOther = self._makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fitOther.ordered.append(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.append, holder)

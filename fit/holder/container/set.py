@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.exception import HolderAddError
+from eos.fit.exception import HolderAlreadyAssignedError, HolderTypeError
 from .base import HolderContainerBase
 
 
@@ -51,9 +51,11 @@ class HolderSet(HolderContainerBase):
         self.__set.add(holder)
         try:
             self._handleAdd(holder)
-        except HolderAddError as e:
+        except (HolderTypeError, HolderAlreadyAssignedError) as e:
             self.__set.remove(holder)
-            raise ValueError(holder) from e
+            exceptionMap = {HolderTypeError: TypeError,
+                            HolderAlreadyAssignedError: ValueError}
+            raise exceptionMap[type(e)](*e.args) from e
 
     def remove(self, holder):
         """
