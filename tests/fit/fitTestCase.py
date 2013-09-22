@@ -31,14 +31,14 @@ class FitTestCase(EosTestCase):
 
     self.assertObjectBuffersEmpty -- checks if fit has
     any holders assigned to it.
-    self._makeFit -- create fit with all services replaced
+    self.makeFit -- create fit with all services replaced
     by mocks. Everything added to link tracker is stored in
     fit.lt in {holder: {enabled states}} format, everything
     added to restriction tracker is stored in fit.rt in
     {holder: {enabled states}} format. If any specific
     membership checks need to be performed upon holder
     addition to and removal from trackers, they can be
-    specified in _customMembershipCheck(fit, holder) of
+    specified in customMembershipCheck(fit, holder) of
     child classes.
     """
 
@@ -68,7 +68,7 @@ class FitTestCase(EosTestCase):
 
     @patch('eos.fit.fit.RestrictionTracker')
     @patch('eos.fit.fit.LinkTracker')
-    def _makeFit(self, *args, eos=None):
+    def makeFit(self, *args, eos=None):
         fit = Fit(eos=eos)
         fit.character = None
         self.__setupTrackerMemory(fit)
@@ -83,29 +83,29 @@ class FitTestCase(EosTestCase):
         def handleLtAddHolder(holder):
             self.assertNotIn(holder, fit.lt)
             fit.lt[holder] = set()
-            if hasattr(self, '_customMembershipCheck'):
-                self._customMembershipCheck(fit, holder)
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
 
         def handleLtEnableStates(holder, states):
             self.assertIn(holder, fit.lt)
             self.assertEqual(len(set(states).intersection(fit.lt[holder])), 0)
             fit.lt[holder].update(set(states))
-            if hasattr(self, '_customMembershipCheck'):
-                self._customMembershipCheck(fit, holder)
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
 
         def handleLtDisableStates(holder, states):
             self.assertIn(holder, fit.lt)
             self.assertEqual(len(set(states).difference(fit.lt[holder])), 0)
             fit.lt[holder].difference_update(set(states))
-            if hasattr(self, '_customMembershipCheck'):
-                self._customMembershipCheck(fit, holder)
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
 
         def handleLtRemoveHolder(holder):
             self.assertIn(holder, fit.lt)
             self.assertEqual(len(fit.lt[holder]), 0)
             del fit.lt[holder]
-            if hasattr(self, '_customMembershipCheck'):
-                self._customMembershipCheck(fit, holder)
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
 
         fit._linkTracker.addHolder.side_effect = handleLtAddHolder
         fit._linkTracker.enableStates.side_effect = handleLtEnableStates
@@ -122,8 +122,8 @@ class FitTestCase(EosTestCase):
                 fit.rt[holder] = set()
             self.assertEqual(len(set(states).intersection(fit.rt[holder])), 0)
             fit.rt[holder].update(set(states))
-            if hasattr(self, '_customMembershipCheck'):
-                self._customMembershipCheck(fit, holder)
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
 
         def handleRtDisableStates(holder, states):
             self.assertIn(holder, fit.rt)
@@ -131,8 +131,8 @@ class FitTestCase(EosTestCase):
             fit.rt[holder].difference_update(set(states))
             if len(fit.rt[holder]) == 0:
                 del fit.rt[holder]
-            if hasattr(self, '_customMembershipCheck'):
-                self._customMembershipCheck(fit, holder)
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
 
         fit._restrictionTracker.enableStates.side_effect = handleRtEnableStates
         fit._restrictionTracker.disableStates.side_effect = handleRtDisableStates

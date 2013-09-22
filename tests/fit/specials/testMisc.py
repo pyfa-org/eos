@@ -27,7 +27,7 @@ from eos.tests.fit.fitTestCase import FitTestCase
 class TestHolderStateSwitch(FitTestCase):
 
     def testRestrictionValidator(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         rtCallsBefore = len(fit._restrictionTracker.mock_calls)
         fit.validate()
         rtCallsAfter = len(fit._restrictionTracker.mock_calls)

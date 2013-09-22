@@ -29,16 +29,16 @@ from eos.tests.fit.fitTestCase import FitTestCase
 
 class TestHolderStateSwitch(FitTestCase):
 
-    def _makeFit(self, *args, **kwargs):
-        fit = super()._makeFit(*args, **kwargs)
+    def makeFit(self, *args, **kwargs):
+        fit = super().makeFit(*args, **kwargs)
         fit.unordered = HolderSet(fit)
         return fit
 
-    def _customMembershipCheck(self, fit, holder):
+    def customMembershipCheck(self, fit, holder):
         self.assertIn(holder, fit.unordered)
 
     def testDetachedUpwards(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         # Action
         holder = Holder(1, State.offline)
         fit.unordered.add(holder)
@@ -60,7 +60,7 @@ class TestHolderStateSwitch(FitTestCase):
         self.assertObjectBuffersEmpty(fit)
 
     def testDetachedDownwards(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         # Action
         holder = Holder(1, State.overload)
         fit.unordered.add(holder)
@@ -83,7 +83,7 @@ class TestHolderStateSwitch(FitTestCase):
 
     def testAttachedUpwards(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         # Action
         holder = Holder(1, State.overload)
         fit.unordered.add(holder)

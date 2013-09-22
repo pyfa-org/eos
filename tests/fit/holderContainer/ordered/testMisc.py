@@ -29,16 +29,16 @@ from eos.tests.fit.fitTestCase import FitTestCase
 
 class TestContainerOrderedMisc(FitTestCase):
 
-    def _makeFit(self, *args, **kwargs):
-        fit = super()._makeFit(*args, **kwargs)
+    def makeFit(self, *args, **kwargs):
+        fit = super().makeFit(*args, **kwargs)
         fit.ordered = HolderList(fit)
         return fit
 
-    def _customMembershipCheck(self, fit, holder):
+    def customMembershipCheck(self, fit, holder):
         self.assertIn(holder, fit.ordered)
 
     def testLen(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         holder1 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
         self.assertEqual(len(fit.ordered), 0)
@@ -53,7 +53,7 @@ class TestContainerOrderedMisc(FitTestCase):
         self.assertObjectBuffersEmpty(fit)
 
     def testContains(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
         holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
         self.assertFalse(holder1 in fit.ordered)
@@ -78,7 +78,7 @@ class TestContainerOrderedMisc(FitTestCase):
         self.assertObjectBuffersEmpty(fit)
 
     def testIter(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
         holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
         self.assertEqual(list(holder for holder in fit.ordered), [])
@@ -93,7 +93,7 @@ class TestContainerOrderedMisc(FitTestCase):
         self.assertObjectBuffersEmpty(fit)
 
     def testDetachedClear(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         holder1 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
         fit.ordered.append(holder1)
@@ -111,7 +111,7 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def testAttachedClear(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         holder1 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
         fit.ordered.append(holder1)
@@ -128,7 +128,7 @@ class TestContainerOrderedMisc(FitTestCase):
         self.assertObjectBuffersEmpty(fit)
 
     def testHolderView(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
         holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
         view = fit.ordered.holders()

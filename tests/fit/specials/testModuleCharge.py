@@ -40,12 +40,12 @@ class TestModuleCharge(FitTestCase):
         # module <-> charge link
         self.expectModuleChargeLink = None
 
-    def _makeFit(self, *args, **kwargs):
-        fit = super()._makeFit(*args, **kwargs)
+    def makeFit(self, *args, **kwargs):
+        fit = super().makeFit(*args, **kwargs)
         fit.ordered = HolderList(fit)
         return fit
 
-    def _customMembershipCheck(self, fit, holder):
+    def customMembershipCheck(self, fit, holder):
         # If link variable is True, we make sure
         # there's link between module and charge upon
         # addition to both of trackers. If False, we
@@ -128,7 +128,7 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._fit)
 
     def testDetachedModuleNoneToBoundCharge(self):
-        fitOther = self._makeFit()
+        fitOther = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fitOther.ordered.append(charge)
@@ -148,7 +148,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fitOther)
 
     def testDetachedModuleChargeToBoundCharge(self):
-        fitOther = self._makeFit()
+        fitOther = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge1 = Charge(2)
         charge2 = Charge(3)
@@ -173,7 +173,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fitOther)
 
     def testDetachedFitNoneToNone(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         fit.ordered.append(module)
         # Action
@@ -189,7 +189,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fit)
 
     def testDetachedFitNoneToFreeCharge(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
@@ -209,7 +209,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fit)
 
     def testDetachedFitChargeToFreeCharge(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge1 = Charge(2)
         charge2 = Charge(3)
@@ -234,7 +234,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fit)
 
     def testDetachedFitChargeToNone(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
@@ -255,8 +255,8 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fit)
 
     def testDetachedFitNoneToBoundCharge(self):
-        fit = self._makeFit()
-        fitOther = self._makeFit()
+        fit = self.makeFit()
+        fitOther = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
@@ -281,8 +281,8 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fitOther)
 
     def testDetachedFitChargeToBoundCharge(self):
-        fit = self._makeFit()
-        fitOther = self._makeFit()
+        fit = self.makeFit()
+        fitOther = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge1 = Charge(2)
         charge2 = Charge(3)
@@ -312,7 +312,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fitOther)
 
     def testDetachedFitAddChargedModule(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         module.charge = charge
@@ -334,7 +334,7 @@ class TestModuleCharge(FitTestCase):
         self.assertFitBuffersEmpty(fit)
 
     def testDetachedFitAddRemovedModule(self):
-        fit = self._makeFit()
+        fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         module.charge = charge
@@ -356,7 +356,7 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitNoneToNone(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         fit.ordered.append(module)
         # Action
@@ -377,7 +377,7 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitNoneToFreeCharge(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
@@ -408,7 +408,7 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitChargeToFreeCharge(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge1 = Charge(2)
         charge2 = Charge(3)
@@ -444,7 +444,7 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitChargeToNone(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
@@ -472,8 +472,8 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitNoneToBoundCharge(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
-        fitOther = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
+        fitOther = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
@@ -509,8 +509,8 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitChargeToBoundCharge(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
-        fitOther = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
+        fitOther = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge1 = Charge(2)
         charge2 = Charge(3)
@@ -555,7 +555,7 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitAddChargedModule(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         module.charge = charge
@@ -588,7 +588,7 @@ class TestModuleCharge(FitTestCase):
 
     def testAttachedFitAddRemovedModule(self):
         eos = Mock(spec_set=())
-        fit = self._makeFit(eos=eos)
+        fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
         module.charge = charge
