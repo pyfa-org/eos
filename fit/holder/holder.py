@@ -67,8 +67,7 @@ class Holder:
         """
         Each time holder's context is changed (holder's
         fit or fit's eos), this method should be called;
-        it will refresh data which belongs to certain
-        context and which is not actual outside of it.
+        it will refresh data which is context-dependent.
         """
         self.attributes.clear()
         try:

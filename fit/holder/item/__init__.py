@@ -20,10 +20,10 @@
 
 
 from .booster import Booster
-from .celestial import Celestial
 from .character import Character
 from .charge import Charge
 from .drone import Drone
+from .effectBeacon import EffectBeacon
 from .implant import Implant
 from .module import Module
 from .rig import Rig
