@@ -46,6 +46,7 @@ class RestrictionTracker:
         # Format: {triggering state: {registers}}
         self.__registers = {State.offline: (CalibrationRegister(self),
                                             DroneBayVolumeRegister(self),
+                                            HolderClassRegister(),
                                             HighSlotRegister(self),
                                             MediumSlotRegister(self),
                                             LowSlotRegister(self),

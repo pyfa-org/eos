@@ -154,3 +154,4 @@ class Restriction(metaclass=Enum):
     maxGroupActive = 23
     skillRequirement = 24
     skillUniqueness = 25
+    holderClass = 26

@@ -21,6 +21,7 @@
 
 from .capitalItem import CapitalItemRegister
 from .droneGroup import DroneGroupRegister
+from .holderClass import HolderClassRegister
 from .launchedDrone import LaunchedDroneRegister
 from .maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
@@ -34,10 +35,10 @@ from .slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, R
 SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 
 
-__all__ = ['CapitalItemRegister', 'DroneGroupRegister', 'LaunchedDroneRegister', 'MaxGroupFittedRegister',
-           'MaxGroupOnlineRegister', 'MaxGroupActiveRegister', 'CpuRegister', 'PowerGridRegister',
-           'CalibrationRegister', 'DroneBayVolumeRegister', 'DroneBandwidthRegister', 'RigSizeRegister',
-           'ShipTypeGroupRegister', 'SkillRequirementRegister', 'SkillUniquenessRegister', 'SubsystemIndexRegister',
-           'ImplantIndexRegister', 'BoosterIndexRegister', 'HighSlotRegister', 'MediumSlotRegister',
-           'LowSlotRegister', 'RigSlotRegister', 'SubsystemSlotRegister', 'TurretSlotRegister',
-           'LauncherSlotRegister']
+__all__ = ['CapitalItemRegister', 'DroneGroupRegister', 'HolderClassRegister', 'LaunchedDroneRegister',
+           'MaxGroupFittedRegister', 'MaxGroupOnlineRegister', 'MaxGroupActiveRegister', 'CpuRegister',
+           'PowerGridRegister', 'CalibrationRegister', 'DroneBayVolumeRegister', 'DroneBandwidthRegister',
+           'RigSizeRegister', 'ShipTypeGroupRegister', 'SkillRequirementRegister', 'SkillUniquenessRegister',
+           'SubsystemIndexRegister', 'ImplantIndexRegister', 'BoosterIndexRegister', 'HighSlotRegister',
+           'MediumSlotRegister', 'LowSlotRegister', 'RigSlotRegister', 'SubsystemSlotRegister',
+           'TurretSlotRegister', 'LauncherSlotRegister']

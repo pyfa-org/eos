@@ -30,3 +30,6 @@ from .rig import Rig
 from .ship import Ship
 from .skill import Skill
 from .subsystem import Subsystem
+
+__all__ = ('Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon',
+           'Implant', 'Module', 'Rig', 'Ship', 'Skill', 'Subsystem')
