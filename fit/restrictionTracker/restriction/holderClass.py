@@ -71,7 +71,7 @@ class HolderClassRegister(RestrictionRegister):
         self.__holders.add(holder)
 
     def unregisterHolder(self, holder):
-        self.__capitalHolders.discard(holder)
+        self.__holders.discard(holder)
 
     def validate(self):
         taintedHolders = {}
