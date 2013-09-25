@@ -33,7 +33,7 @@ from .skillUniqueness import SkillUniquenessRegister
 from .slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
 from .slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
 SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
-
+from .state import StateRegister
 
 __all__ = ['CapitalItemRegister', 'DroneGroupRegister', 'HolderClassRegister', 'LaunchedDroneRegister',
            'MaxGroupFittedRegister', 'MaxGroupOnlineRegister', 'MaxGroupActiveRegister', 'CpuRegister',
@@ -41,4 +41,4 @@ __all__ = ['CapitalItemRegister', 'DroneGroupRegister', 'HolderClassRegister', '
            'RigSizeRegister', 'ShipTypeGroupRegister', 'SkillRequirementRegister', 'SkillUniquenessRegister',
            'SubsystemIndexRegister', 'ImplantIndexRegister', 'BoosterIndexRegister', 'HighSlotRegister',
            'MediumSlotRegister', 'LowSlotRegister', 'RigSlotRegister', 'SubsystemSlotRegister',
-           'TurretSlotRegister', 'LauncherSlotRegister']
+           'TurretSlotRegister', 'LauncherSlotRegister', 'StateRegister']

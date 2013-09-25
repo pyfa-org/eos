@@ -68,7 +68,8 @@ class RestrictionTracker:
                                             PowerGridRegister(self),
                                             DroneBandwidthRegister(self),
                                             MaxGroupOnlineRegister(),
-                                            LaunchedDroneRegister(self)),
+                                            LaunchedDroneRegister(self),
+                                            StateRegister()),
                             State.active:  (MaxGroupActiveRegister(),)}
 
     def enableStates(self, holder, states):

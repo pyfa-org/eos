@@ -155,3 +155,4 @@ class Restriction(metaclass=Enum):
     skillRequirement = 24
     skillUniqueness = 25
     holderClass = 26
+    state = 27
