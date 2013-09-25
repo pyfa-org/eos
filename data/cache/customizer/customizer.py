@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State, Location, EffectBuildStatus, Context, FilterType, Operator
-from eos.const.eve import Type, Group, Attribute, EffectCategory
+from eos.const.eve import Type, Group, Attribute, Effect, EffectCategory
 
 
 class CacheCustomizer:
@@ -28,11 +28,18 @@ class CacheCustomizer:
     Run customizations on the cache. Currently only
     built-in customizations are supported, which are
     used to compensate some hardcoded data.
+
+    Positional keywords:
+    logger -- logger to use for errors
     """
+
+    def __init__(self, logger):
+        self._logger = logger
 
     def runBuiltIn(self, data):
         self.data = data
         self._addCharacterMissileDamageMultiplier()
+        self._fixOnlineEffectCategory()
 
     def _addCharacterMissileDamageMultiplier(self):
         """
@@ -73,3 +80,24 @@ class CacheCustomizer:
         for typeRow in self.data['types']:
             if typeRow['groupId'] == Group.character:
                 typeRow['effects'].append(effectId)
+
+    def _fixOnlineEffectCategory(self):
+        """
+        For some weird reason, 'online' effect has 'active' effect
+        category, which lets all items with it to be in active state.
+        CCP probably does some hardcoding to avoid it, we'll get rid
+        of it on cache building time.
+        """
+        onlineEffect = None
+        for effectRow in self.data['effects']:
+            if effectRow['effectId'] == Effect.online:
+                onlineEffect = effectRow
+                break
+        if onlineEffect is None:
+            msg = 'unable to find online effect'
+            self._logger.warning(msg, childName='cacheCustomizer')
+        elif onlineEffect['effectCategory'] == EffectCategory.online:
+            msg = 'online effect category does not need to be adjusted'
+            self._logger.warning(msg, childName='cacheCustomizer')
+        else:
+            onlineEffect['effectCategory'] = EffectCategory.online

@@ -121,5 +121,5 @@ class Eos:
             self._logger.info(msg)
             # Generate cache, apply customizations and write it
             cacheData = CacheGenerator(self._logger).run(dataHandler)
-            CacheCustomizer().runBuiltIn(cacheData)
+            CacheCustomizer(self._logger).runBuiltIn(cacheData)
             cacheHandler.updateCache(cacheData, currentFp)
