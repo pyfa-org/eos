@@ -52,7 +52,6 @@ class StateRegister(RestrictionRegister):
     def validate(self):
         taintedHolders = {}
         for holder in self.__holders:
-            print(holder)
             if holder.state > holder.item.maxState:
                 taintedHolders[holder] = StateErrorData(currentState=holder.state,
                                                         maxState=holder.item.maxState)
@@ -61,4 +60,4 @@ class StateRegister(RestrictionRegister):
 
     @property
     def restrictionType(self):
-        return Restriction.rigSize
+        return Restriction.state
