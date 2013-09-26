@@ -63,13 +63,13 @@ class ChargeSizeRegister(RestrictionRegister):
     def validate(self):
         taintedHolders = {}
         # Go through containers with charges, and if their
-        # sizes mismatch - taint charges
+        # sizes mismatch - taint charge holders
         for container in self.__restrictedContainers:
             charge = container.charge
             if charge is None:
                 continue
             containerSize = container.item.attributes[Attribute.chargeSize]
-            chargeSize = charge.item.attributes[Attribute.chargeSize]
+            chargeSize = charge.item.attributes.get(Attribute.chargeSize)
             if containerSize != chargeSize:
                 taintedHolders[charge] = ChargeSizeErrorData(allowedSize=containerSize,
                                                              holderSize=chargeSize)

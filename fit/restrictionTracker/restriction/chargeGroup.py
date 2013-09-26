@@ -27,6 +27,10 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
+restrictionAttrs = (Attribute.chargeGroup1, Attribute.chargeGroup2, Attribute.chargeGroup3,
+                    Attribute.chargeGroup4, Attribute.chargeGroup5)
+
+
 ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('allowedGroups', 'holderGroup'))
 
 
@@ -45,10 +49,6 @@ class ChargeGroupRegister(RestrictionRegister):
         # Format: {container holder: (allowed groups)}
         self.__restrictedContainers = {}
 
-    restrictionAttrs = (Attribute.chargeGroup1, Attribute.chargeGroup2,
-                        Attribute.chargeGroup3, Attribute.chargeGroup4,
-                        Attribute.chargeGroup5)
-
     def registerHolder(self, holder):
         # We're going to track containers, not charges;
         # ignore all holders which can't fit a charge
@@ -57,12 +57,9 @@ class ChargeGroupRegister(RestrictionRegister):
         # Compose set of charge groups this container
         # is able to fit
         allowedGroups = set()
-        for restrictionAttr in self.restrictionAttrs:
-            try:
-                allowed = holder.item.attributes[restrictionAttr]
-            except KeyError:
-                continue
-            allowedGroups.add(allowed)
+        for restrictionAttr in restrictionAttrs:
+            allowedGroups.add(holder.item.attributes.get(restrictionAttr))
+        allowedGroups.discard(None)
         # Only if groups were specified, consider
         # restriction enabled
         if allowedGroups:

@@ -27,6 +27,11 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
+# Holders of volume bigger than this
+# are considered as capital
+maxSubcapVolume = 500
+
+
 CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('allowedVolume', 'holderVolume'))
 
 
@@ -41,10 +46,6 @@ class CapitalItemRegister(RestrictionRegister):
     For validation, unmodified volume value is taken. If
     volume attribute is absent, holder is not validated.
     """
-
-    # Holders of volume bigger than this
-    # are considered as capital
-    _maxSubcapVolume = 500
 
     def __init__(self, tracker):
         self._tracker = tracker
@@ -61,7 +62,7 @@ class CapitalItemRegister(RestrictionRegister):
             holderVolume = holder.item.attributes[Attribute.volume]
         except KeyError:
             return
-        if holderVolume <= self._maxSubcapVolume:
+        if holderVolume <= maxSubcapVolume:
             return
         self.__capitalHolders.add(holder)
 
@@ -85,7 +86,7 @@ class CapitalItemRegister(RestrictionRegister):
             taintedHolders = {}
             for holder in self.__capitalHolders:
                 holderVolume = holder.item.attributes[Attribute.volume]
-                taintedHolders[holder] = CapitalItemErrorData(allowedVolume=self._maxSubcapVolume,
+                taintedHolders[holder] = CapitalItemErrorData(allowedVolume=maxSubcapVolume,
                                                               holderVolume=holderVolume)
             raise RegisterValidationError(taintedHolders)
 

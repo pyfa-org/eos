@@ -51,16 +51,14 @@ class SlotIndexRegister(RestrictionRegister):
 
     def registerHolder(self, holder):
         # Skip items which don't have index specifier
-        try:
-            slotIndex = holder.item.attributes[self.__slotIndexAttr]
-        except KeyError:
+        slotIndex = holder.item.attributes.get(self.__slotIndexAttr)
+        if slotIndex is not None:
             return
         self.__slottedHolders.addData(slotIndex, holder)
 
     def unregisterHolder(self, holder):
-        try:
-            slotIndex = holder.item.attributes[self.__slotIndexAttr]
-        except KeyError:
+        slotIndex = holder.item.attributes.get(self.__slotIndexAttr)
+        if slotIndex is None:
             return
         self.__slottedHolders.rmData(slotIndex, holder)
 

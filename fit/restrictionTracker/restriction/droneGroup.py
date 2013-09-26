@@ -28,6 +28,9 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
+restrictionAttrs = (Attribute.allowedDroneGroup1, Attribute.allowedDroneGroup2)
+
+
 DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('allowedGroups', 'droneGroup'))
 
 
@@ -70,12 +73,9 @@ class DroneGroupRegister(RestrictionRegister):
         # Set with allowed groups
         allowedGroups = set()
         # Find out if we have restriction, and which drone groups it allows
-        for restrictionAttr in (Attribute.allowedDroneGroup1, Attribute.allowedDroneGroup2):
-            try:
-                allowedGroup = shipItem.attributes[restrictionAttr]
-            except KeyError:
-                continue
-            allowedGroups.add(allowedGroup)
+        for restrictionAttr in restrictionAttrs:
+            allowedGroups.add(shipItem.attributes.get(restrictionAttr))
+        allowedGroups.discard(None)
         # No allowed group attributes - no restriction
         if not allowedGroups:
             return

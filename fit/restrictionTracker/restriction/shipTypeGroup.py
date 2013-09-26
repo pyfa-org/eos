@@ -27,6 +27,13 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
+# Containers for attribute IDs which are used to restrict fitting
+typeRestrictionAttrs = (Attribute.canFitShipType1, Attribute.canFitShipType2, Attribute.canFitShipType3,
+                        Attribute.canFitShipType4, Attribute.fitsToShipType)
+groupRestrictionAttrs = (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2, Attribute.canFitShipGroup3,
+                         Attribute.canFitShipGroup4)
+
+
 ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('allowedTypes', 'allowedGroups', 'shipType', 'shipGroup'))
 
 
@@ -68,24 +75,12 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # which holder is allowed to fit
         allowedTypes = set()
         allowedGroups = set()
-        # Containers for attribute IDs which
-        # are used to restrict fitting
-        typeRestrictionAttrs = (Attribute.canFitShipType1, Attribute.canFitShipType2,
-                                Attribute.canFitShipType3, Attribute.canFitShipType4,
-                                Attribute.fitsToShipType)
-        groupRestrictionAttrs = (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
-                                 Attribute.canFitShipGroup3, Attribute.canFitShipGroup4)
         for allowedContainer, restrictionAttrs in ((allowedTypes, typeRestrictionAttrs),
                                                    (allowedGroups, groupRestrictionAttrs)):
             # Cycle through IDs of known restriction attributes
             for restrictionAttr in restrictionAttrs:
-                # Fill allowed data container only if holder's
-                # original item has required attribute
-                try:
-                    allowed = holder.item.attributes[restrictionAttr]
-                except KeyError:
-                    continue
-                allowedContainer.add(allowed)
+                allowedContainer.add(holder.item.attributes.get(restrictionAttr))
+            allowedContainer.discard(None)
         # Ignore non-restricted holders
         if not allowedTypes and not allowedGroups:
             return
