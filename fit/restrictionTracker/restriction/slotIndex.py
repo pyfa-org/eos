@@ -52,7 +52,7 @@ class SlotIndexRegister(RestrictionRegister):
     def registerHolder(self, holder):
         # Skip items which don't have index specifier
         slotIndex = holder.item.attributes.get(self.__slotIndexAttr)
-        if slotIndex is not None:
+        if slotIndex is None:
             return
         self.__slottedHolders.addData(slotIndex, holder)
 
