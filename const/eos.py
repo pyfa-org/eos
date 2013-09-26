@@ -156,3 +156,5 @@ class Restriction(metaclass=Enum):
     skillUniqueness = 25
     holderClass = 26
     state = 27
+    chargeGroup = 28
+    chargeSize = 29
