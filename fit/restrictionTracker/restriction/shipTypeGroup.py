@@ -117,10 +117,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
             # If ship's type isn't in allowed types and ship's
             # group isn't in allowed groups, holder is tainted
             if shipTypeId not in allowedData.types and shipGroupId not in allowedData.groups:
-                allowedTypes = tuple(allowedData.types)
-                allowedGroups = tuple(allowedData.groups)
-                taintedHolders[holder] = ShipTypeGroupErrorData(allowedTypes=allowedTypes,
-                                                                allowedGroups=allowedGroups,
+                taintedHolders[holder] = ShipTypeGroupErrorData(allowedTypes=allowedData.types,
+                                                                allowedGroups=allowedData.groups,
                                                                 shipType=shipTypeId,
                                                                 shipGroup=shipGroupId)
         # Raise error if there're any tainted holders
