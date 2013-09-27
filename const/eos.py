@@ -158,3 +158,4 @@ class Restriction(metaclass=Enum):
     state = 27
     chargeGroup = 28
     chargeSize = 29
+    chargeVolume = 30

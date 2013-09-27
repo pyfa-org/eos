@@ -22,6 +22,7 @@
 from .capitalItem import CapitalItemRegister
 from .chargeGroup import ChargeGroupRegister
 from .chargeSize import ChargeSizeRegister
+from .chargeVolume import ChargeVolumeRegister
 from .droneGroup import DroneGroupRegister
 from .holderClass import HolderClassRegister
 from .launchedDrone import LaunchedDroneRegister
@@ -37,10 +38,11 @@ from .slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, R
 SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 from .state import StateRegister
 
-__all__ = ['CapitalItemRegister', 'ChargeGroupRegister', 'ChargeSizeRegister', 'DroneGroupRegister',
-           'HolderClassRegister', 'LaunchedDroneRegister', 'MaxGroupFittedRegister', 'MaxGroupOnlineRegister',
-           'MaxGroupActiveRegister', 'CpuRegister', 'PowerGridRegister', 'CalibrationRegister',
-           'DroneBayVolumeRegister', 'DroneBandwidthRegister', 'RigSizeRegister', 'ShipTypeGroupRegister',
-           'SkillRequirementRegister', 'SkillUniquenessRegister', 'SubsystemIndexRegister', 'ImplantIndexRegister',
-           'BoosterIndexRegister', 'HighSlotRegister', 'MediumSlotRegister', 'LowSlotRegister', 'RigSlotRegister',
-           'SubsystemSlotRegister', 'TurretSlotRegister', 'LauncherSlotRegister', 'StateRegister']
+__all__ = ['CapitalItemRegister', 'ChargeGroupRegister', 'ChargeSizeRegister', 'ChargeVolumeRegister',
+           'DroneGroupRegister', 'HolderClassRegister', 'LaunchedDroneRegister', 'MaxGroupFittedRegister',
+           'MaxGroupOnlineRegister', 'MaxGroupActiveRegister', 'CpuRegister', 'PowerGridRegister',
+           'CalibrationRegister', 'DroneBayVolumeRegister', 'DroneBandwidthRegister', 'RigSizeRegister',
+           'ShipTypeGroupRegister', 'SkillRequirementRegister', 'SkillUniquenessRegister', 'SubsystemIndexRegister',
+           'ImplantIndexRegister', 'BoosterIndexRegister', 'HighSlotRegister', 'MediumSlotRegister',
+           'LowSlotRegister', 'RigSlotRegister', 'SubsystemSlotRegister', 'TurretSlotRegister',
+           'LauncherSlotRegister', 'StateRegister']
