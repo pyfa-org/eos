@@ -39,6 +39,8 @@ class ChargeVolumeRegister(RestrictionRegister):
     Details:
     Charge volume and container capacity are taken from
     attributes of original item.
+    If not specified, volume and/or capacity are assumed
+    to be 0.
     """
 
     def __init__(self):
