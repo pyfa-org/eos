@@ -40,8 +40,8 @@ class RigSizeRegister(RestrictionRegister):
     For validation, original value of rigSize attribute is taken.
     """
 
-    def __init__(self, tracker):
-        self._tracker = tracker
+    def __init__(self, fit):
+        self._fit = fit
         # Container for holders which have rig size restriction
         self.__restrictedHolders = set()
 
@@ -56,7 +56,7 @@ class RigSizeRegister(RestrictionRegister):
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
-        shipHolder = self._tracker._fit.ship
+        shipHolder = self._fit.ship
         # Do not apply restriction when fit doesn't
         # have ship
         try:

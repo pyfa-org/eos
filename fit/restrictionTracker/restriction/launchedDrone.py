@@ -43,8 +43,8 @@ class LaunchedDroneRegister(RestrictionRegister):
     is taken.
     """
 
-    def __init__(self, tracker):
-        self._tracker = tracker
+    def __init__(self, fit):
+        self._fit = fit
         # Container for holders which are considered
         # as in-space drones
         # Format: {holders}
@@ -66,7 +66,7 @@ class LaunchedDroneRegister(RestrictionRegister):
         # Get number of drones fit can have in space; consider
         # it as 0 if fitting doesn't have character, or
         # attribute isn't available
-        characterHolder = self._tracker._fit.character
+        characterHolder = self._fit.character
         try:
             characterHolderAttribs = characterHolder.attributes
         except AttributeError:

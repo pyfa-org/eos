@@ -60,8 +60,8 @@ class ShipTypeGroupRegister(RestrictionRegister):
     canFitShipGroupX attributes are taken.
     """
 
-    def __init__(self, tracker):
-        self._tracker = tracker
+    def __init__(self, fit):
+        self._fit = fit
         # Container for holders which possess
         # ship type/group restriction
         # Format: {holder: allowedData}
@@ -97,7 +97,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # them to None because our primary data container
         # with restricted holders can't contain None in its
         # values anyway
-        shipHolder = self._tracker._fit.ship
+        shipHolder = self._fit.ship
         try:
             shipTypeId = shipHolder.item.id
             shipGroupId = shipHolder.item.groupId

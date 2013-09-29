@@ -48,8 +48,8 @@ class DroneGroupRegister(RestrictionRegister):
     restriction.
     """
 
-    def __init__(self, tracker):
-        self._tracker = tracker
+    def __init__(self, fit):
+        self._fit = fit
         # Container for holders which can be subject
         # for restriction
         # Format: {holders}
@@ -64,7 +64,7 @@ class DroneGroupRegister(RestrictionRegister):
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
-        shipHolder = self._tracker._fit.ship
+        shipHolder = self._fit.ship
         # No ship - no restriction
         try:
             shipItem = shipHolder.item
