@@ -28,21 +28,14 @@ from eos.fit.statTracker.container import Resource
 class ResourceRegister(StatRegister):
     """
     Class which implements common functionality for all
-    registers, which track amount of resource, which is
-    used by items belonging to ship, and produced
-    by ship itself.
+    registers, which are used to calculate amount of
+    resource use and ship's resource output.
     """
 
     def __init__(self, fit, outputAttr, usageAttr):
         self._fit = fit
-        # On ship holder, attribute with this ID
-        # contains total amount of produced resource
         self.__outputAttr = outputAttr
-        # On holders, attribute with this ID contains
-        # amount of used resource as value
         self.__usageAttr = usageAttr
-        # Container for holders which use resource
-        # Format: {holders}
         self.__resourceUsers = set()
 
     def registerHolder(self, holder):
@@ -73,13 +66,7 @@ class ResourceRegister(StatRegister):
 
 class CpuRegister(ResourceRegister):
     """
-    Implements restriction:
-    CPU usage by holders should not exceed ship CPU output.
-
-    Details:
-    For validation, modified values of CPU usage and
-    CPU output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    Calculates CPU use and output of passed fit.
     """
 
     def __init__(self, fit):
@@ -87,14 +74,7 @@ class CpuRegister(ResourceRegister):
 
 class PowerGridRegister(ResourceRegister):
     """
-    Implements restriction:
-    Power grid usage by holders should not exceed ship
-    power grid output.
-
-    Details:
-    For validation, modified values of power grid usage and
-    power grid output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    Calculates powergrid use and output of passed fit.
     """
 
     def __init__(self, fit):
@@ -103,14 +83,7 @@ class PowerGridRegister(ResourceRegister):
 
 class CalibrationRegister(ResourceRegister):
     """
-    Implements restriction:
-    Calibration usage by holders should not exceed ship
-    calibration output.
-
-    Details:
-    For validation, modified values of calibration usage and
-    calibration output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    Calculates calibration use and output of passed fit.
     """
 
     def __init__(self, fit):
@@ -119,15 +92,10 @@ class CalibrationRegister(ResourceRegister):
 
 class DroneBayVolumeRegister(ResourceRegister):
     """
-    Implements restriction:
-    Drone bay volume usage by holders should not exceed ship
-    drone bay volume.
+    Calculates drone bay used and total volume of passed fit.
 
     Details:
     Only holders of Drone class are tracked.
-    For validation, modified values of drone bay volume usage and
-    drone bay volume are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
     """
 
     def __init__(self, fit):
@@ -140,14 +108,7 @@ class DroneBayVolumeRegister(ResourceRegister):
 
 class DroneBandwidthRegister(ResourceRegister):
     """
-    Implements restriction:
-    Drone bandwidth usage by holders should not exceed ship
-    drone bandwidth output.
-
-    Details:
-    For validation, modified values of drone bandwidth usage and
-    drone bandwidth output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    Calculates drone bandwidth use and output of passed fit.
     """
 
     def __init__(self, fit):

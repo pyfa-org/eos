@@ -53,8 +53,16 @@ Attributes of any item are accessible via dictionary-like objects like crow.attr
 >>fit.ship.attributes[37] # maxVelocity
 5759.988204454497
 
+Stats of fit can be fetched using 'stats' access point:
+>>fit.stats.agilityFactor
+3.441616707256807
+>>fit.stats.cpu.use
+176.535
+
+Not many stats are implemented yet, more to come soon.
+
 Fit validation method currently raises exception if any fit check fails, its argument contains dictionary which explains what is wrong. If we replace domi nanofiber in above example with yet another BCS, following data will be returned:
 
 {<eos.fit.item.module.Module object at 0x432ba10>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331050>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x4331410>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x432bcb0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=25.0)}, <eos.fit.item.module.Module object at 0x432b4d0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x432bd10>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=25.0)}, <eos.fit.item.module.Module object at 0x432b950>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331170>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x432bfb0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.0)}}
 
-Keys of dictionary are problematic modules (in this case, all CPU consumers on ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 1 being CPU restriction; values contain detailed data about problem, in this case it's named tuple which shows ship CPU output, total CPU consumption and CPU use by current module. Different resstrictions contain different data, but in general format stays the same.
+Keys of dictionary are problematic modules (in this case, all CPU consumers on ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 1 being CPU restriction; values contain detailed data about problem, in this case it's named tuple which shows ship CPU output, total CPU consumption and CPU use by current module. Different restrictions contain different data, but in general format stays the same.

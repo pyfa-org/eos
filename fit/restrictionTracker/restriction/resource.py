@@ -35,26 +35,18 @@ class ResourceRegister(RestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is
-    used by items belonging to ship, and produced
-    by ship itself.
+    used by various fit holders.
     """
 
     def __init__(self, fit, statName, usageAttr, restrictionType):
         self.__restrictionType = restrictionType
         self._fit = fit
-        # Use this resource name to get numbers
-        # from stats tracker
+        # Use this resource name to get numbers from stats tracker
         self.__statName = statName
-        # On holders, attribute with this ID contains
-        # amount of used resource as value
         self.__usageAttr = usageAttr
-        # Container for holders which use resource
-        # Format: {holders}
         self.__resourceUsers = set()
 
     def registerHolder(self, holder):
-        # Do not process holders, whose base items don't
-        # use resource
         if self.__usageAttr not in holder.item.attributes:
             return
         self.__resourceUsers.add(holder)
@@ -68,17 +60,20 @@ class ResourceRegister(RestrictionRegister):
         totalUse = stats.used
         # Can be None, so fall back to 0 in this case
         output = stats.output or 0
-        # If we're out of resource, raise error
-        # with holders-resource-consumers
+        # If we're not out of resource, do nothing
         if totalUse > output:
-            taintedHolders = {}
-            for holder in self.__resourceUsers:
-                resourceUse = holder.attributes[self.__usageAttr]
-                if resourceUse > 0:
-                    taintedHolders[holder] = ResourceErrorData(output=output,
-                                                               totalUse=totalUse,
-                                                               holderUse=resourceUse)
-            raise RegisterValidationError(taintedHolders)
+            return
+        taintedHolders = {}
+        for holder in self.__resourceUsers:
+            resourceUse = holder.attributes[self.__usageAttr]
+            # Ignore holders which do not actually
+            # consume resource
+            if resourceUse <= 0:
+                continue
+            taintedHolders[holder] = ResourceErrorData(output=output,
+                                                       totalUse=totalUse,
+                                                       holderUse=resourceUse)
+        raise RegisterValidationError(taintedHolders)
 
     @property
     def restrictionType(self):
@@ -91,9 +86,7 @@ class CpuRegister(ResourceRegister):
     CPU usage by holders should not exceed ship CPU output.
 
     Details:
-    For validation, modified values of CPU usage and
-    CPU output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    For validation, stats module data is used.
     """
 
     def __init__(self, fit):
@@ -107,9 +100,7 @@ class PowerGridRegister(ResourceRegister):
     power grid output.
 
     Details:
-    For validation, modified values of power grid usage and
-    power grid output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    For validation, stats module data is used.
     """
 
     def __init__(self, fit):
@@ -123,9 +114,7 @@ class CalibrationRegister(ResourceRegister):
     calibration output.
 
     Details:
-    For validation, modified values of calibration usage and
-    calibration output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    For validation, stats module data is used.
     """
 
     def __init__(self, fit):
@@ -140,9 +129,7 @@ class DroneBayVolumeRegister(ResourceRegister):
 
     Details:
     Only holders of Drone class are tracked.
-    For validation, modified values of drone bay volume usage and
-    drone bay volume are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    For validation, stats module data is used.
     """
 
     def __init__(self, fit):
@@ -160,9 +147,7 @@ class DroneBandwidthRegister(ResourceRegister):
     drone bandwidth output.
 
     Details:
-    For validation, modified values of drone bandwidth usage and
-    drone bandwidth output are taken. Absence of ship or absence of
-    required attribute on ship are considered as zero output.
+    For validation, stats module data is used.
     """
 
     def __init__(self, fit):
