@@ -91,6 +91,14 @@ class EosTestCase(TestCase):
         return self.__testLogHandler.buffer
 
     def assertObjectBuffersEmpty(self, object_):
+        entryNum = self._getObjectBufferEntryAmount(object_)
+        # Raise error if we found any data in any attached storage
+        if entryNum > 0:
+            plu = 'y' if entryNum == 1 else 'ies'
+            msg = '{} entr{} in buffers: buffers must be empty'.format(entryNum, plu)
+            self.fail(msg=msg)
+
+    def _getObjectBufferEntryAmount(self, object_):
         entryNum = 0
         for attrName in dir(object_):
             if attrName.startswith("__") and attrName.endswith("__"):
@@ -104,8 +112,4 @@ class EosTestCase(TestCase):
                 pass
             else:
                 entryNum += attrLen
-        # Raise error if we found any data in any attached storage
-        if entryNum > 0:
-            plu = 'y' if entryNum == 1 else 'ies'
-            msg = '{} entr{} in buffers: buffers must be empty'.format(entryNum, plu)
-            self.fail(msg=msg)
+        return entryNum

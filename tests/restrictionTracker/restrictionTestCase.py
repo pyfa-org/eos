@@ -88,18 +88,7 @@ class RestrictionTestCase(EosTestCase):
                 # Cycle through all attributes of each register, besides
                 # __special__ ones, and add count their lengths as number
                 # of detected entries
-                for attrName in dir(register):
-                    if attrName.startswith("__") and attrName.endswith("__"):
-                        continue
-                    attrVal = getattr(register, attrName)
-                    if isinstance(attrVal, str):
-                        continue
-                    try:
-                        attrLen = len(attrVal)
-                    except TypeError:
-                        pass
-                    else:
-                        entryNum += attrLen
+                entryNum += self._getObjectBufferEntryAmount(register)
         # Raise error if we found any data in any register
         if entryNum > 0:
             plu = 'y' if entryNum == 1 else 'ies'
