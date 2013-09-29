@@ -28,7 +28,7 @@ from .holder import Holder
 from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Character
 from .restrictionTracker import RestrictionTracker
-from .statTracker import StatsTracker
+from .statTracker import StatTracker
 
 
 class Fit:
@@ -52,7 +52,7 @@ class Fit:
         # Tracks various restrictions related to given fitting
         self._restrictionTracker = RestrictionTracker(self)
         # Access point for all the fitting stats
-        self.stats = StatsTracker(self)
+        self.stats = StatTracker(self)
         # Attributes to store holders directly assigned to fit
         self._ship = None
         self._character = None

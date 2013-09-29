@@ -19,4 +19,4 @@
 #===============================================================================
 
 
-from .tracker import StatsTracker
+from .tracker import StatTracker

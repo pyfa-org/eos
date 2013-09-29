@@ -66,7 +66,7 @@ class FitTestCase(EosTestCase):
             msg = '{} entr{} in buffers: buffers must be empty'.format(holderNum, plu)
             self.fail(msg=msg)
 
-    @patch('eos.fit.fit.StatsTracker')
+    @patch('eos.fit.fit.StatTracker')
     @patch('eos.fit.fit.RestrictionTracker')
     @patch('eos.fit.fit.LinkTracker')
     def makeFit(self, *args, eos=None):

@@ -26,7 +26,7 @@ from eos.const.eve import Attribute
 from .stat import *
 
 
-class StatsTracker:
+class StatTracker:
 
     def __init__(self, fit):
         self._fit = fit
