@@ -45,16 +45,19 @@ class TestHolderStateSwitch(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Action
         holder.state = State.online
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Action
         holder.state = State.overload
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Misc
         fit.unordered.remove(holder)
         self.assertObjectBuffersEmpty(fit)
@@ -67,16 +70,19 @@ class TestHolderStateSwitch(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Action
         holder.state = State.active
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Action
         holder.state = State.offline
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Misc
         fit.unordered.remove(holder)
         self.assertObjectBuffersEmpty(fit)
@@ -94,6 +100,9 @@ class TestHolderStateSwitch(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline, State.online, State.active, State.overload})
         # Action
         holder.state = State.active
         # Checks
@@ -103,6 +112,9 @@ class TestHolderStateSwitch(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline, State.online, State.active})
         # Action
         holder.state = State.offline
         # Checks
@@ -112,6 +124,9 @@ class TestHolderStateSwitch(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline})
         # Misc
         fit.unordered.remove(holder)
         self.assertObjectBuffersEmpty(fit)

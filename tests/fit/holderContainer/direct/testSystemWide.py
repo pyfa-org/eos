@@ -38,6 +38,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.systemWide)
         # Misc
         self.assertFitBuffersEmpty(fit)
@@ -50,6 +51,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(fit.systemWide, holder)
         self.assertIs(holder._fit, fit)
         # Misc
@@ -64,6 +66,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.systemWide)
         self.assertIsNone(holder._fit)
         # Misc
@@ -79,8 +82,10 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
+        self.assertEqual(len(fitOther.st), 0)
         self.assertIsNone(fit.systemWide)
         self.assertIs(fitOther.systemWide, holder)
         self.assertIs(holder._fit, fitOther)
@@ -99,6 +104,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(fit.systemWide, holder2)
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
@@ -116,6 +122,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(fit.systemWide, holder1)
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
@@ -135,8 +142,10 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
+        self.assertEqual(len(fitOther.st), 0)
         self.assertIs(fit.systemWide, holder1)
         self.assertIs(fitOther.systemWide, holder2)
         self.assertIs(holder1._fit, fit)
@@ -156,6 +165,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.systemWide)
         self.assertIsNone(holder._fit)
         # Misc
@@ -169,6 +179,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.systemWide)
         # Misc
         self.assertFitBuffersEmpty(fit)
@@ -186,6 +197,9 @@ class TestDirectHolderSystemWide(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline, State.online})
         self.assertIs(fit.systemWide, holder)
         self.assertIs(holder._fit, fit)
         # Misc
@@ -201,6 +215,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.systemWide)
         self.assertIsNone(holder._fit)
         # Misc
@@ -217,12 +232,16 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder, fitOther.lt)
         self.assertEqual(fitOther.lt[holder], {State.offline})
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder, fitOther.rt)
         self.assertEqual(fitOther.rt[holder], {State.offline})
+        self.assertEqual(len(fitOther.st), 1)
+        self.assertIn(holder, fitOther.st)
+        self.assertEqual(fitOther.st[holder], {State.offline})
         self.assertIsNone(fit.systemWide)
         self.assertIs(fitOther.systemWide, holder)
         self.assertIs(holder._fit, fitOther)
@@ -246,6 +265,9 @@ class TestDirectHolderSystemWide(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder2, fit.rt)
         self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder2, fit.st)
+        self.assertEqual(fit.st[holder2], {State.offline, State.online, State.active, State.overload})
         self.assertIs(fit.systemWide, holder2)
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
@@ -268,6 +290,9 @@ class TestDirectHolderSystemWide(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder1, fit.st)
+        self.assertEqual(fit.st[holder1], {State.offline})
         self.assertIs(fit.systemWide, holder1)
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
@@ -292,12 +317,18 @@ class TestDirectHolderSystemWide(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder1, fit.st)
+        self.assertEqual(fit.st[holder1], {State.offline})
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder2, fitOther.lt)
         self.assertEqual(fitOther.lt[holder2], {State.offline, State.online})
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder2, fitOther.rt)
         self.assertEqual(fitOther.rt[holder2], {State.offline, State.online})
+        self.assertEqual(len(fitOther.st), 1)
+        self.assertIn(holder2, fitOther.st)
+        self.assertEqual(fitOther.st[holder2], {State.offline, State.online})
         self.assertIs(fit.systemWide, holder1)
         self.assertIs(fitOther.systemWide, holder2)
         self.assertIs(holder1._fit, fit)
@@ -318,6 +349,7 @@ class TestDirectHolderSystemWide(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.systemWide)
         self.assertIsNone(holder._fit)
         # Misc

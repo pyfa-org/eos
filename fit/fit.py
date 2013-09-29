@@ -205,9 +205,11 @@ class Fit:
         if len(enabledStates) > 0:
             self._linkTracker.enableStates(holder, enabledStates)
             self._restrictionTracker.enableStates(holder, enabledStates)
+            self.stats._enableStates(holder, enabledStates)
         elif len(disabledStates) > 0:
             self._linkTracker.disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
+            self.stats._disableStates(holder, disabledStates)
 
     def __setSingleHolder(self, attrName, newHolder):
         """

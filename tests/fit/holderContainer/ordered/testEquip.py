@@ -44,6 +44,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 0)
         # Misc
         self.assertObjectBuffersEmpty(fit)
@@ -56,6 +57,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 1)
         self.assertIs(fit.ordered[0], holder)
         self.assertIs(holder._fit, fit)
@@ -71,6 +73,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -86,9 +89,11 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 0)
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
+        self.assertEqual(len(fitOther.st), 0)
         self.assertIs(len(fitOther.ordered), 1)
         self.assertIs(fitOther.ordered[0], holder)
         self.assertIs(holder._fit, fitOther)
@@ -109,6 +114,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 3)
         self.assertIs(fit.ordered[2], holder3)
         self.assertIs(holder3._fit, fit)
@@ -133,6 +139,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 7)
         self.assertIs(fit.ordered[1], holder4)
         self.assertIs(holder4._fit, fit)
@@ -151,6 +158,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 0)
         # Misc
         self.assertObjectBuffersEmpty(fit)
@@ -168,6 +176,9 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline, State.online, State.active, State.overload})
         self.assertIs(len(fit.ordered), 1)
         self.assertIs(fit.ordered[0], holder)
         self.assertIs(holder._fit, fit)
@@ -184,6 +195,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -200,6 +212,7 @@ class TestContainerOrderedEquip(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.ordered), 0)
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder, fitOther.lt)
@@ -207,6 +220,9 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder, fitOther.rt)
         self.assertEqual(fitOther.rt[holder], {State.offline})
+        self.assertEqual(len(fitOther.st), 1)
+        self.assertIn(holder, fitOther.st)
+        self.assertEqual(fitOther.st[holder], {State.offline})
         self.assertIs(len(fitOther.ordered), 1)
         self.assertIs(fitOther.ordered[0], holder)
         self.assertIs(holder._fit, fitOther)
@@ -232,6 +248,9 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.rt), 3)
         self.assertIn(holder3, fit.rt)
         self.assertEqual(fit.rt[holder3], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.st), 3)
+        self.assertIn(holder3, fit.st)
+        self.assertEqual(fit.st[holder3], {State.offline, State.online, State.active, State.overload})
         self.assertIs(len(fit.ordered), 3)
         self.assertIs(fit.ordered[2], holder3)
         self.assertIs(holder3._fit, fit)
@@ -261,6 +280,9 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.rt), 4)
         self.assertIn(holder4, fit.rt)
         self.assertEqual(fit.rt[holder4], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.st), 4)
+        self.assertIn(holder4, fit.st)
+        self.assertEqual(fit.st[holder4], {State.offline, State.online, State.active})
         self.assertIs(len(fit.ordered), 7)
         self.assertIs(fit.ordered[1], holder4)
         self.assertIs(holder4._fit, fit)

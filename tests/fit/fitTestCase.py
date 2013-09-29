@@ -66,6 +66,7 @@ class FitTestCase(EosTestCase):
             msg = '{} entr{} in buffers: buffers must be empty'.format(holderNum, plu)
             self.fail(msg=msg)
 
+    @patch('eos.fit.fit.StatsTracker')
     @patch('eos.fit.fit.RestrictionTracker')
     @patch('eos.fit.fit.LinkTracker')
     def makeFit(self, *args, eos=None):
@@ -136,3 +137,28 @@ class FitTestCase(EosTestCase):
 
         fit._restrictionTracker.enableStates.side_effect = handleRtEnableStates
         fit._restrictionTracker.disableStates.side_effect = handleRtDisableStates
+
+        # Buffer which will keep track of holders added to
+        # stats tracker
+        # Format: {holder: {states}}
+        fit.st = {}
+
+        def handleStEnableStates(holder, states):
+            if holder not in fit.st:
+                fit.st[holder] = set()
+            self.assertEqual(len(set(states).intersection(fit.st[holder])), 0)
+            fit.st[holder].update(set(states))
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
+
+        def handleStDisableStates(holder, states):
+            self.assertIn(holder, fit.st)
+            self.assertEqual(len(set(states).difference(fit.st[holder])), 0)
+            fit.st[holder].difference_update(set(states))
+            if len(fit.st[holder]) == 0:
+                del fit.st[holder]
+            if hasattr(self, 'customMembershipCheck'):
+                self.customMembershipCheck(fit, holder)
+
+        fit.stats._enableStates.side_effect = handleStEnableStates
+        fit.stats._disableStates.side_effect = handleStDisableStates

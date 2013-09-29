@@ -44,6 +44,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Misc
         self.assertFitBuffersEmpty(fit)
 
@@ -55,6 +56,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 1)
         self.assertIn(holder, fit.unordered)
         self.assertIs(holder._fit, fit)
@@ -70,6 +72,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -85,9 +88,11 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertEqual(len(fitOther.lt), 0)
         self.assertEqual(len(fitOther.rt), 0)
+        self.assertEqual(len(fitOther.st), 0)
         self.assertEqual(len(fitOther.unordered), 1)
         self.assertIn(holder, fitOther.unordered)
         self.assertIs(holder._fit, fitOther)
@@ -105,6 +110,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -118,6 +124,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -134,6 +141,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
@@ -148,6 +156,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         # Misc
         self.assertFitBuffersEmpty(fit)
 
@@ -164,6 +173,9 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline, State.online})
         self.assertEqual(len(fit.unordered), 1)
         self.assertIn(holder, fit.unordered)
         self.assertIs(holder._fit, fit)
@@ -180,6 +192,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -196,6 +209,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertEqual(len(fitOther.lt), 1)
         self.assertIn(holder, fitOther.lt)
@@ -203,6 +217,9 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(len(fitOther.rt), 1)
         self.assertIn(holder, fitOther.rt)
         self.assertEqual(fitOther.rt[holder], {State.offline})
+        self.assertEqual(len(fitOther.st), 1)
+        self.assertIn(holder, fitOther.st)
+        self.assertEqual(fitOther.st[holder], {State.offline})
         self.assertEqual(len(fitOther.unordered), 1)
         self.assertIn(holder, fitOther.unordered)
         self.assertIs(holder._fit, fitOther)
@@ -221,6 +238,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -235,6 +253,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder._fit)
         # Misc
@@ -252,6 +271,7 @@ class TestContainerUnordered(FitTestCase):
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.unordered), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
