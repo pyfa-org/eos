@@ -30,11 +30,19 @@ class StatsTracker:
 
     def __init__(self, fit):
         self._fit = fit
-        self.__cpuStats = CpuRegister(fit)
+        self.__cpu = CpuRegister(fit)
+        self.__pg = PowerGridRegister(fit)
+        self.__calib = CalibrationRegister(fit)
+        self.__droneBay = DroneBayVolumeRegister(fit)
+        self.__droneBw = DroneBandwidthRegister(fit)
+
         # Dictionary which keeps all stats registers
         # Format: {triggering state: {registers}}
-        self.__registers = {State.offline: (),
-                            State.online:  (self.__cpuStats,),
+        self.__registers = {State.offline: (self.__calib,
+                                            self.__droneBay),
+                            State.online:  (self.__cpu,
+                                            self.__pg,
+                                            self.__droneBw),
                             State.active:  ()}
 
     def _enableStates(self, holder, states):
@@ -75,7 +83,23 @@ class StatsTracker:
 
     @property
     def cpu(self):
-        return self.__cpuStats.getResourceStats()
+        return self.__cpu.getResourceStats()
+
+    @property
+    def powerGrid(self):
+        return self.__pg.getResourceStats()
+
+    @property
+    def calibration(self):
+        return self.__calib.getResourceStats()
+
+    @property
+    def droneBay(self):
+        return self.__droneBay.getResourceStats()
+
+    @property
+    def droneBandwidth(self):
+        return self.__droneBw.getResourceStats()
 
     @property
     def agilityFactor(self):

@@ -20,6 +20,7 @@
 
 
 from eos.const.eve import Attribute
+from eos.fit.holder.item import Drone
 from eos.fit.statTracker.register import StatRegister
 from eos.fit.statTracker.container import Resource
 
@@ -83,3 +84,71 @@ class CpuRegister(ResourceRegister):
 
     def __init__(self, fit):
         ResourceRegister.__init__(self, fit, Attribute.cpuOutput, Attribute.cpu)
+
+class PowerGridRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Power grid usage by holders should not exceed ship
+    power grid output.
+
+    Details:
+    For validation, modified values of power grid usage and
+    power grid output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.powerOutput, Attribute.power)
+
+
+class CalibrationRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Calibration usage by holders should not exceed ship
+    calibration output.
+
+    Details:
+    For validation, modified values of calibration usage and
+    calibration output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.upgradeCapacity, Attribute.upgradeCost)
+
+
+class DroneBayVolumeRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Drone bay volume usage by holders should not exceed ship
+    drone bay volume.
+
+    Details:
+    Only holders of Drone class are tracked.
+    For validation, modified values of drone bay volume usage and
+    drone bay volume are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.droneCapacity, Attribute.volume)
+
+    def registerHolder(self, holder):
+        if isinstance(holder, Drone):
+            ResourceRegister.registerHolder(self, holder)
+
+
+class DroneBandwidthRegister(ResourceRegister):
+    """
+    Implements restriction:
+    Drone bandwidth usage by holders should not exceed ship
+    drone bandwidth output.
+
+    Details:
+    For validation, modified values of drone bandwidth usage and
+    drone bandwidth output are taken. Absence of ship or absence of
+    required attribute on ship are considered as zero output.
+    """
+
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.droneBandwidth, Attribute.droneBandwidthUsed)

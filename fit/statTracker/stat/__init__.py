@@ -19,7 +19,9 @@
 #===============================================================================
 
 
-from .resource import CpuRegister
+from .resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
+DroneBandwidthRegister
 
 
-__all__ = ['CpuRegister']
+__all__ = ['CpuRegister', 'PowerGridRegister', 'CalibrationRegister', 'DroneBayVolumeRegister',
+           'DroneBandwidthRegister']
