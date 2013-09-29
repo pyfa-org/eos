@@ -96,6 +96,8 @@ class EosTestCase(TestCase):
             if attrName.startswith("__") and attrName.endswith("__"):
                 continue
             attrVal = getattr(object_, attrName)
+            if isinstance(attrVal, str):
+                continue
             try:
                 attrLen = len(attrVal)
             except TypeError:

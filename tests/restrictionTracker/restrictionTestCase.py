@@ -89,8 +89,10 @@ class RestrictionTestCase(EosTestCase):
                 # __special__ ones, and add count their lengths as number
                 # of detected entries
                 for attrName in dir(register):
-                    attrVal = getattr(register, attrName)
                     if attrName.startswith("__") and attrName.endswith("__"):
+                        continue
+                    attrVal = getattr(register, attrName)
+                    if isinstance(attrVal, str):
                         continue
                     try:
                         attrLen = len(attrVal)
