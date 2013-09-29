@@ -48,10 +48,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testFailExcessSingleOtherClass(self):
+    def testFailExcessSingleOtherClassLocation(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(typeId=1, attributes={Attribute.droneBandwidthUsed: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.space, spec_set=Implant)
+        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=Implant)
         holder.attributes = {Attribute.droneBandwidthUsed: 50}
         self.trackHolder(holder)
         self.fit.stats.droneBandwidth.used = 50

@@ -100,6 +100,9 @@ class EosTestCase(TestCase):
 
     def _getObjectBufferEntryAmount(self, object_):
         entryNum = 0
+        # Cycle through all attributes of object, besides
+        # __special__ ones and "strings", and add count their
+        # lengths as number of detected entries
         for attrName in dir(object_):
             if attrName.startswith("__") and attrName.endswith("__"):
                 continue

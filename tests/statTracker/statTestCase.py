@@ -21,12 +21,12 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Restriction, State
-from eos.fit.restrictionTracker import RestrictionTracker, ValidationError
+from eos.const.eos import State
+from eos.fit.statTracker import StatTracker
 from eos.tests.eosTestCase import EosTestCase
 
 
-class RestrictionTestCase(EosTestCase):
+class StatTestCase(EosTestCase):
     """
     Additional functionality provided:
 
@@ -49,7 +49,7 @@ class RestrictionTestCase(EosTestCase):
         self.fit = Mock()
         self.fit.ship = None
         self.fit.character = None
-        self.rt = RestrictionTracker(self.fit)
+        self.st = StatTracker(self.fit)
 
     def setShip(self, holder):
         self.fit.ship = holder
@@ -58,31 +58,16 @@ class RestrictionTestCase(EosTestCase):
         self.fit.character = holder
 
     def trackHolder(self, holder):
-        self.rt.enableStates(holder, set(filter(lambda s: s <= holder.state, State)))
+        self.st._enableStates(holder, set(filter(lambda s: s <= holder.state, State)))
 
     def untrackHolder(self, holder):
-        self.rt.disableStates(holder, set(filter(lambda s: s <= holder.state, State)))
+        self.st._disableStates(holder, set(filter(lambda s: s <= holder.state, State)))
 
-    def getRestrictionError(self, holder, restriction):
-        skipChecks = set(Restriction).difference((restriction,))
-        try:
-            self.rt.validate(skipChecks)
-        except ValidationError as e:
-            errorData = e.args[0]
-            if holder not in errorData:
-                return None
-            holderError = errorData[holder]
-            if restriction not in holderError:
-                return None
-            return holderError[restriction]
-        else:
-            return None
-
-    def assertRestrictionBuffersEmpty(self):
+    def assertStatBuffersEmpty(self):
         entryNum = 0
         # Get dictionary-container with all registers used by tracker,
         # and cycle through all of them
-        trackerContainer = self.rt._RestrictionTracker__registers
+        trackerContainer = self.st._StatTracker__registers
         for registerGroup in trackerContainer.values():
             for register in registerGroup:
                 entryNum += self._getObjectBufferEntryAmount(register)

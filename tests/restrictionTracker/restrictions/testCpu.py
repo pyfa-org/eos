@@ -48,10 +48,10 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testFailExcessSingleOtherClass(self):
+    def testFailExcessSingleOtherClassLocation(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(typeId=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Implant)
+        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=Implant)
         holder.attributes = {Attribute.cpu: 50}
         self.trackHolder(holder)
         self.fit.stats.cpu.used = 50

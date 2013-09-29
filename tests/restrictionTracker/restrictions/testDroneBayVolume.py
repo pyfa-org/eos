@@ -34,7 +34,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When ship provides drone bay volume, but single consumer
         # demands for more, error should be raised
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 50}
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 50
@@ -52,7 +52,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 5}
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 5
@@ -71,10 +71,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 25}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 20}
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 45
@@ -97,7 +97,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def testFailExcessModified(self):
         # Make sure modified volume values are taken
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 40})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 100}
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 100
@@ -116,10 +116,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 100}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: -10}
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 90
@@ -141,10 +141,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 100}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 0}
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 100
@@ -165,10 +165,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 25}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 20}
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 45
@@ -187,7 +187,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         item = self.ch.type_(typeId=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 100}
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 100
@@ -201,7 +201,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def testPassOtherClass(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Implant)
         holder.attributes = {Attribute.volume: 50}
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 50
