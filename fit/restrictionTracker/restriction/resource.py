@@ -28,7 +28,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from eos.fit.restrictionTracker.register import RestrictionRegister
 
 
-ResourceErrorData = namedtuple('ResourceErrorData', ('output', 'totalUsage', 'holderConsumption'))
+ResourceErrorData = namedtuple('ResourceErrorData', ('output', 'totalUse', 'holderUse'))
 
 
 class ResourceRegister(RestrictionRegister):
@@ -39,15 +39,15 @@ class ResourceRegister(RestrictionRegister):
     by ship itself.
     """
 
-    def __init__(self, fit, outputAttr, usageAttr, restrictionType):
+    def __init__(self, fit, statName, usageAttr, restrictionType):
+        self.__restrictionType = restrictionType
         self._fit = fit
-        # On ship holder, attribute with this ID
-        # contains total amount of produced resource
-        self.__outputAttr = outputAttr
+        # Use this resource name to get numbers
+        # from stats tracker
+        self.__statName = statName
         # On holders, attribute with this ID contains
         # amount of used resource as value
         self.__usageAttr = usageAttr
-        self.__restrictionType = restrictionType
         # Container for holders which use resource
         # Format: {holders}
         self.__resourceUsers = set()
@@ -63,38 +63,21 @@ class ResourceRegister(RestrictionRegister):
         self.__resourceUsers.discard(holder)
 
     def validate(self):
-        # Get ship's resource output, setting it to 0
-        # if fitting doesn't have ship assigned,
-        # or ship doesn't have resource output attribute
-        shipHolder = self._fit.ship
-        try:
-            shipHolderAttribs = shipHolder.attributes
-        except AttributeError:
-            resourceOutput = 0
-        else:
-            try:
-                resourceOutput = shipHolderAttribs[self.__outputAttr]
-            except KeyError:
-                resourceOutput = 0
-        # Calculate resource consumption of all holders on ship
-        totalResourceConsumption = 0
-        # Also use the same loop to compose set of holders,
-        # which actually consume resource (have positive non-null
-        # usage)
-        resourceConsumerData = {}
-        for resourceUser in self.__resourceUsers:
-            resourceUse = resourceUser.attributes[self.__usageAttr]
-            totalResourceConsumption += resourceUse
-            if resourceUse > 0:
-                resourceConsumerData[resourceUser] = resourceUse
+        # Use stats module to get resource use and output
+        stats = getattr(self._fit.stats, self.__statName)
+        totalUse = stats.used
+        # Can be None, so fall back to 0 in this case
+        output = stats.output or 0
         # If we're out of resource, raise error
         # with holders-resource-consumers
-        if totalResourceConsumption > resourceOutput:
+        if totalUse > output:
             taintedHolders = {}
-            for holder in resourceConsumerData:
-                taintedHolders[holder] = ResourceErrorData(output=resourceOutput,
-                                                           totalUsage=totalResourceConsumption,
-                                                           holderConsumption=resourceConsumerData[holder])
+            for holder in self.__resourceUsers:
+                resourceUse = holder.attributes[self.__usageAttr]
+                if resourceUse > 0:
+                    taintedHolders[holder] = ResourceErrorData(output=output,
+                                                               totalUse=totalUse,
+                                                               holderUse=resourceUse)
             raise RegisterValidationError(taintedHolders)
 
     @property
@@ -114,7 +97,7 @@ class CpuRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.cpuOutput, Attribute.cpu, Restriction.cpu)
+        ResourceRegister.__init__(self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
 
 
 class PowerGridRegister(ResourceRegister):
@@ -130,7 +113,7 @@ class PowerGridRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.powerOutput, Attribute.power, Restriction.powerGrid)
+        ResourceRegister.__init__(self, fit, 'powerGrid', Attribute.power, Restriction.powerGrid)
 
 
 class CalibrationRegister(ResourceRegister):
@@ -146,7 +129,7 @@ class CalibrationRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.upgradeCapacity, Attribute.upgradeCost, Restriction.calibration)
+        ResourceRegister.__init__(self, fit, 'calibration', Attribute.upgradeCost, Restriction.calibration)
 
 
 class DroneBayVolumeRegister(ResourceRegister):
@@ -163,7 +146,7 @@ class DroneBayVolumeRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.droneCapacity, Attribute.volume, Restriction.droneBayVolume)
+        ResourceRegister.__init__(self, fit, 'droneBay', Attribute.volume, Restriction.droneBayVolume)
 
     def registerHolder(self, holder):
         if isinstance(holder, Drone):
@@ -183,4 +166,4 @@ class DroneBandwidthRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, Restriction.droneBandwidth)
+        ResourceRegister.__init__(self, fit, 'droneBandwidth', Attribute.droneBandwidthUsed, Restriction.droneBandwidth)
