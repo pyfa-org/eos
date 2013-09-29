@@ -19,32 +19,4 @@
 #===============================================================================
 
 
-import math
-
-from eos.const.eve import Attribute
-
-
-class StatsCalculator:
-    def __init__(self, fit):
-        self._fit = fit
-
-    @property
-    def agilityFactor(self):
-        try:
-            shipAttribs = self._fit.ship.attributes
-        except AttributeError:
-            return None
-        try:
-            agility = shipAttribs[Attribute.agility]
-            mass = shipAttribs[Attribute.mass]
-        except KeyError:
-            return None
-        realAgility = -math.log(0.25) * agility * mass / 1000000
-        return realAgility
-
-    @property
-    def alignTime(self):
-        try:
-            return math.ceil(self.agilityFactor)
-        except TypeError:
-            return None
+from .tracker import StatsTracker

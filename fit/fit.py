@@ -28,7 +28,7 @@ from .holder import Holder
 from .holder.container import HolderList, HolderSet, ModuleRacks
 from .holder.item import Character
 from .restrictionTracker import RestrictionTracker
-from .stats.calculator import StatsCalculator
+from .statTracker import StatsTracker
 
 
 class Fit:
@@ -52,7 +52,7 @@ class Fit:
         # Tracks various restrictions related to given fitting
         self._restrictionTracker = RestrictionTracker(self)
         # Access point for all the fitting stats
-        self.stats = StatsCalculator(self)
+        self.stats = StatsTracker(self)
         # Attributes to store holders directly assigned to fit
         self._ship = None
         self._character = None
@@ -172,12 +172,14 @@ class Fit:
         if len(enabledStates) > 0:
             self._linkTracker.enableStates(holder, enabledStates)
             self._restrictionTracker.enableStates(holder, enabledStates)
+            self.stats._enableStates(holder, enabledStates)
 
     def _holderDisableServices(self, holder):
         """Remove holder from all Eos-relying services."""
         # Switch states downwards from current holder's state
         disabledStates = set(filter(lambda s: s <= holder.state, State))
         if len(disabledStates) > 0:
+            self.stats._disableStates(holder, disabledStates)
             self._restrictionTracker.disableStates(holder, disabledStates)
             self._linkTracker.disableStates(holder, disabledStates)
         self._linkTracker.removeHolder(holder)
