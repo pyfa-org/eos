@@ -23,174 +23,141 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone, Ship, Implant
+from eos.fit.holder.item import Drone, Implant
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
 class TestDroneBayVolume(RestrictionTestCase):
     """Check functionality of drone bay volume restriction"""
 
-    def testFailExcessNoShip(self):
-        # Make sure error is raised on fits without ship
-        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
-        holder.attributes = {Attribute.volume: 50}
-        self.trackHolder(holder)
-        restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.output, 0)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
-        self.untrackHolder(holder)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
-    def testFailExcessShipNoAttr(self):
-        # When ship is assigned, but doesn't have calibration output
-        # attribute, error should be raised for calibration consumers too
-        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
-        holder.attributes = {Attribute.volume: 50}
-        self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {}
-        self.setShip(shipHolder)
-        restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.output, 0)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
-        self.untrackHolder(holder)
-        self.setShip(None)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
     def testFailExcessSingle(self):
-        # When ship provides calibration output, but single consumer
+        # When ship provides drone bay volume, but single consumer
         # demands for more, error should be raised
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder.attributes = {Attribute.volume: 50}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 40}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 50
+        self.fit.stats.droneBay.output = 40
         restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 40)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
+        self.assertEqual(restrictionError.totalUse, 50)
+        self.assertEqual(restrictionError.holderUse, 50)
         self.untrackHolder(holder)
-        self.setShip(None)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
+
+    def testFailExcessSingleUndefinedOutput(self):
+        # When stats module does not specify output, make sure
+        # it's assumed to be 0
+        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
+        holder.attributes = {Attribute.volume: 5}
+        self.trackHolder(holder)
+        self.fit.stats.droneBay.used = 5
+        self.fit.stats.droneBay.output = None
+        restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.output, 0)
+        self.assertEqual(restrictionError.totalUse, 5)
+        self.assertEqual(restrictionError.holderUse, 5)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
     def testFailExcessMultiple(self):
-        # When multiple consumers require less than calibration output
+        # When multiple consumers require less than drone bay volume
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 25}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 20}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 40}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 45
+        self.fit.stats.droneBay.output = 40
         restrictionError1 = self.getRestrictionError(holder1, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 40)
-        self.assertEqual(restrictionError1.totalUsage, 45)
-        self.assertEqual(restrictionError1.holderConsumption, 25)
+        self.assertEqual(restrictionError1.totalUse, 45)
+        self.assertEqual(restrictionError1.holderUse, 25)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.output, 40)
-        self.assertEqual(restrictionError2.totalUsage, 45)
-        self.assertEqual(restrictionError2.holderConsumption, 20)
+        self.assertEqual(restrictionError2.totalUse, 45)
+        self.assertEqual(restrictionError2.holderUse, 20)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
     def testFailExcessModified(self):
-        # Make sure modified calibration values are taken
+        # Make sure modified volume values are taken
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 40})
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder.attributes = {Attribute.volume: 100}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2, attributes={Attribute.droneCapacity: 45})
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 100
+        self.fit.stats.droneBay.output = 50
         restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 50)
-        self.assertEqual(restrictionError.totalUsage, 100)
-        self.assertEqual(restrictionError.holderConsumption, 100)
+        self.assertEqual(restrictionError.totalUse, 100)
+        self.assertEqual(restrictionError.holderUse, 100)
         self.untrackHolder(holder)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
     def testMixUsageNegative(self):
-        # If some holder has negative usage and calibration error is
+        # If some holder has negative usage and drone bay error is
         # still raised, check it's not raised for holder with
         # negative usage
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 100}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder2.attributes = {Attribute.volume: -10}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 90
+        self.fit.stats.droneBay.output = 50
         restrictionError1 = self.getRestrictionError(holder1, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 50)
-        self.assertEqual(restrictionError1.totalUsage, 90)
-        self.assertEqual(restrictionError1.holderConsumption, 100)
+        self.assertEqual(restrictionError1.totalUse, 90)
+        self.assertEqual(restrictionError1.holderUse, 100)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.droneBayVolume)
         self.assertIsNone(restrictionError2)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
     def testMixUsageZero(self):
-        # If some holder has zero usage and calibration error is
+        # If some holder has zero usage and drone bay error is
         # still raised, check it's not raised for holder with
         # zero usage
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 100}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 0}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 100
+        self.fit.stats.droneBay.output = 50
         restrictionError1 = self.getRestrictionError(holder1, Restriction.droneBayVolume)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 50)
-        self.assertEqual(restrictionError1.totalUsage, 100)
-        self.assertEqual(restrictionError1.holderConsumption, 100)
+        self.assertEqual(restrictionError1.totalUse, 100)
+        self.assertEqual(restrictionError1.holderUse, 100)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.droneBayVolume)
         self.assertIsNone(restrictionError2)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -198,23 +165,20 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 25}
         self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 20}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 45
+        self.fit.stats.droneBay.output = 50
         restrictionError1 = self.getRestrictionError(holder1, Restriction.droneBayVolume)
         self.assertIsNone(restrictionError1)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.droneBayVolume)
         self.assertIsNone(restrictionError2)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -223,42 +187,14 @@ class TestDroneBayVolume(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         item = self.ch.type_(typeId=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Drone)
         holder.attributes = {Attribute.volume: 100}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 100
+        self.fit.stats.droneBay.output = 50
         restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
         self.assertIsNone(restrictionError)
         self.untrackHolder(holder)
-        self.setShip(None)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
-    def testPassNegativeConsumption(self):
-        # Check that even if use of one holder exceeds
-        # calibration output, negative use of other holder may help
-        # to avoid raising error
-        item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
-        holder1.attributes = {Attribute.volume: 50}
-        self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
-        holder2.attributes = {Attribute.volume: -15}
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 40}
-        self.setShip(shipHolder)
-        restrictionError1 = self.getRestrictionError(holder1, Restriction.droneBayVolume)
-        self.assertIsNone(restrictionError1)
-        restrictionError2 = self.getRestrictionError(holder2, Restriction.droneBayVolume)
-        self.assertIsNone(restrictionError2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -268,13 +204,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
         holder.attributes = {Attribute.volume: 50}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.droneCapacity: 40}
-        self.setShip(shipHolder)
+        self.fit.stats.droneBay.used = 50
+        self.fit.stats.droneBay.output = 40
         restrictionError = self.getRestrictionError(holder, Restriction.droneBayVolume)
         self.assertIsNone(restrictionError)
         self.untrackHolder(holder)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()

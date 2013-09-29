@@ -61,7 +61,7 @@ class ResourceRegister(RestrictionRegister):
         # Can be None, so fall back to 0 in this case
         output = stats.output or 0
         # If we're not out of resource, do nothing
-        if totalUse > output:
+        if totalUse <= output:
             return
         taintedHolders = {}
         for holder in self.__resourceUsers:

@@ -46,10 +46,10 @@ class RestrictionTestCase(EosTestCase):
 
     def setUp(self):
         EosTestCase.setUp(self)
-        fit = Mock()
-        fit.ship = None
-        fit.character = None
-        self.rt = RestrictionTracker(fit)
+        self.fit = Mock()
+        self.fit.ship = None
+        self.fit.character = None
+        self.rt = RestrictionTracker(self.fit)
 
     def setShip(self, holder):
         self.rt._fit.ship = holder

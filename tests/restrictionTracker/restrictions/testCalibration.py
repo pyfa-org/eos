@@ -23,48 +23,12 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Rig, Ship, Implant
+from eos.fit.holder.item import Rig, Implant
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
 class TestCalibration(RestrictionTestCase):
     """Check functionality of calibration restriction"""
-
-    def testFailExcessNoShip(self):
-        # Make sure error is raised on fits without ship
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
-        holder.attributes = {Attribute.upgradeCost: 50}
-        self.trackHolder(holder)
-        restrictionError = self.getRestrictionError(holder, Restriction.calibration)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.output, 0)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
-        self.untrackHolder(holder)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
-    def testFailExcessShipNoAttr(self):
-        # When ship is assigned, but doesn't have calibration output
-        # attribute, error should be raised for calibration consumers too
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
-        holder.attributes = {Attribute.upgradeCost: 50}
-        self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {}
-        self.setShip(shipHolder)
-        restrictionError = self.getRestrictionError(holder, Restriction.calibration)
-        self.assertIsNotNone(restrictionError)
-        self.assertEqual(restrictionError.output, 0)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
-        self.untrackHolder(holder)
-        self.setShip(None)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
 
     def testFailExcessSingle(self):
         # When ship provides calibration output, but single consumer
@@ -73,37 +37,49 @@ class TestCalibration(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder.attributes = {Attribute.upgradeCost: 50}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 40}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 50
+        self.fit.stats.calibration.output = 40
         restrictionError = self.getRestrictionError(holder, Restriction.calibration)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 40)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
+        self.assertEqual(restrictionError.totalUse, 50)
+        self.assertEqual(restrictionError.holderUse, 50)
         self.untrackHolder(holder)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
     def testFailExcessSingleOtherClass(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Implant)
         holder.attributes = {Attribute.upgradeCost: 50}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 40}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 50
+        self.fit.stats.calibration.output = 40
         restrictionError = self.getRestrictionError(holder, Restriction.calibration)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 40)
-        self.assertEqual(restrictionError.totalUsage, 50)
-        self.assertEqual(restrictionError.holderConsumption, 50)
+        self.assertEqual(restrictionError.totalUse, 50)
+        self.assertEqual(restrictionError.holderUse, 50)
         self.untrackHolder(holder)
-        self.setShip(None)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
+
+    def testFailExcessSingleUndefinedOutput(self):
+        # When stats module does not specify output, make sure
+        # it's assumed to be 0
+        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
+        holder.attributes = {Attribute.upgradeCost: 5}
+        self.trackHolder(holder)
+        self.fit.stats.calibration.used = 5
+        self.fit.stats.calibration.output = None
+        restrictionError = self.getRestrictionError(holder, Restriction.calibration)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.output, 0)
+        self.assertEqual(restrictionError.totalUse, 5)
+        self.assertEqual(restrictionError.holderUse, 5)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -118,23 +94,20 @@ class TestCalibration(RestrictionTestCase):
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder2.attributes = {Attribute.upgradeCost: 20}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 40}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 45
+        self.fit.stats.calibration.output = 40
         restrictionError1 = self.getRestrictionError(holder1, Restriction.calibration)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 40)
-        self.assertEqual(restrictionError1.totalUsage, 45)
-        self.assertEqual(restrictionError1.holderConsumption, 25)
+        self.assertEqual(restrictionError1.totalUse, 45)
+        self.assertEqual(restrictionError1.holderUse, 25)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.calibration)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.output, 40)
-        self.assertEqual(restrictionError2.totalUsage, 45)
-        self.assertEqual(restrictionError2.holderConsumption, 20)
+        self.assertEqual(restrictionError2.totalUse, 45)
+        self.assertEqual(restrictionError2.holderUse, 20)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -144,17 +117,14 @@ class TestCalibration(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder.attributes = {Attribute.upgradeCost: 100}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2, attributes={Attribute.upgradeCapacity: 45})
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 100
+        self.fit.stats.calibration.output = 50
         restrictionError = self.getRestrictionError(holder, Restriction.calibration)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.output, 50)
-        self.assertEqual(restrictionError.totalUsage, 100)
-        self.assertEqual(restrictionError.holderConsumption, 100)
+        self.assertEqual(restrictionError.totalUse, 100)
+        self.assertEqual(restrictionError.holderUse, 100)
         self.untrackHolder(holder)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -169,20 +139,17 @@ class TestCalibration(RestrictionTestCase):
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder2.attributes = {Attribute.upgradeCost: -10}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 90
+        self.fit.stats.calibration.output = 50
         restrictionError1 = self.getRestrictionError(holder1, Restriction.calibration)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 50)
-        self.assertEqual(restrictionError1.totalUsage, 90)
-        self.assertEqual(restrictionError1.holderConsumption, 100)
+        self.assertEqual(restrictionError1.totalUse, 90)
+        self.assertEqual(restrictionError1.holderUse, 100)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.calibration)
         self.assertIsNone(restrictionError2)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -197,20 +164,17 @@ class TestCalibration(RestrictionTestCase):
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder2.attributes = {Attribute.upgradeCost: 0}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 100
+        self.fit.stats.calibration.output = 50
         restrictionError1 = self.getRestrictionError(holder1, Restriction.calibration)
         self.assertIsNotNone(restrictionError1)
         self.assertEqual(restrictionError1.output, 50)
-        self.assertEqual(restrictionError1.totalUsage, 100)
-        self.assertEqual(restrictionError1.holderConsumption, 100)
+        self.assertEqual(restrictionError1.totalUse, 100)
+        self.assertEqual(restrictionError1.holderUse, 100)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.calibration)
         self.assertIsNone(restrictionError2)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -224,17 +188,14 @@ class TestCalibration(RestrictionTestCase):
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder2.attributes = {Attribute.upgradeCost: 20}
         self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 45
+        self.fit.stats.calibration.output = 50
         restrictionError1 = self.getRestrictionError(holder1, Restriction.calibration)
         self.assertIsNone(restrictionError1)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.calibration)
         self.assertIsNone(restrictionError2)
         self.untrackHolder(holder1)
         self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
@@ -246,38 +207,10 @@ class TestCalibration(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
         holder.attributes = {Attribute.upgradeCost: 100}
         self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 50}
-        self.setShip(shipHolder)
+        self.fit.stats.calibration.used = 100
+        self.fit.stats.calibration.output = 50
         restrictionError = self.getRestrictionError(holder, Restriction.calibration)
         self.assertIsNone(restrictionError)
         self.untrackHolder(holder)
-        self.setShip(None)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
-    def testPassNegativeConsumption(self):
-        # Check that even if use of one holder exceeds
-        # calibration output, negative use of other holder may help
-        # to avoid raising error
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
-        holder1.attributes = {Attribute.upgradeCost: 50}
-        self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig)
-        holder2.attributes = {Attribute.upgradeCost: -15}
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.upgradeCapacity: 40}
-        self.setShip(shipHolder)
-        restrictionError1 = self.getRestrictionError(holder1, Restriction.calibration)
-        self.assertIsNone(restrictionError1)
-        restrictionError2 = self.getRestrictionError(holder2, Restriction.calibration)
-        self.assertIsNone(restrictionError2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
