@@ -39,8 +39,8 @@ class ResourceRegister(RestrictionRegister):
     by ship itself.
     """
 
-    def __init__(self, tracker, outputAttr, usageAttr, restrictionType):
-        self._tracker = tracker
+    def __init__(self, fit, outputAttr, usageAttr, restrictionType):
+        self._fit = fit
         # On ship holder, attribute with this ID
         # contains total amount of produced resource
         self.__outputAttr = outputAttr
@@ -66,7 +66,7 @@ class ResourceRegister(RestrictionRegister):
         # Get ship's resource output, setting it to 0
         # if fitting doesn't have ship assigned,
         # or ship doesn't have resource output attribute
-        shipHolder = self._tracker._fit.ship
+        shipHolder = self._fit.ship
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
@@ -113,8 +113,8 @@ class CpuRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
-    def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.cpuOutput, Attribute.cpu, Restriction.cpu)
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.cpuOutput, Attribute.cpu, Restriction.cpu)
 
 
 class PowerGridRegister(ResourceRegister):
@@ -129,8 +129,8 @@ class PowerGridRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
-    def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.powerOutput, Attribute.power, Restriction.powerGrid)
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.powerOutput, Attribute.power, Restriction.powerGrid)
 
 
 class CalibrationRegister(ResourceRegister):
@@ -145,8 +145,8 @@ class CalibrationRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
-    def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.upgradeCapacity, Attribute.upgradeCost, Restriction.calibration)
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.upgradeCapacity, Attribute.upgradeCost, Restriction.calibration)
 
 
 class DroneBayVolumeRegister(ResourceRegister):
@@ -162,8 +162,8 @@ class DroneBayVolumeRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
-    def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.droneCapacity, Attribute.volume, Restriction.droneBayVolume)
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.droneCapacity, Attribute.volume, Restriction.droneBayVolume)
 
     def registerHolder(self, holder):
         if isinstance(holder, Drone):
@@ -182,5 +182,5 @@ class DroneBandwidthRegister(ResourceRegister):
     required attribute on ship are considered as zero output.
     """
 
-    def __init__(self, tracker):
-        ResourceRegister.__init__(self, tracker, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, Restriction.droneBandwidth)
+    def __init__(self, fit):
+        ResourceRegister.__init__(self, fit, Attribute.droneBandwidth, Attribute.droneBandwidthUsed, Restriction.droneBandwidth)

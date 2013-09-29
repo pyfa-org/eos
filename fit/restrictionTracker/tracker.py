@@ -44,8 +44,8 @@ class RestrictionTracker:
         # as key, it's registered/unregistered in registers
         # stored as value.
         # Format: {triggering state: {registers}}
-        self.__registers = {State.offline: (CalibrationRegister(self),
-                                            DroneBayVolumeRegister(self),
+        self.__registers = {State.offline: (CalibrationRegister(fit),
+                                            DroneBayVolumeRegister(fit),
                                             HolderClassRegister(),
                                             HighSlotRegister(self),
                                             MediumSlotRegister(self),
@@ -67,9 +67,9 @@ class RestrictionTracker:
                                             ChargeGroupRegister(),
                                             ChargeSizeRegister(),
                                             ChargeVolumeRegister()),
-                            State.online:  (CpuRegister(self),
-                                            PowerGridRegister(self),
-                                            DroneBandwidthRegister(self),
+                            State.online:  (CpuRegister(fit),
+                                            PowerGridRegister(fit),
+                                            DroneBandwidthRegister(fit),
                                             MaxGroupOnlineRegister(),
                                             LaunchedDroneRegister(self),
                                             StateRegister()),
