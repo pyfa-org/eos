@@ -70,7 +70,6 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-
     def testPassNoVolume(self):
         chargeItem = self.ch.type_(typeId=1, attributes={})
         chargeHolder = Mock(state=State.offline, item=chargeItem, _location=None, spec_set=Charge)
