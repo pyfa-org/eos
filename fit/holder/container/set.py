@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.exception import HolderAlreadyAssignedError, HolderTypeError
+from eos.fit.exception import HolderAlreadyAssignedError
 from .base import HolderContainerBase
 
 
@@ -29,33 +29,33 @@ class HolderSet(HolderContainerBase):
 
     Positional arguments:
     fit -- fit, to which container is attached
+    holderClass -- class of holders this container
+    is allowed to contain
     """
 
     __slots__ = ('__set')
 
-    def __init__(self, fit):
+    def __init__(self, fit, holderClass):
+        HolderContainerBase.__init__(self, fit, holderClass)
         self.__set = set()
-        HolderContainerBase.__init__(self, fit)
 
     def add(self, holder):
         """
         Add holder to container.
 
         Possible exceptions:
-        TypeError -- raised when non-holder is passed
+        TypeError -- raised when holder of unacceptable class
+        is passed
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
-        if holder is None:
-            raise TypeError(type(holder))
+        self._checkClass(holder)
         self.__set.add(holder)
         try:
             self._handleAdd(holder)
-        except (HolderTypeError, HolderAlreadyAssignedError) as e:
+        except HolderAlreadyAssignedError as e:
             self.__set.remove(holder)
-            exceptionMap = {HolderTypeError: TypeError,
-                            HolderAlreadyAssignedError: ValueError}
-            raise exceptionMap[type(e)](*e.args) from e
+            raise ValueError(*e.args) from e
 
     def remove(self, holder):
         """

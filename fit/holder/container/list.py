@@ -19,13 +19,9 @@
 #===============================================================================
 
 
-from eos.fit.exception import HolderTypeError, HolderAlreadyAssignedError
+from eos.fit.exception import HolderAlreadyAssignedError
 from .base import HolderContainerBase
 from .exception import SlotTakenError
-
-
-exceptionMap = {HolderTypeError: TypeError,
-                HolderAlreadyAssignedError: ValueError}
 
 
 class HolderList(HolderContainerBase):
@@ -34,13 +30,15 @@ class HolderList(HolderContainerBase):
 
     Positional arguments:
     fit -- fit, to which container is attached
+    holderClass -- class of holders this container
+    is allowed to contain
     """
 
     __slots__ = ('__list')
 
-    def __init__(self, fit):
+    def __init__(self, fit, holderClass):
+        HolderContainerBase.__init__(self, fit, holderClass)
         self.__list = []
-        HolderContainerBase.__init__(self, fit)
 
     def insert(self, index, value):
         """
@@ -51,12 +49,13 @@ class HolderList(HolderContainerBase):
         insert empty slots between holders.
 
         Possible exceptions:
-        TypeError -- raised when passed holder is not None and
-        is not Holder class/subclass instance
+        TypeError -- raised when holder of unacceptable class
+        is passed
         ValueError -- raised when holder is passed as value and
         it cannot be added to container (e.g. already belongs to
         some fit)
         """
+        self._checkClass(value, allowNone=True)
         self._allocate(index - 1)
         self.__list.insert(index, value)
         if value is None:
@@ -64,29 +63,28 @@ class HolderList(HolderContainerBase):
         else:
             try:
                 self._handleAdd(value)
-            except (HolderTypeError, HolderAlreadyAssignedError) as e:
+            except HolderAlreadyAssignedError as e:
                 del self.__list[index]
                 self._cleanup()
-                raise exceptionMap[type(e)](*e.args) from e
+                raise ValueError(*e.args) from e
 
     def append(self, holder):
         """
         Append holder to the end of container.
 
         Possible exceptions:
-        TypeError -- raised when passed holder not Holder
-        class/subclass instance
+        TypeError -- raised when holder of unacceptable class
+        is passed
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
-        if holder is None:
-            raise TypeError(type(holder))
+        self._checkClass(holder)
         self.__list.append(holder)
         try:
             self._handleAdd(holder)
-        except (HolderTypeError, HolderAlreadyAssignedError) as e:
+        except HolderAlreadyAssignedError as e:
             del self.__list[-1]
-            raise exceptionMap[type(e)](*e.args) from e
+            raise ValueError(*e.args) from e
 
     def place(self, index, holder):
         """
@@ -95,15 +93,14 @@ class HolderList(HolderContainerBase):
         and put holder there.
 
         Possible exceptions:
-        TypeError -- raised when passed holder not Holder
-        class/subclass instance
+        TypeError -- raised when holder of unacceptable class
+        is passed
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         SlotTakenError -- raised when slot at specified index
         is already taken by other holder
         """
-        if holder is None:
-            raise TypeError(type(holder))
+        self._checkClass(holder)
         try:
             oldHolder = self.__list[index]
         except IndexError:
@@ -114,10 +111,10 @@ class HolderList(HolderContainerBase):
         self.__list[index] = holder
         try:
             self._handleAdd(holder)
-        except (HolderTypeError, HolderAlreadyAssignedError) as e:
+        except HolderAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
-            raise exceptionMap[type(e)](*e.args) from e
+            raise ValueError(*e.args) from e
 
     def equip(self, holder):
         """
@@ -126,13 +123,12 @@ class HolderList(HolderContainerBase):
         to the end of container.
 
         Possible exceptions:
-        TypeError -- raised when passed holder not Holder
-        class/subclass instance
+        TypeError -- raised when holder of unacceptable class
+        is passed
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         """
-        if holder is None:
-            raise TypeError(type(holder))
+        self._checkClass(holder)
         try:
             index = self.__list.index(None)
         except ValueError:
@@ -142,10 +138,10 @@ class HolderList(HolderContainerBase):
             self.__list[index] = holder
         try:
             self._handleAdd(holder)
-        except (HolderTypeError, HolderAlreadyAssignedError) as e:
+        except HolderAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
-            raise exceptionMap[type(e)](*e.args) from e
+            raise ValueError(*e.args) from e
 
     def remove(self, value):
         """

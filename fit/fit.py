@@ -23,10 +23,9 @@ from eos import eos as eosModule
 from eos.const.eos import State
 from eos.const.eve import Type
 from .attributeCalculator import LinkTracker
-from .exception import HolderAlreadyAssignedError, HolderFitMismatchError, HolderTypeError
-from .holder import Holder
+from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderList, HolderSet, ModuleRacks
-from .holder.item import Character
+from .holder.item import *
 from .restrictionTracker import RestrictionTracker
 from .statTracker import StatTracker
 
@@ -58,14 +57,16 @@ class Fit:
         self._character = None
         self._systemWide = None
         # Character-related holder containers
-        self.skills = HolderSet(self)
-        self.implants = HolderSet(self)
-        self.boosters = HolderSet(self)
+        self.skills = HolderSet(self, Skill)
+        self.implants = HolderSet(self, Implant)
+        self.boosters = HolderSet(self, Booster)
         # Ship-related containers
-        self.subsystems = HolderSet(self)
-        self.modules = ModuleRacks(high=HolderList(self), med=HolderList(self), low=HolderList(self))
-        self.rigs = HolderList(self)
-        self.drones = HolderSet(self)
+        self.subsystems = HolderSet(self, Subsystem)
+        self.modules = ModuleRacks(high=HolderList(self, Module),
+                                   med=HolderList(self, Module),
+                                   low=HolderList(self, Module))
+        self.rigs = HolderList(self, Rig)
+        self.drones = HolderSet(self, Drone)
         # Contains all holders currently attached to fit
         self._holders = set()
         # As character object shouldn't change in any sane
@@ -129,10 +130,7 @@ class Fit:
 
     def _addHolder(self, holder):
         """Handle adding of holder to fit."""
-        # Make sure the holder is holder and that it
-        # isn't used already
-        if not isinstance(holder, Holder):
-            raise HolderTypeError(type(holder))
+        # Make sure the holder isn't used already
         if holder._fit is not None:
             raise HolderAlreadyAssignedError(holder)
         # Assign fit to holder first

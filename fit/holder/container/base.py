@@ -29,12 +29,25 @@ class HolderContainerBase:
 
     Positional arguments:
     fit -- fit, to which container is attached
+    holderClass -- class of holders this container
+    is allowed to contain
     """
 
-    __slots__ = ('__fit')
+    __slots__ = ('__fit', '__holderClass')
 
-    def __init__(self, fit):
+    def __init__(self, fit, holderClass):
         self.__fit = fit
+        self.__holderClass = holderClass
+
+    def _checkClass(self, holder, allowNone=False):
+        if isinstance(holder, self.__holderClass):
+            return
+        if holder is None and allowNone is True:
+            return
+        msg = 'only {} {} accepted, not {}'.format(self.__holderClass,
+                                                   'or None are' if allowNone is True else 'is',
+                                                   type(holder))
+        raise TypeError(msg)
 
     def _handleAdd(self, holder):
         """Shortcut for registration of holder in fit."""

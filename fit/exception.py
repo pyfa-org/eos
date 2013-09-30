@@ -30,14 +30,6 @@ class HolderAddError(EosError):
     pass
 
 
-class HolderTypeError(HolderAddError):
-    """
-    Raised on attempt to add non-holder object
-    to fit.
-    """
-    pass
-
-
 class HolderAlreadyAssignedError(HolderAddError):
     """
     Raised on attempt to add holder to fit, when
