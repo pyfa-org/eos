@@ -98,7 +98,7 @@ class Fit:
 
     @character.setter
     def character(self, newCharacter):
-        self.__setSingleHolder('_character', newCharacter)
+        self.__setSingleHolder('_character', newCharacter, Character)
 
     @property
     def ship(self):
@@ -106,7 +106,7 @@ class Fit:
 
     @ship.setter
     def ship(self, newShip):
-        self.__setSingleHolder('_ship', newShip)
+        self.__setSingleHolder('_ship', newShip, Ship)
 
     @property
     def systemWide(self):
@@ -114,7 +114,7 @@ class Fit:
 
     @systemWide.setter
     def systemWide(self, newSystemWide):
-        self.__setSingleHolder('_systemWide', newSystemWide)
+        self.__setSingleHolder('_systemWide', newSystemWide, EffectBeacon)
 
     def validate(self, skipChecks=()):
         """
@@ -209,17 +209,21 @@ class Fit:
             self._restrictionTracker.disableStates(holder, disabledStates)
             self.stats._disableStates(holder, disabledStates)
 
-    def __setSingleHolder(self, attrName, newHolder):
+    def __setSingleHolder(self, attrName, newHolder, expectedClass):
         """
         Handle setting of holder as fit's attribute,
         including removal of old holder assigned to it.
 
         Possible exceptions:
         TypeError -- raised when holder to be set is not
-        None and is not Holder class/subclass instance
+        holder of expected class or None
         ValueError -- raised when holder cannot be used
         (e.g. already belongs to some fit)
         """
+        if newHolder is not None and not isinstance(newHolder, expectedClass):
+            msg = 'only {} and None are accepted, not {}'.format(expectedClass,
+                                                                 type(newHolder))
+            raise TypeError(msg)
         oldHolder = getattr(self, attrName)
         if oldHolder is not None:
             self._removeHolder(oldHolder)
@@ -227,10 +231,8 @@ class Fit:
         if newHolder is not None:
             try:
                 self._addHolder(newHolder)
-            except (HolderTypeError, HolderAlreadyAssignedError) as e:
+            except HolderAlreadyAssignedError as e:
                 setattr(self, attrName, oldHolder)
                 if oldHolder is not None:
                     self._addHolder(oldHolder)
-                exceptionMap = {HolderTypeError: TypeError,
-                                HolderAlreadyAssignedError: ValueError}
-                raise exceptionMap[type(e)](*e.args) from e
+                raise ValueError(*e.args) from e

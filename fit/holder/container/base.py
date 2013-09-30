@@ -40,6 +40,10 @@ class HolderContainerBase:
         self.__holderClass = holderClass
 
     def _checkClass(self, holder, allowNone=False):
+        """
+        Check if class of passed holder corresponds
+        to our expectations.
+        """
         if isinstance(holder, self.__holderClass):
             return
         if holder is None and allowNone is True:

@@ -21,6 +21,7 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
+from . import Charge
 
 
 class Module(Holder):
@@ -30,7 +31,8 @@ class Module(Holder):
 
     def __init__(self, typeId, state=State.offline, charge=None):
         Holder.__init__(self, typeId, state)
-        self.__charge = charge
+        self.__charge = None
+        self.charge = charge
 
     @property
     def _location(self):
@@ -47,9 +49,16 @@ class Module(Holder):
 
     @charge.setter
     def charge(self, newCharge):
-        # All charges getting assigned must be unbound
-        if newCharge is not None and newCharge._fit is not None:
-            raise ValueError(newCharge)
+        if newCharge is not None:
+            # Check what's being assigned
+            if not isinstance(newCharge, Charge):
+                msg = 'only {} and None are accepted, not {}'.format(Charge,
+                                                                     type(newCharge))
+                raise TypeError(msg)
+            # Also check if it is attached to other
+            # fit already or not
+            if newCharge._fit is not None:
+                raise ValueError(newCharge)
         oldCharge = self.charge
         if oldCharge is not None:
             if self._fit is not None:
