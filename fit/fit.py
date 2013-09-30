@@ -216,7 +216,7 @@ class Fit:
 
         Possible exceptions:
         TypeError -- raised when holder to be set is not
-        holder of expected class or None
+        holder of expected class and is not None
         ValueError -- raised when holder cannot be used
         (e.g. already belongs to some fit)
         """

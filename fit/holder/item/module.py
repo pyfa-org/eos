@@ -55,8 +55,12 @@ class Module(Holder):
                 msg = 'only {} and None are accepted, not {}'.format(Charge,
                                                                      type(newCharge))
                 raise TypeError(msg)
-            # Also check if it is attached to other
-            # fit already or not
+            # Also check if it is attached to other fit already
+            # or not. We need to do it this early, because charges
+            # can be swapped when module is detached from fit,
+            # skipping fit assignment check in fit._addHolder
+            # and breaking consistency of fit assignment between
+            # module and charge
             if newCharge._fit is not None:
                 raise ValueError(newCharge)
         oldCharge = self.charge

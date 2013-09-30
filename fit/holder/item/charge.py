@@ -40,5 +40,5 @@ class Charge(Holder):
 
     @property
     def _other(self):
-        """Purely service method, used in fit link tracker registry"""
+        """Purely service property, used for attribute calculations"""
         return self.container
