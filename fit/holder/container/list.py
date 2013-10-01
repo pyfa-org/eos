@@ -198,7 +198,7 @@ class HolderList(HolderContainerBase):
         self.__list.clear()
 
     def __getitem__(self, index):
-        """Get holder by index."""
+        """Get holder by index or holders by slice object."""
         return self.__list.__getitem__(index)
 
     def index(self, holder):
