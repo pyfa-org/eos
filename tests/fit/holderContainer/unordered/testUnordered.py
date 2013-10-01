@@ -22,8 +22,8 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
 from eos.fit.holder.container import HolderSet
+from eos.fit.holder.item import Booster, Implant
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestContainerUnordered(FitTestCase):
 
     def makeFit(self, *args, **kwargs):
         fit = super().makeFit(*args, **kwargs)
-        fit.unordered = HolderSet(fit)
+        fit.unordered = HolderSet(fit, Implant)
         return fit
 
     def customMembershipCheck(self, fit, holder):
@@ -45,12 +45,13 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
+        self.assertEqual(len(fit.unordered), 0)
         # Misc
         self.assertFitBuffersEmpty(fit)
 
     def testDetachedAddHolder(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
         # Action
         fit.unordered.add(holder)
         # Checks
@@ -66,7 +67,7 @@ class TestContainerUnordered(FitTestCase):
 
     def testDetachedAddHolderTypeFailure(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Booster)
         # Action
         self.assertRaises(TypeError, fit.unordered.add, holder)
         # Checks
@@ -81,7 +82,7 @@ class TestContainerUnordered(FitTestCase):
     def testDetachedAddHolderValueFailure(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
         fitOther.unordered.add(holder)
         # Action
         self.assertRaises(ValueError, fit.unordered.add, holder)
@@ -103,7 +104,7 @@ class TestContainerUnordered(FitTestCase):
 
     def testDetachedRemoveHolder(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Implant)
         fit.unordered.add(holder)
         # Action
         fit.unordered.remove(holder)
@@ -118,7 +119,7 @@ class TestContainerUnordered(FitTestCase):
 
     def testDetachedRemoveHolderFailure(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
         # Action
         self.assertRaises(KeyError, fit.unordered.remove, holder)
         # Checks
@@ -132,8 +133,8 @@ class TestContainerUnordered(FitTestCase):
 
     def testDetachedClear(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
         fit.unordered.add(holder1)
         fit.unordered.add(holder2)
         # Action
@@ -157,13 +158,14 @@ class TestContainerUnordered(FitTestCase):
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
+        self.assertEqual(len(fit.unordered), 0)
         # Misc
         self.assertFitBuffersEmpty(fit)
 
     def testAttachedAddHolder(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.online, spec_set=Implant)
         # Action
         fit.unordered.add(holder)
         # Checks
@@ -186,7 +188,7 @@ class TestContainerUnordered(FitTestCase):
     def testAttachedAddHolderTypeFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Booster)
         # Action
         self.assertRaises(TypeError, fit.unordered.add, holder)
         # Checks
@@ -202,7 +204,7 @@ class TestContainerUnordered(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         fitOther = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
         fitOther.unordered.add(holder)
         # Action
         self.assertRaises(ValueError, fit.unordered.add, holder)
@@ -231,7 +233,7 @@ class TestContainerUnordered(FitTestCase):
     def testAttachedRemoveHolder(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
         fit.unordered.add(holder)
         # Action
         fit.unordered.remove(holder)
@@ -247,7 +249,7 @@ class TestContainerUnordered(FitTestCase):
     def testAttachedRemoveHolderFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.online, spec_set=Implant)
         # Action
         self.assertRaises(KeyError, fit.unordered.remove, holder)
         # Checks
@@ -262,8 +264,8 @@ class TestContainerUnordered(FitTestCase):
     def testAttachedClear(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Implant)
         fit.unordered.add(holder1)
         fit.unordered.add(holder2)
         # Action
@@ -280,8 +282,8 @@ class TestContainerUnordered(FitTestCase):
 
     def testLen(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
         self.assertEqual(len(fit.unordered), 0)
         fit.unordered.add(holder1)
         self.assertEqual(len(fit.unordered), 1)
@@ -295,8 +297,8 @@ class TestContainerUnordered(FitTestCase):
 
     def testContains(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
         self.assertFalse(holder1 in fit.unordered)
         self.assertFalse(holder2 in fit.unordered)
         fit.unordered.add(holder1)
@@ -315,8 +317,8 @@ class TestContainerUnordered(FitTestCase):
 
     def testIter(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
         self.assertEqual(set(holder for holder in fit.unordered), set())
         fit.unordered.add(holder1)
         self.assertEqual(set(holder for holder in fit.unordered), {holder1})

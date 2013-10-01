@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
+from eos.fit.holder.item import Character, Ship
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
@@ -45,7 +45,7 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedNoneToHolder(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Character)
         # Action
         fit.character = holder
         # Checks
@@ -60,7 +60,7 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedNoneToHolderTypeFailure(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'character', holder)
         # Checks
@@ -75,7 +75,7 @@ class TestDirectHolderCharacter(FitTestCase):
     def testDetachedNoneToHolderValueFailure(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Character)
         fitOther.character = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'character', holder)
@@ -96,8 +96,8 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedHolderToHolder(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Character)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Character)
         fit.character = holder1
         # Action
         fit.character = holder2
@@ -114,8 +114,8 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedHolderToHolderTypeFailure(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Character)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
         fit.character = holder1
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'character', holder2)
@@ -133,8 +133,8 @@ class TestDirectHolderCharacter(FitTestCase):
     def testDetachedHolderToHolderValueFailure(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Character)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Character)
         fit.character = holder1
         fitOther.character = holder2
         # Action
@@ -158,7 +158,7 @@ class TestDirectHolderCharacter(FitTestCase):
 
     def testDetachedHolderToNone(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Character)
         fit.character = holder
         # Action
         fit.character = None
@@ -187,7 +187,7 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedNoneToHolder(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.online, spec_set=Character)
         # Action
         fit.character = holder
         # Checks
@@ -209,7 +209,7 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedNoneToHolderTypeFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Ship)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'character', holder)
         # Checks
@@ -225,7 +225,7 @@ class TestDirectHolderCharacter(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         fitOther = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Character)
         fitOther.character = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'character', holder)
@@ -253,8 +253,8 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedHolderToHolder(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Character)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Character)
         fit.character = holder1
         # Action
         fit.character = holder2
@@ -278,8 +278,8 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedHolderToHolderTypeFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Character)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Ship)
         fit.character = holder1
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'character', holder2)
@@ -304,8 +304,8 @@ class TestDirectHolderCharacter(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         fitOther = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Character)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Character)
         fit.character = holder1
         fitOther.character = holder2
         # Action
@@ -342,7 +342,7 @@ class TestDirectHolderCharacter(FitTestCase):
     def testAttachedHolderToNone(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Character)
         fit.character = holder
         # Action
         fit.character = None

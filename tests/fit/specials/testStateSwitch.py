@@ -22,16 +22,16 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
 from eos.fit.holder.container import HolderSet
+from eos.fit.holder.item import Module
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
-class TestHolderStateSwitch(FitTestCase):
+class TestModuleStateSwitch(FitTestCase):
 
     def makeFit(self, *args, **kwargs):
         fit = super().makeFit(*args, **kwargs)
-        fit.unordered = HolderSet(fit)
+        fit.unordered = HolderSet(fit, Module)
         return fit
 
     def customMembershipCheck(self, fit, holder):
@@ -40,7 +40,7 @@ class TestHolderStateSwitch(FitTestCase):
     def testDetachedUpwards(self):
         fit = self.makeFit()
         # Action
-        holder = Holder(1, State.offline)
+        holder = Module(1, State.offline)
         fit.unordered.add(holder)
         # Checks
         self.assertEqual(len(fit.lt), 0)
@@ -65,7 +65,7 @@ class TestHolderStateSwitch(FitTestCase):
     def testDetachedDownwards(self):
         fit = self.makeFit()
         # Action
-        holder = Holder(1, State.overload)
+        holder = Module(1, State.overload)
         fit.unordered.add(holder)
         # Checks
         self.assertEqual(len(fit.lt), 0)
@@ -91,7 +91,7 @@ class TestHolderStateSwitch(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         # Action
-        holder = Holder(1, State.overload)
+        holder = Module(1, State.overload)
         fit.unordered.add(holder)
         # Checks
         self.assertEqual(len(fit.lt), 1)

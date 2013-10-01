@@ -22,8 +22,8 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
 from eos.fit.holder.container import HolderList
+from eos.fit.holder.item import Booster, Implant
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestContainerOrderedEquip(FitTestCase):
 
     def makeFit(self, *args, **kwargs):
         fit = super().makeFit(*args, **kwargs)
-        fit.ordered = HolderList(fit)
+        fit.ordered = HolderList(fit, Implant)
         return fit
 
     def customMembershipCheck(self, fit, holder):
@@ -51,7 +51,7 @@ class TestContainerOrderedEquip(FitTestCase):
 
     def testDetachedHolderToEmpty(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
         # Action
         fit.ordered.equip(holder)
         # Checks
@@ -67,7 +67,7 @@ class TestContainerOrderedEquip(FitTestCase):
 
     def testDetachedHolderToEmptyTypeFailure(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Booster)
         # Action
         self.assertRaises(TypeError, fit.ordered.equip, holder)
         # Checks
@@ -82,7 +82,7 @@ class TestContainerOrderedEquip(FitTestCase):
     def testDetachedHolderToEmptyValueFailure(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Implant)
         fitOther.ordered.equip(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.equip, holder)
@@ -104,9 +104,9 @@ class TestContainerOrderedEquip(FitTestCase):
     def testDetachedHolderSolid(self):
         # Check case when all slots of list are filled
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder3 = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder3 = Mock(_fit=None, state=State.offline, spec_set=Implant)
         fit.ordered.append(holder1)
         fit.ordered.append(holder2)
         # Action
@@ -127,10 +127,10 @@ class TestContainerOrderedEquip(FitTestCase):
     def testDetachedHolderFirstHole(self):
         # Check that leftmost empty slot is taken
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
-        holder3 = Mock(_fit=None, state=State.overload, spec_set=Holder)
-        holder4 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder4 = Mock(_fit=None, state=State.online, spec_set=Implant)
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         fit.ordered.insert(6, holder3)
@@ -166,7 +166,7 @@ class TestContainerOrderedEquip(FitTestCase):
     def testAttachedHolderToEmpty(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
         # Action
         fit.ordered.equip(holder)
         # Checks
@@ -189,7 +189,7 @@ class TestContainerOrderedEquip(FitTestCase):
     def testAttachedHolderToEmptyTypeFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=Booster)
         # Action
         self.assertRaises(TypeError, fit.ordered.equip, holder)
         # Checks
@@ -205,7 +205,7 @@ class TestContainerOrderedEquip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         fitOther = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
         fitOther.ordered.equip(holder)
         # Action
         self.assertRaises(ValueError, fit.ordered.equip, holder)
@@ -234,9 +234,9 @@ class TestContainerOrderedEquip(FitTestCase):
         # Check case when all slots of list are filled
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder3 = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=Implant)
         fit.ordered.append(holder1)
         fit.ordered.append(holder2)
         # Action
@@ -264,10 +264,10 @@ class TestContainerOrderedEquip(FitTestCase):
         # Check that leftmost empty slot is taken
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder3 = Mock(_fit=None, state=State.online, spec_set=Holder)
-        holder4 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder3 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder4 = Mock(_fit=None, state=State.active, spec_set=Implant)
         fit.ordered.append(holder1)
         fit.ordered.insert(3, holder2)
         fit.ordered.insert(6, holder3)

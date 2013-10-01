@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
+from eos.fit.holder.item import EffectBeacon, Ship
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
@@ -45,7 +45,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def testDetachedNoneToHolder(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         # Action
         fit.ship = holder
         # Checks
@@ -60,7 +60,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def testDetachedNoneToHolderTypeFailure(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.active, spec_set=EffectBeacon)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -75,7 +75,7 @@ class TestDirectHolderShip(FitTestCase):
     def testDetachedNoneToHolderValueFailure(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         fitOther.ship = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
@@ -96,8 +96,8 @@ class TestDirectHolderShip(FitTestCase):
 
     def testDetachedHolderToHolder(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit.ship = holder1
         # Action
         fit.ship = holder2
@@ -114,8 +114,8 @@ class TestDirectHolderShip(FitTestCase):
 
     def testDetachedHolderToHolderTypeFailure(self):
         fit = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=EffectBeacon)
         fit.ship = holder1
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
@@ -133,8 +133,8 @@ class TestDirectHolderShip(FitTestCase):
     def testDetachedHolderToHolderValueFailure(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
         fit.ship = holder1
         fitOther.ship = holder2
         # Action
@@ -158,7 +158,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def testDetachedHolderToNone(self):
         fit = self.makeFit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit.ship = holder
         # Action
         fit.ship = None
@@ -187,7 +187,7 @@ class TestDirectHolderShip(FitTestCase):
     def testAttachedNoneToHolder(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.online, spec_set=Ship)
         # Action
         fit.ship = holder
         # Checks
@@ -209,7 +209,7 @@ class TestDirectHolderShip(FitTestCase):
     def testAttachedNoneToHolderTypeFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=('_fit', 'state'))
+        holder = Mock(_fit=None, state=State.offline, spec_set=EffectBeacon)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -225,7 +225,7 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         fitOther = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Ship)
         fitOther.ship = holder
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
@@ -250,8 +250,8 @@ class TestDirectHolderShip(FitTestCase):
     def testAttachedHolderToHolder(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Ship)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
         fit.ship = holder1
         # Action
         fit.ship = holder2
@@ -275,8 +275,8 @@ class TestDirectHolderShip(FitTestCase):
     def testAttachedHolderToHolderTypeFailure(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=('_fit', 'state'))
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=EffectBeacon)
         fit.ship = holder1
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
@@ -301,8 +301,8 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         fitOther = self.makeFit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Holder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Holder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Ship)
         fit.ship = holder1
         fitOther.ship = holder2
         # Action
@@ -339,7 +339,7 @@ class TestDirectHolderShip(FitTestCase):
     def testAttachedHolderToNone(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=Holder)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit.ship = holder
         # Action
         fit.ship = None
