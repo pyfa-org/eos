@@ -129,6 +129,34 @@ class TestContainerOrderedMisc(FitTestCase):
         # Misc
         self.assertObjectBuffersEmpty(fit)
 
+    def testSlice(self):
+        fit = self.makeFit()
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        fit.ordered.append(holder1)
+        fit.ordered.place(3, holder2)
+        sliceFull = fit.ordered[:]
+        self.assertEqual(len(sliceFull), 4)
+        self.assertIs(sliceFull[0], holder1)
+        self.assertIsNone(sliceFull[1])
+        self.assertIsNone(sliceFull[2])
+        self.assertIs(sliceFull[3], holder2)
+        slicePositive = fit.ordered[0:2]
+        self.assertEqual(len(slicePositive), 2)
+        self.assertIs(slicePositive[0], holder1)
+        self.assertIsNone(slicePositive[1])
+        sliceNegative = fit.ordered[-2:]
+        self.assertEqual(len(sliceNegative), 2)
+        self.assertIsNone(sliceNegative[0])
+        sliceStep = fit.ordered[::2]
+        self.assertEqual(len(sliceStep), 2)
+        self.assertIs(sliceStep[0], holder1)
+        self.assertIsNone(sliceStep[1])
+        self.assertIs(sliceNegative[1], holder2)
+        fit.ordered.remove(holder1)
+        fit.ordered.remove(holder2)
+        self.assertObjectBuffersEmpty(fit)
+
     def testHolderView(self):
         fit = self.makeFit()
         holder1 = Mock(_fit=None, state=State.online, spec_set=Implant)
