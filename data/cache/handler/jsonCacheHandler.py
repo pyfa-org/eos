@@ -174,7 +174,7 @@ class JsonCacheHandler(CacheHandler):
         data['fingerprint'] = fingerprint
         # Update disk cache
         cacheFolder = os.path.dirname(self._diskCacheFile)
-        if not os.path.exists(cacheFolder):
+        if os.path.isdir(cacheFolder) is not True:
             os.makedirs(cacheFolder, mode=0o755)
         with bz2.BZ2File(self._diskCacheFile, 'w') as file:
             jsonData = json.dumps(data)
