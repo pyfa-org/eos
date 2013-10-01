@@ -47,7 +47,8 @@ classValidators = {Booster: lambda item: (item.categoryId == Category.implant an
                                       Slot.rig in item.slots),
                    Ship: lambda item: item.categoryId == Category.ship,
                    Skill: lambda item: item.categoryId == Category.skill,
-                   Subsystem: lambda item: item.categoryId == Category.subsystem}
+                   Subsystem: lambda item: (item.categoryId == Category.subsystem and
+                                            Slot.subsystem in item.slots)}
 
 
 class HolderClassRegister(RestrictionRegister):

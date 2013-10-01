@@ -350,6 +350,7 @@ class TestHolderClass(RestrictionTestCase):
 
     def testSubsystemPass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.subsystem)
+        item.slots = {Slot.subsystem}
         holder = Subsystem(1)
         holder._Holder__type = item
         self.trackHolder(holder)
@@ -361,6 +362,20 @@ class TestHolderClass(RestrictionTestCase):
 
     def testSubsystemFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008)
+        holder = Subsystem(1)
+        holder._Holder__type = item
+        self.trackHolder(holder)
+        restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.holderClass, Subsystem)
+        self.assertEqual(len(restrictionError.expectedClasses), 0)
+        self.untrackHolder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
+
+    def testSubsystemFailSlot(self):
+        item = self.ch.type_(typeId=1, categoryId=Category.subsystem)
+        item.slots = {1008}
         holder = Subsystem(1)
         holder._Holder__type = item
         self.trackHolder(holder)
