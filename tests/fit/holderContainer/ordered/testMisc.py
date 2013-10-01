@@ -148,11 +148,11 @@ class TestContainerOrderedMisc(FitTestCase):
         sliceNegative = fit.ordered[-2:]
         self.assertEqual(len(sliceNegative), 2)
         self.assertIsNone(sliceNegative[0])
+        self.assertIs(sliceNegative[1], holder2)
         sliceStep = fit.ordered[::2]
         self.assertEqual(len(sliceStep), 2)
         self.assertIs(sliceStep[0], holder1)
         self.assertIsNone(sliceStep[1])
-        self.assertIs(sliceNegative[1], holder2)
         fit.ordered.remove(holder1)
         fit.ordered.remove(holder2)
         self.assertObjectBuffersEmpty(fit)
