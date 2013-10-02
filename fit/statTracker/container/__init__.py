@@ -19,9 +19,6 @@
 #===============================================================================
 
 
-from .resourceUse import CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister, \
-DroneBayVolumeUseRegister, DroneBandwidthUseRegister
+from .shipResource import ShipResource
 
-
-__all__ = ['CpuUseRegister', 'PowerGridUseRegister', 'CalibrationUseRegister', 'DroneBayVolumeUseRegister',
-           'DroneBandwidthUseRegister']
+__all__ = ['ShipResource']

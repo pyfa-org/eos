@@ -23,27 +23,41 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
+from .container import *
 from .stat import *
 
 
 class StatTracker:
+    """
+    Object which is used as access points for all
+    fit statistics.
+
+    Positional arguments:
+    fit -- Fit object to which tracker is assigned
+    """
 
     def __init__(self, fit):
         self._fit = fit
-        self.__cpu = CpuRegister(fit)
-        self.__pg = PowerGridRegister(fit)
-        self.__calib = CalibrationRegister(fit)
-        self.__droneBay = DroneBayVolumeRegister(fit)
-        self.__droneBw = DroneBandwidthRegister(fit)
-
+        # Initialize registers
+        cpuReg = CpuUseRegister(fit)
+        pgReg = PowerGridUseRegister(fit)
+        calibReg = CalibrationUseRegister(fit)
+        droneBayReg = DroneBayVolumeUseRegister(fit)
+        droneBwReg = DroneBandwidthUseRegister(fit)
         # Dictionary which keeps all stats registers
         # Format: {triggering state: {registers}}
-        self.__registers = {State.offline: (self.__calib,
-                                            self.__droneBay),
-                            State.online:  (self.__cpu,
-                                            self.__pg,
-                                            self.__droneBw),
+        self.__registers = {State.offline: (calibReg,
+                                            droneBayReg),
+                            State.online:  (cpuReg,
+                                            pgReg,
+                                            droneBwReg),
                             State.active:  ()}
+        # Initialize sub-containers
+        self.cpu = ShipResource(fit, cpuReg, Attribute.cpuOutput)
+        self.powerGrid = ShipResource(fit, pgReg, Attribute.powerOutput)
+        self.calibration = ShipResource(fit, calibReg, Attribute.upgradeCapacity)
+        self.droneBay = ShipResource(fit, droneBayReg, Attribute.droneCapacity)
+        self.droneBandwidth = ShipResource(fit, droneBwReg, Attribute.droneBandwidth)
 
     def _enableStates(self, holder, states):
         """
@@ -80,26 +94,6 @@ class StatTracker:
                 continue
             for register in registers:
                 register.unregisterHolder(holder)
-
-    @property
-    def cpu(self):
-        return self.__cpu.getResourceStats()
-
-    @property
-    def powerGrid(self):
-        return self.__pg.getResourceStats()
-
-    @property
-    def calibration(self):
-        return self.__calib.getResourceStats()
-
-    @property
-    def droneBay(self):
-        return self.__droneBay.getResourceStats()
-
-    @property
-    def droneBandwidth(self):
-        return self.__droneBw.getResourceStats()
 
     @property
     def agilityFactor(self):
