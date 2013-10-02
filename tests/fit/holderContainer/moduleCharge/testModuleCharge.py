@@ -23,15 +23,13 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from eos.fit.holder.item import Module, Charge
+from eos.fit.holder.item import Charge, Implant, Module
 from eos.tests.fit.fitTestCase import FitTestCase
 
 
 class TestModuleCharge(FitTestCase):
     """
-    Everything related to charge switching and
-    addition, executed on the level of holders
-    and fit, is tested here.
+    Everything related to charge switching is tested here.
     """
 
     def setUp(self):
@@ -83,6 +81,7 @@ class TestModuleCharge(FitTestCase):
         # Checks
         self.assertIsNone(module.charge)
         self.assertIsNone(module._other)
+        self.assertIsNone(module._fit)
 
     def testDetachedModuleNoneToFreeCharge(self):
         module = Module(1, state=State.active, charge=None)
@@ -94,6 +93,8 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._other, charge)
         self.assertIs(charge.container, module)
         self.assertIs(charge._other, module)
+        self.assertIsNone(module._fit)
+        self.assertIsNone(charge._fit)
 
     def testDetachedModuleChargeToFreeCharge(self):
         module = Module(1, state=State.active, charge=None)
@@ -126,6 +127,33 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._other)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
+
+    def testDetachedModuleNoneToNonCharge(self):
+        module = Module(1, state=State.active, charge=None)
+        nonCharge = Implant(2)
+        # Action
+        self.assertRaises(TypeError, module.__setattr__, 'charge', nonCharge)
+        # Checks
+        self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
+        self.assertIsNone(module._fit)
+        self.assertIsNone(nonCharge._fit)
+
+    def testDetachedModuleChargeToNonCharge(self):
+        module = Module(1, state=State.active, charge=None)
+        charge = Charge(2)
+        nonCharge = Implant(3)
+        module.charge = charge
+        # Action
+        self.assertRaises(TypeError, module.__setattr__, 'charge', nonCharge)
+        # Checks
+        self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
+        self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
+        self.assertIsNone(module._fit)
+        self.assertIsNone(charge._fit)
+        self.assertIsNone(nonCharge._fit)
 
     def testDetachedModuleNoneToBoundCharge(self):
         fitOther = self.makeFit()
@@ -270,6 +298,49 @@ class TestModuleCharge(FitTestCase):
         fit.ordered.remove(module)
         self.assertFitBuffersEmpty(fit)
 
+    def testDetachedFitNoneToNonCharge(self):
+        fit = self.makeFit()
+        module = Module(1, state=State.active, charge=None)
+        nonCharge = Implant(2)
+        fit.ordered.append(module)
+        # Action
+        self.assertRaises(TypeError, module.__setattr__, 'charge', nonCharge)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
+        self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
+        self.assertIs(module._fit, fit)
+        self.assertIsNone(nonCharge._fit)
+        # Misc
+        fit.ordered.remove(module)
+        self.assertFitBuffersEmpty(fit)
+
+    def testDetachedFitChargeToNonCharge(self):
+        fit = self.makeFit()
+        module = Module(1, state=State.active, charge=None)
+        charge = Charge(2)
+        nonCharge = Implant(3)
+        fit.ordered.append(module)
+        module.charge = charge
+        # Action
+        self.assertRaises(TypeError, module.__setattr__, 'charge', nonCharge)
+        # Checks
+        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.rt), 0)
+        self.assertEqual(len(fit.st), 0)
+        self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
+        self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
+        self.assertIs(module._fit, fit)
+        self.assertIs(charge._fit, fit)
+        self.assertIsNone(nonCharge._fit)
+        # Misc
+        fit.ordered.remove(module)
+        self.assertFitBuffersEmpty(fit)
+
     def testDetachedFitNoneToBoundCharge(self):
         fit = self.makeFit()
         fitOther = self.makeFit()
@@ -364,7 +435,7 @@ class TestModuleCharge(FitTestCase):
         fit.ordered.remove(module)
         self.assertFitBuffersEmpty(fit)
 
-    def testDetachedFitAddRemovedModule(self):
+    def testDetachedFitRemoveChargedModule(self):
         fit = self.makeFit()
         module = Module(1, state=State.active, charge=None)
         charge = Charge(2)
@@ -513,6 +584,72 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge._fit)
+        # Misc
+        self.expectModuleChargeLink = None
+        fit.ordered.remove(module)
+        self.assertFitBuffersEmpty(fit)
+
+    def testAttachedFitNoneToNonCharge(self):
+        eos = Mock(spec_set=())
+        fit = self.makeFit(eos=eos)
+        module = Module(1, state=State.active, charge=None)
+        nonCharge = Implant(2)
+        fit.ordered.append(module)
+        self.expectModuleChargeLink = True
+        # Action
+        self.assertRaises(TypeError, module.__setattr__, 'charge', nonCharge)
+        # Checks
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(module, fit.lt)
+        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(module, fit.rt)
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(module, fit.st)
+        self.assertEqual(fit.st[module], {State.offline, State.online, State.active})
+        self.assertIsNone(module.charge)
+        self.assertIsNone(module._other)
+        self.assertIs(module._fit, fit)
+        self.assertIsNone(nonCharge._fit)
+        # Misc
+        self.expectModuleChargeLink = None
+        fit.ordered.remove(module)
+        self.assertFitBuffersEmpty(fit)
+
+    def testAttachedFitChargeToNonCharge(self):
+        eos = Mock(spec_set=())
+        fit = self.makeFit(eos=eos)
+        module = Module(1, state=State.active, charge=None)
+        charge = Charge(2)
+        nonCharge = Implant(3)
+        fit.ordered.append(module)
+        module.charge = charge
+        self.expectModuleChargeLink = True
+        # Action
+        self.assertRaises(TypeError, module.__setattr__, 'charge', nonCharge)
+        # Checks
+        self.assertEqual(len(fit.lt), 2)
+        self.assertIn(module, fit.lt)
+        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.lt)
+        self.assertEqual(fit.lt[charge], {State.offline})
+        self.assertEqual(len(fit.rt), 2)
+        self.assertIn(module, fit.rt)
+        self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.rt)
+        self.assertEqual(fit.rt[charge], {State.offline})
+        self.assertEqual(len(fit.st), 2)
+        self.assertIn(module, fit.st)
+        self.assertEqual(fit.st[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.st)
+        self.assertEqual(fit.st[charge], {State.offline})
+        self.assertIs(module.charge, charge)
+        self.assertIs(module._other, charge)
+        self.assertIs(charge.container, module)
+        self.assertIs(charge._other, module)
+        self.assertIs(module._fit, fit)
+        self.assertIs(charge._fit, fit)
+        self.assertIsNone(nonCharge._fit)
         # Misc
         self.expectModuleChargeLink = None
         fit.ordered.remove(module)
@@ -675,7 +812,7 @@ class TestModuleCharge(FitTestCase):
         fit.ordered.remove(module)
         self.assertFitBuffersEmpty(fit)
 
-    def testAttachedFitAddRemovedModule(self):
+    def testAttachedFitRemoveChargedModule(self):
         eos = Mock(spec_set=())
         fit = self.makeFit(eos=eos)
         module = Module(1, state=State.active, charge=None)
