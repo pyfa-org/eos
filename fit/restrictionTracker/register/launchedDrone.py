@@ -25,7 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Drone
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.fit.restrictionTracker.register import RestrictionRegister
+from .abc import RestrictionRegister
 
 
 LaunchedDroneErrorData = namedtuple('LaunchedDroneErrorData', ('maxLaunchedDrones', 'launchedDrones'))

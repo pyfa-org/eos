@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Location, Restriction, Slot
 from eos.const.eve import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.fit.restrictionTracker.register import RestrictionRegister
+from .abc import RestrictionRegister
 
 
 SlotNumberErrorData = namedtuple('SlotNumberErrorData', ('slotsMax', 'slotsUsed'))

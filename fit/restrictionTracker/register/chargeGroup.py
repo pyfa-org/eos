@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.fit.restrictionTracker.register import RestrictionRegister
+from .abc import RestrictionRegister
 
 
 restrictionAttrs = (Attribute.chargeGroup1, Attribute.chargeGroup2, Attribute.chargeGroup3,

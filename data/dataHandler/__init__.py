@@ -19,5 +19,5 @@
 #===============================================================================
 
 
-from .dataHandler import DataHandler
+from .abc import DataHandler
 from .jsonDataHandler import JsonDataHandler

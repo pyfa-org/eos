@@ -21,7 +21,7 @@
 import json
 import os.path
 
-from .dataHandler import DataHandler
+from .abc import DataHandler
 
 
 class JsonDataHandler(DataHandler):

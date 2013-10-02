@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Location, Restriction
 from eos.const.eve import Type, Attribute
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.fit.restrictionTracker.register import RestrictionRegister
+from .abc import RestrictionRegister
 
 
 # Holders of volume bigger than this

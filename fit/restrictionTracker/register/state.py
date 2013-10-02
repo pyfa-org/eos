@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.fit.restrictionTracker.register import RestrictionRegister
+from .abc import RestrictionRegister
 
 
 StateErrorData = namedtuple('StateErrorData', ('currentState', 'maxState'))

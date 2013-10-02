@@ -19,6 +19,6 @@
 #===============================================================================
 
 
-from .cacheHandler import CacheHandler
+from .abc import CacheHandler
 from .jsonCacheHandler import JsonCacheHandler
 from .exception import TypeFetchError

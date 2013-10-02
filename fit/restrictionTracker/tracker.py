@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from .exception import RegisterValidationError, ValidationError
-from .restriction import *
+from .register import *
 
 
 class RestrictionTracker:

@@ -25,7 +25,7 @@ from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.holder.item import *
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.fit.restrictionTracker.register import RestrictionRegister
+from .abc import RestrictionRegister
 
 
 HolderClassErrorData = namedtuple('HolderClassErrorData', ('holderClass', 'expectedClasses'))
