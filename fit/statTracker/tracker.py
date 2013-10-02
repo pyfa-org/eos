@@ -24,7 +24,7 @@ import math
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from .container import *
-from .stat import *
+from .register import *
 
 
 class StatTracker:

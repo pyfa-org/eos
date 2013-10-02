@@ -21,7 +21,7 @@
 
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Drone
-from eos.fit.statTracker.register import StatRegister
+from .abc import StatRegister
 
 
 class ResourceUseRegister(StatRegister):
