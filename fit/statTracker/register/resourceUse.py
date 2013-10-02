@@ -46,8 +46,7 @@ class ResourceUseRegister(StatRegister):
 
     def getResourceUse(self):
         # Calculate resource consumption of all holders on ship
-        use = sum(h.attributes[self.__usageAttr] for h in self.__resourceUsers)
-        return use
+        return sum(h.attributes[self.__usageAttr] for h in self.__resourceUsers)
 
 class CpuUseRegister(ResourceUseRegister):
     """Calculates CPU use of passed fit."""

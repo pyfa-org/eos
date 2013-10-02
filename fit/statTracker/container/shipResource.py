@@ -21,6 +21,10 @@
 
 
 class ShipResource:
+    """
+    Class designed to conveniently provide ship
+    resource use and output.
+    """
 
     __slots__ = ('_fit', '__register', '__outputAttr')
 
