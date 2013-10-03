@@ -44,10 +44,14 @@ class StatTracker:
         calibReg = CalibrationUseRegister(fit)
         droneBayReg = DroneBayVolumeUseRegister(fit)
         droneBwReg = DroneBandwidthUseRegister(fit)
+        turretReg = TurretUseRegister(fit)
+        launcherReg = LauncherUseRegister(fit)
         # Dictionary which keeps all stats registers
         # Format: {triggering state: {registers}}
         self.__registers = {State.offline: (calibReg,
-                                            droneBayReg),
+                                            droneBayReg,
+                                            turretReg,
+                                            launcherReg),
                             State.online:  (cpuReg,
                                             pgReg,
                                             droneBwReg),
@@ -63,6 +67,8 @@ class StatTracker:
         self.lowSlots = ShipSlots(fit, fit.modules.low, Attribute.lowSlots)
         self.rigSlots = ShipSlots(fit, fit.rigs, Attribute.rigSlots)
         self.subsystemSlots = ShipSlots(fit, fit.subsystems, Attribute.subSystemSlot)
+        self.turretSlots = ShipSlots(fit, turretReg, Attribute.turretSlotsLeft)
+        self.launcherSlots = ShipSlots(fit, launcherReg, Attribute.launcherSlotsLeft)
 
     def _enableStates(self, holder, states):
         """

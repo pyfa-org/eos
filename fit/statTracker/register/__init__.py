@@ -21,7 +21,8 @@
 
 from .resourceUse import CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister, \
 DroneBayVolumeUseRegister, DroneBandwidthUseRegister
+from .slotUse import TurretUseRegister, LauncherUseRegister
 
 
 __all__ = ['CpuUseRegister', 'PowerGridUseRegister', 'CalibrationUseRegister', 'DroneBayVolumeUseRegister',
-           'DroneBandwidthUseRegister']
+           'DroneBandwidthUseRegister', 'TurretUseRegister', 'LauncherUseRegister']
