@@ -58,6 +58,11 @@ class StatTracker:
         self.calibration = ShipResource(fit, calibReg, Attribute.upgradeCapacity)
         self.droneBay = ShipResource(fit, droneBayReg, Attribute.droneCapacity)
         self.droneBandwidth = ShipResource(fit, droneBwReg, Attribute.droneBandwidth)
+        self.highSlots = ShipSlots(fit, fit.modules.high, Attribute.hiSlots)
+        self.medSlots = ShipSlots(fit, fit.modules.med, Attribute.medSlots)
+        self.lowSlots = ShipSlots(fit, fit.modules.low, Attribute.lowSlots)
+        self.rigSlots = ShipSlots(fit, fit.rigs, Attribute.rigSlots)
+        self.subsystemSlots = ShipSlots(fit, fit.subsystems, Attribute.subSystemSlot)
 
     def _enableStates(self, holder, states):
         """

@@ -46,12 +46,6 @@ class Fit:
             self.__eos = eosModule.defaultInstance
         else:
             self.__eos = eos
-        # Tracks links between holders assigned to fit
-        self._linkTracker = LinkTracker(self)
-        # Tracks various restrictions related to given fitting
-        self._restrictionTracker = RestrictionTracker(self)
-        # Access point for all the fitting stats
-        self.stats = StatTracker(self)
         # Attributes to store holders directly assigned to fit
         self._ship = None
         self._character = None
@@ -69,6 +63,10 @@ class Fit:
         self.drones = HolderSet(self, Drone)
         # Contains all holders currently attached to fit
         self._holders = set()
+        # Initialize services
+        self._linkTracker = LinkTracker(self)  # Tracks links between holders assigned to fit
+        self._restrictionTracker = RestrictionTracker(self) # Tracks various restrictions related to given fitting
+        self.stats = StatTracker(self)  # Access point for all the fitting stats
         # As character object shouldn't change in any sane
         # cases, initialize it here
         self.character = Character(Type.characterStatic)
