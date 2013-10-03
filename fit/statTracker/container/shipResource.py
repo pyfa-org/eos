@@ -26,8 +26,6 @@ class ShipResource:
     resource use and output.
     """
 
-    __slots__ = ('_fit', '__register', '__outputAttr')
-
     def __init__(self, fit, resourceUseRegister, outputAttr):
         self._fit = fit
         self.__register = resourceUseRegister
