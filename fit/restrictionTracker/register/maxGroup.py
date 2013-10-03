@@ -28,7 +28,7 @@ from eos.util.keyedSet import KeyedSet
 from .abc import RestrictionRegister
 
 
-MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('maxGroup', 'holderGroup', 'groupHolders'))
+MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('holderGroup', 'maxGroup', 'groupHolders'))
 
 
 class MaxGroupRegister(RestrictionRegister):
@@ -89,8 +89,8 @@ class MaxGroupRegister(RestrictionRegister):
             # If number of registered holders from this group is bigger,
             # then current holder is tainted
             if groupHolders > maxGroupRestriction:
-                taintedHolders[holder] = MaxGroupErrorData(maxGroup=maxGroupRestriction,
-                                                           holderGroup=groupId,
+                taintedHolders[holder] = MaxGroupErrorData(holderGroup=groupId,
+                                                           maxGroup=maxGroupRestriction,
                                                            groupHolders=groupHolders)
         # Raise error if we detected any tainted holders
         if taintedHolders:

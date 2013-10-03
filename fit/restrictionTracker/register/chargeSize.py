@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
-ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('allowedSize', 'holderSize'))
+ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('holderSize', 'allowedSize'))
 
 
 class ChargeSizeRegister(RestrictionRegister):
@@ -71,8 +71,8 @@ class ChargeSizeRegister(RestrictionRegister):
             containerSize = container.item.attributes[Attribute.chargeSize]
             chargeSize = charge.item.attributes.get(Attribute.chargeSize)
             if containerSize != chargeSize:
-                taintedHolders[charge] = ChargeSizeErrorData(allowedSize=containerSize,
-                                                             holderSize=chargeSize)
+                taintedHolders[charge] = ChargeSizeErrorData(holderSize=chargeSize,
+                                                             allowedSize=containerSize)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

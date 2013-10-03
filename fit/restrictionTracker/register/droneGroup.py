@@ -31,7 +31,7 @@ from .abc import RestrictionRegister
 restrictionAttrs = (Attribute.allowedDroneGroup1, Attribute.allowedDroneGroup2)
 
 
-DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('allowedGroups', 'droneGroup'))
+DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('holderGroup', 'allowedGroups'))
 
 
 class DroneGroupRegister(RestrictionRegister):
@@ -88,8 +88,8 @@ class DroneGroupRegister(RestrictionRegister):
             # Taint holders, whose group is not allowed
             holderGroup = holder.item.groupId
             if holderGroup not in allowedGroups:
-                taintedHolders[holder] = DroneGroupErrorData(allowedGroups=allowedGroups,
-                                                             droneGroup=holderGroup)
+                taintedHolders[holder] = DroneGroupErrorData(holderGroup=holderGroup,
+                                                             allowedGroups=allowedGroups)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

@@ -28,7 +28,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
-ResourceErrorData = namedtuple('ResourceErrorData', ('output', 'totalUse', 'holderUse'))
+ResourceErrorData = namedtuple('ResourceErrorData', ('totalUse', 'output', 'holderUse'))
 
 
 class ResourceRegister(RestrictionRegister):
@@ -70,8 +70,8 @@ class ResourceRegister(RestrictionRegister):
             # consume resource
             if resourceUse <= 0:
                 continue
-            taintedHolders[holder] = ResourceErrorData(output=output,
-                                                       totalUse=totalUse,
+            taintedHolders[holder] = ResourceErrorData(totalUse=totalUse,
+                                                       output=output,
                                                        holderUse=resourceUse)
         raise RegisterValidationError(taintedHolders)
 

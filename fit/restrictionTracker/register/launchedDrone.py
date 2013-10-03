@@ -28,7 +28,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
-LaunchedDroneErrorData = namedtuple('LaunchedDroneErrorData', ('maxLaunchedDrones', 'launchedDrones'))
+LaunchedDroneErrorData = namedtuple('LaunchedDroneErrorData', ('launchedDrones', 'maxLaunchedDrones'))
 
 
 class LaunchedDroneRegister(RestrictionRegister):
@@ -81,8 +81,8 @@ class LaunchedDroneRegister(RestrictionRegister):
         if launchedDrones > maxLaunchedDrones:
             taintedHolders = {}
             for holder in self.__restrictedHolders:
-                taintedHolders[holder] = LaunchedDroneErrorData(maxLaunchedDrones=maxLaunchedDrones,
-                                                                launchedDrones=launchedDrones)
+                taintedHolders[holder] = LaunchedDroneErrorData(launchedDrones=launchedDrones,
+                                                                maxLaunchedDrones=maxLaunchedDrones)
             raise RegisterValidationError(taintedHolders)
 
     @property

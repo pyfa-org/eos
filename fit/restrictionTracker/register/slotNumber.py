@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
-SlotNumberErrorData = namedtuple('SlotNumberErrorData', ('slotsMax', 'slotsUsed'))
+SlotNumberErrorData = namedtuple('SlotNumberErrorData', ('slotsUsed', 'slotsMaxAllowed'))
 
 
 class SlotNumberRegister(RestrictionRegister):
@@ -86,8 +86,8 @@ class SlotNumberRegister(RestrictionRegister):
         if slotsUsed > slotsMax:
             taintedHolders = {}
             for holder in self.__slotConsumers:
-                taintedHolders[holder] = SlotNumberErrorData(slotsMax=slotsMax,
-                                                             slotsUsed=slotsUsed)
+                taintedHolders[holder] = SlotNumberErrorData(slotsUsed=slotsUsed,
+                                                             slotsMaxAllowed=slotsMax)
             raise RegisterValidationError(taintedHolders)
 
     @property

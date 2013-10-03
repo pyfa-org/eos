@@ -27,7 +27,7 @@ from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
-RigSizeErrorData = namedtuple('RigSizeErrorData', ('allowedSize', 'holderSize'))
+RigSizeErrorData = namedtuple('RigSizeErrorData', ('holderSize', 'allowedSize'))
 
 
 class RigSizeRegister(RestrictionRegister):
@@ -75,8 +75,8 @@ class RigSizeRegister(RestrictionRegister):
             # If rig size specification on holder and ship differs,
             # then holder is tainted
             if holderRigSize != allowedRigSize:
-                taintedHolders[holder] = RigSizeErrorData(allowedSize=allowedRigSize,
-                                                          holderSize=holderRigSize)
+                taintedHolders[holder] = RigSizeErrorData(holderSize=holderRigSize,
+                                                          allowedSize=allowedRigSize)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

@@ -31,7 +31,7 @@ restrictionAttrs = (Attribute.chargeGroup1, Attribute.chargeGroup2, Attribute.ch
                     Attribute.chargeGroup4, Attribute.chargeGroup5)
 
 
-ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('allowedGroups', 'holderGroup'))
+ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('holderGroup', 'allowedGroups'))
 
 
 class ChargeGroupRegister(RestrictionRegister):
@@ -78,8 +78,8 @@ class ChargeGroupRegister(RestrictionRegister):
             if charge is None:
                 continue
             if charge.item.groupId not in allowedGroups:
-                taintedHolders[charge] = ChargeGroupErrorData(allowedGroups=allowedGroups,
-                                                              holderGroup=charge.item.groupId)
+                taintedHolders[charge] = ChargeGroupErrorData(holderGroup=charge.item.groupId,
+                                                              allowedGroups=allowedGroups)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

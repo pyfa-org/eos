@@ -32,7 +32,7 @@ from .abc import RestrictionRegister
 maxSubcapVolume = 500
 
 
-CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('allowedVolume', 'holderVolume'))
+CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('holderVolume', 'maxAllowedVolume'))
 
 
 class CapitalItemRegister(RestrictionRegister):
@@ -86,8 +86,8 @@ class CapitalItemRegister(RestrictionRegister):
             taintedHolders = {}
             for holder in self.__capitalHolders:
                 holderVolume = holder.item.attributes[Attribute.volume]
-                taintedHolders[holder] = CapitalItemErrorData(allowedVolume=maxSubcapVolume,
-                                                              holderVolume=holderVolume)
+                taintedHolders[holder] = CapitalItemErrorData(holderVolume=holderVolume,
+                                                              maxAllowedVolume=maxSubcapVolume)
             raise RegisterValidationError(taintedHolders)
 
     @property

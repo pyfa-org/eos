@@ -34,7 +34,7 @@ groupRestrictionAttrs = (Attribute.canFitShipGroup1, Attribute.canFitShipGroup2,
                          Attribute.canFitShipGroup4)
 
 
-ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('allowedTypes', 'allowedGroups', 'shipType', 'shipGroup'))
+ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('shipType', 'shipGroup', 'allowedTypes', 'allowedGroups'))
 
 
 # Helper class-container for metadata regarding allowed
@@ -112,10 +112,10 @@ class ShipTypeGroupRegister(RestrictionRegister):
             # If ship's type isn't in allowed types and ship's
             # group isn't in allowed groups, holder is tainted
             if shipTypeId not in allowedData.types and shipGroupId not in allowedData.groups:
-                taintedHolders[holder] = ShipTypeGroupErrorData(allowedTypes=allowedData.types,
-                                                                allowedGroups=allowedData.groups,
-                                                                shipType=shipTypeId,
-                                                                shipGroup=shipGroupId)
+                taintedHolders[holder] = ShipTypeGroupErrorData(shipType=shipTypeId,
+                                                                shipGroup=shipGroupId,
+                                                                allowedTypes=allowedData.types,
+                                                                allowedGroups=allowedData.groups)
         # Raise error if there're any tainted holders
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
