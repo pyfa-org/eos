@@ -21,12 +21,12 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction
+from eos.const.eos import Restriction, State
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
-StateErrorData = namedtuple('StateErrorData', ('currentState', 'maxState'))
+StateErrorData = namedtuple('StateErrorData', ('currentState', 'allowedStates'))
 
 
 class StateRegister(RestrictionRegister):
@@ -53,8 +53,9 @@ class StateRegister(RestrictionRegister):
         taintedHolders = {}
         for holder in self.__holders:
             if holder.state > holder.item.maxState:
+                allowedStates = tuple(filter(lambda s: s <= holder.item.maxState, State))
                 taintedHolders[holder] = StateErrorData(currentState=holder.state,
-                                                        maxState=holder.item.maxState)
+                                                        allowedStates=allowedStates)
         if taintedHolders:
             raise RegisterValidationError(taintedHolders)
 

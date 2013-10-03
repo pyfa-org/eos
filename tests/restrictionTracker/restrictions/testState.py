@@ -59,7 +59,7 @@ class TestState(RestrictionTestCase):
         restrictionError = self.getRestrictionError(holder, Restriction.state)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.currentState, State.overload)
-        self.assertEqual(restrictionError.maxState, State.active)
+        self.assertCountEqual(restrictionError.allowedStates, (State.offline, State.online, State.active))
         self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
