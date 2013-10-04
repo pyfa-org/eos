@@ -42,7 +42,7 @@ class TestMedSlot(StatTestCase):
         self.assertStatBuffersEmpty()
 
     def testUseMultiple(self):
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
+        item = self.ch.type_(typeId=1, attributes={})
         holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         self.fit.modules.med.append(holder1)
@@ -52,7 +52,7 @@ class TestMedSlot(StatTestCase):
         self.assertStatBuffersEmpty()
 
     def testUseMultipleWithNone(self):
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
+        item = self.ch.type_(typeId=1, attributes={})
         holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         self.fit.modules.med.append(None)
@@ -64,7 +64,7 @@ class TestMedSlot(StatTestCase):
         self.assertStatBuffersEmpty()
 
     def testUseOtherContainer(self):
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
+        item = self.ch.type_(typeId=1, attributes={})
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         self.fit.modules.low.append(holder)
         self.assertEqual(self.st.medSlots.used, 0)

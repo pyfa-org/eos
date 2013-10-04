@@ -42,7 +42,7 @@ class TestRig(StatTestCase):
         self.assertStatBuffersEmpty()
 
     def testUseMultiple(self):
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
+        item = self.ch.type_(typeId=1, attributes={})
         holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         self.fit.rigs.add(holder1)
@@ -52,7 +52,7 @@ class TestRig(StatTestCase):
         self.assertStatBuffersEmpty()
 
     def testUseOtherContainer(self):
-        item = self.ch.type_(typeId=1, attributes={Attribute.upgradeCost: 0})
+        item = self.ch.type_(typeId=1, attributes={})
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         self.fit.subsystems.add(holder)
         self.assertEqual(self.st.rigSlots.used, 0)
