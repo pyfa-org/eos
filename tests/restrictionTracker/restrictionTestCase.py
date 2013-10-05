@@ -49,6 +49,7 @@ class RestrictionTestCase(EosTestCase):
         self.fit = Mock()
         self.fit.ship = None
         self.fit.character = None
+        self.fit.skills = {}
         self.fit.modules.high = []
         self.fit.modules.med = []
         self.fit.modules.low = []
