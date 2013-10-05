@@ -30,7 +30,7 @@ class HolderContainerError(EosError):
     pass
 
 
-class SlotTakenError(EosError):
+class SlotTakenError(HolderContainerError):
     """
     When attempt to overwrite another holder in ordered container
     is detected, this exception is raised.

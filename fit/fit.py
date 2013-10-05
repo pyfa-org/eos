@@ -24,7 +24,7 @@ from eos.const.eos import State
 from eos.const.eve import Type
 from .attributeCalculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
-from .holder.container import HolderList, HolderSet, ModuleRacks
+from .holder.container import HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
 from .holder.item import *
 from .restrictionTracker import RestrictionTracker
 from .statTracker import StatTracker
@@ -51,7 +51,7 @@ class Fit:
         self._character = None
         self._systemWide = None
         # Character-related holder containers
-        self.skills = HolderSet(self, Skill)
+        self.skills = HolderRestrictedSet(self, Skill)
         self.implants = HolderSet(self, Implant)
         self.boosters = HolderSet(self, Booster)
         # Ship-related containers
