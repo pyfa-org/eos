@@ -47,6 +47,6 @@ class ShipSlots:
             return None
         else:
             try:
-                return shipHolderAttribs[self.__slotAttr]
+                return int(shipHolderAttribs[self.__slotAttr])
             except KeyError:
                 return None

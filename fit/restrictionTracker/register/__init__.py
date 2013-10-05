@@ -34,7 +34,7 @@ from .shipTypeGroup import ShipTypeGroupRegister
 from .skillRequirement import SkillRequirementRegister
 from .skillUniqueness import SkillUniquenessRegister
 from .slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
-from .slotNumber import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
+from .slotAmount import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
 SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
 from .state import StateRegister
 

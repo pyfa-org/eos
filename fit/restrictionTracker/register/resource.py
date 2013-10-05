@@ -41,7 +41,7 @@ class ResourceRegister(RestrictionRegister):
     def __init__(self, fit, statName, usageAttr, restrictionType):
         self.__restrictionType = restrictionType
         self._fit = fit
-        # Use this resource name to get numbers from stats tracker
+        # Use this stat name to get numbers from stats tracker
         self.__statName = statName
         self.__usageAttr = usageAttr
         self.__resourceUsers = set()
