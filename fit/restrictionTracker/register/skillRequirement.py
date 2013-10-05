@@ -22,9 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.fit.holder.item import Skill
 from eos.fit.restrictionTracker.exception import RegisterValidationError
-from eos.util.keyedSet import KeyedSet
 from .abc import RestrictionRegister
 
 
@@ -37,31 +35,26 @@ class SkillRequirementRegister(RestrictionRegister):
     To use holder, all its skill requirements must be met.
 
     Details:
-    Only holders of Skill class are able to satisfy skill
-    requirements.
+    Only holders located within fit.skills container are able to
+    satisfy skill requirements.
     Original item attributes are taken to determine skill and
     skill level requirements.
     If corresponding skill is found, but its skill level is None,
     check for holder is failed.
     """
 
-    def __init__(self):
-        # Container for skill holders, for ease of access
-        # Format: {holder id: {holders}}
-        self.__skillHolders = KeyedSet()
+    def __init__(self, fit):
+        self._fit = fit
         # Set with holders which have any skill requirements
         # Format: {holders}
         self.__restrictedHolders = set()
 
     def registerHolder(self, holder):
-        if isinstance(holder, Skill):
-            self.__skillHolders.addData(holder.item.id, holder)
         # Holders which have any skill requirement are tracked
         if holder.item.requiredSkills:
             self.__restrictedHolders.add(holder)
 
     def unregisterHolder(self, holder):
-        self.__skillHolders.rmData(holder.item.id, holder)
         self.__restrictedHolders.discard(holder)
 
     def validate(self):
@@ -69,20 +62,17 @@ class SkillRequirementRegister(RestrictionRegister):
         # Go through restricted holders
         for holder in self.__restrictedHolders:
             # Container for skill requirement errors
+            # for current holder
             skillRequirementErrors = []
             # Check each skill requirement
             for requiredSkillId in holder.item.requiredSkills:
                 requiredSkillLevel = holder.item.requiredSkills[requiredSkillId]
-                skillHolders = self.__skillHolders.get(requiredSkillId) or ()
-                # Pick max level of all skill holders, absence of skill
-                # is considered as skill level set to None
-                skillLevel = None
-                for skillHolder in skillHolders:
-                    skillHolderLevel = skillHolder.level
-                    if skillLevel is None:
-                        skillLevel = skillHolderLevel
-                    elif skillHolderLevel is not None:
-                        skillLevel = max(skillLevel, skillHolderLevel)
+                # Get skill level with None as fallback value for case
+                # when we don't have such skill in fit
+                try:
+                    skillLevel = self._fit.skills[requiredSkillId].level
+                except KeyError:
+                    skillLevel = None
                 # Last check - if skill level is lower than expected, current holder
                 # is tainted; mark it so and move to the next one
                 if skillLevel is None or skillLevel < requiredSkillLevel:

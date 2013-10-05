@@ -332,6 +332,17 @@ class TestContainerRestrictedSet(FitTestCase):
         # Misc
         self.assertObjectBuffersEmpty(fit)
 
+    def testGetItem(self):
+        eos = Mock(spec_set=())
+        fit = self.makeFit(eos=eos)
+        holder = Mock(_fit=None, _typeId=5, state=State.online, spec_set=Skill)
+        fit.container.add(holder)
+        self.assertIs(fit.container[5], holder)
+        self.assertRaises(KeyError, fit.container.__getitem__, 0)
+        self.assertRaises(KeyError, fit.container.__getitem__, 6)
+        fit.container.remove(holder)
+        self.assertFitBuffersEmpty(fit.container)
+
     def testLen(self):
         fit = self.makeFit()
         holder1 = Mock(_fit=None, _typeId=1, state=State.active, spec_set=Skill)
