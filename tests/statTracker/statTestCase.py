@@ -54,6 +54,7 @@ class StatTestCase(EosTestCase):
         self.fit.modules.low = []
         self.fit.rigs = set()
         self.fit.subsystems = set()
+        self.fit.drones = set()
         self.st = StatTracker(self.fit)
 
     def setShip(self, holder):

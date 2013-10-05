@@ -20,7 +20,6 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone
 from .abc import StatRegister
 
 
@@ -80,7 +79,7 @@ class DroneBayVolumeUseRegister(ResourceUseRegister):
         ResourceUseRegister.__init__(self, fit, Attribute.volume)
 
     def registerHolder(self, holder):
-        if isinstance(holder, Drone):
+        if holder in self._fit.drones:
             ResourceUseRegister.registerHolder(self, holder)
 
 

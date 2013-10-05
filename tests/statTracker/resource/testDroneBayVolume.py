@@ -41,6 +41,7 @@ class TestDroneBayVolume(StatTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(holder)
         self.trackHolder(holder)
         self.assertEqual(self.st.droneBay.used, 50)
         self.untrackHolder(holder)
@@ -51,9 +52,11 @@ class TestDroneBayVolume(StatTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(holder1)
         self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 30}
+        self.fit.drones.add(holder2)
         self.trackHolder(holder2)
         self.assertEqual(self.st.droneBay.used, 80)
         self.untrackHolder(holder1)
@@ -65,9 +68,11 @@ class TestDroneBayVolume(StatTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(holder1)
         self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: -30}
+        self.fit.drones.add(holder2)
         self.trackHolder(holder2)
         self.assertEqual(self.st.droneBay.used, 20)
         self.untrackHolder(holder1)
@@ -81,16 +86,13 @@ class TestDroneBayVolume(StatTestCase):
         self.assertStatBuffersEmpty()
 
     def testUseOtherClass(self):
-        # Only Dronee class should be taken into account
+        # Make sure holders placed to other containers are unaffected
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
-        holder1.attributes = {Attribute.volume: 50}
-        self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Implant)
-        holder2.attributes = {Attribute.volume: 30}
-        self.trackHolder(holder2)
-        self.assertEqual(self.st.droneBay.used, 50)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder.attributes = {Attribute.volume: 30}
+        self.fit.rigs.add(holder)
+        self.trackHolder(holder)
+        self.assertEqual(self.st.droneBay.used, 0)
+        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
         self.assertStatBuffersEmpty()

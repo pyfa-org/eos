@@ -44,8 +44,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertRestrictionBuffersEmpty()
 
     def testFailMultiple(self):
-        # Make sure satisfied skill requirements are not shown
-        # up in error
+        # Check that multiple errors are shown as iterable
         item = self.ch.type_(typeId=1)
         item.requiredSkills = {48: 1, 50: 5}
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)

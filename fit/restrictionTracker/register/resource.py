@@ -23,7 +23,6 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
@@ -128,7 +127,7 @@ class DroneBayVolumeRegister(ResourceRegister):
     drone bay volume.
 
     Details:
-    Only holders of Drone class are tracked.
+    Only holders placed to fit.drones are tracked.
     For validation, stats module data is used.
     """
 
@@ -136,7 +135,7 @@ class DroneBayVolumeRegister(ResourceRegister):
         ResourceRegister.__init__(self, fit, 'droneBay', Attribute.volume, Restriction.droneBayVolume)
 
     def registerHolder(self, holder):
-        if isinstance(holder, Drone):
+        if holder in self._fit.drones:
             ResourceRegister.registerHolder(self, holder)
 
 

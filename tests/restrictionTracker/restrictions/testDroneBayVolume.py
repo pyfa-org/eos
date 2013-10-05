@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone, Implant
+from eos.fit.holder.item import Drone
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
@@ -36,6 +36,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(holder)
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 50
         self.fit.stats.droneBay.output = 40
@@ -54,6 +55,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 5}
+        self.fit.drones.add(holder)
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 5
         self.fit.stats.droneBay.output = None
@@ -73,9 +75,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 25}
+        self.fit.drones.add(holder1)
         self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 20}
+        self.fit.drones.add(holder2)
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 45
         self.fit.stats.droneBay.output = 40
@@ -99,6 +103,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 40})
         holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(holder)
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 100
         self.fit.stats.droneBay.output = 50
@@ -118,9 +123,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(holder1)
         self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: -10}
+        self.fit.drones.add(holder2)
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 90
         self.fit.stats.droneBay.output = 50
@@ -143,9 +150,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(holder1)
         self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 0}
+        self.fit.drones.add(holder2)
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 100
         self.fit.stats.droneBay.output = 50
@@ -167,9 +176,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
         holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder1.attributes = {Attribute.volume: 25}
+        self.fit.drones.add(holder1)
         self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder2.attributes = {Attribute.volume: 20}
+        self.fit.drones.add(holder2)
         self.trackHolder(holder2)
         self.fit.stats.droneBay.used = 45
         self.fit.stats.droneBay.output = 50
@@ -189,6 +200,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         item = self.ch.type_(typeId=1)
         holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(holder)
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 100
         self.fit.stats.droneBay.output = 50
@@ -198,11 +210,12 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testPassOtherClass(self):
-        # Make sure holders of all classes are affected
+    def testPassOtherContainer(self):
+        # Make sure holders placed to other containers are unaffected
         item = self.ch.type_(typeId=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Implant)
+        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
         holder.attributes = {Attribute.volume: 50}
+        self.fit.rigs.add(holder)
         self.trackHolder(holder)
         self.fit.stats.droneBay.used = 50
         self.fit.stats.droneBay.output = 40
