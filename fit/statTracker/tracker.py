@@ -55,8 +55,8 @@ class StatTracker:
                                             launcherReg),
                             State.online:  (cpuReg,
                                             pgReg,
-                                            droneBwReg),
-                            State.active:  (launchedDroneReg,)}
+                                            droneBwReg,
+                                            launchedDroneReg)}
         # Initialize sub-containers
         self.cpu = ShipResource(fit, cpuReg, Attribute.cpuOutput)
         self.powerGrid = ShipResource(fit, pgReg, Attribute.powerOutput)
