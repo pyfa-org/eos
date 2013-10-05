@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-
-class ShipSlots:
+class EntitySlots:
     """
-    Class for providing amount of used and available
-    slots.
+    Generic functionality for classes which track amount
+    of used slots against provided slots
     """
 
-    def __init__(self, fit, container, slotAttr):
+    def __init__(self, fit, container, slotCarrier, slotAttr):
         self._fit = fit
         self.__container = container
+        self.__slotCarrier = slotCarrier
         self.__slotAttr = slotAttr
 
     @property
@@ -40,7 +40,7 @@ class ShipSlots:
         # Get amount of provided slots, setting it to None
         # if fitting doesn't have ship assigned,
         # or ship doesn't have slot attribute
-        shipHolder = self._fit.ship
+        shipHolder = getattr(self._fit, self.__slotCarrier)
         try:
             shipHolderAttribs = shipHolder.attributes
         except AttributeError:
@@ -50,3 +50,23 @@ class ShipSlots:
                 return int(shipHolderAttribs[self.__slotAttr])
             except KeyError:
                 return None
+
+
+class ShipSlots(EntitySlots):
+    """
+    Class for providing amount of used and available
+    slots on ship.
+    """
+
+    def __init__(self, fit, container, slotAttr):
+        EntitySlots.__init__(self, fit, container, 'ship', slotAttr)
+
+
+class CharSlots(EntitySlots):
+    """
+    Class for providing amount of used and available
+    slots on character.
+    """
+
+    def __init__(self, fit, container, slotAttr):
+        EntitySlots.__init__(self, fit, container, 'character', slotAttr)

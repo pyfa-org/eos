@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import Slot
+from eos.fit.holder.item import Drone
 from .abc import StatRegister
 
 
@@ -49,9 +50,6 @@ class TurretUseRegister(SlotUseRegister):
     Assist with calculation of amount of used turret slots.
     """
 
-    def __init__(self, fit):
-        SlotUseRegister.__init__(self, fit)
-
     def registerHolder(self, holder):
         if Slot.turret in holder.item.slots:
             SlotUseRegister.registerHolder(self, holder)
@@ -62,9 +60,15 @@ class LauncherUseRegister(SlotUseRegister):
     Assist with calculation of amount of used launcher slots.
     """
 
-    def __init__(self, fit):
-        SlotUseRegister.__init__(self, fit)
-
     def registerHolder(self, holder):
         if Slot.launcher in holder.item.slots:
+            SlotUseRegister.registerHolder(self, holder)
+
+class LaunchedDroneRegister(SlotUseRegister):
+    """
+    Assist with calculation of amount of launched drones.
+    """
+
+    def registerHolder(self, holder):
+        if isinstance(holder, Drone):
             SlotUseRegister.registerHolder(self, holder)

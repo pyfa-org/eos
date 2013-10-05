@@ -20,6 +20,6 @@
 
 
 from .shipResource import ShipResource
-from .shipSlots import ShipSlots
+from .slots import CharSlots, ShipSlots
 
-__all__ = ['ShipResource', 'ShipSlots']
+__all__ = ['ShipResource', 'CharSlots', 'ShipSlots']
