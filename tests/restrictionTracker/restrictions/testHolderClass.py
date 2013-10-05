@@ -31,7 +31,7 @@ class TestHolderClass(RestrictionTestCase):
     def testBoosterPass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.implant, attributes={Attribute.boosterness: 3})
         holder = Booster(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -42,7 +42,7 @@ class TestHolderClass(RestrictionTestCase):
     def testBoosterFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008, attributes={Attribute.boosterness: 3})
         holder = Booster(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -55,7 +55,7 @@ class TestHolderClass(RestrictionTestCase):
     def testBoosterFailAttr(self):
         item = self.ch.type_(typeId=1, categoryId=Category.implant)
         holder = Booster(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -68,7 +68,7 @@ class TestHolderClass(RestrictionTestCase):
     def testCharacterPass(self):
         item = self.ch.type_(typeId=1, groupId=Group.character)
         holder = Character(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -79,7 +79,7 @@ class TestHolderClass(RestrictionTestCase):
     def testCharacterFailGroup(self):
         item = self.ch.type_(typeId=1, groupId=1008)
         holder = Character(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -92,7 +92,7 @@ class TestHolderClass(RestrictionTestCase):
     def testChargePass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.charge)
         holder = Charge(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -103,7 +103,7 @@ class TestHolderClass(RestrictionTestCase):
     def testChargeFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008)
         holder = Charge(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -116,7 +116,7 @@ class TestHolderClass(RestrictionTestCase):
     def testDronePass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.drone)
         holder = Drone(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -127,7 +127,7 @@ class TestHolderClass(RestrictionTestCase):
     def testDroneFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008)
         holder = Drone(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -140,7 +140,7 @@ class TestHolderClass(RestrictionTestCase):
     def testEffectBeaconPass(self):
         item = self.ch.type_(typeId=1, groupId=Group.effectBeacon)
         holder = EffectBeacon(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -151,7 +151,7 @@ class TestHolderClass(RestrictionTestCase):
     def testEffectBeaconFailGroup(self):
         item = self.ch.type_(typeId=1, groupId=1008)
         holder = EffectBeacon(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -164,7 +164,7 @@ class TestHolderClass(RestrictionTestCase):
     def testImplantPass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.implant, attributes={Attribute.implantness: 3})
         holder = Implant(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -175,7 +175,7 @@ class TestHolderClass(RestrictionTestCase):
     def testImplantFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008, attributes={Attribute.implantness: 3})
         holder = Implant(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -188,7 +188,7 @@ class TestHolderClass(RestrictionTestCase):
     def testImplantFailAttr(self):
         item = self.ch.type_(typeId=1, categoryId=Category.implant)
         holder = Implant(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -202,7 +202,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.module)
         item.slots = {Slot.moduleHigh}
         holder = Module(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -214,7 +214,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.module)
         item.slots = {Slot.moduleMed}
         holder = Module(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -226,7 +226,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.module)
         item.slots = {Slot.moduleLow}
         holder = Module(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -238,7 +238,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=1008)
         item.slots = {Slot.moduleHigh}
         holder = Module(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -251,7 +251,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.module)
         item.slots = {1008}
         holder = Module(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -265,7 +265,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.module)
         item.slots = {Slot.rig}
         holder = Rig(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -277,7 +277,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=1008)
         item.slots = {Slot.rig}
         holder = Rig(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -290,7 +290,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.module)
         item.slots = {1008}
         holder = Rig(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -303,7 +303,7 @@ class TestHolderClass(RestrictionTestCase):
     def testShipPass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.ship)
         holder = Ship(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -314,7 +314,7 @@ class TestHolderClass(RestrictionTestCase):
     def testShipFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008)
         holder = Ship(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -327,7 +327,7 @@ class TestHolderClass(RestrictionTestCase):
     def testSkillPass(self):
         item = self.ch.type_(typeId=1, categoryId=Category.skill)
         holder = Skill(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -338,7 +338,7 @@ class TestHolderClass(RestrictionTestCase):
     def testSkillFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008)
         holder = Skill(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -352,7 +352,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.subsystem)
         item.slots = {Slot.subsystem}
         holder = Subsystem(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNone(restrictionError)
@@ -363,7 +363,7 @@ class TestHolderClass(RestrictionTestCase):
     def testSubsystemFailCategory(self):
         item = self.ch.type_(typeId=1, categoryId=1008)
         holder = Subsystem(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -377,7 +377,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.subsystem)
         item.slots = {1008}
         holder = Subsystem(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -390,7 +390,7 @@ class TestHolderClass(RestrictionTestCase):
     def testSingleReplacement(self):
         item = self.ch.type_(typeId=1, categoryId=Category.implant, attributes={Attribute.boosterness: 3})
         holder = Implant(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
@@ -405,7 +405,7 @@ class TestHolderClass(RestrictionTestCase):
         item = self.ch.type_(typeId=1, categoryId=Category.implant,
                              attributes={Attribute.boosterness: 3, Attribute.implantness: 1})
         holder = Drone(1)
-        holder._Holder__type = item
+        holder.item = item
         self.trackHolder(holder)
         restrictionError = self.getRestrictionError(holder, Restriction.holderClass)
         self.assertIsNotNone(restrictionError)
