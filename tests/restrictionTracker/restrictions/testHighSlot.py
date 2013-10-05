@@ -21,168 +21,142 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Location, Restriction, Slot, State
-from eos.const.eve import Attribute
-from eos.fit.holder.item import Module, Ship
+from eos.const.eos import Location, Restriction, State
+from eos.fit.holder.item import Implant, Module
 from eos.tests.restrictionTracker.restrictionTestCase import RestrictionTestCase
 
 
 class TestHighSlot(RestrictionTestCase):
     """Check functionality of high slot amount restriction"""
 
-    def testFail(self):
+    def testFailExcessSignle(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         item = self.ch.type_(typeId=1)
-        item.slots = {Slot.moduleHigh}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.hiSlots: 1}
-        self.setShip(shipHolder)
-        restrictionError1 = self.getRestrictionError(holder1, Restriction.highSlot)
-        self.assertIsNotNone(restrictionError1)
-        self.assertEqual(restrictionError1.slotsMaxAllowed, 1)
-        self.assertEqual(restrictionError1.slotsUsed, 2)
-        restrictionError2 = self.getRestrictionError(holder2, Restriction.highSlot)
-        self.assertIsNotNone(restrictionError2)
-        self.assertEqual(restrictionError2.slotsMaxAllowed, 1)
-        self.assertEqual(restrictionError2.slotsUsed, 2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
-    def testFailShipNoAttr(self):
-        # Make sure that absence of specifier of slot output
-        # is considered as 0 output
-        item = self.ch.type_(typeId=1)
-        item.slots = {Slot.moduleHigh}
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {}
-        self.setShip(shipHolder)
+        self.fit.modules.high.append(holder)
+        self.fit.stats.highSlots.used = 1
+        self.fit.stats.highSlots.total = 0
         restrictionError = self.getRestrictionError(holder, Restriction.highSlot)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.slotsMaxAllowed, 0)
         self.assertEqual(restrictionError.slotsUsed, 1)
-        self.untrackHolder(holder)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testFailNoShip(self):
-        # Make sure that absence of ship
-        # is considered as 0 output
+    def testFailExcessSignleOtherClassLocation(self):
+        # Make sure holders of all classes are affected
         item = self.ch.type_(typeId=1)
-        item.slots = {Slot.moduleHigh}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder)
+        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        self.fit.modules.high.append(holder)
+        self.fit.stats.highSlots.used = 1
+        self.fit.stats.highSlots.total = 0
         restrictionError = self.getRestrictionError(holder, Restriction.highSlot)
         self.assertIsNotNone(restrictionError)
         self.assertEqual(restrictionError.slotsMaxAllowed, 0)
         self.assertEqual(restrictionError.slotsUsed, 1)
-        self.untrackHolder(holder)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testFailModified(self):
-        # Make sure that modified number of slot output
-        # is taken
+    def testFailExcessSignleUndefinedOutput(self):
+        # When stats module does not specify total slot amount,
+        # make sure it's assumed to be 0
         item = self.ch.type_(typeId=1)
-        item.slots = {Slot.moduleHigh}
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.fit.modules.high.append(holder)
+        self.fit.stats.highSlots.used = 1
+        self.fit.stats.highSlots.total = None
+        restrictionError = self.getRestrictionError(holder, Restriction.highSlot)
+        self.assertIsNotNone(restrictionError)
+        self.assertEqual(restrictionError.slotsMaxAllowed, 0)
+        self.assertEqual(restrictionError.slotsUsed, 1)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
+
+    def testFailExcessMultiple(self):
+        # Check that error works for multiple holders, and raised
+        # only for those which lie out of bounds
+        item = self.ch.type_(typeId=1)
         holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2, attributes={Attribute.hiSlots: 5})
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.hiSlots: 1}
-        self.setShip(shipHolder)
+        self.fit.modules.high.append(holder1)
+        self.fit.modules.high.append(holder2)
+        self.fit.stats.highSlots.used = 2
+        self.fit.stats.highSlots.total = 1
         restrictionError1 = self.getRestrictionError(holder1, Restriction.highSlot)
-        self.assertIsNotNone(restrictionError1)
-        self.assertEqual(restrictionError1.slotsMaxAllowed, 1)
-        self.assertEqual(restrictionError1.slotsUsed, 2)
+        self.assertIsNone(restrictionError1)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.highSlot)
         self.assertIsNotNone(restrictionError2)
         self.assertEqual(restrictionError2.slotsMaxAllowed, 1)
         self.assertEqual(restrictionError2.slotsUsed, 2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testPass(self):
-        # No error is raised when slot users do not
-        # exceed slot output
+    def testFailExcessMultipleWithNones(self):
+        # Make sure Nones are processed properly
         item = self.ch.type_(typeId=1)
-        item.slots = {Slot.moduleHigh}
         holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.hiSlots: 3}
-        self.setShip(shipHolder)
+        holder3 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.fit.modules.high.append(None)
+        self.fit.modules.high.append(holder1)
+        self.fit.modules.high.append(None)
+        self.fit.modules.high.append(None)
+        self.fit.modules.high.append(holder2)
+        self.fit.modules.high.append(None)
+        self.fit.modules.high.append(holder3)
+        self.fit.stats.highSlots.used = 7
+        self.fit.stats.highSlots.total = 3
         restrictionError1 = self.getRestrictionError(holder1, Restriction.highSlot)
         self.assertIsNone(restrictionError1)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.highSlot)
-        self.assertIsNone(restrictionError2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
+        self.assertIsNotNone(restrictionError2)
+        self.assertEqual(restrictionError2.slotsMaxAllowed, 3)
+        self.assertEqual(restrictionError2.slotsUsed, 7)
+        restrictionError3 = self.getRestrictionError(holder2, Restriction.highSlot)
+        self.assertIsNotNone(restrictionError3)
+        self.assertEqual(restrictionError3.slotsMaxAllowed, 3)
+        self.assertEqual(restrictionError3.slotsUsed, 7)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()
 
-    def testPassHolderNonShip(self):
-        # Non-ship holders shouldn't be affected
+    def testPassEqual(self):
         item = self.ch.type_(typeId=1)
-        item.slots = {Slot.moduleHigh}
-        holder1 = Mock(state=State.offline, item=item, _location=None, spec_set=Module)
-        self.trackHolder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=None, spec_set=Module)
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.hiSlots: 1}
-        self.setShip(shipHolder)
-        restrictionError1 = self.getRestrictionError(holder1, Restriction.highSlot)
-        self.assertIsNone(restrictionError1)
-        restrictionError2 = self.getRestrictionError(holder2, Restriction.highSlot)
-        self.assertIsNone(restrictionError2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
-        self.assertEqual(len(self.log), 0)
-        self.assertRestrictionBuffersEmpty()
-
-    def testPassNonSlot(self):
-        # If holders don't use slot, no error should
-        # be raised
-        item = self.ch.type_(typeId=1)
-        item.slots = set()
         holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        self.trackHolder(holder2)
-        shipItem = self.ch.type_(typeId=2)
-        shipHolder = Mock(state=State.offline, item=shipItem, _location=None, spec_set=Ship)
-        shipHolder.attributes = {Attribute.hiSlots: 1}
-        self.setShip(shipHolder)
+        self.fit.modules.high.append(holder1)
+        self.fit.modules.high.append(holder2)
+        self.fit.stats.highSlots.used = 2
+        self.fit.stats.highSlots.total = 2
         restrictionError1 = self.getRestrictionError(holder1, Restriction.highSlot)
         self.assertIsNone(restrictionError1)
         restrictionError2 = self.getRestrictionError(holder2, Restriction.highSlot)
         self.assertIsNone(restrictionError2)
-        self.untrackHolder(holder1)
-        self.untrackHolder(holder2)
-        self.setShip(None)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
+
+    def testPassGreater(self):
+        item = self.ch.type_(typeId=1)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.fit.modules.high.append(holder1)
+        self.fit.modules.high.append(holder2)
+        self.fit.stats.highSlots.used = 2
+        self.fit.stats.highSlots.total = 5
+        restrictionError1 = self.getRestrictionError(holder1, Restriction.highSlot)
+        self.assertIsNone(restrictionError1)
+        restrictionError2 = self.getRestrictionError(holder2, Restriction.highSlot)
+        self.assertIsNone(restrictionError2)
+        self.assertEqual(len(self.log), 0)
+        self.assertRestrictionBuffersEmpty()
+
+    def testPassOtherContainer(self):
+        item = self.ch.type_(typeId=1)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.fit.modules.med.append(holder)
+        self.fit.stats.highSlots.used = 1
+        self.fit.stats.highSlots.total = 0
+        restrictionError = self.getRestrictionError(holder, Restriction.highSlot)
+        self.assertIsNone(restrictionError)
         self.assertEqual(len(self.log), 0)
         self.assertRestrictionBuffersEmpty()

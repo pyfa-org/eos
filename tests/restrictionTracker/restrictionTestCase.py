@@ -49,6 +49,11 @@ class RestrictionTestCase(EosTestCase):
         self.fit = Mock()
         self.fit.ship = None
         self.fit.character = None
+        self.fit.modules.high = []
+        self.fit.modules.med = []
+        self.fit.modules.low = []
+        self.fit.rigs = set()
+        self.fit.subsystems = set()
         self.rt = RestrictionTracker(self.fit)
 
     def setShip(self, holder):
