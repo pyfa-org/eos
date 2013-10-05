@@ -30,14 +30,11 @@ class SlotUseRegister(StatRegister):
     resource used.
     """
 
-    def __init__(self, fit, slotType):
+    def __init__(self, fit):
         self._fit = fit
-        self.__slotType = slotType
         self.__slotUsers = set()
 
     def registerHolder(self, holder):
-        if self.__slotType not in holder.item.slots:
-            return
         self.__slotUsers.add(holder)
 
     def unregisterHolder(self, holder):
@@ -53,7 +50,11 @@ class TurretUseRegister(SlotUseRegister):
     """
 
     def __init__(self, fit):
-        SlotUseRegister.__init__(self, fit, Slot.turret)
+        SlotUseRegister.__init__(self, fit)
+
+    def registerHolder(self, holder):
+        if Slot.turret in holder.item.slots:
+            SlotUseRegister.registerHolder(self, holder)
 
 
 class LauncherUseRegister(SlotUseRegister):
@@ -62,4 +63,8 @@ class LauncherUseRegister(SlotUseRegister):
     """
 
     def __init__(self, fit):
-        SlotUseRegister.__init__(self, fit, Slot.launcher)
+        SlotUseRegister.__init__(self, fit)
+
+    def registerHolder(self, holder):
+        if Slot.launcher in holder.item.slots:
+            SlotUseRegister.registerHolder(self, holder)
