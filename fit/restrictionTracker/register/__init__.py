@@ -25,7 +25,6 @@ from .chargeSize import ChargeSizeRegister
 from .chargeVolume import ChargeVolumeRegister
 from .droneGroup import DroneGroupRegister
 from .holderClass import HolderClassRegister
-from .launchedDrone import LaunchedDroneRegister
 from .maxGroup import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .resource import CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, \
 DroneBandwidthRegister
@@ -34,14 +33,14 @@ from .shipTypeGroup import ShipTypeGroupRegister
 from .skillRequirement import SkillRequirementRegister
 from .slotIndex import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
 from .slotAmount import HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister, \
-SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister
+SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister, LaunchedDroneRegister
 from .state import StateRegister
 
 __all__ = ['CapitalItemRegister', 'ChargeGroupRegister', 'ChargeSizeRegister', 'ChargeVolumeRegister',
-           'DroneGroupRegister', 'HolderClassRegister', 'LaunchedDroneRegister', 'MaxGroupFittedRegister',
-           'MaxGroupOnlineRegister', 'MaxGroupActiveRegister', 'CpuRegister', 'PowerGridRegister',
-           'CalibrationRegister', 'DroneBayVolumeRegister', 'DroneBandwidthRegister', 'RigSizeRegister',
-           'ShipTypeGroupRegister', 'SkillRequirementRegister', 'SubsystemIndexRegister', 'ImplantIndexRegister',
-           'BoosterIndexRegister', 'HighSlotRegister', 'MediumSlotRegister', 'LowSlotRegister',
-           'RigSlotRegister', 'SubsystemSlotRegister', 'TurretSlotRegister', 'LauncherSlotRegister',
+           'DroneGroupRegister', 'HolderClassRegister', 'MaxGroupFittedRegister', 'MaxGroupOnlineRegister',
+           'MaxGroupActiveRegister', 'CpuRegister', 'PowerGridRegister', 'CalibrationRegister',
+           'DroneBayVolumeRegister', 'DroneBandwidthRegister', 'RigSizeRegister', 'ShipTypeGroupRegister',
+           'SkillRequirementRegister', 'SubsystemIndexRegister', 'ImplantIndexRegister', 'BoosterIndexRegister',
+           'HighSlotRegister', 'MediumSlotRegister', 'LowSlotRegister', 'RigSlotRegister',
+           'SubsystemSlotRegister', 'TurretSlotRegister', 'LauncherSlotRegister', 'LaunchedDroneRegister',
            'StateRegister']

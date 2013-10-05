@@ -22,6 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
+from eos.fit.holder.item import Drone
 from eos.fit.restrictionTracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
@@ -221,6 +222,28 @@ class LauncherSlotRegister(SlotAmountRegister):
 
     def registerHolder(self, holder):
         if Slot.launcher in holder.item.slots:
+            SlotAmountRegister.registerHolder(self, holder)
+
+    def _getTaintedHolders(self, slotsMax):
+        return self._slotConsumers
+
+
+class LaunchedDroneRegister(SlotAmountRegister):
+    """
+    Implements restriction:
+    Number of launched drones should not exceed number of
+    drones you're allowed to launch.
+
+    Details:
+    Only holders of Drone class are tracked.
+    For validation, stats module data is used.
+    """
+
+    def __init__(self, fit):
+        SlotAmountRegister.__init__(self, fit, 'launchedDrones', Restriction.launchedDrone)
+
+    def registerHolder(self, holder):
+        if isinstance(holder, Drone):
             SlotAmountRegister.registerHolder(self, holder)
 
     def _getTaintedHolders(self, slotsMax):
