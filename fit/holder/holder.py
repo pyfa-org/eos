@@ -33,11 +33,11 @@ class Holder:
     state -- state which this holder takes during initialization
     """
 
-    __slots__ = ('__typeId', '__state', 'attributes', '__fit', '__type')
+    __slots__ = ('_typeId', '__state', 'attributes', '__fit', 'item')
 
     def __init__(self, typeId, state):
         # TypeID of item this holder is supposed to wrap
-        self.__typeId = typeId
+        self._typeId = typeId
         # Keeps current state of the holder
         self.__state = state
         # Special dictionary subclass that holds modified attributes
@@ -46,13 +46,9 @@ class Holder:
         # Which fit this holder is bound to
         self.__fit = None
         # Which type this holder wraps
-        self.__type = None
+        self.item = None
         ## Keeps current target of holder
         #self.__target = None
-
-    @property
-    def item(self):
-        return self.__type
 
     @property
     def _fit(self):
@@ -73,9 +69,9 @@ class Holder:
         try:
             cacheHandler = self.__fit.eos._cacheHandler
         except AttributeError:
-            self.__type = None
+            self.item = None
         else:
-            self.__type = cacheHandler.getType(self.__typeId)
+            self.item = cacheHandler.getType(self._typeId)
 
     @property
     def state(self):
