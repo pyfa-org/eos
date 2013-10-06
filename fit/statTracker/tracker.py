@@ -23,6 +23,7 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
+from eos.fit.tuples import DamageTypes, Hitpoints, TankingLayers
 from .container import *
 from .register import *
 
@@ -109,9 +110,42 @@ class StatTracker:
                 register.unregisterHolder(holder)
 
     @property
-    def agilityFactor(self):
+    def hp(self):
+        shipHolder = self._fit.ship
         try:
-            shipAttribs = self._fit.ship.attributes
+            return shipHolder.hp
+        except AttributeError:
+            return Hitpoints(hull=None, armor=None, shield=None, total=0)
+
+    @property
+    def resistances(self):
+        shipHolder = self._fit.ship
+        try:
+            return shipHolder.resistances
+        except AttributeError:
+            empty = DamageTypes(em=None, thermal=None, kinetic=None, explosive=None)
+            return TankingLayers(hull=empty, armor=empty, shield=empty)
+
+    def getEhp(self, damageProfile):
+        shipHolder = self._fit.ship
+        try:
+            return shipHolder.getEhp(damageProfile)
+        except AttributeError:
+            return Hitpoints(hull=None, armor=None, shield=None, total=0)
+
+    @property
+    def worstCaseEhp(self):
+        shipHolder = self._fit.ship
+        try:
+            return shipHolder.worstCaseEhp
+        except AttributeError:
+            return Hitpoints(hull=None, armor=None, shield=None, total=0)
+
+    @property
+    def agilityFactor(self):
+        shipHolder = self._fit.ship
+        try:
+            shipAttribs = shipHolder.attributes
         except AttributeError:
             return None
         try:
