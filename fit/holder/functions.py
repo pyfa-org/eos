@@ -125,3 +125,38 @@ def getResistances(holder):
                          kinetic=_getResistanceByAttr(holder, Attribute.shieldKineticDamageResonance),
                          explosive=_getResistanceByAttr(holder, Attribute.shieldExplosiveDamageResonance))
     return TankingLayers(hull=hull, armor=armor, shield=shield)
+
+def _getLayerEhp(normalizedDamageProfile, hp, layerResistances):
+    """
+    Get EHP for passed tanking layer.
+
+    If any of layer resistances are not specified,
+    they're assumed to be 0.
+    """
+    if not hp:
+        return hp
+    ehp = (hp / (1 - (layerResistances.em or 0)) * normalizedDamageProfile.em +
+           hp / (1 - (layerResistances.thermal or 0)) * normalizedDamageProfile.thermal +
+           hp / (1 - (layerResistances.kinetic or 0)) * normalizedDamageProfile.kinetic +
+           hp / (1 - (layerResistances.explosive or 0)) * normalizedDamageProfile.explosive)
+    return ehp
+
+def getEhp(holder, damageProfile):
+    """
+    Used by:
+    Drone, Ship
+    """
+    # Normalize damage profile, so that sum of
+    # its elements is 1
+    profileTotal = (damageProfile.em + damageProfile.thermal +
+                    damageProfile.kinetic + damageProfile.explosive)
+    normalizedDamageProfile = DamageTypes(em=damageProfile.em / profileTotal,
+                                          thermal=damageProfile.thermal / profileTotal,
+                                          kinetic=damageProfile.kinetic / profileTotal,
+                                          explosive=damageProfile.explosive / profileTotal)
+    hullEhp = _getLayerEhp(normalizedDamageProfile, holder.hp.hull, holder.resistances.hull)
+    armorEhp = _getLayerEhp(normalizedDamageProfile, holder.hp.armor, holder.resistances.armor)
+    shieldEhp = _getLayerEhp(normalizedDamageProfile, holder.hp.shield, holder.resistances.shield)
+    totalEhp = (hullEhp or 0) + (armorEhp or 0) + (shieldEhp or 0)
+    return Hitpoints(hull=hullEhp, armor=armorEhp, shield=shieldEhp, total=totalEhp)
+

@@ -25,4 +25,4 @@ from .data.cache.handler import TypeFetchError
 from .fit import Fit
 from .fit.holder.item import *
 from .fit.restrictionTracker.exception import ValidationError
-
+from .fit.tuples import DamageTypes as DamageProfile
