@@ -21,7 +21,8 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.functions import setState
+from eos.fit.holder.functions import setState, getTrackingSpeed, getOptimalRange, \
+getFalloffRange, getCycleTime
 
 
 class Drone(Holder):

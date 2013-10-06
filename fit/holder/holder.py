@@ -57,6 +57,10 @@ class Holder:
         self.__fit = newFit
         self._refreshContext()
 
+    @property
+    def state(self):
+        return self._state
+
     def _refreshContext(self):
         """
         Each time holder's context is changed (holder's
@@ -70,38 +74,3 @@ class Holder:
             self.item = None
         else:
             self.item = cacheHandler.getType(self._typeId)
-
-    @property
-    def state(self):
-        return self._state
-
-    @property
-    def trackingSpeed(self):
-        """Get tracking speed of holder"""
-        return self.__getItemSpecificAttr('_trackingSpeedAttributeId')
-
-    @property
-    def optimalRange(self):
-        """Get optimal range of holder"""
-        return self.__getItemSpecificAttr('_rangeAttributeId')
-
-    @property
-    def falloffRange(self):
-        """Get falloff range of holder"""
-        return self.__getItemSpecificAttr('_falloffAttributeId')
-
-    @property
-    def cycleTime(self):
-        return self.__getItemSpecificAttr('_durationAttributeId')
-
-    def __getItemSpecificAttr(self, attrName):
-        """Get holder attribute, which is referred by item"""
-        attrId = getattr(self.item, attrName, None)
-        if attrId is not None:
-            try:
-                attrValue = self.attributes[attrId]
-            except KeyError:
-                attrValue = None
-        else:
-            attrValue = None
-        return attrValue

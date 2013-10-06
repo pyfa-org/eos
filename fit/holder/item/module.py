@@ -21,7 +21,8 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.functions import setState
+from eos.fit.holder.functions import setState, getTrackingSpeed, getOptimalRange, \
+getFalloffRange, getCycleTime
 from . import Charge
 
 
@@ -43,6 +44,11 @@ class Module(Holder):
     def _other(self):
         """Purely service property, used in fit link tracker registry"""
         return self.charge
+
+    trackingSpeed = property(getTrackingSpeed)
+    optimalRange = property(getOptimalRange)
+    falloffRange = property(getFalloffRange)
+    cycleTime = property(getCycleTime)
 
     @Holder.state.setter
     def state(self, newState):
