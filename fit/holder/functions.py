@@ -163,3 +163,27 @@ def getEhp(holder, damageProfile):
     totalEhp = (hullEhp or 0) + (armorEhp or 0) + (shieldEhp or 0)
     return Hitpoints(hull=hullEhp, armor=armorEhp, shield=shieldEhp, total=totalEhp)
 
+def _getLayerWorstCaseEhp(layerHp, layerResistances):
+    """
+    Calculate layer EHP according to passed data.
+
+    If layer raw HP is None, None is returned
+    """
+    if not layerHp:
+        return layerHp
+    resistance = min(layerResistances.em or 0,
+                     layerResistances.thermal or 0,
+                     layerResistances.kinetic or 0,
+                     layerResistances.explosive or 0)
+    return layerHp / (1 - resistance)
+
+def getWorstCaseEhp(holder):
+    """
+    Used by:
+    Drone, Ship
+    """
+    hullEhp = _getLayerWorstCaseEhp(holder.hp.hull, holder.resistances.hull)
+    armorEhp = _getLayerWorstCaseEhp(holder.hp.armor, holder.resistances.armor)
+    shieldEhp = _getLayerWorstCaseEhp(holder.hp.shield, holder.resistances.shield)
+    totalEhp = (hullEhp or 0) + (armorEhp or 0) + (shieldEhp or 0)
+    return Hitpoints(hull=hullEhp, armor=armorEhp, shield=shieldEhp, total=totalEhp)
