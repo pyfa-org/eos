@@ -19,23 +19,18 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
-from eos.fit.holder import Holder
-from eos.fit.holder.functions import setState
+"""
+Module with functions intended to be used as holder
+subclass methods. They are stored here only when more
+than 1, but not all holder types are using it.
+"""
 
-
-class Drone(Holder):
-    """Single drone."""
-
-    __slots__ = ()
-
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId, State.offline)
-
-    @property
-    def _location(self):
-        return Location.space
-
-    @Holder.state.setter
-    def state(self, newState):
-        setState(self, newState)
+# Used by Module, Drone
+def setState(holder, newState):
+    if newState == holder.state:
+        return
+    # When holder is assigned to some fit, ask fit to perform
+    # fit-specific state switch of our holder
+    if holder._fit is not None:
+        holder._fit._holderStateSwitch(holder, newState)
+    holder._state = newState

@@ -21,6 +21,7 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
+from eos.fit.holder.functions import setState
 from . import Charge
 
 
@@ -42,6 +43,10 @@ class Module(Holder):
     def _other(self):
         """Purely service property, used in fit link tracker registry"""
         return self.charge
+
+    @Holder.state.setter
+    def state(self, newState):
+        setState(self, newState)
 
     @property
     def charge(self):

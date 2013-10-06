@@ -33,13 +33,13 @@ class Holder:
     state -- state which this holder takes during initialization
     """
 
-    __slots__ = ('_typeId', '__state', 'attributes', '__fit', 'item')
+    __slots__ = ('_typeId', '_state', 'attributes', '__fit', 'item')
 
     def __init__(self, typeId, state):
         # TypeID of item this holder is supposed to wrap
         self._typeId = typeId
         # Keeps current state of the holder
-        self.__state = state
+        self._state = state
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
         self.attributes = MutableAttributeMap(self)
@@ -47,8 +47,6 @@ class Holder:
         self.__fit = None
         # Which type this holder wraps
         self.item = None
-        ## Keeps current target of holder
-        #self.__target = None
 
     @property
     def _fit(self):
@@ -75,30 +73,7 @@ class Holder:
 
     @property
     def state(self):
-        return self.__state
-
-    @state.setter
-    def state(self, newState):
-        if newState == self.state:
-            return
-        # When holder is assigned to some fit, ask fit to perform
-        # fit-specific state switch of our holder
-        if self._fit is not None:
-            self._fit._holderStateSwitch(self, newState)
-        self.__state = newState
-
-#    @property
-#    def target(self):
-#        """Get target, onto which holder is applied"""
-#        return self.__target
-#
-#    @target.setter
-#    def target(self, newTarget):
-#        """Project holder onto target"""
-#        if self.item.isTargeted is True:
-#            self.__target = newTarget
-#        else:
-#            raise TargetException("attempt to project holder with non-projectable item")
+        return self._state
 
     @property
     def trackingSpeed(self):
