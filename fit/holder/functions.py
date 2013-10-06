@@ -27,7 +27,7 @@ than 1, but not all holder types are using it.
 
 
 from eos.const.eve import Attribute
-from eos.fit.tuples import Hitpoints
+from eos.fit.tuples import Hitpoints, TankingLayers, DamageTypes
 
 def setState(holder, newState):
     """
@@ -47,9 +47,6 @@ def _getItemSpecificAttr(holder, attrName):
     If attribute ID which we're trying to get is
     located on holder's item, this functions helps
     to fetch it.
-
-    Used by:
-    other functions
     """
     attrId = getattr(holder.item, attrName, None)
     if attrId is None:
@@ -92,8 +89,39 @@ def getHp(holder):
     Used by:
     Drone, Ship
     """
-    hull = holder.attributes[Attribute.hp]
-    armor = holder.attributes[Attribute.armorHp]
-    shield = holder.attributes[Attribute.shieldCapacity]
+    hull = holder.attributes.get(Attribute.hp, None)
+    armor = holder.attributes.get(Attribute.armorHp, None)
+    shield = holder.attributes.get(Attribute.shieldCapacity, None)
     total = (hull or 0) + (armor or 0) + (shield or 0)
     return Hitpoints(hull=hull, armor=armor, shield=shield, total=total)
+
+def _getResistanceByAttr(holder, attribute):
+    """
+    Get resonance by attribute ID and if there's any
+    value, convert it to resistance.
+    """
+    try:
+        resonance = holder.attributes[attribute]
+    except KeyError:
+        return None
+    else:
+        return 1 - resonance
+
+def getResistances(holder):
+    """
+    Used by:
+    Drone, Ship
+    """
+    hull = DamageTypes(em=_getResistanceByAttr(holder, Attribute.emDamageResonance),
+                       thermal=_getResistanceByAttr(holder, Attribute.thermalDamageResonance),
+                       kinetic=_getResistanceByAttr(holder, Attribute.kineticDamageResonance),
+                       explosive=_getResistanceByAttr(holder, Attribute.explosiveDamageResonance))
+    armor = DamageTypes(em=_getResistanceByAttr(holder, Attribute.armorEmDamageResonance),
+                        thermal=_getResistanceByAttr(holder, Attribute.armorThermalDamageResonance),
+                        kinetic=_getResistanceByAttr(holder, Attribute.armorKineticDamageResonance),
+                        explosive=_getResistanceByAttr(holder, Attribute.armorExplosiveDamageResonance))
+    shield = DamageTypes(em=_getResistanceByAttr(holder, Attribute.shieldEmDamageResonance),
+                         thermal=_getResistanceByAttr(holder, Attribute.shieldThermalDamageResonance),
+                         kinetic=_getResistanceByAttr(holder, Attribute.shieldKineticDamageResonance),
+                         explosive=_getResistanceByAttr(holder, Attribute.shieldExplosiveDamageResonance))
+    return TankingLayers(hull=hull, armor=armor, shield=shield)

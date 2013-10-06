@@ -23,4 +23,5 @@ from collections import namedtuple
 
 
 Hitpoints = namedtuple('Hitpoints', ('hull', 'armor', 'shield', 'total'))
-DamageProfile = namedtuple('DamageProfile', ('em', 'themal', 'kinetic', 'explosive'))
+TankingLayers = namedtuple('TankingLayers', ('hull', 'armor', 'shield'))
+DamageTypes = namedtuple('DamageTypes', ('em', 'thermal', 'kinetic', 'explosive'))

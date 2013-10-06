@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.fit.holder import Holder
-from eos.fit.holder.functions import getHp
+from eos.fit.holder.functions import getHp, getResistances
 
 
 class Ship(Holder):
@@ -40,4 +40,5 @@ class Ship(Holder):
         return None
 
     hp = property(getHp)
+    resistances = property(getResistances)
 
