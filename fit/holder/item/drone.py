@@ -22,7 +22,7 @@
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
 from eos.fit.holder.functions import setState, getTrackingSpeed, getOptimalRange, \
-getFalloffRange, getCycleTime
+getFalloffRange, getCycleTime, getHp
 
 
 class Drone(Holder):
@@ -36,6 +36,12 @@ class Drone(Holder):
     @property
     def _location(self):
         return Location.space
+
+    trackingSpeed = property(getTrackingSpeed)
+    optimalRange = property(getOptimalRange)
+    falloffRange = property(getFalloffRange)
+    cycleTime = property(getCycleTime)
+    hp = property(getHp)
 
     @Holder.state.setter
     def state(self, newState):

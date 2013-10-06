@@ -25,6 +25,10 @@ subclass methods. They are stored here only when more
 than 1, but not all holder types are using it.
 """
 
+
+from eos.const.eve import Attribute
+from eos.fit.tuples import Hitpoints
+
 def setState(holder, newState):
     """
     Used by:
@@ -82,3 +86,14 @@ def getCycleTime(holder):
     Drone, Module
     """
     return _getItemSpecificAttr(holder, '_durationAttributeId')
+
+def getHp(holder):
+    """
+    Used by:
+    Drone, Ship
+    """
+    hull = holder.attributes[Attribute.hp]
+    armor = holder.attributes[Attribute.armorHp]
+    shield = holder.attributes[Attribute.shieldCapacity]
+    total = (hull or 0) + (armor or 0) + (shield or 0)
+    return Hitpoints(hull=hull, armor=armor, shield=shield, total=total)

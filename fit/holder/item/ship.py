@@ -21,6 +21,7 @@
 
 from eos.const.eos import State
 from eos.fit.holder import Holder
+from eos.fit.holder.functions import getHp
 
 
 class Ship(Holder):
@@ -37,4 +38,6 @@ class Ship(Holder):
         # location too (not assigned to anything besides
         # fit), thus its location is None
         return None
+
+    hp = property(getHp)
 

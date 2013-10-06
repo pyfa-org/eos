@@ -30,6 +30,7 @@ from eos.util.enum import Enum
 class Attribute(metaclass=Enum):
     """Attribute ID holder"""
     mass = 4
+    hp = 9
     powerOutput = 11
     lowSlots = 12
     medSlots = 13
@@ -52,6 +53,8 @@ class Attribute(metaclass=Enum):
     requiredSkill2 = 183
     requiredSkill3 = 184
     missileDamageMultiplier = 212
+    shieldCapacity = 263
+    armorHp = 265
     requiredSkill1Level = 277
     requiredSkill2Level = 278
     requiredSkill3Level = 279
