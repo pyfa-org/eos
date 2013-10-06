@@ -37,3 +37,4 @@ class Ship(Holder):
         # location too (not assigned to anything besides
         # fit), thus its location is None
         return None
+

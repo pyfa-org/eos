@@ -19,6 +19,9 @@
 #===============================================================================
 
 
+# TODO: in python 3.4, these's built-in enum module. Use it instead of this
+
+
 class Enum(type):
     """
     We use classes as enums throughout eos, this class
@@ -26,7 +29,7 @@ class Enum(type):
     some additional functionality.
     """
 
-    def __new__(mcs, name, bases, dict_):
+    def __new__(cls, name, bases, dict_):
         # Name map
         # Format: {value: name}
         valueNameMap = {}
@@ -39,7 +42,7 @@ class Enum(type):
         # Assign our custom data structures to class dict
         dict_['_values'] = tuple(valueNameMap)
         dict_['_valueNameMap'] = valueNameMap
-        return type.__new__(mcs, name, bases, dict_)
+        return type.__new__(cls, name, bases, dict_)
 
     def __iter__(self):
         return iter(self._values)
