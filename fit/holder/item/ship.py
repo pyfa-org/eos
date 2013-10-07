@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.fit.holder import Holder
-from eos.fit.holder.functions import getHp, getResistances, getEhp, getWorstCaseEhp
+from eos.fit.holder.attachableFunctions.tanking import getHp, getResistances, getEhp, getWorstCaseEhp
 
 
 class Ship(Holder):

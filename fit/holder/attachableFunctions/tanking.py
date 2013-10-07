@@ -19,70 +19,9 @@
 #===============================================================================
 
 
-"""
-Module with functions intended to be used as holder
-subclass methods. They are stored here only when more
-than 1, but not all holder types are using it.
-"""
-
-
 from eos.const.eve import Attribute
 from eos.fit.tuples import Hitpoints, TankingLayers, DamageTypes
 
-def setState(holder, newState):
-    """
-    Used by:
-    Drone, Module
-    """
-    if newState == holder.state:
-        return
-    # When holder is assigned to some fit, ask fit to perform
-    # fit-specific state switch of our holder
-    if holder._fit is not None:
-        holder._fit._holderStateSwitch(holder, newState)
-    holder._state = newState
-
-def _getItemSpecificAttr(holder, attrName):
-    """
-    If attribute ID which we're trying to get is
-    located on holder's item, this functions helps
-    to fetch it.
-    """
-    attrId = getattr(holder.item, attrName, None)
-    if attrId is None:
-        return None
-    try:
-        return holder.attributes[attrId]
-    except KeyError:
-        return None
-
-def getTrackingSpeed(holder):
-    """
-    Used by:
-    Drone, Module
-    """
-    return _getItemSpecificAttr(holder, '_trackingSpeedAttributeId')
-
-def getOptimalRange(holder):
-    """
-    Used by:
-    Drone, Module
-    """
-    return _getItemSpecificAttr(holder, '_rangeAttributeId')
-
-def getFalloffRange(holder):
-    """
-    Used by:
-    Drone, Module
-    """
-    return _getItemSpecificAttr(holder, '_falloffAttributeId')
-
-def getCycleTime(holder):
-    """
-    Used by:
-    Drone, Module
-    """
-    return _getItemSpecificAttr(holder, '_durationAttributeId')
 
 def getHp(holder):
     """

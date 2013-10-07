@@ -21,7 +21,7 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.functions import setState, getTrackingSpeed, getOptimalRange, \
+from eos.fit.holder.attachableFunctions.misc import setState, getTrackingSpeed, getOptimalRange, \
 getFalloffRange, getCycleTime
 from .charge import Charge
 
