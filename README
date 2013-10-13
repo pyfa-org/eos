@@ -11,8 +11,8 @@ engine = Eos(data_handler, storage_path='~/path/to/logs/and/cache/', make_defaul
 fit = Fit()
 fit.ship = Ship(11176)  # Crow
 
-for skillId in skills:
-    fit.skills.add(Skill(skillId, level=5))
+for skill_id in skills:
+    fit.skills.add(Skill(skill_id, level=5))
 
 fit.modules.high.equip(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
 fit.modules.high.equip(Module(13926, state=State.active, charge=Charge(27365)))  # DG light missile launcher with DG scourge ammo
