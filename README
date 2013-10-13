@@ -2,11 +2,11 @@ Currently API is not considered to be final (read as, what you see is stub for t
 -------------------------------------------------------------------------------
 
 from eos import *
-from eos.data.dataHandler.jsonDataHandler import JsonDataHandler
+from eos.data.data_handler import JsonDataHandler
 
 
-dataHandler = JsonDataHandler('/path/to/phobos/data/dump/')
-engine = Eos(dataHandler, storagePath='~/path/to/logs/and/cache/', makeDefault=True)
+data_handler = JsonDataHandler('/path/to/phobos/data/dump/')
+engine = Eos(data_handler, storage_path='~/path/to/logs/and/cache/', make_default=True)
 
 fit = Fit()
 fit.ship = Ship(11176)  # Crow
@@ -65,6 +65,6 @@ Not many stats are implemented yet, more to come soon.
 
 Fit validation method currently raises exception if any fit check fails, its argument contains dictionary which explains what is wrong. If we replace domi nanofiber in above example with yet another BCS, following data will be returned:
 
-{<eos.fit.item.module.Module object at 0x432ba10>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331050>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x4331410>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x432bcb0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=25.0)}, <eos.fit.item.module.Module object at 0x432b4d0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x432bd10>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=25.0)}, <eos.fit.item.module.Module object at 0x432b950>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331170>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=24.0)}, <eos.fit.item.module.Module object at 0x432bfb0>: {1: ResourceErrorData(output=187.5, totalUsage=200.535, holderConsumption=19.0)}}
+{<eos.fit.item.module.Module object at 0x432ba10>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331050>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=24.0)}, <eos.fit.item.module.Module object at 0x4331410>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=24.0)}, <eos.fit.item.module.Module object at 0x432bcb0>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=25.0)}, <eos.fit.item.module.Module object at 0x432b4d0>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=19.845000000000002)}, <eos.fit.item.module.Module object at 0x432bd10>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=25.0)}, <eos.fit.item.module.Module object at 0x432b950>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=19.845000000000002)}, <eos.fit.item.module.Module object at 0x4331170>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=24.0)}, <eos.fit.item.module.Module object at 0x432bfb0>: {1: ResourceErrorData(output=187.5, total_use=200.535, holder_use=19.0)}}
 
 Keys of dictionary are problematic modules (in this case, all CPU consumers on ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 1 being CPU restriction; values contain detailed data about problem, in this case it's named tuple which shows ship CPU output, total CPU consumption and CPU use by current module. Different restrictions contain different data, but in general format stays the same.
