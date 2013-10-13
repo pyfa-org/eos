@@ -24,11 +24,12 @@ import math
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.tuples import DamageTypes, Hitpoints, TankingLayers
+from eos.util.volatile_cache import VolatileMixin, VolatileProperty
 from .container import *
 from .register import *
 
 
-class StatTracker:
+class StatTracker(VolatileMixin):
     """
     Object which is used as access points for all
     fit statistics.
@@ -38,6 +39,7 @@ class StatTracker:
     """
 
     def __init__(self, fit):
+        VolatileMixin.__init__(self)
         self._fit = fit
         # Initialize registers
         cpu_reg = CpuUseRegister(fit)
@@ -115,7 +117,10 @@ class StatTracker:
             for register in registers:
                 register.unregister_holder(holder)
 
-    @property
+    def _clear_volatile_attrs(self):
+        VolatileMixin._clear_volatile_attrs(self)
+
+    @VolatileProperty
     def hp(self):
         ship_holder = self._fit.ship
         try:
@@ -123,7 +128,7 @@ class StatTracker:
         except AttributeError:
             return Hitpoints(hull=None, armor=None, shield=None, total=0)
 
-    @property
+    @VolatileProperty
     def resistances(self):
         ship_holder = self._fit.ship
         try:
@@ -139,7 +144,7 @@ class StatTracker:
         except AttributeError:
             return Hitpoints(hull=None, armor=None, shield=None, total=0)
 
-    @property
+    @VolatileProperty
     def worst_case_ehp(self):
         ship_holder = self._fit.ship
         try:
@@ -147,7 +152,7 @@ class StatTracker:
         except AttributeError:
             return Hitpoints(hull=None, armor=None, shield=None, total=0)
 
-    @property
+    @VolatileProperty
     def agility_factor(self):
         ship_holder = self._fit.ship
         try:
@@ -162,7 +167,7 @@ class StatTracker:
         real_agility = -math.log(0.25) * agility * mass / 1000000
         return real_agility
 
-    @property
+    @VolatileProperty
     def align_time(self):
         try:
             return math.ceil(self.agility_factor)

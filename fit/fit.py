@@ -71,49 +71,6 @@ class Fit:
         # cases, initialize it here
         self.character = Character(Type.character_static)
 
-    @property
-    def eos(self):
-        return self.__eos
-
-    @eos.setter
-    def eos(self, new_eos):
-        # Disable everything dependent on old eos prior to switch
-        if self.__eos is not None:
-            for holder in self._holders:
-                self._disable_services(holder)
-        # Reassign new eos and feed new data to all holders
-        self.__eos = new_eos
-        for holder in self._holders:
-            holder._refresh_context()
-        # Enable eos-dependent services for new instance
-        if new_eos is not None:
-            for holder in self._holders:
-                self._enable_services(holder)
-
-    @property
-    def character(self):
-        return self._character
-
-    @character.setter
-    def character(self, new_character):
-        self.__set_single_holder('_character', new_character, Character)
-
-    @property
-    def ship(self):
-        return self._ship
-
-    @ship.setter
-    def ship(self, new_ship):
-        self.__set_single_holder('_ship', new_ship, Ship)
-
-    @property
-    def effect_beacon(self):
-        return self._effect_beacon
-
-    @effect_beacon.setter
-    def effect_beacon(self, new_effect_beacon):
-        self.__set_single_holder('_effect_beacon', new_effect_beacon, EffectBeacon)
-
     def validate(self, skip_checks=()):
         """
         Run fit validation.
@@ -121,22 +78,29 @@ class Fit:
         Keyword arguments:
         skip_checks -- iterable with checks to be skipped
 
-        Possible exceptions:HolderFitMismatchError
+        Possible exceptions:
         ValidationError -- raised when validation fails
         """
         self._restriction_tracker.validate(skip_checks)
+
+    def _clear_volatile_data(self):
+        """
+        Clear all the 'cached', but volatile stats, which should
+        be no longer actual on any fit/holder changes.
+        """
+        self.stats._clear_volatile_attrs()
 
     def _add_holder(self, holder):
         """Handle adding of holder to fit."""
         # Make sure the holder isn't used already
         if holder._fit is not None:
             raise HolderAlreadyAssignedError(holder)
-        # Assign fit to holder first
+        self._clear_volatile_data()
         holder._fit = self
         self._holders.add(holder)
         if self.eos is not None:
             self._enable_services(holder)
-        # If holder had charge, register it too
+        # If holder has charge, register it too
         charge = getattr(holder, 'charge', None)
         if charge is not None:
             self._add_holder(charge)
@@ -147,7 +111,10 @@ class Fit:
         # it's removed from
         if holder._fit is not self:
             raise HolderFitMismatchError(holder)
-        # If there's charge in target holder, unset it first
+        # Start from
+        self._clear_volatile_data()
+        # If there's charge in target holder, unset it before
+        # removing holder itself
         charge = getattr(holder, 'charge', None)
         if charge is not None:
             self._remove_holder(charge)
@@ -207,6 +174,30 @@ class Fit:
             self._restriction_tracker.disable_states(holder, disabled_states)
             self.stats._disable_states(holder, disabled_states)
 
+    @property
+    def character(self):
+        return self._character
+
+    @character.setter
+    def character(self, new_character):
+        self.__set_single_holder('_character', new_character, Character)
+
+    @property
+    def ship(self):
+        return self._ship
+
+    @ship.setter
+    def ship(self, new_ship):
+        self.__set_single_holder('_ship', new_ship, Ship)
+
+    @property
+    def effect_beacon(self):
+        return self._effect_beacon
+
+    @effect_beacon.setter
+    def effect_beacon(self, new_effect_beacon):
+        self.__set_single_holder('_effect_beacon', new_effect_beacon, EffectBeacon)
+
     def __set_single_holder(self, attr_name, new_holder, expected_class):
         """
         Handle setting of holder as fit's attribute,
@@ -234,3 +225,23 @@ class Fit:
                 if old_holder is not None:
                     self._add_holder(old_holder)
                 raise ValueError(*e.args) from e
+
+    @property
+    def eos(self):
+        return self.__eos
+
+    @eos.setter
+    def eos(self, new_eos):
+        self._clear_volatile_data()
+        # Disable everything dependent on old eos prior to switch
+        if self.__eos is not None:
+            for holder in self._holders:
+                self._disable_services(holder)
+        # Reassign new eos and feed new data to all holders
+        self.__eos = new_eos
+        for holder in self._holders:
+            holder._refresh_context()
+        # Enable eos-dependent services for new instance
+        if new_eos is not None:
+            for holder in self._holders:
+                self._enable_services(holder)

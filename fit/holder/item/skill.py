@@ -50,5 +50,7 @@ class Skill(Holder):
         self.__level = value
         # Clear everything relying on skill level,
         # if skill is assigned to fit
-        if self._fit is not None:
-            self._fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)
+        fit = self._fit
+        if fit is not None:
+            fit._clear_volatile_data()
+            fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)

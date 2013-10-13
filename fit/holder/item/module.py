@@ -69,8 +69,8 @@ class Module(Holder):
             # Also check if it is attached to other fit already
             # or not. We can't rely on fit._add_holder to do it,
             # because charge can be assigned when module is detached
-            # from fit, which breaks consistency of fit assignment
-            # between module and charge
+            # from fit, which breaks consistency - both holders
+            # need to be assigned to the same fit
             if new_charge._fit is not None:
                 raise ValueError(new_charge)
         old_charge = self.charge
