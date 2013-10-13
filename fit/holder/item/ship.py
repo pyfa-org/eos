@@ -22,15 +22,15 @@
 from eos.const.eos import State
 from eos.fit.holder import Holder
 from eos.fit.holder.attachable_functions.tanking import get_hp, get_resistances, get_ehp, get_worst_case_ehp
+from eos.util.volatile_cache import VolatileMixin, VolatileProperty
 
 
-class Ship(Holder):
+class Ship(Holder, VolatileMixin):
     """Ship with all its special properties."""
-
-    __slots__ = ()
 
     def __init__(self, type_id):
         Holder.__init__(self, type_id, State.offline)
+        VolatileMixin.__init__(self)
 
     @property
     def _location(self):
@@ -39,7 +39,7 @@ class Ship(Holder):
         # fit), thus its location is None
         return None
 
-    hp = property(get_hp)
-    resistances = property(get_resistances)
+    hp = VolatileProperty(get_hp)
+    resistances = VolatileProperty(get_resistances)
     get_ehp = get_ehp
-    worst_case_ehp = property(get_worst_case_ehp)
+    worst_case_ehp = VolatileProperty(get_worst_case_ehp)

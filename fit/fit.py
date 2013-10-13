@@ -22,6 +22,7 @@
 from eos import eos as eos_module
 from eos.const.eos import State
 from eos.const.eve import Type
+from eos.util.volatile_cache import VolatileMixin
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
@@ -61,8 +62,9 @@ class Fit:
                                    low=HolderList(self, Module))
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
-        # Contains all holders currently attached to fit
+        # Service containers
         self._holders = set()
+        self._volatile_holders = set()
         # Initialize services
         self._link_tracker = LinkTracker(self)  # Tracks links between holders assigned to fit
         self._restriction_tracker = RestrictionTracker(self)  # Tracks various restrictions related to given fitting
@@ -89,6 +91,8 @@ class Fit:
         be no longer actual on any fit/holder changes.
         """
         self.stats._clear_volatile_attrs()
+        for holder in self._volatile_holders:
+            holder._clear_volatile_attrs()
 
     def _add_holder(self, holder):
         """Handle adding of holder to fit."""
@@ -98,6 +102,8 @@ class Fit:
         self._clear_volatile_data()
         holder._fit = self
         self._holders.add(holder)
+        if isinstance(holder, VolatileMixin):
+            self._volatile_holders.add(holder)
         if self.eos is not None:
             self._enable_services(holder)
         # If holder has charge, register it too
@@ -121,6 +127,7 @@ class Fit:
         if self.eos is not None:
             self._disable_services(holder)
         self._holders.remove(holder)
+        self._volatile_holders.discard(holder)
         holder._fit = None
 
     def _enable_services(self, holder):

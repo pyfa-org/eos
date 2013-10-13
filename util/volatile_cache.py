@@ -48,8 +48,6 @@ class VolatileMixin:
     classes using volatileproperty on them.
     """
 
-    __slots__ = ('_volatile_attrs',)
-
     def __init__(self):
         self._volatile_attrs = set()
 

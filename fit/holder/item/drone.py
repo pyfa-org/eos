@@ -22,17 +22,17 @@
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
 from eos.fit.holder.attachable_functions.misc import set_state, get_tracking_speed, get_optimal_range, \
-get_falloff_range, get_cycle_time
+    get_falloff_range, get_cycle_time
 from eos.fit.holder.attachable_functions.tanking import get_hp, get_resistances, get_ehp, get_worst_case_ehp
+from eos.util.volatile_cache import VolatileMixin, VolatileProperty
 
 
-class Drone(Holder):
+class Drone(Holder, VolatileMixin):
     """Single drone."""
-
-    __slots__ = ()
 
     def __init__(self, type_id):
         Holder.__init__(self, type_id, State.offline)
+        VolatileMixin.__init__(self)
 
     @property
     def _location(self):
@@ -42,10 +42,10 @@ class Drone(Holder):
     optimal_range = property(get_optimal_range)
     falloff_range = property(get_falloff_range)
     cycle_time = property(get_cycle_time)
-    hp = property(get_hp)
-    resistances = property(get_resistances)
+    hp = VolatileProperty(get_hp)
+    resistances = VolatileProperty(get_resistances)
     get_ehp = get_ehp
-    worst_case_ehp = property(get_worst_case_ehp)
+    worst_case_ehp = VolatileProperty(get_worst_case_ehp)
 
     @Holder.state.setter
     def state(self, new_state):

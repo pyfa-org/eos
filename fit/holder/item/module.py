@@ -23,6 +23,7 @@ from eos.const.eos import Location, State
 from eos.fit.holder import Holder
 from eos.fit.holder.attachable_functions.misc import set_state, get_tracking_speed, get_optimal_range, \
     get_falloff_range, get_cycle_time
+from eos.util.volatile_cache import VolatileMixin, VolatileProperty
 from .charge import Charge
 
 
