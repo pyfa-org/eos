@@ -21,9 +21,9 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.attachableFunctions.misc import setState, getTrackingSpeed, getOptimalRange, \
-getFalloffRange, getCycleTime
-from eos.fit.holder.attachableFunctions.tanking import getHp, getResistances, getEhp, getWorstCaseEhp
+from eos.fit.holder.attachable_functions.misc import set_state, get_tracking_speed, get_optimal_range, \
+get_falloff_range, get_cycle_time
+from eos.fit.holder.attachable_functions.tanking import get_hp, get_resistances, get_ehp, get_worst_case_ehp
 
 
 class Drone(Holder):
@@ -31,22 +31,22 @@ class Drone(Holder):
 
     __slots__ = ()
 
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId, State.offline)
+    def __init__(self, type_id):
+        Holder.__init__(self, type_id, State.offline)
 
     @property
     def _location(self):
         return Location.space
 
-    trackingSpeed = property(getTrackingSpeed)
-    optimalRange = property(getOptimalRange)
-    falloffRange = property(getFalloffRange)
-    cycleTime = property(getCycleTime)
-    hp = property(getHp)
-    resistances = property(getResistances)
-    getEhp = getEhp
-    worstCaseEhp = property(getWorstCaseEhp)
+    tracking_speed = property(get_tracking_speed)
+    optimal_range = property(get_optimal_range)
+    falloff_range = property(get_falloff_range)
+    cycle_time = property(get_cycle_time)
+    hp = property(get_hp)
+    resistances = property(get_resistances)
+    get_ehp = get_ehp
+    worst_case_ehp = property(get_worst_case_ehp)
 
     @Holder.state.setter
-    def state(self, newState):
-        setState(self, newState)
+    def state(self, new_state):
+        set_state(self, new_state)

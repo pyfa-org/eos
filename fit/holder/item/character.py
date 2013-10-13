@@ -31,8 +31,8 @@ class Character(Holder):
 
     __slots__ = ()
 
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId, State.offline)
+    def __init__(self, type_id):
+        Holder.__init__(self, type_id, State.offline)
 
     @property
     def _location(self):

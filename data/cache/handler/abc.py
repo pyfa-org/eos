@@ -33,27 +33,27 @@ class CacheHandler(metaclass=ABCMeta):
 
 
     @abstractmethod
-    def getType(self, typeID):
+    def get_type(self, type_id):
         ...
 
     @abstractmethod
-    def getAttribute(self, attrID):
+    def get_attribute(self, attr_id):
         ...
 
     @abstractmethod
-    def getEffect(self, effectID):
+    def get_effect(self, effect_id):
         ...
 
     @abstractmethod
-    def getModifier(self, modifierID):
+    def get_modifier(self, modifier_id):
         ...
 
     @abstractmethod
-    def getFingerprint(self):
+    def get_fingerprint(self):
         ...
 
     @abstractmethod
-    def updateCache(self, data, fingerprint):
+    def update_cache(self, data, fingerprint):
         """
         Update cache with passed data.
 

@@ -29,8 +29,8 @@ class Skill(Holder):
 
     __slots__ = ('__level',)
 
-    def __init__(self, typeId, level=0):
-        Holder.__init__(self, typeId, State.offline)
+    def __init__(self, type_id, level=0):
+        Holder.__init__(self, type_id, State.offline)
         self.__level = level
 
     @property
@@ -51,4 +51,4 @@ class Skill(Holder):
         # Clear everything relying on skill level,
         # if skill is assigned to fit
         if self._fit is not None:
-            self._fit._linkTracker.clearHolderAttributeDependents(self, Attribute.skillLevel)
+            self._fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)

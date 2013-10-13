@@ -21,8 +21,8 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.attachableFunctions.misc import setState, getTrackingSpeed, getOptimalRange, \
-getFalloffRange, getCycleTime
+from eos.fit.holder.attachable_functions.misc import set_state, get_tracking_speed, get_optimal_range, \
+    get_falloff_range, get_cycle_time
 from .charge import Charge
 
 
@@ -31,8 +31,8 @@ class Module(Holder):
 
     __slots__ = ('__charge',)
 
-    def __init__(self, typeId, state=State.offline, charge=None):
-        Holder.__init__(self, typeId, state)
+    def __init__(self, type_id, state=State.offline, charge=None):
+        Holder.__init__(self, type_id, state)
         self.__charge = None
         self.charge = charge
 
@@ -45,41 +45,41 @@ class Module(Holder):
         """Purely service property, used in fit link tracker registry"""
         return self.charge
 
-    trackingSpeed = property(getTrackingSpeed)
-    optimalRange = property(getOptimalRange)
-    falloffRange = property(getFalloffRange)
-    cycleTime = property(getCycleTime)
+    tracking_speed = property(get_tracking_speed)
+    optimal_range = property(get_optimal_range)
+    falloff_range = property(get_falloff_range)
+    cycle_time = property(get_cycle_time)
 
     @Holder.state.setter
-    def state(self, newState):
-        setState(self, newState)
+    def state(self, new_state):
+        set_state(self, new_state)
 
     @property
     def charge(self):
         return self.__charge
 
     @charge.setter
-    def charge(self, newCharge):
-        if newCharge is not None:
+    def charge(self, new_charge):
+        if new_charge is not None:
             # Check what's being assigned
-            if not isinstance(newCharge, Charge):
-                msg = 'only {} and None are accepted, not {}'.format(Charge,
-                                                                     type(newCharge))
+            if not isinstance(new_charge, Charge):
+                msg = 'only {} and None are accepted, not {}'.format(
+                    Charge, type(new_charge))
                 raise TypeError(msg)
             # Also check if it is attached to other fit already
-            # or not. We can't rely on fit._addHolder to do it,
+            # or not. We can't rely on fit._add_holder to do it,
             # because charge can be assigned when module is detached
             # from fit, which breaks consistency of fit assignment
             # between module and charge
-            if newCharge._fit is not None:
-                raise ValueError(newCharge)
-        oldCharge = self.charge
-        if oldCharge is not None:
+            if new_charge._fit is not None:
+                raise ValueError(new_charge)
+        old_charge = self.charge
+        if old_charge is not None:
             if self._fit is not None:
-                self._fit._removeHolder(oldCharge)
-            oldCharge.container = None
-        self.__charge = newCharge
-        if newCharge is not None:
-            newCharge.container = self
+                self._fit._remove_holder(old_charge)
+            old_charge.container = None
+        self.__charge = new_charge
+        if new_charge is not None:
+            new_charge.container = self
             if self._fit is not None:
-                self._fit._addHolder(newCharge)
+                self._fit._add_holder(new_charge)

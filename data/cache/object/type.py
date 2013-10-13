@@ -21,7 +21,7 @@
 
 from eos.const.eos import Slot, State
 from eos.const.eve import Attribute, Effect, EffectCategory
-from eos.util.cachedProperty import cachedproperty
+from eos.util.cached_property import CachedProperty
 
 
 class Type:
@@ -30,38 +30,45 @@ class Type:
     incursion system-wide effects are actually items.
     """
 
-    def __init__(self, typeId=None, groupId=None, categoryId=None,
-                 durationAttributeId=None, dischargeAttributeId=None,
-                 rangeAttributeId=None, falloffAttributeId=None,
-                 trackingSpeedAttributeId=None, fittableNonSingleton=None,
-                 attributes=None, effects=()):
-        self.id = typeId
+    def __init__(self,
+                 type_id=None,
+                 group_id=None,
+                 category_id=None,
+                 duration_attribute_id=None,
+                 discharge_attribute_id=None,
+                 range_attribute_id=None,
+                 falloff_attribute_id=None,
+                 tracking_speed_attribute_id=None,
+                 fittable_non_singleton=None,
+                 attributes=None,
+                 effects=()):
+        self.id = type_id
 
         # The groupID of the type, integer
-        self.groupId = groupId
+        self.group_id = group_id
 
         # The category ID of the type, integer
-        self.categoryId = categoryId
+        self.category_id = category_id
 
         # Defines cycle time
-        self._durationAttributeId = durationAttributeId
+        self._duration_attribute_id = duration_attribute_id
 
         # Defines attribute, whose value will be used to drain ship's
         # capacitor each cycle
-        self._dischargeAttributeId = dischargeAttributeId
+        self._discharge_attribute_id = discharge_attribute_id
 
         # Attribute with this ID defines optimal range of item
-        self._rangeAttributeId = rangeAttributeId
+        self._range_attribute_id = range_attribute_id
 
         # Defines falloff attribute
-        self._falloffAttributeId = falloffAttributeId
+        self._falloff_attribute_id = falloff_attribute_id
 
         # Defines tracking speed attribute
-        self._trackingSpeedAttributeId = trackingSpeedAttributeId
+        self._tracking_speed_attribute_id = tracking_speed_attribute_id
 
         # Defines if multiple items of this type can be added to fit without packaging.
         # We use it to see if charge can be loaded into anything or not.
-        self._fittableNonSingleton = bool(fittableNonSingleton) if fittableNonSingleton is not None else None
+        self._fittable_non_singleton = bool(fittable_non_singleton) if fittable_non_singleton is not None else None
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
@@ -83,15 +90,17 @@ class Type:
 
     # Define attributes which describe item skill requirement details
     # Format: {item attribute ID: level attribute ID}
-    __skillRqAttrs = {Attribute.requiredSkill1: Attribute.requiredSkill1Level,
-                      Attribute.requiredSkill2: Attribute.requiredSkill2Level,
-                      Attribute.requiredSkill3: Attribute.requiredSkill3Level,
-                      Attribute.requiredSkill4: Attribute.requiredSkill4Level,
-                      Attribute.requiredSkill5: Attribute.requiredSkill5Level,
-                      Attribute.requiredSkill6: Attribute.requiredSkill6Level}
+    __skillrq_attrs = {
+        Attribute.required_skill_1: Attribute.required_skill_1_level,
+        Attribute.required_skill_2: Attribute.required_skill_2_level,
+        Attribute.required_skill_3: Attribute.required_skill_3_level,
+        Attribute.required_skill_4: Attribute.required_skill_4_level,
+        Attribute.required_skill_5: Attribute.required_skill_5_level,
+        Attribute.required_skill_6: Attribute.required_skill_6_level
+    }
 
-    @cachedproperty
-    def requiredSkills(self):
+    @CachedProperty
+    def required_skills(self):
         """
         Get skill requirements.
 
@@ -99,32 +108,32 @@ class Type:
         Dictionary with IDs of skills and corresponding skill levels,
         which are required to use type
         """
-        requiredSkills = {}
-        for srqAttrId in self.__skillRqAttrs:
+        required_skills = {}
+        for srq_attr_id in self.__skillrq_attrs:
             # Skip skill requirement attribute pair if any
             # of them is not available
             try:
-                srq = self.attributes[srqAttrId]
+                srq = self.attributes[srq_attr_id]
             except KeyError:
                 continue
             try:
-                srqLvl = self.attributes[self.__skillRqAttrs[srqAttrId]]
+                srq_lvl = self.attributes[self.__skillrq_attrs[srq_attr_id]]
             except KeyError:
                 continue
-            requiredSkills[int(srq)] = int(srqLvl)
-        return requiredSkills
+            required_skills[int(srq)] = int(srq_lvl)
+        return required_skills
 
     # Map effect category onto max state item can take
     # Format: {effect category ID: state ID}
-    __effectStateMap = {EffectCategory.passive: State.offline,
-                        EffectCategory.active: State.active,
-                        EffectCategory.target: State.active,
-                        EffectCategory.online: State.online,
-                        EffectCategory.overload: State.overload,
-                        EffectCategory.system: State.offline}
+    __effect_state_map = {EffectCategory.passive: State.offline,
+                          EffectCategory.active: State.active,
+                          EffectCategory.target: State.active,
+                          EffectCategory.online: State.online,
+                          EffectCategory.overload: State.overload,
+                          EffectCategory.system: State.offline}
 
-    @cachedproperty
-    def maxState(self):
+    @CachedProperty
+    def max_state(self):
         """
         Get highest state this type is allowed to take.
 
@@ -133,17 +142,17 @@ class Type:
         """
         # All types can be at least offline,
         # even when they have no effects
-        maxState = State.offline
+        max_state = State.offline
         # We cycle through effects, because each effect isn't
         # guaranteed to produce modifier, thus effects are
         # more reliable data source
         for effect in self.effects:
-            effectState = self.__effectStateMap[effect.categoryId]
-            maxState = max(maxState, effectState)
-        return maxState
+            effect_state = self.__effect_state_map[effect.category_id]
+            max_state = max(max_state, effect_state)
+        return max_state
 
-    @cachedproperty
-    def isTargeted(self):
+    @CachedProperty
+    def is_targeted(self):
         """
         Report if type is targeted or not. Targeted types cannot be
         activated w/o target selection.
@@ -155,21 +164,21 @@ class Type:
         targeted = False
         for effect in self.effects:
             # If any of effects is targeted, then type is targeted
-            if effect.categoryId == EffectCategory.target:
+            if effect.category_id == EffectCategory.target:
                 targeted = True
                 break
         return targeted
 
     # Format: {effect ID: slot ID}
-    __effectSlotMap = {Effect.loPower: Slot.moduleLow,
-                       Effect.hiPower: Slot.moduleHigh,
-                       Effect.medPower: Slot.moduleMed,
-                       Effect.launcherFitted: Slot.launcher,
-                       Effect.turretFitted: Slot.turret,
-                       Effect.rigSlot: Slot.rig,
-                       Effect.subSystem: Slot.subsystem}
+    __effect_slot_map = {Effect.lo_power: Slot.module_low,
+                         Effect.hi_power: Slot.module_high,
+                         Effect.med_power: Slot.module_med,
+                         Effect.launcher_fitted: Slot.launcher,
+                         Effect.turret_fitted: Slot.turret,
+                         Effect.rig_slot: Slot.rig,
+                         Effect.subsystem: Slot.subsystem}
 
-    @cachedproperty
+    @CachedProperty
     def slots(self):
         """
         Get types of slots this type occupies.
@@ -182,7 +191,7 @@ class Type:
         for effect in self.effects:
             # Convert effect ID to slot type item takes
             try:
-                slot = self.__effectSlotMap[effect.id]
+                slot = self.__effect_slot_map[effect.id]
             # Silently skip effect if it's not in map
             except KeyError:
                 pass

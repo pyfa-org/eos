@@ -29,34 +29,36 @@ class HolderContainerBase:
 
     Positional arguments:
     fit -- fit, to which container is attached
-    holderClass -- class of holders this container
+    holder_class -- class of holders this container
     is allowed to contain
     """
 
-    __slots__ = ('__fit', '__holderClass')
+    __slots__ = ('__fit', '__holder_class')
 
-    def __init__(self, fit, holderClass):
+    def __init__(self, fit, holder_class):
         self.__fit = fit
-        self.__holderClass = holderClass
+        self.__holder_class = holder_class
 
-    def _checkClass(self, holder, allowNone=False):
+    def _check_class(self, holder, allow_none=False):
         """
         Check if class of passed holder corresponds
         to our expectations.
         """
-        if isinstance(holder, self.__holderClass):
+        if isinstance(holder, self.__holder_class):
             return
-        if holder is None and allowNone is True:
+        if holder is None and allow_none is True:
             return
-        msg = 'only {} {} accepted, not {}'.format(self.__holderClass,
-                                                   'or None are' if allowNone is True else 'is',
-                                                   type(holder))
+        msg = 'only {} {} accepted, not {}'.format(
+            self.__holder_class,
+            'or None are' if allow_none is True else 'is',
+            type(holder)
+        )
         raise TypeError(msg)
 
-    def _handleAdd(self, holder):
+    def _handle_add(self, holder):
         """Shortcut for registration of holder in fit."""
-        self.__fit._addHolder(holder)
+        self.__fit._add_holder(holder)
 
-    def _handleRemove(self, holder):
+    def _handle_remove(self, holder):
         """Shortcut for unregistration of holder in fit."""
-        self.__fit._removeHolder(holder)
+        self.__fit._remove_holder(holder)

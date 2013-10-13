@@ -32,4 +32,9 @@ from .modifier import Modifier
 from .type import Type
 
 
-__all__ = ['Attribute', 'Effect', 'Modifier', 'Type']
+__all__ = (
+    'Attribute',
+    'Effect',
+    'Modifier',
+    'Type'
+)

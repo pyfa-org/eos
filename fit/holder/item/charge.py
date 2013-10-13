@@ -28,10 +28,9 @@ class Charge(Holder):
 
     __slots__ = ('container',)
 
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId, State.offline)
-        # Holder-container, into which our charge holder is
-        # "loaded"
+    def __init__(self, type_id):
+        Holder.__init__(self, type_id, State.offline)
+        # Holder-container, into which our charge holder is "loaded"
         self.container = None
 
     @property

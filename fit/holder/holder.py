@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.fit.attributeCalculator import MutableAttributeMap
+from eos.fit.attribute_calculator import MutableAttributeMap
 
 
 class Holder:
@@ -33,11 +33,11 @@ class Holder:
     state -- state which this holder takes during initialization
     """
 
-    __slots__ = ('_typeId', '_state', 'attributes', '__fit', 'item')
+    __slots__ = ('_type_id', '_state', 'attributes', '__fit', 'item')
 
-    def __init__(self, typeId, state):
+    def __init__(self, type_id, state):
         # TypeID of item this holder is supposed to wrap
-        self._typeId = typeId
+        self._type_id = type_id
         # Keeps current state of the holder
         self._state = state
         # Special dictionary subclass that holds modified attributes
@@ -53,15 +53,15 @@ class Holder:
         return self.__fit
 
     @_fit.setter
-    def _fit(self, newFit):
-        self.__fit = newFit
-        self._refreshContext()
+    def _fit(self, new_fit):
+        self.__fit = new_fit
+        self._refresh_context()
 
     @property
     def state(self):
         return self._state
 
-    def _refreshContext(self):
+    def _refresh_context(self):
         """
         Each time holder's context is changed (holder's
         fit or fit's eos), this method should be called;
@@ -69,8 +69,8 @@ class Holder:
         """
         self.attributes.clear()
         try:
-            cacheHandler = self.__fit.eos._cacheHandler
+            cache_handler = self.__fit.eos._cache_handler
         except AttributeError:
             self.item = None
         else:
-            self.item = cacheHandler.getType(self._typeId)
+            self.item = cache_handler.get_type(self._type_id)

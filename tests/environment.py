@@ -28,88 +28,88 @@ from eos.data.cache.object import Attribute, Effect, Type
 class Logger:
 
     def __init__(self):
-        self.__knownSignatures = set()
-        self.__rootLogger = getLogger('eos_test')
-        self.__rootLogger.setLevel(INFO)
+        self.__known_signatures = set()
+        self.__root_logger = getLogger('eos_test')
+        self.__root_logger.setLevel(INFO)
 
     INFO = INFO
     WARNING = WARNING
     ERROR = ERROR
 
-    def error(self, msg, childName=None, signature=None):
-        logger = self.__getChildLogger(childName)
+    def error(self, msg, child_name=None, signature=None):
+        logger = self.__get_child_logger(child_name)
         if signature is None:
             logger.error(msg)
-        elif not signature in self.__knownSignatures:
+        elif signature not in self.__known_signatures:
             logger.error(msg)
-            self.__knownSignatures.add(signature)
+            self.__known_signatures.add(signature)
 
-    def warning(self, msg, childName=None, signature=None):
-        logger = self.__getChildLogger(childName)
+    def warning(self, msg, child_name=None, signature=None):
+        logger = self.__get_child_logger(child_name)
         if signature is None:
             logger.warning(msg)
-        elif not signature in self.__knownSignatures:
+        elif signature not in self.__known_signatures:
             logger.warning(msg)
-            self.__knownSignatures.add(signature)
+            self.__known_signatures.add(signature)
 
-    def info(self, msg, childName=None, signature=None):
-        logger = self.__getChildLogger(childName)
+    def info(self, msg, child_name=None, signature=None):
+        logger = self.__get_child_logger(child_name)
         if signature is None:
             logger.info(msg)
-        elif not signature in self.__knownSignatures:
+        elif signature not in self.__known_signatures:
             logger.info(msg)
-            self.__knownSignatures.add(signature)
+            self.__known_signatures.add(signature)
 
-    def __getChildLogger(self, childName):
-        if childName is None:
-            logger = self.__rootLogger
+    def __get_child_logger(self, child_name):
+        if child_name is None:
+            logger = self.__root_logger
         else:
-            logger = self.__rootLogger.getChild(childName)
+            logger = self.__root_logger.getChild(child_name)
         return logger
 
 
 class CacheHandler:
 
     def __init__(self):
-        self.__typeData = {}
-        self.__attributeData = {}
-        self.__effectData = {}
+        self.__type_data = {}
+        self.__attribute_data = {}
+        self.__effect_data = {}
 
     def type_(self, **kwargs):
         type_ = Type(**kwargs)
-        if type_.id in self.__typeData:
+        if type_.id in self.__type_data:
             raise KeyError(type_.id)
-        self.__typeData[type_.id] = type_
+        self.__type_data[type_.id] = type_
         return type_
 
     def attribute(self, **kwargs):
         attr = Attribute(**kwargs)
-        if attr.id in self.__attributeData:
+        if attr.id in self.__attribute_data:
             raise KeyError(attr.id)
-        self.__attributeData[attr.id] = attr
+        self.__attribute_data[attr.id] = attr
         return attr
 
     def effect(self, **kwargs):
         eff = Effect(**kwargs)
-        if eff.id in self.__effectData:
+        if eff.id in self.__effect_data:
             raise KeyError(eff.id)
-        self.__effectData[eff.id] = eff
+        self.__effect_data[eff.id] = eff
         return eff
 
-    def getType(self, typeId):
+    def get_type(self, type_id):
         try:
-            return self.__typeData[typeId]
+            return self.__type_data[type_id]
         except KeyError:
-            raise TypeFetchError(typeId)
+            raise TypeFetchError(type_id)
 
-    def getAttribute(self, attrId):
+    def get_attribute(self, attr_id):
         try:
-            return self.__attributeData[attrId]
+            return self.__attribute_data[attr_id]
         except KeyError:
-            raise AttributeFetchError(attrId)
+            raise AttributeFetchError(attr_id)
 
-    def getEffect(self, effId):
+    def get_effect(self, eff_id):
         try:
-            return self.__effectData[effId]
+            return self.__effect_data[eff_id]
         except KeyError:
-            raise EffectFetchError(effId)
+            raise EffectFetchError(eff_id)

@@ -25,26 +25,32 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self, effectId=None, categoryId=None, isOffensive=None, isAssistance=None,
-                 fittingUsageChanceAttributeId=None, buildStatus=None, modifiers=()):
-        self.id = effectId
+    def __init__(self,
+                 effect_id=None,
+                 category_id=None,
+                 is_offensive=None,
+                 is_assistance=None,
+                 fitting_usage_chance_attribute_id=None,
+                 build_status=None,
+                 modifiers=()):
+        self.id = effect_id
 
         # Effect category actually describes type of effect, which determines
         # when it is applied - always, when item is active, overloaded, etc.
-        self.categoryId = categoryId
+        self.category_id = category_id
 
         # Whether the effect is offensive (e.g. guns)
-        self.isOffensive = bool(isOffensive) if isOffensive is not None else None
+        self.is_offensive = bool(is_offensive) if is_offensive is not None else None
 
         # Whether the effect is helpful (e.g. remote repairers)
-        self.isAssistance = bool(isAssistance) if isAssistance is not None else None
+        self.is_assistance = bool(is_assistance) if is_assistance is not None else None
 
         # Refers attribute, which determines chance of effect
         # getting applied when its carrier is added to fit
-        self.fittingUsageChanceAttributeId = fittingUsageChanceAttributeId
+        self.fitting_usage_chance_attribute_id = fitting_usage_chance_attribute_id
 
         # Stores expression->modifiers parsing status
-        self.buildStatus = buildStatus
+        self.build_status = build_status
 
         # Stores Modifiers which are assigned to given effect
         self.modifiers = modifiers

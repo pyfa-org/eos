@@ -23,7 +23,6 @@
 This file holds IDs of multiple Eos-specific entities.
 """
 
-
 from eos.util.enum import Enum
 
 
@@ -46,9 +45,9 @@ class State(metaclass=Enum):
 
 class Slot(metaclass=Enum):
     """Slot types item can take"""
-    moduleHigh = 1  #
-    moduleMed = 2
-    moduleLow = 3
+    module_high = 1
+    module_med = 2
+    module_low = 3
     rig = 4
     subsystem = 5
     turret = 6
@@ -63,13 +62,22 @@ class Location(metaclass=Enum):
     internally by Info class, item classes and calculation
     engine in general.
     """
-    self_ = 1  # Self, i.e. carrier of modification source
-    character = 2  # Character
-    ship = 3  # Ship
-    target = 4  # Currently locked and selected target
-    other = 5  # If used from charge, refers charge's container, if used from container, refers its charge
-    area = 6  # No detailed data about this one, according to expressions, it affects everything on grid (the only expression using it is area-of-effect repair, but it's not assigned to any effects)
-    space = 7  # Target stuff in space (e.g. your launched drones and missiles); this location is Eos-specific and not taken from EVE
+    # Self, i.e. carrier of modification source
+    self_ = 1
+    character = 2
+    ship = 3
+    # Currently locked and selected target
+    target = 4
+    # If used from charge, refers charge's container,
+    # if used from container, refers its charge
+    other = 5
+    # No detailed data about this one, according to expressions,
+    # it affects everything on grid (the only expression using it
+    # is area-of-effect repair, but it's not assigned to any effects)
+    area = 6
+    # Target stuff in space (e.g. your launched drones and missiles);
+    # this location is Eos-specific and not taken from EVE
+    space = 7
 
 
 class EffectBuildStatus(metaclass=Enum):
@@ -77,10 +85,12 @@ class EffectBuildStatus(metaclass=Enum):
     Statuses which indicate effect->modifiers conversion result,
     part of public API.
     """
-    notParsed = 1  # Expression trees were not parsed into modifiers yet
-    error = 2  # Errors occurred during expression trees parsing or validation
-    okPartial = 3  # Modifiers were generated, but some of elements were dropped as unsupported
-    okFull = 4  # All modifications were pulled out of expression tree successfully
+    not_parsed = 1
+    # Errors occurred during expression trees parsing or validation
+    error = 2
+    # Modifiers were generated, but some of elements were dropped as unsupported
+    ok_partial = 3
+    ok_full = 4
 
 
 class Context(metaclass=Enum):
@@ -88,9 +98,13 @@ class Context(metaclass=Enum):
     Describes when modification is applied, used only internally
     by Modifier class and classes interacting with it
     """
-    local = 1  # Fit-local modification
-    gang = 2  # Gang-wide modification
-    projected = 3  # Modification which is applied only when its holder is projected onto something
+    # Fit-local modification
+    local = 1
+    # Gang-wide modification
+    gang = 2
+    # Modification which is applied only when its holder is projected
+    # onto something
+    projected = 3
 
 
 class FilterType(metaclass=Enum):
@@ -98,10 +112,16 @@ class FilterType(metaclass=Enum):
     Filter type ID holder, used only internally
     by Modifier class and classes interacting with it
     """
-    all_ = 1  # Affects all items in target location
-    group = 2  # Affects items in target location with additional filter by group
-    skill = 3  # Affects items in target location with additional filter by skill requirement
-    skillSelf = 4  # Same as skill, but instead of specifying typeID of skill in filter value always refers typeID of carrier
+    # Affects all items in target location
+    all_ = 1
+    # Affects items in target location with additional filter by group
+    group = 2
+    # Affects items in target location with additional filter by skill
+    # requirement
+    skill = 3
+    # Same as skill, but instead of specifying typeID of skill in filter
+    # value always refers typeID of carrier
+    skill_self = 4
 
 
 class Operator(metaclass=Enum):
@@ -114,15 +134,15 @@ class Operator(metaclass=Enum):
     # these some ID, but we need to make sure they're sorted
     # in the order they're kept here by python for proper
     # attribute calculation process
-    preAssignment = 1
-    preMul = 2
-    preDiv = 3
-    modAdd = 4
-    modSub = 5
-    postMul = 6
-    postDiv = 7
-    postPercent = 8
-    postAssignment = 9
+    pre_assignment = 1
+    pre_mul = 2
+    pre_div = 3
+    mod_add = 4
+    mod_sub = 5
+    post_mul = 6
+    post_div = 7
+    post_percent = 8
+    post_assignment = 9
 
 
 class Restriction(metaclass=Enum):
@@ -130,31 +150,31 @@ class Restriction(metaclass=Enum):
     Fitting restriction types.
     """
     cpu = 1
-    powerGrid = 2
+    powergrid = 2
     calibration = 3
-    droneBayVolume = 4
-    droneBandwidth = 5
-    launchedDrone = 6
-    droneGroup = 7
-    highSlot = 8
-    mediumSlot = 9
-    lowSlot = 10
-    rigSlot = 11
-    rigSize = 12
-    subsystemSlot = 13
-    subsystemIndex = 14
-    turretSlot = 15
-    launcherSlot = 16
-    implantIndex = 17
-    boosterIndex = 18
-    shipTypeGroup = 19
-    capitalItem = 20
-    maxGroupFitted = 21
-    maxGroupOnline = 22
-    maxGroupActive = 23
-    skillRequirement = 24
-    holderClass = 26
+    dronebay_volume = 4
+    drone_bandwidth = 5
+    launched_drone = 6
+    drone_group = 7
+    high_slot = 8
+    medium_slot = 9
+    low_slot = 10
+    rig_slot = 11
+    rig_size = 12
+    subsystem_slot = 13
+    subsystem_index = 14
+    turret_slot = 15
+    launcher_slot = 16
+    implant_index = 17
+    booster_index = 18
+    ship_type_group = 19
+    capital_item = 20
+    max_group_fitted = 21
+    max_group_online = 22
+    max_group_active = 23
+    skill_requirement = 24
+    holder_class = 26
     state = 27
-    chargeGroup = 28
-    chargeSize = 29
-    chargeVolume = 30
+    charge_group = 28
+    charge_size = 29
+    charge_volume = 30

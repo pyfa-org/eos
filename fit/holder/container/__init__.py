@@ -22,5 +22,5 @@
 from .exception import SlotTakenError
 from .list import HolderList
 from .modules import ModuleRacks
-from .restrictedSet import HolderRestrictedSet
+from .restricted_set import HolderRestrictedSet
 from .set import HolderSet

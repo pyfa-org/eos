@@ -29,14 +29,14 @@ class HolderSet(HolderContainerBase):
 
     Positional arguments:
     fit -- fit, to which container is attached
-    holderClass -- class of holders this container
+    holder_class -- class of holders this container
     is allowed to contain
     """
 
-    __slots__ = ('__set')
+    __slots__ = ('__set',)
 
-    def __init__(self, fit, holderClass):
-        HolderContainerBase.__init__(self, fit, holderClass)
+    def __init__(self, fit, holder_class):
+        HolderContainerBase.__init__(self, fit, holder_class)
         self.__set = set()
 
     def add(self, holder):
@@ -49,10 +49,10 @@ class HolderSet(HolderContainerBase):
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
-        self._checkClass(holder)
+        self._check_class(holder)
         self.__set.add(holder)
         try:
-            self._handleAdd(holder)
+            self._handle_add(holder)
         except HolderAlreadyAssignedError as e:
             self.__set.remove(holder)
             raise ValueError(*e.args) from e
@@ -67,13 +67,13 @@ class HolderSet(HolderContainerBase):
         """
         if holder not in self.__set:
             raise KeyError(holder)
-        self._handleRemove(holder)
+        self._handle_remove(holder)
         self.__set.remove(holder)
 
     def clear(self):
         """Remove everything from container."""
         for holder in self.__set:
-            self._handleRemove(holder)
+            self._handle_remove(holder)
         self.__set.clear()
 
     def __iter__(self):

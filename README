@@ -54,11 +54,11 @@ Attributes of any item are accessible via dictionary-like objects like crow.attr
 5759.988204454497
 
 Stats of fit can be fetched using 'stats' access point:
->>fit.stats.agilityFactor
+>>fit.stats.agility_factor
 3.441616707256807
 >>fit.stats.cpu.use
 176.535
->>fit.stats.getEhp(DamageProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
+>>fit.stats.get_ehp(DamageProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
 1789.934065934066
 
 Not many stats are implemented yet, more to come soon.

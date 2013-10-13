@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.fit.holder import Holder
-from eos.fit.holder.attachableFunctions.tanking import getHp, getResistances, getEhp, getWorstCaseEhp
+from eos.fit.holder.attachable_functions.tanking import get_hp, get_resistances, get_ehp, get_worst_case_ehp
 
 
 class Ship(Holder):
@@ -29,8 +29,8 @@ class Ship(Holder):
 
     __slots__ = ()
 
-    def __init__(self, typeId):
-        Holder.__init__(self, typeId, State.offline)
+    def __init__(self, type_id):
+        Holder.__init__(self, type_id, State.offline)
 
     @property
     def _location(self):
@@ -39,8 +39,7 @@ class Ship(Holder):
         # fit), thus its location is None
         return None
 
-    hp = property(getHp)
-    resistances = property(getResistances)
-    getEhp = getEhp
-    worstCaseEhp = property(getWorstCaseEhp)
-
+    hp = property(get_hp)
+    resistances = property(get_resistances)
+    get_ehp = get_ehp
+    worst_case_ehp = property(get_worst_case_ehp)

@@ -30,14 +30,14 @@ class HolderList(HolderContainerBase):
 
     Positional arguments:
     fit -- fit, to which container is attached
-    holderClass -- class of holders this container
+    holder_class -- class of holders this container
     is allowed to contain
     """
 
-    __slots__ = ('__list')
+    __slots__ = ('__list',)
 
-    def __init__(self, fit, holderClass):
-        HolderContainerBase.__init__(self, fit, holderClass)
+    def __init__(self, fit, holder_class):
+        HolderContainerBase.__init__(self, fit, holder_class)
         self.__list = []
 
     def insert(self, index, value):
@@ -55,14 +55,14 @@ class HolderList(HolderContainerBase):
         it cannot be added to container (e.g. already belongs to
         some fit)
         """
-        self._checkClass(value, allowNone=True)
+        self._check_class(value, allow_none=True)
         self._allocate(index - 1)
         self.__list.insert(index, value)
         if value is None:
             self._cleanup()
         else:
             try:
-                self._handleAdd(value)
+                self._handle_add(value)
             except HolderAlreadyAssignedError as e:
                 del self.__list[index]
                 self._cleanup()
@@ -78,10 +78,10 @@ class HolderList(HolderContainerBase):
         ValueError -- raised when holder cannot be
         added to container (e.g. already belongs to some fit)
         """
-        self._checkClass(holder)
+        self._check_class(holder)
         self.__list.append(holder)
         try:
-            self._handleAdd(holder)
+            self._handle_add(holder)
         except HolderAlreadyAssignedError as e:
             del self.__list[-1]
             raise ValueError(*e.args) from e
@@ -100,17 +100,17 @@ class HolderList(HolderContainerBase):
         SlotTakenError -- raised when slot at specified index
         is already taken by other holder
         """
-        self._checkClass(holder)
+        self._check_class(holder)
         try:
-            oldHolder = self.__list[index]
+            old_holder = self.__list[index]
         except IndexError:
             self._allocate(index)
         else:
-            if oldHolder is not None:
+            if old_holder is not None:
                 raise SlotTakenError(index)
         self.__list[index] = holder
         try:
-            self._handleAdd(holder)
+            self._handle_add(holder)
         except HolderAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
@@ -128,7 +128,7 @@ class HolderList(HolderContainerBase):
         ValueError -- raised when holder cannot be added to
         container (e.g. already belongs to some fit)
         """
-        self._checkClass(holder)
+        self._check_class(holder)
         try:
             index = self.__list.index(None)
         except ValueError:
@@ -137,7 +137,7 @@ class HolderList(HolderContainerBase):
         else:
             self.__list[index] = holder
         try:
-            self._handleAdd(holder)
+            self._handle_add(holder)
         except HolderAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
@@ -160,7 +160,7 @@ class HolderList(HolderContainerBase):
             holder = value
             index = self.__list.index(holder)
         if holder is not None:
-            self._handleRemove(holder)
+            self._handle_remove(holder)
         del self.__list[index]
         self._cleanup()
 
@@ -182,7 +182,7 @@ class HolderList(HolderContainerBase):
             index = self.__list.index(holder)
         if holder is None:
             return
-        self._handleRemove(holder)
+        self._handle_remove(holder)
         self.__list[index] = None
         self._cleanup()
 
@@ -194,7 +194,7 @@ class HolderList(HolderContainerBase):
         """Remove everything from container."""
         for holder in self.__list:
             if holder is not None:
-                self._handleRemove(holder)
+                self._handle_remove(holder)
         self.__list.clear()
 
     def __getitem__(self, index):
@@ -219,8 +219,8 @@ class HolderList(HolderContainerBase):
         If passed index is out of range, complete
         list with Nones until index becomes available.
         """
-        allocatedNum = len(self.__list)
-        for _ in range(max(index - allocatedNum + 1, 0)):
+        allocated_num = len(self.__list)
+        for _ in range(max(index - allocated_num + 1, 0)):
             self.__list.append(None)
 
     def _cleanup(self):
@@ -240,7 +240,7 @@ class ListHolderView:
     functionality over passed list.
     """
 
-    __slots__ = ('__list')
+    __slots__ = ('__list',)
 
     def __init__(self, list_):
         self.__list = list_

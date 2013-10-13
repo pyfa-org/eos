@@ -27,11 +27,11 @@ from eos.data.cache.handler import JsonCacheHandler
 from eos.util.logger import Logger
 
 
-eosVersion = 'git'
+EOS_VERSION = 'git'
 
 # Keeps instance of Eos which will be used when new fits are
 # created without passing Eos instance explicitly
-defaultInstance = None
+default_instance = None
 
 
 class Eos:
@@ -42,30 +42,31 @@ class Eos:
     level objects like Fit.
 
     Positional arguments:
-    dataHandler -- object which implements standard data
+    data_handler -- object which implements standard data
     interface (returns data rows for several tables as
     dicts and is able to get data version)
 
     Keyword arguments:
-    cachedHandler -- cache handler implementation
+    cache_handler -- cache handler implementation. If not
+    specified, default JSON handler is used.
     name -- name of this eos instance, used as key to
     log and cache files, thus should be unique for all
     running eos instances. Default is 'eos'.
-    storagePath -- path to store various files. Default
+    storage_path -- path to store various files. Default
     is ~/.eos
     """
 
-    def __init__(self, dataHandler, cacheHandler=None, name='eos',
-                 storagePath=None, makeDefault=False):
+    def __init__(self, data_handler, cache_handler=None, name='eos',
+                 storage_path=None, make_default=False):
         self.__name = name
-        self.__path = self.__initializePath(storagePath)
-        self._logger = self.__initializeLogger()
+        self.__path = self.__initialize_path(storage_path)
+        self._logger = self.__initialize_logger()
 
-        self.__initializeCache(dataHandler, cacheHandler)
+        self.__initialize_cache(data_handler, cache_handler)
 
-        if makeDefault is True:
-            global defaultInstance
-            defaultInstance = self
+        if make_default is True:
+            global default_instance
+            default_instance = self
 
     @property
     def name(self):
@@ -79,14 +80,14 @@ class Eos:
         return False
 
     # Initialization methods
-    def __initializePath(self, path):
+    def __initialize_path(self, path):
         """Process path we've received from user and return it."""
         if path is None:
             path = os.path.join('~', '.eos')
         path = os.path.expanduser(path)
         return path
 
-    def __initializeLogger(self):
+    def __initialize_logger(self):
         """
         Initialize logging facilities, log few initial messages,
         and return logger.
@@ -96,30 +97,31 @@ class Eos:
         logger.info('session started')
         return logger
 
-    def __initializeCache(self, dataHandler, cacheHandler):
+    def __initialize_cache(self, data_handler, cache_handler):
         """
         Check if the cache is outdated and, if necessary, compose it
-        using passed datahandler and cacheHandler. If cacheHandler
+        using passed data handler and cache handler. If cache handler
         was specified as None, default on-disk JSON handler is used.
         """
-        if cacheHandler is None:
-            cacheHandler = JsonCacheHandler(os.path.join(self.__path, 'cache'),
-                                            self.__name, self._logger)
-        self._cacheHandler = cacheHandler
+        if cache_handler is None:
+            cache_handler = JsonCacheHandler(os.path.join(self.__path, 'cache'),
+                                             self.__name, self._logger)
+        self._cache_handler = cache_handler
 
         # Compare fingerprints from data and cache
-        cacheFp = cacheHandler.getFingerprint()
-        dataVersion = dataHandler.getVersion()
-        currentFp = '{}_{}_{}'.format(self.name, dataVersion, eosVersion)
+        cache_fp = cache_handler.get_fingerprint()
+        data_version = data_handler.get_version()
+        current_fp = '{}_{}_{}'.format(self.name, data_version, EOS_VERSION)
         # If data version is corrupt or fingerprints mismatch,
         # update cache
-        if dataVersion is None or cacheFp != currentFp:
-            if dataVersion is None:
+        if data_version is None or cache_fp != current_fp:
+            if data_version is None:
                 msg = 'data version is None, updating cache'
             else:
-                msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(cacheFp, currentFp)
+                msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(
+                    cache_fp, current_fp)
             self._logger.info(msg)
             # Generate cache, apply customizations and write it
-            cacheData = CacheGenerator(self._logger).run(dataHandler)
-            CacheCustomizer(self._logger).runBuiltIn(cacheData)
-            cacheHandler.updateCache(cacheData, currentFp)
+            cache_data = CacheGenerator(self._logger).run(data_handler)
+            CacheCustomizer(self._logger).run_builtin(cache_data)
+            cache_handler.update_cache(cache_data, current_fp)

@@ -20,5 +20,5 @@
 
 
 from .abc import CacheHandler
-from .jsonCacheHandler import JsonCacheHandler
+from .json_cache_handler import JsonCacheHandler
 from .exception import TypeFetchError

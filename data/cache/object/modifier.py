@@ -27,12 +27,19 @@ class Modifier:
     apply it, and so on.
     """
 
-    def __init__(self, modifierId=None, state=None, context=None,
-                 sourceAttributeId=None, operator=None, targetAttributeId=None,
-                 location=None, filterType=None, filterValue=None):
+    def __init__(self,
+                 modifier_id=None,
+                 state=None,
+                 context=None,
+                 source_attribute_id=None,
+                 operator=None,
+                 target_attribute_id=None,
+                 location=None,
+                 filter_type=None,
+                 filter_value=None):
         # Identifier of modifier, sythesized at
         # cache generation time
-        self.id = modifierId
+        self.id = modifier_id
 
         # Modifier can be applied only when its carrier holder
         # is in this or greater state, must be eos.const.eos.State
@@ -45,7 +52,7 @@ class Modifier:
 
         # Which attribute will be taken as source value,
         # must be integer which refers attribute via ID.
-        self.sourceAttributeId = sourceAttributeId
+        self.source_attribute_id = source_attribute_id
 
         # Which operation should be applied during modification,
         # must be eos.const.eos.Operator class' attribute value.
@@ -53,7 +60,7 @@ class Modifier:
 
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
-        self.targetAttributeId = targetAttributeId
+        self.target_attribute_id = target_attribute_id
 
         # Target location to change, must be eos.const.eos.Location
         # class' attribute value.
@@ -61,10 +68,10 @@ class Modifier:
 
         # Filter type of the modification, must be None or
         # eos.const.eos.FilterType class' attribute value.
-        self.filterType = filterType
+        self.filter_type = filter_type
 
         # Filter value of the modification:
-        # For filterType.all_, filterType.None or filterType.skillSelf must be None;
-        # For filterType.group must be some integer, referring group via ID;
-        # For filterType.skill must be some integer, referring type via ID
-        self.filterValue = filterValue
+        # For filter_type.all_, filter_type.None or filter_type.skill_self must be None;
+        # For filter_type.group must be some integer, referring group via ID;
+        # For filter_type.skill must be some integer, referring type via ID
+        self.filter_value = filter_value

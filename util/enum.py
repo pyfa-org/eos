@@ -29,20 +29,20 @@ class Enum(type):
     some additional functionality.
     """
 
-    def __new__(cls, name, bases, dict_):
+    def __new__(mcs, name, bases, dict_):
         # Name map
         # Format: {value: name}
-        valueNameMap = {}
-        for attrName, val in dict_.items():
-            if attrName.startswith('_') is True:
+        value_name_map = {}
+        for attr_name, val in dict_.items():
+            if attr_name.startswith('_') is True:
                 continue
-            if val in valueNameMap:
+            if val in value_name_map:
                 raise ValueError('enum contains duplicate values')
-            valueNameMap[val] = attrName
+            value_name_map[val] = attr_name
         # Assign our custom data structures to class dict
-        dict_['_values'] = tuple(valueNameMap)
-        dict_['_valueNameMap'] = valueNameMap
-        return type.__new__(cls, name, bases, dict_)
+        dict_['_values'] = tuple(value_name_map)
+        dict_['_value_name_map'] = value_name_map
+        return type.__new__(mcs, name, bases, dict_)
 
     def __iter__(self):
         return iter(self._values)
@@ -50,5 +50,5 @@ class Enum(type):
     def __contains__(self, value):
         return self._values.__contains__(value)
 
-    def _getName(self, value):
-        return self._valueNameMap.get(value)
+    def _get_name(self, value):
+        return self._value_name_map.get(value)

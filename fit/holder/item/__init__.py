@@ -23,7 +23,7 @@ from .booster import Booster
 from .character import Character
 from .charge import Charge
 from .drone import Drone
-from .effectBeacon import EffectBeacon
+from .effect_beacon import EffectBeacon
 from .implant import Implant
 from .module import Module
 from .rig import Rig
@@ -31,5 +31,16 @@ from .ship import Ship
 from .skill import Skill
 from .subsystem import Subsystem
 
-__all__ = ('Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon',
-           'Implant', 'Module', 'Rig', 'Ship', 'Skill', 'Subsystem')
+__all__ = (
+    'Booster',
+    'Character',
+    'Charge',
+    'Drone',
+    'EffectBeacon',
+    'Implant',
+    'Module',
+    'Rig',
+    'Ship',
+    'Skill',
+    'Subsystem'
+)

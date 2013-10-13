@@ -41,6 +41,7 @@ class EffectFetchError(CacheHandlerError):
     """Raised when cache handler can't find effect with requested ID."""
     pass
 
+
 class ModifierFetchError(CacheHandlerError):
     """Raised when cache handler can't find modifier with requested ID."""
     pass

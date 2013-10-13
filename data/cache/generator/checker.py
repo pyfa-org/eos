@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import Effect
-from eos.util.frozendict import frozendict
+from eos.util.frozen_dict import FrozenDict
 
 
 class Checker:
@@ -35,7 +35,7 @@ class Checker:
     def __init__(self, logger):
         self._logger = logger
 
-    def preCleanup(self, data):
+    def pre_cleanup(self, data):
         """
         Run checks which should be performed on
         data which is yet to be cleaned.
@@ -44,17 +44,17 @@ class Checker:
         data -- data to check
         """
         self.data = data
-        primaryKeys = {'dgmattribs': ('attributeID',),
-                       'dgmeffects': ('effectID',),
-                       'dgmexpressions': ('expressionID',),
-                       'dgmtypeattribs': ('typeID','attributeID'),
-                       'dgmtypeeffects': ('typeID','effectID'),
-                       'invgroups': ('groupID',),
-                       'invtypes': ('typeID',)}
-        for tableName, keyNames in primaryKeys.items():
-            self._tablePk(tableName, keyNames)
+        primary_keys = {'dgmattribs': ('attributeID',),
+                        'dgmeffects': ('effectID',),
+                        'dgmexpressions': ('expressionID',),
+                        'dgmtypeattribs': ('typeID', 'attributeID'),
+                        'dgmtypeeffects': ('typeID', 'effectID'),
+                        'invgroups': ('groupID',),
+                        'invtypes': ('typeID',)}
+        for table_name, key_names in primary_keys.items():
+            self._table_pk(table_name, key_names)
 
-    def preConvert(self, data):
+    def pre_convert(self, data):
         """
         As data convertor and eos relies on some
         assumptions, check that data corresponds to them.
@@ -63,81 +63,83 @@ class Checker:
         data -- data to check
         """
         self.data = data
-        self._attributeValueType()
-        self._multipleDefaultEffects()
-        self._collidingModuleRacks()
+        self._attribute_value_type()
+        self._multiple_default_effects()
+        self._colliding_module_racks()
 
-    def _tablePk(self, tableName, keyNames):
+    def _table_pk(self, table_name, key_names):
         """
         Check if all primary keys in table are integers.
 
         Positional arguments:
-        tableName -- name of table to check
-        keyNames -- names of fields which are considerred
+        table_name -- name of table to check
+        key_names -- names of fields which are considerred
         as primary keys in iterable
         """
-        table = self.data[tableName]
+        table = self.data[table_name]
         # Contains keys used in current table
-        usedKeys = set()
+        used_keys = set()
         # Storage for rows which should be removed
-        invalidRows = set()
-        for datarow in sorted(table, key=lambda row: row['tablePos']):
-            self._rowPk(keyNames, datarow, usedKeys, invalidRows)
+        invalid_rows = set()
+        for datarow in sorted(table, key=lambda row: row['table_pos']):
+            self._row_pk(key_names, datarow, used_keys, invalid_rows)
         # If any invalid rows were detected, remove them and
         # write corresponding message to log
-        if invalidRows:
-            msg = '{} rows in table {} have invalid PKs, removing them'.format(len(invalidRows), tableName)
-            self._logger.warning(msg, childName='cacheGenerator')
-            table.difference_update(invalidRows)
+        if invalid_rows:
+            msg = '{} rows in table {} have invalid PKs, removing them'.format(
+                len(invalid_rows), table_name)
+            self._logger.warning(msg, child_name='cache_generator')
+            table.difference_update(invalid_rows)
 
-    def _rowPk(self, keyNames, datarow, usedKeys, invalidRows):
+    def _row_pk(self, key_names, datarow, used_keys, invalid_rows):
         """
         Check row primary key for validity.
 
         Positional arguments:
-        keyNames -- names of fields which contain keys
+        key_names -- names of fields which contain keys
         datarow -- row to check
-        usedKeys -- container with alreaady used keys
-        invalids -- container for invalid rows
+        used_keys -- container with alreaady used keys
+        invalid_rows -- container for invalid rows
         """
-        rowKey = []
-        for keyName in keyNames:
+        row_key = []
+        for key_name in key_names:
             try:
-                keyValue = datarow[keyName]
+                key_value = datarow[key_name]
             # Invalidate row if it doesn't have any component
             # of primary key
             except KeyError:
-                invalidRows.add(datarow)
+                invalid_rows.add(datarow)
                 return
             # If primary key is not an integer
-            if not isinstance(keyValue, int):
-                invalidRows.add(datarow)
+            if not isinstance(key_value, int):
+                invalid_rows.add(datarow)
                 return
-            rowKey.append(keyValue)
-        rowKey = tuple(rowKey)
+            row_key.append(key_value)
+        row_key = tuple(row_key)
         # If specified key is already used
-        if rowKey in usedKeys:
-            invalidRows.add(datarow)
+        if row_key in used_keys:
+            invalid_rows.add(datarow)
             return
-        usedKeys.add(rowKey)
+        used_keys.add(row_key)
 
-    def _attributeValueType(self):
+    def _attribute_value_type(self):
         """
         Check all attributes of all items for validity.
         Only ints and floats are considered as valid. Eos
         attribute calculation engine relies on this assumption.
         """
-        invalidRows = set()
+        invalid_rows = set()
         table = self.data['dgmtypeattribs']
         for row in table:
             if not isinstance(row.get('value'), (int, float)):
-                invalidRows.add(row)
-        if invalidRows:
-            msg = '{} attribute rows have non-numeric value, removing them'.format(len(invalidRows))
-            self._logger.warning(msg, childName='cacheGenerator')
-            table.difference_update(invalidRows)
+                invalid_rows.add(row)
+        if invalid_rows:
+            msg = '{} attribute rows have non-numeric value, removing them'.format(
+                len(invalid_rows))
+            self._logger.warning(msg, child_name='cache_generator')
+            table.difference_update(invalid_rows)
 
-    def _multipleDefaultEffects(self):
+    def _multiple_default_effects(self):
         """
         Each type must have one default effect at max. Data
         conversion (and resulting data structure) relies on
@@ -146,32 +148,33 @@ class Checker:
         # Set with IDs of types, which have default effect
         defeff = set()
         table = self.data['dgmtypeeffects']
-        invalidRows = set()
-        for row in sorted(table, key=lambda row: row['tablePos']):
-            isDefault = row.get('isDefault')
+        invalid_rows = set()
+        for row in sorted(table, key=lambda r: r['table_pos']):
+            is_default = row.get('isDefault')
             # We're interested only in default effects
-            if isDefault is not True:
+            if is_default is not True:
                 continue
-            typeId = row['typeID']
+            type_id = row['typeID']
             # If we already saw default effect for given type ID,
             # invalidate current row
-            if typeId in defeff:
-                invalidRows.add(row)
+            if type_id in defeff:
+                invalid_rows.add(row)
             else:
-                defeff.add(typeId)
+                defeff.add(type_id)
         # Process ivalid rows, if any
-        if invalidRows:
-            msg = 'data contains {} excessive default effects, marking them as non-default'.format(len(invalidRows))
-            self._logger.warning(msg, childName='cacheGenerator')
+        if invalid_rows:
+            msg = 'data contains {} excessive default effects, marking them as non-default'.format(
+                len(invalid_rows))
+            self._logger.warning(msg, child_name='cache_generator')
             # Replace isDefault field value with False for invalid rows
-            table.difference_update(invalidRows)
-            for invalidRow in invalidRows:
-                newRow = {}
-                for field, value in invalidRow.items():
-                    newRow[field] = False if field == 'isDefault' else value
-                table.add(frozendict(newRow))
+            table.difference_update(invalid_rows)
+            for invalid_row in invalid_rows:
+                new_row = {}
+                for field, value in invalid_row.items():
+                    new_row[field] = False if field == 'isDefault' else value
+                table.add(FrozenDict(new_row))
 
-    def _collidingModuleRacks(self):
+    def _colliding_module_racks(self):
         """
         Type of slot into which module is placed is detected
         using module's effects. Engine relies on assumption that
@@ -182,21 +185,22 @@ class Checker:
         won't be actually used won't be printed.
         """
         table = self.data['dgmtypeeffects']
-        rackEffects = (Effect.hiPower, Effect.medPower, Effect.loPower)
-        rackedItems = set()
-        invalidRows = set()
-        for row in sorted(table, key=lambda row: row['tablePos']):
-            effectId = row['effectID']
+        rack_effects = (Effect.hi_power, Effect.med_power, Effect.lo_power)
+        racked_items = set()
+        invalid_rows = set()
+        for row in sorted(table, key=lambda r: r['table_pos']):
+            effect_id = row['effectID']
             # We're not interested in anything besides
             # rack effects
-            if effectId not in rackEffects:
+            if effect_id not in rack_effects:
                 continue
-            typeId = row['typeID']
-            if typeId in rackedItems:
-                invalidRows.add(row)
+            type_id = row['typeID']
+            if type_id in racked_items:
+                invalid_rows.add(row)
             else:
-                rackedItems.add(typeId)
-        if invalidRows:
-            msg = '{} rows contain colliding module racks, removing them'.format(len(invalidRows))
-            self._logger.warning(msg, childName='cacheGenerator')
-            table.difference_update(invalidRows)
+                racked_items.add(type_id)
+        if invalid_rows:
+            msg = '{} rows contain colliding module racks, removing them'.format(
+                len(invalid_rows))
+            self._logger.warning(msg, child_name='cache_generator')
+            table.difference_update(invalid_rows)

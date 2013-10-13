@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.util.frozendict import frozendict
+from eos.util.frozen_dict import FrozenDict
 from .checker import Checker
 from .cleaner import Cleaner
 from .converter import Converter
@@ -39,12 +39,12 @@ class CacheGenerator:
         self._cleaner = Cleaner(logger)
         self._converter = Converter(logger)
 
-    def run(self, dataHandler):
+    def run(self, data_handler):
         """
         Generate cache out of passed data.
 
         Positional arguments:
-        dataHandler - data handler to use for getting data
+        data_handler - data handler to use for getting data
 
         Return value:
         Dictionary in {entity type: [{field name: field value}]
@@ -57,16 +57,16 @@ class CacheGenerator:
         # frozendicts is used to speed up several stages of
         # the generator.
         data = {}
-        tables = {'invtypes': dataHandler.getInvtypes,
-                  'invgroups': dataHandler.getInvgroups,
-                  'dgmattribs': dataHandler.getDgmattribs,
-                  'dgmtypeattribs': dataHandler.getDgmtypeattribs,
-                  'dgmeffects': dataHandler.getDgmeffects,
-                  'dgmtypeeffects': dataHandler.getDgmtypeeffects,
-                  'dgmexpressions': dataHandler.getDgmexpressions}
+        tables = {'invtypes': data_handler.get_invtypes,
+                  'invgroups': data_handler.get_invgroups,
+                  'dgmattribs': data_handler.get_dgmattribs,
+                  'dgmtypeattribs': data_handler.get_dgmtypeattribs,
+                  'dgmeffects': data_handler.get_dgmeffects,
+                  'dgmtypeeffects': data_handler.get_dgmtypeeffects,
+                  'dgmexpressions': data_handler.get_dgmexpressions}
 
         for tablename, method in tables.items():
-            tablePos = 0
+            table_pos = 0
             # For faster processing of various operations,
             # freeze table rows and put them into set
             table = set()
@@ -76,14 +76,14 @@ class CacheGenerator:
                 # need to be removed. To deterministically remove rows
                 # based on position in original data, write position
                 # to each row
-                row['tablePos'] = tablePos
-                tablePos += 1
-                table.add(frozendict(row))
+                row['table_pos'] = table_pos
+                table_pos += 1
+                table.add(FrozenDict(row))
             data[tablename] = table
 
         # Run pre-cleanup checks, as cleaning and further stages
         # rely on some assumptions about the data
-        self._checker.preCleanup(data)
+        self._checker.pre_cleanup(data)
 
         # Also normalize the data to make data structure
         # more consistent, and thus easier to clean properly
@@ -93,7 +93,7 @@ class CacheGenerator:
         self._cleaner.clean(data)
 
         # Verify that our data is ready for conversion
-        self._checker.preConvert(data)
+        self._checker.pre_convert(data)
 
         # Convert data into Eos-specific format. Here tables are
         # no longer represented by sets of frozendicts, but by

@@ -32,13 +32,13 @@ class Logger:
     used in log filename
     logFolder -- path to folder for logs
     """
-    def __init__(self, name, logFolder):
-        self.__setup(name, logFolder)
+    def __init__(self, name, log_folder):
+        self.__setup(name, log_folder)
         # Storage for signatures of logged entries,
         # to avoid logging them again when it's not desirable
-        self.__knownSignatures = set()
+        self.__known_signatures = set()
 
-    def info(self, msg, childName=None, signature=None):
+    def info(self, msg, child_name=None, signature=None):
         """
         Log info-level message.
 
@@ -46,21 +46,21 @@ class Logger:
         msg -- message to log
 
         Keyword arguments:
-        childName -- name of child logger to use, if None,
+        child_name -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
         if not None, logger logs message only if no message
         with same signature has been logged during current
         session (default None)
         """
-        logger = self.__getLogger(childName)
+        logger = self.__get_logger(child_name)
         if signature is None:
             logger.info(msg)
-        elif signature not in self.__knownSignatures:
+        elif signature not in self.__known_signatures:
             logger.info(msg)
-            self.__knownSignatures.add(signature)
+            self.__known_signatures.add(signature)
 
-    def warning(self, msg, childName=None, signature=None):
+    def warning(self, msg, child_name=None, signature=None):
         """
         Log warning-level message.
 
@@ -68,21 +68,21 @@ class Logger:
         msg -- message to log
 
         Keyword arguments:
-        childName -- name of child logger to use, if None,
+        child_name -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
         if not None, logger logs message only if no message
         with same signature has been logged during current
         session (default None)
         """
-        logger = self.__getLogger(childName)
+        logger = self.__get_logger(child_name)
         if signature is None:
             logger.warning(msg)
-        elif signature not in self.__knownSignatures:
+        elif signature not in self.__known_signatures:
             logger.warning(msg)
-            self.__knownSignatures.add(signature)
+            self.__known_signatures.add(signature)
 
-    def error(self, msg, childName=None, signature=None):
+    def error(self, msg, child_name=None, signature=None):
         """
         Log error-level message.
 
@@ -97,52 +97,52 @@ class Logger:
         with same signature has been logged during current
         session (default None)
         """
-        logger = self.__getLogger(childName)
+        logger = self.__get_logger(child_name)
         if signature is None:
             logger.error(msg)
-        elif signature not in self.__knownSignatures:
+        elif signature not in self.__known_signatures:
             logger.error(msg)
-            self.__knownSignatures.add(signature)
+            self.__known_signatures.add(signature)
 
-    def __setup(self, name, logFolder):
+    def __setup(self, name, log_folder):
         """
         Configure python logging system for our neeeds.
 
         Positional arguments:
         name -- name of root python logger which will be
         used as root for our logger object
-        logFolder -- path to folder for logs
+        log_folder -- path to folder for logs
         """
-        self.__rootLogger = getLogger(name)
+        self.__root_logger = getLogger(name)
         # Set level to INFO to enable handling of
         # all messages with level up to info
-        self.__rootLogger.setLevel(INFO)
+        self.__root_logger.setLevel(INFO)
         # Clear any handlers this logger already may have
-        for handler in self.__rootLogger.handlers:
-            self.__rootLogger.removeHandler(handler)
+        for handler in self.__root_logger.handlers:
+            self.__root_logger.removeHandler(handler)
         # Define log storage options
-        if os.path.isdir(logFolder) is not True:
-            os.makedirs(logFolder, mode=0o755)
-        logPath = os.path.join(logFolder, '{}.log'.format(name))
-        handler = FileHandler(logPath, mode='a', encoding='utf-8', delay=False)
+        if os.path.isdir(log_folder) is not True:
+            os.makedirs(log_folder, mode=0o755)
+        log_path = os.path.join(log_folder, '{}.log'.format(name))
+        handler = FileHandler(log_path, mode='a', encoding='utf-8', delay=False)
         # Set up formatter options
-        msgFormat = '{asctime:19.19} | {levelname:7.7} | {name:23.23} | {message}'
-        timeFormat = '%Y-%m-%d %H:%M:%S'  # Must be specified in old style, as of python 3.2
-        formatter = Formatter(fmt=msgFormat, datefmt=timeFormat, style='{')
+        msg_format = '{asctime:19.19} | {levelname:7.7} | {name:23.23} | {message}'
+        time_format = '%Y-%m-%d %H:%M:%S'  # Must be specified in old style, as of python 3.2
+        formatter = Formatter(fmt=msg_format, datefmt=time_format, style='{')
         handler.setFormatter(formatter)
-        self.__rootLogger.addHandler(handler)
+        self.__root_logger.addHandler(handler)
 
-    def __getLogger(self, childName=None):
+    def __get_logger(self, child_name=None):
         """
         Get python's logger instance, which may be used to log
         actual entries according to logging module documentation.
 
         Keyword arguments:
-        childName -- name of child logger to get, if None is
+        child_name -- name of child logger to get, if None is
         passed, root logger is returned (default None)
         """
-        if childName is None:
-            logger = self.__rootLogger
+        if child_name is None:
+            logger = self.__root_logger
         else:
-            logger = self.__rootLogger.getChild(childName)
+            logger = self.__root_logger.getChild(child_name)
         return logger

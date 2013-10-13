@@ -43,22 +43,23 @@ class ModuleRacks:
 class ModuleHolderView:
     """View over all module holders within all racks."""
 
-    __slots__ = ('__racks')
+    __slots__ = ('__racks',)
 
     def __init__(self, racks):
         self.__racks = racks
 
     def __iter__(self):
-        racksChain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
-        return (item for item in racksChain if item is not None)
+        racks_chain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
+        return (item for item in racks_chain if item is not None)
 
     def __contains__(self, value):
         if value is None:
             return False
         racks = self.__racks
-        return (racks.high.__contains__(value) or racks.med.__contains__(value) or
+        return (racks.high.__contains__(value) or
+                racks.med.__contains__(value) or
                 racks.low.__contains__(value))
 
     def __len__(self):
-        racksChain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
-        return sum(item is not None for item in racksChain)
+        racks_chain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
+        return sum(item is not None for item in racks_chain)

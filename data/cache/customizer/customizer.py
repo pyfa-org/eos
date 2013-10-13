@@ -36,12 +36,12 @@ class CacheCustomizer:
     def __init__(self, logger):
         self._logger = logger
 
-    def runBuiltIn(self, data):
+    def run_builtin(self, data):
         self.data = data
-        self._addCharacterMissileDamageMultiplier()
-        self._fixOnlineEffectCategory()
+        self._add_character_missile_damage_multiplier()
+        self._fix_online_effect_category()
 
-    def _addCharacterMissileDamageMultiplier(self):
+    def _add_character_missile_damage_multiplier(self):
         """
         Some modules, like ballistic control systems, do not affect
         missile attributes directly; instead, they affect an attribute
@@ -50,54 +50,58 @@ class CacheCustomizer:
         hardcoding on CCP's part), so we're adding it manually.
         """
         # Generate modifiers
-        damageModifiers = []
-        modifierId = max(self.data['modifiers'], key=lambda row: row['modifierId'])['modifierId'] + 1
-        for damageAttr in (Attribute.emDamage, Attribute.thermalDamage,
-                           Attribute.kineticDamage, Attribute.explosiveDamage):
-            modifierRow = {'modifierId': modifierId,
-                           'state': State.offline,
-                           'context': Context.local,
-                           'sourceAttributeId': Attribute.missileDamageMultiplier,
-                           'operator': Operator.postMul,
-                           'targetAttributeId': damageAttr,
-                           'location': Location.space,
-                           'filterType': FilterType.skill,
-                           'filterValue': Type.missileLauncherOperation}
-            damageModifiers.append(modifierRow)
-            modifierId += 1
-        self.data['modifiers'].extend(damageModifiers)
+        damage_modifiers = []
+        modifier_id = max(self.data['modifiers'], key=lambda row: row['modifier_id'])['modifier_id'] + 1
+        for damageAttr in (Attribute.em_damage, Attribute.thermal_damage,
+                           Attribute.kinetic_damage, Attribute.explosive_damage):
+            modifier_row = {
+                'modifier_id': modifier_id,
+                'state': State.offline,
+                'context': Context.local,
+                'source_attribute_id': Attribute.missile_damage_multiplier,
+                'operator': Operator.post_mul,
+                'target_attribute_id': damageAttr,
+                'location': Location.space,
+                'filter_type': FilterType.skill,
+                'filter_value': Type.missile_launcher_operation
+            }
+            damage_modifiers.append(modifier_row)
+            modifier_id += 1
+        self.data['modifiers'].extend(damage_modifiers)
         # Generate effect
-        effectId = max(self.data['effects'], key=lambda row: row['effectId'])['effectId'] + 1
-        effectRow = {'effectId': effectId,
-                     'effectCategory': EffectCategory.passive,
-                     'isOffensive': False,
-                     'isAssistance': False,
-                     'fittingUsageChanceAttributeId': None,
-                     'buildStatus': EffectBuildStatus.okFull,
-                     'modifiers': [modifierRow['modifierId'] for modifierRow in damageModifiers]}
-        self.data['effects'].append(effectRow)
+        effect_id = max(self.data['effects'], key=lambda row: row['effect_id'])['effect_id'] + 1
+        effect_row = {
+            'effect_id': effect_id,
+            'effect_category': EffectCategory.passive,
+            'is_offensive': False,
+            'is_assistance': False,
+            'fitting_usage_chance_attribute_id': None,
+            'build_status': EffectBuildStatus.ok_full,
+            'modifiers': [modifier_row['modifier_id'] for modifier_row in damage_modifiers]
+        }
+        self.data['effects'].append(effect_row)
         # Add effect to all characters
-        for typeRow in self.data['types']:
-            if typeRow['groupId'] == Group.character:
-                typeRow['effects'].append(effectId)
+        for type_row in self.data['types']:
+            if type_row['group_id'] == Group.character:
+                type_row['effects'].append(effect_id)
 
-    def _fixOnlineEffectCategory(self):
+    def _fix_online_effect_category(self):
         """
         For some weird reason, 'online' effect has 'active' effect
         category, which lets all items with it to be in active state.
         CCP probably does some hardcoding to avoid it, we'll get rid
         of it on cache building time.
         """
-        onlineEffect = None
-        for effectRow in self.data['effects']:
-            if effectRow['effectId'] == Effect.online:
-                onlineEffect = effectRow
+        online_effect = None
+        for effect_row in self.data['effects']:
+            if effect_row['effect_id'] == Effect.online:
+                online_effect = effect_row
                 break
-        if onlineEffect is None:
+        if online_effect is None:
             msg = 'unable to find online effect'
-            self._logger.warning(msg, childName='cacheCustomizer')
-        elif onlineEffect['effectCategory'] == EffectCategory.online:
+            self._logger.warning(msg, child_name='cache_customizer')
+        elif online_effect['effect_category'] == EffectCategory.online:
             msg = 'online effect category does not need to be adjusted'
-            self._logger.warning(msg, childName='cacheCustomizer')
+            self._logger.warning(msg, child_name='cache_customizer')
         else:
-            onlineEffect['effectCategory'] = EffectCategory.online
+            online_effect['effect_category'] = EffectCategory.online
