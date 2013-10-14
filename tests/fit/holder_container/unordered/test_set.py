@@ -196,18 +196,6 @@ class TestContainerSet(FitTestCase):
         # Checks
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online})
-        self.assertEqual(len(fit.rt), 1)
-        self.assertIn(holder, fit.rt)
-        self.assertEqual(fit.rt[holder], {State.offline, State.online})
-        self.assertEqual(len(fit.st), 1)
-        self.assertIn(holder, fit.st)
-        self.assertEqual(fit.st[holder], {State.offline, State.online})
-        self.assertEqual(len(fit.container), 1)
-        self.assertIn(holder, fit.container)
-        self.assertIs(holder._fit, fit)
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
@@ -272,6 +260,23 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        # Misc
+        self.assert_fit_buffers_empty(fit.container)
+
+    def test_attached_remove_holder_caching(self):
+        eos = Mock(spec_set=())
+        fit = self.make_fit(eos=eos)
+        holder = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
+        fit.container.add(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        # Action
+        fit.container.remove(holder)
+        # Checks
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
