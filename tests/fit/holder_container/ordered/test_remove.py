@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from eos.tests.fit.environment import PlainHolder
+from eos.tests.fit.environment import BaseHolder, PlainHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.container = HolderList(fit, PlainHolder)
+        fit.container = HolderList(fit, BaseHolder)
         return fit
 
     def custom_membership_check(self, fit, holder):

@@ -20,21 +20,20 @@
 
 
 from eos.fit.holder import Holder
-from eos.fit.holder.item import Ship
 from eos.util.volatile_cache import VolatileMixin
 
 
-class PlainHolder(Holder):
+class BaseHolder(Holder):
     pass
 
 
-class PlainHolderOther(Holder):
+class PlainHolder(BaseHolder):
     pass
 
 
-class CachingHolder(Holder, VolatileMixin):
+class CachingHolder(BaseHolder, VolatileMixin):
     pass
 
 
-class CachingHolderOther(Holder, VolatileMixin):
+class OtherHolder(Holder):
     pass

@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderSet
-from eos.tests.fit.environment import PlainHolder, PlainHolderOther
+from eos.tests.fit.environment import BaseHolder, CachingHolder, OtherHolder, PlainHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestContainerSet(FitTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.container = HolderSet(fit, PlainHolder)
+        fit.container = HolderSet(fit, BaseHolder)
         return fit
 
     def custom_membership_check(self, fit, holder):
@@ -67,7 +67,7 @@ class TestContainerSet(FitTestCase):
 
     def test_detached_add_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolderOther)
+        holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder)
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
@@ -185,10 +185,39 @@ class TestContainerSet(FitTestCase):
         fit.container.remove(holder)
         self.assert_fit_buffers_empty(fit.container)
 
+    def test_attached_add_holder_caching(self):
+        eos = Mock(spec_set=())
+        fit = self.make_fit(eos=eos)
+        holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        # Action
+        fit.container.add(holder)
+        # Checks
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(len(fit.lt), 1)
+        self.assertIn(holder, fit.lt)
+        self.assertEqual(fit.lt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.rt), 1)
+        self.assertIn(holder, fit.rt)
+        self.assertEqual(fit.rt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.st), 1)
+        self.assertIn(holder, fit.st)
+        self.assertEqual(fit.st[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.container), 1)
+        self.assertIn(holder, fit.container)
+        self.assertIs(holder._fit, fit)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
+        # Misc
+        fit.container.remove(holder)
+        self.assert_fit_buffers_empty(fit.container)
+
     def test_attached_add_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolderOther)
+        holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder)
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks

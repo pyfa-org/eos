@@ -99,11 +99,11 @@ class Fit:
         # Make sure the holder isn't used already
         if holder._fit is not None:
             raise HolderAlreadyAssignedError(holder)
-        self._clear_volatile_data()
         holder._fit = self
         self._holders.add(holder)
         if isinstance(holder, VolatileMixin):
             self._volatile_holders.add(holder)
+        self._clear_volatile_data()
         if self.eos is not None:
             self._enable_services(holder)
         # If holder has charge, register it too
