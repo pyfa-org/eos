@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderSet
-from eos.fit.holder.item import Booster, Implant
+from eos.tests.fit.environment import PlainHolder, PlainHolderOther
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestContainerSet(FitTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.container = HolderSet(fit, Implant)
+        fit.container = HolderSet(fit, PlainHolder)
         return fit
 
     def custom_membership_check(self, fit, holder):
@@ -51,7 +51,7 @@ class TestContainerSet(FitTestCase):
 
     def test_detached_add_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         # Action
         fit.container.add(holder)
         # Checks
@@ -67,7 +67,7 @@ class TestContainerSet(FitTestCase):
 
     def test_detached_add_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=Booster)
+        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolderOther)
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
@@ -82,7 +82,7 @@ class TestContainerSet(FitTestCase):
     def test_detached_add_holder_value_failure(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit_other.container.add(holder)
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
@@ -104,7 +104,7 @@ class TestContainerSet(FitTestCase):
 
     def test_detached_remove_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
         fit.container.add(holder)
         # Action
         fit.container.remove(holder)
@@ -119,7 +119,7 @@ class TestContainerSet(FitTestCase):
 
     def test_detached_remove_holder_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
@@ -133,8 +133,8 @@ class TestContainerSet(FitTestCase):
 
     def test_detached_clear(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         fit.container.add(holder1)
         fit.container.add(holder2)
         # Action
@@ -165,7 +165,7 @@ class TestContainerSet(FitTestCase):
     def test_attached_add_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         # Action
         fit.container.add(holder)
         # Checks
@@ -188,7 +188,7 @@ class TestContainerSet(FitTestCase):
     def test_attached_add_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Booster)
+        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolderOther)
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
@@ -204,7 +204,7 @@ class TestContainerSet(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         fit_other.container.add(holder)
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
@@ -233,7 +233,7 @@ class TestContainerSet(FitTestCase):
     def test_attached_remove_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.add(holder)
         # Action
         fit.container.remove(holder)
@@ -249,7 +249,7 @@ class TestContainerSet(FitTestCase):
     def test_attached_remove_holder_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
@@ -264,8 +264,8 @@ class TestContainerSet(FitTestCase):
     def test_attached_clear(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
         fit.container.add(holder1)
         fit.container.add(holder2)
         # Action
@@ -282,8 +282,8 @@ class TestContainerSet(FitTestCase):
 
     def test_len(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         self.assertEqual(len(fit.container), 0)
         fit.container.add(holder1)
         self.assertEqual(len(fit.container), 1)
@@ -297,8 +297,8 @@ class TestContainerSet(FitTestCase):
 
     def test_contains(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         self.assertFalse(holder1 in fit.container)
         self.assertFalse(holder2 in fit.container)
         fit.container.add(holder1)
@@ -317,8 +317,8 @@ class TestContainerSet(FitTestCase):
 
     def test_iter(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         self.assertEqual(set(holder for holder in fit.container), set())
         fit.container.add(holder1)
         self.assertEqual(set(holder for holder in fit.container), {holder1})

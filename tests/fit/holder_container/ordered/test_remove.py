@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from eos.fit.holder.item import Implant
+from eos.tests.fit.environment import PlainHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.container = HolderList(fit, Implant)
+        fit.container = HolderList(fit, PlainHolder)
         return fit
 
     def custom_membership_check(self, fit, holder):
@@ -39,8 +39,8 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_holder(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
@@ -67,9 +67,9 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_holder_after_nones(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder3 = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -106,8 +106,8 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_holder_failure(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         fit.container.append(holder1)
         # Action
         self.assertRaises(ValueError, fit.container.remove, holder2)
@@ -136,8 +136,8 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_detached_none(self):
         # Check that first found None is removed
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         fit.container.place(1, holder1)
         fit.container.place(3, holder2)
         # Action
@@ -159,7 +159,7 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_none_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.append(holder)
         # Action
         self.assertRaises(ValueError, fit.container.remove, None)
@@ -176,8 +176,8 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_index_holder(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
@@ -204,7 +204,7 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_index_none(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         fit.container.place(1, holder)
         # Action
         fit.container.remove(0)
@@ -221,9 +221,9 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_index_after_nones(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
-        holder3 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
+        holder3 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -259,7 +259,7 @@ class TestContainerOrderedRemove(FitTestCase):
 
     def test_detached_index_outside(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         fit.container.append(holder)
         # Action
         self.assertRaises(IndexError, fit.container.remove, 5)
@@ -277,8 +277,8 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
@@ -312,9 +312,9 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_holder_after_nones(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Implant)
-        holder3 = Mock(_fit=None, state=State.offline, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
+        holder3 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -370,8 +370,8 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_holder_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.append(holder1)
         # Action
         self.assertRaises(ValueError, fit.container.remove, holder2)
@@ -407,8 +407,8 @@ class TestContainerOrderedRemove(FitTestCase):
         # Check that first found None is removed
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         fit.container.place(1, holder1)
         fit.container.place(3, holder2)
         # Action
@@ -443,7 +443,7 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_none_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
         fit.container.append(holder)
         # Action
         self.assertRaises(ValueError, fit.container.remove, None)
@@ -467,8 +467,8 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_index_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
@@ -502,7 +502,7 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_index_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
         fit.container.place(1, holder)
         # Action
         fit.container.remove(0)
@@ -526,9 +526,9 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_index_after_nones(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Implant)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=Implant)
-        holder3 = Mock(_fit=None, state=State.online, spec_set=Implant)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder3 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -584,7 +584,7 @@ class TestContainerOrderedRemove(FitTestCase):
     def test_attached_index_outside(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=Implant)
+        holder = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
         fit.container.append(holder)
         # Action
         self.assertRaises(IndexError, fit.container.remove, 5)

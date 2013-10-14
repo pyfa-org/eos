@@ -22,7 +22,8 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder.item import EffectBeacon, Ship
+from eos.fit.holder.item import Ship
+from eos.tests.fit.environment import PlainHolderOther
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -60,7 +61,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_none_to_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=EffectBeacon)
+        holder = Mock(_fit=None, state=State.active, spec_set=PlainHolderOther)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -115,7 +116,7 @@ class TestDirectHolderShip(FitTestCase):
     def test_detached_holder_to_holder_type_failure(self):
         fit = self.make_fit()
         holder1 = Mock(_fit=None, state=State.online, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=EffectBeacon)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=PlainHolderOther)
         fit.ship = holder1
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
@@ -209,7 +210,7 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_none_to_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=EffectBeacon)
+        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolderOther)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -276,7 +277,7 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=EffectBeacon)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolderOther)
         fit.ship = holder1
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
