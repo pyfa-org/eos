@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.item import Ship
-from eos.tests.fit.environment import OtherHolder
+from eos.tests.fit.environment import OtherCachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -34,6 +34,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_none_to_none(self):
         fit = self.make_fit()
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = None
         # Checks
@@ -41,12 +42,16 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.ship)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_none_to_holder(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.active, spec_set=Ship)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = holder
         # Checks
@@ -55,13 +60,19 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIs(fit.ship, holder)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_none_to_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=OtherHolder)
+        holder = Mock(_fit=None, state=State.active, spec_set=OtherCachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -70,6 +81,10 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.ship)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
@@ -78,6 +93,9 @@ class TestDirectHolderShip(FitTestCase):
         fit_other = self.make_fit()
         holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit_other.ship = holder
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -90,6 +108,12 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, holder)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -100,6 +124,9 @@ class TestDirectHolderShip(FitTestCase):
         holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
         holder2 = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit.ship = holder1
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = holder2
         # Checks
@@ -109,6 +136,12 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(fit.ship, holder2)
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -116,8 +149,11 @@ class TestDirectHolderShip(FitTestCase):
     def test_detached_holder_to_holder_type_failure(self):
         fit = self.make_fit()
         holder1 = Mock(_fit=None, state=State.online, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=OtherHolder)
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=OtherCachingHolder)
         fit.ship = holder1
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
         # Checks
@@ -127,6 +163,12 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(fit.ship, holder1)
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -138,6 +180,10 @@ class TestDirectHolderShip(FitTestCase):
         holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
         fit.ship = holder1
         fit_other.ship = holder2
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'ship', holder2)
         # Checks
@@ -151,6 +197,14 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(fit_other.ship, holder2)
         self.assertIs(holder1._fit, fit)
         self.assertIs(holder2._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 2)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit.ship = None
         fit_other.ship = None
@@ -161,6 +215,8 @@ class TestDirectHolderShip(FitTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit.ship = holder
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = None
         # Checks
@@ -169,12 +225,17 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.ship)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_none_to_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = None
         # Checks
@@ -182,6 +243,8 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.ship)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
@@ -189,6 +252,8 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         holder = Mock(_fit=None, state=State.online, spec_set=Ship)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = holder
         # Checks
@@ -203,6 +268,10 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(fit.st[holder], {State.offline, State.online})
         self.assertIs(fit.ship, holder)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -210,7 +279,9 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_none_to_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -219,6 +290,10 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.ship)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
@@ -228,6 +303,9 @@ class TestDirectHolderShip(FitTestCase):
         fit_other = self.make_fit(eos=eos)
         holder = Mock(_fit=None, state=State.offline, spec_set=Ship)
         fit_other.ship = holder
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
         # Checks
@@ -243,6 +321,12 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, holder)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -254,6 +338,9 @@ class TestDirectHolderShip(FitTestCase):
         holder1 = Mock(_fit=None, state=State.active, spec_set=Ship)
         holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
         fit.ship = holder1
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = holder2
         # Checks
@@ -269,6 +356,12 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(fit.ship, holder2)
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -277,8 +370,11 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=OtherHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=OtherCachingHolder)
         fit.ship = holder1
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
         # Checks
@@ -294,6 +390,12 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(fit.ship, holder1)
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -306,6 +408,10 @@ class TestDirectHolderShip(FitTestCase):
         holder2 = Mock(_fit=None, state=State.online, spec_set=Ship)
         fit.ship = holder1
         fit_other.ship = holder2
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.__setattr__, 'ship', holder2)
         # Checks
@@ -331,6 +437,14 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(fit_other.ship, holder2)
         self.assertIs(holder1._fit, fit)
         self.assertIs(holder2._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 2)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit.ship = None
         fit_other.ship = None
@@ -342,6 +456,8 @@ class TestDirectHolderShip(FitTestCase):
         fit = self.make_fit(eos=eos)
         holder = Mock(_fit=None, state=State.active, spec_set=Ship)
         fit.ship = holder
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.ship = None
         # Checks
@@ -350,5 +466,9 @@ class TestDirectHolderShip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(fit.ship)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit)
