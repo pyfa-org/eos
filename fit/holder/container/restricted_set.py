@@ -76,3 +76,8 @@ class HolderRestrictedSet(HolderSet):
     def __getitem__(self, type_id):
         """Get holder by type ID"""
         return self.__type_id_map[type_id]
+
+    def __delitem__(self, type_id):
+        """Remove holder by type ID"""
+        holder = self.__type_id_map[type_id]
+        self.remove(holder)

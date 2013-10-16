@@ -50,7 +50,8 @@ class TestContainerSet(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_detached_add_holder(self):
         fit = self.make_fit()
@@ -72,7 +73,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.container.remove(holder)
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_detached_add_holder_type_failure(self):
         fit = self.make_fit()
@@ -92,7 +94,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_detached_add_holder_value_failure(self):
         fit = self.make_fit()
@@ -123,8 +126,10 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.container.remove(holder)
-        self.assert_fit_buffers_empty(fit.container)
-        self.assert_fit_buffers_empty(fit_other.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit_other)
+        self.assert_object_buffers_empty(fit.container)
+        self.assert_object_buffers_empty(fit_other.container)
 
     def test_detached_remove_holder(self):
         fit = self.make_fit()
@@ -145,7 +150,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_detached_remove_holder_failure(self):
         fit = self.make_fit()
@@ -165,7 +171,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_detached_clear(self):
         fit = self.make_fit()
@@ -195,7 +202,8 @@ class TestContainerSet(FitTestCase):
         self.assertGreaterEqual(holder2_cleans, 1)
         self.assertEqual(holder1_cleans + holder2_cleans, 3)
         # Misc
-        self.assert_object_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_none(self):
         eos = Mock(spec_set=())
@@ -211,7 +219,8 @@ class TestContainerSet(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_holder(self):
         eos = Mock(spec_set=())
@@ -240,7 +249,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.container.remove(holder)
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_holder_type_failure(self):
         eos = Mock(spec_set=())
@@ -261,7 +271,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_holder_value_failure(self):
         eos = Mock(spec_set=())
@@ -299,8 +310,10 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.container.remove(holder)
-        self.assert_fit_buffers_empty(fit.container)
-        self.assert_fit_buffers_empty(fit_other.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit_other)
+        self.assert_object_buffers_empty(fit.container)
+        self.assert_object_buffers_empty(fit_other.container)
 
     def test_attached_remove_holder(self):
         eos = Mock(spec_set=())
@@ -322,7 +335,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_attached_remove_holder_failure(self):
         eos = Mock(spec_set=())
@@ -343,7 +357,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
-        self.assert_fit_buffers_empty(fit.container)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_attached_clear(self):
         eos = Mock(spec_set=())
@@ -374,7 +389,8 @@ class TestContainerSet(FitTestCase):
         self.assertGreaterEqual(holder2_cleans, 1)
         self.assertEqual(holder1_cleans + holder2_cleans, 3)
         # Misc
-        self.assert_object_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_len(self):
         fit = self.make_fit()
@@ -389,7 +405,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(len(fit.container), 1)
         fit.container.remove(holder2)
         self.assertEqual(len(fit.container), 0)
-        self.assert_object_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_contains(self):
         fit = self.make_fit()
@@ -409,7 +426,8 @@ class TestContainerSet(FitTestCase):
         fit.container.remove(holder2)
         self.assertFalse(holder1 in fit.container)
         self.assertFalse(holder2 in fit.container)
-        self.assert_object_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_iter(self):
         fit = self.make_fit()
@@ -424,4 +442,5 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(set(holder for holder in fit.container), {holder2})
         fit.container.remove(holder2)
         self.assertEqual(set(holder for holder in fit.container), set())
-        self.assert_object_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
