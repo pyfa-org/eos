@@ -37,3 +37,7 @@ class CachingHolder(BaseHolder, VolatileMixin):
 
 class OtherHolder(Holder):
     pass
+
+
+class OtherCachingHolder(Holder, VolatileMixin):
+    pass
