@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderRestrictedSet
-from eos.tests.fit.environment import BaseHolder, OtherHolder, PlainHolder
+from eos.tests.fit.environment import BaseHolder, CachingHolder, OtherCachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -40,18 +40,23 @@ class TestContainerRestrictedSet(FitTestCase):
     def test_detached_add_none(self):
         fit = self.make_fit()
         # Action
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertRaises(TypeError, fit.container.add, None)
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_detached_add_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.add(holder)
         # Checks
@@ -62,13 +67,19 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertIs(fit.container[1], holder)
         self.assertIn(holder, fit.container)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.container.remove(holder)
         self.assert_fit_buffers_empty(fit.container)
 
     def test_detached_add_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=OtherHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=OtherCachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
@@ -77,14 +88,21 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_detached_add_holder_value_failure_has_fit(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=CachingHolder)
         fit_other.container.add(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
@@ -99,6 +117,12 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertIs(fit_other.container[1], holder)
         self.assertIn(holder, fit_other.container)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.container.remove(holder)
         self.assert_fit_buffers_empty(fit.container)
@@ -106,9 +130,12 @@ class TestContainerRestrictedSet(FitTestCase):
 
     def test_detached_add_holder_value_failure_existing_type_id(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=CachingHolder)
         fit.container.add(holder1)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.container.add, holder2)
         # Checks
@@ -120,14 +147,22 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertIn(holder1, fit.container)
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
         # Misc
         fit.container.remove(holder1)
         self.assert_fit_buffers_empty(fit.container)
 
     def test_detached_remove_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=CachingHolder)
         fit.container.add(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.remove(holder)
         # Checks
@@ -136,12 +171,18 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_detached_remove_holder_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
@@ -150,15 +191,22 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_detached_clear(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=2, state=State.online, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=2, state=State.online, spec_set=CachingHolder)
         fit.container.add(holder1)
         fit.container.add(holder2)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.clear()
         # Checks
@@ -168,12 +216,22 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        holder1_cleans = holder1_cleans_after - holder1_cleans_before
+        holder2_cleans = holder2_cleans_after - holder2_cleans_before
+        self.assertGreaterEqual(holder1_cleans, 1)
+        self.assertGreaterEqual(holder2_cleans, 1)
+        self.assertEqual(holder1_cleans + holder2_cleans, 3)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.add, None)
         # Checks
@@ -181,13 +239,17 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_attached_add_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, _type_id=1, state=State.online, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.online, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.add(holder)
         # Checks
@@ -204,6 +266,10 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertIs(fit.container[1], holder)
         self.assertIn(holder, fit.container)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.container.remove(holder)
         self.assert_fit_buffers_empty(fit.container)
@@ -211,7 +277,9 @@ class TestContainerRestrictedSet(FitTestCase):
     def test_attached_add_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=OtherHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=OtherCachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
@@ -220,6 +288,10 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
@@ -227,8 +299,11 @@ class TestContainerRestrictedSet(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=CachingHolder)
         fit_other.container.add(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
@@ -249,6 +324,12 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertIs(fit_other.container[1], holder)
         self.assertIn(holder, fit_other.container)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.container.remove(holder)
         self.assert_fit_buffers_empty(fit.container)
@@ -257,9 +338,12 @@ class TestContainerRestrictedSet(FitTestCase):
     def test_attached_add_holder_value_failure_existing_type_id(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=CachingHolder)
         fit.container.add(holder1)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.container.add, holder2)
         # Checks
@@ -278,6 +362,12 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
         self.assertIs(fit.container[1], holder1)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
         # Misc
         fit.container.remove(holder1)
         self.assert_fit_buffers_empty(fit.container)
@@ -285,8 +375,10 @@ class TestContainerRestrictedSet(FitTestCase):
     def test_attached_remove_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=CachingHolder)
         fit.container.add(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.remove(holder)
         # Checks
@@ -295,13 +387,19 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_attached_remove_holder_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, _type_id=1, state=State.online, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=1, state=State.online, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
@@ -310,16 +408,23 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
 
     def test_attached_clear(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=2, state=State.active, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=2, state=State.active, spec_set=CachingHolder)
         fit.container.add(holder1)
         fit.container.add(holder2)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.clear()
         # Checks
@@ -329,13 +434,22 @@ class TestContainerRestrictedSet(FitTestCase):
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        holder1_cleans = holder1_cleans_after - holder1_cleans_before
+        holder2_cleans = holder2_cleans_after - holder2_cleans_before
+        self.assertGreaterEqual(holder1_cleans, 1)
+        self.assertGreaterEqual(holder2_cleans, 1)
+        self.assertEqual(holder1_cleans + holder2_cleans, 3)
         # Misc
         self.assert_object_buffers_empty(fit)
 
     def test_get_item(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, _type_id=5, state=State.online, spec_set=PlainHolder)
+        holder = Mock(_fit=None, _type_id=5, state=State.online, spec_set=CachingHolder)
         fit.container.add(holder)
         self.assertIs(fit.container[5], holder)
         self.assertRaises(KeyError, fit.container.__getitem__, 0)
@@ -345,8 +459,8 @@ class TestContainerRestrictedSet(FitTestCase):
 
     def test_len(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=2, state=State.online, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=2, state=State.online, spec_set=CachingHolder)
         self.assertEqual(len(fit.container), 0)
         fit.container.add(holder1)
         self.assertEqual(len(fit.container), 1)
@@ -360,8 +474,8 @@ class TestContainerRestrictedSet(FitTestCase):
 
     def test_contains(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=2, state=State.offline, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=2, state=State.offline, spec_set=CachingHolder)
         self.assertFalse(holder1 in fit.container)
         self.assertFalse(holder2 in fit.container)
         fit.container.add(holder1)
@@ -380,8 +494,8 @@ class TestContainerRestrictedSet(FitTestCase):
 
     def test_iter(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, _type_id=2, state=State.offline, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, _type_id=2, state=State.offline, spec_set=CachingHolder)
         self.assertEqual(set(holder for holder in fit.container), set())
         fit.container.add(holder1)
         self.assertEqual(set(holder for holder in fit.container), {holder1})

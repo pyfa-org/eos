@@ -43,11 +43,11 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, None)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
@@ -60,14 +60,14 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.add(holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 1)
         self.assertIn(holder, fit.container)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
@@ -82,13 +82,13 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
@@ -105,9 +105,6 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
@@ -118,6 +115,9 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(len(fit_other.container), 1)
         self.assertIn(holder, fit_other.container)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
@@ -135,13 +135,13 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.remove(holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
@@ -155,13 +155,13 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
@@ -179,15 +179,15 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.clear()
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
-        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 2)
         holder1_cleans = holder1_cleans_after - holder1_cleans_before
         holder2_cleans = holder2_cleans_after - holder2_cleans_before
@@ -204,11 +204,11 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, None)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit.container)
@@ -222,8 +222,6 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.add(holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 1)
         self.assertIn(holder, fit.lt)
         self.assertEqual(fit.lt[holder], {State.offline, State.online})
@@ -236,6 +234,8 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(len(fit.container), 1)
         self.assertIn(holder, fit.container)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
@@ -251,13 +251,13 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
@@ -275,9 +275,6 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
@@ -294,6 +291,9 @@ class TestContainerSet(FitTestCase):
         self.assertEqual(len(fit_other.container), 1)
         self.assertIn(holder, fit_other.container)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
@@ -312,13 +312,13 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.remove(holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 1)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
@@ -333,13 +333,13 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 0)
         self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
@@ -358,15 +358,16 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.clear()
         # Checks
-        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
-        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
-        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
         holder1_cleans = holder1_cleans_after - holder1_cleans_before
         holder2_cleans = holder2_cleans_after - holder2_cleans_before
         self.assertGreaterEqual(holder1_cleans, 1)
