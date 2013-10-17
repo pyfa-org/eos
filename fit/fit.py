@@ -47,9 +47,6 @@ class Fit:
             self.__eos = eos_module.default_instance
         else:
             self.__eos = eos
-        # Attributes to store holders directly assigned to fit
-        self._character = None
-        self._effect_beacon = None
         # Character-related holder containers
         self.skills = HolderRestrictedSet(self, Skill)
         self.implants = HolderSet(self, Implant)
