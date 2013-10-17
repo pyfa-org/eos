@@ -69,9 +69,9 @@ class Fit:
         # cases, initialize it here
         self.character = Character(Type.character_static)
 
-    ship = OnFitHolderDescriptor(Ship)
-    character = OnFitHolderDescriptor(Character)
-    effect_beacon = OnFitHolderDescriptor(EffectBeacon)
+    ship = OnFitHolderDescriptor('_ship', Ship)
+    character = OnFitHolderDescriptor('_character', Character)
+    effect_beacon = OnFitHolderDescriptor('_effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
         """

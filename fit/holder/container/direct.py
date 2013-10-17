@@ -29,34 +29,36 @@ class OnFitHolderDescriptor(HolderContainerBase):
     as fit attribute for direct access.
 
     Positional arguments:
-    fit -- fit, to which container is attached
+    attr_name -- name of instance attribute which
+    should be used to store data processed by descriptor
     holder_class -- class of holders this container
     is allowed to contain
     """
 
-    __slots__ = ('__holder',)
+    __slots__ = ('__attr_name',)
 
-    def __init__(self, holder_class):
+    def __init__(self, attr_name, holder_class):
         HolderContainerBase.__init__(self, holder_class)
-        self.__holder = None
+        self.__attr_name = attr_name
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
         else:
-            return self.__holder
+            return getattr(instance, self.__attr_name, None)
 
     def __set__(self, instance, new_holder):
         self._check_class(new_holder, allow_none=True)
-        old_holder = self.__holder
+        attr_name = self.__attr_name
+        old_holder = getattr(instance, attr_name, None)
         if old_holder is not None:
             instance._remove_holder(old_holder)
-        self.__holder = new_holder
+        setattr(instance, attr_name, new_holder)
         if new_holder is not None:
             try:
                 instance._add_holder(new_holder)
             except HolderAlreadyAssignedError as e:
-                self.__holder = old_holder
+                setattr(instance, attr_name, old_holder)
                 if old_holder is not None:
                     instance._add_holder(old_holder)
                 raise ValueError(*e.args) from e
