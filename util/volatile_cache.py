@@ -31,14 +31,14 @@ class VolatileProperty:
     def __init__(self, func):
         self.method = func
 
-    def __get__(self, inst, cls):
-        if inst is None:
+    def __get__(self, instance, owner):
+        if instance is None:
             return self
         else:
-            value = self.method(inst)
+            value = self.method(instance)
             name = self.method.__name__
-            setattr(inst, name, value)
-            inst._volatile_attrs.add(name)
+            setattr(instance, name, value)
+            instance._volatile_attrs.add(name)
             return value
 
 

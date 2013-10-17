@@ -39,14 +39,14 @@ class CachedProperty:
     def __init__(self, func):
         self.method = func
 
-    def __get__(self, inst, cls):
+    def __get__(self, instance, owner):
         # Return descriptor if called from class
-        if inst is None:
+        if instance is None:
             return self
         # If called from instance, execute decorated method
         # and store returned value as class attribute, which
         # has the same name as method, then return it to caller
         else:
-            value = self.method(inst)
-            setattr(inst, self.method.__name__, value)
+            value = self.method(instance)
+            setattr(instance, self.method.__name__, value)
             return value

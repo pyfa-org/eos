@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from .direct import OnFitHolderDescriptor
 from .exception import SlotTakenError
 from .list import HolderList
 from .modules import ModuleRacks

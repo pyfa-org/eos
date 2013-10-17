@@ -25,7 +25,7 @@ from eos.const.eve import Type
 from eos.util.volatile_cache import VolatileMixin
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
-from .holder.container import HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
+from .holder.container import HolderList, HolderRestrictedSet, HolderSet, ModuleRacks, OnFitHolderDescriptor
 from .holder.item import *
 from .restriction_tracker import RestrictionTracker
 from .stat_tracker import StatTracker
@@ -48,7 +48,6 @@ class Fit:
         else:
             self.__eos = eos
         # Attributes to store holders directly assigned to fit
-        self._ship = None
         self._character = None
         self._effect_beacon = None
         # Character-related holder containers
@@ -72,6 +71,10 @@ class Fit:
         # As character object shouldn't change in any sane
         # cases, initialize it here
         self.character = Character(Type.character_static)
+
+    ship = OnFitHolderDescriptor(Ship)
+    character = OnFitHolderDescriptor(Character)
+    effect_beacon = OnFitHolderDescriptor(EffectBeacon)
 
     def validate(self, skip_checks=()):
         """
@@ -180,58 +183,6 @@ class Fit:
             self._link_tracker.disable_states(holder, disabled_states)
             self._restriction_tracker.disable_states(holder, disabled_states)
             self.stats._disable_states(holder, disabled_states)
-
-    @property
-    def character(self):
-        return self._character
-
-    @character.setter
-    def character(self, new_character):
-        self.__set_single_holder('_character', new_character, Character)
-
-    @property
-    def ship(self):
-        return self._ship
-
-    @ship.setter
-    def ship(self, new_ship):
-        self.__set_single_holder('_ship', new_ship, Ship)
-
-    @property
-    def effect_beacon(self):
-        return self._effect_beacon
-
-    @effect_beacon.setter
-    def effect_beacon(self, new_effect_beacon):
-        self.__set_single_holder('_effect_beacon', new_effect_beacon, EffectBeacon)
-
-    def __set_single_holder(self, attr_name, new_holder, expected_class):
-        """
-        Handle setting of holder as fit's attribute,
-        including removal of old holder assigned to it.
-
-        Possible exceptions:
-        TypeError -- raised when holder to be set is not
-        holder of expected class and is not None
-        ValueError -- raised when holder cannot be used
-        (e.g. already belongs to some fit)
-        """
-        if new_holder is not None and not isinstance(new_holder, expected_class):
-            msg = 'only {} and None are accepted, not {}'.format(
-                expected_class, type(new_holder))
-            raise TypeError(msg)
-        old_holder = getattr(self, attr_name)
-        if old_holder is not None:
-            self._remove_holder(old_holder)
-        setattr(self, attr_name, new_holder)
-        if new_holder is not None:
-            try:
-                self._add_holder(new_holder)
-            except HolderAlreadyAssignedError as e:
-                setattr(self, attr_name, old_holder)
-                if old_holder is not None:
-                    self._add_holder(old_holder)
-                raise ValueError(*e.args) from e
 
     @property
     def eos(self):

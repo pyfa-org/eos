@@ -33,10 +33,11 @@ class HolderSet(HolderContainerBase):
     is allowed to contain
     """
 
-    __slots__ = ('__set',)
+    __slots__ = ('__fit', '__set')
 
     def __init__(self, fit, holder_class):
-        HolderContainerBase.__init__(self, fit, holder_class)
+        HolderContainerBase.__init__(self, holder_class)
+        self.__fit = fit
         self.__set = set()
 
     def add(self, holder):
@@ -52,7 +53,7 @@ class HolderSet(HolderContainerBase):
         self._check_class(holder)
         self.__set.add(holder)
         try:
-            self._handle_add(holder)
+            self.__fit._add_holder(holder)
         except HolderAlreadyAssignedError as e:
             self.__set.remove(holder)
             raise ValueError(*e.args) from e
@@ -67,13 +68,13 @@ class HolderSet(HolderContainerBase):
         """
         if holder not in self.__set:
             raise KeyError(holder)
-        self._handle_remove(holder)
+        self.__fit._remove_holder(holder)
         self.__set.remove(holder)
 
     def clear(self):
         """Remove everything from container."""
         for holder in self.__set:
-            self._handle_remove(holder)
+            self.__fit._remove_holder(holder)
         self.__set.clear()
 
     def __iter__(self):

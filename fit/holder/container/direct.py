@@ -19,13 +19,14 @@
 #===============================================================================
 
 
-class HolderContainerBase:
+from eos.fit.exception import HolderAlreadyAssignedError
+from .base import HolderContainerBase
+
+
+class OnFitHolderDescriptor(HolderContainerBase):
     """
-    Base class for any containers which are intended
-    to ease management of holders. Hides fit-specific
-    logic under its hood, letting real containers (which
-    should inherit it) implement just container type-
-    specific logic.
+    Container for single holder, intended to be used
+    as fit attribute for direct access.
 
     Positional arguments:
     fit -- fit, to which container is attached
@@ -33,23 +34,29 @@ class HolderContainerBase:
     is allowed to contain
     """
 
-    __slots__ = ('__holder_class',)
+    __slots__ = ('__holder',)
 
     def __init__(self, holder_class):
-        self.__holder_class = holder_class
+        HolderContainerBase.__init__(self, holder_class)
+        self.__holder = None
 
-    def _check_class(self, holder, allow_none=False):
-        """
-        Check if class of passed holder corresponds
-        to our expectations.
-        """
-        if isinstance(holder, self.__holder_class):
-            return
-        if holder is None and allow_none is True:
-            return
-        msg = 'only {} {} accepted, not {}'.format(
-            self.__holder_class,
-            'or None are' if allow_none is True else 'is',
-            type(holder)
-        )
-        raise TypeError(msg)
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        else:
+            return self.__holder
+
+    def __set__(self, instance, new_holder):
+        self._check_class(new_holder, allow_none=True)
+        old_holder = self.__holder
+        if old_holder is not None:
+            instance._remove_holder(old_holder)
+        self.__holder = new_holder
+        if new_holder is not None:
+            try:
+                instance._add_holder(new_holder)
+            except HolderAlreadyAssignedError as e:
+                self.__holder = old_holder
+                if old_holder is not None:
+                    instance._add_holder(old_holder)
+                raise ValueError(*e.args) from e
