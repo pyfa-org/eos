@@ -23,7 +23,7 @@ from eos.fit.exception import HolderAlreadyAssignedError
 from .base import HolderContainerBase
 
 
-class OnFitHolderDescriptor(HolderContainerBase):
+class HolderDescriptorOnFit(HolderContainerBase):
     """
     Container for single holder, intended to be used
     as fit attribute for direct access.

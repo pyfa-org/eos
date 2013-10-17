@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from .direct import OnFitHolderDescriptor
 from .exception import SlotTakenError
 from .list import HolderList
 from .modules import ModuleRacks
 from .restricted_set import HolderRestrictedSet
 from .set import HolderSet
+from .single_onfit import HolderDescriptorOnFit

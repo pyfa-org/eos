@@ -25,7 +25,7 @@ from eos.const.eve import Type
 from eos.util.volatile_cache import VolatileMixin
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
-from .holder.container import HolderList, HolderRestrictedSet, HolderSet, ModuleRacks, OnFitHolderDescriptor
+from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
 from .holder.item import *
 from .restriction_tracker import RestrictionTracker
 from .stat_tracker import StatTracker
@@ -69,9 +69,9 @@ class Fit:
         # cases, initialize it here
         self.character = Character(Type.character_static)
 
-    ship = OnFitHolderDescriptor('_ship', Ship)
-    character = OnFitHolderDescriptor('_character', Character)
-    effect_beacon = OnFitHolderDescriptor('_effect_beacon', EffectBeacon)
+    ship = HolderDescriptorOnFit('_ship', Ship)
+    character = HolderDescriptorOnFit('_character', Character)
+    effect_beacon = HolderDescriptorOnFit('_effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
         """
