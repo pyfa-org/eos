@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from eos.tests.fit.environment import BaseHolder, OtherHolder, PlainHolder
+from eos.tests.fit.environment import BaseHolder, CachingHolder, OtherCachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -39,6 +39,7 @@ class TestContainerOrderedEquip(FitTestCase):
 
     def test_detached_none_to_empty(self):
         fit = self.make_fit()
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.equip, None)
         # Checks
@@ -46,12 +47,16 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
     def test_detached_holder_to_empty(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.equip(holder)
         # Checks
@@ -61,13 +66,19 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], holder)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.container.remove(holder)
         self.assert_object_buffers_empty(fit.container)
 
     def test_detached_holder_to_empty_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.equip, holder)
         # Checks
@@ -76,14 +87,21 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
     def test_detached_holder_to_empty_value_failure(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
         fit_other.container.equip(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.container.equip, holder)
         # Checks
@@ -97,6 +115,12 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit_other.container), 1)
         self.assertIs(fit_other.container[0], holder)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.container.remove(holder)
         self.assert_object_buffers_empty(fit.container)
@@ -104,11 +128,15 @@ class TestContainerOrderedEquip(FitTestCase):
     def test_detached_holder_solid(self):
         # Check case when all slots of list are filled
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
-        holder3 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder3 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
         fit.container.append(holder1)
         fit.container.append(holder2)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_before = len(holder3._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.equip(holder3)
         # Checks
@@ -118,6 +146,14 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit.container), 3)
         self.assertIs(fit.container[2], holder3)
         self.assertIs(holder3._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_after = len(holder3._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
+        self.assertEqual(holder3_cleans_after - holder3_cleans_before, 1)
         # Misc
         fit.container.remove(holder1)
         fit.container.remove(holder2)
@@ -127,13 +163,18 @@ class TestContainerOrderedEquip(FitTestCase):
     def test_detached_holder_first_hole(self):
         # Check that leftmost empty slot is taken
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
-        holder3 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
-        holder4 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
+        holder4 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
         fit.container.append(holder1)
         fit.container.insert(3, holder2)
         fit.container.insert(6, holder3)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_before = len(holder3._clear_volatile_attrs.mock_calls)
+        holder4_cleans_before = len(holder4._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.equip(holder4)
         # Checks
@@ -143,6 +184,16 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit.container), 7)
         self.assertIs(fit.container[1], holder4)
         self.assertIs(holder4._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_after = len(holder3._clear_volatile_attrs.mock_calls)
+        holder4_cleans_after = len(holder4._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
+        self.assertEqual(holder3_cleans_after - holder3_cleans_before, 1)
+        self.assertEqual(holder4_cleans_after - holder4_cleans_before, 1)
         # Misc
         fit.container.remove(holder1)
         fit.container.remove(holder2)
@@ -153,6 +204,7 @@ class TestContainerOrderedEquip(FitTestCase):
     def test_attached_none_to_empty(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.equip, None)
         # Checks
@@ -160,13 +212,17 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_holder_to_empty(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
+        holder = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.equip(holder)
         # Checks
@@ -182,6 +238,10 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], holder)
         self.assertIs(holder._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
         # Misc
         fit.container.remove(holder)
         self.assert_object_buffers_empty(fit.container)
@@ -189,7 +249,9 @@ class TestContainerOrderedEquip(FitTestCase):
     def test_attached_holder_to_empty_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.equip, holder)
         # Checks
@@ -198,6 +260,10 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(holder._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
@@ -205,8 +271,11 @@ class TestContainerOrderedEquip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
         fit_other.container.equip(holder)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, fit.container.equip, holder)
         # Checks
@@ -226,6 +295,9 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit_other.container), 1)
         self.assertIs(fit_other.container[0], holder)
         self.assertIs(holder._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
         # Misc
         fit_other.container.remove(holder)
         self.assert_object_buffers_empty(fit.container)
@@ -234,11 +306,15 @@ class TestContainerOrderedEquip(FitTestCase):
         # Check case when all slots of list are filled
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
-        holder3 = Mock(_fit=None, state=State.overload, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
         fit.container.append(holder1)
         fit.container.append(holder2)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_before = len(holder3._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.equip(holder3)
         # Checks
@@ -254,6 +330,14 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit.container), 3)
         self.assertIs(fit.container[2], holder3)
         self.assertIs(holder3._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_after = len(holder3._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
+        self.assertEqual(holder3_cleans_after - holder3_cleans_before, 1)
         # Misc
         fit.container.remove(holder1)
         fit.container.remove(holder2)
@@ -264,13 +348,18 @@ class TestContainerOrderedEquip(FitTestCase):
         # Check that leftmost empty slot is taken
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=PlainHolder)
-        holder3 = Mock(_fit=None, state=State.online, spec_set=PlainHolder)
-        holder4 = Mock(_fit=None, state=State.active, spec_set=PlainHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder3 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder4 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
         fit.container.append(holder1)
         fit.container.insert(3, holder2)
         fit.container.insert(6, holder3)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_before = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_before = len(holder3._clear_volatile_attrs.mock_calls)
+        holder4_cleans_before = len(holder4._clear_volatile_attrs.mock_calls)
         # Action
         fit.container.equip(holder4)
         # Checks
@@ -286,6 +375,16 @@ class TestContainerOrderedEquip(FitTestCase):
         self.assertIs(len(fit.container), 7)
         self.assertIs(fit.container[1], holder4)
         self.assertIs(holder4._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
+        holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
+        holder3_cleans_after = len(holder3._clear_volatile_attrs.mock_calls)
+        holder4_cleans_after = len(holder4._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
+        self.assertEqual(holder3_cleans_after - holder3_cleans_before, 1)
+        self.assertEqual(holder4_cleans_after - holder4_cleans_before, 1)
         # Misc
         fit.container.remove(holder1)
         fit.container.remove(holder2)

@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from eos.fit.holder.item import Charge, Implant, Module
+from eos.tests.fit.environment import CachingCharge, CachingModule, OtherCachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -40,7 +40,7 @@ class TestModuleCharge(FitTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.ordered = HolderList(fit, Module)
+        fit.ordered = HolderList(fit, CachingModule)
         return fit
 
     def custom_membership_check(self, fit, holder):
@@ -74,17 +74,22 @@ class TestModuleCharge(FitTestCase):
             self.assertIsNone(holder._other)
 
     def test_detached_module_none_to_none(self):
-        module = Module(1, state=State.active, charge=None)
+        module = CachingModule(1, state=State.active, charge=None)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = None
         # Checks
         self.assertIsNone(module.charge)
         self.assertIsNone(module._other)
         self.assertIsNone(module._fit)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
 
     def test_detached_module_none_to_free_charge(self):
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = charge
         # Checks
@@ -94,12 +99,19 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
 
     def test_detached_module_charge_to_free_charge(self):
-        module = Module(1, state=State.active, charge=None)
-        charge1 = Charge(2)
-        charge2 = Charge(3)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge1 = CachingCharge(2)
+        charge2 = CachingCharge(3)
         module.charge = charge1
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge1_cleans_before = len(charge1._clear_volatile_attrs.mock_calls)
+        charge2_cleans_before = len(charge2._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = charge2
         # Checks
@@ -112,11 +124,19 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module._fit)
         self.assertIsNone(charge1._fit)
         self.assertIsNone(charge2._fit)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge1_cleans_after = len(charge1._clear_volatile_attrs.mock_calls)
+        charge2_cleans_after = len(charge2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge1_cleans_after - charge1_cleans_before, 0)
+        self.assertEqual(charge2_cleans_after - charge2_cleans_before, 0)
 
     def test_detached_module_charge_to_none(self):
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         module.charge = charge
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = None
         # Checks
@@ -126,10 +146,16 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._other)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
 
     def test_detached_module_none_to_non_charge(self):
-        module = Module(1, state=State.active, charge=None)
-        non_charge = Implant(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
@@ -137,12 +163,19 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module._other)
         self.assertIsNone(module._fit)
         self.assertIsNone(non_charge._fit)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_after = len(non_charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(non_charge_cleans_after - non_charge_cleans_before, 0)
 
     def test_detached_module_charge_to_non_charge(self):
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
-        non_charge = Implant(3)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
         module.charge = charge
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
@@ -153,14 +186,24 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
         self.assertIsNone(non_charge._fit)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_after = len(non_charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
+        self.assertEqual(non_charge_cleans_after - non_charge_cleans_before, 0)
 
     def test_detached_module_none_to_bound_charge(self):
         fit_other = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        module_other = Module(3, state=State.active, charge=None)
-        charge_other = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        module_other = CachingModule(3, state=State.active, charge=None)
+        charge_other = CachingCharge(2)
         module_other.charge = charge_other
         fit_other.ordered.append(module_other)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_before = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_before = len(charge_other._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
@@ -176,19 +219,32 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module._fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_after = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_after = len(charge_other._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
+        self.assertEqual(module_other_cleans_after - module_other_cleans_before, 0)
+        self.assertEqual(charge_other_cleans_after - charge_other_cleans_before, 0)
         # Misc
         fit_other.ordered.remove(module_other)
         self.assert_fit_buffers_empty(fit_other)
 
     def test_detached_module_charge_to_bound_charge(self):
         fit_other = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
-        module_other = Module(3, state=State.active, charge=None)
-        charge_other = Charge(4)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        module_other = CachingModule(3, state=State.active, charge=None)
+        charge_other = CachingCharge(4)
         fit_other.ordered.append(module_other)
         module.charge = charge
         module_other.charge = charge_other
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_before = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_before = len(charge_other._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
@@ -207,14 +263,26 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_after = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_after = len(charge_other._clear_volatile_attrs.mock_calls)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
+        self.assertEqual(module_other_cleans_after - module_other_cleans_before, 0)
+        self.assertEqual(charge_other_cleans_after - charge_other_cleans_before, 0)
         # Misc
         fit_other.ordered.remove(module_other)
         self.assert_fit_buffers_empty(fit_other)
 
     def test_detached_fit_none_to_none(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
+        module = CachingModule(1, state=State.active, charge=None)
         fit.ordered.append(module)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = None
         # Checks
@@ -224,15 +292,22 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module.charge)
         self.assertIsNone(module._other)
         self.assertIs(module._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_fit_none_to_free_charge(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         fit.ordered.append(module)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = charge
         # Checks
@@ -245,17 +320,27 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(module_cleans_after - module_cleans_before, 1)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_fit_charge_to_free_charge(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge1 = Charge(2)
-        charge2 = Charge(3)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge1 = CachingCharge(2)
+        charge2 = CachingCharge(3)
         fit.ordered.append(module)
         module.charge = charge1
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge1_cleans_before = len(charge1._clear_volatile_attrs.mock_calls)
+        charge2_cleans_before = len(charge2._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = charge2
         # Checks
@@ -271,16 +356,27 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge1._fit)
         self.assertIs(charge2._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge1_cleans_after = len(charge1._clear_volatile_attrs.mock_calls)
+        charge2_cleans_after = len(charge2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(charge1_cleans_after - charge1_cleans_before, 2)
+        self.assertEqual(charge2_cleans_after - charge2_cleans_before, 2)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_fit_charge_to_none(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         fit.ordered.append(module)
         module.charge = charge
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = None
         # Checks
@@ -293,15 +389,24 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(module_cleans_after - module_cleans_before, 1)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_fit_none_to_non_charge(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        non_charge = Implant(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
         fit.ordered.append(module)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
@@ -312,17 +417,27 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(non_charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_after = len(non_charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(non_charge_cleans_after - non_charge_cleans_before, 0)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_fit_charge_to_non_charge(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
-        non_charge = Implant(3)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
         fit.ordered.append(module)
         module.charge = charge
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
@@ -336,6 +451,14 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         self.assertIsNone(non_charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_after = len(non_charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
+        self.assertEqual(non_charge_cleans_after - non_charge_cleans_before, 0)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
@@ -343,12 +466,17 @@ class TestModuleCharge(FitTestCase):
     def test_detached_fit_none_to_bound_charge(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        module_other = Module(3, state=State.active, charge=None)
-        charge_other = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        module_other = CachingModule(3, state=State.active, charge=None)
+        charge_other = CachingCharge(2)
         module_other.charge = charge_other
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_before = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_before = len(charge_other._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
@@ -367,6 +495,16 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._fit, fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_after = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_after = len(charge_other._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
+        self.assertEqual(module_other_cleans_after - module_other_cleans_before, 0)
+        self.assertEqual(charge_other_cleans_after - charge_other_cleans_before, 0)
         # Misc
         fit.ordered.remove(module)
         fit_other.ordered.remove(module_other)
@@ -376,14 +514,20 @@ class TestModuleCharge(FitTestCase):
     def test_detached_fit_charge_to_bound_charge(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
-        module_other = Module(3, state=State.active, charge=None)
-        charge_other = Charge(4)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        module_other = CachingModule(3, state=State.active, charge=None)
+        charge_other = CachingCharge(4)
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
         module.charge = charge
         module_other.charge = charge_other
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_before = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_before = len(charge_other._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
@@ -405,6 +549,18 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._fit, fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_after = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_after = len(charge_other._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
+        self.assertEqual(module_other_cleans_after - module_other_cleans_before, 0)
+        self.assertEqual(charge_other_cleans_after - charge_other_cleans_before, 0)
         # Misc
         fit.ordered.remove(module)
         fit_other.ordered.remove(module_other)
@@ -413,9 +569,12 @@ class TestModuleCharge(FitTestCase):
 
     def test_detached_fit_add_charged_module(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         module.charge = charge
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         fit.ordered.append(module)
         # Checks
@@ -430,16 +589,25 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
     def test_detached_fit_remove_charged_module(self):
         fit = self.make_fit()
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         module.charge = charge
         fit.ordered.append(module)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         fit.ordered.remove(module)
         # Checks
@@ -453,14 +621,22 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 2)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_none_to_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
+        module = CachingModule(1, state=State.active, charge=None)
         fit.ordered.append(module)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = None
         # Checks
@@ -476,6 +652,10 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module.charge)
         self.assertIsNone(module._other)
         self.assertIs(module._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
         # Misc
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
@@ -483,10 +663,13 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_none_to_free_charge(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         fit.ordered.append(module)
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = charge
         # Checks
@@ -511,6 +694,12 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(module_cleans_after - module_cleans_before, 1)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -519,12 +708,16 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_charge_to_free_charge(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge1 = Charge(2)
-        charge2 = Charge(3)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge1 = CachingCharge(2)
+        charge2 = CachingCharge(3)
         fit.ordered.append(module)
         module.charge = charge1
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge1_cleans_before = len(charge1._clear_volatile_attrs.mock_calls)
+        charge2_cleans_before = len(charge2._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = charge2
         # Checks
@@ -552,6 +745,14 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge1._fit)
         self.assertIs(charge2._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge1_cleans_after = len(charge1._clear_volatile_attrs.mock_calls)
+        charge2_cleans_after = len(charge2._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(charge1_cleans_after - charge1_cleans_before, 2)
+        self.assertEqual(charge2_cleans_after - charge2_cleans_before, 2)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -560,11 +761,14 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_charge_to_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         fit.ordered.append(module)
         module.charge = charge
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         module.charge = None
         # Checks
@@ -583,6 +787,12 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(charge._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(module_cleans_after - module_cleans_before, 1)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -591,10 +801,13 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_none_to_non_charge(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        non_charge = Implant(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
         fit.ordered.append(module)
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
@@ -610,6 +823,12 @@ class TestModuleCharge(FitTestCase):
         self.assertIsNone(module._other)
         self.assertIs(module._fit, fit)
         self.assertIsNone(non_charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_after = len(non_charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(non_charge_cleans_after - non_charge_cleans_before, 0)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -618,12 +837,16 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_charge_to_non_charge(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
-        non_charge = Implant(3)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
         fit.ordered.append(module)
         module.charge = charge
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
@@ -649,6 +872,14 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         self.assertIsNone(non_charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        non_charge_cleans_after = len(non_charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
+        self.assertEqual(non_charge_cleans_after - non_charge_cleans_before, 0)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -658,13 +889,18 @@ class TestModuleCharge(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        module_other = Module(3, state=State.active, charge=None)
-        charge_other = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        module_other = CachingModule(3, state=State.active, charge=None)
+        charge_other = CachingCharge(2)
         module_other.charge = charge_other
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_before = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_before = len(charge_other._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
@@ -701,6 +937,16 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(module._fit, fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_after = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_after = len(charge_other._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
+        self.assertEqual(module_other_cleans_after - module_other_cleans_before, 0)
+        self.assertEqual(charge_other_cleans_after - charge_other_cleans_before, 0)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -712,15 +958,21 @@ class TestModuleCharge(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
-        module_other = Module(3, state=State.active, charge=None)
-        charge_other = Charge(4)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
+        module_other = CachingModule(3, state=State.active, charge=None)
+        charge_other = CachingCharge(4)
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
         module.charge = charge
         module_other.charge = charge_other
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
+        st_other_cleans_before = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_before = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_before = len(charge_other._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
@@ -766,6 +1018,18 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._fit, fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        module_other_cleans_after = len(module_other._clear_volatile_attrs.mock_calls)
+        charge_other_cleans_after = len(charge_other._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(module_cleans_after - module_cleans_before, 0)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
+        self.assertEqual(module_other_cleans_after - module_other_cleans_before, 0)
+        self.assertEqual(charge_other_cleans_after - charge_other_cleans_before, 0)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -776,10 +1040,13 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_add_charged_module(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         module.charge = charge
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         fit.ordered.append(module)
         # Checks
@@ -806,6 +1073,12 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -814,11 +1087,14 @@ class TestModuleCharge(FitTestCase):
     def test_attached_fit_remove_charged_module(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        module = Module(1, state=State.active, charge=None)
-        charge = Charge(2)
+        module = CachingModule(1, state=State.active, charge=None)
+        charge = CachingCharge(2)
         module.charge = charge
         fit.ordered.append(module)
         self.expect_module_charge_link = True
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
         # Action
         fit.ordered.remove(module)
         # Checks
@@ -832,5 +1108,11 @@ class TestModuleCharge(FitTestCase):
         self.assertIs(charge._other, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
+        charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 2)
+        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(charge_cleans_after - charge_cleans_before, 2)
         # Misc
         self.assert_fit_buffers_empty(fit)

@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderSet
-from eos.fit.holder.item import Module
+from eos.tests.fit.environment import CachingModule
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -31,7 +31,7 @@ class TestModuleStateSwitch(FitTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.unordered = HolderSet(fit, Module)
+        fit.unordered = HolderSet(fit, CachingModule)
         return fit
 
     def custom_membership_check(self, fit, holder):
@@ -39,50 +39,60 @@ class TestModuleStateSwitch(FitTestCase):
 
     def test_detached_upwards(self):
         fit = self.make_fit()
-        # Action
-        holder = Module(1, State.offline)
+        holder = CachingModule(1, State.offline)
         fit.unordered.add(holder)
-        # Checks
-        self.assertEqual(len(fit.lt), 0)
-        self.assertEqual(len(fit.rt), 0)
-        self.assertEqual(len(fit.st), 0)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         holder.state = State.online
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
+        st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_between = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between - st_cleans_before, 1)
+        self.assertEqual(module_cleans_between - module_cleans_before, 1)
         # Action
         holder.state = State.overload
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_between, 1)
+        self.assertEqual(module_cleans_after - module_cleans_between, 1)
         # Misc
         fit.unordered.remove(holder)
         self.assert_object_buffers_empty(fit)
 
     def test_detached_downwards(self):
         fit = self.make_fit()
-        # Action
-        holder = Module(1, State.overload)
+        holder = CachingModule(1, State.overload)
         fit.unordered.add(holder)
-        # Checks
-        self.assertEqual(len(fit.lt), 0)
-        self.assertEqual(len(fit.rt), 0)
-        self.assertEqual(len(fit.st), 0)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         holder.state = State.active
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
+        st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_between = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between - st_cleans_before, 1)
+        self.assertEqual(module_cleans_between - module_cleans_before, 1)
         # Action
         holder.state = State.offline
         # Checks
         self.assertEqual(len(fit.lt), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_between, 1)
+        self.assertEqual(module_cleans_after - module_cleans_between, 1)
         # Misc
         fit.unordered.remove(holder)
         self.assert_object_buffers_empty(fit)
@@ -90,19 +100,10 @@ class TestModuleStateSwitch(FitTestCase):
     def test_attached_upwards(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        # Action
-        holder = Module(1, State.offline)
+        holder = CachingModule(1, State.offline)
         fit.unordered.add(holder)
-        # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline})
-        self.assertEqual(len(fit.rt), 1)
-        self.assertIn(holder, fit.rt)
-        self.assertEqual(fit.rt[holder], {State.offline})
-        self.assertEqual(len(fit.st), 1)
-        self.assertIn(holder, fit.st)
-        self.assertEqual(fit.st[holder], {State.offline})
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         holder.state = State.online
         # Checks
@@ -115,6 +116,10 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 1)
         self.assertIn(holder, fit.st)
         self.assertEqual(fit.st[holder], {State.offline, State.online})
+        st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_between = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between - st_cleans_before, 1)
+        self.assertEqual(module_cleans_between - module_cleans_before, 1)
         # Action
         holder.state = State.overload
         # Checks
@@ -127,6 +132,10 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 1)
         self.assertIn(holder, fit.st)
         self.assertEqual(fit.st[holder], {State.offline, State.online, State.active, State.overload})
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_between, 1)
+        self.assertEqual(module_cleans_after - module_cleans_between, 1)
         # Misc
         fit.unordered.remove(holder)
         self.assert_object_buffers_empty(fit)
@@ -134,19 +143,10 @@ class TestModuleStateSwitch(FitTestCase):
     def test_attached_downwards(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        # Action
-        holder = Module(1, State.overload)
+        holder = CachingModule(1, State.overload)
         fit.unordered.add(holder)
-        # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active, State.overload})
-        self.assertEqual(len(fit.rt), 1)
-        self.assertIn(holder, fit.rt)
-        self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active, State.overload})
-        self.assertEqual(len(fit.st), 1)
-        self.assertIn(holder, fit.st)
-        self.assertEqual(fit.st[holder], {State.offline, State.online, State.active, State.overload})
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
         holder.state = State.active
         # Checks
@@ -159,6 +159,10 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 1)
         self.assertIn(holder, fit.st)
         self.assertEqual(fit.st[holder], {State.offline, State.online, State.active})
+        st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_between = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between - st_cleans_before, 1)
+        self.assertEqual(module_cleans_between - module_cleans_before, 1)
         # Action
         holder.state = State.offline
         # Checks
@@ -171,6 +175,10 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 1)
         self.assertIn(holder, fit.st)
         self.assertEqual(fit.st[holder], {State.offline})
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        module_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_between, 1)
+        self.assertEqual(module_cleans_after - module_cleans_between, 1)
         # Misc
         fit.unordered.remove(holder)
         self.assert_object_buffers_empty(fit)
