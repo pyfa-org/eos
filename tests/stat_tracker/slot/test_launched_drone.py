@@ -29,7 +29,7 @@ from eos.tests.stat_tracker.stat_testcase import StatTestCase
 
 class TestLaunchedDrone(StatTestCase):
 
-    def test_total(self):
+    def test_output(self):
         # Check that modified attribute of character is used
         char_item = self.ch.type_(type_id=1, attributes={Attribute.max_active_drones: 2})
         char_holder = Mock(state=State.offline, item=char_item, _location=None, spec_set=Character)
@@ -98,5 +98,48 @@ class TestLaunchedDrone(StatTestCase):
         self.track_holder(holder)
         self.assertEqual(self.st.launched_drones.used, 0)
         self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
+
+    def test_cache(self):
+        char_item = self.ch.type_(type_id=1)
+        char_holder = Mock(state=State.offline, item=char_item, _location=None, spec_set=Character)
+        char_holder.attributes = {Attribute.max_active_drones: 6}
+        self.set_character(char_holder)
+        item = self.ch.type_(type_id=2, attributes={})
+        holder1 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        holder2 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.track_holder(holder1)
+        self.track_holder(holder2)
+        self.assertEqual(self.st.launched_drones.used, 2)
+        self.assertEqual(self.st.launched_drones.total, 6)
+        char_holder.attributes[Attribute.max_active_drones] = 4
+        self.untrack_holder(holder1)
+        self.assertEqual(self.st.launched_drones.used, 2)
+        self.assertEqual(self.st.launched_drones.total, 6)
+        self.set_character(None)
+        self.untrack_holder(holder2)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
+
+    def test_volatility(self):
+        char_item = self.ch.type_(type_id=1)
+        char_holder = Mock(state=State.offline, item=char_item, _location=None, spec_set=Character)
+        char_holder.attributes = {Attribute.max_active_drones: 6}
+        self.set_character(char_holder)
+        item = self.ch.type_(type_id=2, attributes={})
+        holder1 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        holder2 = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
+        self.track_holder(holder1)
+        self.track_holder(holder2)
+        self.assertEqual(self.st.launched_drones.used, 2)
+        self.assertEqual(self.st.launched_drones.total, 6)
+        char_holder.attributes[Attribute.max_active_drones] = 4
+        self.untrack_holder(holder1)
+        self.st._clear_volatile_attrs()
+        self.assertEqual(self.st.launched_drones.used, 1)
+        self.assertEqual(self.st.launched_drones.total, 4)
+        self.set_character(None)
+        self.untrack_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

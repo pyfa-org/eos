@@ -19,23 +19,27 @@
 #===============================================================================
 
 
-class EntitySlots:
+from eos.util.volatile_cache import VolatileMixin, VolatileProperty
+
+
+class EntitySlots(VolatileMixin):
     """
     Generic functionality for classes which track amount
     of used slots against provided slots
     """
 
     def __init__(self, fit, container, slot_carrier, slot_attr):
+        VolatileMixin.__init__(self)
         self._fit = fit
         self.__container = container
         self.__slot_carrier = slot_carrier
         self.__slot_attr = slot_attr
 
-    @property
+    @VolatileProperty
     def used(self):
         return len(self.__container)
 
-    @property
+    @VolatileProperty
     def total(self):
         # Get amount of provided slots, setting it to None
         # if fitting doesn't have ship assigned,

@@ -19,22 +19,26 @@
 #===============================================================================
 
 
-class ShipResource:
+from eos.util.volatile_cache import VolatileMixin, VolatileProperty
+
+
+class ShipResource(VolatileMixin):
     """
     Class designed to conveniently provide ship
     resource use and output.
     """
 
     def __init__(self, fit, resource_use_register, output_attr):
+        VolatileMixin.__init__(self)
         self._fit = fit
         self.__register = resource_use_register
         self.__output_attr = output_attr
 
-    @property
+    @VolatileProperty
     def used(self):
         return self.__register.get_resource_use()
 
-    @property
+    @VolatileProperty
     def output(self):
         # Get ship's resource output, setting it to None
         # if fitting doesn't have ship assigned,

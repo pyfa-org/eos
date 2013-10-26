@@ -80,6 +80,21 @@ class StatTracker(VolatileMixin):
         self.turret_slots = ShipSlots(fit, turret_reg, Attribute.turret_slots_left)
         self.launcher_slots = ShipSlots(fit, launcher_reg, Attribute.launcher_slots_left)
         self.launched_drones = CharSlots(fit, launched_drone_reg, Attribute.max_active_drones)
+        self._volatile_containers = (
+            self.cpu,
+            self.powergrid,
+            self.calibration,
+            self.dronebay,
+            self.drone_bandwidth,
+            self.high_slots,
+            self.med_slots,
+            self.low_slots,
+            self.rig_slots,
+            self.subsystem_slots,
+            self.turret_slots,
+            self.launcher_slots,
+            self.launched_drones
+        )
 
     def _enable_states(self, holder, states):
         """
@@ -118,6 +133,8 @@ class StatTracker(VolatileMixin):
                 register.unregister_holder(holder)
 
     def _clear_volatile_attrs(self):
+        for container in self._volatile_containers:
+            container._clear_volatile_attrs()
         VolatileMixin._clear_volatile_attrs(self)
 
     @VolatileProperty

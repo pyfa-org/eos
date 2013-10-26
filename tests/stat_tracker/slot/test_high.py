@@ -29,7 +29,7 @@ from eos.tests.stat_tracker.stat_testcase import StatTestCase
 
 class TestHighSlot(StatTestCase):
 
-    def test_total(self):
+    def test_output(self):
         # Check that modified attribute of ship is used
         ship_item = self.ch.type_(type_id=1, attributes={Attribute.hi_slots: 2})
         ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
@@ -89,5 +89,46 @@ class TestHighSlot(StatTestCase):
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
         self.fit.modules.med.append(holder)
         self.assertEqual(self.st.high_slots.used, 0)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
+
+    def test_cache(self):
+        ship_item = self.ch.type_(type_id=1)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder.attributes = {Attribute.hi_slots: 6}
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=2, attributes={})
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.fit.modules.high.append(holder1)
+        self.fit.modules.high.append(holder2)
+        self.assertEqual(self.st.high_slots.used, 2)
+        self.assertEqual(self.st.high_slots.total, 6)
+        ship_holder.attributes[Attribute.hi_slots] = 4
+        self.fit.modules.high.remove(holder1)
+        self.assertEqual(self.st.high_slots.used, 2)
+        self.assertEqual(self.st.high_slots.total, 6)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
+
+    def test_volatility(self):
+        ship_item = self.ch.type_(type_id=1)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder.attributes = {Attribute.hi_slots: 6}
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=2, attributes={})
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        self.fit.modules.high.append(holder1)
+        self.fit.modules.high.append(holder2)
+        self.assertEqual(self.st.high_slots.used, 2)
+        self.assertEqual(self.st.high_slots.total, 6)
+        ship_holder.attributes[Attribute.hi_slots] = 4
+        self.fit.modules.high.remove(holder1)
+        self.st._clear_volatile_attrs()
+        self.assertEqual(self.st.high_slots.used, 1)
+        self.assertEqual(self.st.high_slots.total, 4)
+        self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

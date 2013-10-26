@@ -96,3 +96,56 @@ class TestDroneBayVolume(StatTestCase):
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
+
+    def test_cache(self):
+        ship_item = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder.attributes = {Attribute.drone_capacity: 50}
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=2, attributes={Attribute.volume: 0})
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder1.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(holder1)
+        self.track_holder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder2.attributes = {Attribute.volume: 30}
+        self.fit.drones.add(holder2)
+        self.track_holder(holder2)
+        self.assertEqual(self.st.dronebay.used, 80)
+        self.assertEqual(self.st.dronebay.output, 50)
+        holder1.attributes[Attribute.volume] = 10
+        ship_holder.attributes[Attribute.drone_capacity] = 60
+        self.assertEqual(self.st.dronebay.used, 80)
+        self.assertEqual(self.st.dronebay.output, 50)
+        self.set_ship(None)
+        self.untrack_holder(holder1)
+        self.untrack_holder(holder2)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
+
+    def test_volatility(self):
+        ship_item = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder.attributes = {Attribute.drone_capacity: 50}
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=2, attributes={Attribute.volume: 0})
+        holder1 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder1.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(holder1)
+        self.track_holder(holder1)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
+        holder2.attributes = {Attribute.volume: 30}
+        self.fit.drones.add(holder2)
+        self.track_holder(holder2)
+        self.assertEqual(self.st.dronebay.used, 80)
+        self.assertEqual(self.st.dronebay.output, 50)
+        holder1.attributes[Attribute.volume] = 10
+        ship_holder.attributes[Attribute.drone_capacity] = 60
+        self.st._clear_volatile_attrs()
+        self.assertEqual(self.st.dronebay.used, 40)
+        self.assertEqual(self.st.dronebay.output, 60)
+        self.set_ship(None)
+        self.untrack_holder(holder1)
+        self.untrack_holder(holder2)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
