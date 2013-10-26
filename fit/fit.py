@@ -166,6 +166,7 @@ class Fit:
         # doesn't have Eos assigned
         if self.eos is None:
             return
+        self._clear_volatile_data()
         # Get states which are passed during enabling/disabling
         # into single set (other should stay empty)
         enabled_states = set(filter(lambda s: holder.state < s <= new_state, State))

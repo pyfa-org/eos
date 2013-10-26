@@ -30,7 +30,6 @@ def set_state(holder, new_state):
     # fit-specific state switch of our holder
     fit = holder._fit
     if fit is not None:
-        fit._clear_volatile_data()
         fit._holder_state_switch(holder, new_state)
     holder._state = new_state
 
