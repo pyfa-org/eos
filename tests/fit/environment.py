@@ -43,8 +43,7 @@ class CachingModule(Module, VolatileMixin):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
         VolatileMixin.__init__(self)
-
-    _clear_volatile_attrs = Mock()
+        self._clear_volatile_attrs = Mock()
 
 
 class CachingCharge(Charge, VolatileMixin):
@@ -52,5 +51,4 @@ class CachingCharge(Charge, VolatileMixin):
     def __init__(self, *args, **kwargs):
         Charge.__init__(self, *args, **kwargs)
         VolatileMixin.__init__(self)
-
-    _clear_volatile_attrs = Mock()
+        self._clear_volatile_attrs = Mock()

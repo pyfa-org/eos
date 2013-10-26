@@ -75,12 +75,15 @@ class Module(Holder):
             if new_charge._fit is not None:
                 raise ValueError(new_charge)
         old_charge = self.charge
+        module_fit = self._fit
         if old_charge is not None:
-            if self._fit is not None:
-                self._fit._remove_holder(old_charge)
+            if module_fit is not None:
+                module_fit._clear_volatile_data()
+                module_fit._remove_holder(old_charge)
             old_charge.container = None
         self.__charge = new_charge
         if new_charge is not None:
             new_charge.container = self
-            if self._fit is not None:
-                self._fit._add_holder(new_charge)
+            if module_fit is not None:
+                module_fit._add_holder(new_charge)
+                module_fit._clear_volatile_data()

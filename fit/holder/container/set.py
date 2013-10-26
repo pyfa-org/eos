@@ -57,6 +57,7 @@ class HolderSet(HolderContainerBase):
         except HolderAlreadyAssignedError as e:
             self.__set.remove(holder)
             raise ValueError(*e.args) from e
+        self.__fit._clear_volatile_data()
 
     def remove(self, holder):
         """
@@ -68,11 +69,13 @@ class HolderSet(HolderContainerBase):
         """
         if holder not in self.__set:
             raise KeyError(holder)
+        self.__fit._clear_volatile_data()
         self.__fit._remove_holder(holder)
         self.__set.remove(holder)
 
     def clear(self):
         """Remove everything from container."""
+        self.__fit._clear_volatile_data()
         for holder in self.__set:
             self.__fit._remove_holder(holder)
         self.__set.clear()

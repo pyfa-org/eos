@@ -51,8 +51,8 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_between = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_between - st_cleans_before, 1)
-        self.assertEqual(module_cleans_between - module_cleans_before, 1)
+        self.assertEqual(st_cleans_between - st_cleans_before, 0)
+        self.assertEqual(module_cleans_between - module_cleans_before, 0)
         # Action
         holder.state = State.overload
         # Checks
@@ -61,8 +61,8 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_between, 1)
-        self.assertEqual(module_cleans_after - module_cleans_between, 1)
+        self.assertEqual(st_cleans_after - st_cleans_between, 0)
+        self.assertEqual(module_cleans_after - module_cleans_between, 0)
         # Misc
         fit.unordered.remove(holder)
         self.assert_object_buffers_empty(fit)
@@ -81,8 +81,8 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_between = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_between - st_cleans_before, 1)
-        self.assertEqual(module_cleans_between - module_cleans_before, 1)
+        self.assertEqual(st_cleans_between - st_cleans_before, 0)
+        self.assertEqual(module_cleans_between - module_cleans_before, 0)
         # Action
         holder.state = State.offline
         # Checks
@@ -91,8 +91,8 @@ class TestModuleStateSwitch(FitTestCase):
         self.assertEqual(len(fit.st), 0)
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_between, 1)
-        self.assertEqual(module_cleans_after - module_cleans_between, 1)
+        self.assertEqual(st_cleans_after - st_cleans_between, 0)
+        self.assertEqual(module_cleans_after - module_cleans_between, 0)
         # Misc
         fit.unordered.remove(holder)
         self.assert_object_buffers_empty(fit)

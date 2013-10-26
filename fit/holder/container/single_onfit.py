@@ -52,6 +52,7 @@ class HolderDescriptorOnFit(HolderContainerBase):
         attr_name = self.__attr_name
         old_holder = getattr(instance, attr_name, None)
         if old_holder is not None:
+            instance._clear_volatile_data()
             instance._remove_holder(old_holder)
         setattr(instance, attr_name, new_holder)
         if new_holder is not None:
@@ -62,3 +63,4 @@ class HolderDescriptorOnFit(HolderContainerBase):
                 if old_holder is not None:
                     instance._add_holder(old_holder)
                 raise ValueError(*e.args) from e
+            instance._clear_volatile_data()

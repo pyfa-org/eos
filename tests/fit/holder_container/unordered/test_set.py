@@ -379,12 +379,9 @@ class TestContainerSet(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 2)
-        holder1_cleans = holder1_cleans_after - holder1_cleans_before
-        holder2_cleans = holder2_cleans_after - holder2_cleans_before
-        self.assertGreaterEqual(holder1_cleans, 1)
-        self.assertGreaterEqual(holder2_cleans, 1)
-        self.assertEqual(holder1_cleans + holder2_cleans, 3)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertGreaterEqual(holder1_cleans_after - holder1_cleans_before, 1)
+        self.assertGreaterEqual(holder2_cleans_after - holder2_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)

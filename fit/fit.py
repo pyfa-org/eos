@@ -85,11 +85,13 @@ class Fit:
         """
         self._restriction_tracker.validate(skip_checks)
 
-    def _clear_volatile_data(self):
+    def _clear_volatile_data(self, eos_check=True):
         """
         Clear all the 'cached', but volatile stats, which should
         be no longer actual on any fit/holder changes.
         """
+        if eos_check is True and self.eos is None:
+            return
         self.stats._clear_volatile_attrs()
         for holder in self._volatile_holders:
             holder._clear_volatile_attrs()
@@ -104,7 +106,6 @@ class Fit:
         if isinstance(holder, VolatileMixin):
             self._volatile_holders.add(holder)
         if self.eos is not None:
-            self._clear_volatile_data()
             self._enable_services(holder)
         # If holder has charge, register it too
         charge = getattr(holder, 'charge', None)
@@ -123,7 +124,6 @@ class Fit:
         if charge is not None:
             self._remove_holder(charge)
         if self.eos is not None:
-            self._clear_volatile_data()
             self._disable_services(holder)
         self._holders.remove(holder)
         self._volatile_holders.discard(holder)
@@ -193,6 +193,7 @@ class Fit:
                 self._disable_services(holder)
         # Reassign new eos and feed new data to all holders
         self.__eos = new_eos
+        self._clear_volatile_data(eos_check=False)
         for holder in self._holders:
             holder._refresh_context()
         # Enable eos-dependent services for new instance

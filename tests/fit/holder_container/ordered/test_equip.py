@@ -298,6 +298,9 @@ class TestContainerOrderedEquip(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
         st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
+        self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
         fit_other.container.remove(holder)
         self.assert_object_buffers_empty(fit.container)

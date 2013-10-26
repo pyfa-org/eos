@@ -751,8 +751,8 @@ class TestModuleCharge(FitTestCase):
         charge2_cleans_after = len(charge2._clear_volatile_attrs.mock_calls)
         self.assertEqual(st_cleans_after - st_cleans_before, 2)
         self.assertEqual(module_cleans_after - module_cleans_before, 2)
-        self.assertEqual(charge1_cleans_after - charge1_cleans_before, 2)
-        self.assertEqual(charge2_cleans_after - charge2_cleans_before, 2)
+        self.assertEqual(charge1_cleans_after - charge1_cleans_before, 1)
+        self.assertEqual(charge2_cleans_after - charge2_cleans_before, 1)
         # Misc
         self.expect_module_charge_link = None
         fit.ordered.remove(module)
@@ -1076,8 +1076,8 @@ class TestModuleCharge(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
         charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 2)
-        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(module_cleans_after - module_cleans_before, 1)
         self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         self.expect_module_charge_link = None
@@ -1111,8 +1111,8 @@ class TestModuleCharge(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_after = len(module._clear_volatile_attrs.mock_calls)
         charge_cleans_after = len(charge._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 2)
-        self.assertEqual(module_cleans_after - module_cleans_before, 2)
+        self.assertEqual(st_cleans_after - st_cleans_before, 1)
+        self.assertEqual(module_cleans_after - module_cleans_before, 1)
         self.assertEqual(charge_cleans_after - charge_cleans_before, 1)
         # Misc
         self.assert_fit_buffers_empty(fit)
