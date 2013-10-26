@@ -103,8 +103,8 @@ class Fit:
         self._holders.add(holder)
         if isinstance(holder, VolatileMixin):
             self._volatile_holders.add(holder)
-        self._clear_volatile_data()
         if self.eos is not None:
+            self._clear_volatile_data()
             self._enable_services(holder)
         # If holder has charge, register it too
         charge = getattr(holder, 'charge', None)
@@ -117,14 +117,13 @@ class Fit:
         # it's removed from
         if holder._fit is not self:
             raise HolderFitMismatchError(holder)
-        # Start from
-        self._clear_volatile_data()
         # If there's charge in target holder, unset it before
         # removing holder itself
         charge = getattr(holder, 'charge', None)
         if charge is not None:
             self._remove_holder(charge)
         if self.eos is not None:
+            self._clear_volatile_data()
             self._disable_services(holder)
         self._holders.remove(holder)
         self._volatile_holders.discard(holder)

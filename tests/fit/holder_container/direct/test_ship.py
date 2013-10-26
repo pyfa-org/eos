@@ -62,8 +62,8 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIs(holder._fit, fit)
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 1)
-        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -139,9 +139,9 @@ class TestDirectHolderShip(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 2)
-        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 1)
-        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 1)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -201,8 +201,8 @@ class TestDirectHolderShip(FitTestCase):
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
         st_other_cleans_after = len(fit_other.stats._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 2)
-        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 2)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_before, 0)
         self.assertEqual(holder2_cleans_after - holder2_cleans_before, 0)
         self.assertEqual(st_other_cleans_after - st_other_cleans_before, 0)
         # Misc
@@ -227,8 +227,8 @@ class TestDirectHolderShip(FitTestCase):
         self.assertIsNone(holder._fit)
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_before, 1)
-        self.assertEqual(holder_cleans_after - holder_cleans_before, 1)
+        self.assertEqual(st_cleans_after - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_before, 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
 

@@ -112,9 +112,9 @@ class TestContainerOrderedFree(FitTestCase):
         st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_between = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_between = len(holder2._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_between - st_cleans_before, 1)
-        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 1)
-        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 1)
+        self.assertEqual(st_cleans_between - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 0)
         # Action
         fit.container.free(holder2)
         # Checks
@@ -127,9 +127,9 @@ class TestContainerOrderedFree(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_between, 1)
+        self.assertEqual(st_cleans_after - st_cleans_between, 0)
         self.assertEqual(holder1_cleans_after - holder1_cleans_between, 0)
-        self.assertEqual(holder2_cleans_after - holder2_cleans_between, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_between, 0)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
@@ -213,10 +213,10 @@ class TestContainerOrderedFree(FitTestCase):
         holder1_cleans_between = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_between = len(holder2._clear_volatile_attrs.mock_calls)
         holder3_cleans_between = len(holder3._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_between - st_cleans_before, 1)
-        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 1)
-        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 1)
-        self.assertEqual(holder3_cleans_between - holder3_cleans_before, 1)
+        self.assertEqual(st_cleans_between - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 0)
+        self.assertEqual(holder3_cleans_between - holder3_cleans_before, 0)
         # Action
         fit.container.free(holder3)
         # Checks
@@ -232,10 +232,10 @@ class TestContainerOrderedFree(FitTestCase):
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
         holder3_cleans_after = len(holder3._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_between, 1)
-        self.assertEqual(holder1_cleans_after - holder1_cleans_between, 1)
+        self.assertEqual(st_cleans_after - st_cleans_between, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_between, 0)
         self.assertEqual(holder2_cleans_after - holder2_cleans_between, 0)
-        self.assertEqual(holder3_cleans_after - holder3_cleans_between, 1)
+        self.assertEqual(holder3_cleans_after - holder3_cleans_between, 0)
         # Misc
         fit.container.free(holder1)
         self.assert_object_buffers_empty(fit.container)
@@ -263,9 +263,9 @@ class TestContainerOrderedFree(FitTestCase):
         st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_between = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_between = len(holder2._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_between - st_cleans_before, 1)
-        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 1)
-        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 1)
+        self.assertEqual(st_cleans_between - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 0)
         # Action
         fit.container.free(1)
         # Checks
@@ -278,9 +278,9 @@ class TestContainerOrderedFree(FitTestCase):
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_between, 1)
+        self.assertEqual(st_cleans_after - st_cleans_between, 0)
         self.assertEqual(holder1_cleans_after - holder1_cleans_between, 0)
-        self.assertEqual(holder2_cleans_after - holder2_cleans_between, 1)
+        self.assertEqual(holder2_cleans_after - holder2_cleans_between, 0)
         # Misc
         self.assert_object_buffers_empty(fit.container)
 
@@ -341,10 +341,10 @@ class TestContainerOrderedFree(FitTestCase):
         holder1_cleans_between = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_between = len(holder2._clear_volatile_attrs.mock_calls)
         holder3_cleans_between = len(holder3._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_between - st_cleans_before, 1)
-        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 1)
-        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 1)
-        self.assertEqual(holder3_cleans_between - holder3_cleans_before, 1)
+        self.assertEqual(st_cleans_between - st_cleans_before, 0)
+        self.assertEqual(holder1_cleans_between - holder1_cleans_before, 0)
+        self.assertEqual(holder2_cleans_between - holder2_cleans_before, 0)
+        self.assertEqual(holder3_cleans_between - holder3_cleans_before, 0)
         # Action
         fit.container.free(6)
         # Checks
@@ -360,10 +360,10 @@ class TestContainerOrderedFree(FitTestCase):
         holder1_cleans_after = len(holder1._clear_volatile_attrs.mock_calls)
         holder2_cleans_after = len(holder2._clear_volatile_attrs.mock_calls)
         holder3_cleans_after = len(holder3._clear_volatile_attrs.mock_calls)
-        self.assertEqual(st_cleans_after - st_cleans_between, 1)
-        self.assertEqual(holder1_cleans_after - holder1_cleans_between, 1)
+        self.assertEqual(st_cleans_after - st_cleans_between, 0)
+        self.assertEqual(holder1_cleans_after - holder1_cleans_between, 0)
         self.assertEqual(holder2_cleans_after - holder2_cleans_between, 0)
-        self.assertEqual(holder3_cleans_after - holder3_cleans_between, 1)
+        self.assertEqual(holder3_cleans_after - holder3_cleans_between, 0)
         # Misc
         fit.container.free(holder1)
         self.assert_object_buffers_empty(fit.container)
