@@ -80,6 +80,15 @@ MULTIPLICATIONS = (
     Operator.post_percent
 )
 
+# Following attributes have limited precision - only
+# to second number after point
+LIMITED_PRECISION = (
+    Attribute.cpu,
+    Attribute.power,
+    Attribute.cpu_output,
+    Attribute.power_output
+)
+
 
 class MutableAttributeMap:
     """
@@ -299,6 +308,10 @@ class MutableAttributeMap:
                     self._cap_map = KeyedSet()
                 # Fill cap map with data: capping attribute and capped attribute
                 self._cap_map.add_data(attr_meta.max_attribute_id, attr_id)
+        # Some of attributes are rounded for whatever reason,
+        # deal with it after all the calculations
+        if attr_id in LIMITED_PRECISION:
+            result = round(result, 2)
         return result
 
     def __penalize_values(self, mod_list):
