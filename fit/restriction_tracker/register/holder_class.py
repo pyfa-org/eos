@@ -101,9 +101,8 @@ class HolderClassRegister(RestrictionRegister):
         for holder_class, validator_func in CLASS_VALIDATORS.items():
             if validator_func(holder.item) is True:
                 expected_classes.append(holder_class)
-        expected_classes = tuple(expected_classes)
         error_data = HolderClassErrorData(holder_class=type(holder),
-                                          expected_classes=expected_classes)
+                                          expected_classes=tuple(expected_classes))
         return error_data
 
     @property
