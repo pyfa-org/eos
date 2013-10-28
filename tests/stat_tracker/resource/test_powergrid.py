@@ -37,12 +37,22 @@ class TestPowergrid(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_single(self):
+    def test_use_single_rounding_up(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
         holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
-        holder.attributes = {Attribute.power: 50}
+        holder.attributes = {Attribute.power: 55.5555555555}
         self.track_holder(holder)
-        self.assertEqual(self.st.powergrid.used, 50)
+        self.assertEqual(self.st.powergrid.used, 55.56)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_stat_buffers_empty()
+
+    def test_use_single_rounding_down(self):
+        item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder.attributes = {Attribute.power: 44.4444444444}
+        self.track_holder(holder)
+        self.assertEqual(self.st.powergrid.used, 44.44)
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

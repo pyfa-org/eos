@@ -37,12 +37,12 @@ class TestCalibration(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_single(self):
+    def test_use_single_no_rounding(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder.attributes = {Attribute.upgrade_cost: 50}
+        holder.attributes = {Attribute.upgrade_cost: 55.5555555555}
         self.track_holder(holder)
-        self.assertEqual(self.st.calibration.used, 50)
+        self.assertEqual(self.st.calibration.used, 55.5555555555)
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

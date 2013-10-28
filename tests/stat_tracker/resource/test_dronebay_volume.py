@@ -37,13 +37,13 @@ class TestDroneBayVolume(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_single(self):
+    def test_use_single_no_rounding(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
         holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone)
-        holder.attributes = {Attribute.volume: 50}
+        holder.attributes = {Attribute.volume: 55.5555555555}
         self.fit.drones.add(holder)
         self.track_holder(holder)
-        self.assertEqual(self.st.dronebay.used, 50)
+        self.assertEqual(self.st.dronebay.used, 55.5555555555)
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

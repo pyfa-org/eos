@@ -37,12 +37,12 @@ class TestDroneBandwidth(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_single(self):
+    def test_use_single_no_rounding(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         holder = Mock(state=State.online, item=item, _location=Location.space, spec_set=Drone)
-        holder.attributes = {Attribute.drone_bandwidth_used: 50}
+        holder.attributes = {Attribute.drone_bandwidth_used: 55.5555555555}
         self.track_holder(holder)
-        self.assertEqual(self.st.drone_bandwidth.used, 50)
+        self.assertEqual(self.st.drone_bandwidth.used, 55.5555555555)
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

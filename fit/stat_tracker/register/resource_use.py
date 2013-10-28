@@ -54,12 +54,18 @@ class CpuUseRegister(ResourceUseRegister):
     def __init__(self, fit):
         ResourceUseRegister.__init__(self, fit, Attribute.cpu)
 
+    def get_resource_use(self):
+        return round(ResourceUseRegister.get_resource_use(self), 2)
+
 
 class PowerGridUseRegister(ResourceUseRegister):
     """Calculates powergrid use of passed fit."""
 
     def __init__(self, fit):
         ResourceUseRegister.__init__(self, fit, Attribute.power)
+
+    def get_resource_use(self):
+        return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class CalibrationUseRegister(ResourceUseRegister):
