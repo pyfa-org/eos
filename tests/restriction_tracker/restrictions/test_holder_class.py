@@ -198,10 +198,10 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_module_pass_high(self):
+    def test_module_high_pass(self):
         item = self.ch.type_(type_id=1, category_id=Category.module)
         item.slots = {Slot.module_high}
-        holder = Module(1)
+        holder = ModuleHigh(1)
         holder.item = item
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
@@ -210,52 +210,106 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_module_pass_medium(self):
-        item = self.ch.type_(type_id=1, category_id=Category.module)
-        item.slots = {Slot.module_med}
-        holder = Module(1)
-        holder.item = item
-        self.track_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
-        self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
-        self.assertEqual(len(self.log), 0)
-        self.assert_restriction_buffers_empty()
-
-    def test_module_pass_low(self):
-        item = self.ch.type_(type_id=1, category_id=Category.module)
-        item.slots = {Slot.module_low}
-        holder = Module(1)
-        holder.item = item
-        self.track_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
-        self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
-        self.assertEqual(len(self.log), 0)
-        self.assert_restriction_buffers_empty()
-
-    def test_module_fail_category(self):
+    def test_module_high_fail_category(self):
         item = self.ch.type_(type_id=1, category_id=1008)
         item.slots = {Slot.module_high}
-        holder = Module(1)
+        holder = ModuleHigh(1)
         holder.item = item
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Module)
+        self.assertEqual(restriction_error.holder_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
 
-    def test_module_fail_slot(self):
+    def test_module_high_fail_slot(self):
         item = self.ch.type_(type_id=1, category_id=Category.module)
         item.slots = {1008}
-        holder = Module(1)
+        holder = ModuleHigh(1)
         holder.item = item
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Module)
+        self.assertEqual(restriction_error.holder_class, ModuleHigh)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_module_medium_pass(self):
+        item = self.ch.type_(type_id=1, category_id=Category.module)
+        item.slots = {Slot.module_med}
+        holder = ModuleMed(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNone(restriction_error)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_module_med_fail_category(self):
+        item = self.ch.type_(type_id=1, category_id=1008)
+        item.slots = {Slot.module_med}
+        holder = ModuleMed(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.holder_class, ModuleMed)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+
+    def test_module_med_fail_slot(self):
+        item = self.ch.type_(type_id=1, category_id=Category.module)
+        item.slots = {1008}
+        holder = ModuleMed(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.holder_class, ModuleMed)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_module_low_pass(self):
+        item = self.ch.type_(type_id=1, category_id=Category.module)
+        item.slots = {Slot.module_low}
+        holder = ModuleLow(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNone(restriction_error)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_module_low_fail_category(self):
+        item = self.ch.type_(type_id=1, category_id=1008)
+        item.slots = {Slot.module_low}
+        holder = ModuleLow(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.holder_class, ModuleLow)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+
+    def test_module_low_fail_slot(self):
+        item = self.ch.type_(type_id=1, category_id=Category.module)
+        item.slots = {1008}
+        holder = ModuleLow(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.holder_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)

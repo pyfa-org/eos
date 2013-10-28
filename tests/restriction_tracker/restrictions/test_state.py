@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, State
-from eos.fit.holder.item import Module
+from eos.fit.holder.item import ModuleHigh
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
@@ -32,7 +32,7 @@ class TestState(RestrictionTestCase):
     def test_state_lower(self):
         item = self.ch.type_(type_id=1)
         item.max_state = State.active
-        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=Module)
+        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=ModuleHigh)
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
@@ -43,7 +43,7 @@ class TestState(RestrictionTestCase):
     def test_state_equal(self):
         item = self.ch.type_(type_id=1)
         item.max_state = State.active
-        holder = Mock(state=State.active, item=item, _location=Location.character, spec_set=Module)
+        holder = Mock(state=State.active, item=item, _location=Location.character, spec_set=ModuleHigh)
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
@@ -54,7 +54,7 @@ class TestState(RestrictionTestCase):
     def test_state_higher(self):
         item = self.ch.type_(type_id=1)
         item.max_state = State.active
-        holder = Mock(state=State.overload, item=item, _location=Location.character, spec_set=Module)
+        holder = Mock(state=State.overload, item=item, _location=Location.character, spec_set=ModuleHigh)
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNotNone(restriction_error)

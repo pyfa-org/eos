@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, Slot, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Module, Ship
+from eos.fit.holder.item import ModuleHigh, Ship
 from eos.tests.stat_tracker.stat_testcase import StatTestCase
 
 
@@ -65,7 +65,7 @@ class TestTurretSlot(StatTestCase):
     def test_use_single(self):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder)
         self.assertEqual(self.st.turret_slots.used, 1)
         self.untrack_holder(holder)
@@ -75,7 +75,7 @@ class TestTurretSlot(StatTestCase):
     def test_use_other_slot(self):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder)
         self.assertEqual(self.st.turret_slots.used, 0)
         self.untrack_holder(holder)
@@ -85,8 +85,8 @@ class TestTurretSlot(StatTestCase):
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.assertEqual(self.st.turret_slots.used, 2)
@@ -98,10 +98,10 @@ class TestTurretSlot(StatTestCase):
     def test_use_mixed(self):
         item1 = self.ch.type_(type_id=1, attributes={})
         item1.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item1, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item1, _location=Location.ship, spec_set=ModuleHigh)
         item2 = self.ch.type_(type_id=2, attributes={})
         item2.slots = {Slot.launcher}
-        holder2 = Mock(state=State.offline, item=item2, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item2, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.assertEqual(self.st.turret_slots.used, 1)
@@ -117,8 +117,8 @@ class TestTurretSlot(StatTestCase):
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
         item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.assertEqual(self.st.turret_slots.used, 2)
@@ -139,8 +139,8 @@ class TestTurretSlot(StatTestCase):
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
         item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.assertEqual(self.st.turret_slots.used, 2)

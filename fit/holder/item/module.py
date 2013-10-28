@@ -86,3 +86,15 @@ class Module(Holder):
             if module_fit is not None:
                 module_fit._add_holder(new_charge)
                 module_fit._clear_volatile_data()
+
+
+class ModuleHigh(Module):
+    pass
+
+
+class ModuleMed(Module):
+    pass
+
+
+class ModuleLow(Module):
+    pass

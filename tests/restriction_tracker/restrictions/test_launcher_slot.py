@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, Slot, State
-from eos.fit.holder.item import Implant, Module
+from eos.fit.holder.item import Implant, ModuleHigh
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
@@ -34,7 +34,7 @@ class TestLauncherSlot(RestrictionTestCase):
         # slots exceeds slot amount provided by ship
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder)
         self.fit.stats.launcher_slots.used = 1
         self.fit.stats.launcher_slots.total = 0
@@ -67,7 +67,7 @@ class TestLauncherSlot(RestrictionTestCase):
         # make sure it's assumed to be 0
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder)
         self.fit.stats.launcher_slots.used = 1
         self.fit.stats.launcher_slots.total = None
@@ -83,8 +83,8 @@ class TestLauncherSlot(RestrictionTestCase):
         # Check that error works for multiple holders
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.fit.stats.launcher_slots.used = 2
@@ -105,8 +105,8 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_equal(self):
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.fit.stats.launcher_slots.used = 2
@@ -123,8 +123,8 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_greater(self):
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.fit.stats.launcher_slots.used = 2
@@ -141,7 +141,7 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_other_slot(self):
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder)
         self.fit.stats.launcher_slots.used = 1
         self.fit.stats.launcher_slots.total = 0

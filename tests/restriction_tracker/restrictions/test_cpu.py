@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Module, Implant
+from eos.fit.holder.item import ModuleHigh, Implant
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
@@ -34,7 +34,7 @@ class TestCpu(RestrictionTestCase):
         # When ship provides cpu output, but single consumer
         # demands for more, error should be raised
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder.attributes = {Attribute.cpu: 50}
         self.track_holder(holder)
         self.fit.stats.cpu.used = 50
@@ -69,7 +69,7 @@ class TestCpu(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder.attributes = {Attribute.cpu: 5}
         self.track_holder(holder)
         self.fit.stats.cpu.used = 5
@@ -88,10 +88,10 @@ class TestCpu(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.cpu: 25}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.cpu: 20}
         self.track_holder(holder2)
         self.fit.stats.cpu.used = 45
@@ -114,7 +114,7 @@ class TestCpu(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified cpu values are taken
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 40})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder.attributes = {Attribute.cpu: 100}
         self.track_holder(holder)
         self.fit.stats.cpu.used = 100
@@ -133,10 +133,10 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.cpu: 100}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.cpu: -10}
         self.track_holder(holder2)
         self.fit.stats.cpu.used = 90
@@ -158,10 +158,10 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.cpu: 100}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.cpu: 0}
         self.track_holder(holder2)
         self.fit.stats.cpu.used = 100
@@ -182,10 +182,10 @@ class TestCpu(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.cpu: 25}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.cpu: 20}
         self.track_holder(holder2)
         self.fit.stats.cpu.used = 45
@@ -204,7 +204,7 @@ class TestCpu(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder.attributes = {Attribute.cpu: 100}
         self.track_holder(holder)
         self.fit.stats.cpu.used = 100
@@ -218,7 +218,7 @@ class TestCpu(RestrictionTestCase):
     def test_pass_state(self):
         # When holder isn't online, it shouldn't consume anything
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder.attributes = {Attribute.cpu: 50}
         self.track_holder(holder)
         self.fit.stats.cpu.used = 50

@@ -40,10 +40,12 @@ CLASS_VALIDATORS = {
     EffectBeacon: lambda item: item.group_id == Group.effect_beacon,
     Implant: lambda item: (item.category_id == Category.implant and
                            Attribute.implantness in item.attributes),
-    Module: lambda item: (item.category_id == Category.module and
-                          (Slot.module_high in item.slots or
-                           Slot.module_med in item.slots or
-                           Slot.module_low in item.slots)),
+    ModuleHigh: lambda item: (item.category_id == Category.module and
+                              Slot.module_high in item.slots),
+    ModuleMed: lambda item: (item.category_id == Category.module and
+                             Slot.module_med in item.slots),
+    ModuleLow: lambda item: (item.category_id == Category.module and
+                             Slot.module_low in item.slots),
     Rig: lambda item: (item.category_id == Category.module and
                        Slot.rig in item.slots),
     Ship: lambda item: item.category_id == Category.ship,

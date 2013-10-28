@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.fit.holder import Holder
-from eos.fit.holder.item import Charge, Module
+from eos.fit.holder.item import Charge, ModuleHigh
 from eos.util.volatile_cache import VolatileMixin
 
 
@@ -38,10 +38,10 @@ class OtherCachingHolder(Holder, VolatileMixin):
     pass
 
 
-class CachingModule(Module, VolatileMixin):
+class CachingModule(ModuleHigh, VolatileMixin):
 
     def __init__(self, *args, **kwargs):
-        Module.__init__(self, *args, **kwargs)
+        ModuleHigh.__init__(self, *args, **kwargs)
         VolatileMixin.__init__(self)
         self._clear_volatile_attrs = Mock()
 

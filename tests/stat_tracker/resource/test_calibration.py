@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Module, Ship, Implant
+from eos.fit.holder.item import ModuleHigh, Ship, Implant
 from eos.tests.stat_tracker.stat_testcase import StatTestCase
 
 
@@ -39,7 +39,7 @@ class TestCalibration(StatTestCase):
 
     def test_use_single_no_rounding(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder.attributes = {Attribute.upgrade_cost: 55.5555555555}
         self.track_holder(holder)
         self.assertEqual(self.st.calibration.used, 55.5555555555)
@@ -49,10 +49,10 @@ class TestCalibration(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.calibration.used, 80)
@@ -63,10 +63,10 @@ class TestCalibration(StatTestCase):
 
     def test_use_negative(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.upgrade_cost: -30}
         self.track_holder(holder2)
         self.assertEqual(self.st.calibration.used, 20)
@@ -82,7 +82,7 @@ class TestCalibration(StatTestCase):
 
     def test_use_other_class_location(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.track_holder(holder1)
         holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
@@ -100,10 +100,10 @@ class TestCalibration(StatTestCase):
         ship_holder.attributes = {Attribute.upgrade_capacity: 50}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.calibration.used, 80)
@@ -124,10 +124,10 @@ class TestCalibration(StatTestCase):
         ship_holder.attributes = {Attribute.upgrade_capacity: 50}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=Module)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.calibration.used, 80)

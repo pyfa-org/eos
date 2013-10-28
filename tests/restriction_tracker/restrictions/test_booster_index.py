@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Booster, Module
+from eos.fit.holder.item import Booster, ModuleHigh
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
@@ -52,8 +52,8 @@ class TestBoosterIndex(RestrictionTestCase):
     def test_fail_other_holder_class(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1, attributes={Attribute.boosterness: 120})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.track_holder(holder1)
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.booster_index)

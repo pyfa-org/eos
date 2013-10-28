@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Location, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Module, Ship
+from eos.fit.holder.item import ModuleHigh, Ship
 from eos.tests.stat_tracker.stat_testcase import StatTestCase
 
 
@@ -64,8 +64,8 @@ class TestRig(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.fit.rigs.add(holder1)
         self.fit.rigs.add(holder2)
         self.assertEqual(self.st.rig_slots.used, 2)
@@ -74,7 +74,7 @@ class TestRig(StatTestCase):
 
     def test_use_other_container(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.fit.subsystems.add(holder)
         self.assertEqual(self.st.rig_slots.used, 0)
         self.assertEqual(len(self.log), 0)
@@ -86,8 +86,8 @@ class TestRig(StatTestCase):
         ship_holder.attributes = {Attribute.rig_slots: 6}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.fit.rigs.add(holder1)
         self.fit.rigs.add(holder2)
         self.assertEqual(self.st.rig_slots.used, 2)
@@ -106,8 +106,8 @@ class TestRig(StatTestCase):
         ship_holder.attributes = {Attribute.rig_slots: 6}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Module)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
         self.fit.rigs.add(holder1)
         self.fit.rigs.add(holder2)
         self.assertEqual(self.st.rig_slots.used, 2)
