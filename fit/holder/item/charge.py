@@ -21,15 +21,16 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
+from eos.fit.holder.mixin import ImmutableStateMixin
 
 
-class Charge(Holder):
+class Charge(Holder,
+             ImmutableStateMixin):
     """Ammo - crystals, probes, bombs, etc."""
 
-    __slots__ = ('container',)
-
     def __init__(self, type_id):
-        Holder.__init__(self, type_id, State.offline)
+        Holder.__init__(self, type_id)
+        ImmutableStateMixin.__init__(self, State.offline)
         # Holder-container, into which our charge holder is "loaded"
         self.container = None
 

@@ -19,8 +19,32 @@
 #===============================================================================
 
 
-"""
-Module with functions intended to be used as holder
-subclass methods. They are stored here only when more
-than 1, but not all holder types are using it.
-"""
+class ImmutableStateMixin:
+
+    def __init__(self, state):
+        self.__state = state
+
+    @property
+    def state(self):
+        return self.__state
+
+
+class MutableStateMixin:
+
+    def __init__(self, state):
+        self.__state = state
+
+    @property
+    def state(self):
+        return self.__state
+
+    @state.setter
+    def state(self, new_state):
+        if new_state == self.__state:
+            return
+        # When holder is assigned to some fit, ask fit to perform
+        # fit-specific state switch of our holder
+        fit = self._fit
+        if fit is not None:
+            fit._holder_state_switch(self, new_state)
+        self.__state = new_state

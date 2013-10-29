@@ -33,8 +33,6 @@ class HolderContainerBase:
     is allowed to contain
     """
 
-    __slots__ = ('__holder_class',)
-
     def __init__(self, holder_class):
         self.__holder_class = holder_class
 

@@ -19,19 +19,34 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
-from eos.fit.holder import Holder
-from eos.fit.holder.mixin import ImmutableStateMixin
-
-
-class Implant(Holder,
-              ImmutableStateMixin):
-    """Implant with all its special properties."""
-
-    def __init__(self, type_id):
-        Holder.__init__(self, type_id)
-        ImmutableStateMixin.__init__(self, State.offline)
+class SpecialAttribMixin:
 
     @property
-    def _location(self):
-        return Location.character
+    def tracking_speed(self):
+        return self.__get_item_specific_attr('_tracking_speed_attribute_id')
+
+    @property
+    def optimal_range(self):
+        return self.__get_item_specific_attr('_range_attribute_id')
+
+    @property
+    def falloff_range(self):
+        return self.__get_item_specific_attr('_falloff_attribute_id')
+
+    @property
+    def cycle_time(self):
+        return self.__get_item_specific_attr('_duration_attribute_id')
+
+    def __get_item_specific_attr(self, attr_name):
+        """
+        If attribute ID which we're trying to get is
+        located on holder's item, this functions helps
+        to fetch it.
+        """
+        attr_id = getattr(self.item, attr_name, None)
+        if attr_id is None:
+            return None
+        try:
+            return self.attributes[attr_id]
+        except KeyError:
+            return None

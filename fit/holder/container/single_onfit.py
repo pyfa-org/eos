@@ -35,8 +35,6 @@ class HolderDescriptorOnFit(HolderContainerBase):
     is allowed to contain
     """
 
-    __slots__ = ('__attr_name',)
-
     def __init__(self, attr_name, holder_class):
         HolderContainerBase.__init__(self, holder_class)
         self.__attr_name = attr_name

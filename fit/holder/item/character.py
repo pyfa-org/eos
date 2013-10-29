@@ -21,18 +21,19 @@
 
 from eos.const.eos import State
 from eos.fit.holder import Holder
+from eos.fit.holder.mixin import ImmutableStateMixin
 
 
-class Character(Holder):
+class Character(Holder,
+                ImmutableStateMixin):
     """
     Represents a character. Must be holder, as EVE tracks
     some attributes on it.
     """
 
-    __slots__ = ()
-
     def __init__(self, type_id):
-        Holder.__init__(self, type_id, State.offline)
+        Holder.__init__(self, type_id)
+        ImmutableStateMixin.__init__(self, State.offline)
 
     @property
     def _location(self):

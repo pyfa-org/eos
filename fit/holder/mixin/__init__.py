@@ -19,19 +19,6 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
-from eos.fit.holder import Holder
-from eos.fit.holder.mixin import ImmutableStateMixin
-
-
-class Implant(Holder,
-              ImmutableStateMixin):
-    """Implant with all its special properties."""
-
-    def __init__(self, type_id):
-        Holder.__init__(self, type_id)
-        ImmutableStateMixin.__init__(self, State.offline)
-
-    @property
-    def _location(self):
-        return Location.character
+from .misc import SpecialAttribMixin
+from .state import ImmutableStateMixin, MutableStateMixin
+from .tanking import BufferTankingMixin

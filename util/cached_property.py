@@ -34,8 +34,6 @@ class CachedProperty:
     delete cached attribute.
     """
 
-    __slots__ = ('method',)
-
     def __init__(self, func):
         self.method = func
 

@@ -33,8 +33,6 @@ class HolderRestrictedSet(HolderSet):
     is allowed to contain
     """
 
-    __slots__ = ('__type_id_map',)
-
     def __init__(self, fit, holder_class):
         HolderSet.__init__(self, fit, holder_class)
         self.__type_id_map = {}

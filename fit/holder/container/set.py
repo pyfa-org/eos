@@ -33,8 +33,6 @@ class HolderSet(HolderContainerBase):
     is allowed to contain
     """
 
-    __slots__ = ('__fit', '__set')
-
     def __init__(self, fit, holder_class):
         HolderContainerBase.__init__(self, holder_class)
         self.__fit = fit

@@ -21,15 +21,16 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
+from eos.fit.holder.mixin import ImmutableStateMixin
 
 
-class Subsystem(Holder):
+class Subsystem(Holder,
+                ImmutableStateMixin):
     """Tech 3 ship's subsystem."""
 
-    __slots__ = ()
-
     def __init__(self, type_id):
-        Holder.__init__(self, type_id, State.offline)
+        Holder.__init__(self, type_id)
+        ImmutableStateMixin.__init__(self, State.offline)
 
     @property
     def _location(self):

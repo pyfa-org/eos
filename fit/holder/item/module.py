@@ -21,18 +21,19 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.attachable_functions.misc import set_state, get_tracking_speed, get_optimal_range, \
-    get_falloff_range, get_cycle_time
+from eos.fit.holder.mixin import MutableStateMixin, SpecialAttribMixin
 from .charge import Charge
 
 
-class Module(Holder):
+class Module(Holder,
+             MutableStateMixin,
+             SpecialAttribMixin):
     """Ship's module from any slot."""
 
-    __slots__ = ('__charge',)
-
     def __init__(self, type_id, state=State.offline, charge=None):
-        Holder.__init__(self, type_id, state)
+        Holder.__init__(self, type_id)
+        MutableStateMixin.__init__(self, state)
+        SpecialAttribMixin.__init__(self)
         self.__charge = None
         self.charge = charge
 
@@ -44,15 +45,6 @@ class Module(Holder):
     def _other(self):
         """Purely service property, used in fit link tracker registry"""
         return self.charge
-
-    tracking_speed = property(get_tracking_speed)
-    optimal_range = property(get_optimal_range)
-    falloff_range = property(get_falloff_range)
-    cycle_time = property(get_cycle_time)
-
-    @Holder.state.setter
-    def state(self, new_state):
-        set_state(self, new_state)
 
     @property
     def charge(self):

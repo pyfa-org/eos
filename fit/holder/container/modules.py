@@ -28,8 +28,6 @@ class ModuleRacks:
     (which are containers for holders).
     """
 
-    __slots__ = ('high', 'med', 'low')
-
     def __init__(self, high, med, low):
         self.high = high
         self.med = med
@@ -42,8 +40,6 @@ class ModuleRacks:
 
 class ModuleHolderView:
     """View over all module holders within all racks."""
-
-    __slots__ = ('__racks',)
 
     def __init__(self, racks):
         self.__racks = racks

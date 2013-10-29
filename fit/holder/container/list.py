@@ -34,8 +34,6 @@ class HolderList(HolderContainerBase):
     is allowed to contain
     """
 
-    __slots__ = ('__fit', '__list')
-
     def __init__(self, fit, holder_class):
         HolderContainerBase.__init__(self, holder_class)
         self.__fit = fit
@@ -247,8 +245,6 @@ class ListHolderView:
     Simple class to implement view-like
     functionality over passed list.
     """
-
-    __slots__ = ('__list',)
 
     def __init__(self, list_):
         self.__list = list_

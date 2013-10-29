@@ -30,16 +30,11 @@ class Holder:
     Positional arguments:
     typeId -- typeID of item, which is supposed to be
     base item for holder
-    state -- state which this holder takes during initialization
     """
 
-    __slots__ = ('_type_id', '_state', 'attributes', '__fit', 'item')
-
-    def __init__(self, type_id, state):
+    def __init__(self, type_id):
         # TypeID of item this holder is supposed to wrap
         self._type_id = type_id
-        # Keeps current state of the holder
-        self._state = state
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
         self.attributes = MutableAttributeMap(self)
@@ -56,10 +51,6 @@ class Holder:
     def _fit(self, new_fit):
         self.__fit = new_fit
         self._refresh_context()
-
-    @property
-    def state(self):
-        return self._state
 
     def _refresh_context(self):
         """

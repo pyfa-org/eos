@@ -26,8 +26,6 @@ class VolatileProperty:
     by VolatileMixin.
     """
 
-    __slots__ = ('method',)
-
     def __init__(self, func):
         self.method = func
 

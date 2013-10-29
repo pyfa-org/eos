@@ -22,15 +22,16 @@
 from eos.const.eos import Location, State
 from eos.const.eve import Attribute
 from eos.fit.holder import Holder
+from eos.fit.holder.mixin import ImmutableStateMixin
 
 
-class Skill(Holder):
+class Skill(Holder,
+            ImmutableStateMixin):
     """Skill with all its special properties."""
 
-    __slots__ = ('__level',)
-
     def __init__(self, type_id, level=0):
-        Holder.__init__(self, type_id, State.offline)
+        Holder.__init__(self, type_id)
+        ImmutableStateMixin.__init__(self, State.offline)
         self.__level = level
 
     @property

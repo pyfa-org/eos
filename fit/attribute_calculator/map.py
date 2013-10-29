@@ -98,8 +98,6 @@ class MutableAttributeMap:
     holder -- holder, to which this map is assigned
     """
 
-    __slots__ = ('__holder', '__modified_attributes', '_cap_map')
-
     def __init__(self, holder):
         # Reference to holder for internal needs
         self.__holder = holder
