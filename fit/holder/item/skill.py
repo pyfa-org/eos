@@ -29,9 +29,9 @@ class Skill(Holder,
             ImmutableStateMixin):
     """Skill with all its special properties."""
 
-    def __init__(self, type_id, level=0):
+    def __init__(self, level=0, **kwargs):
         self.__level = level
-        super().__init__(type_id=type_id, state=State.offline)
+        super().__init__(state=State.offline, **kwargs)
 
     @property
     def _location(self):

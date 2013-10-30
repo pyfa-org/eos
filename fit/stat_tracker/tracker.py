@@ -41,14 +41,14 @@ class StatTracker(VolatileMixin):
     def __init__(self, fit):
         self._fit = fit
         # Initialize registers
-        cpu_reg = CpuUseRegister(fit)
-        powergrid_reg = PowerGridUseRegister(fit)
-        calibration_reg = CalibrationUseRegister(fit)
-        dronebay_reg = DroneBayVolumeUseRegister(fit)
-        drone_bandwidth_reg = DroneBandwidthUseRegister(fit)
-        turret_reg = TurretUseRegister(fit)
-        launcher_reg = LauncherUseRegister(fit)
-        launched_drone_reg = LaunchedDroneRegister(fit)
+        cpu_reg = CpuUseRegister(fit=fit)
+        powergrid_reg = PowerGridUseRegister(fit=fit)
+        calibration_reg = CalibrationUseRegister(fit=fit)
+        dronebay_reg = DroneBayVolumeUseRegister(fit=fit)
+        drone_bandwidth_reg = DroneBandwidthUseRegister(fit=fit)
+        turret_reg = TurretUseRegister(fit=fit)
+        launcher_reg = LauncherUseRegister(fit=fit)
+        launched_drone_reg = LaunchedDroneRegister(fit=fit)
         # Dictionary which keeps all stats registers
         # Format: {triggering state: {registers}}
         self.__registers = {
@@ -66,19 +66,71 @@ class StatTracker(VolatileMixin):
             )
         }
         # Initialize sub-containers
-        self.cpu = ShipResource(fit, cpu_reg, Attribute.cpu_output)
-        self.powergrid = ShipResource(fit, powergrid_reg, Attribute.power_output)
-        self.calibration = ShipResource(fit, calibration_reg, Attribute.upgrade_capacity)
-        self.dronebay = ShipResource(fit, dronebay_reg, Attribute.drone_capacity)
-        self.drone_bandwidth = ShipResource(fit, drone_bandwidth_reg, Attribute.drone_bandwidth)
-        self.high_slots = ShipSlots(fit, fit.modules.high, Attribute.hi_slots)
-        self.med_slots = ShipSlots(fit, fit.modules.med, Attribute.med_slots)
-        self.low_slots = ShipSlots(fit, fit.modules.low, Attribute.low_slots)
-        self.rig_slots = ShipSlots(fit, fit.rigs, Attribute.rig_slots)
-        self.subsystem_slots = ShipSlots(fit, fit.subsystems, Attribute.subsystem_slot)
-        self.turret_slots = ShipSlots(fit, turret_reg, Attribute.turret_slots_left)
-        self.launcher_slots = ShipSlots(fit, launcher_reg, Attribute.launcher_slots_left)
-        self.launched_drones = CharSlots(fit, launched_drone_reg, Attribute.max_active_drones)
+        self.cpu = ShipResource(
+            fit=fit,
+            resource_use_register=cpu_reg,
+            output_attr=Attribute.cpu_output
+        )
+        self.powergrid = ShipResource(
+            fit=fit,
+            resource_use_register=powergrid_reg,
+            output_attr=Attribute.power_output
+        )
+        self.calibration = ShipResource(
+            fit=fit,
+            resource_use_register=calibration_reg,
+            output_attr=Attribute.upgrade_capacity
+        )
+        self.dronebay = ShipResource(
+            fit=fit,
+            resource_use_register=dronebay_reg,
+            output_attr=Attribute.drone_capacity
+        )
+        self.drone_bandwidth = ShipResource(
+            fit=fit,
+            resource_use_register=drone_bandwidth_reg,
+            output_attr=Attribute.drone_bandwidth
+        )
+        self.high_slots = ShipSlots(
+            fit=fit,
+            container=fit.modules.high,
+            slot_attr=Attribute.hi_slots
+        )
+        self.med_slots = ShipSlots(
+            fit=fit,
+            container=fit.modules.med,
+            slot_attr=Attribute.med_slots
+        )
+        self.low_slots = ShipSlots(
+            fit=fit,
+            container=fit.modules.low,
+            slot_attr=Attribute.low_slots
+        )
+        self.rig_slots = ShipSlots(
+            fit=fit,
+            container=fit.rigs,
+            slot_attr=Attribute.rig_slots
+        )
+        self.subsystem_slots = ShipSlots(
+            fit=fit,
+            container=fit.subsystems,
+            slot_attr=Attribute.subsystem_slot
+        )
+        self.turret_slots = ShipSlots(
+            fit=fit,
+            container=turret_reg,
+            slot_attr=Attribute.turret_slots_left
+        )
+        self.launcher_slots = ShipSlots(
+            fit=fit,
+            container=launcher_reg,
+            slot_attr=Attribute.launcher_slots_left
+        )
+        self.launched_drones = CharSlots(
+            fit=fit,
+            container=launched_drone_reg,
+            slot_attr=Attribute.max_active_drones
+        )
         self._volatile_containers = (
             self.cpu,
             self.powergrid,
@@ -135,7 +187,13 @@ class StatTracker(VolatileMixin):
     def _clear_volatile_attrs(self):
         for container in self._volatile_containers:
             container._clear_volatile_attrs()
-        VolatileMixin._clear_volatile_attrs(self)
+        next_in_mro = super()
+        try:
+            method = next_in_mro._clear_volatile_attrs
+        except AttributeError:
+            pass
+        else:
+            method()
 
     @VolatileProperty
     def hp(self):

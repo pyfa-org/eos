@@ -28,10 +28,10 @@ class Charge(Holder,
              ImmutableStateMixin):
     """Ammo - crystals, probes, bombs, etc."""
 
-    def __init__(self, type_id):
+    def __init__(self, **kwargs):
         # Holder-container, into which our charge holder is "loaded"
         self.container = None
-        super().__init__(type_id=type_id, state=State.offline)
+        super().__init__(state=State.offline, **kwargs)
 
     @property
     def _location(self):

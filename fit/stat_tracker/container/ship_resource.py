@@ -28,11 +28,11 @@ class ShipResource(VolatileMixin):
     resource use and output.
     """
 
-    def __init__(self, fit, resource_use_register, output_attr):
-        VolatileMixin.__init__(self)
+    def __init__(self, fit, resource_use_register, output_attr, **kwargs):
         self._fit = fit
         self.__register = resource_use_register
         self.__output_attr = output_attr
+        super().__init__(**kwargs)
 
     @VolatileProperty
     def used(self):

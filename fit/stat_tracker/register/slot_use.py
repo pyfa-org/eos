@@ -31,9 +31,10 @@ class SlotUseRegister(StatRegister):
     resource used.
     """
 
-    def __init__(self, fit):
+    def __init__(self, fit, **kwargs):
         self._fit = fit
         self.__slot_users = set()
+        super().__init__(**kwargs)
 
     def register_holder(self, holder):
         self.__slot_users.add(holder)
@@ -52,7 +53,7 @@ class TurretUseRegister(SlotUseRegister):
 
     def register_holder(self, holder):
         if Slot.turret in holder.item.slots:
-            SlotUseRegister.register_holder(self, holder)
+            super().register_holder(holder)
 
 
 class LauncherUseRegister(SlotUseRegister):
@@ -62,7 +63,7 @@ class LauncherUseRegister(SlotUseRegister):
 
     def register_holder(self, holder):
         if Slot.launcher in holder.item.slots:
-            SlotUseRegister.register_holder(self, holder)
+            super().register_holder(holder)
 
 
 class LaunchedDroneRegister(SlotUseRegister):
@@ -72,4 +73,4 @@ class LaunchedDroneRegister(SlotUseRegister):
 
     def register_holder(self, holder):
         if isinstance(holder, Drone):
-            SlotUseRegister.register_holder(self, holder)
+            super().register_holder(holder)
