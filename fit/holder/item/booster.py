@@ -29,8 +29,7 @@ class Booster(Holder,
     """Booster with all its special properties."""
 
     def __init__(self, type_id):
-        Holder.__init__(self, type_id)
-        ImmutableStateMixin.__init__(self, State.offline)
+        super().__init__(type_id=type_id, state=State.offline)
 
     @property
     def _location(self):

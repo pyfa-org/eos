@@ -39,7 +39,6 @@ class StatTracker(VolatileMixin):
     """
 
     def __init__(self, fit):
-        VolatileMixin.__init__(self)
         self._fit = fit
         # Initialize registers
         cpu_reg = CpuUseRegister(fit)
@@ -95,6 +94,7 @@ class StatTracker(VolatileMixin):
             self.launcher_slots,
             self.launched_drones
         )
+        super().__init__()
 
     def _enable_states(self, holder, states):
         """

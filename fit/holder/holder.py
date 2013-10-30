@@ -32,7 +32,7 @@ class Holder:
     base item for holder
     """
 
-    def __init__(self, type_id):
+    def __init__(self, type_id, **kwargs):
         # TypeID of item this holder is supposed to wrap
         self._type_id = type_id
         # Special dictionary subclass that holds modified attributes
@@ -42,6 +42,7 @@ class Holder:
         self.__fit = None
         # Which type this holder wraps
         self.item = None
+        super().__init__(**kwargs)
 
     @property
     def _fit(self):

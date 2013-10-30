@@ -31,10 +31,8 @@ class Module(Holder,
     """Ship's module from any slot."""
 
     def __init__(self, type_id, state=State.offline, charge=None):
-        Holder.__init__(self, type_id)
-        MutableStateMixin.__init__(self, state)
-        SpecialAttribMixin.__init__(self)
         self.__charge = None
+        super().__init__(type_id=type_id, state=state)
         self.charge = charge
 
     @property

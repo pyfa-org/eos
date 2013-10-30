@@ -21,8 +21,9 @@
 
 class ImmutableStateMixin:
 
-    def __init__(self, state):
+    def __init__(self, state, **kwargs):
         self.__state = state
+        super().__init__(**kwargs)
 
     @property
     def state(self):
@@ -31,8 +32,9 @@ class ImmutableStateMixin:
 
 class MutableStateMixin:
 
-    def __init__(self, state):
+    def __init__(self, state, **kwargs):
         self.__state = state
+        super().__init__(**kwargs)
 
     @property
     def state(self):

@@ -30,11 +30,8 @@ class Drone(Holder,
             SpecialAttribMixin):
     """Single drone."""
 
-    def __init__(self, type_id):
-        Holder.__init__(self, type_id)
-        MutableStateMixin.__init__(self, State.offline)
-        BufferTankingMixin.__init__(self)
-        SpecialAttribMixin.__init__(self)
+    def __init__(self, type_id, state=State.offline):
+        super().__init__(type_id=type_id, state=state)
 
     @property
     def _location(self):
