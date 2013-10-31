@@ -30,11 +30,10 @@ class ResourceUseRegister(StatRegister):
     resource used.
     """
 
-    def __init__(self, fit, usage_attr, **kwargs):
+    def __init__(self, fit, usage_attr):
         self._fit = fit
         self.__usage_attr = usage_attr
         self.__resource_users = set()
-        super().__init__(**kwargs)
 
     def register_holder(self, holder):
         if self.__usage_attr not in holder.item.attributes:
@@ -52,28 +51,28 @@ class ResourceUseRegister(StatRegister):
 class CpuUseRegister(ResourceUseRegister):
     """Calculates CPU use of passed fit."""
 
-    def __init__(self, **kwargs):
-        super().__init__(usage_attr=Attribute.cpu, **kwargs)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.cpu)
 
     def get_resource_use(self):
-        return round(super().get_resource_use(), 2)
+        return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class PowerGridUseRegister(ResourceUseRegister):
     """Calculates powergrid use of passed fit."""
 
-    def __init__(self, **kwargs):
-        super().__init__(usage_attr=Attribute.power, **kwargs)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.power)
 
     def get_resource_use(self):
-        return round(super().get_resource_use(), 2)
+        return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class CalibrationUseRegister(ResourceUseRegister):
     """Calculates calibration use of passed fit."""
 
-    def __init__(self, **kwargs):
-        super().__init__(usage_attr=Attribute.upgrade_cost, **kwargs)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.upgrade_cost)
 
 
 class DroneBayVolumeUseRegister(ResourceUseRegister):
@@ -84,16 +83,16 @@ class DroneBayVolumeUseRegister(ResourceUseRegister):
     Only holders of Drone class are tracked.
     """
 
-    def __init__(self, **kwargs):
-        super().__init__(usage_attr=Attribute.volume, **kwargs)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.volume)
 
     def register_holder(self, holder):
         if holder in self._fit.drones:
-            super().register_holder(holder)
+            ResourceUseRegister.register_holder(self, holder)
 
 
 class DroneBandwidthUseRegister(ResourceUseRegister):
     """Calculates drone bandwidth use of passed fit."""
 
-    def __init__(self, **kwargs):
-        super().__init__(usage_attr=Attribute.drone_bandwidth_used, **kwargs)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.drone_bandwidth_used)

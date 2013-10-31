@@ -60,10 +60,4 @@ class VolatileMixin:
                 delattr(self, attr_name)
             except AttributeError:
                 pass
-        next_in_mro = super()
-        try:
-            method = next_in_mro._clear_volatile_attrs
-        except AttributeError:
-            pass
-        else:
-            method()
+        self._volatile_attrs.clear()

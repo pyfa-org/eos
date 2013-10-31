@@ -30,9 +30,9 @@ class Module(Holder,
              SpecialAttribMixin):
     """Ship's module from any slot."""
 
-    def __init__(self, state=State.offline, charge=None, **kwargs):
+    def __init__(self, type_id, state=State.offline, charge=None):
         self.__charge = None
-        super().__init__(state=state, **kwargs)
+        super().__init__(type_id=type_id, state=state)
         self.charge = charge
 
     @property

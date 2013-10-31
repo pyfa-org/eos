@@ -28,12 +28,12 @@ class EntitySlots(VolatileMixin):
     of used slots against provided slots
     """
 
-    def __init__(self, fit, container, slot_carrier, slot_attr, **kwargs):
+    def __init__(self, fit, container, slot_carrier, slot_attr):
+        VolatileMixin.__init__(self)
         self._fit = fit
         self.__container = container
         self.__slot_carrier = slot_carrier
         self.__slot_attr = slot_attr
-        super().__init__(**kwargs)
 
     @VolatileProperty
     def used(self):
@@ -62,14 +62,8 @@ class ShipSlots(EntitySlots):
     slots on ship.
     """
 
-    def __init__(self, fit, container, slot_attr, **kwargs):
-        super().__init__(
-            fit=fit,
-            container=container,
-            slot_carrier='ship',
-            slot_attr=slot_attr,
-            **kwargs
-        )
+    def __init__(self, fit, container, slot_attr):
+        EntitySlots.__init__(self, fit, container, 'ship', slot_attr)
 
 
 class CharSlots(EntitySlots):
@@ -78,11 +72,5 @@ class CharSlots(EntitySlots):
     slots on character.
     """
 
-    def __init__(self, fit, container, slot_attr, **kwargs):
-        super().__init__(
-            fit=fit,
-            container=container,
-            slot_carrier='character',
-            slot_attr=slot_attr,
-            **kwargs
-        )
+    def __init__(self, fit, container, slot_attr):
+        EntitySlots.__init__(self, fit, container, 'character', slot_attr)

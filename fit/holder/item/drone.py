@@ -30,8 +30,8 @@ class Drone(Holder,
             SpecialAttribMixin):
     """Single drone."""
 
-    def __init__(self, state=State.offline, **kwargs):
-        super().__init__(state=state, **kwargs)
+    def __init__(self, type_id, state=State.offline):
+        super().__init__(type_id=type_id, state=state)
 
     @property
     def _location(self):

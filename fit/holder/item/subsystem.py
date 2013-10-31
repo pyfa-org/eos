@@ -28,8 +28,8 @@ class Subsystem(Holder,
                 ImmutableStateMixin):
     """Tech 3 ship's subsystem."""
 
-    def __init__(self, **kwargs):
-        super().__init__(state=State.offline, **kwargs)
+    def __init__(self, type_id):
+        super().__init__(type_id=type_id, state=State.offline)
 
     @property
     def _location(self):

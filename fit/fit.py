@@ -67,7 +67,7 @@ class Fit:
         self.stats = StatTracker(self)  # Access point for all the fitting stats
         # As character object shouldn't change in any sane
         # cases, initialize it here
-        self.character = Character(type_id=Type.character_static)
+        self.character = Character(Type.character_static)
 
     ship = HolderDescriptorOnFit('_ship', Ship)
     character = HolderDescriptorOnFit('_character', Character)
