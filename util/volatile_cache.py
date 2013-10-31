@@ -68,9 +68,9 @@ class CooperableVolatileMixin:
     classes using volatileproperty on them.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._volatile_attrs = set()
-        super().__init__()
+        super().__init__(**kwargs)
 
     def _clear_volatile_attrs(self):
         """
