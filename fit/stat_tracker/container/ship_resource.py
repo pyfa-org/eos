@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from eos.util.volatile_cache import VolatileMixin, VolatileProperty
+from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
 
 
-class ShipResource(VolatileMixin):
+class ShipResource(InheritableVolatileMixin):
     """
     Class designed to conveniently provide ship
     resource use and output.
     """
 
     def __init__(self, fit, resource_use_register, output_attr):
-        VolatileMixin.__init__(self)
+        InheritableVolatileMixin.__init__(self)
         self._fit = fit
         self.__register = resource_use_register
         self.__output_attr = output_attr

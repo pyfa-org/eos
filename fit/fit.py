@@ -22,7 +22,7 @@
 from eos import eos as eos_module
 from eos.const.eos import State
 from eos.const.eve import Type
-from eos.util.volatile_cache import VolatileMixin
+from eos.util.volatile_cache import InheritableVolatileMixin
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
@@ -103,7 +103,7 @@ class Fit:
             raise HolderAlreadyAssignedError(holder)
         holder._fit = self
         self._holders.add(holder)
-        if isinstance(holder, VolatileMixin):
+        if hasattr(holder, '_clear_volatile_attrs'):
             self._volatile_holders.add(holder)
         if self.eos is not None:
             self._enable_services(holder)

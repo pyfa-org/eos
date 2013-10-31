@@ -19,17 +19,17 @@
 #===============================================================================
 
 
-from eos.util.volatile_cache import VolatileMixin, VolatileProperty
+from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
 
 
-class EntitySlots(VolatileMixin):
+class EntitySlots(InheritableVolatileMixin):
     """
     Generic functionality for classes which track amount
     of used slots against provided slots
     """
 
     def __init__(self, fit, container, slot_carrier, slot_attr):
-        VolatileMixin.__init__(self)
+        InheritableVolatileMixin.__init__(self)
         self._fit = fit
         self.__container = container
         self.__slot_carrier = slot_carrier

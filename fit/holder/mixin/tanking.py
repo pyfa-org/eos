@@ -21,10 +21,10 @@
 
 from eos.const.eve import Attribute
 from eos.fit.tuples import Hitpoints, TankingLayers, DamageTypes
-from eos.util.volatile_cache import VolatileMixin, VolatileProperty
+from eos.util.volatile_cache import CooperableVolatileMixin, VolatileProperty
 
 
-class BufferTankingMixin(VolatileMixin):
+class BufferTankingMixin(CooperableVolatileMixin):
 
     @VolatileProperty
     def hp(self):

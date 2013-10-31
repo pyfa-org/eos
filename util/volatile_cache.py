@@ -40,15 +40,14 @@ class VolatileProperty:
             return value
 
 
-class VolatileMixin:
+class InheritableVolatileMixin:
     """
     Should be added as base class for all
     classes using volatileproperty on them.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         self._volatile_attrs = set()
-        super().__init__(**kwargs)
 
     def _clear_volatile_attrs(self):
         """
@@ -61,3 +60,33 @@ class VolatileMixin:
             except AttributeError:
                 pass
         self._volatile_attrs.clear()
+
+
+class CooperableVolatileMixin:
+    """
+    Should be added as base class for all
+    classes using volatileproperty on them.
+    """
+
+    def __init__(self):
+        self._volatile_attrs = set()
+        super().__init__()
+
+    def _clear_volatile_attrs(self):
+        """
+        Remove all the caches values which were
+        stored since the last cleanup.
+        """
+        for attr_name in self._volatile_attrs:
+            try:
+                delattr(self, attr_name)
+            except AttributeError:
+                pass
+        self._volatile_attrs.clear()
+        next_in_mro = super()
+        try:
+            method = next_in_mro._clear_volatile_attrs
+        except AttributeError:
+            pass
+        else:
+            method()

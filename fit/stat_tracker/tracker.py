@@ -24,12 +24,12 @@ import math
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.tuples import DamageTypes, Hitpoints, TankingLayers
-from eos.util.volatile_cache import VolatileMixin, VolatileProperty
+from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
 from .container import *
 from .register import *
 
 
-class StatTracker(VolatileMixin):
+class StatTracker(InheritableVolatileMixin):
     """
     Object which is used as access points for all
     fit statistics.
@@ -135,7 +135,7 @@ class StatTracker(VolatileMixin):
     def _clear_volatile_attrs(self):
         for container in self._volatile_containers:
             container._clear_volatile_attrs()
-        VolatileMixin._clear_volatile_attrs(self)
+        InheritableVolatileMixin._clear_volatile_attrs(self)
 
     @VolatileProperty
     def hp(self):
