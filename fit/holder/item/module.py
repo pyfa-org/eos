@@ -21,22 +21,30 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.mixin.charge import ChargeContainerMixin
+from eos.fit.holder.container import HolderDescriptorOnHolder
 from eos.fit.holder.mixin.misc import SpecialAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
+from .charge import Charge
 
 
 class Module(Holder,
              MutableStateMixin,
-             ChargeContainerMixin,
              SpecialAttribMixin):
 
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
-        super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
+        super().__init__(type_id=type_id, state=state, **kwargs)
+        self.charge = charge
 
     @property
     def _location(self):
         return Location.ship
+
+    charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
+
+    @property
+    def _other(self):
+        """Purely service property, used in fit link tracker registry"""
+        return self.charge
 
 
 class ModuleHigh(Module):
