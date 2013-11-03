@@ -22,7 +22,7 @@
 from eos.fit.holder.item import Charge
 
 
-class ChargeableMixin:
+class ChargeContainerMixin:
 
     def __init__(self, charge, **kwargs):
         self.__charge = None
@@ -51,7 +51,7 @@ class ChargeableMixin:
                 raise TypeError(msg)
             # Also check if it is attached to other fit already
             # or not. We can't rely on fit._add_holder to do it,
-            # because charge can be assigned when module is detached
+            # because charge can be assigned when container is detached
             # from fit, which breaks consistency - both holders
             # need to be assigned to the same fit
             if new_charge._fit is not None:

@@ -27,7 +27,12 @@ from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 class Skill(Holder,
             ImmutableStateMixin):
-    """Skill with all its special properties."""
+    """
+    Skill with all its special properties.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, type_id, level=0, **kwargs):
         self.__level = level

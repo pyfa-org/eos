@@ -30,7 +30,12 @@ class Drone(Holder,
             MutableStateMixin,
             BufferTankingMixin,
             SpecialAttribMixin):
-    """Single drone."""
+    """
+    Single drone.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)

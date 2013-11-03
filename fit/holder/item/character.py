@@ -29,6 +29,9 @@ class Character(Holder,
     """
     Represents a character. Must be holder, as EVE tracks
     some attributes on it.
+
+    This class has following methods designed cooperatively:
+    __init__
     """
 
     def __init__(self, type_id, **kwargs):

@@ -21,16 +21,15 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.mixin.chargeable import ChargeableMixin
+from eos.fit.holder.mixin.charge import ChargeContainerMixin
 from eos.fit.holder.mixin.misc import SpecialAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 
 
 class Module(Holder,
              MutableStateMixin,
-             ChargeableMixin,
+             ChargeContainerMixin,
              SpecialAttribMixin):
-    """Ship's module from any slot."""
 
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
@@ -41,12 +40,30 @@ class Module(Holder,
 
 
 class ModuleHigh(Module):
+    """
+    Ship's module from high slot.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
     pass
 
 
 class ModuleMed(Module):
+    """
+    Ship's module from medium slot.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
     pass
 
 
 class ModuleLow(Module):
+    """
+    Ship's module from low slot.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
     pass

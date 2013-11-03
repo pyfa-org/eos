@@ -26,7 +26,12 @@ from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 class Charge(Holder,
              ImmutableStateMixin):
-    """Ammo - crystals, probes, bombs, etc."""
+    """
+    Ammo - crystals, probes, bombs, etc.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, type_id, **kwargs):
         # Holder-container, into which our charge holder is "loaded"

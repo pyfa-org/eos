@@ -26,7 +26,12 @@ from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 class Subsystem(Holder,
                 ImmutableStateMixin):
-    """Tech 3 ship's subsystem."""
+    """
+    Tech 3 ship's subsystem.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, type_id, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)

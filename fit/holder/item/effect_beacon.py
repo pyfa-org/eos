@@ -26,7 +26,12 @@ from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 class EffectBeacon(Holder,
                    ImmutableStateMixin):
-    """System-wide anomaly with all its special properties."""
+    """
+    System-wide anomaly with all its special properties.
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, type_id, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
