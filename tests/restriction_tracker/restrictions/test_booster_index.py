@@ -34,8 +34,8 @@ class TestBoosterIndex(RestrictionTestCase):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
         item = self.ch.type_(type_id=1, attributes={Attribute.boosterness: 120})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster(1))
         self.track_holder(holder1)
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.booster_index)
@@ -52,8 +52,8 @@ class TestBoosterIndex(RestrictionTestCase):
     def test_fail_other_holder_class(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1, attributes={Attribute.boosterness: 120})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.booster_index)
@@ -70,8 +70,8 @@ class TestBoosterIndex(RestrictionTestCase):
     def test_fail_original(self):
         # Make sure that original attributes are used
         item = self.ch.type_(type_id=1, attributes={Attribute.boosterness: 120})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster(1))
         holder1.attributes = {Attribute.boosterness: 119}
         holder2.attributes = {Attribute.boosterness: 121}
         self.track_holder(holder1)
@@ -91,7 +91,7 @@ class TestBoosterIndex(RestrictionTestCase):
         # Single holder which takes some slot shouldn't
         # trigger any errors
         item = self.ch.type_(type_id=1, attributes={Attribute.boosterness: 120})
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster)
+        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Booster(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.booster_index)
         self.assertIsNone(restriction_error)
@@ -103,8 +103,8 @@ class TestBoosterIndex(RestrictionTestCase):
         # Holders taking different slots shouldn't trigger any errors
         item1 = self.ch.type_(type_id=1, attributes={Attribute.boosterness: 120})
         item2 = self.ch.type_(type_id=2, attributes={Attribute.boosterness: 121})
-        holder1 = Mock(state=State.offline, item=item1, _location=Location.character, spec_set=Booster)
-        holder2 = Mock(state=State.offline, item=item2, _location=Location.character, spec_set=Booster)
+        holder1 = Mock(state=State.offline, item=item1, _location=Location.character, spec_set=Booster(1))
+        holder2 = Mock(state=State.offline, item=item2, _location=Location.character, spec_set=Booster(1))
         self.track_holder(holder1)
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.booster_index)

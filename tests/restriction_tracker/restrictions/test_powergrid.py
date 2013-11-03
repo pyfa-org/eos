@@ -34,7 +34,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When ship provides pg output, but single consumer
         # demands for more, error should be raised
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 50}
         self.track_holder(holder)
         self.fit.stats.powergrid.used = 50
@@ -51,7 +51,7 @@ class TestPowerGrid(RestrictionTestCase):
     def test_fail_excess_single_other_class_location(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=Implant)
+        holder = Mock(state=State.online, item=item, _location=Location.character, spec_set=Implant(1))
         holder.attributes = {Attribute.power: 50}
         self.track_holder(holder)
         self.fit.stats.powergrid.used = 50
@@ -69,7 +69,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 5}
         self.track_holder(holder)
         self.fit.stats.powergrid.used = 5
@@ -88,10 +88,10 @@ class TestPowerGrid(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 25}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 20}
         self.track_holder(holder2)
         self.fit.stats.powergrid.used = 45
@@ -114,7 +114,7 @@ class TestPowerGrid(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified pg values are taken
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 40})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 100}
         self.track_holder(holder)
         self.fit.stats.powergrid.used = 100
@@ -133,10 +133,10 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 100}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: -10}
         self.track_holder(holder2)
         self.fit.stats.powergrid.used = 90
@@ -158,10 +158,10 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 100}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 0}
         self.track_holder(holder2)
         self.fit.stats.powergrid.used = 100
@@ -182,10 +182,10 @@ class TestPowerGrid(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 25}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 20}
         self.track_holder(holder2)
         self.fit.stats.powergrid.used = 45
@@ -204,7 +204,7 @@ class TestPowerGrid(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 100}
         self.track_holder(holder)
         self.fit.stats.powergrid.used = 100
@@ -218,7 +218,7 @@ class TestPowerGrid(RestrictionTestCase):
     def test_pass_state(self):
         # When holder isn't online, it shouldn't consume anything
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 50}
         self.track_holder(holder)
         self.fit.stats.powergrid.used = 50

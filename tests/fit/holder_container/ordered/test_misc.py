@@ -39,8 +39,8 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def test_len(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         self.assertEqual(len(fit.container), 0)
         fit.container.append(holder1)
         self.assertEqual(len(fit.container), 1)
@@ -54,8 +54,8 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def test_contains(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         self.assertFalse(holder1 in fit.container)
         self.assertFalse(None in fit.container)
         self.assertFalse(holder2 in fit.container)
@@ -79,8 +79,8 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def test_iter(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         self.assertEqual(list(holder for holder in fit.container), [])
         fit.container.append(holder1)
         self.assertEqual(list(holder for holder in fit.container), [holder1])
@@ -94,8 +94,8 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def test_detached_clear(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -122,8 +122,8 @@ class TestContainerOrderedMisc(FitTestCase):
     def test_attached_clear(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -149,8 +149,8 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def test_slice(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         slice_full = fit.container[:]
@@ -177,8 +177,8 @@ class TestContainerOrderedMisc(FitTestCase):
 
     def test_holder_view(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         view = fit.container.holders()
         self.assertEqual(len(view), 0)
         self.assertEqual(list(view), [])

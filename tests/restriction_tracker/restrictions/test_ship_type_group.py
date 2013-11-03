@@ -34,10 +34,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that first type-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -54,10 +54,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that second type-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_2: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -74,10 +74,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that third type-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_3: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -94,10 +94,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that fourth type-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_4: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -114,10 +114,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that fifth type-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.fits_to_shiptype: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -132,11 +132,11 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_type_multiple_different(self):
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10,
                                                     Attribute.can_fit_ship_type_2: 11})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -151,11 +151,11 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_type_multiple_same(self):
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10,
                                                     Attribute.can_fit_ship_type_2: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -172,10 +172,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that first group-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -192,10 +192,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that second group-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_2: 38})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -212,10 +212,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that third group-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_3: 38})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -232,10 +232,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that fourth group-restriction attribute affects
         # holder
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_4: 38})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -250,11 +250,11 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_group_multiple_different(self):
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38,
                                                     Attribute.can_fit_ship_group_2: 83})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -269,11 +269,11 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_group_multiple_same(self):
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38,
                                                     Attribute.can_fit_ship_group_2: 38})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -290,11 +290,11 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that failure is appropriately generated when
         # holder specifies both type and group restrictions
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089,
                                                     Attribute.can_fit_ship_group_1: 23})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -310,7 +310,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_no_ship(self):
         # Absent ship should trigger this error too
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNotNone(restriction_error)
@@ -325,10 +325,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_attr_original(self):
         # Make sure original value is taken
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.can_fit_ship_type_1: 772}
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -346,10 +346,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # When type of ship matches type-restriction attribute,
         # no error should be raised
         ship_item = self.ch.type_(type_id=554, group_id=23)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 554})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNone(restriction_error)
@@ -362,10 +362,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         # When type of ship matches group-restriction attribute,
         # no error should be raised
         ship_item = self.ch.type_(type_id=554, group_id=23)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 23})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNone(restriction_error)
@@ -378,11 +378,11 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that it's enough to match type condition
         # to be fittable, even if both conditions are specified
         ship_item = self.ch.type_(type_id=671, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 671,
                                                     Attribute.can_fit_ship_group_1: 38})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNone(restriction_error)
@@ -395,11 +395,11 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that it's enough to match group condition
         # to be fittable, even if both conditions are specified
         ship_item = self.ch.type_(type_id=554, group_id=23)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089,
                                                     Attribute.can_fit_ship_group_1: 23})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNone(restriction_error)
@@ -411,10 +411,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_non_ship_holder(self):
         # Holders not belonging to ship shouldn't be affected
         ship_item = self.ch.type_(type_id=772, group_id=31)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
-        holder = Mock(state=State.offline, item=item, _location=None, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=None, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
         self.assertIsNone(restriction_error)

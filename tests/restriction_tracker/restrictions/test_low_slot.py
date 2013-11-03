@@ -33,7 +33,7 @@ class TestLowSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder)
         self.fit.stats.low_slots.used = 1
         self.fit.stats.low_slots.total = 0
@@ -47,7 +47,7 @@ class TestLowSlot(RestrictionTestCase):
     def test_fail_excess_signle_other_class_location(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant)
+        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant(1))
         self.fit.modules.low.append(holder)
         self.fit.stats.low_slots.used = 1
         self.fit.stats.low_slots.total = 0
@@ -62,7 +62,7 @@ class TestLowSlot(RestrictionTestCase):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder)
         self.fit.stats.low_slots.used = 1
         self.fit.stats.low_slots.total = None
@@ -77,8 +77,8 @@ class TestLowSlot(RestrictionTestCase):
         # Check that error works for multiple holders, and raised
         # only for those which lie out of bounds
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(holder2)
         self.fit.stats.low_slots.used = 2
@@ -95,9 +95,9 @@ class TestLowSlot(RestrictionTestCase):
     def test_fail_excess_multiple_with_nones(self):
         # Make sure Nones are processed properly
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
-        holder3 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder3 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(None)
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(None)
@@ -122,8 +122,8 @@ class TestLowSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(holder2)
         self.fit.stats.low_slots.used = 2
@@ -137,8 +137,8 @@ class TestLowSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(holder2)
         self.fit.stats.low_slots.used = 2
@@ -152,7 +152,7 @@ class TestLowSlot(RestrictionTestCase):
 
     def test_pass_other_container(self):
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh)
+        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder)
         self.fit.stats.low_slots.used = 1
         self.fit.stats.low_slots.total = 0

@@ -31,7 +31,7 @@ class TestWorstCaseEhp(StatTestCase):
     def test_relay(self):
         # Check that stat tracker relays wcehp stats properly
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         ship_holder.worst_case_ehp.hull = 50
         ship_holder.worst_case_ehp.armor = 60
         ship_holder.worst_case_ehp.shield = 70
@@ -56,7 +56,7 @@ class TestWorstCaseEhp(StatTestCase):
 
     def test_cache(self):
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         ship_holder.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
         self.assertEqual(self.st.worst_case_ehp.hull, 50)
@@ -74,7 +74,7 @@ class TestWorstCaseEhp(StatTestCase):
 
     def test_volatility(self):
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         ship_holder.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
         self.assertEqual(self.st.worst_case_ehp.hull, 50)

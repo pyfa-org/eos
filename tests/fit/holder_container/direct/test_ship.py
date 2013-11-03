@@ -49,7 +49,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_none_to_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
@@ -70,7 +70,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_none_to_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=OtherCachingHolder)
+        holder = Mock(_fit=None, state=State.active, spec_set=OtherCachingHolder(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
@@ -91,7 +91,7 @@ class TestDirectHolderShip(FitTestCase):
     def test_detached_none_to_holder_value_failure(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit_other.ship = holder
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -121,8 +121,8 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_holder_to_holder(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Ship)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit.ship = holder1
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
@@ -148,8 +148,8 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_holder_to_holder_type_failure(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=OtherCachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=OtherCachingHolder(1))
         fit.ship = holder1
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
@@ -176,8 +176,8 @@ class TestDirectHolderShip(FitTestCase):
     def test_detached_holder_to_holder_value_failure(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship(1))
         fit.ship = holder1
         fit_other.ship = holder2
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -213,7 +213,7 @@ class TestDirectHolderShip(FitTestCase):
 
     def test_detached_holder_to_none(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit.ship = holder
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -251,7 +251,7 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_none_to_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=Ship)
+        holder = Mock(_fit=None, state=State.online, spec_set=Ship(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
@@ -279,7 +279,7 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_none_to_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
         # Action
@@ -301,7 +301,7 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.offline, spec_set=Ship)
+        holder = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
         fit_other.ship = holder
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -335,8 +335,8 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_holder_to_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship(1))
         fit.ship = holder1
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
@@ -369,8 +369,8 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_holder_to_holder_type_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=OtherCachingHolder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=OtherCachingHolder(1))
         fit.ship = holder1
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
@@ -404,8 +404,8 @@ class TestDirectHolderShip(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         fit_other = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=Ship)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
         fit.ship = holder1
         fit_other.ship = holder2
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -454,7 +454,7 @@ class TestDirectHolderShip(FitTestCase):
     def test_attached_holder_to_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship)
+        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit.ship = holder
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)

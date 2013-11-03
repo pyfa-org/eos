@@ -39,8 +39,8 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_none(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.append(holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -91,8 +91,8 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_holder(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.append(holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -135,8 +135,8 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_holder_failure(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
@@ -182,9 +182,9 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_holder_after_nones(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder3 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder3 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -242,8 +242,8 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_index_holder(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.append(holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -286,7 +286,7 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_index_none(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         fit.container.place(1, holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -310,9 +310,9 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_index_after_nones(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder3 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder3 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -370,7 +370,7 @@ class TestContainerOrderedFree(FitTestCase):
 
     def test_detached_index_outside(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         fit.container.append(holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -394,8 +394,8 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.append(holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -465,8 +465,8 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.append(holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -515,8 +515,8 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_holder_failure(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder1_cleans_before = len(holder1._clear_volatile_attrs.mock_calls)
@@ -569,9 +569,9 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_holder_after_nones(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
-        holder3 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
+        holder3 = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -648,8 +648,8 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_index_holder(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.append(holder2)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -698,7 +698,7 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_index_none(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder)
+        holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         fit.container.place(1, holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -729,9 +729,9 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_index_after_nones(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
-        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
-        holder3 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder)
+        holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
+        holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
+        holder3 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
@@ -808,7 +808,7 @@ class TestContainerOrderedFree(FitTestCase):
     def test_attached_index_outside(self):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
-        holder = Mock(_fit=None, state=State.active, spec_set=CachingHolder)
+        holder = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.append(holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)

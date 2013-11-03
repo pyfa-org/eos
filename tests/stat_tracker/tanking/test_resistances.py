@@ -31,7 +31,7 @@ class TestResistances(StatTestCase):
     def test_relay(self):
         # Check that stat tracker relays resistance stats properly
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         ship_holder.resistances.hull.em = 5
         ship_holder.resistances.hull.thermal = 6
         ship_holder.resistances.hull.kinetic = 7
@@ -80,7 +80,7 @@ class TestResistances(StatTestCase):
 
     def test_cache(self):
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         hull = Mock(em=5, thermal=6, kinetic=7, explosive=8)
         armor = Mock(em=15, thermal=16, kinetic=17, explosive=18)
@@ -120,7 +120,7 @@ class TestResistances(StatTestCase):
 
     def test_volatility(self):
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship)
+        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         hull = Mock(em=5, thermal=6, kinetic=7, explosive=8)
         armor = Mock(em=15, thermal=16, kinetic=17, explosive=18)

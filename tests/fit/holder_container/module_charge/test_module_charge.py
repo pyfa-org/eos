@@ -153,7 +153,7 @@ class TestModuleCharge(FitTestCase):
 
     def test_detached_module_none_to_non_charge(self):
         module = CachingModule(1, state=State.active, charge=None)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
         non_charge_cleans_before = len(non_charge._clear_volatile_attrs.mock_calls)
         # Action
@@ -171,7 +171,7 @@ class TestModuleCharge(FitTestCase):
     def test_detached_module_charge_to_non_charge(self):
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         module.charge = charge
         module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
         charge_cleans_before = len(charge._clear_volatile_attrs.mock_calls)
@@ -402,7 +402,7 @@ class TestModuleCharge(FitTestCase):
     def test_detached_fit_none_to_non_charge(self):
         fit = self.make_fit()
         module = CachingModule(1, state=State.active, charge=None)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         fit.ordered.append(module)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         module_cleans_before = len(module._clear_volatile_attrs.mock_calls)
@@ -431,7 +431,7 @@ class TestModuleCharge(FitTestCase):
         fit = self.make_fit()
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         fit.ordered.append(module)
         module.charge = charge
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -802,7 +802,7 @@ class TestModuleCharge(FitTestCase):
         eos = Mock(spec_set=())
         fit = self.make_fit(eos=eos)
         module = CachingModule(1, state=State.active, charge=None)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         fit.ordered.append(module)
         self.expect_module_charge_link = True
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -839,7 +839,7 @@ class TestModuleCharge(FitTestCase):
         fit = self.make_fit(eos=eos)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder)
+        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         fit.ordered.append(module)
         module.charge = charge
         self.expect_module_charge_link = True

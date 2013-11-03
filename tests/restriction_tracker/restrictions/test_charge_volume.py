@@ -32,9 +32,9 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_fail_greater(self):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
-        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge)
+        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.capacity: 1})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh)
+        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -52,9 +52,9 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_no_capacity(self):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
-        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge)
+        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh)
+        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -72,9 +72,9 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_no_volume(self):
         charge_item = self.ch.type_(type_id=1, attributes={})
-        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge)
+        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.volume: 3})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh)
+        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -90,9 +90,9 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_equal(self):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.capacity: 2})
-        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge)
+        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.volume: 2})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh)
+        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -108,9 +108,9 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_lesser(self):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
-        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge)
+        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.capacity: 3})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh)
+        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -127,10 +127,10 @@ class TestChargeVolume(RestrictionTestCase):
     def test_pass_original_attribs(self):
         # Make sure original item attributes are used
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
-        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge)
+        charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         charge_holder.attributes = {Attribute.volume: 3}
         container_item = self.ch.type_(type_id=2, attributes={Attribute.capacity: 2})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh)
+        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.attributes = {Attribute.capacity: 1}
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
