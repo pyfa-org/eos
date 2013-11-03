@@ -21,9 +21,7 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.mixin.misc import SpecialAttribMixin
-from eos.fit.holder.mixin.state import MutableStateMixin
-from eos.fit.holder.mixin.tanking import BufferTankingMixin
+from eos.fit.holder.mixin import BufferTankingMixin, MutableStateMixin, SpecialAttribMixin
 
 
 class Drone(Holder,

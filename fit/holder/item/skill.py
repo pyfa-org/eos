@@ -22,7 +22,7 @@
 from eos.const.eos import Location, State
 from eos.const.eve import Attribute
 from eos.fit.holder import Holder
-from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.fit.holder.mixin import ImmutableStateMixin
 
 
 class Skill(Holder,
