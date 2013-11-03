@@ -25,8 +25,11 @@ from eos.fit.holder.item import Charge
 class ChargeableMixin:
 
     def __init__(self, charge, **kwargs):
-        self.__charge = charge
+        self.__charge = None
         super().__init__(**kwargs)
+        # Assign charge properly only after initialization by
+        # next classes is complete, because setting it relies on
+        # _fit attribute which may be not initialized yet
         self.charge = charge
 
     @property
