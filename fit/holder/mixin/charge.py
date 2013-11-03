@@ -20,52 +20,22 @@
 
 
 from eos.fit.holder.item import Charge
+from eos.fit.holder.container import HolderDescriptorOnHolder
 
 
 class ChargeContainerMixin:
 
     def __init__(self, charge, **kwargs):
-        self.__charge = None
         super().__init__(**kwargs)
         # Assign charge properly only after initialization by
         # next classes is complete, because setting it relies on
-        # _fit attribute which may be not initialized yet
+        # _fit attribute which may be not initialized by the moment
+        # our current init is called
         self.charge = charge
+
+    charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
 
     @property
     def _other(self):
         """Purely service property, used in fit link tracker registry"""
         return self.charge
-
-    @property
-    def charge(self):
-        return self.__charge
-
-    @charge.setter
-    def charge(self, new_charge):
-        if new_charge is not None:
-            # Check what's being assigned
-            if not isinstance(new_charge, Charge):
-                msg = 'only {} and None are accepted, not {}'.format(
-                    Charge, type(new_charge))
-                raise TypeError(msg)
-            # Also check if it is attached to other fit already
-            # or not. We can't rely on fit._add_holder to do it,
-            # because charge can be assigned when container is detached
-            # from fit, which breaks consistency - both holders
-            # need to be assigned to the same fit
-            if new_charge._fit is not None:
-                raise ValueError(new_charge)
-        old_charge = self.charge
-        fit = self._fit
-        if old_charge is not None:
-            if fit is not None:
-                fit._clear_volatile_data()
-                fit._remove_holder(old_charge)
-            old_charge.container = None
-        self.__charge = new_charge
-        if new_charge is not None:
-            new_charge.container = self
-            if fit is not None:
-                fit._add_holder(new_charge)
-                fit._clear_volatile_data()

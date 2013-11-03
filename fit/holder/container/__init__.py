@@ -25,3 +25,4 @@ from .modules import ModuleRacks
 from .restricted_set import HolderRestrictedSet
 from .set import HolderSet
 from .single_onfit import HolderDescriptorOnFit
+from .single_onholder import HolderDescriptorOnHolder
