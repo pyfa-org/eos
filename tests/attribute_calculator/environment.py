@@ -110,8 +110,6 @@ class Fit:
 
 class Holder:
 
-    __slots__ = ('__fit', 'item', 'attributes', '__state')
-
     def __init__(self, type_):
         self.__fit = None
         self.item = type_
@@ -143,8 +141,6 @@ class Holder:
 
 class IndependentItem(Holder):
 
-    __slots__ = ()
-
     def __init__(self, type_):
         Holder.__init__(self, type_)
 
@@ -154,8 +150,6 @@ class IndependentItem(Holder):
 
 
 class CharacterItem(Holder):
-
-    __slots__ = ()
 
     def __init__(self, type_):
         Holder.__init__(self, type_)
@@ -167,8 +161,6 @@ class CharacterItem(Holder):
 
 class ShipItem(Holder):
 
-    __slots__ = ()
-
     def __init__(self, type_):
         Holder.__init__(self, type_)
 
@@ -178,8 +170,6 @@ class ShipItem(Holder):
 
 
 class SpaceItem(Holder):
-
-    __slots__ = ()
 
     def __init__(self, type_):
         Holder.__init__(self, type_)
@@ -191,16 +181,12 @@ class SpaceItem(Holder):
 
 class Skill(IndependentItem):
 
-    __slots__ = ('level',)
-
     def __init__(self, type_):
         IndependentItem.__init__(self, type_)
         self.level = 0
 
 
 class ItemWithOther(IndependentItem):
-
-    __slots__ = ('_other',)
 
     def __init__(self, type_):
         IndependentItem.__init__(self, type_)
