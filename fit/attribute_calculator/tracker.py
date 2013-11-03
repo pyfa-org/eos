@@ -107,9 +107,8 @@ class LinkTracker:
         during state switch, except for initial state
         """
         processed_contexts = (Context.local,)
-        enabled_affectors = self.__generate_affectors(holder,
-                                                     state_filter=states,
-                                                     context_filter=processed_contexts)
+        enabled_affectors = self.__generate_affectors(
+            holder, state_filter=states, context_filter=processed_contexts)
         # Clear attributes only after registration jobs
         for affector in enabled_affectors:
             self._register.register_affector(affector)
@@ -125,9 +124,8 @@ class LinkTracker:
         during state switch, except for final state
         """
         processed_contexts = (Context.local,)
-        disabled_affectors = self.__generate_affectors(holder,
-                                                      state_filter=states,
-                                                      context_filter=processed_contexts)
+        disabled_affectors = self.__generate_affectors(
+            holder, state_filter=states, context_filter=processed_contexts)
         # Clear attributes before unregistering, otherwise
         # we won't clean them up properly
         self.__clear_affectors_dependents(disabled_affectors)
