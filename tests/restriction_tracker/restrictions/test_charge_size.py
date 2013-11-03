@@ -34,7 +34,8 @@ class TestChargeSize(RestrictionTestCase):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.charge_size: 2})
         charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_size: 3})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
+        container_holder = Mock(state=State.offline, item=container_item,
+                                _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -54,7 +55,8 @@ class TestChargeSize(RestrictionTestCase):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.charge_size: 2})
         charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_size: 1})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
+        container_holder = Mock(state=State.offline, item=container_item,
+                                _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -74,7 +76,8 @@ class TestChargeSize(RestrictionTestCase):
         charge_item = self.ch.type_(type_id=1, attributes={})
         charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_size: 3})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
+        container_holder = Mock(state=State.offline, item=container_item,
+                                _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -94,7 +97,8 @@ class TestChargeSize(RestrictionTestCase):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.charge_size: 2})
         charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_size: 2})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
+        container_holder = Mock(state=State.offline, item=container_item,
+                                _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
@@ -114,7 +118,8 @@ class TestChargeSize(RestrictionTestCase):
         charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         charge_holder.attributes = {Attribute.charge_size: 1}
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_size: 2})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
+        container_holder = Mock(state=State.offline, item=container_item,
+                                _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.attributes = {Attribute.charge_size: 3}
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -133,7 +138,8 @@ class TestChargeSize(RestrictionTestCase):
         charge_item = self.ch.type_(type_id=1, attributes={Attribute.charge_size: 2})
         charge_holder = Mock(state=State.offline, item=charge_item, _location=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={})
-        container_holder = Mock(state=State.offline, item=container_item, _location=Location.ship, spec_set=ModuleHigh(1))
+        container_holder = Mock(state=State.offline, item=container_item,
+                                _location=Location.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.track_holder(container_holder)
