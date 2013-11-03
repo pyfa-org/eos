@@ -44,6 +44,8 @@ class InheritableVolatileMixin:
     """
     Should be added as base class for all
     classes using volatileproperty on them.
+    This mixin is to be used in classical
+    inheritance trees.
     """
 
     def __init__(self):
@@ -62,10 +64,12 @@ class InheritableVolatileMixin:
         self._volatile_attrs.clear()
 
 
-class CooperableVolatileMixin:
+class CooperativeVolatileMixin:
     """
     Should be added as base class for all
     classes using volatileproperty on them.
+    This mixin is to be used in cooperative
+    classes (see super() docs).
     """
 
     def __init__(self, **kwargs):
