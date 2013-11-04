@@ -186,25 +186,6 @@ class Skill(IndependentItem):
         self.level = 0
 
 
-class ItemWithOther(IndependentItem):
-
-    def __init__(self, type_):
-        IndependentItem.__init__(self, type_)
-        self._other = None
-
-    def make_other_link(self, other):
-        if self._other is not None or other._other is not None:
-            raise Exception
-        self._other = other
-        other._other = self
-
-    def break_other_link(self, other):
-        if self._other is not other or other._other is not self:
-            raise Exception
-        self._other = None
-        other._other = None
-
-
 class ContainerHolder(IndependentItem):
 
     def __init__(self, type_):
