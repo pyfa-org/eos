@@ -25,7 +25,7 @@ from eos.fit.holder.mixin import SpecialAttribMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
-class TestDirectHolderShip(FitTestCase):
+class TestHolderMixinSpecialAttrib(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
@@ -36,29 +36,29 @@ class TestDirectHolderShip(FitTestCase):
     def test_tracking(self):
         self.mixin.item._tracking_speed_attribute_id = 102
         self.mixin.attributes[102] = 8
-        self.assertEqual(self.mixin.tracking_speed, 8)
+        self.assertAlmostEqual(self.mixin.tracking_speed, 8)
 
     def test_optimal(self):
         self.mixin.item._range_attribute_id = 102
         self.mixin.attributes[102] = 8
-        self.assertEqual(self.mixin.optimal_range, 8)
+        self.assertAlmostEqual(self.mixin.optimal_range, 8)
 
     def test_falloff(self):
         self.mixin.item._falloff_attribute_id = 102
         self.mixin.attributes[102] = 8
-        self.assertEqual(self.mixin.falloff_range, 8)
+        self.assertAlmostEqual(self.mixin.falloff_range, 8)
 
     def test_cycle(self):
         self.mixin.item._duration_attribute_id = 102
         self.mixin.attributes[102] = 8
-        self.assertEqual(self.mixin.cycle_time, 8)
+        self.assertAlmostEqual(self.mixin.cycle_time, 8)
 
     def test_change(self):
         self.mixin.item._tracking_speed_attribute_id = 102
         self.mixin.attributes[102] = 8
-        self.assertEqual(self.mixin.tracking_speed, 8)
+        self.assertAlmostEqual(self.mixin.tracking_speed, 8)
         self.mixin.attributes[102] = 9
-        self.assertEqual(self.mixin.tracking_speed, 9)
+        self.assertAlmostEqual(self.mixin.tracking_speed, 9)
 
     def test_undescribed(self):
         self.mixin.attributes[102] = 8
