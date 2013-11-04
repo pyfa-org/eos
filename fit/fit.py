@@ -22,7 +22,6 @@
 from eos import eos as eos_module
 from eos.const.eos import State
 from eos.const.eve import Type
-from eos.util.volatile_cache import InheritableVolatileMixin
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks

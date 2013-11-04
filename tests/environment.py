@@ -21,8 +21,8 @@
 
 from logging import getLogger, ERROR, INFO, WARNING
 
-from eos.data.cache.handler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
-from eos.data.cache.object import Attribute, Effect, Type
+from eos.data.cache_handler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
+from eos.data.cache_object import Attribute, Effect, Type
 
 
 class Logger:

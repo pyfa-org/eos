@@ -21,7 +21,7 @@
 
 from eos.const.eos import Location, EffectBuildStatus, FilterType
 from eos.const.eve import Operand
-from eos.data.cache.object import Modifier
+from eos.data.cache_object import Modifier
 from .action_builder import ActionBuilder
 from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, \
     ActionBuilderError, ExpressionFetchError

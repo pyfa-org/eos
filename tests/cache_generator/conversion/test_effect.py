@@ -31,7 +31,7 @@ class TestConversionEffect(GeneratorTestCase):
     indexes of object representing effect.
     """
 
-    @patch('eos.data.cache.generator.converter.ModifierBuilder')
+    @patch('eos.data.cache_generator.converter.ModifierBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 112})

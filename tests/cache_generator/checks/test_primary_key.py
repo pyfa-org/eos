@@ -267,7 +267,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertEqual(data['types'][1]['falloff_attribute_id'], 70)
 
-    @patch('eos.data.cache.generator.converter.ModifierBuilder')
+    @patch('eos.data.cache_generator.converter.ModifierBuilder')
     def test_dgmexpressions(self, mod_builder):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})

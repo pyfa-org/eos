@@ -24,7 +24,7 @@ import json
 import os.path
 from weakref import WeakValueDictionary
 
-from eos.data.cache.object import *
+from eos.data.cache_object import *
 from .abc import CacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 

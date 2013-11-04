@@ -21,7 +21,7 @@
 
 from eos.const.eos import State, Location, Context, FilterType, Operator
 from eos.const.eve import EffectCategory
-from eos.data.cache.object.modifier import Modifier
+from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
 from eos.tests.environment import Logger
