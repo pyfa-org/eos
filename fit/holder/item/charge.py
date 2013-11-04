@@ -41,8 +41,3 @@ class Charge(Holder,
     @property
     def _location(self):
         return Location.space
-
-    @property
-    def _other(self):
-        """Purely service property, used for attribute calculations"""
-        return self.container

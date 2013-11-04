@@ -40,11 +40,6 @@ class Module(Holder,
 
     charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
 
-    @property
-    def _other(self):
-        """Purely service property, used in fit link tracker registry"""
-        return self.charge
-
 
 class ModuleHigh(Module):
     """

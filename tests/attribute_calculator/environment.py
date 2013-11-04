@@ -203,3 +203,17 @@ class ItemWithOther(IndependentItem):
             raise Exception
         self._other = None
         other._other = None
+
+
+class ContainerHolder(IndependentItem):
+
+    def __init__(self, type_):
+        IndependentItem.__init__(self, type_)
+        self.charge = None
+
+
+class ChargeHolder(IndependentItem):
+
+    def __init__(self, type_):
+        IndependentItem.__init__(self, type_)
+        self.container = None

@@ -93,13 +93,13 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         If any of layer resistances are not specified,
         they're assumed to be 0.
         """
-        dmg_dealt = dmg.em + dmg.thermal + dmg.kinetic + dmg.explosive
-        absorbed_dmg = (dmg.em * (res.em or 0) +
-                        dmg.thermal * (res.thermal or 0) +
-                        dmg.kinetic * (res.kinetic or 0) +
-                        dmg.explosive * (res.explosive or 0))
-        received_dmg = dmg_dealt - absorbed_dmg
-        return dmg_dealt / received_dmg
+        dealt = dmg.em + dmg.thermal + dmg.kinetic + dmg.explosive
+        absorbed = (dmg.em * (res.em or 0) +
+                    dmg.thermal * (res.thermal or 0) +
+                    dmg.kinetic * (res.kinetic or 0) +
+                    dmg.explosive * (res.explosive or 0))
+        received = dealt - absorbed
+        return dealt / received
 
     @VolatileProperty
     def worst_case_ehp(self):

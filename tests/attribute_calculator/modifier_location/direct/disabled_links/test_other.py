@@ -23,41 +23,72 @@ from eos.const.eos import State, Location, Context, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache.object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import ItemWithOther
+from eos.tests.attribute_calculator.environment import ChargeHolder, ContainerHolder
 
 
 class TestLocationDirectOtherSwitch(AttrCalcTestCase):
     """Test direct modification of "other" (e.g. module's charge) when it's changed"""
 
-    def test_other(self):
-        tgt_attr = self.ch.attribute(attribute_id=1)
-        src_attr = self.ch.attribute(attribute_id=2)
+    def setUp(self):
+        AttrCalcTestCase.setUp(self)
+        self.tgt_attr = self.ch.attribute(attribute_id=1)
+        self.src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
         modifier.state = State.offline
         modifier.context = Context.local
-        modifier.source_attribute_id = src_attr.id
+        modifier.source_attribute_id = self.src_attr.id
         modifier.operator = Operator.post_percent
-        modifier.target_attribute_id = tgt_attr.id
+        modifier.target_attribute_id = self.tgt_attr.id
         modifier.location = Location.other
         modifier.filter_type = None
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
-        effect.modifiers = (modifier,)
-        influence_source = ItemWithOther(self.ch.type_(type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
+        self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        self.effect.modifiers = (modifier,)
+
+    def test_other_container(self):
+        influence_source = ContainerHolder(self.ch.type_(type_id=1, effects=(self.effect,),
+                                                         attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        item = self.ch.type_(type_id=2, attributes={tgt_attr.id: 100})
-        influence_target1 = ItemWithOther(item)
-        influence_source.make_other_link(influence_target1)
+        item = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        influence_target1 = ChargeHolder(item)
+        influence_source.charge = influence_target1
+        influence_target1.container = influence_source
         self.fit.items.add(influence_target1)
-        self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
+        self.assertNotAlmostEqual(influence_target1.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target1)
-        influence_source.break_other_link(influence_target1)
-        influence_target2 = ItemWithOther(item)
-        influence_source.make_other_link(influence_target2)
+        influence_target2 = ChargeHolder(item)
+        influence_target1.container = None
+        influence_source.charge = influence_target2
+        influence_target2.container = influence_source
         self.fit.items.add(influence_target2)
-        self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
+        self.assertNotAlmostEqual(influence_target2.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target2)
-        influence_source.break_other_link(influence_target2)
+        influence_source.charge = None
+        influence_target2.container = None
+        self.fit.items.remove(influence_source)
+        self.assertEqual(len(self.log), 0)
+        self.assert_link_buffers_empty(self.fit)
+
+    def test_other_charge(self):
+        influence_source = ChargeHolder(self.ch.type_(type_id=1, effects=(self.effect,),
+                                                      attributes={self.src_attr.id: 20}))
+        self.fit.items.add(influence_source)
+        item = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        influence_target1 = ContainerHolder(item)
+        influence_source.container = influence_target1
+        influence_target1.charge = influence_source
+        self.fit.items.add(influence_target1)
+        self.assertNotAlmostEqual(influence_target1.attributes[self.tgt_attr.id], 100)
+        self.fit.items.remove(influence_target1)
+        influence_target2 = ContainerHolder(item)
+        influence_target1.charge = None
+        influence_source.container = influence_target2
+        influence_target2.charge = influence_source
+        self.fit.items.add(influence_target2)
+        self.assertNotAlmostEqual(influence_target2.attributes[self.tgt_attr.id], 100)
+        self.fit.items.remove(influence_target2)
+        influence_source.container = None
+        influence_target2.charge = None
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)

@@ -173,10 +173,7 @@ class LinkRegister:
                     ship = self._fit.ship
                     target = {ship} if ship is not None else None
                 elif modifier.location == Location.other:
-                    try:
-                        other_holder = source_holder._other
-                    except AttributeError:
-                        other_holder = None
+                    other_holder = self.__get_other_linked_holder(source_holder)
                     target = {other_holder} if other_holder is not None else None
                 else:
                     raise DirectLocationError(modifier.location)
@@ -309,10 +306,7 @@ class LinkRegister:
             # When other location is referenced, it means direct reference to module's charge
             # or to charge's module-container
             elif modifier.location == Location.other:
-                try:
-                    other_holder = source_holder._other
-                except AttributeError:
-                    other_holder = None
+                other_holder = self.__get_other_linked_holder(source_holder)
                 if other_holder is not None:
                     affector_map = self.__active_direct_affectors
                     key = other_holder
@@ -441,7 +435,7 @@ class LinkRegister:
             location = Location.character
         # For "other" location, we should've checked for presence
         # of other entity - charge's container or module's charge
-        elif getattr(holder, '_other', None) is not None:
+        elif self.__get_other_linked_holder(holder) is not None:
             location = Location.other
         else:
             location = None
@@ -506,10 +500,7 @@ class LinkRegister:
         Positional arguments:
         target_holder -- holder which is being registered
         """
-        try:
-            other_holder = target_holder._other
-        except AttributeError:
-            other_holder = None
+        other_holder = self.__get_other_linked_holder(target_holder)
         # If passed holder doesn't have other location (charge's module
         # or module's charge), do nothing
         if other_holder is None:
@@ -535,10 +526,7 @@ class LinkRegister:
         Positional arguments:
         target_holder -- holder which is being unregistered
         """
-        try:
-            other_holder = target_holder._other
-        except AttributeError:
-            other_holder = None
+        other_holder = self.__get_other_linked_holder(target_holder)
         if other_holder is None:
             return
         affectors_to_disable = set()
@@ -554,3 +542,16 @@ class LinkRegister:
         # If we have, move them from map to map
         self.__disabled_direct_affectors.add_data_set(other_holder, affectors_to_disable)
         self.__active_direct_affectors.rm_data_set(target_holder, affectors_to_disable)
+
+    def __get_other_linked_holder(self, holder):
+        """
+        Attempt to get holder linked via 'other' link,
+        like charge's module or module's charge, return
+        None if nothing is found.
+        """
+        if hasattr(holder, 'charge'):
+            return holder.charge
+        elif hasattr(holder, 'container'):
+            return holder.container
+        else:
+            return None
