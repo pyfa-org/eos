@@ -39,7 +39,6 @@ class Type:
                  range_attribute_id=None,
                  falloff_attribute_id=None,
                  tracking_speed_attribute_id=None,
-                 fittable_non_singleton=None,
                  attributes=None,
                  effects=()):
         self.id = type_id
@@ -65,10 +64,6 @@ class Type:
 
         # Defines tracking speed attribute
         self._tracking_speed_attribute_id = tracking_speed_attribute_id
-
-        # Defines if multiple items of this type can be added to fit without packaging.
-        # We use it to see if charge can be loaded into anything or not.
-        self._fittable_non_singleton = bool(fittable_non_singleton) if fittable_non_singleton is not None else None
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable

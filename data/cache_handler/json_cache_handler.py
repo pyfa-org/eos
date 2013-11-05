@@ -99,9 +99,8 @@ class JsonCacheHandler(CacheHandler):
                 range_attribute_id=type_data[4],
                 falloff_attribute_id=type_data[5],
                 tracking_speed_attribute_id=type_data[6],
-                fittable_non_singleton=type_data[7],
-                attributes={attr_id: attr_val for attr_id, attr_val in type_data[9]},
-                effects=tuple(self.get_effect(effect_id) for effect_id in type_data[8])
+                attributes={attr_id: attr_val for attr_id, attr_val in type_data[8]},
+                effects=tuple(self.get_effect(effect_id) for effect_id in type_data[7])
             )
             self.__type_obj_cache[type_id] = type_
         return type_
@@ -212,7 +211,6 @@ class JsonCacheHandler(CacheHandler):
                 type_row['range_attribute_id'],
                 type_row['falloff_attribute_id'],
                 type_row['tracking_speed_attribute_id'],
-                type_row['fittable_non_singleton'],
                 tuple(type_row['effects']),  # List -> tuple
                 tuple(type_row['attributes'].items())  # Dictionary -> tuple
             )

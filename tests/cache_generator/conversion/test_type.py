@@ -31,7 +31,7 @@ class TestConversionType(GeneratorTestCase):
 
     def test_fields(self):
         self.dh.data['invtypes'].append({'randomField': 66, 'typeID': 1, 'groupID': 6})
-        self.dh.data['invgroups'].append({'categoryID': 16, 'fittableNonSingleton': True, 'groupID': 6})
+        self.dh.data['invgroups'].append({'categoryID': 16, 'groupID': 6})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append({'attributeID': 80, 'typeID': 1, 'value': 180.0})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111, 'isDefault': True})
@@ -56,7 +56,7 @@ class TestConversionType(GeneratorTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
         type_row = data['types'][1]
-        self.assertEqual(len(type_row), 11)
+        self.assertEqual(len(type_row), 10)
         self.assertEqual(type_row['group_id'], 6)
         self.assertEqual(type_row['category_id'], 16)
         self.assertEqual(type_row['duration_attribute_id'], 78)
@@ -64,7 +64,6 @@ class TestConversionType(GeneratorTestCase):
         self.assertEqual(type_row['range_attribute_id'], 2)
         self.assertEqual(type_row['falloff_attribute_id'], 3)
         self.assertEqual(type_row['tracking_speed_attribute_id'], 6)
-        self.assertIs(type_row['fittable_non_singleton'], True)
         type_effects = type_row['effects']
         self.assertEqual(len(type_effects), 2)
         self.assertIn(111, type_effects)

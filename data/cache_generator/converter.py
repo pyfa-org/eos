@@ -154,7 +154,6 @@ class Converter:
                 'range_attribute_id': defeff.get('rangeAttributeID'),
                 'falloff_attribute_id': defeff.get('falloffAttributeID'),
                 'tracking_speed_attribute_id': defeff.get('trackingSpeedAttributeID'),
-                'fittable_non_singleton': invgroups_keyed.get(group_id, {}).get('fittableNonSingleton'),
                 'effects': type_effects.get(type_id, []),
                 'attributes': type_attribs.get(type_id, {})
             }

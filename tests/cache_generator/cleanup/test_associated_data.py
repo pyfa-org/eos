@@ -71,14 +71,14 @@ class TestAssociatedData(GeneratorTestCase):
                                                'expressionGroupID': None, 'expressionAttributeID': None})
         # Weak type in any case, but linked through expression
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
-        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
+        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50})
         self.dh.data['dgmattribs'].append({'attributeID': 1007, 'maxAttributeID': None, 'default_value': 0.0,
                                            'high_is_good': False, 'stackable': False})
 
     def test_strong(self, mod_builder):
         self.__generate_data()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
+        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16})
         mod_builder.return_value.build_effect.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
@@ -111,7 +111,7 @@ class TestAssociatedData(GeneratorTestCase):
     def test_weak(self, mod_builder):
         self.__generate_data()
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'fittableNonSingleton': True})
+        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101})
         mod_builder.return_value.build_effect.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
@@ -147,7 +147,7 @@ class TestAssociatedData(GeneratorTestCase):
         # Check that single type included into table does not
         # pull other types belonging to same group
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'fittableNonSingleton': True})
+        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmeffects'].append({
             'effectID': 100, 'effectCategory': 8888, 'isOffensive': True, 'isAssistance': False,
@@ -161,7 +161,7 @@ class TestAssociatedData(GeneratorTestCase):
         # Weak type, but linked through expression
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 6})
-        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'fittableNonSingleton': True})
+        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50})
         mod_builder.return_value.build_effect.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
