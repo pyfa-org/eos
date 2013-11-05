@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.fit.holder.mixin import SpecialAttribMixin
+from eos.fit.holder.mixin.misc import SpecialAttribMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 

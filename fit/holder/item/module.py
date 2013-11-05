@@ -21,24 +21,22 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder import Holder
-from eos.fit.holder.container import HolderDescriptorOnHolder
-from eos.fit.holder.mixin import MutableStateMixin, SpecialAttribMixin
-from .charge import Charge
+from eos.fit.holder.mixin.chargeable import ChargeableMixin
+from eos.fit.holder.mixin.misc import SpecialAttribMixin
+from eos.fit.holder.mixin.state import MutableStateMixin
 
 
 class Module(Holder,
              MutableStateMixin,
+             ChargeableMixin,
              SpecialAttribMixin):
 
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
-        super().__init__(type_id=type_id, state=state, **kwargs)
-        self.charge = charge
+        super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
 
     @property
     def _location(self):
         return Location.ship
-
-    charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
 
 
 class ModuleHigh(Module):

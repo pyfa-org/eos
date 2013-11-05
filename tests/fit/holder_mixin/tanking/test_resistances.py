@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.holder.mixin import BufferTankingMixin
+from eos.fit.holder.mixin.tanking import BufferTankingMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 

@@ -17,3 +17,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
+
+
+from eos.fit.holder.container import HolderDescriptorOnHolder
+from eos.fit.holder.item import Charge
+
+
+class ChargeableMixin:
+
+    def __init__(self, charge, **kwargs):
+        super().__init__(**kwargs)
+        self.charge = charge
+
+    charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
