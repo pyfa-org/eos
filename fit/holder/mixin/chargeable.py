@@ -19,14 +19,44 @@
 #===============================================================================
 
 
+from eos.const.eve import Attribute
 from eos.fit.holder.container import HolderDescriptorOnHolder
 from eos.fit.holder.item import Charge
+from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 
 
-class ChargeableMixin:
+class ChargeableMixin(CooperativeVolatileMixin):
+    """
+    Mixin intended to use with holders which can have charge loaded
+    into them.
+    """
 
     def __init__(self, charge, **kwargs):
         super().__init__(**kwargs)
         self.charge = charge
 
     charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
+
+    @VolatileProperty
+    def charges_amount_max(self):
+        """
+        Return max amount of loadable charges as integer, based
+        on the container capacity and charge volume. If any of these
+        is not defined, or no charge is found in holder, None is returned.
+        """
+        if self.charge is None:
+            return None
+        container_capacity = self.attributes.get(Attribute.capacity)
+        charge_volume = self.charge.attributes.get(Attribute.volume)
+        if container_capacity is None or charge_volume is None:
+            return None
+        # Run rounding to negate float representation inaccuracies
+        # (e.g. to have 2.3 / 0.1 at 23, not 22)
+        charges = int(round(container_capacity / charge_volume, 9))
+        return charges
+
+    # Current amount of charges in container, defaults to max amount
+    # of charges which can be loaded into it. It's here to make it
+    # possible to override amount of loaded charges, while retaining
+    # access to max amount number.
+    charges_amount = charges_amount_max

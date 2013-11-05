@@ -25,6 +25,10 @@ from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 
 
 class BufferTankingMixin(CooperativeVolatileMixin):
+    """
+    Mixin intended to use with all entities which are able
+    to sustain damage (ships, drones, maybe some charges).
+    """
 
     @VolatileProperty
     def hp(self):
