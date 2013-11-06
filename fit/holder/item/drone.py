@@ -33,7 +33,15 @@ class Drone(Holder,
     """
     Single drone.
 
-    This class has following methods designed cooperatively:
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Optional arguments:
+    state -- initial state Drone takes, default is offline
+    (drone in drone bay).
+
+    Cooperative methods:
     __init__
     """
 

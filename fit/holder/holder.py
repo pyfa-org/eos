@@ -27,9 +27,12 @@ class Holder:
     Base holder class inherited by all classes that
     need to keep track of modified attributes.
 
-    Arguments consumed by cooperative __init__:
-    type_id -- type ID of item, which is supposed to be
-    base item for holder
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this holder.
+
+    Cooperative methods:
+    __init__
     """
 
     def __init__(self, type_id, **kwargs):

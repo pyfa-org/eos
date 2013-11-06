@@ -27,7 +27,7 @@ class ImmutableStateMixin:
     Required arguments:
     state -- initial state to take
 
-    This class has following methods designed cooperatively:
+    Cooperative methods:
     __init__
     """
 
@@ -48,7 +48,7 @@ class MutableStateMixin:
     Required arguments:
     state -- initial state to take
 
-    This class has following methods designed cooperatively:
+    Cooperative methods:
     __init__
     """
 

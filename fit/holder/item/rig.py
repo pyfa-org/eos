@@ -26,7 +26,16 @@ from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 class Rig(Holder,
           ImmutableStateMixin):
-    """Rig with all its special properties."""
+    """
+    Rig with all its special properties.
+
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Cooperative methods:
+    __init__
+    """
 
     def __init__(self, type_id, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)

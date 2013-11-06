@@ -34,13 +34,12 @@ class ChargeableMixin(CooperativeVolatileMixin):
     Required arguments:
     charge -- charge to be loaded into holder
 
-    This class has following methods designed cooperatively:
+    Cooperative methods:
     __init__
     """
 
     def __init__(self, charge, **kwargs):
         super().__init__(**kwargs)
-        self.__charge_amount_override = None
         self.charge = charge
 
     charge = HolderDescriptorOnHolder('_charge', 'container', Charge)

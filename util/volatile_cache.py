@@ -71,7 +71,7 @@ class CooperativeVolatileMixin:
     This mixin is to be used in cooperative
     classes (see super() docs).
 
-    This class has following methods designed cooperatively:
+    Cooperative methods:
     __init__
     _clear_volatile_attrs
     """

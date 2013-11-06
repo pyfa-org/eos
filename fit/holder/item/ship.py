@@ -31,7 +31,11 @@ class Ship(Holder,
     """
     Ship with all its special properties.
 
-    This class has following methods designed cooperatively:
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Cooperative methods:
     __init__
     """
 

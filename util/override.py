@@ -21,28 +21,33 @@
 
 class OverrideDescriptor:
     """
-    Take attribute name as argument on initialization,
-    and return it on access, if override hasn't been set,
-    else return override.
+    Provide ability to override specified attribute
+    with reference to other attribute as fallback.
+    instance.a = 1 to set override, del instance.a to
+    remove override, instance.a to access it.
+
+    Required arguments:
+    default_name -- name of attribute on object which is
+    fetched as fallback default value
     """
 
     def __init__(self, default_name):
         self.__default_name = default_name
-        self.__override_name = '_{}_{}'.format(type(self).__name__, default_name)
+        self.__store_name = '_{}_{}'.format(type(self).__name__, default_name)
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        if hasattr(instance, self.__override_name):
-            return getattr(instance, self.__override_name)
+        if hasattr(instance, self.__store_name):
+            return getattr(instance, self.__store_name)
         return getattr(instance, self.__default_name)
 
     def __set__(self, instance, value):
-        setattr(instance, self.__override_name, value)
+        setattr(instance, self.__store_name, value)
 
     def __delete__(self, instance):
         try:
-            delattr(instance, self.__override_name)
+            delattr(instance, self.__store_name)
         except AttributeError as e:
             msg = 'override for {} is not set'.format(self.__default_name)
             raise AttributeError(msg) from e

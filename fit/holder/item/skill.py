@@ -30,7 +30,14 @@ class Skill(Holder,
     """
     Skill with all its special properties.
 
-    This class has following methods designed cooperatively:
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Optional arguments:
+    level -- set level of skill at initialization, default is 0
+
+    Cooperative methods:
     __init__
     """
 

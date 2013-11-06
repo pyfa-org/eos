@@ -30,7 +30,11 @@ class Character(Holder,
     Represents a character. Must be holder, as EVE tracks
     some attributes on it.
 
-    This class has following methods designed cooperatively:
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Cooperative methods:
     __init__
     """
 
