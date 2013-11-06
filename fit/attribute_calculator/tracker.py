@@ -32,7 +32,7 @@ class LinkTracker:
     state, context and attribute filters), and exposes two main register
     getters for external use.
 
-    Positional arguments:
+    Required arguments:
     fit -- Fit object to which tracker is assigned
     """
 
@@ -44,10 +44,10 @@ class LinkTracker:
         """
         Get affectors, influencing passed holder.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which we're getting affectors
 
-        Keyword arguments:
+        Optional arguments:
         attr_id -- target attribute ID filter; only affectors
         which influence attribute with this ID will be returned.
         If None, all affectors influencing holder are returned
@@ -69,7 +69,7 @@ class LinkTracker:
         """
         Get affectees being influenced by affector.
 
-        Positional arguments:
+        Required arguments:
         affector -- affector, for which we're getting affectees
 
         Return value:
@@ -82,7 +82,7 @@ class LinkTracker:
         Track links between passed holder and already
         tracked holders.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder which is added to tracker
         """
         self._register.register_affectee(holder)
@@ -92,7 +92,7 @@ class LinkTracker:
         Stop tracking links between passed holder
         and remaining tracked holders.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder which is removed from tracker
         """
         self._register.unregister_affectee(holder)
@@ -101,7 +101,7 @@ class LinkTracker:
         """
         Handle state switch upwards.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for initial state
@@ -118,7 +118,7 @@ class LinkTracker:
         """
         Handle state switch downwards.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for final state
@@ -136,7 +136,7 @@ class LinkTracker:
         """
         Clear calculated attributes relying on passed attribute.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, which carries attribute in question
         attr_id -- ID of attribute
         """
@@ -160,7 +160,7 @@ class LinkTracker:
         """
         Clear calculated attributes relying on affectors.
 
-        Positional arguments:
+        Required arguments:
         affectors -- iterable with affectors in question
         """
         for affector in affectors:
@@ -173,10 +173,10 @@ class LinkTracker:
         """
         Get all affectors spawned by holder.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which affectors are generated
 
-        Keyword arguments:
+        Optional arguments:
         state_filter -- filter results by affector's required state,
         which should be in this iterable; if None, no filtering
         occurs (default None)

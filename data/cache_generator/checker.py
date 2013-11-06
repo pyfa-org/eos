@@ -28,7 +28,7 @@ class Checker:
     Class responsible for conducting checks and making
     data consistent for further stages of processing.
 
-    Positional arguments:
+    Required arguments:
     logger -- logger to use
     """
 
@@ -40,7 +40,7 @@ class Checker:
         Run checks which should be performed on
         data which is yet to be cleaned.
 
-        Positional arguments:
+        Required arguments:
         data -- data to check
         """
         self.data = data
@@ -59,7 +59,7 @@ class Checker:
         As data convertor and eos relies on some
         assumptions, check that data corresponds to them.
 
-        Positional arguments:
+        Required arguments:
         data -- data to check
         """
         self.data = data
@@ -71,7 +71,7 @@ class Checker:
         """
         Check if all primary keys in table are integers.
 
-        Positional arguments:
+        Required arguments:
         table_name -- name of table to check
         key_names -- names of fields which are considerred
         as primary keys in iterable
@@ -95,7 +95,7 @@ class Checker:
         """
         Check row primary key for validity.
 
-        Positional arguments:
+        Required arguments:
         key_names -- names of fields which contain keys
         datarow -- row to check
         used_keys -- container with alreaady used keys

@@ -94,7 +94,7 @@ class MutableAttributeMap:
     """
     Calculate, store and provide access to modified attribute values.
 
-    Positional arguments:
+    Required arguments:
     holder -- holder, to which this map is assigned
     """
 
@@ -199,7 +199,7 @@ class MutableAttributeMap:
         """
         Run calculations to find the actual value of attribute.
 
-        Positional arguments:
+        Required arguments:
         attr_id -- ID of attribute to be calculated
 
         Return value:

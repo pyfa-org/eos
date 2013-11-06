@@ -138,7 +138,7 @@ class ModifierBuilder:
         """
         Convert action to Modifier object.
 
-        Positional arguments:
+        Required arguments:
         action -- action for conversion
         effect_category_id -- category of effect, whose expressions were used
         to generate action

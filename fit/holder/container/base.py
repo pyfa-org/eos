@@ -27,7 +27,7 @@ class HolderContainerBase:
     should inherit it) implement just container type-
     specific logic.
 
-    Positional arguments:
+    Required arguments:
     fit -- fit, to which container is attached
     holder_class -- class of holders this container
     is allowed to contain

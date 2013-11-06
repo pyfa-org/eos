@@ -28,7 +28,7 @@ class HolderDescriptorOnFit(HolderContainerBase):
     Container for single holder, intended to be used
     as fit attribute for direct access.
 
-    Positional arguments:
+    Required arguments:
     attr_name -- name of instance attribute which
     should be used to store data processed by descriptor
     holder_class -- class of holders this container

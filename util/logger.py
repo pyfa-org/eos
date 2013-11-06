@@ -27,7 +27,7 @@ class Logger:
     """
     Handles everything related to logs.
 
-    Positional arguments:
+    Required arguments:
     name -- name of root logger for this instance,
     used in log filename
     logFolder -- path to folder for logs
@@ -42,10 +42,10 @@ class Logger:
         """
         Log info-level message.
 
-        Positional arguments:
+        Required arguments:
         msg -- message to log
 
-        Keyword arguments:
+        Optional arguments:
         child_name -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
@@ -64,10 +64,10 @@ class Logger:
         """
         Log warning-level message.
 
-        Positional arguments:
+        Required arguments:
         msg -- message to log
 
-        Keyword arguments:
+        Optional arguments:
         child_name -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
@@ -86,10 +86,10 @@ class Logger:
         """
         Log error-level message.
 
-        Positional arguments:
+        Required arguments:
         msg -- message to log
 
-        Keyword arguments:
+        Optional arguments:
         child -- name of child logger to use, if None,
         root logger is used (default None)
         signature -- hashable signature of log entry;
@@ -108,7 +108,7 @@ class Logger:
         """
         Configure python logging system for our neeeds.
 
-        Positional arguments:
+        Required arguments:
         name -- name of root python logger which will be
         used as root for our logger object
         log_folder -- path to folder for logs
@@ -137,7 +137,7 @@ class Logger:
         Get python's logger instance, which may be used to log
         actual entries according to logging module documentation.
 
-        Keyword arguments:
+        Optional arguments:
         child_name -- name of child logger to get, if None is
         passed, root logger is returned (default None)
         """

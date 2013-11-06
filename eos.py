@@ -41,12 +41,12 @@ class Eos:
     fetch necessary data, thus should be passed to top-
     level objects like Fit.
 
-    Positional arguments:
+    Required arguments:
     data_handler -- object which implements standard data
     interface (returns data rows for several tables as
     dicts and is able to get data version)
 
-    Keyword arguments:
+    Optional arguments:
     cache_handler -- cache handler implementation. If not
     specified, default JSON handler is used.
     name -- name of this eos instance, used as key to

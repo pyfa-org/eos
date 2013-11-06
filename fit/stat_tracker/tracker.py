@@ -34,7 +34,7 @@ class StatTracker(InheritableVolatileMixin):
     Object which is used as access points for all
     fit statistics.
 
-    Positional arguments:
+    Required arguments:
     fit -- Fit object to which tracker is assigned
     """
 
@@ -100,7 +100,7 @@ class StatTracker(InheritableVolatileMixin):
         """
         Handle state switch upwards.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for initial state
@@ -119,7 +119,7 @@ class StatTracker(InheritableVolatileMixin):
         """
         Handle state switch downwards.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for final state

@@ -20,6 +20,16 @@
 
 
 class ImmutableStateMixin:
+    """
+    Mixin intended to be used for holders which define
+    state at instantiation time and do not change it later.
+
+    Required arguments:
+    state -- initial state to take
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, state, **kwargs):
         self.__state = state
@@ -31,6 +41,16 @@ class ImmutableStateMixin:
 
 
 class MutableStateMixin:
+    """
+    Mixin intended to be used for holders which can
+    switch state at any time.
+
+    Required arguments:
+    state -- initial state to take
+
+    This class has following methods designed cooperatively:
+    __init__
+    """
 
     def __init__(self, state, **kwargs):
         self.__state = state

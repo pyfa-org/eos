@@ -27,7 +27,7 @@ class HolderDescriptorOnHolder(HolderContainerBase):
     Container for single holder, intended to be used
     as holder attribute for direct access.
 
-    Positional arguments:
+    Required arguments:
     direct_attr_name -- name of instance attribute which
     should be used to store data processed by descriptor
     reverse_attr_name -- name of attribute which will be

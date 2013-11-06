@@ -34,7 +34,7 @@ class Fit:
     """
     Fit holds all fit items and facilities to calculate their attributes.
 
-    Keyword arguments:
+    Optional arguments:
     eos -- eos instance within which fit will operate. If not specified,
     eos.default_instance is used.
     """
@@ -76,7 +76,7 @@ class Fit:
         """
         Run fit validation.
 
-        Keyword arguments:
+        Optional arguments:
         skip_checks -- iterable with checks to be skipped
 
         Possible exceptions:
@@ -156,7 +156,7 @@ class Fit:
         """
         Handle fit-specific part of holder state switch.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which state should be switched
         new_state -- state, which holder should take
         """

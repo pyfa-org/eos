@@ -27,8 +27,8 @@ class Holder:
     Base holder class inherited by all classes that
     need to keep track of modified attributes.
 
-    Positional arguments:
-    typeId -- typeID of item, which is supposed to be
+    Arguments consumed by cooperative __init__:
+    type_id -- type ID of item, which is supposed to be
     base item for holder
     """
 

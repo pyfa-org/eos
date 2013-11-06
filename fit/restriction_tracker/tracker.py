@@ -31,7 +31,7 @@ class RestrictionTracker:
     between fit and restriction registers, managing them and providing
     results to fit.
 
-    Positional arguments:
+    Required arguments:
     fit -- Fit object to which tracker is assigned
     """
 
@@ -86,7 +86,7 @@ class RestrictionTracker:
         """
         Handle state switch upwards.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for initial state
@@ -105,7 +105,7 @@ class RestrictionTracker:
         """
         Handle state switch downwards.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for final state
@@ -122,7 +122,7 @@ class RestrictionTracker:
         """
         Validate fit.
 
-        Keyword arguments:
+        Optional arguments:
         skip_checks -- iterable with restriction types, for which
         checks are skipped
 

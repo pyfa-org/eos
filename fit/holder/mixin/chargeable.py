@@ -29,6 +29,12 @@ class ChargeableMixin(CooperativeVolatileMixin):
     """
     Mixin intended to use with holders which can have charge loaded
     into them.
+
+    Required arguments:
+    charge -- charge to be loaded into holder
+
+    This class has following methods designed cooperatively:
+    __init__
     """
 
     def __init__(self, charge, **kwargs):

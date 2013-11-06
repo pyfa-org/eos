@@ -32,6 +32,12 @@ class BufferTankingMixin(CooperativeVolatileMixin):
 
     @VolatileProperty
     def hp(self):
+        """
+        Access point to fetch hp of item. Provides hp for following layers:
+        .hull, .armor, .shield -- number, or None if data can't be fetched
+        .total -- total amount of HP, if data for some layer is not available,
+        defaults hp of this layer to 0
+        """
         hull = self.attributes.get(Attribute.hp, None)
         armor = self.attributes.get(Attribute.armor_hp, None)
         shield = self.attributes.get(Attribute.shield_capacity, None)
@@ -40,6 +46,14 @@ class BufferTankingMixin(CooperativeVolatileMixin):
 
     @VolatileProperty
     def resistances(self):
+        """
+        Access point to fetch resistances of item. Provides following data:
+        .hull.em, .hull.thermal, .hull.kinetic, .hull.explosive,
+        .armor.em, .armor.thermal, .armor.kinetic, .armor.explosive,
+        .shield.em, .shield.thermal, .shield.kinetic, .shield.explosive
+        When resistance data can't be fetched, returns None for requested
+        resistance.
+        """
         hull = DamageTypes(
             em=self.__get_resistance_by_attr(Attribute.em_damage_resonance),
             thermal=self.__get_resistance_by_attr(Attribute.thermal_damage_resonance),
@@ -73,6 +87,18 @@ class BufferTankingMixin(CooperativeVolatileMixin):
             return 1 - resonance
 
     def get_ehp(self, damage_profile):
+        """
+        Get effective HP of item against passed damage profile.
+
+        Required arguments:
+        damage_profile -- object which has following numbers as its attibutes:
+        em, thermal, kinetic and explosive
+
+        Object with following attributes is returned:
+        .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
+        .total -- total effective HP, if data for some layer is not available,
+        defaults effective hp of this layer to 0.
+        """
         hull_ehp = self.__get_layer_ehp(self.hp.hull, self.resistances.hull, damage_profile)
         armor_ehp = self.__get_layer_ehp(self.hp.armor, self.resistances.armor, damage_profile)
         shield_ehp = self.__get_layer_ehp(self.hp.shield, self.resistances.shield, damage_profile)
@@ -107,6 +133,17 @@ class BufferTankingMixin(CooperativeVolatileMixin):
 
     @VolatileProperty
     def worst_case_ehp(self):
+        """
+        Get EVE-style effective HP for item.
+
+        EVE takes the worst resistance and calculates EHP against it,
+        on a per-layer basis.
+
+        Object with following attributes is returned:
+        .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
+        .total -- total effective HP, if data for some layer is not available,
+        defaults effective hp of this layer to 0.
+        """
         hull_ehp = self.__get_layer_worst_case_ehp(self.hp.hull, self.resistances.hull)
         armor_ehp = self.__get_layer_worst_case_ehp(self.hp.armor, self.resistances.armor)
         shield_ehp = self.__get_layer_worst_case_ehp(self.hp.shield, self.resistances.shield)

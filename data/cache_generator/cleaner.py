@@ -28,7 +28,7 @@ class Cleaner:
     from the database in automatic mode, using several
     pre-defined data relations.
 
-    Positional arguments:
+    Required arguments:
     logger -- logger to use
     """
 
@@ -204,7 +204,7 @@ class Cleaner:
         """
         Auxiliary method, mark data rows as strong.
 
-        Positional arguments:
+        Required arguments:
         table_name -- name of table for which we're pumping data
         datarows -- set with rows to pump
         """
@@ -215,7 +215,7 @@ class Cleaner:
         """
         Auxiliary method, mark data rows as pending removal.
 
-        Positional arguments:
+        Required arguments:
         table_name -- name of table for which we're removing data
         datarows -- set with rows to remove
         """
@@ -230,7 +230,7 @@ class Cleaner:
         Auxiliary method, move data from trash back to actual
         data container.
 
-        Positional arguments:
+        Required arguments:
         table_name -- name of table for which we're restoring data
         datarows -- set with rows to restore
         """

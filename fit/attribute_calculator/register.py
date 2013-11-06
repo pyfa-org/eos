@@ -33,7 +33,7 @@ class LinkRegister:
     doesn't know anything about states and contexts, just
     affectors and affectees.
 
-    Positional arguments:
+    Required arguments:
     fit -- fit, to which this register is bound to
     """
 
@@ -80,7 +80,7 @@ class LinkRegister:
         Add passed target holder to register's maps, so it can be affected by
         other holders properly.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder to register
         """
         for key, affectee_map in self.__get_affectee_maps(target_holder):
@@ -101,7 +101,7 @@ class LinkRegister:
         Remove passed target holder from register's maps, so holders affecting
         it "know" that its modification is no longer needed.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder to unregister
         """
         for key, affectee_map in self.__get_affectee_maps(target_holder):
@@ -121,7 +121,7 @@ class LinkRegister:
         Add passed affector to register's affector maps, so that new holders
         added to fit know that they should be affected by it.
 
-        Positional arguments:
+        Required arguments:
         affector -- affector to register
         """
         try:
@@ -136,7 +136,7 @@ class LinkRegister:
         Remove passed affector from register's affector maps, so that
         holders-affectees "know" that they're no longer affected by it.
 
-        Positional arguments:
+        Required arguments:
         affector -- affector to unregister
         """
         try:
@@ -153,7 +153,7 @@ class LinkRegister:
         """
         Get all holders influenced by passed affector.
 
-        Positional arguments:
+        Required arguments:
         affector -- affector, for which we're seeking for affectees
 
         Return value:
@@ -212,7 +212,7 @@ class LinkRegister:
         """
         Get all affectors, which influence passed holder.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder, for which we're seeking for affecting it
         affectors
 
@@ -238,7 +238,7 @@ class LinkRegister:
         """
         Helper for affectee register/unregister methods.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder, for which affectee maps are requested
 
         Return value:
@@ -261,7 +261,7 @@ class LinkRegister:
         """
         Helper for affector register/unregister methods.
 
-        Positional arguments:
+        Required arguments:
         affector -- affector, for which affector map are requested
 
         Return value:
@@ -348,7 +348,7 @@ class LinkRegister:
         it is done from centralized place - this method. If error cannot be
         handled by method, it is re-raised.
 
-        Positional arguments:
+        Required arguments:
         error -- Exception instance which was caught and needs to be handled
         affector -- affector object, which was being processed when error occurred
         """
@@ -383,7 +383,7 @@ class LinkRegister:
         filtered holders, direct modifications are processed out
         of the context of this method.
 
-        Positional arguments:
+        Required arguments:
         affector -- affector, whose modifier refers location in question
 
         Return value:
@@ -420,7 +420,7 @@ class LinkRegister:
         Get location which you need to target to apply
         direct modification to passed holder.
 
-        Positional arguments:
+        Required arguments:
         holder -- holder in question
 
         Return value:
@@ -446,7 +446,7 @@ class LinkRegister:
         Enable temporarily disabled affectors, directly targeting holder in
         specific location.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder which is being registered
         target_location -- location, to which holder is being registered
         """
@@ -473,7 +473,7 @@ class LinkRegister:
         """
         Disable affectors, directly targeting holder in specific location.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder which is being unregistered
         """
         # Format: {source_holder: [affectors]}
@@ -497,7 +497,7 @@ class LinkRegister:
         Enable temporarily disabled affectors, directly targeting passed holder,
         originating from holder in "other" location.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder which is being registered
         """
         other_holder = self.__get_other_linked_holder(target_holder)
@@ -523,7 +523,7 @@ class LinkRegister:
         Disable affectors, directly targeting passed holder, originating from
         holder in "other" location.
 
-        Positional arguments:
+        Required arguments:
         target_holder -- holder which is being unregistered
         """
         other_holder = self.__get_other_linked_holder(target_holder)

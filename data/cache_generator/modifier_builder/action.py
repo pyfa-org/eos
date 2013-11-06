@@ -77,7 +77,7 @@ class Action:
         """
         Check if passed action is mirrored version of self.
 
-        Positional arguments:
+        Required arguments:
         other -- action to check against
 
         Return value:

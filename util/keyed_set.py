@@ -30,7 +30,7 @@ class KeyedSet(dict):
         Add data set to dictionary, with proper creation jobs
         if necessary.
 
-        Positional arguments:
+        Required arguments:
         key -- key to access dictionary value (data set)
         data_set -- set with data to add to value
         """
@@ -44,7 +44,7 @@ class KeyedSet(dict):
         Remove data set from dictionary, with proper cleanup
         jobs if necessary.
 
-        Positional arguments:
+        Required arguments:
         key -- key to access dictionary value (data set)
         data_set -- set with data to remove from value
         """
@@ -62,7 +62,7 @@ class KeyedSet(dict):
         Add single object to dictionary, with proper creation
         jobs if necessary.
 
-        Positional arguments:
+        Required arguments:
         key -- key to access dictionary value (data set)
         data -- object to add to value
         """
@@ -76,7 +76,7 @@ class KeyedSet(dict):
         Remove single object from dictionary, with proper
         cleanup jobs if necessary.
 
-        Positional arguments:
+        Required arguments:
         key -- key to access dictionary value (data set)
         dataSet -- object to remove from value
         """
@@ -93,7 +93,7 @@ class KeyedSet(dict):
         """
         Get data set with safe fallback.
 
-        Positional arguments:
+        Required arguments:
         key -- key to access dictionary value (data set)
 
         Return value:

@@ -27,7 +27,7 @@ class HolderRestrictedSet(HolderSet):
     Unordered container for holders, which can't
     contain 2 holders with the same type ID.
 
-    Positional arguments:
+    Required arguments:
     fit -- fit, to which container is attached
     holder_class -- class of holders this container
     is allowed to contain

@@ -43,7 +43,7 @@ class CacheGenerator:
         """
         Generate cache out of passed data.
 
-        Positional arguments:
+        Required arguments:
         data_handler - data handler to use for getting data
 
         Return value:

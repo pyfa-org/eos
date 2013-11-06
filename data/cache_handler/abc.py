@@ -57,7 +57,7 @@ class CacheHandler(metaclass=ABCMeta):
         """
         Update cache with passed data.
 
-        Positional arguments:
+        Required arguments:
         data -- format: {entity type: [{field name: field value}]
         fingerprint -- unique ID of data in the form of string
         """

@@ -36,7 +36,7 @@ class JsonCacheHandler(CacheHandler):
     keeps loads data from on-disk cache to memory, and uses weakref
     object cache for assembled objects.
 
-    Positional arguments:
+    Required arguments:
     diskCacheFolder -- folder where on-disk cache files are stored
     name -- unique indentifier of cache, e.g. Eos instance name
     logger -- logger to use for errors
@@ -261,7 +261,7 @@ class JsonCacheHandler(CacheHandler):
         """
         Loads data into memory data cache.
 
-        Positional arguments:
+        Required arguments:
         data -- dictionary with data to load
         """
         self.__type_data_cache = data['types']

@@ -20,6 +20,11 @@
 
 
 class SpecialAttribMixin:
+    """
+    Provides access to various attributes via aliases, the
+    mapping between aliases and actual attributes with their
+    values is provided by eve item (type, holder.item) itself.
+    """
 
     @property
     def tracking_speed(self):
