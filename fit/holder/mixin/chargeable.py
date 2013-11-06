@@ -45,9 +45,9 @@ class ChargeableMixin(CooperativeVolatileMixin):
     charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
 
     @VolatileProperty
-    def charge_max_amount(self):
+    def charge_max_quantity(self):
         """
-        Return max amount of loadable charges as integer, based
+        Return max quantity of loadable charges as integer, based
         on the container capacity and charge volume. If any of these
         is not defined, or no charge is found in holder, None is returned.
         """
@@ -63,15 +63,15 @@ class ChargeableMixin(CooperativeVolatileMixin):
         return charges
 
     @property
-    def charge_amount(self):
+    def charge_quantity(self):
         if self.__charge_amount_override is None:
             return self.charge_max_amount
         return self.__charge_amount_override
 
-    @charge_amount.setter
-    def charge_amount(self, value):
+    @charge_quantity.setter
+    def charge_quantity(self, value):
         self.__charge_amount_override = value
 
-    @charge_amount.deleter
-    def charge_amount(self):
+    @charge_quantity.deleter
+    def charge_quantity(self):
         self.__charge_amount_override = None
