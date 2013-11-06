@@ -33,21 +33,8 @@ class OverrideDescriptor:
 
     def __init__(self, default_name):
         self.__default_name = default_name
-        self.__store_name = '_{}_{}'.format(type(self).__name__, default_name)
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        if hasattr(instance, self.__store_name):
-            return getattr(instance, self.__store_name)
         return getattr(instance, self.__default_name)
-
-    def __set__(self, instance, value):
-        setattr(instance, self.__store_name, value)
-
-    def __delete__(self, instance):
-        try:
-            delattr(instance, self.__store_name)
-        except AttributeError as e:
-            msg = 'override for {} is not set'.format(self.__default_name)
-            raise AttributeError(msg) from e
