@@ -39,12 +39,13 @@ class ChargeableMixin(CooperativeVolatileMixin):
 
     def __init__(self, charge, **kwargs):
         super().__init__(**kwargs)
+        self.__charge_amount_override = None
         self.charge = charge
 
     charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
 
     @VolatileProperty
-    def charges_amount_max(self):
+    def charge_max_amount(self):
         """
         Return max amount of loadable charges as integer, based
         on the container capacity and charge volume. If any of these
@@ -61,8 +62,16 @@ class ChargeableMixin(CooperativeVolatileMixin):
         charges = int(round(container_capacity / charge_volume, 9))
         return charges
 
-    # Current amount of charges in container, defaults to max amount
-    # of charges which can be loaded into it. It's here to make it
-    # possible to override amount of loaded charges, while retaining
-    # access to max amount number.
-    charges_amount = charges_amount_max
+    @property
+    def charge_amount(self):
+        if self.__charge_amount_override is None:
+            return self.charge_max_amount
+        return self.__charge_amount_override
+
+    @charge_amount.setter
+    def charge_amount(self, value):
+        self.__charge_amount_override = value
+
+    @charge_amount.deleter
+    def charge_amount(self):
+        self.__charge_amount_override = None

@@ -70,6 +70,10 @@ class CooperativeVolatileMixin:
     classes using volatileproperty on them.
     This mixin is to be used in cooperative
     classes (see super() docs).
+
+    This class has following methods designed cooperatively:
+    __init__
+    _clear_volatile_attrs
     """
 
     def __init__(self, **kwargs):
@@ -80,6 +84,9 @@ class CooperativeVolatileMixin:
         """
         Remove all the caches values which were
         stored since the last cleanup.
+
+        Attempt to call next method in MRO, do nothing
+        on failure to find it.
         """
         for attr_name in self._volatile_attrs:
             try:
