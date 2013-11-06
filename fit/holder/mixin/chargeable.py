@@ -22,6 +22,7 @@
 from eos.const.eve import Attribute
 from eos.fit.holder.container import HolderDescriptorOnHolder
 from eos.fit.holder.item import Charge
+from eos.util.override import OverrideDescriptor
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 
 
@@ -62,16 +63,4 @@ class ChargeableMixin(CooperativeVolatileMixin):
         charges = int(round(container_capacity / charge_volume, 9))
         return charges
 
-    @property
-    def charge_quantity(self):
-        if self.__charge_amount_override is None:
-            return self.charge_max_amount
-        return self.__charge_amount_override
-
-    @charge_quantity.setter
-    def charge_quantity(self, value):
-        self.__charge_amount_override = value
-
-    @charge_quantity.deleter
-    def charge_quantity(self):
-        self.__charge_amount_override = None
+    charge_quantity = OverrideDescriptor('charge_max_quantity')
