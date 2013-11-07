@@ -42,8 +42,7 @@ class HolderDescriptorOnFit(HolderContainerBase):
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        else:
-            return getattr(instance, self.__attr_name, None)
+        return getattr(instance, self.__attr_name, None)
 
     def __set__(self, instance, new_holder):
         self._check_class(new_holder, allow_none=True)
