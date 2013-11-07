@@ -141,9 +141,18 @@ class StatTracker(InheritableVolatileMixin):
     def hp(self):
         ship_holder = self._fit.ship
         try:
-            return ship_holder.hp
+            hp_data = ship_holder.hp
         except AttributeError:
             return Hitpoints(hull=None, armor=None, shield=None, total=0)
+        else:
+            # Build tuple here because the object we fetched
+            # changes stats dynamically
+            return Hitpoints(
+                hull=hp_data.hull,
+                armor=hp_data.armor,
+                shield=hp_data.shield,
+                total=hp_data.total
+            )
 
     @VolatileProperty
     def resistances(self):

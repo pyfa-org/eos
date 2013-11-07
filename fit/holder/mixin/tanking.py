@@ -21,6 +21,7 @@
 
 from eos.const.eve import Attribute
 from eos.fit.tuples import Hitpoints, TankingLayers, DamageTypes
+from eos.util.override import OverrideDescriptor
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
 
@@ -29,21 +30,14 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to sustain damage (ships, drones, maybe some charges).
+
+    Cooperative methods:
+    __init__
     """
 
-    @VolatileProperty
-    def hp(self):
-        """
-        Access point to fetch hp of item. Provides hp for following layers:
-        .hull, .armor, .shield -- number, or None if data can't be fetched
-        .total -- total amount of HP, if data for some layer is not available,
-        defaults hp of this layer to 0
-        """
-        hull = self.attributes.get(Attribute.hp, None)
-        armor = self.attributes.get(Attribute.armor_hp, None)
-        shield = self.attributes.get(Attribute.shield_capacity, None)
-        total = (hull or 0) + (armor or 0) + (shield or 0)
-        return Hitpoints(hull=hull, armor=armor, shield=shield, total=total)
+    def __init__(self, **kwargs):
+        self.hp = OverridableHp(self)
+        super().__init__(**kwargs)
 
     @VolatileProperty
     def resistances(self):
@@ -164,3 +158,39 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
                          layer_resistances.kinetic or 0,
                          layer_resistances.explosive or 0)
         return layer_hp / (1 - resistance)
+
+
+class OverridableHp:
+    """
+    Access point to fetch hp of item. Provides following data:
+
+    .hull, .armor, .shield -- number (overridable), or None if data can't
+    be fetched
+    .max_hull, .max_armor, .max_shield -- number, or None if data can't
+    be fetched
+    .total -- total amount of HP based on overridable data, if data for
+    some layer is not available, defaults hp of this layer to 0
+    """
+
+    def __init__(self, holder):
+        self.__holder = holder
+
+    @property
+    def max_hull(self):
+        return self.__holder.attributes.get(Attribute.hp, None)
+
+    @property
+    def max_armor(self):
+        return self.__holder.attributes.get(Attribute.armor_hp, None)
+
+    @property
+    def max_shield(self):
+        return self.__holder.attributes.get(Attribute.shield_capacity, None)
+
+    hull = OverrideDescriptor('max_hull')
+    armor = OverrideDescriptor('max_armor')
+    shield = OverrideDescriptor('max_shield')
+
+    @property
+    def total(self):
+        return (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
