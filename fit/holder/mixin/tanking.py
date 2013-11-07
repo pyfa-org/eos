@@ -166,7 +166,7 @@ class OverridableHp:
 
     .hull, .armor, .shield -- number (overridable), or None if data can't
     be fetched
-    .max_hull, .max_armor, .max_shield -- number, or None if data can't
+    .hull_max, .armor_max, .shield_max -- number, or None if data can't
     be fetched
     .total -- total amount of HP based on overridable data, if data for
     some layer is not available, defaults hp of this layer to 0
@@ -194,3 +194,6 @@ class OverridableHp:
     @property
     def total(self):
         return (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
+
+    def _request_volatile_cleanup(self):
+        self.__holder._request_volatile_cleanup()
