@@ -66,7 +66,7 @@ class HolderList(HolderContainerBase):
                 del self.__list[index]
                 self._cleanup()
                 raise ValueError(*e.args) from e
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
 
     def append(self, holder):
         """
@@ -85,7 +85,7 @@ class HolderList(HolderContainerBase):
         except HolderAlreadyAssignedError as e:
             del self.__list[-1]
             raise ValueError(*e.args) from e
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
 
     def place(self, index, holder):
         """
@@ -116,7 +116,7 @@ class HolderList(HolderContainerBase):
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
 
     def equip(self, holder):
         """
@@ -144,7 +144,7 @@ class HolderList(HolderContainerBase):
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
 
     def remove(self, value):
         """
@@ -162,7 +162,7 @@ class HolderList(HolderContainerBase):
         else:
             holder = value
             index = self.__list.index(holder)
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
         if holder is not None:
             self.__fit._remove_holder(holder)
         del self.__list[index]
@@ -186,7 +186,7 @@ class HolderList(HolderContainerBase):
             index = self.__list.index(holder)
         if holder is None:
             return
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
         self.__fit._remove_holder(holder)
         self.__list[index] = None
         self._cleanup()
@@ -197,7 +197,7 @@ class HolderList(HolderContainerBase):
 
     def clear(self):
         """Remove everything from container."""
-        self.__fit._clear_volatile_data()
+        self.__fit._request_volatile_cleanup()
         for holder in self.__list:
             if holder is not None:
                 self.__fit._remove_holder(holder)

@@ -62,7 +62,7 @@ class HolderDescriptorOnHolder(HolderContainerBase):
         old_holder = getattr(instance, direct_attr_name, None)
         if old_holder is not None:
             if fit is not None:
-                fit._clear_volatile_data()
+                fit._request_volatile_cleanup()
                 fit._remove_holder(old_holder)
             if reverse_attr_name is not None:
                 setattr(old_holder, reverse_attr_name, None)
@@ -72,4 +72,4 @@ class HolderDescriptorOnHolder(HolderContainerBase):
                 setattr(new_holder, reverse_attr_name, instance)
             if fit is not None:
                 fit._add_holder(new_holder)
-                fit._clear_volatile_data()
+                fit._request_volatile_cleanup()
