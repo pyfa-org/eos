@@ -43,6 +43,7 @@ class OverrideDescriptor:
         return getattr(instance, self.__default_name)
 
     def __set__(self, instance, value):
+        instance._request_volatile_cleanup()
         setattr(instance, self.__store_name, value)
 
     def __delete__(self, instance):
@@ -51,3 +52,5 @@ class OverrideDescriptor:
         except AttributeError as e:
             msg = 'override for {} is not set'.format(self.__default_name)
             raise AttributeError(msg) from e
+        else:
+            instance._request_volatile_cleanup()

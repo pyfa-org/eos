@@ -69,3 +69,11 @@ class Holder:
             self.item = None
         else:
             self.item = cache_handler.get_type(self._type_id)
+
+    def _request_volatile_cleanup(self):
+        """
+        Request fit to clear all fit volatile data.
+        """
+        fit = self._fit
+        if fit is not None:
+            fit._request_volatile_cleanup()
