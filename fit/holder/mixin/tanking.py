@@ -176,20 +176,20 @@ class OverridableHp:
         self.__holder = holder
 
     @property
-    def max_hull(self):
+    def hull_max(self):
         return self.__holder.attributes.get(Attribute.hp, None)
 
     @property
-    def max_armor(self):
+    def armor_max(self):
         return self.__holder.attributes.get(Attribute.armor_hp, None)
 
     @property
-    def max_shield(self):
+    def shield_max(self):
         return self.__holder.attributes.get(Attribute.shield_capacity, None)
 
-    hull = OverrideDescriptor('max_hull')
-    armor = OverrideDescriptor('max_armor')
-    shield = OverrideDescriptor('max_shield')
+    hull = OverrideDescriptor('hull_max')
+    armor = OverrideDescriptor('armor_max')
+    shield = OverrideDescriptor('shield_max')
 
     @property
     def total(self):
