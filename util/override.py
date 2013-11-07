@@ -43,8 +43,8 @@ class OverrideDescriptor:
         return getattr(instance, self.__default_name)
 
     def __set__(self, instance, value):
-        instance._request_volatile_cleanup()
         setattr(instance, self.__store_name, value)
+        instance._request_volatile_cleanup()
 
     def __delete__(self, instance):
         try:

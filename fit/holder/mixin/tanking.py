@@ -22,9 +22,10 @@
 from eos.const.eve import Attribute
 from eos.fit.tuples import Hitpoints, TankingLayers, DamageTypes
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
+from .holder import HolderBase
 
 
-class BufferTankingMixin(CooperativeVolatileMixin):
+class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to sustain damage (ships, drones, maybe some charges).

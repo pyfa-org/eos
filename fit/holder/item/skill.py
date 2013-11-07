@@ -21,12 +21,10 @@
 
 from eos.const.eos import Location, State
 from eos.const.eve import Attribute
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Skill(Holder,
-            ImmutableStateMixin):
+class Skill(ImmutableStateMixin):
     """
     Skill with all its special properties.
 

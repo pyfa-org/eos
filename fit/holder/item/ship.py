@@ -20,13 +20,11 @@
 
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
 
 
-class Ship(Holder,
-           ImmutableStateMixin,
+class Ship(ImmutableStateMixin,
            BufferTankingMixin):
     """
     Ship with all its special properties.

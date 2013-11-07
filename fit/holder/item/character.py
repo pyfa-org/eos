@@ -20,12 +20,10 @@
 
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Character(Holder,
-                ImmutableStateMixin):
+class Character(ImmutableStateMixin):
     """
     Represents a character. Must be holder, as EVE tracks
     some attributes on it.

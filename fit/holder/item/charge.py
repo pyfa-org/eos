@@ -20,12 +20,10 @@
 
 
 from eos.const.eos import Location, State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Charge(Holder,
-             ImmutableStateMixin):
+class Charge(ImmutableStateMixin):
     """
     Ammo - crystals, probes, bombs, etc.
 

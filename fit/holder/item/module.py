@@ -20,14 +20,12 @@
 
 
 from eos.const.eos import Location, State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.chargeable import ChargeableMixin
 from eos.fit.holder.mixin.misc import SpecialAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 
 
-class Module(Holder,
-             MutableStateMixin,
+class Module(MutableStateMixin,
              ChargeableMixin,
              SpecialAttribMixin):
 

@@ -28,7 +28,7 @@ class TestHolderMixinTankingHp(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
-        self.mixin = BufferTankingMixin()
+        self.mixin = BufferTankingMixin(type_id=None)
         self.mixin.attributes = {}
 
     def test_generic(self):

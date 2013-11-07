@@ -20,12 +20,10 @@
 
 
 from eos.const.eos import State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class EffectBeacon(Holder,
-                   ImmutableStateMixin):
+class EffectBeacon(ImmutableStateMixin):
     """
     System-wide anomaly with all its special properties.
 

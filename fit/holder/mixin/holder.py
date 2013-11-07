@@ -22,7 +22,7 @@
 from eos.fit.attribute_calculator import MutableAttributeMap
 
 
-class Holder:
+class HolderBase:
     """
     Base holder class inherited by all classes that
     need to keep track of modified attributes.

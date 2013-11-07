@@ -20,12 +20,10 @@
 
 
 from eos.const.eos import Location, State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Booster(Holder,
-              ImmutableStateMixin):
+class Booster(ImmutableStateMixin):
     """
     Booster with all its special properties.
 

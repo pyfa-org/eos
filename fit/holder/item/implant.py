@@ -20,12 +20,10 @@
 
 
 from eos.const.eos import Location, State
-from eos.fit.holder import Holder
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Implant(Holder,
-              ImmutableStateMixin):
+class Implant(ImmutableStateMixin):
     """
     Implant with all its special properties.
 

@@ -19,7 +19,10 @@
 #===============================================================================
 
 
-class SpecialAttribMixin:
+from .holder import HolderBase
+
+
+class SpecialAttribMixin(HolderBase):
     """
     Provides access to various attributes via aliases, the
     mapping between aliases and actual attributes with their

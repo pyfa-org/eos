@@ -19,7 +19,10 @@
 #===============================================================================
 
 
-class ImmutableStateMixin:
+from .holder import HolderBase
+
+
+class ImmutableStateMixin(HolderBase):
     """
     Mixin intended to be used for holders which define
     state at instantiation time and do not change it later.
@@ -40,7 +43,7 @@ class ImmutableStateMixin:
         return self.__state
 
 
-class MutableStateMixin:
+class MutableStateMixin(HolderBase):
     """
     Mixin intended to be used for holders which can
     switch state at any time.
