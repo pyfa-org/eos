@@ -32,11 +32,12 @@ class VolatileProperty:
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        value = self.method(instance)
-        name = self.method.__name__
-        setattr(instance, name, value)
-        instance._volatile_attrs.add(name)
-        return value
+        else:
+            value = self.method(instance)
+            name = self.method.__name__
+            setattr(instance, name, value)
+            instance._volatile_attrs.add(name)
+            return value
 
 
 class InheritableVolatileMixin:

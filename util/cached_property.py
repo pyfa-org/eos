@@ -44,6 +44,7 @@ class CachedProperty:
         # If called from instance, execute decorated method
         # and store returned value as class attribute, which
         # has the same name as method, then return it to caller
-        value = self.method(instance)
-        setattr(instance, self.method.__name__, value)
-        return value
+        else:
+            value = self.method(instance)
+            setattr(instance, self.method.__name__, value)
+            return value
