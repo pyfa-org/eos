@@ -87,7 +87,12 @@ class Fit:
     def _request_volatile_cleanup(self, eos_check=True):
         """
         Clear all the 'cached', but volatile stats, which should
-        be no longer actual on any fit/holder changes.
+        be no longer actual on any fit/holder changes. Called
+        automatically be eos components when needed.
+
+        Optional arguments:
+        eos_check -- check if fit has eos instance assigned,
+        do not clean if it doesn't. Default is True (do check).
         """
         if eos_check is True and self.eos is None:
             return
@@ -186,7 +191,8 @@ class Fit:
 
     @eos.setter
     def eos(self, new_eos):
-        self._request_volatile_cleanup()
+        if new_eos is self.eos:
+            return
         # Disable everything dependent on old eos prior to switch
         if self.__eos is not None:
             for holder in self._holders:
