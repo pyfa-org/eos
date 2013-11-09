@@ -40,8 +40,9 @@ class Skill(ImmutableStateMixin):
     """
 
     def __init__(self, type_id, level=0, **kwargs):
-        self.__level = level
+        self.__level = None
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
+        self.level = level
 
     @property
     def _location(self):
@@ -53,6 +54,7 @@ class Skill(ImmutableStateMixin):
 
     @level.setter
     def level(self, value):
+        value = int(value)
         # Skip everything if level isn't actually
         # changed
         if self.__level == value:
