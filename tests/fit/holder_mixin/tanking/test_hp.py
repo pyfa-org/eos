@@ -38,43 +38,48 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertAlmostEqual(self.mixin.hp.hull, 8)
         self.assertAlmostEqual(self.mixin.hp.armor, 10)
         self.assertAlmostEqual(self.mixin.hp.shield, 12)
+        self.assertAlmostEqual(self.mixin.hp.hull_max, 8)
+        self.assertAlmostEqual(self.mixin.hp.armor_max, 10)
+        self.assertAlmostEqual(self.mixin.hp.shield_max, 12)
         self.assertAlmostEqual(self.mixin.hp.total, 30)
 
     def test_unspecified(self):
         self.assertIsNone(self.mixin.hp.hull)
         self.assertIsNone(self.mixin.hp.armor)
         self.assertIsNone(self.mixin.hp.shield)
+        self.assertIsNone(self.mixin.hp.hull_max)
+        self.assertIsNone(self.mixin.hp.armor_max)
+        self.assertIsNone(self.mixin.hp.shield_max)
         self.assertEqual(self.mixin.hp.total, 0)
 
-    def test_cache(self):
+    def test_override(self):
         self.mixin.attributes[Attribute.hp] = 8
         self.mixin.attributes[Attribute.armor_hp] = 10
         self.mixin.attributes[Attribute.shield_capacity] = 12
         self.assertAlmostEqual(self.mixin.hp.hull, 8)
         self.assertAlmostEqual(self.mixin.hp.armor, 10)
         self.assertAlmostEqual(self.mixin.hp.shield, 12)
+        self.assertAlmostEqual(self.mixin.hp.hull_max, 8)
+        self.assertAlmostEqual(self.mixin.hp.armor_max, 10)
+        self.assertAlmostEqual(self.mixin.hp.shield_max, 12)
         self.assertAlmostEqual(self.mixin.hp.total, 30)
-        self.mixin.attributes[Attribute.hp] = 18
-        self.mixin.attributes[Attribute.armor_hp] = 110
-        self.mixin.attributes[Attribute.shield_capacity] = 112
+        self.mixin.hp.hull = 100
+        self.mixin.hp.armor = 200
+        self.mixin.hp.shield = 300
+        self.assertAlmostEqual(self.mixin.hp.hull, 100)
+        self.assertAlmostEqual(self.mixin.hp.armor, 200)
+        self.assertAlmostEqual(self.mixin.hp.shield, 300)
+        self.assertAlmostEqual(self.mixin.hp.hull_max, 8)
+        self.assertAlmostEqual(self.mixin.hp.armor_max, 10)
+        self.assertAlmostEqual(self.mixin.hp.shield_max, 12)
+        self.assertAlmostEqual(self.mixin.hp.total, 600)
+        del self.mixin.hp.hull
+        del self.mixin.hp.armor
+        del self.mixin.hp.shield
         self.assertAlmostEqual(self.mixin.hp.hull, 8)
         self.assertAlmostEqual(self.mixin.hp.armor, 10)
         self.assertAlmostEqual(self.mixin.hp.shield, 12)
+        self.assertAlmostEqual(self.mixin.hp.hull_max, 8)
+        self.assertAlmostEqual(self.mixin.hp.armor_max, 10)
+        self.assertAlmostEqual(self.mixin.hp.shield_max, 12)
         self.assertAlmostEqual(self.mixin.hp.total, 30)
-
-    def test_volatility(self):
-        self.mixin.attributes[Attribute.hp] = 8
-        self.mixin.attributes[Attribute.armor_hp] = 10
-        self.mixin.attributes[Attribute.shield_capacity] = 12
-        self.assertAlmostEqual(self.mixin.hp.hull, 8)
-        self.assertAlmostEqual(self.mixin.hp.armor, 10)
-        self.assertAlmostEqual(self.mixin.hp.shield, 12)
-        self.assertAlmostEqual(self.mixin.hp.total, 30)
-        self.mixin._clear_volatile_attrs()
-        self.mixin.attributes[Attribute.hp] = 18
-        self.mixin.attributes[Attribute.armor_hp] = 110
-        self.mixin.attributes[Attribute.shield_capacity] = 112
-        self.assertAlmostEqual(self.mixin.hp.hull, 18)
-        self.assertAlmostEqual(self.mixin.hp.armor, 110)
-        self.assertAlmostEqual(self.mixin.hp.shield, 112)
-        self.assertAlmostEqual(self.mixin.hp.total, 240)
