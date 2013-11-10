@@ -64,3 +64,8 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         return charges
 
     charge_quantity = OverrideDescriptor('charge_quantity_max')
+
+    @property
+    def reload_time(self):
+        return self.attributes.get(Attribute.reload_time)
+

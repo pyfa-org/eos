@@ -146,7 +146,8 @@ class StatTracker(InheritableVolatileMixin):
             return Hitpoints(hull=None, armor=None, shield=None, total=0)
         else:
             # Build tuple here because the object we fetched
-            # from ship updates stored stats on fit changes
+            # from ship is access point to stats, which are
+            # updated on fit changes
             return Hitpoints(
                 hull=hp_data.hull,
                 armor=hp_data.armor,

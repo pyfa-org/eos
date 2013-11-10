@@ -108,6 +108,7 @@ class Attribute(metaclass=Enum):
     rig_size = 1547
     allowed_drone_group_1 = 1782
     allowed_drone_group_2 = 1783
+    reload_time = 1795
 
 
 class Type(metaclass=Enum):
