@@ -110,6 +110,11 @@ class Attribute(metaclass=Enum):
     allowed_drone_group_1 = 1782
     allowed_drone_group_2 = 1783
     reload_time = 1795
+    can_fit_ship_group_5 = 1872
+    can_fit_ship_group_6 = 1879
+    can_fit_ship_group_7 = 1880
+    can_fit_ship_group_8 = 1881
+
 
 
 class Type(metaclass=Enum):

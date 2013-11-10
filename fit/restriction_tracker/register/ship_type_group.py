@@ -39,7 +39,11 @@ GROUP_RESTRICTION_ATTRS = (
     Attribute.can_fit_ship_group_1,
     Attribute.can_fit_ship_group_2,
     Attribute.can_fit_ship_group_3,
-    Attribute.can_fit_ship_group_4
+    Attribute.can_fit_ship_group_4,
+    Attribute.can_fit_ship_group_5,
+    Attribute.can_fit_ship_group_6,
+    Attribute.can_fit_ship_group_7,
+    Attribute.can_fit_ship_group_8
 )
 
 
