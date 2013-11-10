@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eve import Attribute
+from eos.const.eve import Attribute, Effect
 from eos.fit.holder.container import HolderDescriptorOnHolder
 from eos.fit.holder.item import Charge
 from eos.util.override import OverrideDescriptor
@@ -65,7 +65,20 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
 
     charge_quantity = OverrideDescriptor('charge_quantity_max')
 
-    @property
+    @VolatileProperty
     def reload_time(self):
-        return self.attributes.get(Attribute.reload_time)
+        """
+        Return holder reload time in seconds.
+        """
+        # Return hardcoded 1.0 if holder's item has target_attack effect
+        # (various lasers), else fetch reload time attribute from holder
+        holder_item = self.item
+        try:
+            item_effids = holder_item._effect_ids
+        except AttributeError:
+            pass
+        else:
+            if Effect.target_attack in item_effids:
+                return 1.0
+        return self.attributes.get(Attribute.reload_time) / 1000
 

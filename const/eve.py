@@ -137,10 +137,12 @@ class Category(metaclass=Enum):
 
 class Effect(metaclass=Enum):
     """Effect ID holder"""
+    target_attack = 10
     lo_power = 11
     hi_power = 12
     med_power = 13
     online = 16
+    projectile_fired = 34
     launcher_fitted = 40
     turret_fitted = 42
     rig_slot = 2663

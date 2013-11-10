@@ -74,6 +74,10 @@ class Type:
         # which this type applies
         self.effects = effects
 
+    @CachedProperty
+    def _effect_ids(self):
+        return tuple(e.id for e in self.effects)
+
     @property
     def modifiers(self):
         """ Get all modifiers spawned by item effects."""
