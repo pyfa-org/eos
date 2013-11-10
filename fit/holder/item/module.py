@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import Location, State
+from eos.const.eve import Attribute
 from eos.fit.holder.mixin.chargeable import ChargeableMixin
 from eos.fit.holder.mixin.misc import SpecialAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
@@ -35,6 +36,10 @@ class Module(MutableStateMixin,
     @property
     def _location(self):
         return Location.ship
+
+    @property
+    def reactivation_delay(self):
+        return self.attributes.get(Attribute.module_reactivation_delay)
 
 
 class ModuleHigh(Module):

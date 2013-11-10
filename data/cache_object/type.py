@@ -76,6 +76,7 @@ class Type:
 
     @CachedProperty
     def _effect_ids(self):
+        """Tuple with IDs of effects this item has."""
         return tuple(e.id for e in self.effects)
 
     @property

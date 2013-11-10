@@ -79,6 +79,7 @@ class Attribute(metaclass=Enum):
     charge_group_3 = 606
     charge_group_4 = 609
     charge_group_5 = 610
+    module_reactivation_delay = 669
     max_group_active = 763
     max_group_online = 978
     boosterness = 1087
