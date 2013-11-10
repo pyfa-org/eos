@@ -25,8 +25,8 @@ from eos.fit.holder.mixin.holder import HolderBase
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Skill(HolderBase,
-            ImmutableStateMixin):
+class Skill(ImmutableStateMixin,
+            HolderBase):
     """
     Skill with all its special properties.
 
