@@ -21,9 +21,10 @@
 
 import os.path
 from logging import getLogger, FileHandler, Formatter, INFO
+from .abc import BaseLogger
 
 
-class Logger:
+class EosLogger(BaseLogger):
     """
     Handles everything related to logs.
 
