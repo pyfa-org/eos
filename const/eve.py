@@ -39,6 +39,7 @@ class Attribute(metaclass=Enum):
     power = 30
     capacity = 38
     cpu = 50
+    charge_rate = 56
     agility = 70
     launcher_slots_left = 101
     turret_slots_left = 102
@@ -81,6 +82,9 @@ class Attribute(metaclass=Enum):
     charge_group_5 = 610
     module_reactivation_delay = 669
     max_group_active = 763
+    crystal_volatility_chance = 783
+    crystal_volatility_damage = 784
+    crystals_get_damaged = 786
     max_group_online = 978
     boosterness = 1087
     upgrade_capacity = 1132
@@ -114,7 +118,6 @@ class Attribute(metaclass=Enum):
     can_fit_ship_group_6 = 1879
     can_fit_ship_group_7 = 1880
     can_fit_ship_group_8 = 1881
-
 
 
 class Type(metaclass=Enum):
@@ -151,6 +154,8 @@ class Effect(metaclass=Enum):
     projectile_fired = 34
     launcher_fitted = 40
     turret_fitted = 42
+    mining_laser = 67
+    use_missiles = 101
     rig_slot = 2663
     subsystem = 3772
 

@@ -27,6 +27,10 @@ from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
 
 
+def _float_to_int(value):
+    return int(round(value, 9))
+
+
 class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with holders which can have charge loaded
@@ -60,10 +64,46 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
             return None
         # Run rounding to negate float representation inaccuracies
         # (e.g. to have 2.3 / 0.1 at 23, not 22)
-        charges = int(round(container_capacity / charge_volume, 9))
+        charges = _float_to_int(container_capacity / charge_volume)
         return charges
 
     charge_quantity = OverrideDescriptor('charge_quantity_max')
+
+    @VolatileProperty
+    def fully_charged_cycles(self):
+        """
+        Return amount of cycles this container can do until charges are
+        depleted. If amount of cycles can vary, mean value if taken
+        (t2 laser ammo). Cycles, when amount of charges consumed per
+        cycle is more than left in container, are ignored (possible with
+        ancillary armor repairers). None is returned if container can
+        cycle without ammo consumption.
+        """
+        item_effects = set(self.item._effect_ids)
+        ammo_consumers = {Effect.projectile_fired, Effect.use_missiles}
+        crystal_consumers = {Effect.target_attack, Effect.mining_laser}
+        if item_effects.intersection(ammo_consumers):
+            return self.__get_ammo_full_cycles()
+        if item_effects.intersection(crystal_consumers):
+            return self.__get_crystal_mean_cycles()
+
+    def __get_ammo_full_cycles(self):
+        charge_rate = self.attributes.get(Attribute.charge_rate)
+        if not charge_rate:
+            return None
+        cycles = int(self.charge_quantity) // int(charge_rate)
+        return cycles
+
+    def __get_crystal_mean_cycles(self):
+        charge_attribs = self.charge.attributes
+        damageable = charge_attribs.get(Attribute.crystals_get_damaged)
+        hp = charge_attribs.get(Attribute.hp)
+        chance = charge_attribs.get(Attribute.crystal_volatility_chance)
+        damage = charge_attribs.get(Attribute.crystal_volatility_damage)
+        if not damageable or hp is None or chance is None or damage is None:
+            return None
+        cycles = _float_to_int(hp / damage / chance) * int(self.charge_quantity)
+        return cycles
 
     @VolatileProperty
     def reload_time(self):
