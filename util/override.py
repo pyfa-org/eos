@@ -29,11 +29,17 @@ class OverrideDescriptor:
     Required arguments:
     default_name -- name of attribute on object which is
     fetched as fallback default value
+
+    Optional arguments:
+    accepted_classes -- single class or iterable with classes
+    which, instances of which are accepted as overrides. If None,
+    type check is not executed. Default is None.
     """
 
-    def __init__(self, default_name):
+    def __init__(self, default_name, class_check=None):
         self.__default_name = default_name
         self.__store_name = '_{}_{}'.format(type(self).__name__, default_name)
+        self.__class_check = class_check
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -43,6 +49,11 @@ class OverrideDescriptor:
         return getattr(instance, self.__default_name)
 
     def __set__(self, instance, value):
+        if self.__class_check is not None:
+            if not isinstance(value, self.__class_check):
+                msg = 'only {} is accepted, not {}'.format(
+                    self.__class_check, type(value))
+                raise TypeError(msg)
         setattr(instance, self.__store_name, value)
         instance._request_volatile_cleanup()
 

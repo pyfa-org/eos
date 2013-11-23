@@ -67,7 +67,7 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         charges = _float_to_int(container_capacity / charge_volume)
         return charges
 
-    charge_quantity = OverrideDescriptor('charge_quantity_max')
+    charge_quantity = OverrideDescriptor('charge_quantity_max', class_check=int)
 
     @VolatileProperty
     def fully_charged_cycles(self):
@@ -91,7 +91,7 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         charge_rate = self.attributes.get(Attribute.charge_rate)
         if not charge_rate:
             return None
-        cycles = int(self.charge_quantity) // int(charge_rate)
+        cycles = self.charge_quantity // int(charge_rate)
         return cycles
 
     def __get_crystal_mean_cycles(self):
@@ -102,7 +102,7 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         damage = charge_attribs.get(Attribute.crystal_volatility_damage)
         if not damageable or hp is None or chance is None or damage is None:
             return None
-        cycles = _float_to_int(hp / damage / chance) * int(self.charge_quantity)
+        cycles = _float_to_int(hp / damage / chance) * self.charge_quantity
         return cycles
 
     @VolatileProperty
