@@ -86,6 +86,7 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
             return self.__get_ammo_full_cycles()
         if item_effects.intersection(crystal_consumers):
             return self.__get_crystal_mean_cycles()
+        return None
 
     def __get_ammo_full_cycles(self):
         charge_rate = self.attributes.get(Attribute.charge_rate)

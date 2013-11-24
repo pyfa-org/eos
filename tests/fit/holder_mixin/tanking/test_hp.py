@@ -61,7 +61,7 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertIsNone(self.holder.hp.shield_max)
         self.assertEqual(self.holder.hp.total, 0)
 
-    def test_override_set(self):
+    def test_override_set_int(self):
         eos = Mock()
         fit = self.make_fit(eos=eos)
         holder = self.holder
@@ -100,6 +100,86 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertAlmostEqual(holder.hp.armor_max, 10)
         self.assertAlmostEqual(holder.hp.shield_max, 12)
         self.assertAlmostEqual(holder.hp.total, 600)
+
+    def test_override_set_float(self):
+        eos = Mock()
+        fit = self.make_fit(eos=eos)
+        holder = self.holder
+        fit.container.add(holder)
+        holder.attributes[Attribute.hp] = 8
+        holder.attributes[Attribute.armor_hp] = 10
+        holder.attributes[Attribute.shield_capacity] = 12
+        self.assertAlmostEqual(holder.hp.hull, 8)
+        self.assertAlmostEqual(holder.hp.armor, 10)
+        self.assertAlmostEqual(holder.hp.shield, 12)
+        self.assertAlmostEqual(holder.hp.hull_max, 8)
+        self.assertAlmostEqual(holder.hp.armor_max, 10)
+        self.assertAlmostEqual(holder.hp.shield_max, 12)
+        self.assertAlmostEqual(holder.hp.total, 30)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        holder.hp.hull = 100.5
+        st_cleans_between1 = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_between1 = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between1 - st_cleans_before, 1)
+        self.assertEqual(holder_cleans_between1 - holder_cleans_before, 1)
+        holder.hp.armor = 200.5
+        st_cleans_between2 = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_between2 = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between2 - st_cleans_between1, 1)
+        self.assertEqual(holder_cleans_between2 - holder_cleans_between1, 1)
+        holder.hp.shield = 300.5
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_between2, 1)
+        self.assertEqual(holder_cleans_after - holder_cleans_between2, 1)
+        self.assertAlmostEqual(holder.hp.hull, 100.5)
+        self.assertAlmostEqual(holder.hp.armor, 200.5)
+        self.assertAlmostEqual(holder.hp.shield, 300.5)
+        self.assertAlmostEqual(holder.hp.hull_max, 8)
+        self.assertAlmostEqual(holder.hp.armor_max, 10)
+        self.assertAlmostEqual(holder.hp.shield_max, 12)
+        self.assertAlmostEqual(holder.hp.total, 601.5)
+
+    def test_override_set_other(self):
+        eos = Mock()
+        fit = self.make_fit(eos=eos)
+        holder = self.holder
+        fit.container.add(holder)
+        holder.attributes[Attribute.hp] = 8
+        holder.attributes[Attribute.armor_hp] = 10
+        holder.attributes[Attribute.shield_capacity] = 12
+        self.assertAlmostEqual(holder.hp.hull, 8)
+        self.assertAlmostEqual(holder.hp.armor, 10)
+        self.assertAlmostEqual(holder.hp.shield, 12)
+        self.assertAlmostEqual(holder.hp.hull_max, 8)
+        self.assertAlmostEqual(holder.hp.armor_max, 10)
+        self.assertAlmostEqual(holder.hp.shield_max, 12)
+        self.assertAlmostEqual(holder.hp.total, 30)
+        st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertRaises(TypeError, holder.hp.__setattr__, 'hull', 'a')
+        st_cleans_between1 = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_between1 = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between1 - st_cleans_before, 0)
+        self.assertEqual(holder_cleans_between1 - holder_cleans_before, 0)
+        self.assertRaises(TypeError, holder.hp.__setattr__, 'armor', 'b')
+        st_cleans_between2 = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_between2 = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_between2 - st_cleans_between1, 0)
+        self.assertEqual(holder_cleans_between2 - holder_cleans_between1, 0)
+        self.assertRaises(TypeError, holder.hp.__setattr__, 'shield', 'c')
+        st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
+        holder_cleans_after = len(holder._clear_volatile_attrs.mock_calls)
+        self.assertEqual(st_cleans_after - st_cleans_between2, 0)
+        self.assertEqual(holder_cleans_after - holder_cleans_between2, 0)
+        self.assertAlmostEqual(holder.hp.hull, 8)
+        self.assertAlmostEqual(holder.hp.armor, 10)
+        self.assertAlmostEqual(holder.hp.shield, 12)
+        self.assertAlmostEqual(holder.hp.hull_max, 8)
+        self.assertAlmostEqual(holder.hp.armor_max, 10)
+        self.assertAlmostEqual(holder.hp.shield_max, 12)
+        self.assertAlmostEqual(holder.hp.total, 30)
 
     def test_override_del(self):
         eos = Mock()
