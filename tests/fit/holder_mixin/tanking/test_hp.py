@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
 from eos.const.eve import Attribute
 from eos.fit.holder.container import HolderSet

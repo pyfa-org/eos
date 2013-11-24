@@ -79,20 +79,26 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         ancillary armor repairers). None is returned if container can
         cycle without ammo consumption.
         """
-        item_effects = set(self.item._effect_ids)
-        ammo_consumers = {Effect.projectile_fired, Effect.use_missiles}
-        crystal_consumers = {Effect.target_attack, Effect.mining_laser}
-        if item_effects.intersection(ammo_consumers):
+        # Various types of items consume charges during cycle,
+        # detect them based on presence of charge_rate attribute
+        # in original item (modified attribute value is always
+        # possible to fetch, as it has base value, so it's not
+        # reliable way to detect it)
+        if Attribute.charge_rate in self.item.attributes:
             return self.__get_ammo_full_cycles()
+        # Detect crystal-based items using effects
+        item_effects = set(self.item._effect_ids)
+        crystal_consumers = {Effect.target_attack, Effect.mining_laser}
         if item_effects.intersection(crystal_consumers):
             return self.__get_crystal_mean_cycles()
         return None
 
     def __get_ammo_full_cycles(self):
         charge_rate = self.attributes.get(Attribute.charge_rate)
-        if not charge_rate:
+        charge_quantity = self.charge_quantity
+        if not charge_rate or charge_quantity is None:
             return None
-        cycles = self.charge_quantity // int(charge_rate)
+        cycles = charge_quantity // int(charge_rate)
         return cycles
 
     def __get_crystal_mean_cycles(self):
@@ -101,9 +107,15 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         hp = charge_attribs.get(Attribute.hp)
         chance = charge_attribs.get(Attribute.crystal_volatility_chance)
         damage = charge_attribs.get(Attribute.crystal_volatility_damage)
-        if not damageable or hp is None or chance is None or damage is None:
+        charge_quantity = self.charge_quantity
+        if (
+            not damageable or
+            hp is None or chance is None
+            or damage is None or
+            charge_quantity is None
+        ):
             return None
-        cycles = _float_to_int(hp / damage / chance) * self.charge_quantity
+        cycles = _float_to_int(hp / damage / chance) * charge_quantity
         return cycles
 
     @VolatileProperty
@@ -122,4 +134,3 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
             if Effect.target_attack in item_effids:
                 return 1.0
         return self.attributes.get(Attribute.reload_time) / 1000
-
