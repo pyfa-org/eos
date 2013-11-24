@@ -32,10 +32,8 @@ class TestHolderMixinChargeQuantity(FitTestCase):
     def setUp(self):
         FitTestCase.setUp(self)
         self.holder = ModuleHigh(type_id=None)
-        self.holder._clear_volatile_attrs = Mock()
         self.holder.attributes = {}
         self.charge = Charge(type_id=None)
-        self.charge._clear_volatile_attrs = Mock()
         self.charge.attributes = {}
         self.holder.charge = self.charge
 
@@ -79,11 +77,34 @@ class TestHolderMixinChargeQuantity(FitTestCase):
         self.assertIsNone(self.holder.charge_quantity_max)
         self.assertIsNone(self.holder.charge_quantity)
 
+    def test_cache(self):
+        self.holder.attributes[Attribute.capacity] = 20.0
+        self.charge.attributes[Attribute.volume] = 2.0
+        self.assertEqual(self.holder.charge_quantity_max, 10)
+        self.assertEqual(self.holder.charge_quantity, 10)
+        self.holder.attributes[Attribute.capacity] = 200.0
+        self.charge.attributes[Attribute.volume] = 1.0
+        self.assertEqual(self.holder.charge_quantity_max, 10)
+        self.assertEqual(self.holder.charge_quantity, 10)
+
+    def test_volatility(self):
+        self.holder.attributes[Attribute.capacity] = 20.0
+        self.charge.attributes[Attribute.volume] = 2.0
+        self.assertEqual(self.holder.charge_quantity_max, 10)
+        self.assertEqual(self.holder.charge_quantity, 10)
+        self.holder._clear_volatile_attrs()
+        self.holder.attributes[Attribute.capacity] = 200.0
+        self.charge.attributes[Attribute.volume] = 1.0
+        self.assertEqual(self.holder.charge_quantity_max, 200)
+        self.assertEqual(self.holder.charge_quantity, 200)
+
     def test_override_set_int(self):
         eos = Mock()
         fit = self.make_fit(eos=eos)
         holder = self.holder
         charge = self.charge
+        holder._clear_volatile_attrs = Mock()
+        charge._clear_volatile_attrs = Mock()
         fit.container.add(holder)
         holder.attributes[Attribute.capacity] = 20.0
         charge.attributes[Attribute.volume] = 2.0
@@ -107,6 +128,8 @@ class TestHolderMixinChargeQuantity(FitTestCase):
         fit = self.make_fit(eos=eos)
         holder = self.holder
         charge = self.charge
+        holder._clear_volatile_attrs = Mock()
+        charge._clear_volatile_attrs = Mock()
         fit.container.add(holder)
         holder.attributes[Attribute.capacity] = 20.0
         charge.attributes[Attribute.volume] = 2.0
@@ -130,6 +153,8 @@ class TestHolderMixinChargeQuantity(FitTestCase):
         fit = self.make_fit(eos=eos)
         holder = self.holder
         charge = self.charge
+        holder._clear_volatile_attrs = Mock()
+        charge._clear_volatile_attrs = Mock()
         fit.container.add(holder)
         holder.attributes[Attribute.capacity] = 20.0
         charge.attributes[Attribute.volume] = 2.0
