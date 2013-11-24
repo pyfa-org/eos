@@ -44,6 +44,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.holder.charge = self.charge
 
     def test_ammo_generic(self):
+        print('stoot')
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
         self.holder.item.attributes[Attribute.charge_rate] = 1.0
