@@ -19,29 +19,23 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
-from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
-from eos.fit.holder.mixin.state import ImmutableStateMixin
-
-
-class Charge(ImmutableStateMixin,
-             DamageDealerMixin):
+class DamageDealerMixin:
     """
-    Ammo - crystals, probes, bombs, etc.
-
-    Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
-
-    Cooperative methods:
-    __init__
+    Mixin intended to use with all entities which are able
+    to deal damage (modules, drones).
     """
 
-    def __init__(self, type_id, **kwargs):
-        # Holder-container, into which our charge holder is "loaded"
-        self.container = None
-        super().__init__(type_id=type_id, state=State.offline, **kwargs)
+    def get_nominal_volley(self, target_resistances=None):
+        return
 
-    @property
-    def _location(self):
-        return Location.space
+    def get_volley_vs_target(self, target_data=None, target_resistances=None):
+        return
+
+    def get_chance_to_hit(self, target_data=None):
+        return
+
+    def get_nominal_dps(self, target_resistances=None, reload=True):
+        return
+
+    def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
+        return

@@ -22,12 +22,14 @@
 from eos.const.eos import Location, State
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.chargeable import ChargeableMixin
+from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.holder.mixin.misc import SpecialAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 
 
 class Module(MutableStateMixin,
              ChargeableMixin,
+             DamageDealerMixin,
              SpecialAttribMixin):
 
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
