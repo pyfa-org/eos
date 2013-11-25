@@ -92,12 +92,15 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
         Object with following attributes is returned:
         .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
         .total -- total effective HP, if data for some layer is not available,
-        defaults effective hp of this layer to 0.
+        defaults effective hp of this layer to 0; if data for all layers is not
+        available, equals None.
         """
         hull_ehp = self.__get_layer_ehp(self.hp.hull, self.resistances.hull, damage_profile)
         armor_ehp = self.__get_layer_ehp(self.hp.armor, self.resistances.armor, damage_profile)
         shield_ehp = self.__get_layer_ehp(self.hp.shield, self.resistances.shield, damage_profile)
         total_ehp = (hull_ehp or 0) + (armor_ehp or 0) + (shield_ehp or 0)
+        if total_ehp == 0 and hull_ehp is None and armor_ehp is None and shield_ehp is None:
+            total_ehp = None
         return Hitpoints(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
 
     def __get_layer_ehp(self, layer_hp, layer_resistances, damage_profile):
@@ -137,12 +140,15 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
         Object with following attributes is returned:
         .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
         .total -- total effective HP, if data for some layer is not available,
-        defaults effective hp of this layer to 0.
+        defaults effective hp of this layer to 0; if data for all layers is not
+        available, equals None.
         """
         hull_ehp = self.__get_layer_worst_case_ehp(self.hp.hull, self.resistances.hull)
         armor_ehp = self.__get_layer_worst_case_ehp(self.hp.armor, self.resistances.armor)
         shield_ehp = self.__get_layer_worst_case_ehp(self.hp.shield, self.resistances.shield)
         total_ehp = (hull_ehp or 0) + (armor_ehp or 0) + (shield_ehp or 0)
+        if total_ehp == 0 and hull_ehp is None and armor_ehp is None and shield_ehp is None:
+            total_ehp = None
         return Hitpoints(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
 
     def __get_layer_worst_case_ehp(self, layer_hp, layer_resistances):
@@ -193,7 +199,10 @@ class OverridableHp:
 
     @property
     def total(self):
-        return (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
+        total_hp = (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
+        if total_hp == 0 and self.hull is None and self.armor is None and self.shield is None:
+            total_hp = None
+        return total_hp
 
     def _request_volatile_cleanup(self):
         self.__holder._request_volatile_cleanup()

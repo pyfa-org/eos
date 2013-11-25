@@ -252,7 +252,7 @@ class TestHolderMixinTankingWorstCaseEhp(FitTestCase):
         self.assertIsNone(mixin.worst_case_ehp.hull)
         self.assertIsNone(mixin.worst_case_ehp.armor)
         self.assertIsNone(mixin.worst_case_ehp.shield)
-        self.assertAlmostEqual(mixin.worst_case_ehp.total, 0)
+        self.assertIsNone(mixin.worst_case_ehp.total)
 
     def test_none_resistance_em(self):
         mixin = self.mixin

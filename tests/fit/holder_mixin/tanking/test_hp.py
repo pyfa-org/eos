@@ -59,7 +59,7 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertIsNone(self.holder.hp.hull_max)
         self.assertIsNone(self.holder.hp.armor_max)
         self.assertIsNone(self.holder.hp.shield_max)
-        self.assertEqual(self.holder.hp.total, 0)
+        self.assertIsNone(self.holder.hp.total)
 
     def test_override_set_int(self):
         eos = Mock()

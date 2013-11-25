@@ -176,7 +176,7 @@ class TestHolderMixinTankingEhp(FitTestCase):
         self.assertIsNone(results.hull)
         self.assertIsNone(results.armor)
         self.assertIsNone(results.shield)
-        self.assertAlmostEqual(results.total, 0)
+        self.assertIsNone(results.total)
 
     def test_none_resistance_em(self):
         mixin = self.mixin
