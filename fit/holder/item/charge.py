@@ -20,12 +20,10 @@
 
 
 from eos.const.eos import Location, State
-from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
-class Charge(ImmutableStateMixin,
-             DamageDealerMixin):
+class Charge(ImmutableStateMixin):
     """
     Ammo - crystals, probes, bombs, etc.
 
