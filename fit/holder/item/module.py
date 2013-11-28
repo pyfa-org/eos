@@ -41,7 +41,7 @@ class Module(MutableStateMixin,
 
     @property
     def reactivation_delay(self):
-        return self.attributes.get(Attribute.module_reactivation_delay)
+        return self.attributes.get(Attribute.module_reactivation_delay) / 1000
 
 
 class ModuleHigh(Module):

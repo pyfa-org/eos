@@ -40,6 +40,7 @@ class Attribute(metaclass=Enum):
     capacity = 38
     cpu = 50
     charge_rate = 56
+    damage_multiplier = 64
     agility = 70
     launcher_slots_left = 101
     turret_slots_left = 102
@@ -146,18 +147,27 @@ class Category(metaclass=Enum):
 
 class Effect(metaclass=Enum):
     """Effect ID holder"""
+    missile_launching = 9
     target_attack = 10
     lo_power = 11
     hi_power = 12
     med_power = 13
     online = 16
     projectile_fired = 34
+    emp_wave = 38
     launcher_fitted = 40
     turret_fitted = 42
     mining_laser = 67
     use_missiles = 101
+    fof_missile_launching = 104
     rig_slot = 2663
+    bomb_launching = 2971
     subsystem = 3772
+    fighter_missile = 4729
+    super_weapon_amarr = 4489
+    super_weapon_caldari = 4490
+    super_weapon_gallente = 4491
+    super_weapon_minmatar = 4492
 
 
 class EffectCategory(metaclass=Enum):

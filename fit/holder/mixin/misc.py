@@ -43,7 +43,7 @@ class SpecialAttribMixin(HolderBase):
 
     @property
     def cycle_time(self):
-        return self.__get_item_specific_attr('_duration_attribute_id')
+        return self.__get_item_specific_attr('_duration_attribute_id') / 1000
 
     def __get_item_specific_attr(self, attr_name):
         """

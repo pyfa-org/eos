@@ -23,7 +23,7 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.tuples import DamageTypes, Hitpoints, TankingLayers
+from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
 from .container import *
 from .register import *
@@ -143,12 +143,12 @@ class StatTracker(InheritableVolatileMixin):
         try:
             hp_data = ship_holder.hp
         except AttributeError:
-            return Hitpoints(hull=None, armor=None, shield=None, total=0)
+            return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
         else:
             # Build tuple here because the object we fetched
             # from ship is access point to stats, which are
             # updated on fit changes
-            return Hitpoints(
+            return TankingLayersTotal(
                 hull=hp_data.hull,
                 armor=hp_data.armor,
                 shield=hp_data.shield,
@@ -169,7 +169,7 @@ class StatTracker(InheritableVolatileMixin):
         try:
             return ship_holder.get_ehp(damage_profile)
         except AttributeError:
-            return Hitpoints(hull=None, armor=None, shield=None, total=0)
+            return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
 
     @VolatileProperty
     def worst_case_ehp(self):
@@ -177,7 +177,7 @@ class StatTracker(InheritableVolatileMixin):
         try:
             return ship_holder.worst_case_ehp
         except AttributeError:
-            return Hitpoints(hull=None, armor=None, shield=None, total=0)
+            return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
 
     @VolatileProperty
     def agility_factor(self):

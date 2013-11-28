@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.tuples import Hitpoints, TankingLayers, DamageTypes
+from eos.fit.tuples import TankingLayers, TankingLayersTotal, DamageTypes
 from eos.util.override import OverrideDescriptor
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
@@ -101,7 +101,7 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
         total_ehp = (hull_ehp or 0) + (armor_ehp or 0) + (shield_ehp or 0)
         if total_ehp == 0 and hull_ehp is None and armor_ehp is None and shield_ehp is None:
             total_ehp = None
-        return Hitpoints(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
+        return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
 
     def __get_layer_ehp(self, layer_hp, layer_resistances, damage_profile):
         """
@@ -149,7 +149,7 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
         total_ehp = (hull_ehp or 0) + (armor_ehp or 0) + (shield_ehp or 0)
         if total_ehp == 0 and hull_ehp is None and armor_ehp is None and shield_ehp is None:
             total_ehp = None
-        return Hitpoints(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
+        return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
 
     def __get_layer_worst_case_ehp(self, layer_hp, layer_resistances):
         """
