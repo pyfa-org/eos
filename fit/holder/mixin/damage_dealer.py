@@ -22,10 +22,11 @@
 from eos.const.eos import WeaponType
 from eos.const.eve import Attribute, Effect
 from eos.fit.tuples import DamageTypesTotal
+from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
 
 
-class DamageDealerMixin(HolderBase):
+class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to deal damage (modules, drones).
@@ -87,7 +88,7 @@ class DamageDealerMixin(HolderBase):
     def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
         return
 
-    @property
+    @VolatileProperty
     def _weapon_type(self):
         """
         Get weapon type of holder. Weapon type defines mechanics used to
