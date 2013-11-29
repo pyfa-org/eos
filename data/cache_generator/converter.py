@@ -19,7 +19,9 @@
 #===============================================================================
 
 
-from eos.const.eve import Attribute
+import re
+
+from eos.const.eve import Attribute, Operand
 from eos.util.frozen_dict import FrozenDict
 from .modifier_builder import ModifierBuilder
 
@@ -38,6 +40,7 @@ class Converter:
         """ Make data more consistent."""
         self.data = data
         self._move_attribs()
+        self._convert_expression_symbolic_references()
 
     def _move_attribs(self):
         """
@@ -91,6 +94,58 @@ class Converter:
             msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(
                 attrs_skipped)
             self._logger.warning(msg, child_name='cache_generator')
+
+    def _convert_expression_symbolic_references(self):
+        """
+        Some of entities in dgmexpressions table are defined not as
+        IDs, but as symbolic references. Convert them to IDs here.
+        """
+        data = self.data
+        dgmexpressions = data['dgmexpressions']
+        replacement_desc = (
+            ('dgmattribs', 'attributeID', 'attributeName', 'expressionAttributeID', Operand.def_attr),
+            ('invgroups', 'groupID', 'groupName', 'expressionGroupID', Operand.def_grp),
+            ('invtypes', 'typeID', 'typeName', 'expressionTypeID', Operand.def_type)
+        )
+        for entry in replacement_desc:
+            entity_table, id_column, symname_column, tgt_column, operand = entry
+            name_id_map = {}
+            for entity_row in data[entity_table]:
+                entity_id = entity_row[id_column]
+                entity_name_normal = entity_row[symname_column]
+                ids_normal = name_id_map.setdefault(entity_name_normal, [])
+                ids_normal.append(entity_id)
+                # Entities can be referred via names with stripped space
+                entity_name_stripped = re.sub('\s', '', entity_name_normal)
+                ids_stripped = name_id_map.setdefault(entity_name_stripped, [])
+                ids_stripped.append(entity_id)
+            # We're modifying only rows with specific operands
+            for exp_row in filter(lambda r: r['operandID'] == operand, dgmexpressions):
+                exp_entity_id = exp_row[tgt_column]
+                # If entity is already referenced via ID, nothing
+                # to do here
+                if exp_entity_id is not None:
+                    continue
+                exp_value = exp_row['expressionValue']
+                # If we don't have expression value in our name-id map,
+                # then we can't help anyhow too
+                if exp_value not in name_id_map:
+                    continue
+                repl_ids = name_id_map[exp_value]
+                repl_id = repl_ids[0]
+                if len(repl_ids) > 1:
+                    msg = 'multiple {}s found for symbolic name {}: ({}), using {}'.format(
+                        id_column, exp_value, ', '.join(str(i) for i in repl_ids), repl_id)
+                    self._logger.warning(msg, child_name='cache_generator')
+                # As rows are frozen dicts, we compose new mutable dict, update
+                # data there, freeze it, and only then replace old row with new
+                new_exp_row = {}
+                new_exp_row.update(exp_row)
+                new_exp_row['expressionValue'] = None
+                new_exp_row[tgt_column] = repl_id
+                new_exp_row = FrozenDict(new_exp_row)
+                dgmexpressions.remove(exp_row)
+                dgmexpressions.add(new_exp_row)
 
     def convert(self, data):
         """
