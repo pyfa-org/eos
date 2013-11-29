@@ -29,7 +29,7 @@ class TestCleanupTypes(GeneratorTestCase):
     """
 
     def test_group_character(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -39,8 +39,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
 
-    def test_group_effectBeacon(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
+    def test_group_effect_beacon(self):
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -51,7 +51,7 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_group_other(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -61,7 +61,7 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
 
     def test_group_character_unpublished(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'published': False})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': '', 'published': False})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -72,8 +72,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_ship(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 6})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 6, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -84,8 +84,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_module(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 7})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 7, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -96,8 +96,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_charge(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 8})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 8, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -108,8 +108,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_skill(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 16})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 16, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -120,8 +120,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_drone(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 18})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 18, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -132,8 +132,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_implant(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 20})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 20, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -144,8 +144,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_subsystem(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 32})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 32, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -156,8 +156,8 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertIn(1, data['types'])
 
     def test_category_other(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50})
-        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 51})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 50, 'categoryID': 51, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -167,12 +167,12 @@ class TestCleanupTypes(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
 
     def test_mixed(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920})
-        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 50})
-        self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 20})
-        self.dh.data['invgroups'].append({'groupID': 20, 'categoryID': 7})
-        self.dh.data['invtypes'].append({'typeID': 4, 'groupID': 80})
-        self.dh.data['invgroups'].append({'groupID': 80, 'categoryID': 700})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920, 'typeName': ''})
+        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 50, 'typeName': ''})
+        self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 20, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 20, 'categoryID': 7, 'groupName': ''})
+        self.dh.data['invtypes'].append({'typeID': 4, 'groupID': 80, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 80, 'categoryID': 700, 'groupName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]

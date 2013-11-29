@@ -50,8 +50,8 @@ class TestHolderMixinSpecialAttrib(FitTestCase):
 
     def test_cycle(self):
         self.mixin.item._duration_attribute_id = 102
-        self.mixin.attributes[102] = 8
-        self.assertAlmostEqual(self.mixin.cycle_time, 8)
+        self.mixin.attributes[102] = 800
+        self.assertAlmostEqual(self.mixin.cycle_time, 0.8)
 
     def test_change(self):
         self.mixin.item._tracking_speed_attribute_id = 102

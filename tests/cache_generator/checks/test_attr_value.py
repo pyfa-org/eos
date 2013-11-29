@@ -31,7 +31,7 @@ class TestAttrValue(GeneratorTestCase):
     """
 
     def test_int(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
@@ -42,7 +42,7 @@ class TestAttrValue(GeneratorTestCase):
         self.assertEqual(data['types'][1]['attributes'][5], 8)
 
     def test_float(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
@@ -53,7 +53,7 @@ class TestAttrValue(GeneratorTestCase):
         self.assertEqual(data['types'][1]['attributes'][5], 8.5)
 
     def test_other(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
@@ -70,7 +70,7 @@ class TestAttrValue(GeneratorTestCase):
 
     def test_cleanup(self):
         # Make sure cleanup runs before check being tested
-        self.dh.data['invtypes'].append({'typeID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)

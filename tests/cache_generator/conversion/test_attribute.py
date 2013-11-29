@@ -30,10 +30,11 @@ class TestConversionAttribute(GeneratorTestCase):
     """
 
     def test_fields(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 111, 'value': 8.2})
         self.dh.data['dgmattribs'].append({'maxAttributeID': 84, 'randomField': None, 'stackable': True,
-                                           'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False})
+                                           'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False,
+                                           'attributeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]

@@ -33,7 +33,7 @@ class TestConversionModifier(GeneratorTestCase):
     """
 
     def test_fields(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1,
                                            'postExpression': 11, 'effectCategory': 111})
@@ -56,7 +56,7 @@ class TestConversionModifier(GeneratorTestCase):
 
     def test_numbering_single_effect(self, mod_builder):
         # Check how multiple modifiers generated out of single effect are numbered
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 21,
                                            'postExpression': 21, 'effectCategory': 21})
@@ -85,7 +85,7 @@ class TestConversionModifier(GeneratorTestCase):
 
     def test_numbering_multiple_effects(self, mod_builder):
         # Check how multiple modifiers generated out of two effects are numbered
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 222})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1,
@@ -123,7 +123,7 @@ class TestConversionModifier(GeneratorTestCase):
         # Check that if modifiers with the same values are generated on single effect,
         # they're assigned to single identifier and it is listed twice in list of
         # modifiers
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 22,
                                            'postExpression': 22, 'effectCategory': 22})
@@ -149,7 +149,7 @@ class TestConversionModifier(GeneratorTestCase):
     def test_merge_multiple_effects(self, mod_builder):
         # Check that if modifiers with the same values are generated on multiple effects,
         # they're assigned to single identifier
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 222})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1,
@@ -184,7 +184,7 @@ class TestConversionModifier(GeneratorTestCase):
 
     def test_builder_usage(self, mod_builder):
         # Check that modifier builder is properly used
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 56,
                                            'postExpression': 107, 'effectCategory': 108})

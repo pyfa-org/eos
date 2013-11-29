@@ -30,8 +30,8 @@ class TestConversionType(GeneratorTestCase):
     """
 
     def test_fields(self):
-        self.dh.data['invtypes'].append({'randomField': 66, 'typeID': 1, 'groupID': 6})
-        self.dh.data['invgroups'].append({'categoryID': 16, 'groupID': 6})
+        self.dh.data['invtypes'].append({'randomField': 66, 'typeID': 1, 'groupID': 6, 'typeName': ''})
+        self.dh.data['invgroups'].append({'categoryID': 16, 'groupID': 6, 'groupName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append({'attributeID': 80, 'typeID': 1, 'value': 180.0})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111, 'isDefault': True})

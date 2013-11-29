@@ -24,11 +24,11 @@ from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
 from eos.tests.environment import Logger
 
 
-class TestNormalization(GeneratorTestCase):
-    """Check that all normalization jobs function as expected"""
+class TestNormalizationAttr(GeneratorTestCase):
+    """Check that attribute normalization jobs function as expected"""
 
     def test_basic_attr_radius(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'radius': 50.0})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'radius': 50.0, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -37,7 +37,7 @@ class TestNormalization(GeneratorTestCase):
         self.assertEqual(data['types'][1]['attributes'][Attribute.radius], 50.0)
 
     def test_basic_attr_mass(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -46,7 +46,7 @@ class TestNormalization(GeneratorTestCase):
         self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 5.0)
 
     def test_basic_attr_volume(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'volume': 500.0})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'volume': 500.0, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -55,7 +55,7 @@ class TestNormalization(GeneratorTestCase):
         self.assertEqual(data['types'][1]['attributes'][Attribute.volume], 500.0)
 
     def test_basic_attr_capacity(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'capacity': 0.5})
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'capacity': 0.5, 'typeName': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
