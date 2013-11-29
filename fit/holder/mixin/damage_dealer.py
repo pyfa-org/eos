@@ -33,6 +33,18 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
     """
 
     def get_nominal_volley(self, target_resistances=None):
+        volley = self._base_volley
+        if target_resistances is not None:
+            em = volley.em * (1 - target_resistances.em)
+            therm = volley.thermal * (1 - target_resistances.thermal)
+            kin = volley.kinetic * (1 - target_resistances.kinetic)
+            expl = volley.explosive * (1 - target_resistances.explosive)
+            total = em + therm + kin + expl
+            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+        return volley
+
+    @VolatileProperty
+    def _base_volley(self):
         if self._weapon_type == WeaponType.turret:
             charge = getattr(self, 'charge', None)
             if charge is not None:
@@ -84,7 +96,6 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         total = em + therm + kin + expl
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
 
-
     def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
         return
 
@@ -93,7 +104,7 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         """
         Get weapon type of holder. Weapon type defines mechanics used to
         deliver damage and attributes used for damage calculation. If
-        holder is not a weapon or inactive weapon, None is returned.
+        holder is not a weapon or an inactive weapon, None is returned.
         """
         # For some weapon types, it's enough to use just holder
         # effects for detection

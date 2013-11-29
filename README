@@ -64,7 +64,7 @@ Stats of fit can be fetched using 'stats' access point:
 3.593148863813811
 >>fit.stats.cpu.used
 193.55
->>fit.stats.get_ehp(DamageProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
+>>fit.stats.get_ehp(DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)).total
 2005.580357142857
 
 Not many stats are implemented yet, more to come soon.
