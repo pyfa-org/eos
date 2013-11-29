@@ -19,6 +19,11 @@
 #===============================================================================
 
 
+from eos.const.eos import State
+from eos.const.eve import EffectCategory
+from eos.util.cached_property import CachedProperty
+
+
 class Effect:
     """
     Represents a single effect. Effects are the building blocks which describe what its carrier
@@ -54,3 +59,19 @@ class Effect:
 
         # Stores Modifiers which are assigned to given effect
         self.modifiers = modifiers
+
+    # Format: {effect category ID: state ID}
+    __effect_state_map = {EffectCategory.passive: State.offline,
+                          EffectCategory.active: State.active,
+                          EffectCategory.target: State.active,
+                          EffectCategory.online: State.online,
+                          EffectCategory.overload: State.overload,
+                          EffectCategory.system: State.offline}
+
+    @CachedProperty
+    def _state(self):
+        """
+        Return state of effect - if holder takes this state or
+        higher, effect activates.
+        """
+        return self.__effect_state_map[self.category_id]

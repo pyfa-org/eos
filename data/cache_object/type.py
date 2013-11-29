@@ -123,15 +123,6 @@ class Type:
             required_skills[int(srq)] = int(srq_lvl)
         return required_skills
 
-    # Map effect category onto max state item can take
-    # Format: {effect category ID: state ID}
-    __effect_state_map = {EffectCategory.passive: State.offline,
-                          EffectCategory.active: State.active,
-                          EffectCategory.target: State.active,
-                          EffectCategory.online: State.online,
-                          EffectCategory.overload: State.overload,
-                          EffectCategory.system: State.offline}
-
     @CachedProperty
     def max_state(self):
         """
@@ -147,8 +138,7 @@ class Type:
         # guaranteed to produce modifier, thus effects are
         # more reliable data source
         for effect in self.effects:
-            effect_state = self.__effect_state_map[effect.category_id]
-            max_state = max(max_state, effect_state)
+            max_state = max(max_state, effect._state)
         return max_state
 
     @CachedProperty
