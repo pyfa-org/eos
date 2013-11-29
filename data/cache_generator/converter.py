@@ -117,6 +117,10 @@ class Converter:
                 ids_normal.append(entity_id)
                 # Entities can be referred via names with stripped space
                 entity_name_stripped = re.sub('\s', '', entity_name_normal)
+                # Do not add id of entity against stripped name, if it's
+                # already stripped
+                if entity_name_stripped == entity_name_normal:
+                    continue
                 ids_stripped = name_id_map.setdefault(entity_name_stripped, [])
                 ids_stripped.append(entity_id)
             # We're modifying only rows with specific operands
