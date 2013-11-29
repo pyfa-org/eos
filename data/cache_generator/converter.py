@@ -123,6 +123,9 @@ class Converter:
                     continue
                 ids_stripped = name_id_map.setdefault(entity_name_stripped, [])
                 ids_stripped.append(entity_id)
+            # Set to keep symbolic names about which we've already
+            # logged warnings
+            warned_conflicts = set()
             # We're modifying only rows with specific operands
             for exp_row in filter(lambda r: r['operandID'] == operand, dgmexpressions):
                 exp_entity_id = exp_row[tgt_column]
@@ -130,17 +133,19 @@ class Converter:
                 # to do here
                 if exp_entity_id is not None:
                     continue
-                exp_value = exp_row['expressionValue']
+                sym_name = exp_row['expressionValue']
                 # If we don't have expression value in our name-id map,
                 # then we can't help anyhow too
-                if exp_value not in name_id_map:
+                if sym_name not in name_id_map:
                     continue
-                repl_ids = name_id_map[exp_value]
+                repl_ids = name_id_map[sym_name]
                 repl_id = repl_ids[0]
                 if len(repl_ids) > 1:
-                    msg = 'multiple {}s found for symbolic name {}: ({}), using {}'.format(
-                        id_column, exp_value, ', '.join(str(i) for i in repl_ids), repl_id)
-                    self._logger.warning(msg, child_name='cache_generator')
+                    if sym_name not in warned_conflicts:
+                        msg = 'multiple {}s found for symbolic name "{}": ({}), using {}'.format(
+                            id_column, sym_name, ', '.join(str(i) for i in repl_ids), repl_id)
+                        self._logger.warning(msg, child_name='cache_generator')
+                        warned_conflicts.add(sym_name)
                 # As rows are frozen dicts, we compose new mutable dict, update
                 # data there, freeze it, and only then replace old row with new
                 new_exp_row = {}
