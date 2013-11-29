@@ -66,8 +66,6 @@ class TestNormalizationIdzing(GeneratorTestCase):
         clean_stats = self.log[0]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
-        # As in expression conversion, we're verifying expressions
-        # passed to modifier builder, as it's much easier to do
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expected = {'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
@@ -89,8 +87,6 @@ class TestNormalizationIdzing(GeneratorTestCase):
         clean_stats = self.log[0]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
-        # As in expression conversion, we're verifying expressions
-        # passed to modifier builder, as it's much easier to do
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expected = {'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
@@ -111,8 +107,6 @@ class TestNormalizationIdzing(GeneratorTestCase):
         clean_stats = self.log[0]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
-        # As in expression conversion, we're verifying expressions
-        # passed to modifier builder, as it's much easier to do
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expected = {'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
@@ -142,8 +136,6 @@ class TestNormalizationIdzing(GeneratorTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
-        # As in expression conversion, we're verifying expressions
-        # passed to modifier builder, as it's much easier to do
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expected = {'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
