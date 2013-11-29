@@ -110,7 +110,7 @@ class Converter:
         for entry in replacement_desc:
             entity_table, id_column, symname_column, tgt_column, operand = entry
             name_id_map = {}
-            for entity_row in data[entity_table]:
+            for entity_row in sorted(data[entity_table], key=lambda row: row['table_pos']):
                 entity_id = entity_row[id_column]
                 entity_name_normal = entity_row[symname_column]
                 ids_normal = name_id_map.setdefault(entity_name_normal, [])
