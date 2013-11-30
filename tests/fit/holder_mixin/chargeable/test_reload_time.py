@@ -22,8 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eve import Attribute, Effect
-from eos.fit.holder.container import HolderSet
-from eos.fit.holder.item import ModuleHigh, Charge
+from eos.fit.holder.item import ModuleHigh
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -38,7 +37,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
 
     def test_generic(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item._effect_ids = ()
+        self.holder.item.default_effect.id = 1008
         self.assertEqual(self.holder.reload_time, 5.0)
 
     def test_generic_no_item(self):
@@ -46,7 +45,12 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.holder.item = None
         self.assertEqual(self.holder.reload_time, 5.0)
 
-    def test_laser(self):
+    def test_generic_no_default_effect(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect = None
+        self.assertEqual(self.holder.reload_time, 5.0)
+
+    def test_combat_laser(self):
+        self.holder.attributes[Attribute.reload_time] = 5000.0
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.reload_time, 1.0)

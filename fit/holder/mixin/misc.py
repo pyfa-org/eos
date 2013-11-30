@@ -56,7 +56,7 @@ class DefaultEffectAttribMixin(HolderBase):
         located on holder's item, this functions helps
         to fetch it.
         """
-        default_effect = getattr(self.item, '_default_effect', None)
+        default_effect = getattr(self.item, 'default_effect', None)
         if default_effect is None:
             return None
         attr_id = getattr(default_effect, attr_name, None)

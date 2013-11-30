@@ -55,7 +55,7 @@ class Type:
         self.effects = effects
 
         # Default effect of item, which defines its several major properties
-        self._default_effect = default_effect
+        self.default_effect = default_effect
 
     @CachedProperty
     def _effect_ids(self):

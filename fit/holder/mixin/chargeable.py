@@ -97,12 +97,20 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         # in original item (modified attribute value is always
         # possible to fetch, as it has base value, so it's not
         # reliable way to detect it)
-        if Attribute.charge_rate in self.item.attributes:
-            return self.__get_ammo_full_cycles(charge_quantity)
+        holder_item = self.item
+        try:
+            item_attribs = holder_item.attributes
+        except AttributeError:
+            pass
+        else:
+            if Attribute.charge_rate in item_attribs:
+                return self.__get_ammo_full_cycles(charge_quantity)
         # Detect crystal-based items using effects
-        item_effects = set(self.item._effect_ids)
-        crystal_consumers = {Effect.target_attack, Effect.mining_laser}
-        if item_effects.intersection(crystal_consumers):
+        try:
+            defeff_id = holder_item.default_effect.id
+        except AttributeError:
+            defeff_id = None
+        if defeff_id in (Effect.target_attack, Effect.mining_laser):
             return self.__get_crystal_mean_cycles(charge_quantity)
         return None
 
@@ -138,10 +146,10 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         # (various lasers), else fetch reload time attribute from holder
         holder_item = self.item
         try:
-            item_effids = holder_item._effect_ids
+            defeff_id = holder_item.default_effect.id
         except AttributeError:
             pass
         else:
-            if Effect.target_attack in item_effids:
+            if defeff_id == Effect.target_attack:
                 return 1.0
         return self.attributes.get(Attribute.reload_time) / 1000

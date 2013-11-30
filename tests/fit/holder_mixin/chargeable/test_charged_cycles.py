@@ -27,7 +27,7 @@ from eos.fit.holder.item import ModuleHigh, Charge
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
-class TestHolderMixinChargeReloadTime(FitTestCase):
+class TestHolderMixinChargedCycles(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
@@ -79,7 +79,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.fully_charged_cycles, 4400)
         self.assertEqual(self.holder.fully_charged_cycles_max, 4400)
 
@@ -90,7 +90,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.mining_laser,)
+        self.holder.item.default_effect.id = Effect.mining_laser
         self.assertEqual(self.holder.fully_charged_cycles, 4400)
         self.assertEqual(self.holder.fully_charged_cycles_max, 4400)
 
@@ -100,7 +100,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.fully_charged_cycles)
         self.assertIsNone(self.holder.fully_charged_cycles_max)
 
@@ -110,7 +110,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.fully_charged_cycles)
         self.assertIsNone(self.holder.fully_charged_cycles_max)
 
@@ -120,7 +120,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.fully_charged_cycles)
         self.assertIsNone(self.holder.fully_charged_cycles_max)
 
@@ -130,7 +130,7 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.fully_charged_cycles)
         self.assertIsNone(self.holder.fully_charged_cycles_max)
 
@@ -142,11 +142,27 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.fully_charged_cycles, 6600)
         self.assertEqual(self.holder.fully_charged_cycles_max, 4400)
 
-    def test_cache_override(self):
+    def test_no_item(self):
+        self.holder.attributes[Attribute.capacity] = 100.0
+        self.charge.attributes[Attribute.volume] = 2.0
+        self.holder.item = None
+        self.holder.attributes[Attribute.charge_rate] = 2.0
+        self.assertIsNone(self.holder.fully_charged_cycles)
+        self.assertIsNone(self.holder.fully_charged_cycles_max)
+
+    def test_no_default_effect(self):
+        self.holder.attributes[Attribute.capacity] = 100.0
+        self.charge.attributes[Attribute.volume] = 2.0
+        self.holder.item.default_effect = None
+        self.holder.attributes[Attribute.charge_rate] = 2.0
+        self.assertIsNone(self.holder.fully_charged_cycles)
+        self.assertIsNone(self.holder.fully_charged_cycles_max)
+
+    def test_cache(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
         self.holder.item.attributes[Attribute.charge_rate] = 1.0
@@ -181,6 +197,6 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder.item.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.fully_charged_cycles, 4400)
         self.assertEqual(self.holder.fully_charged_cycles_max, 4400)
