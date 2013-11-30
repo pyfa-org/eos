@@ -66,6 +66,19 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
     """
 
     def get_nominal_volley(self, target_resistances=None):
+        """
+        Get nominal volley for holder, calculated against passed
+        target resistances.
+
+        Optional arguments:
+        target_resistances -- object which has following numbers as its attibutes:
+        em, thermal, kinetic and explosive (all in range [0, 1])
+        If none, raw volley damage is calculated. By default None.
+
+        Return value:
+        Object with volley damage of current holder, accessible via following attributes:
+        em, thermal, kinetic, explosive, total
+        """
         volley = self._base_volley
         if target_resistances is not None:
             em = volley.em * (1 - target_resistances.em)
@@ -78,12 +91,28 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
 
     @VolatileProperty
     def _base_volley(self):
-        if self._weapon_type == WeaponType.turret:
-            charge = getattr(self, 'charge', None)
-            if charge is not None:
-                em, therm, kin, expl = self.__get_holder_damage(charge)
-            else:
-                em, therm, kin, expl = self.__get_holder_damage(self)
+        """
+        Return base volley for current holder - nominal volley, not modified by
+        any resistances.
+        """
+        # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
+        base_dmg_fetchers = {
+            WeaponType.turret: (self.__get_base_dmg_hybrid, True),
+            WeaponType.guided_missile: (self.__get_base_dmg_hybrid, False),
+            WeaponType.instant_missile: (self.__get_base_dmg_hybrid, True),
+            WeaponType.bomb: (self.__get_base_dmg_hybrid, False),
+            WeaponType.direct: (self.__get_base_dmg_hybrid, False),
+            WeaponType.untargeted_aoe: (self.__get_base_dmg_hybrid, False)
+        }
+        try:
+            base_fetcher, multiply = base_dmg_fetchers[self._weapon_type]
+        except KeyError:
+            return None
+        base_dmg = base_fetcher()
+        if base_dmg is None:
+            return None
+        em, kin, therm, expl = base_dmg
+        if multiply:
             try:
                 multiplier = self.attributes[Attribute.damage_multiplier]
             except KeyError:
@@ -93,16 +122,51 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
                 therm *= multiplier
                 kin *= multiplier
                 expl *= multiplier
-            total = em + therm + kin + expl
-            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+        total = em + therm + kin + expl
+        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+
+    def __get_base_dmg_holder(self):
+        """
+        Return holder damage attribs as 4-tuple.
+        """
+        return self.__get_holder_damage(self)
+
+    def __get_base_dmg_charge(self):
+        """
+        Return holder's charge damage attribs as 4-tuple.
+        """
+        charge = getattr(self, 'charge', None)
+        if charge is None:
+            return None
+        return self.__get_holder_damage(charge)
+
+    def __get_base_dmg_hybrid(self):
+        """
+        If charge is loaded, return damage attribs, if not -
+         holder attribs.
+        """
+        charge = getattr(self, 'charge', None)
+        if charge is not None:
+            return self.__get_holder_damage(charge)
         else:
-            volley = None
-        return volley
+            return self.__get_holder_damage(self)
+
+    def __get_holder_damage(self, holder):
+        """
+        Get damage per type as tuple for passed holder.
+        """
+        em = holder.attributes.get(Attribute.em_damage, 0)
+        therm = holder.attributes.get(Attribute.thermal_damage, 0)
+        kin = holder.attributes.get(Attribute.kinetic_damage, 0)
+        expl = holder.attributes.get(Attribute.explosive_damage, 0)
+        return em, therm, kin, expl
 
     def get_volley_vs_target(self, target_data=None, target_resistances=None):
+        # TODO
         return
 
     def get_chance_to_hit(self, target_data=None):
+        # TODO
         return
 
     def get_nominal_dps(self, target_resistances=None, reload=True):
@@ -130,6 +194,7 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
 
     def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
+        # TODO
         return
 
     @VolatileProperty
@@ -175,13 +240,3 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
             except KeyError:
                 pass
         return None
-
-    def __get_holder_damage(self, holder):
-        """
-        Get damage per type as tuple for passed holder.
-        """
-        em = holder.attributes.get(Attribute.em_damage, 0)
-        therm = holder.attributes.get(Attribute.thermal_damage, 0)
-        kin = holder.attributes.get(Attribute.kinetic_damage, 0)
-        expl = holder.attributes.get(Attribute.explosive_damage, 0)
-        return em, therm, kin, expl

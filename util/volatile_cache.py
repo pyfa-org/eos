@@ -26,14 +26,14 @@ class VolatileProperty:
     by VolatileMixin.
     """
 
-    def __init__(self, func):
-        self.method = func
+    def __init__(self, method):
+        self.__method = method
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        value = self.method(instance)
-        name = self.method.__name__
+        value = self.__method(instance)
+        name = self.__method.__name__
         setattr(instance, name, value)
         instance._volatile_attrs.add(name)
         return value

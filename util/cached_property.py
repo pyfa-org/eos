@@ -34,8 +34,8 @@ class CachedProperty:
     delete cached attribute.
     """
 
-    def __init__(self, func):
-        self.method = func
+    def __init__(self, method):
+        self.__method = method
 
     def __get__(self, instance, owner):
         # Return descriptor if called from class
@@ -44,6 +44,6 @@ class CachedProperty:
         # If called from instance, execute decorated method
         # and store returned value as class attribute, which
         # has the same name as method, then return it to caller
-        value = self.method(instance)
-        setattr(instance, self.method.__name__, value)
+        value = self.__method(instance)
+        setattr(instance, self.__method.__name__, value)
         return value
