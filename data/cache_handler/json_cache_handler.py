@@ -79,7 +79,10 @@ class JsonCacheHandler(CacheHandler):
             self.__update_mem_cache(data)
 
     def get_type(self, type_id):
-        type_id = int(type_id)
+        try:
+            type_id = int(type_id)
+        except TypeError as e:
+            raise TypeFetchError(type_id) from e
         try:
             type_ = self.__type_obj_cache[type_id]
         except KeyError:
@@ -94,19 +97,18 @@ class JsonCacheHandler(CacheHandler):
                 type_id=type_id,
                 group_id=type_data[0],
                 category_id=type_data[1],
-                duration_attribute_id=type_data[2],
-                discharge_attribute_id=type_data[3],
-                range_attribute_id=type_data[4],
-                falloff_attribute_id=type_data[5],
-                tracking_speed_attribute_id=type_data[6],
-                attributes={attr_id: attr_val for attr_id, attr_val in type_data[8]},
-                effects=tuple(self.get_effect(effect_id) for effect_id in type_data[7])
+                attributes={attr_id: attr_val for attr_id, attr_val in type_data[2]},
+                effects=tuple(self.get_effect(effect_id) for effect_id in type_data[3]),
+                default_effect=None if type_data[4] is None else self.get_effect(type_data[4])
             )
             self.__type_obj_cache[type_id] = type_
         return type_
 
     def get_attribute(self, attr_id):
-        attr_id = int(attr_id)
+        try:
+            attr_id = int(attr_id)
+        except TypeError as e:
+            raise AttributeFetchError(attr_id) from e
         try:
             attribute = self.__attribute_obj_cache[attr_id]
         except KeyError:
@@ -126,7 +128,10 @@ class JsonCacheHandler(CacheHandler):
         return attribute
 
     def get_effect(self, effect_id):
-        effect_id = int(effect_id)
+        try:
+            effect_id = int(effect_id)
+        except TypeError as e:
+            raise EffectFetchError(effect_id) from e
         try:
             effect = self.__effect_obj_cache[effect_id]
         except KeyError:
@@ -140,15 +145,23 @@ class JsonCacheHandler(CacheHandler):
                 category_id=effect_data[0],
                 is_offensive=effect_data[1],
                 is_assistance=effect_data[2],
-                fitting_usage_chance_attribute_id=effect_data[3],
-                build_status=effect_data[4],
-                modifiers=tuple(self.get_modifier(modifier_id) for modifier_id in effect_data[5])
+                duration_attribute_id=effect_data[3],
+                discharge_attribute_id=effect_data[4],
+                range_attribute_id=effect_data[5],
+                falloff_attribute_id=effect_data[6],
+                tracking_speed_attribute_id=effect_data[7],
+                fitting_usage_chance_attribute_id=effect_data[8],
+                build_status=effect_data[9],
+                modifiers=tuple(self.get_modifier(modifier_id) for modifier_id in effect_data[10])
             )
             self.__effect_obj_cache[effect_id] = effect
         return effect
 
     def get_modifier(self, modifier_id):
-        modifier_id = int(modifier_id)
+        try:
+            modifier_id = int(modifier_id)
+        except TypeError as e:
+            raise ModifierFetchError(modifier_id) from e
         try:
             modifier = self.__modifier_obj_cache[modifier_id]
         except KeyError:
@@ -206,13 +219,9 @@ class JsonCacheHandler(CacheHandler):
             slim_types[type_id] = (
                 type_row['group_id'],
                 type_row['category_id'],
-                type_row['duration_attribute_id'],
-                type_row['discharge_attribute_id'],
-                type_row['range_attribute_id'],
-                type_row['falloff_attribute_id'],
-                type_row['tracking_speed_attribute_id'],
+                tuple(type_row['attributes'].items()),  # Dictionary -> tuple
                 tuple(type_row['effects']),  # List -> tuple
-                tuple(type_row['attributes'].items())  # Dictionary -> tuple
+                type_row['default_effect']
             )
         slim_data['types'] = slim_types
 
@@ -234,6 +243,11 @@ class JsonCacheHandler(CacheHandler):
                 effect_row['effect_category'],
                 effect_row['is_offensive'],
                 effect_row['is_assistance'],
+                effect_row['duration_attribute_id'],
+                effect_row['discharge_attribute_id'],
+                effect_row['range_attribute_id'],
+                effect_row['falloff_attribute_id'],
+                effect_row['tracking_speed_attribute_id'],
                 effect_row['fitting_usage_chance_attribute_id'],
                 effect_row['build_status'],
                 tuple(effect_row['modifiers'])  # List -> tuple

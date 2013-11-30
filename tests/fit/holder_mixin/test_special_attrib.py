@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.fit.holder.mixin.misc import SpecialAttribMixin
+from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -29,7 +29,7 @@ class TestHolderMixinSpecialAttrib(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
-        self.mixin = SpecialAttribMixin(type_id=None)
+        self.mixin = DefaultEffectAttribMixin(type_id=None)
         self.mixin.attributes = {}
         self.mixin.item = Mock()
 

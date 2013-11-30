@@ -35,6 +35,11 @@ class Effect:
                  category_id=None,
                  is_offensive=None,
                  is_assistance=None,
+                 duration_attribute_id=None,
+                 discharge_attribute_id=None,
+                 range_attribute_id=None,
+                 falloff_attribute_id=None,
+                 tracking_speed_attribute_id=None,
                  fitting_usage_chance_attribute_id=None,
                  build_status=None,
                  modifiers=()):
@@ -49,6 +54,26 @@ class Effect:
 
         # Whether the effect is helpful (e.g. remote repairers)
         self.is_assistance = bool(is_assistance) if is_assistance is not None else None
+
+        # If effect is default effect of active holder, attribute
+        # with this ID on holder defines cycle time
+        self.duration_attribute_id = duration_attribute_id
+
+        # If effect is default effect of active holder, attribute
+        # with this ID on holder defines ship's cap drained per cycle
+        self.discharge_attribute_id = discharge_attribute_id
+
+        # If effect needs to know its optimal range, attribute value on
+        # holder referenced by this ID will contain it
+        self.range_attribute_id = range_attribute_id
+
+        # If effect needs to know its falloff range, attribute value on
+        # holder referenced by this ID will contain it
+        self.falloff_attribute_id = falloff_attribute_id
+
+        # If effect needs to know its tracking speed, attribute value on
+        # holder referenced by this ID will contain it
+        self.tracking_speed_attribute_id = tracking_speed_attribute_id
 
         # Refers attribute, which determines chance of effect
         # getting applied when its carrier is added to fit

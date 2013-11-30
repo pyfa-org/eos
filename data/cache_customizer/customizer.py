@@ -75,6 +75,11 @@ class CacheCustomizer:
             'effect_category': EffectCategory.passive,
             'is_offensive': False,
             'is_assistance': False,
+            'duration_attribute_id': None,
+            'discharge_attribute_id': None,
+            'range_attribute_id': None,
+            'falloff_attribute_id': None,
+            'tracking_speed_attribute_id': None,
             'fitting_usage_chance_attribute_id': None,
             'build_status': EffectBuildStatus.ok_full,
             'modifiers': [modifier_row['modifier_id'] for modifier_row in damage_modifiers]

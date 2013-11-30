@@ -21,7 +21,7 @@
 
 from eos.const.eos import Location, State
 from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
-from eos.fit.holder.mixin.misc import SpecialAttribMixin
+from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
 
@@ -29,7 +29,7 @@ from eos.fit.holder.mixin.tanking import BufferTankingMixin
 class Drone(MutableStateMixin,
             DamageDealerMixin,
             BufferTankingMixin,
-            SpecialAttribMixin):
+            DefaultEffectAttribMixin):
     """
     Single drone.
 

@@ -213,13 +213,9 @@ class Converter:
                 'type_id': type_id,
                 'group_id': group_id,
                 'category_id': invgroups_keyed.get(group_id, {}).get('categoryID'),
-                'duration_attribute_id': defeff.get('durationAttributeID'),
-                'discharge_attribute_id': defeff.get('dischargeAttributeID'),
-                'range_attribute_id': defeff.get('rangeAttributeID'),
-                'falloff_attribute_id': defeff.get('falloffAttributeID'),
-                'tracking_speed_attribute_id': defeff.get('trackingSpeedAttributeID'),
                 'effects': type_effects.get(type_id, []),
-                'attributes': type_attribs.get(type_id, {})
+                'attributes': type_attribs.get(type_id, {}),
+                'default_effect': type_defeff_map.get(type_id)
             }
             types.append(type_)
         assembly['types'] = types
@@ -244,6 +240,11 @@ class Converter:
                 'effect_category': row.get('effectCategory'),
                 'is_offensive': row.get('isOffensive'),
                 'is_assistance': row.get('isAssistance'),
+                'duration_attribute_id': row.get('durationAttributeID'),
+                'discharge_attribute_id': row.get('dischargeAttributeID'),
+                'range_attribute_id': row.get('rangeAttributeID'),
+                'falloff_attribute_id': row.get('falloffAttributeID'),
+                'tracking_speed_attribute_id': row.get('trackingSpeedAttributeID'),
                 'fitting_usage_chance_attribute_id': row.get('fittingUsageChanceAttributeID'),
                 'pre_expression_id': row.get('preExpression'),
                 'post_expression_id': row.get('postExpression')
@@ -320,7 +321,7 @@ class Converter:
         Converts modifier into frozendict with its keys and
         values assigned according to modifier's ones.
         """
-        # Fields which we need to dump into row
+        # Fields which we need to write into row
         fields = ('state', 'context', 'source_attribute_id', 'operator',
                   'target_attribute_id', 'location', 'filter_type', 'filter_value')
         modifier_row = {}

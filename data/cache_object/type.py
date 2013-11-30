@@ -34,13 +34,9 @@ class Type:
                  type_id=None,
                  group_id=None,
                  category_id=None,
-                 duration_attribute_id=None,
-                 discharge_attribute_id=None,
-                 range_attribute_id=None,
-                 falloff_attribute_id=None,
-                 tracking_speed_attribute_id=None,
                  attributes=None,
-                 effects=()):
+                 effects=(),
+                 default_effect=None):
         self.id = type_id
 
         # The groupID of the type, integer
@@ -48,22 +44,6 @@ class Type:
 
         # The category ID of the type, integer
         self.category_id = category_id
-
-        # Defines cycle time
-        self._duration_attribute_id = duration_attribute_id
-
-        # Defines attribute, whose value will be used to drain ship's
-        # capacitor each cycle
-        self._discharge_attribute_id = discharge_attribute_id
-
-        # Attribute with this ID defines optimal range of item
-        self._range_attribute_id = range_attribute_id
-
-        # Defines falloff attribute
-        self._falloff_attribute_id = falloff_attribute_id
-
-        # Defines tracking speed attribute
-        self._tracking_speed_attribute_id = tracking_speed_attribute_id
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
@@ -73,6 +53,9 @@ class Type:
         # Iterable with effects this type has, they describe modifications
         # which this type applies
         self.effects = effects
+
+        # Default effect of item, which defines its several major properties
+        self._default_effect = default_effect
 
     @CachedProperty
     def _effect_ids(self):
