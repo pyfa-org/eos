@@ -62,14 +62,14 @@ class TestHolderMixinSpecialAttrib(FitTestCase):
 
     def test_no_default_effect(self):
         self.mixin.item._default_effect = None
-        self.mixin.attributes[102] = 8
-        self.assertIsNone(self.mixin.tracking_speed)
+        self.mixin.attributes[102] = 800
+        self.assertIsNone(self.mixin.cycle_time)
 
     def test_no_description(self):
-        self.mixin.item._default_effect.tracking_speed_attribute_id = None
-        self.mixin.attributes[102] = 8
-        self.assertIsNone(self.mixin.tracking_speed)
+        self.mixin.item._default_effect.duration_attribute_id = None
+        self.mixin.attributes[102] = 800
+        self.assertIsNone(self.mixin.cycle_time)
 
     def test_no_attr(self):
-        self.mixin.item._default_effect.tracking_speed_attribute_id = 102
-        self.assertIsNone(self.mixin.tracking_speed)
+        self.mixin.item._default_effect.duration_attribute_id = 102
+        self.assertIsNone(self.mixin.cycle_time)
