@@ -57,11 +57,6 @@ class Type:
         # Default effect of item, which defines its several major properties
         self.default_effect = default_effect
 
-    @CachedProperty
-    def _effect_ids(self):
-        """Tuple with IDs of effects this item has."""
-        return tuple(e.id for e in self.effects)
-
     @property
     def modifiers(self):
         """ Get all modifiers spawned by item effects."""

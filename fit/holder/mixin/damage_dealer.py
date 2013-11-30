@@ -110,33 +110,31 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         # effects for detection
         holder_item = self.item
         try:
-            holder_effect_ids = holder_item._effect_ids
+            holder_defeff_id = holder_item.default_effect.id
         except AttributeError:
-            holder_effect_ids = ()
-        if (Effect.target_attack in holder_effect_ids or
-                Effect.projectile_fired in holder_effect_ids):
+            holder_defeff_id = None
+        if holder_defeff_id in (Effect.target_attack, Effect.projectile_fired):
             return WeaponType.turret
-        if Effect.emp_wave in holder_effect_ids:
+        if holder_defeff_id == Effect.emp_wave:
             return WeaponType.untargeted_aoe
-        if Effect.fighter_missile in holder_effect_ids:
+        if holder_defeff_id == Effect.fighter_missile:
             return WeaponType.instant_missile
-        if (Effect.super_weapon_amarr in holder_effect_ids or
-                Effect.super_weapon_caldari in holder_effect_ids or
-                Effect.super_weapon_gallente in holder_effect_ids or
-                Effect.super_weapon_minmatar in holder_effect_ids):
+        if holder_defeff_id in (
+            Effect.super_weapon_amarr, Effect.super_weapon_caldari,
+            Effect.super_weapon_gallente, Effect.super_weapon_minmatar
+        ):
             return WeaponType.direct
         # For missiles and bombs, we need to use charge effect, as it
         # defines property of 'projectile'
-        charge = getattr(self, 'charge', None)
-        try:
-            charge_effect_ids = charge.item._effect_ids
-        except AttributeError:
-            charge_effect_ids = ()
-        if Effect.use_missiles in holder_effect_ids:
-            if (Effect.missile_launching in charge_effect_ids or
-                    Effect.fof_missile_launching in charge_effect_ids):
+        if holder_defeff_id == Effect.missile_launching:
+            charge = getattr(self, 'charge', None)
+            try:
+                charge_defeff_id = charge.item.default_effect.id
+            except AttributeError:
+                charge_defeff_id = None
+            if charge_defeff_id in (Effect.missile_launching, Effect.fof_missile_launching):
                 return WeaponType.guided_missile
-            if Effect.bomb_launching in charge_effect_ids:
+            if charge_defeff_id == Effect.bomb_launching:
                 return WeaponType.bomb
         return None
 
