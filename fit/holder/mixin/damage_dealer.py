@@ -111,7 +111,7 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         base_dmg = base_fetcher()
         if base_dmg is None:
             return None
-        em, kin, therm, expl = base_dmg
+        em, therm, kin, expl = base_dmg
         if multiply:
             try:
                 multiplier = self.attributes[Attribute.damage_multiplier]
@@ -228,7 +228,7 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         # For missiles and bombs, we need to use charge as well, as it
         # defines property of 'projectile' which massively influence type
         # of weapon
-        if holder_defeff_id == Effect.missile_launching:
+        if holder_defeff_id == Effect.use_missiles:
             charge = getattr(self, 'charge', None)
             # Guard against malformed or absent item and default effect
             try:
