@@ -171,25 +171,35 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
 
     def get_nominal_dps(self, target_resistances=None, reload=True):
         volley = self.get_nominal_volley(target_resistances=target_resistances)
-        cycle = self.cycle_time
-        reactivation = getattr(self, 'reactivation_delay', 0)
+        if volley is None:
+            return None
+        cycle_time = self.cycle_time
+        # Holders may have no reactivation attribute, return None or actual value;
+        # make sure we use 0 as fallback in all cases
+        reactivation_time = getattr(self, 'reactivation_delay', 0) or 0
+        # Time which module should spend on each cycle, regardless of any conditions
+        full_cycle_time = cycle_time + reactivation_time
         if reload:
             try:
                 reload_time = self.reload_time
+                # As we're calculating long-run DPS, use normal amount of charges
+                # loadable int container, not overriden done
                 charged_cycles = self.fully_charged_cycles_max
             except AttributeError:
-                mean_cycle_time = cycle + reactivation
+                pass
             else:
-                # Actual additional time which module spends reloading,
-                # not on cycling or cooling down reactivation timer
-                reload_idle_time = max(reload_time - reactivation, 0)
-                mean_cycle_time = cycle + reactivation + (reload_idle_time / charged_cycles)
-        else:
-            mean_cycle_time = cycle + reactivation
-        em = volley.em / mean_cycle_time
-        therm = volley.thermal / mean_cycle_time
-        kin = volley.kinetic / mean_cycle_time
-        expl = volley.explosive / mean_cycle_time
+                # Weapon can't actually shoot if it can't load enough charges to cycle
+                if charged_cycles == 0:
+                    return None
+                if reload_time is not None and charged_cycles is not None:
+                    # To each cycle, add average time which module should spend reloading
+                    # (and take into account that reactivation delay, which we already take
+                    # into account, can cover reload time partially or fully)
+                    full_cycle_time += max(reload_time - reactivation_time, 0) / charged_cycles
+        em = volley.em / full_cycle_time
+        therm = volley.thermal / full_cycle_time
+        kin = volley.kinetic / full_cycle_time
+        expl = volley.explosive / full_cycle_time
         total = em + therm + kin + expl
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
 

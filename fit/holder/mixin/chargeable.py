@@ -152,4 +152,7 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         else:
             if defeff_id == Effect.target_attack:
                 return 1.0
-        return self.attributes.get(Attribute.reload_time) / 1000
+        reload_ms = self.attributes.get(Attribute.reload_time)
+        if reload_ms is None:
+            return None
+        return reload_ms / 1000

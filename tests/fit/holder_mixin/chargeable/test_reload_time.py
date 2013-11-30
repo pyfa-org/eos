@@ -40,6 +40,10 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.holder.item.default_effect.id = 1008
         self.assertEqual(self.holder.reload_time, 5.0)
 
+    def test_generic_no_attribute(self):
+        self.holder.item.default_effect.id = 1008
+        self.assertIsNone(self.holder.reload_time)
+
     def test_generic_no_item(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
         self.holder.item = None

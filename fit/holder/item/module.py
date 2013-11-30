@@ -41,7 +41,10 @@ class Module(MutableStateMixin,
 
     @property
     def reactivation_delay(self):
-        return self.attributes.get(Attribute.module_reactivation_delay) / 1000
+        delay_ms = self.attributes.get(Attribute.module_reactivation_delay)
+        if delay_ms is None:
+            return None
+        return delay_ms / 1000
 
 
 class ModuleHigh(Module):
@@ -68,6 +71,16 @@ class ModuleMed(Module):
     """
     Ship's module from medium slot.
 
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Optional arguments:
+    state -- initial state this module takes, default is
+    offline
+    charge -- charge object to load into module, default
+    is None
+
     Cooperative methods:
     __init__
     """
@@ -77,6 +90,16 @@ class ModuleMed(Module):
 class ModuleLow(Module):
     """
     Ship's module from low slot.
+
+    Required arguments:
+    type_id -- type ID of item which should serve as base
+    for this item.
+
+    Optional arguments:
+    state -- initial state this module takes, default is
+    offline
+    charge -- charge object to load into module, default
+    is None
 
     Cooperative methods:
     __init__
