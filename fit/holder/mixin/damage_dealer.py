@@ -80,6 +80,8 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         em, thermal, kinetic, explosive, total
         """
         volley = self._base_volley
+        if volley is None:
+            return None
         if target_resistances is not None:
             em = volley.em * (1 - target_resistances.em)
             therm = volley.thermal * (1 - target_resistances.thermal)
@@ -98,11 +100,11 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
         base_dmg_fetchers = {
             WeaponType.turret: (self.__get_base_dmg_hybrid, True),
-            WeaponType.guided_missile: (self.__get_base_dmg_hybrid, False),
-            WeaponType.instant_missile: (self.__get_base_dmg_hybrid, True),
-            WeaponType.bomb: (self.__get_base_dmg_hybrid, False),
-            WeaponType.direct: (self.__get_base_dmg_hybrid, False),
-            WeaponType.untargeted_aoe: (self.__get_base_dmg_hybrid, False)
+            WeaponType.guided_missile: (self.__get_base_dmg_charge, False),
+            WeaponType.instant_missile: (self.__get_base_dmg_holder, True),
+            WeaponType.bomb: (self.__get_base_dmg_charge, False),
+            WeaponType.direct: (self.__get_base_dmg_holder, False),
+            WeaponType.untargeted_aoe: (self.__get_base_dmg_holder, False)
         }
         try:
             base_fetcher, multiply = base_dmg_fetchers[self._weapon_type]
@@ -161,14 +163,6 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         expl = holder.attributes.get(Attribute.explosive_damage, 0)
         return em, therm, kin, expl
 
-    def get_volley_vs_target(self, target_data=None, target_resistances=None):
-        # TODO
-        return
-
-    def get_chance_to_hit(self, target_data=None):
-        # TODO
-        return
-
     def get_nominal_dps(self, target_resistances=None, reload=True):
         volley = self.get_nominal_volley(target_resistances=target_resistances)
         if volley is None:
@@ -202,10 +196,6 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         expl = volley.explosive / full_cycle_time
         total = em + therm + kin + expl
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
-
-    def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
-        # TODO
-        return
 
     @VolatileProperty
     def _weapon_type(self):
@@ -250,3 +240,15 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
             except KeyError:
                 pass
         return None
+
+    def get_volley_vs_target(self, target_data=None, target_resistances=None):
+        # TODO
+        return
+
+    def get_chance_to_hit(self, target_data=None):
+        # TODO
+        return
+
+    def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
+        # TODO
+        return
