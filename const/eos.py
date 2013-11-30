@@ -178,18 +178,3 @@ class Restriction(metaclass=Enum):
     charge_group = 28
     charge_size = 29
     charge_volume = 30
-
-
-class WeaponType(metaclass=Enum):
-    # Everything turret-based, including drones
-    turret = 1
-    # All regular missiles
-    guided_missile = 2
-    # Fighter-bomber missiles
-    instant_missile = 3
-    # Free-aiming bombs, launched towards ship vector
-    bomb = 4
-    # Damage done to single target
-    direct = 5
-    # Smartbombs
-    untargeted_aoe = 6

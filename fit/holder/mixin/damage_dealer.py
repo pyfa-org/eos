@@ -19,11 +19,44 @@
 #===============================================================================
 
 
-from eos.const.eos import WeaponType
 from eos.const.eve import Attribute, Effect
 from eos.fit.tuples import DamageTypesTotal
+from eos.util.enum import Enum
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
+
+
+class WeaponType(metaclass=Enum):
+    # Everything turret-based, including drones
+    turret = 1
+    # All regular missiles
+    guided_missile = 2
+    # Fighter-bomber missiles
+    instant_missile = 3
+    # Free-aiming bombs, launched towards ship vector
+    bomb = 4
+    # Damage done to single target
+    direct = 5
+    # Smartbombs
+    untargeted_aoe = 6
+
+
+SIMPLE_EFFECT_WEAPON_MAP = {
+    Effect.target_attack: WeaponType.turret,
+    Effect.projectile_fired: WeaponType.turret,
+    Effect.emp_wave: WeaponType.untargeted_aoe,
+    Effect.fighter_missile: WeaponType.instant_missile,
+    Effect.super_weapon_amarr: WeaponType.direct,
+    Effect.super_weapon_caldari: WeaponType.direct,
+    Effect.super_weapon_gallente: WeaponType.direct,
+    Effect.super_weapon_minmatar: WeaponType.direct
+}
+
+MISSILE_EFFECT_WEAPON_MAP = {
+    Effect.missile_launching: WeaponType.guided_missile,
+    Effect.fof_missile_launching: WeaponType.guided_missile,
+    Effect.bomb_launching: WeaponType.bomb
+}
 
 
 class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
@@ -106,36 +139,41 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         deliver damage and attributes used for damage calculation. If
         holder is not a weapon or an inactive weapon, None is returned.
         """
-        # For some weapon types, it's enough to use just holder
-        # effects for detection
         holder_item = self.item
+        # Guard against malformed or absent items
         try:
-            holder_defeff_id = holder_item.default_effect.id
+            holder_deffeff = holder_item.default_effect
         except AttributeError:
-            holder_defeff_id = None
-        if holder_defeff_id in (Effect.target_attack, Effect.projectile_fired):
-            return WeaponType.turret
-        if holder_defeff_id == Effect.emp_wave:
-            return WeaponType.untargeted_aoe
-        if holder_defeff_id == Effect.fighter_missile:
-            return WeaponType.instant_missile
-        if holder_defeff_id in (
-            Effect.super_weapon_amarr, Effect.super_weapon_caldari,
-            Effect.super_weapon_gallente, Effect.super_weapon_minmatar
-        ):
-            return WeaponType.direct
-        # For missiles and bombs, we need to use charge effect, as it
-        # defines property of 'projectile'
+            return None
+        # Guard against malformed or absent default effect
+        try:
+            holder_defeff_id = holder_deffeff.id
+            holder_defeff_state = holder_deffeff._state
+        except AttributeError:
+            return None
+        # Weapon properties are defined by holder default effect;
+        # thus, if holder isn't in state to have this effect 'active',
+        # it can't be considered as weapon
+        if self.state < holder_defeff_state:
+            return None
+        # For some weapon types, it's enough to use just holder for detection
+        weapon_type = SIMPLE_EFFECT_WEAPON_MAP.get(holder_defeff_id)
+        if weapon_type is not None:
+            return weapon_type
+        # For missiles and bombs, we need to use charge as well, as it
+        # defines property of 'projectile' which massively influence type
+        # of weapon
         if holder_defeff_id == Effect.missile_launching:
             charge = getattr(self, 'charge', None)
+            # Guard against malformed or absent item and default effect
             try:
                 charge_defeff_id = charge.item.default_effect.id
             except AttributeError:
                 charge_defeff_id = None
-            if charge_defeff_id in (Effect.missile_launching, Effect.fof_missile_launching):
-                return WeaponType.guided_missile
-            if charge_defeff_id == Effect.bomb_launching:
-                return WeaponType.bomb
+            try:
+                return MISSILE_EFFECT_WEAPON_MAP[charge_defeff_id]
+            except KeyError:
+                pass
         return None
 
     def __get_holder_damage(self, holder):
