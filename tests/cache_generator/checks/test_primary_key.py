@@ -254,7 +254,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': False})
-        self.dh.data['dgmeffects'].append({'effectID': 100, 'falloffAttributeID': 70})
+        self.dh.data['dgmeffects'].append({'effectID': 100})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
@@ -265,7 +265,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['falloff_attribute_id'], 70)
+        self.assertEqual(data['types'][1]['default_effect'], 100)
 
     @patch('eos.data.cache_generator.converter.ModifierBuilder')
     def test_dgmexpressions(self, mod_builder):

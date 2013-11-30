@@ -38,15 +38,11 @@ class TestConversionType(GeneratorTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 1111, 'isDefault': False})
         self.dh.data['dgmeffects'].append({
             'effectID': 111, 'effectCategory': 8, 'isOffensive': True, 'isAssistance': False,
-            'fittingUsageChanceAttributeID': 96, 'preExpression': None, 'postExpression': None,
-            'durationAttributeID': 78, 'dischargeAttributeID': 72, 'rangeAttributeID': 2,
-            'falloffAttributeID': 3, 'trackingSpeedAttributeID': 6
+            'fittingUsageChanceAttributeID': 96, 'preExpression': None, 'postExpression': None
         })
         self.dh.data['dgmeffects'].append({
             'effectID': 1111, 'effectCategory': 85, 'isOffensive': False, 'isAssistance': True,
-            'fittingUsageChanceAttributeID': 41, 'preExpression': None, 'postExpression': None,
-            'durationAttributeID': 781, 'dischargeAttributeID': 752, 'rangeAttributeID': 26,
-            'falloffAttributeID': 33, 'trackingSpeedAttributeID': 68
+            'fittingUsageChanceAttributeID': 41, 'preExpression': None, 'postExpression': None
         })
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
@@ -56,19 +52,16 @@ class TestConversionType(GeneratorTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
         type_row = data['types'][1]
-        self.assertEqual(len(type_row), 10)
+        self.assertEqual(len(type_row), 6)
         self.assertEqual(type_row['group_id'], 6)
         self.assertEqual(type_row['category_id'], 16)
-        self.assertEqual(type_row['duration_attribute_id'], 78)
-        self.assertEqual(type_row['discharge_attribute_id'], 72)
-        self.assertEqual(type_row['range_attribute_id'], 2)
-        self.assertEqual(type_row['falloff_attribute_id'], 3)
-        self.assertEqual(type_row['tracking_speed_attribute_id'], 6)
-        type_effects = type_row['effects']
-        self.assertEqual(len(type_effects), 2)
-        self.assertIn(111, type_effects)
-        self.assertIn(1111, type_effects)
         type_attributes = type_row['attributes']
         self.assertEqual(len(type_attributes), 2)
         self.assertEqual(type_attributes[5], 10.0)
         self.assertEqual(type_attributes[80], 180.0)
+        type_effects = type_row['effects']
+        self.assertEqual(len(type_effects), 2)
+        self.assertIn(111, type_effects)
+        self.assertIn(1111, type_effects)
+        type_defeff = type_row['default_effect']
+        self.assertEqual(type_defeff, 111)

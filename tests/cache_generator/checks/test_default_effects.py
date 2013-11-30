@@ -50,7 +50,9 @@ class TestDefaultEffects(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1]['falloff_attribute_id'], 20)
+        self.assertEqual(len(data['effects']), 2)
+        self.assertIn(2, data['effects'])
+        self.assertEqual(data['effects'][2]['falloff_attribute_id'], 20)
 
     def test_duplicate(self):
         self.eff_link1['isDefault'] = True
@@ -67,11 +69,11 @@ class TestDefaultEffects(GeneratorTestCase):
                          'data contains 1 excessive default effects, marking them as non-default')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1]['falloff_attribute_id'], 10)
         # Make sure effects are not removed
         self.assertEqual(len(data['effects']), 2)
         self.assertIn(1, data['effects'])
         self.assertIn(2, data['effects'])
+        self.assertEqual(data['effects'][1]['falloff_attribute_id'], 10)
 
     def test_cleanup(self):
         del self.item['groupID']
