@@ -49,6 +49,7 @@ class StatTracker(InheritableVolatileMixin):
         turret_reg = TurretUseRegister(fit)
         launcher_reg = LauncherUseRegister(fit)
         launched_drone_reg = LaunchedDroneRegister(fit)
+        self._dd_reg = DamageDealerRegister()
         # Dictionary which keeps all stats registers
         # Format: {triggering state: {registers}}
         self.__registers = {
@@ -56,7 +57,8 @@ class StatTracker(InheritableVolatileMixin):
                 calibration_reg,
                 dronebay_reg,
                 turret_reg,
-                launcher_reg
+                launcher_reg,
+                self._dd_reg
             ),
             State.online:  (
                 cpu_reg,
@@ -178,6 +180,12 @@ class StatTracker(InheritableVolatileMixin):
             return ship_holder.worst_case_ehp
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
+
+    def get_nominal_volley(self, target_resistances=None):
+        return self._dd_reg.get_nominal_volley(target_resistances=target_resistances)
+
+    def get_nominal_dps(self, target_resistances=None, reload=False):
+        return self._dd_reg.get_nominal_dps(target_resistances=target_resistances, reload=reload)
 
     @VolatileProperty
     def agility_factor(self):

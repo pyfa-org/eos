@@ -162,7 +162,7 @@ class DamageDealerMixin(CooperativeVolatileMixin):
         expl = holder.attributes.get(Attribute.explosive_damage, 0)
         return em, therm, kin, expl
 
-    def get_nominal_dps(self, target_resistances=None, reload=True):
+    def get_nominal_dps(self, target_resistances=None, reload=False):
         volley = self.get_nominal_volley(target_resistances=target_resistances)
         if volley is None:
             return None
