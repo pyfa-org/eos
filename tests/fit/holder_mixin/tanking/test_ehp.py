@@ -29,7 +29,7 @@ class TestHolderMixinTankingEhp(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
-        self.mixin = BufferTankingMixin(type_id=None)
+        self.mixin = BufferTankingMixin()
         self.mixin.hp = Mock()
         self.mixin.resistances = Mock()
         self.mixin.attributes = {}

@@ -31,7 +31,7 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
-        mixin = DamageDealerMixin(type_id=None)
+        mixin = DamageDealerMixin()
         mixin.item = Mock()
         mixin.item.default_effect.id = Effect.super_weapon_amarr
         mixin.item.default_effect._state = State.active

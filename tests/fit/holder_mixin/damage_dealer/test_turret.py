@@ -31,7 +31,7 @@ class TestHolderMixinDamageTurret(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
-        mixin = DamageDealerMixin(type_id=None)
+        mixin = DamageDealerMixin()
         mixin.item = Mock()
         mixin.item.default_effect.id = Effect.projectile_fired
         mixin.item.default_effect._state = State.active

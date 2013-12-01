@@ -31,7 +31,7 @@ class TestHolderMixinDamageBomb(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
-        mixin = DamageDealerMixin(type_id=None)
+        mixin = DamageDealerMixin()
         mixin.item = Mock()
         mixin.item.default_effect.id = Effect.use_missiles
         mixin.item.default_effect._state = State.active

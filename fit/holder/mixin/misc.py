@@ -19,10 +19,7 @@
 #===============================================================================
 
 
-from .holder import HolderBase
-
-
-class DefaultEffectAttribMixin(HolderBase):
+class DefaultEffectAttribMixin:
     """
     Provides access to various attributes via aliases, the
     mapping between aliases and actual attributes with their
