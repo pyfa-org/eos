@@ -27,13 +27,13 @@ from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
-class TestHolderMixinDamageFighterBomber(FitTestCase):
+class TestHolderMixinDamageDrone(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
         mixin = DamageDealerMixin(type_id=None)
         mixin.item = Mock()
-        mixin.item.default_effect.id = Effect.fighter_missile
+        mixin.item.default_effect.id = Effect.target_attack
         mixin.item.default_effect._state = State.active
         mixin.attributes = {}
         mixin.state = State.active
@@ -126,11 +126,11 @@ class TestHolderMixinDamageFighterBomber(FitTestCase):
         mixin.charge.attributes[Attribute.explosive_damage] = 8.5
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 0)
-        self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 0)
+        self.assertAlmostEqual(volley.em, 28.6)
+        self.assertAlmostEqual(volley.thermal, 34.65)
+        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.explosive, 46.75)
+        self.assertAlmostEqual(volley.total, 150.7)
 
     def test_nominal_volley_cache(self):
         mixin = self.mixin

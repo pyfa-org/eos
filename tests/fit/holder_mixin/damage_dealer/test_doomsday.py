@@ -37,8 +37,10 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
         mixin.item.default_effect._state = State.active
         mixin.attributes = {}
         mixin.state = State.active
+        mixin.cycle_time = 0.5
+        mixin.reactivation_delay = None
         mixin.charge = None
-        mixin.charge_quantity_max = None
+        mixin.fully_charged_cycles_max = None
         mixin.reload_time = None
         self.mixin = mixin
 
@@ -117,10 +119,11 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
     def test_nominal_volley_charge_attrs(self):
         mixin = self.mixin
         mixin.charge = Mock()
-        mixin.charge.attributes = {
-            Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
-            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
-        }
+        mixin.charge.attributes = {}
+        mixin.charge.attributes[Attribute.em_damage] = 5.2
+        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
+        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
+        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
         volley = mixin.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 0)
@@ -209,7 +212,6 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
-        mixin.cycle_time = 0.5
         dps = mixin.get_nominal_dps(reload=False)
         self.assertAlmostEqual(dps.em, 10.4)
         self.assertAlmostEqual(dps.thermal, 12.6)
@@ -223,7 +225,6 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
-        mixin.cycle_time = 0.5
         dps = mixin.get_nominal_dps(reload=True)
         self.assertAlmostEqual(dps.em, 10.4)
         self.assertAlmostEqual(dps.thermal, 12.6)
@@ -237,7 +238,6 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
-        mixin.cycle_time = 0.5
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         dps = mixin.get_nominal_volley(target_resistances=profile)
         self.assertAlmostEqual(dps.em, 4.16)
@@ -253,6 +253,5 @@ class TestHolderMixinDamageDoomsday(FitTestCase):
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
         mixin.state = State.online
-        mixin.cycle_time = 0.5
         dps = mixin.get_nominal_dps()
         self.assertIsNone(dps)
