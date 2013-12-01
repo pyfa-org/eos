@@ -147,6 +147,17 @@ class TestHolderMixinDamageTurret(FitTestCase):
         self.assertAlmostEqual(volley.explosive, 46.75)
         self.assertAlmostEqual(volley.total, 150.7)
 
+    def test_nominal_volley_no_charged_cycles(self):
+        mixin = self.mixin
+        mixin.fully_charged_cycles_max = 0
+        mixin.charge.attributes[Attribute.em_damage] = 5.2
+        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
+        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
+        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
+        volley = mixin.get_nominal_volley()
+        self.assertIsNone(volley)
+
     def test_nominal_volley_cache(self):
         mixin = self.mixin
         mixin.charge.attributes[Attribute.em_damage] = 5.2
@@ -349,34 +360,6 @@ class TestHolderMixinDamageTurret(FitTestCase):
         self.assertAlmostEqual(dps.kinetic, 2.035)
         self.assertAlmostEqual(dps.explosive, 2.3375)
         self.assertAlmostEqual(dps.total, 7.535)
-
-    def test_nominal_dps_no_charged_cycles(self):
-        mixin = self.mixin
-        mixin.fully_charged_cycles_max = 0
-        mixin.reload_time = 6.5
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        mixin.attributes[Attribute.damage_multiplier] = 5.5
-        dps = mixin.get_nominal_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 57.2)
-        self.assertAlmostEqual(dps.thermal, 69.3)
-        self.assertAlmostEqual(dps.kinetic, 81.4)
-        self.assertAlmostEqual(dps.explosive, 93.5)
-        self.assertAlmostEqual(dps.total, 301.4)
-
-    def test_nominal_dps_no_charged_cycles_reload(self):
-        mixin = self.mixin
-        mixin.fully_charged_cycles_max = 0
-        mixin.reload_time = 6.5
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        mixin.attributes[Attribute.damage_multiplier] = 5.5
-        dps = mixin.get_nominal_dps(reload=True)
-        self.assertIsNone(dps)
 
     def test_nominal_dps_effective(self):
         mixin = self.mixin

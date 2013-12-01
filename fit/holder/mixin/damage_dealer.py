@@ -182,9 +182,6 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
             except AttributeError:
                 pass
             else:
-                # Weapon can't actually shoot if it can't load enough charges to cycle
-                if charged_cycles == 0:
-                    return None
                 if reload_time is not None and charged_cycles is not None:
                     # To each cycle, add average time which module should spend reloading
                     # (and take into account that reactivation delay, which we already take
@@ -220,6 +217,10 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
         # thus, if holder isn't in state to have this effect 'active',
         # it can't be considered as weapon
         if self.state < holder_defeff_state:
+            return None
+        # If holder contains some charge type but can't hold enough to actually
+        # cycle itself, do not consider such holder as weapon
+        if getattr(self, 'fully_charged_cycles_max', None) == 0:
             return None
         # For some weapon types, it's enough to use just holder for detection
         weapon_type = SIMPLE_EFFECT_WEAPON_MAP.get(holder_defeff_id)
