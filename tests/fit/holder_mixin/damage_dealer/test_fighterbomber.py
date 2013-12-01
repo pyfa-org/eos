@@ -27,13 +27,13 @@ from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
-class TestHolderMixinDamageSmartbomb(FitTestCase):
+class TestHolderMixinDamageFighterbomber(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
         mixin = DamageDealerMixin(type_id=None)
         mixin.item = Mock()
-        mixin.item.default_effect.id = Effect.emp_wave
+        mixin.item.default_effect.id = Effect.fighter_missile
         mixin.item.default_effect._state = State.active
         mixin.attributes = {}
         mixin.state = State.active
@@ -48,12 +48,13 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
+        self.assertAlmostEqual(volley.em, 28.6)
+        self.assertAlmostEqual(volley.thermal, 34.65)
+        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.explosive, 46.75)
+        self.assertAlmostEqual(volley.total, 150.7)
 
     def test_nominal_volley_effective(self):
         mixin = self.mixin
@@ -61,21 +62,21 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
+        self.assertAlmostEqual(volley.em, 22.88)
+        self.assertAlmostEqual(volley.thermal, 27.72)
+        self.assertAlmostEqual(volley.kinetic, 8.14)
         self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
+        self.assertAlmostEqual(volley.total, 58.74)
 
-    def test_nominal_volley_multiplier(self):
+    def test_nominal_volley_no_multiplier(self):
         mixin = self.mixin
         mixin.attributes[Attribute.em_damage] = 5.2
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
-        mixin.attributes[Attribute.damage_multiplier] = 2
         volley = mixin.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 5.2)
         self.assertAlmostEqual(volley.thermal, 6.3)
@@ -88,15 +89,17 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.em_damage] = 5.2
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
+        self.assertAlmostEqual(volley.em, 28.6)
         self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 21.1)
+        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.explosive, 46.75)
+        self.assertAlmostEqual(volley.total, 116.05)
 
     def test_nominal_volley_no_attrib_all(self):
         mixin = self.mixin
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 0)
@@ -110,6 +113,7 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.state = State.online
         volley = mixin.get_nominal_volley()
         self.assertIsNone(volley)
@@ -119,7 +123,8 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.charge = Mock()
         mixin.charge.attributes = {
             Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
-            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5,
+            Attribute.damage_multiplier: 5.5
         }
         volley = mixin.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 0)
@@ -134,36 +139,38 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
+        self.assertAlmostEqual(volley.em, 28.6)
+        self.assertAlmostEqual(volley.thermal, 34.65)
+        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.explosive, 46.75)
+        self.assertAlmostEqual(volley.total, 150.7)
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
+        self.assertAlmostEqual(volley.em, 22.88)
+        self.assertAlmostEqual(volley.thermal, 27.72)
+        self.assertAlmostEqual(volley.kinetic, 8.14)
         self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
+        self.assertAlmostEqual(volley.total, 58.74)
         mixin.attributes[Attribute.em_damage] = 52
         mixin.attributes[Attribute.thermal_damage] = 63
         mixin.attributes[Attribute.kinetic_damage] = 74
         mixin.attributes[Attribute.explosive_damage] = 85
+        mixin.attributes[Attribute.damage_multiplier] = 55
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
+        self.assertAlmostEqual(volley.em, 28.6)
+        self.assertAlmostEqual(volley.thermal, 34.65)
+        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.explosive, 46.75)
+        self.assertAlmostEqual(volley.total, 150.7)
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
+        self.assertAlmostEqual(volley.em, 22.88)
+        self.assertAlmostEqual(volley.thermal, 27.72)
+        self.assertAlmostEqual(volley.kinetic, 8.14)
         self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
+        self.assertAlmostEqual(volley.total, 58.74)
 
     def test_nominal_volley_volatility(self):
         mixin = self.mixin
@@ -171,37 +178,39 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
+        self.assertAlmostEqual(volley.em, 28.6)
+        self.assertAlmostEqual(volley.thermal, 34.65)
+        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.explosive, 46.75)
+        self.assertAlmostEqual(volley.total, 150.7)
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
+        self.assertAlmostEqual(volley.em, 22.88)
+        self.assertAlmostEqual(volley.thermal, 27.72)
+        self.assertAlmostEqual(volley.kinetic, 8.14)
         self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
+        self.assertAlmostEqual(volley.total, 58.74)
         mixin._clear_volatile_attrs()
         mixin.attributes[Attribute.em_damage] = 52
         mixin.attributes[Attribute.thermal_damage] = 63
         mixin.attributes[Attribute.kinetic_damage] = 74
         mixin.attributes[Attribute.explosive_damage] = 85
+        mixin.attributes[Attribute.damage_multiplier] = 55
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 52)
-        self.assertAlmostEqual(volley.thermal, 63)
-        self.assertAlmostEqual(volley.kinetic, 74)
-        self.assertAlmostEqual(volley.explosive, 85)
-        self.assertAlmostEqual(volley.total, 274)
+        self.assertAlmostEqual(volley.em, 2860)
+        self.assertAlmostEqual(volley.thermal, 3465)
+        self.assertAlmostEqual(volley.kinetic, 4070)
+        self.assertAlmostEqual(volley.explosive, 4675)
+        self.assertAlmostEqual(volley.total, 15070)
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 41.6)
-        self.assertAlmostEqual(volley.thermal, 50.4)
-        self.assertAlmostEqual(volley.kinetic, 14.8)
+        self.assertAlmostEqual(volley.em, 2288)
+        self.assertAlmostEqual(volley.thermal, 2772)
+        self.assertAlmostEqual(volley.kinetic, 814)
         self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 106.8)
+        self.assertAlmostEqual(volley.total, 5874)
 
     def test_nominal_dps(self):
         mixin = self.mixin
@@ -209,13 +218,14 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.cycle_time = 0.5
         dps = mixin.get_nominal_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 10.4)
-        self.assertAlmostEqual(dps.thermal, 12.6)
-        self.assertAlmostEqual(dps.kinetic, 14.8)
-        self.assertAlmostEqual(dps.explosive, 17)
-        self.assertAlmostEqual(dps.total, 54.8)
+        self.assertAlmostEqual(dps.em, 57.2)
+        self.assertAlmostEqual(dps.thermal, 69.3)
+        self.assertAlmostEqual(dps.kinetic, 81.4)
+        self.assertAlmostEqual(dps.explosive, 93.5)
+        self.assertAlmostEqual(dps.total, 301.4)
 
     def test_nominal_dps_reload(self):
         mixin = self.mixin
@@ -223,13 +233,14 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.cycle_time = 0.5
         dps = mixin.get_nominal_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 10.4)
-        self.assertAlmostEqual(dps.thermal, 12.6)
-        self.assertAlmostEqual(dps.kinetic, 14.8)
-        self.assertAlmostEqual(dps.explosive, 17)
-        self.assertAlmostEqual(dps.total, 54.8)
+        self.assertAlmostEqual(dps.em, 57.2)
+        self.assertAlmostEqual(dps.thermal, 69.3)
+        self.assertAlmostEqual(dps.kinetic, 81.4)
+        self.assertAlmostEqual(dps.explosive, 93.5)
+        self.assertAlmostEqual(dps.total, 301.4)
 
     def test_nominal_dps_effective(self):
         mixin = self.mixin
@@ -237,14 +248,15 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.cycle_time = 0.5
         profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
         dps = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(dps.em, 4.16)
-        self.assertAlmostEqual(dps.thermal, 5.04)
-        self.assertAlmostEqual(dps.kinetic, 1.48)
+        self.assertAlmostEqual(dps.em, 22.88)
+        self.assertAlmostEqual(dps.thermal, 27.72)
+        self.assertAlmostEqual(dps.kinetic, 8.14)
         self.assertAlmostEqual(dps.explosive, 0)
-        self.assertAlmostEqual(dps.total, 10.68)
+        self.assertAlmostEqual(dps.total, 58.74)
 
     def test_nominal_dps_none_volley(self):
         mixin = self.mixin
@@ -252,6 +264,7 @@ class TestHolderMixinDamageSmartbomb(FitTestCase):
         mixin.attributes[Attribute.thermal_damage] = 6.3
         mixin.attributes[Attribute.kinetic_damage] = 7.4
         mixin.attributes[Attribute.explosive_damage] = 8.5
+        mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.state = State.online
         mixin.cycle_time = 0.5
         dps = mixin.get_nominal_dps()

@@ -27,13 +27,13 @@ from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
-class TestHolderMixinDamageSmartbomb(FitTestCase):
+class TestHolderMixinDamageDoomsday(FitTestCase):
 
     def setUp(self):
         FitTestCase.setUp(self)
         mixin = DamageDealerMixin(type_id=None)
         mixin.item = Mock()
-        mixin.item.default_effect.id = Effect.emp_wave
+        mixin.item.default_effect.id = Effect.super_weapon_amarr
         mixin.item.default_effect._state = State.active
         mixin.attributes = {}
         mixin.state = State.active
