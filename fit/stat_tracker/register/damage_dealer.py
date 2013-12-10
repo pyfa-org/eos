@@ -19,9 +19,21 @@
 #===============================================================================
 
 
+from collections import namedtuple
+from itertools import chain
+
+from eos.const.eve import Group
 from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.tuples import DamageTypesTotal
 from .abc import StatRegister
+
+
+DmgCats = namedtuple('DmgCats', ('turret', 'missile', 'drone', 'smartbomb',
+                                 'bomb', 'doomsday', 'misc', 'all'))
+DroneDmgCats = namedtuple('DroneDmgCats', ('mobile', 'sentry', 'all'))
+InternalCats = namedtuple('InternalCats', ('turret', 'missile', 'drone_mobile',
+                                           'drone_sentry', 'smartbomb', 'bomb',
+                                           'doomsday', 'misc'))
 
 
 class DamageDealerRegister(StatRegister):
@@ -42,20 +54,68 @@ class DamageDealerRegister(StatRegister):
         self.__dealers.discard(holder)
 
     def get_nominal_volley(self, target_resistances):
-        em = 0
-        therm = 0
-        kin = 0
-        expl = 0
+        containers = InternalCats(turret={}, missile={}, drone_mobile={}, drone_sentry={},
+                                  smartbomb={}, bomb={}, doomsday={}, misc={})
+        drone_totals = {}
+        totals = {}
+        container_finder = {
+            Group.projectile_weapon: lambda h: containers.turret,
+            Group.energy_weapon: lambda h: containers.turret,
+            Group.hydrid_weapon: lambda h: containers.turret
+        }
         for holder in self.__dealers:
             volley = holder.get_nominal_volley(target_resistances=target_resistances)
             if volley is None:
                 continue
-            em += volley.em
-            therm += volley.thermal
-            kin += volley.kinetic
-            expl += volley.explosive
-        total = em + therm + kin + expl
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+            try:
+                group = holder.item.group_id
+            except AttributeError:
+                group = None
+            try:
+                finder = container_finder[group]
+            except KeyError:
+                container = containers.misc
+            else:
+                container = finder(holder)
+            for i in range(4):
+                damage = volley[i]
+                try:
+                    container[i] += damage
+                except KeyError:
+                    container[i] = damage
+        for container in (containers.drone_mobile, containers.drone_sentry):
+            for k, v in container:
+                try:
+                    drone_totals[k] += v
+                except KeyError:
+                    drone_totals[k] = v
+        for container in containers:
+            for k, v in container.items():
+                try:
+                    totals[k] += v
+                except KeyError:
+                    totals[k] = v
+        drone_dmg = DroneDmgCats(
+            mobile=self.__dmg_container_to_ntuple(containers.drone_mobile),
+            sentry=self.__dmg_container_to_ntuple(containers.drone_sentry),
+            all=self.__dmg_container_to_ntuple(drone_totals)
+        )
+        dmg = DmgCats(
+            turret=self.__dmg_container_to_ntuple(containers.turret),
+            missile=self.__dmg_container_to_ntuple(containers.missile),
+            drone=drone_dmg,
+            smartbomb=self.__dmg_container_to_ntuple(containers.smartbomb),
+            bomb=self.__dmg_container_to_ntuple(containers.bomb),
+            doomsday=self.__dmg_container_to_ntuple(containers.doomsday),
+            misc=self.__dmg_container_to_ntuple(containers.misc),
+            all=totals
+        )
+        return dmg
+
+    def __dmg_container_to_ntuple(self, container):
+        total = sum(container.values())
+        ntuple = DamageTypesTotal(*chain((container.get(k, 0) for k in range(4)), (total,)))
+        return ntuple
 
     def get_nominal_dps(self, target_resistances, reload):
         em = 0

@@ -131,6 +131,9 @@ class Type(metaclass=Enum):
 class Group(metaclass=Enum):
     """Group ID holder"""
     character = 1
+    energy_weapon = 53
+    projectile_weapon = 55
+    hydrid_weapon = 74
     effect_beacon = 920
 
 
