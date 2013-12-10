@@ -108,7 +108,7 @@ class DamageDealerRegister(StatRegister):
             bomb=self.__dmg_container_to_ntuple(containers.bomb),
             doomsday=self.__dmg_container_to_ntuple(containers.doomsday),
             misc=self.__dmg_container_to_ntuple(containers.misc),
-            all=totals
+            all=self.__dmg_container_to_ntuple(totals)
         )
         return dmg
 
