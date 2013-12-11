@@ -2,6 +2,7 @@ Currently you can use engine following way:
 -------------------------------------------------------------------------------
 
 from eos import *
+from eos.holder_filter import *
 from eos.data.data_handler import JsonDataHandler
 
 
@@ -66,5 +67,12 @@ Stats of fit can be fetched using 'stats' access point:
 193.55
 >>fit.stats.get_ehp(DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)).total
 2005.580357142857
-
+>>fit.stats.get_nominal_dps(reload=False).total
+150.8354902813764
+>>fit.stats.get_nominal_dps(reload=True).total
+145.714760268934
+>>fit.stats.get_nominal_dps(target_resistances=DamageTypes(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5), reload=True).total
+87.4288561613604
+>>fit.stats.get_nominal_dps(holder_filter=turret_filter).total
+0
 Not many stats are implemented yet, more to come soon.

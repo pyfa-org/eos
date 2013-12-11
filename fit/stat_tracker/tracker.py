@@ -181,11 +181,14 @@ class StatTracker(InheritableVolatileMixin):
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
 
-    def get_nominal_volley(self, target_resistances=None):
-        return self._dd_reg.get_nominal_volley(target_resistances=target_resistances)
+    def get_nominal_volley(self, holder_filter=None, target_resistances=None):
+        return self._dd_reg.get_nominal_volley(holder_filter=holder_filter,
+                                               target_resistances=target_resistances)
 
-    def get_nominal_dps(self, target_resistances=None, reload=False):
-        return self._dd_reg.get_nominal_dps(target_resistances=target_resistances, reload=reload)
+    def get_nominal_dps(self, holder_filter=None, target_resistances=None, reload=False):
+        return self._dd_reg.get_nominal_dps(holder_filter=holder_filter,
+                                            target_resistances=target_resistances,
+                                            reload=reload)
 
     @VolatileProperty
     def agility_factor(self):

@@ -19,12 +19,21 @@
 #===============================================================================
 
 
-from .ship_resource import ShipResource
-from .slots import CharSlots, ShipSlots
+from eos.const.eve import Group
 
 
 __all__ = (
-    'ShipResource',
-    'CharSlots',
-    'ShipSlots'
+    'turret_filter',
 )
+
+
+def turret_filter(holder):
+    try:
+        group = holder.item.group_id
+    except AttributeError:
+        return False
+    if group in (Group.projectile_weapon, Group.energy_weapon, Group.hydrid_weapon):
+        return True
+    else:
+        return False
+
