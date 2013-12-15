@@ -46,7 +46,7 @@ class DamageDealerRegister(StatRegister):
         Fetch stats from all registered holders.
 
         Required arguments:
-        holder_filter -- function which is evaluated for each holder.
+        holder_filter -- function which is evaluated for each holder;
         if true, holder's stats are taken into consideration. Can be None.
         method_name, *args, **kwargs -- method name, which will be called
         for each holder to request its damage stats. Args and kwargs are
@@ -57,16 +57,36 @@ class DamageDealerRegister(StatRegister):
         which contain total stats for all holders which satisfy passed
         conditions.
         """
-        em, therm, kin, expl = 0, 0, 0, 0
+        em, therm, kin, expl = None, None, None, None
         for holder in self.__dealers:
             stat = getattr(holder, method_name)(*args, **kwargs)
-            if stat is None:
-                continue
             if holder_filter is not None and not holder_filter(holder):
                 continue
-            em += stat.em
-            therm += stat.thermal
-            kin += stat.kinetic
-            expl += stat.explosive
-        total = em + therm + kin + expl
+            # Guards against both aggregated values equal to None and
+            # holder values equal to None. If original value is equal to
+            # None, assigns to variable value from holder stats. If holder
+            # stat is None, just ignores it.
+            try:
+                em += stat.em
+            except TypeError:
+                if em is None:
+                    em = stat.em
+            try:
+                therm += stat.thermal
+            except TypeError:
+                if therm is None:
+                    therm = stat.thermal
+            try:
+                kin += stat.kinetic
+            except TypeError:
+                if kin is None:
+                    kin = stat.kinetic
+            try:
+                expl += stat.explosive
+            except TypeError:
+                if expl is None:
+                    expl = stat.explosive
+        total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
+        if total == 0 and em is None and therm is None and kin is None and expl is None:
+            total = None
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)

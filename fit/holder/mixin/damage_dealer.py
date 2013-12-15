@@ -64,31 +64,41 @@ class DamageDealerMixin(CooperativeVolatileMixin):
     to deal damage (modules, drones).
     """
 
-    def get_nominal_volley(self, target_resistances=None):
+    def __get_base_dmg_holder(self):
         """
-        Get nominal volley for holder, calculated against passed
-        target resistances.
-
-        Optional arguments:
-        target_resistances -- object which has following numbers as its attibutes:
-        em, thermal, kinetic and explosive (all in range [0, 1])
-        If none, raw volley damage is calculated. By default None.
-
-        Return value:
-        Object with volley damage of current holder, accessible via following attributes:
-        em, thermal, kinetic, explosive, total
+        Return holder damage attribs as 4-tuple.
         """
-        volley = self._base_volley
-        if volley is None:
-            return None
-        if target_resistances is not None:
-            em = volley.em * (1 - target_resistances.em)
-            therm = volley.thermal * (1 - target_resistances.thermal)
-            kin = volley.kinetic * (1 - target_resistances.kinetic)
-            expl = volley.explosive * (1 - target_resistances.explosive)
-            total = em + therm + kin + expl
-            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
-        return volley
+        return self.__get_holder_damage(self)
+
+    def __get_base_dmg_charge(self):
+        """
+        Return holder's charge damage attribs as 4-tuple.
+        """
+        charge = getattr(self, 'charge', None)
+        if charge is None:
+            return None, None, None, None
+        return self.__get_holder_damage(charge)
+
+    def __get_base_dmg_hybrid(self):
+        """
+        If charge is loaded, return damage attribs, if not -
+         holder attribs.
+        """
+        charge = getattr(self, 'charge', None)
+        if charge is not None:
+            return self.__get_holder_damage(charge)
+        else:
+            return self.__get_holder_damage(self)
+
+    def __get_holder_damage(self, holder):
+        """
+        Get damage per type as tuple for passed holder.
+        """
+        em = holder.attributes.get(Attribute.em_damage)
+        therm = holder.attributes.get(Attribute.thermal_damage)
+        kin = holder.attributes.get(Attribute.kinetic_damage)
+        expl = holder.attributes.get(Attribute.explosive_damage)
+        return em, therm, kin, expl
 
     @VolatileProperty
     def _base_volley(self):
@@ -107,65 +117,87 @@ class DamageDealerMixin(CooperativeVolatileMixin):
         }
         try:
             base_fetcher, multiply = base_dmg_fetchers[self._weapon_type]
+        # Return tuple with Nones if we're not dealing with known type weapon
         except KeyError:
-            return None
-        base_dmg = base_fetcher()
-        if base_dmg is None:
-            return None
-        em, therm, kin, expl = base_dmg
+            return DamageTypesTotal(em=None, thermal=None, kinetic=None, explosive=None, total=None)
+        em, therm, kin, expl = base_fetcher()
         if multiply:
             try:
                 multiplier = self.attributes[Attribute.damage_multiplier]
             except KeyError:
                 pass
             else:
-                em *= multiplier
-                therm *= multiplier
-                kin *= multiplier
-                expl *= multiplier
-        total = em + therm + kin + expl
+                # Guards against None-values
+                try:
+                    em *= multiplier
+                except TypeError:
+                    pass
+                try:
+                    therm *= multiplier
+                except TypeError:
+                    pass
+                try:
+                    kin *= multiplier
+                except TypeError:
+                    pass
+                try:
+                    expl *= multiplier
+                except TypeError:
+                    pass
+        total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
+        if total == 0 and em is None and therm is None and kin is None and expl is None:
+            total = None
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
 
-    def __get_base_dmg_holder(self):
+    def get_nominal_volley(self, target_resistances=None):
         """
-        Return holder damage attribs as 4-tuple.
-        """
-        return self.__get_holder_damage(self)
+        Get nominal volley for holder, calculated against passed
+        target resistances.
 
-    def __get_base_dmg_charge(self):
-        """
-        Return holder's charge damage attribs as 4-tuple.
-        """
-        charge = getattr(self, 'charge', None)
-        if charge is None:
-            return None
-        return self.__get_holder_damage(charge)
+        Optional arguments:
+        target_resistances -- object which has following numbers as its attibutes:
+        em, thermal, kinetic and explosive (all in range [0, 1])
+        If none, raw volley damage is calculated. By default None.
 
-    def __get_base_dmg_hybrid(self):
+        Return value:
+        Object with volley damage of current holder, accessible via following attributes:
+        em, thermal, kinetic, explosive, total
         """
-        If charge is loaded, return damage attribs, if not -
-         holder attribs.
-        """
-        charge = getattr(self, 'charge', None)
-        if charge is not None:
-            return self.__get_holder_damage(charge)
-        else:
-            return self.__get_holder_damage(self)
-
-    def __get_holder_damage(self, holder):
-        """
-        Get damage per type as tuple for passed holder.
-        """
-        em = holder.attributes.get(Attribute.em_damage, 0)
-        therm = holder.attributes.get(Attribute.thermal_damage, 0)
-        kin = holder.attributes.get(Attribute.kinetic_damage, 0)
-        expl = holder.attributes.get(Attribute.explosive_damage, 0)
-        return em, therm, kin, expl
+        volley = self._base_volley
+        if target_resistances is not None:
+            em_resonance = 1 - target_resistances.em
+            therm_resonance = 1 - target_resistances.thermal
+            kin_resonance = 1 - target_resistances.kinetic
+            expl_resonance = 1 - target_resistances.explosive
+            # Guards against None-values of volley components
+            try:
+                em = volley.em * em_resonance
+            except TypeError:
+                em = None
+            try:
+                therm = volley.thermal * therm_resonance
+            except TypeError:
+                therm = None
+            try:
+                kin = volley.kinetic * kin_resonance
+            except TypeError:
+                kin = None
+            try:
+                expl = volley.explosive * expl_resonance
+            except TypeError:
+                expl = None
+            total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
+            if total == 0 and em is None and therm is None and kin is None and expl is None:
+                total = None
+            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+        return volley
 
     def get_nominal_dps(self, target_resistances=None, reload=False):
         volley = self.get_nominal_volley(target_resistances=target_resistances)
-        if volley is None:
-            return None
+        # If all attribs of base volley are None, nothing we can do here
+        if (volley.total is None and volley.em is None and volley.thermal is None and
+                volley.kinetic is None and volley.explosive is None):
+            return volley
         cycle_time = self.cycle_time
         # Holders may have no reactivation attribute, return None or actual value;
         # make sure we use 0 as fallback in all cases
@@ -186,11 +218,26 @@ class DamageDealerMixin(CooperativeVolatileMixin):
                     # (and take into account that reactivation delay, which we already take
                     # into account, can cover reload time partially or fully)
                     full_cycle_time += max(reload_time - reactivation_time, 0) / charged_cycles
-        em = volley.em / full_cycle_time
-        therm = volley.thermal / full_cycle_time
-        kin = volley.kinetic / full_cycle_time
-        expl = volley.explosive / full_cycle_time
-        total = em + therm + kin + expl
+        # Guards against None-valued volley components
+        try:
+            em = volley.em / full_cycle_time
+        except TypeError:
+            em = None
+        try:
+            therm = volley.thermal / full_cycle_time
+        except TypeError:
+            therm = None
+        try:
+            kin = volley.kinetic / full_cycle_time
+        except TypeError:
+            kin = None
+        try:
+            expl = volley.explosive / full_cycle_time
+        except TypeError:
+            expl = None
+        total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
+        if total == 0 and em is None and therm is None and kin is None and expl is None:
+            total = None
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
 
     @VolatileProperty
