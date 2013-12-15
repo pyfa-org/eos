@@ -41,32 +41,32 @@ class DamageDealerRegister(StatRegister):
     def unregister_holder(self, holder):
         self.__dealers.discard(holder)
 
-    def get_nominal_volley(self, holder_filter, target_resistances):
-        em, therm, kin, expl = 0, 0, 0, 0
-        for holder in self.__dealers:
-            volley = holder.get_nominal_volley(target_resistances=target_resistances)
-            if volley is None:
-                continue
-            if holder_filter is not None and not holder_filter(holder):
-                continue
-            em += volley.em
-            therm += volley.thermal
-            kin += volley.kinetic
-            expl += volley.explosive
-        total = em + therm + kin + expl
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+    def _collect_damage_stats(self, holder_filter, method_name, *args, **kwargs):
+        """
+        Fetch stats from all registered holders.
 
-    def get_nominal_dps(self, holder_filter, target_resistances, reload):
+        Required arguments:
+        holder_filter -- function which is evaluated for each holder.
+        if true, holder's stats are taken into consideration. Can be None.
+        method_name, *args, **kwargs -- method name, which will be called
+        for each holder to request its damage stats. Args and kwargs are
+        arguments which are passed to this method.
+
+        Return value:
+        Object with em, thermal, kinetic, explosive and total attributes
+        which contain total stats for all holders which satisfy passed
+        conditions.
+        """
         em, therm, kin, expl = 0, 0, 0, 0
         for holder in self.__dealers:
-            dps = holder.get_nominal_dps(target_resistances=target_resistances, reload=reload)
-            if dps is None:
+            stat = getattr(holder, method_name)(*args, **kwargs)
+            if stat is None:
                 continue
             if holder_filter is not None and not holder_filter(holder):
                 continue
-            em += dps.em
-            therm += dps.thermal
-            kin += dps.kinetic
-            expl += dps.explosive
+            em += stat.em
+            therm += stat.thermal
+            kin += stat.kinetic
+            expl += stat.explosive
         total = em + therm + kin + expl
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)

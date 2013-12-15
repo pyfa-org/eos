@@ -19,21 +19,85 @@
 #===============================================================================
 
 
-from eos.const.eve import Group
+from eos.const.eve import Type, Group, Category
 
 
 __all__ = (
     'turret_filter',
+    'missile_filter',
+    'drone_filter',
+    'sentry_drone_filter'
+)
+
+TURRET_GROUPS = (Group.projectile_weapon, Group.energy_weapon, Group.hydrid_weapon)
+MISSILE_LAUNCHER_GROUPS = (
+    Group.missile_launcher_rocket,
+    Group.missile_launcher_light,
+    Group.missile_launcher_rapid_light,
+    Group.missile_launcher_heavy_assault,
+    Group.missile_launcher_heavy,
+    Group.missile_launcher_rapid_heavy,
+    Group.missile_launcher_torpedo,
+    Group.missile_launcher_cruise,
+    Group.missile_launcher_citadel
 )
 
 
 def turret_filter(holder):
+    """
+    True for all items belonging to projectile,
+    hybrid and energy weapon groups.
+    """
     try:
         group = holder.item.group_id
     except AttributeError:
         return False
-    if group in (Group.projectile_weapon, Group.energy_weapon, Group.hydrid_weapon):
+    if group in TURRET_GROUPS:
         return True
     else:
         return False
 
+
+def missile_filter(holder):
+    """
+    True for all items which belong to various missile
+    launcher groups.
+    """
+    try:
+        group = holder.item.group_id
+    except AttributeError:
+        return False
+    if group in MISSILE_LAUNCHER_GROUPS:
+        return True
+    else:
+        return False
+
+
+def drone_filter(holder):
+    """
+    True for all items belonging to drone category.
+    """
+    try:
+        category = holder.item.category_id
+    except AttributeError:
+        return False
+    if category == Category.drone:
+        return True
+    else:
+        return False
+
+
+def sentry_drone_filter(holder):
+    """
+    True for all drones which require sentry interfacing skill.
+    """
+    if not drone_filter(holder):
+        return False
+    try:
+        skillrqs = holder.item.required_skills
+    except AttributeError:
+        return False
+    if Type.sentry_drone_interfacing in skillrqs:
+        return True
+    else:
+        return False

@@ -135,17 +135,25 @@ class StatTracker(InheritableVolatileMixin):
                 register.unregister_holder(holder)
 
     def _clear_volatile_attrs(self):
+        """
+        Clear volatile cache for self and all child objects.
+        """
         for container in self._volatile_containers:
             container._clear_volatile_attrs()
         InheritableVolatileMixin._clear_volatile_attrs(self)
 
     @VolatileProperty
     def hp(self):
+        """
+        Fetch current ship HP and return object with hull, armor, shield and
+        total attributes. If fit has no ship or some data cannot be fetched,
+        corresponding attribs will be set to None.
+        """
         ship_holder = self._fit.ship
         try:
             hp_data = ship_holder.hp
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
+            return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
         else:
             # Build tuple here because the object we fetched
             # from ship is access point to stats, which are
@@ -159,6 +167,14 @@ class StatTracker(InheritableVolatileMixin):
 
     @VolatileProperty
     def resistances(self):
+        """
+        Fetch current ship resistances and return object wit following data:
+        .hull.em, .hull.thermal, .hull.kinetic, .hull.explosive,
+        .armor.em, .armor.thermal, .armor.kinetic, .armor.explosive,
+        .shield.em, .shield.thermal, .shield.kinetic, .shield.explosive
+        If fit has no ship or some data cannot be fetched, corresponding attribs
+        will be set to None.
+        """
         ship_holder = self._fit.ship
         try:
             return ship_holder.resistances
@@ -167,6 +183,13 @@ class StatTracker(InheritableVolatileMixin):
             return TankingLayers(hull=empty, armor=empty, shield=empty)
 
     def get_ehp(self, damage_profile):
+        """
+        Same as hp, but takes damage_profile argument which defines damage
+        profile (should have em, thermal, kinetic and explosive arguments defined
+        as numbers). Returns effective HP of a ship against this profile.
+        If fit has no ship or some data cannot be fetched, corresponding attribs
+        will be set to None.
+        """
         ship_holder = self._fit.ship
         try:
             return ship_holder.get_ehp(damage_profile)
@@ -175,6 +198,11 @@ class StatTracker(InheritableVolatileMixin):
 
     @VolatileProperty
     def worst_case_ehp(self):
+        """
+        Eve-style EHP for a ship - calculated using worst resistance for each layer.
+        If fit has no ship or some data cannot be fetched, corresponding attribs
+        will be set to None.
+        """
         ship_holder = self._fit.ship
         try:
             return ship_holder.worst_case_ehp
@@ -182,13 +210,51 @@ class StatTracker(InheritableVolatileMixin):
             return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
 
     def get_nominal_volley(self, holder_filter=None, target_resistances=None):
-        return self._dd_reg.get_nominal_volley(holder_filter=holder_filter,
-                                               target_resistances=target_resistances)
+        """
+        Get nominal volley of whole fit.
+
+        Optional arguments:
+        holder_filter -- when iterating over fit holder, this function is called.
+        If evaluated as True, this holder is taken into consideration, else not.
+        If argument is None, all holders 'pass filter'. By default None.
+        target_resistances -- resistance profile to calculate effective volley.
+        Profile should contain em, thermal, kinetic and explosive attributes as
+        numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
+
+        Return value:
+        Object with em, thermal, kinetic, explosive and total attributes.
+        """
+        volley = self._dd_reg._collect_damage_stats(
+            holder_filter,
+            'get_nominal_volley',
+            target_resistances=target_resistances
+        )
+        return volley
 
     def get_nominal_dps(self, holder_filter=None, target_resistances=None, reload=False):
-        return self._dd_reg.get_nominal_dps(holder_filter=holder_filter,
-                                            target_resistances=target_resistances,
-                                            reload=reload)
+        """
+        Get nominal dps of whole fit.
+
+        Optional arguments:
+        holder_filter -- when iterating over fit holder, this function is called.
+        If evaluated as True, this holder is taken into consideration, else not.
+        If argument is None, all holders 'pass filter'. By default None.
+        target_resistances -- resistance profile to calculate effective dps.
+        Profile should contain em, thermal, kinetic and explosive attributes as
+        numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
+        reload -- boolean flag, should reload be taken into consideration or not.
+        By default False.
+
+        Return value:
+        Object with em, thermal, kinetic, explosive and total attributes.
+        """
+        dps = self._dd_reg._collect_damage_stats(
+            holder_filter,
+            'get_nominal_dps',
+            target_resistances=target_resistances,
+            reload=reload
+        )
+        return dps
 
     @VolatileProperty
     def agility_factor(self):

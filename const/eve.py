@@ -126,6 +126,7 @@ class Type(metaclass=Enum):
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
     capital_ships = 20533  # Skill
+    sentry_drone_interfacing = 23594  # Skill
 
 
 class Group(metaclass=Enum):
@@ -134,7 +135,16 @@ class Group(metaclass=Enum):
     energy_weapon = 53
     projectile_weapon = 55
     hydrid_weapon = 74
+    missile_launcher_cruise = 506
+    missile_launcher_rocket = 507
+    missile_launcher_torpedo = 508
+    missile_launcher_light = 509
+    missile_launcher_heavy = 510
+    missile_launcher_rapid_light = 511
+    missile_launcher_citadel = 524
+    missile_launcher_heavy_assault = 771
     effect_beacon = 920
+    missile_launcher_rapid_heavy = 1245
 
 
 class Category(metaclass=Enum):
