@@ -30,13 +30,13 @@ fit.modules.med.equip(ModuleMed(9622, state=State.active))  # Named EM hardener
 fit.modules.med.equip(ModuleMed(5443, state=State.active))  # Best named scram
 fit.modules.med.equip(ModuleMed(2281, state=State.active))  # T2 invuln
 
-fit.modules.low.equip(ModuleLow(5839, state=State.active))  # IFFA DC
-fit.modules.low.equip(ModuleLow(519, state=State.online))  # T2 gyrostab
+fit.modules.low.equip(ModuleLow(2048, state=State.active))  # T2 DC
 fit.modules.low.equip(ModuleLow(519, state=State.online))  # T2 gyrostab
 fit.modules.low.equip(ModuleLow(519, state=State.online))  # T2 gyrostab
 fit.modules.low.equip(ModuleLow(22291, state=State.online))  # T2 BCU
 fit.modules.low.equip(ModuleLow(22291, state=State.online))  # T2 BCU
-fit.modules.low.equip(ModuleLow(22291, state=State.online))  # T2 BCU
+fit.modules.low.equip(ModuleLow(4405, state=State.online))  # T2 DDA
+fit.modules.low.equip(ModuleLow(4405, state=State.online))  # T2 DDA
 
 fit.rigs.equip(Rig(26082))  # T1 therm rig
 fit.rigs.equip(Rig(26088))  # T1 extender
@@ -80,41 +80,41 @@ Stats of fit can be fetched using 'stats' access point. For example, few regular
 >>fit.stats.agility_factor
 15.70747757338698
 >>fit.stats.cpu.used
-818.0
+821.0
 
 And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
 
 >>fit.stats.get_ehp(DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)).total
-93224.10304316846
+95329.19886256836
 >>fit.stats.get_ehp(DamageTypes(em=1, thermal=0, kinetic=0, explosive=0)).shield
-49448.56438362059
+50013.690833719105
 
 DPS can be fetched with various parameters, for example, should it take reload into consideration or not:
 
 >>fit.stats.get_nominal_dps(reload=False).total
-1962.7517726071933
+1931.374697718373
 >>fit.stats.get_nominal_dps(reload=True).total
-1874.4655946855314
+1857.2875753203057
 
 Specific damage type is accessible too (in this case, hail deals some kinetic damage):
 >>fit.stats.get_nominal_dps(reload=False).kinetic
-153.651573415778
+136.64914857525073
 
 Get effective DPS against passed damage profile:
 
 >>fit.stats.get_nominal_dps(target_resistances=DamageTypes(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
-1060.1010436451743
+1072.8636430538475
 
 Get dps using built-in filters:
 >>fit.stats.get_nominal_dps(holder_filter=turret_filter).total
-717.0406759402973
+637.6960266845034
 >>fit.stats.get_nominal_dps(holder_filter=missile_filter).total
-928.9110966668959
+826.1217743481901
 >>fit.stats.get_nominal_dps(holder_filter=drone_filter).total
-316.8
+467.55689668567936
 
 You can compose your own filters or combine existing:
 >>fit.stats.get_nominal_dps(holder_filter=lambda h: turret_filter(h) or missile_filter(h)).total
-1645.951772607193
+1463.8178010326933
 
 Not all stats are implemented yet, more to come soon.
