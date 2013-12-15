@@ -194,7 +194,7 @@ class StatTracker(InheritableVolatileMixin):
         try:
             return ship_holder.get_ehp(damage_profile)
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
+            return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
 
     @VolatileProperty
     def worst_case_ehp(self):
@@ -207,7 +207,7 @@ class StatTracker(InheritableVolatileMixin):
         try:
             return ship_holder.worst_case_ehp
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None, total=0)
+            return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
 
     def get_nominal_volley(self, holder_filter=None, target_resistances=None):
         """

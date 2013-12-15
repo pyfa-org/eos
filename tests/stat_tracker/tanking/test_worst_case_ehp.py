@@ -50,7 +50,7 @@ class TestWorstCaseEhp(StatTestCase):
         self.assertIsNone(self.st.worst_case_ehp.hull)
         self.assertIsNone(self.st.worst_case_ehp.armor)
         self.assertIsNone(self.st.worst_case_ehp.shield)
-        self.assertEqual(self.st.worst_case_ehp.total, 0)
+        self.assertIsNone(self.st.worst_case_ehp.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 

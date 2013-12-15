@@ -50,7 +50,7 @@ class TestHp(StatTestCase):
         self.assertIsNone(self.st.hp.hull)
         self.assertIsNone(self.st.hp.armor)
         self.assertIsNone(self.st.hp.shield)
-        self.assertEqual(self.st.hp.total, 0)
+        self.assertIsNone(self.st.hp.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 

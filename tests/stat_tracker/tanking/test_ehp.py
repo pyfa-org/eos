@@ -55,6 +55,6 @@ class TestEhp(StatTestCase):
         self.assertIsNone(ehp_stats.hull)
         self.assertIsNone(ehp_stats.armor)
         self.assertIsNone(ehp_stats.shield)
-        self.assertEqual(ehp_stats.total, 0)
+        self.assertIsNone(ehp_stats.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
