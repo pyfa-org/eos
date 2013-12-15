@@ -90,13 +90,13 @@ class TestHolderMixinDamageTurret(FitTestCase):
     def test_nominal_volley_no_attrib_single(self):
         mixin = self.mixin
         mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
+        mixin.charge.attributes[Attribute.thermal_damage] = 7.4
         mixin.charge.attributes[Attribute.explosive_damage] = 8.5
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 28.6)
-        self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 40.7)
+        self.assertAlmostEqual(volley.thermal, 40.7)
+        self.assertIsNone(volley.kinetic)
         self.assertAlmostEqual(volley.explosive, 46.75)
         self.assertAlmostEqual(volley.total, 116.05)
 
@@ -104,11 +104,11 @@ class TestHolderMixinDamageTurret(FitTestCase):
         mixin = self.mixin
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 0)
-        self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 0)
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
 
     def test_nominal_volley_insufficient_state(self):
         mixin = self.mixin
@@ -119,18 +119,22 @@ class TestHolderMixinDamageTurret(FitTestCase):
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.state = State.online
         volley = mixin.get_nominal_volley()
-        self.assertIsNone(volley)
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
 
     def test_nominal_volley_no_charge(self):
         mixin = self.mixin
         mixin.charge = None
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 0)
-        self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 0)
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
 
     def test_nominal_volley_onholder_damage_stats(self):
         mixin = self.mixin
@@ -156,7 +160,11 @@ class TestHolderMixinDamageTurret(FitTestCase):
         mixin.charge.attributes[Attribute.explosive_damage] = 8.5
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         volley = mixin.get_nominal_volley()
-        self.assertIsNone(volley)
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
 
     def test_nominal_volley_cache(self):
         mixin = self.mixin
@@ -385,4 +393,8 @@ class TestHolderMixinDamageTurret(FitTestCase):
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         mixin.state = State.online
         dps = mixin.get_nominal_dps()
-        self.assertIsNone(dps)
+        self.assertIsNone(dps.em)
+        self.assertIsNone(dps.thermal)
+        self.assertIsNone(dps.kinetic)
+        self.assertIsNone(dps.explosive)
+        self.assertIsNone(dps.total)
