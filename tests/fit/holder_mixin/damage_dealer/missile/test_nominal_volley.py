@@ -42,8 +42,8 @@ class TestHolderMixinDamageMissileNominalVolley(FitTestCase):
         mixin.charge = Mock()
         mixin.charge.item.default_effect.id = Effect.missile_launching
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = None
-        mixin.reload_time = None
+        mixin.fully_charged_cycles_max = 20
+        mixin.reload_time = 10
         self.mixin = mixin
 
     def test_generic(self):

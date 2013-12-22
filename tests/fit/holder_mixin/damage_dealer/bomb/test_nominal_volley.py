@@ -38,12 +38,12 @@ class TestHolderMixinDamageBombNominalVolley(FitTestCase):
         mixin.attributes = {}
         mixin.state = State.active
         mixin.cycle_time = 0.5
-        mixin.reactivation_delay = None
+        mixin.reactivation_delay = 1.5
         mixin.charge = Mock()
         mixin.charge.item.default_effect.id = Effect.bomb_launching
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = None
-        mixin.reload_time = None
+        mixin.fully_charged_cycles_max = 2
+        mixin.reload_time = 10
         self.mixin = mixin
 
     def test_generic(self):

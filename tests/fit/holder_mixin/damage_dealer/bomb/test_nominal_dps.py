@@ -38,12 +38,12 @@ class TestHolderMixinDamageBombNominalDps(FitTestCase):
         mixin.attributes = {}
         mixin.state = State.active
         mixin.cycle_time = 0.5
-        mixin.reactivation_delay = None
+        mixin.reactivation_delay = 1.5
         mixin.charge = Mock()
         mixin.charge.item.default_effect.id = Effect.bomb_launching
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = None
-        mixin.reload_time = None
+        mixin.fully_charged_cycles_max = 2
+        mixin.reload_time = 10
         self.mixin = mixin
 
     def test_no_reload(self):
@@ -53,11 +53,11 @@ class TestHolderMixinDamageBombNominalDps(FitTestCase):
         mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
         mixin.charge.attributes[Attribute.explosive_damage] = 8.5
         dps = mixin.get_nominal_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 10.4)
-        self.assertAlmostEqual(dps.thermal, 12.6)
-        self.assertAlmostEqual(dps.kinetic, 14.8)
-        self.assertAlmostEqual(dps.explosive, 17)
-        self.assertAlmostEqual(dps.total, 54.8)
+        self.assertAlmostEqual(dps.em, 2.6)
+        self.assertAlmostEqual(dps.thermal, 3.15)
+        self.assertAlmostEqual(dps.kinetic, 3.7)
+        self.assertAlmostEqual(dps.explosive, 4.25)
+        self.assertAlmostEqual(dps.total, 13.7)
 
     def test_reload(self):
         mixin = self.mixin
@@ -66,66 +66,8 @@ class TestHolderMixinDamageBombNominalDps(FitTestCase):
         mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
         mixin.charge.attributes[Attribute.explosive_damage] = 8.5
         dps = mixin.get_nominal_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 10.4)
-        self.assertAlmostEqual(dps.thermal, 12.6)
-        self.assertAlmostEqual(dps.kinetic, 14.8)
-        self.assertAlmostEqual(dps.explosive, 17)
-        self.assertAlmostEqual(dps.total, 54.8)
-
-    def test_reactivation_no_reload(self):
-        mixin = self.mixin
-        mixin.reactivation_delay = 1.5
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        dps = mixin.get_nominal_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 2.6)
-        self.assertAlmostEqual(dps.thermal, 3.15)
-        self.assertAlmostEqual(dps.kinetic, 3.7)
-        self.assertAlmostEqual(dps.explosive, 4.25)
-        self.assertAlmostEqual(dps.total, 13.7)
-
-    def test_reactivation_reload(self):
-        mixin = self.mixin
-        mixin.reactivation_delay = 1.5
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        dps = mixin.get_nominal_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 2.6)
-        self.assertAlmostEqual(dps.thermal, 3.15)
-        self.assertAlmostEqual(dps.kinetic, 3.7)
-        self.assertAlmostEqual(dps.explosive, 4.25)
-        self.assertAlmostEqual(dps.total, 13.7)
-
-    def test_limited_charges_no_reload(self):
-        mixin = self.mixin
-        mixin.fully_charged_cycles_max = 10
-        mixin.reload_time = 5
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        dps = mixin.get_nominal_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 10.4)
-        self.assertAlmostEqual(dps.thermal, 12.6)
-        self.assertAlmostEqual(dps.kinetic, 14.8)
-        self.assertAlmostEqual(dps.explosive, 17.0)
-        self.assertAlmostEqual(dps.total, 54.8)
-
-    def test_limited_charges_reload(self):
-        mixin = self.mixin
-        mixin.fully_charged_cycles_max = 10
-        mixin.reload_time = 5
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        dps = mixin.get_nominal_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 5.2)
-        self.assertAlmostEqual(dps.thermal, 6.3)
-        self.assertAlmostEqual(dps.kinetic, 7.4)
-        self.assertAlmostEqual(dps.explosive, 8.5)
-        self.assertAlmostEqual(dps.total, 27.4)
+        self.assertAlmostEqual(dps.em, 0.832)
+        self.assertAlmostEqual(dps.thermal, 1.008)
+        self.assertAlmostEqual(dps.kinetic, 1.184)
+        self.assertAlmostEqual(dps.explosive, 1.36)
+        self.assertAlmostEqual(dps.total, 4.384)

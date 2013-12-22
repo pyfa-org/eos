@@ -41,8 +41,8 @@ class TestHolderMixinDamageTurretNominalVolley(FitTestCase):
         mixin.reactivation_delay = None
         mixin.charge = Mock()
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = None
-        mixin.reload_time = None
+        mixin.fully_charged_cycles_max = 10
+        mixin.reload_time = 5
         self.mixin = mixin
 
     def test_generic(self):
