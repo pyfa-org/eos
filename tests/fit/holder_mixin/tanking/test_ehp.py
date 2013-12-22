@@ -82,6 +82,26 @@ class TestHolderMixinTankingEhp(FitTestCase):
         self.assertAlmostEqual(results.shield, 685.5506263491)
         self.assertAlmostEqual(results.total, 792.7831354543)
 
+    def test_corrupted_all_zero(self):
+        mixin = self.mixin
+        mixin.hp.hull = 10
+        mixin.hp.armor = 50
+        mixin.hp.shield = 600
+        mixin.resistances.hull.em = 0.1
+        mixin.resistances.hull.thermal = 0.2
+        mixin.resistances.hull.kinetic = 0.3
+        mixin.resistances.hull.explosive = 0.4
+        mixin.resistances.armor.em = 0.6
+        mixin.resistances.armor.thermal = 0.4
+        mixin.resistances.armor.kinetic = 0.2
+        mixin.resistances.armor.explosive = 0.1
+        mixin.resistances.shield.em = 0
+        mixin.resistances.shield.thermal = 0.2
+        mixin.resistances.shield.kinetic = 0.4
+        mixin.resistances.shield.explosive = 0.5
+        profile = Mock(em=0, thermal=0, kinetic=0, explosive=0)
+        self.assertRaises(ValueError, mixin.get_ehp, profile)
+
     def test_none_hp_hull(self):
         mixin = self.mixin
         mixin.hp.hull = None

@@ -85,7 +85,7 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         Get effective HP of item against passed damage profile.
 
         Required arguments:
-        damage_profile -- object which has following numbers as its attibutes:
+        damage_profile -- object which has numbers as its following attibutes:
         em, thermal, kinetic and explosive
 
         Object with following attributes is returned:
@@ -94,6 +94,13 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         defaults effective hp of this layer to 0; if data for all layers is not
         available, equals None.
         """
+        if (
+            damage_profile.em == 0 and
+            damage_profile.thermal == 0 and
+            damage_profile.kinetic == 0 and
+            damage_profile.explosive == 0
+        ):
+            raise ValueError('damage profile cannot have all damage components as 0')
         hull_ehp = self.__get_layer_ehp(self.hp.hull, self.resistances.hull, damage_profile)
         armor_ehp = self.__get_layer_ehp(self.hp.armor, self.resistances.armor, damage_profile)
         shield_ehp = self.__get_layer_ehp(self.hp.shield, self.resistances.shield, damage_profile)
