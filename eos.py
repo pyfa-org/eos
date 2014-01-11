@@ -24,7 +24,7 @@ import os.path
 from eos.data.cache_customizer import CacheCustomizer
 from eos.data.cache_generator import CacheGenerator
 from eos.data.cache_handler import JsonCacheHandler
-from eos.util.logger import Logger
+from eos.util.logger import EosLogger
 
 
 EOS_VERSION = 'git'
@@ -49,6 +49,8 @@ class Eos:
     Optional arguments:
     cache_handler -- cache handler implementation. If not
     specified, default JSON handler is used.
+    logger -- logging implementation. If not specified, default Eos Logger is
+    used.
     name -- name of this eos instance, used as key to
     log and cache files, thus should be unique for all
     running eos instances. Default is 'eos'.
@@ -56,12 +58,12 @@ class Eos:
     is ~/.eos
     """
 
-    def __init__(self, data_handler, cache_handler=None, name='eos',
-                 storage_path=None, make_default=False):
+    def __init__(self, data_handler, cache_handler=None, logger=None,
+                 name='eos', storage_path=None, make_default=False):
         self.__name = name
         self.__path = self.__initialize_path(storage_path)
-        self._logger = self.__initialize_logger()
 
+        self.__initialize_logger(logger)
         self.__initialize_cache(data_handler, cache_handler)
 
         if make_default is True:
@@ -87,15 +89,17 @@ class Eos:
         path = os.path.expanduser(path)
         return path
 
-    def __initialize_logger(self):
+    def __initialize_logger(self, logger):
         """
-        Initialize logging facilities, log few initial messages,
-        and return logger.
+        Initialize logging facilities and log a few initial messages. If logger
+        was specified as None, default to EosLogger.
         """
-        logger = Logger(self.name, os.path.join(self.__path, 'logs'))
+        if logger is None:
+            logger = EosLogger(self.name, os.path.join(self.__path, 'logs'))
+        self._logger = logger
+
         logger.info('------------------------------------------------------------------------')
         logger.info('session started')
-        return logger
 
     def __initialize_cache(self, data_handler, cache_handler):
         """
