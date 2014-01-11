@@ -54,7 +54,12 @@ class TestHolderMixinChargeReloadTime(FitTestCase):
         self.holder.item.default_effect = None
         self.assertEqual(self.holder.reload_time, 5.0)
 
-    def test_combat_laser(self):
+    def test_combat_combat_laser(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
         self.holder.item.default_effect.id = Effect.target_attack
+        self.assertEqual(self.holder.reload_time, 1.0)
+
+    def test_combat_mining_laser(self):
+        self.holder.attributes[Attribute.reload_time] = 5000.0
+        self.holder.item.default_effect.id = Effect.mining_laser
         self.assertEqual(self.holder.reload_time, 1.0)

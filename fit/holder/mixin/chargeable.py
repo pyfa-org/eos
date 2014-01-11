@@ -149,7 +149,7 @@ class ChargeableMixin(CooperativeVolatileMixin):
         except AttributeError:
             pass
         else:
-            if defeff_id == Effect.target_attack:
+            if defeff_id in (Effect.target_attack, Effect.mining_laser):
                 return 1.0
         reload_ms = self.attributes.get(Attribute.reload_time)
         if reload_ms is None:
