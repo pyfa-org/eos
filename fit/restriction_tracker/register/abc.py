@@ -19,8 +19,7 @@
 #===============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 
 class RestrictionRegister(metaclass=ABCMeta):

@@ -21,6 +21,7 @@
 
 import os.path
 from logging import getLogger, FileHandler, Formatter, INFO
+
 from .abc import BaseLogger
 
 
@@ -33,6 +34,7 @@ class EosLogger(BaseLogger):
     used in log filename
     logFolder -- path to folder for logs
     """
+
     def __init__(self, name, log_folder):
         self.__setup(name, log_folder)
         # Storage for signatures of logged entries,
