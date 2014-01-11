@@ -48,18 +48,27 @@ class Eos:
 
     Optional arguments:
     cache_handler -- cache handler implementation. If not
-    specified, default JSON handler is used.
-    logger -- logging implementation. If not specified, default Eos Logger is
-    used.
-    name -- name of this eos instance, used as key to
-    log and cache files, thus should be unique for all
-    running eos instances. Default is 'eos'.
+    specified, built-in JSON cache handler is used.
+    logger -- logging implementation. If not specified,
+    built-in plain text logger is used.
+    name -- name of this eos instance, used as part of name
+    of cache and log files for built-in facilities, thus
+    should be unique for all running eos instances. Default
+    is 'eos'.
     storage_path -- path to store various files. Default
-    is ~/.eos
+    is ~/.eos. Used by built-in cache handler and logger
+    implementations.
     """
 
-    def __init__(self, data_handler, cache_handler=None, logger=None,
-                 name='eos', storage_path=None, make_default=False):
+    def __init__(
+        self,
+        data_handler,
+        cache_handler=None,
+        logger=None,
+        name='eos',
+        storage_path=None,
+        make_default=False
+    ):
         self.__name = name
         self.__path = self.__initialize_path(storage_path)
 
@@ -108,8 +117,11 @@ class Eos:
         was specified as None, default on-disk JSON handler is used.
         """
         if cache_handler is None:
-            cache_handler = JsonCacheHandler(os.path.join(self.__path, 'cache'),
-                                             self.__name, self._logger)
+            cache_handler = JsonCacheHandler(
+                os.path.join(self.__path, 'cache'),
+                self.__name,
+                self._logger
+            )
         self._cache_handler = cache_handler
 
         # Compare fingerprints from data and cache
