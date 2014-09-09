@@ -23,10 +23,11 @@
 This file holds IDs of multiple Eos-specific entities.
 """
 
-from eos.util.enum import Enum
+from enum import IntEnum, unique
 
 
-class State(metaclass=Enum):
+@unique
+class State(IntEnum):
     """
     Possible item states, used as part of public API and
     internally by Modifier class and classes interacting with
@@ -43,7 +44,8 @@ class State(metaclass=Enum):
     overload = 4
 
 
-class Slot(metaclass=Enum):
+@unique
+class Slot(IntEnum):
     """Slot types item can take"""
     module_high = 1
     module_med = 2
@@ -55,7 +57,8 @@ class Slot(metaclass=Enum):
 
 
 # Class used by Modifiers and Item definitions
-class Location(metaclass=Enum):
+@unique
+class Location(IntEnum):
     """
     Location specification, often relative, thus item
     context must be taken into account. Used only
@@ -80,7 +83,8 @@ class Location(metaclass=Enum):
     space = 7
 
 
-class EffectBuildStatus(metaclass=Enum):
+@unique
+class EffectBuildStatus(IntEnum):
     """
     Statuses which indicate effect->modifiers conversion result,
     part of public API.
@@ -93,7 +97,8 @@ class EffectBuildStatus(metaclass=Enum):
     ok_full = 4
 
 
-class Context(metaclass=Enum):
+@unique
+class Context(IntEnum):
     """
     Describes when modification is applied, used only internally
     by Modifier class and classes interacting with it
@@ -107,7 +112,8 @@ class Context(metaclass=Enum):
     projected = 3
 
 
-class FilterType(metaclass=Enum):
+@unique
+class FilterType(IntEnum):
     """
     Filter type ID holder, used only internally
     by Modifier class and classes interacting with it
@@ -124,7 +130,8 @@ class FilterType(metaclass=Enum):
     skill_self = 4
 
 
-class Operator(metaclass=Enum):
+@unique
+class Operator(IntEnum):
     """
     Operator ID holder, used only internally
     by Modifier class and classes interacting with it
@@ -145,7 +152,8 @@ class Operator(metaclass=Enum):
     post_assignment = 9
 
 
-class Restriction(metaclass=Enum):
+@unique
+class Restriction(IntEnum):
     """
     Fitting restriction types.
     """

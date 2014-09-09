@@ -24,10 +24,11 @@ This file holds IDs of multiple EVE's entities.
 """
 
 
-from eos.util.enum import Enum
+from enum import IntEnum, unique
 
 
-class Attribute(metaclass=Enum):
+@unique
+class Attribute(IntEnum):
     """Attribute ID holder"""
     mass = 4
     hp = 9
@@ -121,7 +122,8 @@ class Attribute(metaclass=Enum):
     can_fit_ship_group_8 = 1881
 
 
-class Type(metaclass=Enum):
+@unique
+class Type(IntEnum):
     """Item ID holder"""
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
@@ -129,7 +131,8 @@ class Type(metaclass=Enum):
     sentry_drone_interfacing = 23594  # Skill
 
 
-class Group(metaclass=Enum):
+@unique
+class Group(IntEnum):
     """Group ID holder"""
     character = 1
     energy_weapon = 53
@@ -147,7 +150,8 @@ class Group(metaclass=Enum):
     missile_launcher_rapid_heavy = 1245
 
 
-class Category(metaclass=Enum):
+@unique
+class Category(IntEnum):
     """Category ID holder"""
     ship = 6
     module = 7
@@ -158,7 +162,8 @@ class Category(metaclass=Enum):
     subsystem = 32
 
 
-class Effect(metaclass=Enum):
+@unique
+class Effect(IntEnum):
     """Effect ID holder"""
     missile_launching = 9
     target_attack = 10
@@ -183,7 +188,8 @@ class Effect(metaclass=Enum):
     super_weapon_minmatar = 4492
 
 
-class EffectCategory(metaclass=Enum):
+@unique
+class EffectCategory(IntEnum):
     """Effect category ID holder"""
     # Applied when item is just present in fit - implants, skills, offlined modules
     passive = 0
@@ -203,7 +209,8 @@ class EffectCategory(metaclass=Enum):
     system = 7
 
 
-class Operand(metaclass=Enum):
+@unique
+class Operand(IntEnum):
     """Expression operand ID holder"""
     # Add two numbers to return result, used in conditions
     add = 1

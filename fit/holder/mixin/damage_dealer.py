@@ -19,13 +19,15 @@
 #===============================================================================
 
 
+from enum import IntEnum, unique
+
 from eos.const.eve import Attribute, Effect
 from eos.fit.tuples import DamageTypesTotal
-from eos.util.enum import Enum
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 
 
-class WeaponType(metaclass=Enum):
+@unique
+class WeaponType(IntEnum):
     # Everything turret-based, including drones
     turret = 1
     # All regular missiles
