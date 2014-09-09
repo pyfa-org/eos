@@ -59,7 +59,7 @@ class CacheCustomizer:
                 'state': State.offline,
                 'context': Context.local,
                 'source_attribute_id': Attribute.missile_damage_multiplier,
-                'operator': Operator.post_mul,
+                'operator': Operator.pre_mul,
                 'target_attribute_id': damageAttr,
                 'location': Location.space,
                 'filter_type': FilterType.skill,
