@@ -61,11 +61,11 @@ class JsonDataHandler(DataHandler):
         return data
 
     def get_version(self):
-        metadata = self.__fetch_file('metadata')
+        metadata = self.__fetch_file('phbmetadata')
         # If we won't find version field, it will be None
         version = None
         for row in metadata:
-            if row['fieldName'] == 'clientBuild':
-                version = row['fieldValue']
+            if row['field_name'] == 'client_build':
+                version = row['field_value']
                 break
         return version
