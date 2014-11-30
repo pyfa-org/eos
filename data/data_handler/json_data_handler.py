@@ -56,7 +56,7 @@ class JsonDataHandler(DataHandler):
         return self.__fetch_file('dgmexpressions')
 
     def __fetch_file(self, filename):
-        with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r') as file:
+        with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r', encoding='utf8') as file:
             data = json.load(file)
         return data
 
