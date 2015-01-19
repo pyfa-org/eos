@@ -19,10 +19,23 @@
 #===============================================================================
 
 
-"""
-This module contains modifier object builder and all facilities
-which help it to work with raw data.
-"""
+from .expression_tree import Effect2Modifiers
 
 
-from .builder import ModifierBuilder
+class ModifierBuilder:
+    """
+    Class which is used for generating Eos modifiers out of
+    effect data.
+    """
+
+    def __init__(self, expressions, logger):
+        self._tree = Effect2Modifiers(expressions, logger)
+
+
+    def build(self, effect_row):
+        modifiers, build_status = self._tree.convert(
+            effect_row['pre_expression_id'],
+            effect_row['post_expression_id'],
+            effect_row['effect_category']
+        )
+        return modifiers, build_status

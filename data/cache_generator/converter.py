@@ -271,9 +271,7 @@ class Converter:
         modifier_id = 1
         # Sort rows by ID so we numerate modifiers in deterministic way
         for effect_row in sorted(data['effects'], key=lambda row: row['effect_id']):
-            modifiers, build_status = builder.build_effect(effect_row['pre_expression_id'],
-                                                           effect_row['post_expression_id'],
-                                                           effect_row['effect_category'])
+            modifiers, build_status = builder.build(effect_row)
             # Update effects: add modifier build status and remove
             # fields which we needed only for this process
             effect_row['build_status'] = build_status

@@ -22,36 +22,40 @@
 from eos.exception import EosError
 
 
-# Exception classes used by modifier builder
-class ModifierBuilderError(EosError):
+# Exception classes used by effect to modifier converter
+class Effect2ModifiersError(EosError):
     """
-    All exceptions raised by modifier builder are based on this class.
-    """
-    pass
-
-
-class TreeFetchingError(ModifierBuilderError):
-    """
-    Raised when modifier builder encounters expression fetching error.
+    All exceptions raised by effect-to-modifier converter are
+    based on this class.
     """
     pass
 
 
-class TreeParsingError(ModifierBuilderError):
+class TreeFetchingError(Effect2ModifiersError):
     """
-    Raised when action builder encounters some expected error.
-    """
-    pass
-
-
-class TreeParsingUnexpectedError(ModifierBuilderError):
-    """
-    Raised when action builder encounters some unhandled error.
+    Raised when effect-to-modifier converter encounters
+    expression fetching error.
     """
     pass
 
 
-class UnusedActionError(ModifierBuilderError):
+class TreeParsingError(Effect2ModifiersError):
+    """
+    Raised when effect-to-modifier converter encounters some
+    expected error.
+    """
+    pass
+
+
+class TreeParsingUnexpectedError(Effect2ModifiersError):
+    """
+    Raised when effect-to-modifier converter encounters some
+    unhandled error.
+    """
+    pass
+
+
+class UnusedActionError(Effect2ModifiersError):
     """
     Raised when some actions are not marked as used after
     generating modifiers out of them.
@@ -59,24 +63,24 @@ class UnusedActionError(ModifierBuilderError):
     pass
 
 
-# Exception classes used by action builder
-class ActionBuilderError(EosError):
+# Exception classes used by expression tree to action converter
+class ETree2ActionError(EosError):
     """
-    All exceptions raised by action builder are either represented
-    by this class or based on it.
-    """
-    pass
-
-
-class ExpressionFetchError(ActionBuilderError):
-    """
-    Raised when action builder is unable to find expression
-    requested by any of its components.
+    All exceptions raised by expression-to-action converter
+    are either represented by this class or based on it.
     """
     pass
 
 
-class ActionValidationError(ActionBuilderError):
+class ExpressionFetchError(ETree2ActionError):
+    """
+    Raised when expression-to-action converter is unable to find
+    expression requested by any of its components.
+    """
+    pass
+
+
+class ActionValidationError(ETree2ActionError):
     """
     Raised when some action generated out of expression tree
     is invalid.

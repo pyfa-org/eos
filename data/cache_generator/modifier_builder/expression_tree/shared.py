@@ -21,7 +21,7 @@
 
 """
 This file is intended to hold some functions and data, which
-is used by several builders.
+is used by several converters.
 """
 
 
@@ -38,7 +38,7 @@ from eos.const.eve import EffectCategory, Operand
 OperandMeta = namedtuple('OperandMeta', ('enabled', 'gang', 'mirror'))
 
 
-# Map which holds data auxiliary for builder
+# Map which holds data auxiliary for converters
 # Format: {operand: OperandMeta}
 operand_data = {
     Operand.add_gang_grp_mod: OperandMeta(enabled=True, gang=True, mirror=Operand.rm_gang_grp_mod),

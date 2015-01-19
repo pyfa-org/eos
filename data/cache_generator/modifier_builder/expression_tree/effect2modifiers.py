@@ -22,23 +22,23 @@
 from eos.const.eos import Location, EffectBuildStatus, FilterType
 from eos.const.eve import Operand
 from eos.data.cache_object import Modifier
-from .action_builder import ActionBuilder
+from .etree2actions import ETree2Actions
 from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, \
-    ActionBuilderError, ExpressionFetchError
+    ETree2ActionError, ExpressionFetchError
 from .shared import operand_data, state_data
 
 
-class ModifierBuilder:
+class Effect2Modifiers:
     """
-    Class is responsible for converting Action objects into Modifier
-    objects, which can then be used in the rest of the engine.
+    Class which uses effects' expression trees and some additional
+    data to generate actual modifier objects used by Eos.
     """
 
     def __init__(self, expressions, logger):
-        self._action_builder = ActionBuilder(expressions)
+        self._etree2actions = ETree2Actions(expressions)
         self._logger = logger
 
-    def build_effect(self, pre_expression_id, post_expression_id, effect_category_id):
+    def convert(self, pre_expression_id, post_expression_id, effect_category_id):
         """Generate Modifier objects out of passed data."""
         try:
             # By default, assume that our build is 100% successful
@@ -48,19 +48,21 @@ class ModifierBuilder:
             post_actions = set()
 
             # Get actions out of both trees
-            for tree_root_id, action_set in ((pre_expression_id, pre_actions),
-                                             (post_expression_id, post_actions)):
+            for tree_root_id, action_set in (
+                (pre_expression_id, pre_actions),
+                (post_expression_id, post_actions)
+            ):
                 # If there's no tree, then there's nothing to build
                 if tree_root_id is None:
                     continue
                 try:
-                    actions, skipped_data = self._action_builder.build(tree_root_id, effect_category_id)
+                    actions, skipped_data = self._etree2actions.convert(tree_root_id, effect_category_id)
                 except KeyboardInterrupt:
                     raise
                 # If any errors occurred, raise corresponding exceptions
                 except ExpressionFetchError as e:
                     raise TreeFetchingError(*e.args)
-                except ActionBuilderError as e:
+                except ETree2ActionError as e:
                     raise TreeParsingError(*e.args) from e
                 except Exception as e:
                     raise TreeParsingUnexpectedError from e

@@ -25,4 +25,4 @@ which help it to work with raw data.
 """
 
 
-from .builder import ModifierBuilder
+from .effect2modifiers import Effect2Modifiers

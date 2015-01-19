@@ -22,11 +22,11 @@
 from eos.const.eos import Location, Operator
 from eos.const.eve import Operand
 from .action import Action
-from .exception import ActionBuilderError, ExpressionFetchError, ActionValidationError
+from .exception import ETree2ActionError, ExpressionFetchError, ActionValidationError
 from .shared import operand_data, state_data
 
 
-class ActionBuilder:
+class ETree2Actions:
     """
     Class is responsible for converting tree of Expression objects (which
     aren't directly useful to us) into intermediate Action objects.
@@ -39,12 +39,12 @@ class ActionBuilder:
         for exp_row in expressions:
             self._expressions[exp_row['expressionID']] = exp_row
 
-    def build(self, tree_root_id, effect_category_id):
+    def convert(self, tree_root_id, effect_category_id):
         """
         Generate Action objects out of passed data.
 
         Possible exceptions:
-        ActionBuilderError -- raised when tree has documented deviations
+        ETree2ActionError -- raised when tree has documented deviations
         Exception -- any other exception type may be raised, as structure and
         contents of tree may differ from expected greatly, so please wrap call
         into try-except block which catches all exceptions if you want to achieve
@@ -92,7 +92,7 @@ class ActionBuilder:
             try:
                 method = generic_opnds[operand_id]
             except KeyError as e:
-                raise ActionBuilderError('unknown generic operand {}'.format(operand_id)) from e
+                raise ETree2ActionError('unknown generic operand {}'.format(operand_id)) from e
             method(expression)
 
     def _splice(self, expression):
@@ -182,13 +182,13 @@ class ActionBuilder:
         """Check if given expression is stub, returning integer 0 or 1"""
         value = self._get_integer(expression)
         if value not in (0, 1):
-            raise ActionBuilderError('integer stub with unexpected value {}'.format(value))
+            raise ETree2ActionError('integer stub with unexpected value {}'.format(value))
 
     def _check_bool_stub(self, expression):
         """Check if given expression is stub, returning boolean true"""
         value = self._get_boolean(expression)
         if value is not True:
-            raise ActionBuilderError('boolean stub with unexpected value {}'.format(value))
+            raise ETree2ActionError('boolean stub with unexpected value {}'.format(value))
 
     def _get_operator(self, expression):
         # Format: {operator name: operator ID}
