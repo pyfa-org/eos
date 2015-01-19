@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #===============================================================================
 # Copyright (C) 2011 Diego Duclos
-# Copyright (C) 2011-2013 Anton Vorobyov
+# Copyright (C) 2011-2015 Anton Vorobyov
 #
 # This file is part of Eos.
 #
