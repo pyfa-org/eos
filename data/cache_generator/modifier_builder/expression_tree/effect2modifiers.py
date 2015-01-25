@@ -155,24 +155,26 @@ class Effect2Modifiers:
         modifier.operator = action.operator
         modifier.target_attribute_id = action.target_attribute_id
         # Fill remaining fields on per-type-of-action basis
-        conversion_map = {Operand.add_gang_grp_mod: self._convert_gang_grp,
-                          Operand.rm_gang_grp_mod: self._convert_gang_grp,
-                          Operand.add_gang_itm_mod: self._convert_gang_itm,
-                          Operand.rm_gang_itm_mod: self._convert_gang_itm,
-                          Operand.add_gang_own_srq_mod: self._convert_gang_own_srq,
-                          Operand.rm_gang_own_srq_mod: self._convert_gang_own_srq,
-                          Operand.add_gang_srq_mod: self._convert_gang_srq,
-                          Operand.rm_gang_srq_mod: self._convert_gang_srq,
-                          Operand.add_itm_mod: self._convert_itm,
-                          Operand.rm_itm_mod: self._convert_itm,
-                          Operand.add_loc_grp_mod: self._convert_loc_grp,
-                          Operand.rm_loc_grp_mod: self._convert_loc_grp,
-                          Operand.add_loc_mod: self._convert_loc,
-                          Operand.rm_loc_mod: self._convert_loc,
-                          Operand.add_loc_srq_mod: self._convert_loc_srq,
-                          Operand.rm_loc_srq_mod: self._convert_loc_srq,
-                          Operand.add_own_srq_mod: self._convert_own_srq,
-                          Operand.rm_own_srq_mod: self._convert_own_srq}
+        conversion_map = {
+            Operand.add_gang_grp_mod: self._convert_gang_grp,
+            Operand.rm_gang_grp_mod: self._convert_gang_grp,
+            Operand.add_gang_itm_mod: self._convert_gang_itm,
+            Operand.rm_gang_itm_mod: self._convert_gang_itm,
+            Operand.add_gang_own_srq_mod: self._convert_gang_own_srq,
+            Operand.rm_gang_own_srq_mod: self._convert_gang_own_srq,
+            Operand.add_gang_srq_mod: self._convert_gang_srq,
+            Operand.rm_gang_srq_mod: self._convert_gang_srq,
+            Operand.add_itm_mod: self._convert_itm,
+            Operand.rm_itm_mod: self._convert_itm,
+            Operand.add_loc_grp_mod: self._convert_loc_grp,
+            Operand.rm_loc_grp_mod: self._convert_loc_grp,
+            Operand.add_loc_mod: self._convert_loc,
+            Operand.rm_loc_mod: self._convert_loc,
+            Operand.add_loc_srq_mod: self._convert_loc_srq,
+            Operand.rm_loc_srq_mod: self._convert_loc_srq,
+            Operand.add_own_srq_mod: self._convert_own_srq,
+            Operand.rm_own_srq_mod: self._convert_own_srq
+        }
         conversion_map[action.type](action, modifier)
         return modifier
 

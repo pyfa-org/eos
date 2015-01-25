@@ -96,13 +96,13 @@ class Action:
             return False
         # Then, check all other fields of modifier
         if (
-                self.source_attribute_id != other.source_attribute_id or
-                self.operator != other.operator or
-                self.target_attribute_id != other.target_attribute_id or
-                self.target_location != other.target_location or
-                self.target_group_id != other.target_group_id or
-                self.target_skill_requirement_id != other.target_skill_requirement_id or
-                self.target_skill_requirement_self is not other.target_skill_requirement_self
+            self.source_attribute_id != other.source_attribute_id or
+            self.operator != other.operator or
+            self.target_attribute_id != other.target_attribute_id or
+            self.target_location != other.target_location or
+            self.target_group_id != other.target_group_id or
+            self.target_skill_requirement_id != other.target_skill_requirement_id or
+            self.target_skill_requirement_self is not other.target_skill_requirement_self
         ):
             return False
         # If all conditions were met, then it's actually mirror

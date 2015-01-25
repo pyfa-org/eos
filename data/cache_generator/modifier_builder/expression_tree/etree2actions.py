@@ -87,8 +87,10 @@ class ETree2Actions:
             self._splice(expression)
         # Process expressions with other operands using the map
         else:
-            generic_opnds = {Operand.def_int: self._check_int_stub,
-                             Operand.def_bool: self._check_bool_stub}
+            generic_opnds = {
+                Operand.def_int: self._check_int_stub,
+                Operand.def_bool: self._check_bool_stub
+            }
             try:
                 method = generic_opnds[operand_id]
             except KeyError as e:
@@ -122,10 +124,12 @@ class ETree2Actions:
         arg1 = self._get_exp(expression.get('arg1'))
         action.operator = self._get_operator(arg1)
         # Handling of arg2 depends on its operand
-        tgt_route_map = {Operand.gen_attr: self._tgt_attr,
-                         Operand.grp_attr: self._tgt_grp_attr,
-                         Operand.srq_attr: self._tgt_srq_attr,
-                         Operand.itm_attr: self._tgt_itm_attr}
+        tgt_route_map = {
+            Operand.gen_attr: self._tgt_attr,
+            Operand.grp_attr: self._tgt_grp_attr,
+            Operand.srq_attr: self._tgt_srq_attr,
+            Operand.itm_attr: self._tgt_itm_attr
+        }
         arg2 = self._get_exp(expression.get('arg2'))
         tgt_route_map[arg2.get('operandID')](arg2, action)
 
@@ -151,9 +155,11 @@ class ETree2Actions:
     def _tgt_itm_attr(self, expression, action):
         """Handle target item specification and get target attribute"""
         # Item specification format depends on operand of arg1
-        itm_getter_map = {Operand.def_loc: self._tgt_loc,
-                          Operand.loc_grp: self._tgt_loc_grp,
-                          Operand.loc_srq: self._tgt_loc_srq}
+        itm_getter_map = {
+            Operand.def_loc: self._tgt_loc,
+            Operand.loc_grp: self._tgt_loc_grp,
+            Operand.loc_srq: self._tgt_loc_srq
+        }
         arg1 = self._get_exp(expression.get('arg1'))
         itm_getter_map[arg1.get('operandID')](arg1, action)
         # Target attribute is always specified in arg2
@@ -192,26 +198,30 @@ class ETree2Actions:
 
     def _get_operator(self, expression):
         # Format: {operator name: operator ID}
-        conversion_map = {'PreAssignment': Operator.pre_assignment,
-                          'PreMul': Operator.pre_mul,
-                          'PreDiv': Operator.pre_div,
-                          'ModAdd': Operator.mod_add,
-                          'ModSub': Operator.mod_sub,
-                          'PostMul': Operator.post_mul,
-                          'PostDiv': Operator.post_div,
-                          'PostPercent': Operator.post_percent,
-                          'PostAssignment': Operator.post_assignment}
+        conversion_map = {
+            'PreAssignment': Operator.pre_assignment,
+            'PreMul': Operator.pre_mul,
+            'PreDiv': Operator.pre_div,
+            'ModAdd': Operator.mod_add,
+            'ModSub': Operator.mod_sub,
+            'PostMul': Operator.post_mul,
+            'PostDiv': Operator.post_div,
+            'PostPercent': Operator.post_percent,
+            'PostAssignment': Operator.post_assignment
+        }
         operator = conversion_map[expression.get('expressionValue')]
         return operator
 
     def _get_location(self, expression):
         # Format: {location name: location ID}
-        conversion_map = {'Self': Location.self_,
-                          'Char': Location.character,
-                          'Ship': Location.ship,
-                          'Target': Location.target,
-                          'Other': Location.other,
-                          'Area': Location.area}
+        conversion_map = {
+            'Self': Location.self_,
+            'Char': Location.character,
+            'Ship': Location.ship,
+            'Target': Location.target,
+            'Other': Location.other,
+            'Area': Location.area
+        }
         location = conversion_map[expression.get('expressionValue')]
         return location
 
@@ -240,8 +250,10 @@ class ETree2Actions:
 
     def _get_boolean(self, expression):
         # Format: {boolean name: boolean value}
-        conversion_map = {'True': True,
-                          'False': False}
+        conversion_map = {
+            'True': True,
+            'False': False
+        }
         boolean = conversion_map[expression.get('expressionValue')]
         return boolean
 
@@ -275,24 +287,26 @@ class ETree2Actions:
         if (effect_category_id, gang_flag) not in state_data:
             return False
         # Other fields are optional, check them using action type
-        validate_map = {Operand.add_gang_grp_mod: self._validate_gang_grp,
-                        Operand.rm_gang_grp_mod: self._validate_gang_grp,
-                        Operand.add_gang_itm_mod: self._validate_gang_itm,
-                        Operand.rm_gang_itm_mod: self._validate_gang_itm,
-                        Operand.add_gang_own_srq_mod: self._validate_gang_own_srq,
-                        Operand.rm_gang_own_srq_mod: self._validate_gang_own_srq,
-                        Operand.add_gang_srq_mod: self._validate_gang_srq,
-                        Operand.rm_gang_srq_mod: self._validate_gang_srq,
-                        Operand.add_itm_mod: self._validate_itm,
-                        Operand.rm_itm_mod: self._validate_itm,
-                        Operand.add_loc_grp_mod: self._validate_loc_grp,
-                        Operand.rm_loc_grp_mod: self._validate_loc_grp,
-                        Operand.add_loc_mod: self._validate_loc,
-                        Operand.rm_loc_mod: self._validate_loc,
-                        Operand.add_loc_srq_mod: self._validate_loc_srq,
-                        Operand.rm_loc_srq_mod: self._validate_loc_srq,
-                        Operand.add_own_srq_mod: self._validate_own_srq,
-                        Operand.rm_own_srq_mod: self._validate_own_srq}
+        validate_map = {
+            Operand.add_gang_grp_mod: self._validate_gang_grp,
+            Operand.rm_gang_grp_mod: self._validate_gang_grp,
+            Operand.add_gang_itm_mod: self._validate_gang_itm,
+            Operand.rm_gang_itm_mod: self._validate_gang_itm,
+            Operand.add_gang_own_srq_mod: self._validate_gang_own_srq,
+            Operand.rm_gang_own_srq_mod: self._validate_gang_own_srq,
+            Operand.add_gang_srq_mod: self._validate_gang_srq,
+            Operand.rm_gang_srq_mod: self._validate_gang_srq,
+            Operand.add_itm_mod: self._validate_itm,
+            Operand.rm_itm_mod: self._validate_itm,
+            Operand.add_loc_grp_mod: self._validate_loc_grp,
+            Operand.rm_loc_grp_mod: self._validate_loc_grp,
+            Operand.add_loc_mod: self._validate_loc,
+            Operand.rm_loc_mod: self._validate_loc,
+            Operand.add_loc_srq_mod: self._validate_loc_srq,
+            Operand.rm_loc_srq_mod: self._validate_loc_srq,
+            Operand.add_own_srq_mod: self._validate_own_srq,
+            Operand.rm_own_srq_mod: self._validate_own_srq
+        }
         try:
             method = validate_map[action.type]
         except KeyError:

@@ -83,14 +83,16 @@ operand_data = {
 # Dictionary which assists conversion of effect category
 # and operand gang/local modification to state and context
 # Format: {(effect category, gang flag): (state, context)}
-state_data = {(EffectCategory.passive, False): (State.offline, Context.local),
-              (EffectCategory.passive, True): (State.offline, Context.gang),
-              (EffectCategory.active, False): (State.active, Context.local),
-              (EffectCategory.active, True): (State.active, Context.gang),
-              (EffectCategory.target, False): (State.active, Context.projected),
-              (EffectCategory.online, False): (State.online, Context.local),
-              (EffectCategory.online, True): (State.online, Context.gang),
-              (EffectCategory.overload, False): (State.overload, Context.local),
-              (EffectCategory.overload, True): (State.overload, Context.gang),
-              (EffectCategory.system, False): (State.offline, Context.local),
-              (EffectCategory.system, True): (State.offline, Context.gang)}
+state_data = {
+    (EffectCategory.passive, False): (State.offline, Context.local),
+    (EffectCategory.passive, True): (State.offline, Context.gang),
+    (EffectCategory.active, False): (State.active, Context.local),
+    (EffectCategory.active, True): (State.active, Context.gang),
+    (EffectCategory.target, False): (State.active, Context.projected),
+    (EffectCategory.online, False): (State.online, Context.local),
+    (EffectCategory.online, True): (State.online, Context.gang),
+    (EffectCategory.overload, False): (State.overload, Context.local),
+    (EffectCategory.overload, True): (State.overload, Context.gang),
+    (EffectCategory.system, False): (State.offline, Context.local),
+    (EffectCategory.system, True): (State.offline, Context.gang)
+}

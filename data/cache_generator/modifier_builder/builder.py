@@ -33,6 +33,8 @@ class ModifierBuilder:
 
 
     def build(self, effect_row):
+        # When no modifierInfo specified, use expression trees
+        # to make modifiers
         modifiers, build_status = self._tree.convert(
             effect_row['pre_expression_id'],
             effect_row['post_expression_id'],
