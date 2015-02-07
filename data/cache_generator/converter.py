@@ -203,12 +203,6 @@ class Converter:
         for row in data['invtypes']:
             type_id = row['typeID']
             group_id = row.get('groupID')
-            # Get effect row of default effect, replacing it
-            # with empty dictionary if there's no one
-            if type_id in type_defeff_map:
-                defeff = dgmeffects_keyed.get(type_defeff_map[type_id], {})
-            else:
-                defeff = {}
             type_ = {
                 'type_id': type_id,
                 'group_id': group_id,
@@ -247,7 +241,8 @@ class Converter:
                 'tracking_speed_attribute_id': row.get('trackingSpeedAttributeID'),
                 'fitting_usage_chance_attribute_id': row.get('fittingUsageChanceAttributeID'),
                 'pre_expression_id': row.get('preExpression'),
-                'post_expression_id': row.get('postExpression')
+                'post_expression_id': row.get('postExpression'),
+                'modifier_info': row.get('modifierInfo')
             }
             effects.append(effect)
         assembly['effects'] = effects

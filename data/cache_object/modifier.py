@@ -27,17 +27,19 @@ class Modifier:
     apply it, and so on.
     """
 
-    def __init__(self,
-                 modifier_id=None,
-                 state=None,
-                 context=None,
-                 source_attribute_id=None,
-                 operator=None,
-                 target_attribute_id=None,
-                 location=None,
-                 filter_type=None,
-                 filter_value=None):
-        # Identifier of modifier, sythesized at
+    def __init__(
+        self,
+        modifier_id=None,
+        state=None,
+        context=None,
+        source_attribute_id=None,
+        operator=None,
+        target_attribute_id=None,
+        location=None,
+        filter_type=None,
+        filter_value=None
+    ):
+        # Identifier of modifier, synthesized at
         # cache generation time
         self.id = modifier_id
 

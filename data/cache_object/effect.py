@@ -30,19 +30,21 @@ class Effect:
     does with other items.
     """
 
-    def __init__(self,
-                 effect_id=None,
-                 category_id=None,
-                 is_offensive=None,
-                 is_assistance=None,
-                 duration_attribute_id=None,
-                 discharge_attribute_id=None,
-                 range_attribute_id=None,
-                 falloff_attribute_id=None,
-                 tracking_speed_attribute_id=None,
-                 fitting_usage_chance_attribute_id=None,
-                 build_status=None,
-                 modifiers=()):
+    def __init__(
+        self,
+        effect_id=None,
+        category_id=None,
+        is_offensive=None,
+        is_assistance=None,
+        duration_attribute_id=None,
+        discharge_attribute_id=None,
+        range_attribute_id=None,
+        falloff_attribute_id=None,
+        tracking_speed_attribute_id=None,
+        fitting_usage_chance_attribute_id=None,
+        build_status=None,
+        modifiers=()
+    ):
         self.id = effect_id
 
         # Effect category actually describes type of effect, which determines
@@ -86,12 +88,14 @@ class Effect:
         self.modifiers = modifiers
 
     # Format: {effect category ID: state ID}
-    __effect_state_map = {EffectCategory.passive: State.offline,
-                          EffectCategory.active: State.active,
-                          EffectCategory.target: State.active,
-                          EffectCategory.online: State.online,
-                          EffectCategory.overload: State.overload,
-                          EffectCategory.system: State.offline}
+    __effect_state_map = {
+        EffectCategory.passive: State.offline,
+        EffectCategory.active: State.active,
+        EffectCategory.target: State.active,
+        EffectCategory.online: State.online,
+        EffectCategory.overload: State.overload,
+        EffectCategory.system: State.offline
+    }
 
     @CachedProperty
     def _state(self):

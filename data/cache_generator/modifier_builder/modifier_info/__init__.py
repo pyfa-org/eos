@@ -19,29 +19,4 @@
 #===============================================================================
 
 
-from .expression_tree import Effect2Modifiers
-from .modifier_info import Info2Modifiers
-
-
-class ModifierBuilder:
-    """
-    Class which is used for generating Eos modifiers out of
-    effect data.
-    """
-
-    def __init__(self, expressions, logger):
-        self._tree = Effect2Modifiers(expressions, logger)
-        self._info = Info2Modifiers(logger)
-
-    def build(self, effect_row):
-        if effect_row['modifier_info'] is not None:
-            modifiers, build_status = self._info.convert(effect_row)
-        # When no modifierInfo specified, use expression trees
-        # to make modifiers
-        else:
-            modifiers, build_status = self._tree.convert(
-                effect_row['pre_expression_id'],
-                effect_row['post_expression_id'],
-                effect_row['effect_category']
-            )
-        return modifiers, build_status
+from .info2modifiers import Info2Modifiers

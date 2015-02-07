@@ -54,9 +54,15 @@ class Cleaner:
         Mark some hardcoded invtypes as strong.
         """
         # Tuple with categoryIDs of items we want to keep
-        strong_categories = (Category.ship, Category.module, Category.charge,
-                             Category.skill, Category.drone, Category.implant,
-                             Category.subsystem)
+        strong_categories = (
+            Category.ship,
+            Category.module,
+            Category.charge,
+            Category.skill,
+            Category.drone,
+            Category.implant,
+            Category.subsystem
+        )
         # Set with groupIDs of items we want to keep
         # It is set because we will need to modify it
         strong_groups = {Group.character, Group.effect_beacon}
