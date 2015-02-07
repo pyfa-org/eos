@@ -38,6 +38,8 @@ class ModBuilderTestCase(EosTestCase):
         EosTestCase.setUp(self)
         self.ef = ExpressionFactory()
 
-    def run_builder(self, pre_exp, post_exp, eff_cat):
+    def run_builder(self, effect_row):
+        effect_row.setdefault('effect_id', 1)
+        effect_row.setdefault('modifier_info', None)
         builder = ModifierBuilder(self.ef.data, Logger())
-        return builder.build_effect(pre_exp, post_exp, eff_cat)
+        return builder.build(effect_row)

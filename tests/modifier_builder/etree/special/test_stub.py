@@ -30,9 +30,12 @@ class TestStubInt0(ModBuilderTestCase):
     def test_build_success(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         e_post_stub = self.ef.make(2, operandID=Operand.def_int, expressionValue='0')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post_stub['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post_stub['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
@@ -44,9 +47,12 @@ class TestStubInt1(ModBuilderTestCase):
     def test_build_success(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='1')
         e_post_stub = self.ef.make(2, operandID=Operand.def_int, expressionValue='1')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post_stub['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post_stub['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
@@ -58,9 +64,12 @@ class TestStubBoolTrue(ModBuilderTestCase):
     def test_build_success(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_bool, expressionValue='True')
         e_post_stub = self.ef.make(2, operandID=Operand.def_bool, expressionValue='True')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post_stub['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post_stub['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
@@ -72,9 +81,12 @@ class TestStubMixed(ModBuilderTestCase):
     def test_build_success(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_bool, expressionValue='True')
         e_post_stub = self.ef.make(2, operandID=Operand.def_int, expressionValue='0')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post_stub['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post_stub['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)

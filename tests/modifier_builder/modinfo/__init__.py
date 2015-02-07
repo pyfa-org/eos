@@ -18,30 +18,3 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 #===============================================================================
 
-
-from .expression_tree import Effect2Modifiers
-from .modifier_info import Info2Modifiers
-
-
-class ModifierBuilder:
-    """
-    Class which is used for generating Eos modifiers out of
-    effect data.
-    """
-
-    def __init__(self, expressions, logger):
-        self._tree = Effect2Modifiers(expressions, logger)
-        self._info = Info2Modifiers(logger)
-
-    def build(self, effect_row):
-        """
-        Take effect data row and convert it into modifiers. Also
-        report build status for passed effect as 2nd returned value.
-        """
-        if effect_row['modifier_info'] is not None:
-            modifiers, build_status = self._info.convert(effect_row)
-        # When no modifierInfo specified, use expression trees
-        # to make modifiers
-        else:
-            modifiers, build_status = self._tree.convert(effect_row)
-        return modifiers, build_status

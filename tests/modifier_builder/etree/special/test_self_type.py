@@ -34,19 +34,37 @@ class TestSelfType(ModBuilderTestCase):
         e_tgt_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=64)
         e_optr = self.ef.make(5, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(6, operandID=Operand.def_attr, expressionAttributeID=292)
-        e_tgt_itms = self.ef.make(7, operandID=Operand.loc_srq, arg1=e_tgt_own['expressionID'],
-                                  arg2=e_self_type['expressionID'])
-        e_tgt_spec = self.ef.make(8, operandID=Operand.itm_attr, arg1=e_tgt_itms['expressionID'],
-                                  arg2=e_tgt_attr['expressionID'])
-        e_optr_tgt = self.ef.make(9, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
-                                  arg2=e_tgt_spec['expressionID'])
-        e_add_mod = self.ef.make(10, operandID=Operand.add_own_srq_mod, arg1=e_optr_tgt['expressionID'],
-                                 arg2=e_src_attr['expressionID'])
-        e_rm_mod = self.ef.make(11, operandID=Operand.rm_own_srq_mod, arg1=e_optr_tgt['expressionID'],
-                                arg2=e_src_attr['expressionID'])
-        modifiers, status = self.run_builder(e_add_mod['expressionID'],
-                                             e_rm_mod['expressionID'],
-                                             EffectCategory.passive)
+        e_tgt_itms = self.ef.make(
+            7, operandID=Operand.loc_srq,
+            arg1=e_tgt_own['expressionID'],
+            arg2=e_self_type['expressionID']
+        )
+        e_tgt_spec = self.ef.make(
+            8, operandID=Operand.itm_attr,
+            arg1=e_tgt_itms['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        e_optr_tgt = self.ef.make(
+            9, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        e_add_mod = self.ef.make(
+            10, operandID=Operand.add_own_srq_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        e_rm_mod = self.ef.make(
+            11, operandID=Operand.rm_own_srq_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        effect_row = {
+            'pre_expression_id': e_add_mod['expressionID'],
+            'post_expression_id': e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]

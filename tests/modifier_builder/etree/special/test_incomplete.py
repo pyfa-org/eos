@@ -35,28 +35,46 @@ class TestIncomplete(ModBuilderTestCase):
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
         self.e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=327)
-        e_tgt_spec = self.ef.make(5, operandID=Operand.itm_attr, arg1=e_tgt['expressionID'],
-                                  arg2=e_tgt_attr['expressionID'])
-        self.e_optr_tgt = self.ef.make(6, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
-                                       arg2=e_tgt_spec['expressionID'])
+        e_tgt_spec = self.ef.make(
+            5, operandID=Operand.itm_attr,
+            arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        self.e_optr_tgt = self.ef.make(
+            6, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
         self.stub = self.ef.make(7, operandID=Operand.def_int, expressionValue='1')
 
     def test_rre(self):
-        e_add_mod = self.ef.make(8, operandID=Operand.add_itm_mod, arg1=self.e_optr_tgt['expressionID'],
-                                 arg2=self.e_src_attr['expressionID'])
-        modifiers, status = self.run_builder(e_add_mod['expressionID'],
-                                             self.stub['expressionID'],
-                                             EffectCategory.passive)
+        e_add_mod = self.ef.make(
+            8, operandID=Operand.add_itm_mod,
+            arg1=self.e_optr_tgt['expressionID'],
+            arg2=self.e_src_attr['expressionID']
+        )
+        effect_row = {
+            'pre_expression_id': e_add_mod['expressionID'],
+            'post_expression_id': self.stub['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
     def test_post(self):
-        e_rm_mod = self.ef.make(8, operandID=Operand.rm_itm_mod, arg1=self.e_optr_tgt['expressionID'],
-                                arg2=self.e_src_attr['expressionID'])
-        modifiers, status = self.run_builder(self.stub['expressionID'],
-                                             e_rm_mod['expressionID'],
-                                             EffectCategory.passive)
+        e_rm_mod = self.ef.make(
+            8, operandID=Operand.rm_itm_mod,
+            arg1=self.e_optr_tgt['expressionID'],
+            arg2=self.e_src_attr['expressionID']
+        )
+        effect_row = {
+            'pre_expression_id': self.stub['expressionID'],
+            'post_expression_id': e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)

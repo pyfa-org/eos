@@ -33,19 +33,34 @@ class TestModItm(ModBuilderTestCase):
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=327)
-        e_tgt_spec = self.ef.make(5, operandID=Operand.itm_attr, arg1=e_tgt['expressionID'],
-                                  arg2=e_tgt_attr['expressionID'])
-        e_optr_tgt = self.ef.make(6, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
-                                  arg2=e_tgt_spec['expressionID'])
-        self.e_add_mod = self.ef.make(7, operandID=Operand.add_itm_mod, arg1=e_optr_tgt['expressionID'],
-                                      arg2=e_src_attr['expressionID'])
-        self.e_rm_mod = self.ef.make(8, operandID=Operand.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
-                                     arg2=e_src_attr['expressionID'])
+        e_tgt_spec = self.ef.make(
+            5, operandID=Operand.itm_attr,
+            arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        e_optr_tgt = self.ef.make(
+            6, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        self.e_add_mod = self.ef.make(
+            7, operandID=Operand.add_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        self.e_rm_mod = self.ef.make(
+            8, operandID=Operand.rm_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
 
     def test_generic_build_success(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
@@ -59,9 +74,12 @@ class TestModItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_passive(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
@@ -70,9 +88,12 @@ class TestModItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_active(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.active)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.active
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
@@ -81,9 +102,12 @@ class TestModItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_target(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.target)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.target
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
@@ -92,17 +116,23 @@ class TestModItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_area(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.area)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.area
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
     def test_eff_category_online(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.online)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.online
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
@@ -111,9 +141,12 @@ class TestModItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_overload(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.overload)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.overload
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
@@ -122,17 +155,23 @@ class TestModItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_dungeon(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.dungeon)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.dungeon
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
     def test_eff_category_system(self):
-        modifiers, status = self.run_builder(self.e_add_mod['expressionID'],
-                                             self.e_rm_mod['expressionID'],
-                                             EffectCategory.system)
+        effect_row = {
+            'pre_expression_id': self.e_add_mod['expressionID'],
+            'post_expression_id': self.e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.system
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]

@@ -30,14 +30,20 @@ class TestModifierBuilderError(ModBuilderTestCase):
 
     def test_data_direct(self):
         # Check reaction to expression data fetch errors
-        modifiers, status = self.run_builder(902, 28, EffectCategory.passive)
+        effect_row = {
+            'effect_id': 915,
+            'pre_expression_id': 902,
+            'post_expression_id': 28,
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.ERROR)
-        expected = 'failed to parse tree with base 902-28 and effect category 0: unable to fetch expression 902'
+        expected = 'failed to parse expression tree of effect 915: unable to fetch expression 902'
         self.assertEqual(log_record.msg, expected)
 
     def test_unused_actions(self):
@@ -48,21 +54,34 @@ class TestModifierBuilderError(ModBuilderTestCase):
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=327)
-        e_tgt_spec = self.ef.make(5, operandID=Operand.itm_attr, arg1=e_tgt['expressionID'],
-                                  arg2=e_tgt_attr['expressionID'])
-        e_optr_tgt = self.ef.make(6, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
-                                  arg2=e_tgt_spec['expressionID'])
-        e_add_mod = self.ef.make(7, operandID=Operand.add_itm_mod, arg1=e_optr_tgt['expressionID'],
-                                 arg2=e_src_attr['expressionID'])
+        e_tgt_spec = self.ef.make(
+            5, operandID=Operand.itm_attr,
+            arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        e_optr_tgt = self.ef.make(
+            6, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        e_add_mod = self.ef.make(
+            7, operandID=Operand.add_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
         e_post_stub = self.ef.make(8, operandID=Operand.def_int, expressionValue='1')
-        modifiers, status = self.run_builder(e_add_mod['expressionID'],
-                                             e_post_stub['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'effect_id': 29,
+            'pre_expression_id': e_add_mod['expressionID'],
+            'post_expression_id': e_post_stub['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'unused actions left after parsing tree with base 7-8 and effect category 0'
+        expected = 'unused actions left after parsing expression tree of effect 29'
         self.assertEqual(log_record.msg, expected)

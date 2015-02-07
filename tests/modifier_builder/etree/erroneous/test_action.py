@@ -32,61 +32,77 @@ class TestActionBuilderError(ModBuilderTestCase):
         # Check reaction to expression data fetch errors,
         # if they occur not for root expression
         splice = self.ef.make(1, operandID=Operand.splice, arg1=37, arg2=105)
-        modifiers, status = self.run_builder(splice['expressionID'],
-                                             splice['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'effect_id': 56,
+            'pre_expression_id': splice['expressionID'],
+            'post_expression_id': splice['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.ERROR)
-        expected = 'failed to parse tree with base 1-1 and effect category 0: unable to fetch expression 37'
+        expected = 'failed to parse expression tree of effect 56: unable to fetch expression 37'
         self.assertEqual(log_record.msg, expected)
 
     def test_generic(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='1')
         e_post = self.ef.make(2, operandID=1009)
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'effect_id': 33,
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed to parse tree with base 1-2 and effect category 0: unknown generic operand 1009'
+        expected = 'failed to parse expression tree of effect 33: unknown generic operand 1009'
         self.assertEqual(log_record.msg, expected)
 
     def test_int_stub(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         e_post = self.ef.make(2, operandID=Operand.def_int, expressionValue='6')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'effect_id': 907,
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed to parse tree with base 1-2 and effect category 0: integer stub with unexpected value 6'
+        expected = 'failed to parse expression tree of effect 907: integer stub with unexpected value 6'
         self.assertEqual(log_record.msg, expected)
 
     def test_bool_stub(self):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         e_post = self.ef.make(2, operandID=Operand.def_bool, expressionValue='False')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'effect_id': 0,
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed to parse tree with base 1-2 and effect category 0: boolean stub with unexpected value False'
+        expected = 'failed to parse expression tree of effect 0: boolean stub with unexpected value False'
         self.assertEqual(log_record.msg, expected)
 
     def test_unknown(self):
@@ -94,16 +110,20 @@ class TestActionBuilderError(ModBuilderTestCase):
         # which are not specifically processed by it
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         e_post = self.ef.make(2, operandID=Operand.def_bool, expressionValue='Garbage')
-        modifiers, status = self.run_builder(e_pre_stub['expressionID'],
-                                             e_post['expressionID'],
-                                             EffectCategory.passive)
+        effect_row = {
+            'effect_id': 3,
+            'pre_expression_id': e_pre_stub['expressionID'],
+            'post_expression_id': e_post['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.ERROR)
-        expected = 'failed to parse tree with base 1-2 and effect category 0 due to unknown reason'
+        expected = 'failed to parse expression tree of effect 3 due to unknown reason'
         self.assertEqual(log_record.msg, expected)
 
     def test_validation(self):
@@ -116,24 +136,43 @@ class TestActionBuilderError(ModBuilderTestCase):
         e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=6)
         e_optr = self.ef.make(4, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(5, operandID=Operand.def_attr, expressionAttributeID=1576)
-        e_tgt_itms = self.ef.make(6, operandID=Operand.loc_grp, arg1=e_tgt_loc['expressionID'],
-                                  arg2=e_tgt_grp['expressionID'])
-        e_tgt_spec = self.ef.make(7, operandID=Operand.itm_attr, arg1=e_tgt_itms['expressionID'],
-                                  arg2=e_tgt_attr['expressionID'])
-        e_optr_tgt = self.ef.make(8, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
-                                  arg2=e_tgt_spec['expressionID'])
-        e_add_mod = self.ef.make(9, operandID=Operand.add_itm_mod, arg1=e_optr_tgt['expressionID'],
-                                 arg2=e_src_attr['expressionID'])
-        e_rm_mod = self.ef.make(10, operandID=Operand.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
-                                arg2=e_src_attr['expressionID'])
-        modifiers, status = self.run_builder(e_add_mod['expressionID'],
-                                             e_rm_mod['expressionID'],
-                                             EffectCategory.passive)
+        e_tgt_itms = self.ef.make(
+            6, operandID=Operand.loc_grp,
+            arg1=e_tgt_loc['expressionID'],
+            arg2=e_tgt_grp['expressionID']
+        )
+        e_tgt_spec = self.ef.make(
+            7, operandID=Operand.itm_attr,
+            arg1=e_tgt_itms['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        e_optr_tgt = self.ef.make(
+            8, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        e_add_mod = self.ef.make(
+            9, operandID=Operand.add_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        e_rm_mod = self.ef.make(
+            10, operandID=Operand.rm_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        effect_row = {
+            'effect_id': 66,
+            'pre_expression_id': e_add_mod['expressionID'],
+            'post_expression_id': e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed to parse tree with base 9-10 and effect category 0: failed to validate action'
+        expected = 'failed to parse expression tree of effect 66: failed to validate action'
         self.assertEqual(log_record.msg, expected)
