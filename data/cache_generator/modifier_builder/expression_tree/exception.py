@@ -31,22 +31,6 @@ class Effect2ModifiersError(EosError):
     pass
 
 
-class TreeFetchingError(Effect2ModifiersError):
-    """
-    Raised when effect-to-modifier converter encounters
-    expression fetching error.
-    """
-    pass
-
-
-class TreeParsingError(Effect2ModifiersError):
-    """
-    Raised when effect-to-modifier converter encounters some
-    expected error.
-    """
-    pass
-
-
 class TreeParsingUnexpectedError(Effect2ModifiersError):
     """
     Raised when effect-to-modifier converter encounters some

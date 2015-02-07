@@ -25,6 +25,7 @@ from eos.const.eve import EffectCategory
 from eos.data.cache_object import Modifier
 from .exception import *
 
+
 # Format:
 # info func: (mod filter type, info attribute name for mod filter value,
 # {info domain: (mod context, mod location)}
@@ -76,6 +77,8 @@ filter_map = {
     )
 }
 
+# Format:
+# {CCP operator ID: eos operator ID}
 operator_map = {
     -1: Operator.pre_assignment,
     0: Operator.pre_mul,
@@ -125,7 +128,7 @@ class Info2Modifiers:
             signature = (YamlParseError, effect_id)
             self._logger.error(msg, child_name='modifier_builder', signature=signature)
             # We cannot recover any data in this case, thus return empty list
-            return [], EffectBuildStatus.error
+            return (), EffectBuildStatus.error
         # Go through modifier objects and attempt to convert them one-by-one
         modifiers = []
         for modifier_info in modifier_infos:
@@ -147,7 +150,7 @@ class Info2Modifiers:
         # with no modifiers in the list, consider whole conversion process to be
         # a failure
         if build_status == EffectBuildStatus.ok_partial and len(modifiers) == 0:
-            return [], EffectBuildStatus.error
+            return (), EffectBuildStatus.error
         try:
             self._conv_state(modifiers, effect_row)
         except UnknownStateError as e:
@@ -158,7 +161,7 @@ class Info2Modifiers:
             # Modifiers without state data will be useless, and we cannot do any
             # safe assumptions here, , thus consider that everything went wrong
             # and return empty list
-            return [], EffectBuildStatus.error
+            return (), EffectBuildStatus.error
         return modifiers, build_status
 
     def _conv_generic(self, modifier, modifier_info):

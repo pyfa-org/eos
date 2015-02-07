@@ -39,9 +39,5 @@ class ModifierBuilder:
         # When no modifierInfo specified, use expression trees
         # to make modifiers
         else:
-            modifiers, build_status = self._tree.convert(
-                effect_row['pre_expression_id'],
-                effect_row['post_expression_id'],
-                effect_row['effect_category']
-            )
+            modifiers, build_status = self._tree.convert(effect_row)
         return modifiers, build_status

@@ -261,7 +261,8 @@ class ETree2Actions:
         try:
             return self._expressions[expression_id]
         except KeyError:
-            raise ExpressionFetchError(expression_id)
+            msg = 'unable to fetch expression {}'.format(expression_id)
+            raise ExpressionFetchError(msg)
 
     def validate_action(self, action, effect_category_id):
         """

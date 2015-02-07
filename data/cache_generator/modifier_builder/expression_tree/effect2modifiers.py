@@ -23,24 +23,26 @@ from eos.const.eos import Location, EffectBuildStatus, FilterType
 from eos.const.eve import Operand
 from eos.data.cache_object import Modifier
 from .etree2actions import ETree2Actions
-from .exception import TreeFetchingError, TreeParsingError, TreeParsingUnexpectedError, UnusedActionError, \
-    ETree2ActionError, ExpressionFetchError
+from .exception import TreeParsingUnexpectedError, UnusedActionError, ETree2ActionError, ExpressionFetchError
 from .shared import operand_data, state_data
 
 
 class Effect2Modifiers:
     """
-    Class which uses effects' expression trees and some additional
-    data to generate actual modifier objects used by Eos.
+    Class which uses effects' expression trees to generate
+    actual modifier objects used by Eos.
     """
 
     def __init__(self, expressions, logger):
         self._etree2actions = ETree2Actions(expressions)
         self._logger = logger
 
-    def convert(self, pre_expression_id, post_expression_id, effect_category_id):
+    def convert(self, effect_row):
         """Generate Modifier objects out of passed data."""
         try:
+            pre_expression_id = effect_row['pre_expression_id']
+            post_expression_id = effect_row['post_expression_id']
+            effect_category_id = effect_row['effect_category']
             # By default, assume that our build is 100% successful
             build_status = EffectBuildStatus.ok_full
             # Containers for our data
@@ -57,13 +59,11 @@ class Effect2Modifiers:
                     continue
                 try:
                     actions, skipped_data = self._etree2actions.convert(tree_root_id, effect_category_id)
-                except KeyboardInterrupt:
-                    raise
                 # If any errors occurred, raise corresponding exceptions
-                except ExpressionFetchError as e:
-                    raise TreeFetchingError(*e.args)
-                except ETree2ActionError as e:
-                    raise TreeParsingError(*e.args) from e
+                except (KeyboardInterrupt, ExpressionFetchError, ETree2ActionError):
+                    raise
+                # All exceptions classes besides the ones listed above are considered
+                # as unexpected, and will be treated more severely
                 except Exception as e:
                     raise TreeParsingUnexpectedError from e
                 # Update set with actions we've just got
@@ -104,32 +104,29 @@ class Effect2Modifiers:
 
             # If there're any actions which were not used for modifier
             # generation, mark current effect as partially parsed
-            try:
-                if pre_actions.difference(used_pre_actions) or post_actions.difference(used_post_actions):
-                    raise UnusedActionError
-            except UnusedActionError as e:
-                msg = 'unused actions left after parsing tree with base {}-{} and effect category {}'.format(
-                    pre_expression_id, post_expression_id, effect_category_id)
-                signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
+            if pre_actions.difference(used_pre_actions) or post_actions.difference(used_post_actions):
+                effect_id = effect_row['effect_id']
+                msg = 'unused actions left after parsing expression tree of effect {}'.format(effect_id)
+                signature = (UnusedActionError, effect_id)
                 self._logger.warning(msg, child_name='modifier_builder', signature=signature)
-                build_status = EffectBuildStatus.ok_partial
+                return modifiers, EffectBuildStatus.ok_partial
 
         # Handle raised exceptions
-        except TreeFetchingError as e:
-            msg = 'failed to parse tree with base {}-{} and effect category {}: unable to fetch expression {}'.format(
-                pre_expression_id, post_expression_id, effect_category_id, e.args[0])
-            signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
+        except ExpressionFetchError as e:
+            effect_id = effect_row['effect_id']
+            msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
+            signature = (type(e), effect_id)
             self._logger.error(msg, child_name='modifier_builder', signature=signature)
             return (), EffectBuildStatus.error
-        except TreeParsingError as e:
-            msg = 'failed to parse tree with base {}-{} and effect category {}: {}'.format(
-                pre_expression_id, post_expression_id, effect_category_id, e.args[0])
+        except ETree2ActionError as e:
+            effect_id = effect_row['effect_id']
+            msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
             signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
             self._logger.warning(msg, child_name='modifier_builder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError as e:
-            msg = 'failed to parse tree with base {}-{} and effect category {} due to unknown reason'.format(
-                pre_expression_id, post_expression_id, effect_category_id)
+            effect_id = effect_row['effect_id']
+            msg = 'failed to parse expression tree of effect {} due to unknown reason'.format(effect_id)
             signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
             self._logger.error(msg, child_name='modifier_builder', signature=signature)
             return (), EffectBuildStatus.error
