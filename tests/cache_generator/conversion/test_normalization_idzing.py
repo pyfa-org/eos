@@ -34,10 +34,12 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 3'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-                                               'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-                                               'expressionGroupID': 567, 'expressionAttributeID': 102})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
+            'expressionGroupID': 567, 'expressionAttributeID': 102
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -47,9 +49,11 @@ class TestNormalizationIdzing(GeneratorTestCase):
         # passed to modifier builder, as it's much easier to do
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-                    'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
-                    'expressionAttributeID': 102, 'table_pos': 0}
+        expected = {
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
+            'expressionAttributeID': 102, 'table_pos': 0
+        }
         self.assertIn(expected, expressions)
 
     def test_group_idzing(self, mod_builder):
@@ -57,10 +61,12 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.dh.data['invgroups'].append({'groupID': 668, 'categoryID': 16, 'groupName': 'Big Guns'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
-                                               'arg2': 66, 'expressionValue': 'BigGuns', 'expressionTypeID': 567,
-                                               'expressionGroupID': None, 'expressionAttributeID': 102})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'BigGuns', 'expressionTypeID': 567,
+            'expressionGroupID': None, 'expressionAttributeID': 102
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -68,9 +74,11 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
-                    'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 668,
-                    'expressionAttributeID': 102, 'table_pos': 0}
+        expected = {
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 668,
+            'expressionAttributeID': 102, 'table_pos': 0
+        }
         self.assertIn(expected, expressions)
 
     def test_attribute_idzing(self, mod_builder):
@@ -78,10 +86,12 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.dh.data['invgroups'].append({'groupID': 668, 'categoryID': 16, 'groupName': 'Big Guns'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
-                                               'arg2': 66, 'expressionValue': 'BigGuns', 'expressionTypeID': 567,
-                                               'expressionGroupID': None, 'expressionAttributeID': 102})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'BigGuns', 'expressionTypeID': 567,
+            'expressionGroupID': None, 'expressionAttributeID': 102
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -89,19 +99,23 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
-                    'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 668,
-                    'expressionAttributeID': 102, 'table_pos': 0}
+        expected = {
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 668,
+            'expressionAttributeID': 102, 'table_pos': 0
+        }
         self.assertIn(expected, expressions)
 
     def test_unstripped(self, mod_builder):
         self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 3'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-                                               'arg2': 66, 'expressionValue': 'Big Gun 3', 'expressionTypeID': None,
-                                               'expressionGroupID': 567, 'expressionAttributeID': 102})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'Big Gun 3', 'expressionTypeID': None,
+            'expressionGroupID': 567, 'expressionAttributeID': 102
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -109,9 +123,11 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-                    'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
-                    'expressionAttributeID': 102, 'table_pos': 0}
+        expected = {
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
+            'expressionAttributeID': 102, 'table_pos': 0
+        }
         self.assertIn(expected, expressions)
 
     def test_multiple_warning(self, mod_builder):
@@ -124,30 +140,40 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 35, 'effectID': 11})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 589, 'postExpression': 589})
-        self.dh.data['dgmexpressions'].append({'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-                                               'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-                                               'expressionGroupID': 567, 'expressionAttributeID': 102})
-        self.dh.data['dgmexpressions'].append({'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507,
-                                               'arg2': 6, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-                                               'expressionGroupID': 57, 'expressionAttributeID': 12})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
+            'expressionGroupID': 567, 'expressionAttributeID': 102
+        })
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507,
+            'arg2': 6, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
+            'expressionGroupID': 57, 'expressionAttributeID': 12
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 2)
         multiple_warning = self.log[0]
         self.assertEqual(multiple_warning.name, 'eos_test.cache_generator')
         self.assertEqual(multiple_warning.levelno, Logger.WARNING)
-        self.assertEqual(multiple_warning.msg,
-                         'multiple typeIDs found for symbolic name "BigGun3": (556, 35, 22), using 556')
+        self.assertEqual(
+            multiple_warning.msg,
+            'multiple typeIDs found for symbolic name "BigGun3": (556, 35, 22), using 556'
+        )
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 2)
-        expected = {'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-                    'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
-                    'expressionAttributeID': 102, 'table_pos': 0}
+        expected = {
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
+            'expressionAttributeID': 102, 'table_pos': 0
+        }
         self.assertIn(expected, expressions)
-        expected = {'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507, 'arg2': 6,
-                    'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 57,
-                    'expressionAttributeID': 12, 'table_pos': 1}
+        expected = {
+            'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507, 'arg2': 6,
+            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 57,
+            'expressionAttributeID': 12, 'table_pos': 1
+        }
         self.assertIn(expected, expressions)

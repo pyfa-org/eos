@@ -22,13 +22,15 @@
 class DataHandler:
 
     def __init__(self):
-        self.data = {'invtypes': [],
-                     'invgroups': [],
-                     'dgmattribs': [],
-                     'dgmtypeattribs': [],
-                     'dgmeffects': [],
-                     'dgmtypeeffects': [],
-                     'dgmexpressions': []}
+        self.data = {
+            'invtypes': [],
+            'invgroups': [],
+            'dgmattribs': [],
+            'dgmtypeattribs': [],
+            'dgmeffects': [],
+            'dgmtypeeffects': [],
+            'dgmexpressions': []
+        }
 
     def get_invtypes(self):
         return self.data['invtypes']

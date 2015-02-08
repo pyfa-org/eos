@@ -36,13 +36,17 @@ class TestConversionExpression(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 41})
-        self.dh.data['dgmexpressions'].append({'expressionTypeID': 502, 'expressionValue': None, 'randomField': 'vals',
-                                               'operandID': 6, 'arg1': 1009, 'expressionID': 41, 'arg2': 15,
-                                               'expressionAttributeID': 90, 'expressionGroupID': 451})
-        self.dh.data['dgmexpressions'].append({'expressionGroupID': 567, 'arg2': 66, 'operandID': 33, 'arg1': 5007,
-                                               'expressionID': 57, 'expressionTypeID': 551, 'randoom': True,
-                                               'expressionAttributeID': 102, 'expressionValue': 'Kurr'})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionTypeID': 502, 'expressionValue': None, 'randomField': 'vals',
+            'operandID': 6, 'arg1': 1009, 'expressionID': 41, 'arg2': 15,
+            'expressionAttributeID': 90, 'expressionGroupID': 451
+        })
+        self.dh.data['dgmexpressions'].append({
+            'expressionGroupID': 567, 'arg2': 66, 'operandID': 33, 'arg1': 5007,
+            'expressionID': 57, 'expressionTypeID': 551, 'randoom': True,
+            'expressionAttributeID': 102, 'expressionValue': 'Kurr'
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -54,11 +58,15 @@ class TestConversionExpression(GeneratorTestCase):
         self.assertEqual(len(expressions), 2)
         # It's fine that additional fields get into final expression set,
         # because they will be replaced by modifiers anyway
-        expected = {'expressionID': 41, 'operandID': 6, 'arg1': 1009, 'arg2': 15, 'expressionValue': None,
-                    'expressionTypeID': 502, 'expressionGroupID': 451, 'expressionAttributeID': 90,
-                    'table_pos': 0, 'randomField': 'vals'}
+        expected = {
+            'expressionID': 41, 'operandID': 6, 'arg1': 1009, 'arg2': 15, 'expressionValue': None,
+            'expressionTypeID': 502, 'expressionGroupID': 451, 'expressionAttributeID': 90,
+            'table_pos': 0, 'randomField': 'vals'
+        }
         self.assertIn(expected, expressions)
-        expected = {'expressionID': 57, 'operandID': 33, 'arg1': 5007, 'arg2': 66, 'expressionValue': 'Kurr',
-                    'expressionTypeID': 551, 'expressionGroupID': 567, 'expressionAttributeID': 102,
-                    'table_pos': 1, 'randoom': True}
+        expected = {
+            'expressionID': 57, 'operandID': 33, 'arg1': 5007, 'arg2': 66, 'expressionValue': 'Kurr',
+            'expressionTypeID': 551, 'expressionGroupID': 567, 'expressionAttributeID': 102,
+            'table_pos': 1, 'randoom': True
+        }
         self.assertIn(expected, expressions)

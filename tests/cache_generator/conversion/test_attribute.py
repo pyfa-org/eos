@@ -32,9 +32,11 @@ class TestConversionAttribute(GeneratorTestCase):
     def test_fields(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 111, 'value': 8.2})
-        self.dh.data['dgmattribs'].append({'maxAttributeID': 84, 'randomField': None, 'stackable': True,
-                                           'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False,
-                                           'attributeName': ''})
+        self.dh.data['dgmattribs'].append({
+            'maxAttributeID': 84, 'randomField': None, 'stackable': True,
+            'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False,
+            'attributeName': ''
+        })
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -42,6 +44,8 @@ class TestConversionAttribute(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
         self.assertIn(111, data['attributes'])
-        expected = {'attribute_id': 111, 'max_attribute_id': 84, 'default_value': 0.0,
-                    'high_is_good': False, 'stackable': True}
+        expected = {
+            'attribute_id': 111, 'max_attribute_id': 84, 'default_value': 0.0,
+            'high_is_good': False, 'stackable': True
+        }
         self.assertEqual(data['attributes'][111], expected)

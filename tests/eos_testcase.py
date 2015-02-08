@@ -19,9 +19,11 @@
 #===============================================================================
 
 
+from copy import deepcopy
 from logging import getLogger
 from logging.handlers import BufferingHandler
 from unittest import TestCase
+from unittest.mock import DEFAULT
 
 from .environment import CacheHandler
 
@@ -116,3 +118,19 @@ class EosTestCase(TestCase):
             else:
                 entry_num += attr_len
         return entry_num
+
+    def _setup_args_capture(self, mock_obj, arg_list):
+        """
+        In case when we want to capture exact state of arguments passed
+        to mock (to verify what they looked like, if they were further
+        modified by object under test), we have to copy them at the time
+        they were passed to mock. This method assists with this, it takes
+        passed mock and records copies of all passed arguments into list
+        passed as second argument in the form of tuple (args, kwargs}.
+        """
+
+        def capture_args(*args, **kwargs):
+            arg_list.append((deepcopy(args), deepcopy(kwargs)))
+            return DEFAULT
+
+        mock_obj.side_effect = capture_args

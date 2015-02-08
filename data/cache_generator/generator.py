@@ -57,13 +57,15 @@ class CacheGenerator:
         # frozendicts is used to speed up several stages of
         # the generator.
         data = {}
-        tables = {'invtypes': data_handler.get_invtypes,
-                  'invgroups': data_handler.get_invgroups,
-                  'dgmattribs': data_handler.get_dgmattribs,
-                  'dgmtypeattribs': data_handler.get_dgmtypeattribs,
-                  'dgmeffects': data_handler.get_dgmeffects,
-                  'dgmtypeeffects': data_handler.get_dgmtypeeffects,
-                  'dgmexpressions': data_handler.get_dgmexpressions}
+        tables = {
+            'invtypes': data_handler.get_invtypes,
+            'invgroups': data_handler.get_invgroups,
+            'dgmattribs': data_handler.get_dgmattribs,
+            'dgmtypeattribs': data_handler.get_dgmtypeattribs,
+            'dgmeffects': data_handler.get_dgmeffects,
+            'dgmtypeeffects': data_handler.get_dgmtypeeffects,
+            'dgmexpressions': data_handler.get_dgmexpressions
+        }
 
         for tablename, method in tables.items():
             table_pos = 0

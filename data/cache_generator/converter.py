@@ -272,6 +272,7 @@ class Converter:
             effect_row['build_status'] = build_status
             del effect_row['pre_expression_id']
             del effect_row['post_expression_id']
+            del effect_row['modifier_info']
             for modifier in modifiers:
                 # Convert modifiers into frozen datarows to use
                 # them in conversion process

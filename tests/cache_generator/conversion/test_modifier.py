@@ -35,11 +35,16 @@ class TestConversionModifier(GeneratorTestCase):
     def test_fields(self, mod_builder):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1,
-                                           'postExpression': 11, 'effectCategory': 111})
-        mod = self.mod(state=2, context=3, source_attribute_id=4, operator=5,
-                       target_attribute_id=6, location=7, filter_type=8, filter_value=9)
-        mod_builder.return_value.build_effect.return_value = ([mod], 0)
+        self.dh.data['dgmeffects'].append({
+            'effectID': 111, 'preExpression': 1,
+            'postExpression': 11, 'effectCategory': 111,
+            'modifierInfo': 'YAML stuff'
+        })
+        mod = self.mod(
+            state=2, context=3, source_attribute_id=4, operator=5,
+            target_attribute_id=6, location=7, filter_type=8, filter_value=9
+        )
+        mod_builder.return_value.build.return_value = ([mod], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -47,8 +52,10 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
-        expected = {'modifier_id': 1, 'state': 2, 'context': 3, 'source_attribute_id': 4, 'operator': 5,
-                    'target_attribute_id': 6, 'location': 7, 'filter_type': 8, 'filter_value': 9}
+        expected = {
+            'modifier_id': 1, 'state': 2, 'context': 3, 'source_attribute_id': 4, 'operator': 5,
+            'target_attribute_id': 6, 'location': 7, 'filter_type': 8, 'filter_value': 9
+        }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(111, data['effects'])
         modifiers = data['effects'][111]['modifiers']
@@ -58,13 +65,20 @@ class TestConversionModifier(GeneratorTestCase):
         # Check how multiple modifiers generated out of single effect are numbered
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 21,
-                                           'postExpression': 21, 'effectCategory': 21})
-        mod1 = self.mod(state=20, context=30, source_attribute_id=40, operator=50,
-                        target_attribute_id=60, location=70, filter_type=80, filter_value=90)
-        mod2 = self.mod(state=200, context=300, source_attribute_id=400, operator=500,
-                        target_attribute_id=600, location=700, filter_type=800, filter_value=900)
-        mod_builder.return_value.build_effect.return_value = ([mod1, mod2], 0)
+        self.dh.data['dgmeffects'].append({
+            'effectID': 111, 'preExpression': 21,
+            'postExpression': 21, 'effectCategory': 21,
+            'modifierInfo': 'YAML stuff'
+        })
+        mod1 = self.mod(
+            state=20, context=30, source_attribute_id=40, operator=50,
+            target_attribute_id=60, location=70, filter_type=80, filter_value=90
+        )
+        mod2 = self.mod(
+            state=200, context=300, source_attribute_id=400, operator=500,
+            target_attribute_id=600, location=700, filter_type=800, filter_value=900
+        )
+        mod_builder.return_value.build.return_value = ([mod1, mod2], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -72,12 +86,16 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 2)
         self.assertIn(1, data['modifiers'])
-        expected = {'modifier_id': 1, 'state': 20, 'context': 30, 'source_attribute_id': 40, 'operator': 50,
-                    'target_attribute_id': 60, 'location': 70, 'filter_type': 80, 'filter_value': 90}
+        expected = {
+            'modifier_id': 1, 'state': 20, 'context': 30, 'source_attribute_id': 40, 'operator': 50,
+            'target_attribute_id': 60, 'location': 70, 'filter_type': 80, 'filter_value': 90
+        }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(2, data['modifiers'])
-        expected = {'modifier_id': 2, 'state': 200, 'context': 300, 'source_attribute_id': 400, 'operator': 500,
-                    'target_attribute_id': 600, 'location': 700, 'filter_type': 800, 'filter_value': 900}
+        expected = {
+            'modifier_id': 2, 'state': 200, 'context': 300, 'source_attribute_id': 400, 'operator': 500,
+            'target_attribute_id': 600, 'location': 700, 'filter_type': 800, 'filter_value': 900
+        }
         self.assertEqual(data['modifiers'][2], expected)
         self.assertIn(111, data['effects'])
         modifiers = data['effects'][111]['modifiers']
@@ -86,18 +104,28 @@ class TestConversionModifier(GeneratorTestCase):
     def test_numbering_multiple_effects(self, mod_builder):
         # Check how multiple modifiers generated out of two effects are numbered
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 222})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1,
-                                           'postExpression': 11, 'effectCategory': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 222, 'preExpression': 111,
-                                           'postExpression': 1, 'effectCategory': 111})
-        mod1 = self.mod(state=2, context=3, source_attribute_id=4, operator=5,
-                        target_attribute_id=6, location=7, filter_type=8, filter_value=9)
-        mod2 = self.mod(state=22, context=33, source_attribute_id=44, operator=55,
-                        target_attribute_id=66, location=77, filter_type=88, filter_value=99)
-        arg_map = {(1, 11, 111): mod1, (111, 1, 111): mod2}
-        mod_builder.return_value.build_effect.side_effect = lambda pre, post, cat: ([arg_map[(pre, post, cat)]], 0)
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 333})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 444})
+        self.dh.data['dgmeffects'].append({
+            'effectID': 333, 'preExpression': 1,
+            'postExpression': 11, 'effectCategory': 111,
+            'modifierInfo': 'YAML stuff'
+        })
+        self.dh.data['dgmeffects'].append({
+            'effectID': 444, 'preExpression': 111,
+            'postExpression': 1, 'effectCategory': 111,
+            'modifierInfo': 'YAML stuff'
+        })
+        mod1 = self.mod(
+            state=2, context=3, source_attribute_id=4, operator=5,
+            target_attribute_id=6, location=7, filter_type=8, filter_value=9
+        )
+        mod2 = self.mod(
+            state=22, context=33, source_attribute_id=44, operator=55,
+            target_attribute_id=66, location=77, filter_type=88, filter_value=99
+        )
+        arg_map = {333: mod1, 444: mod2}
+        mod_builder.return_value.build.side_effect = lambda eff_row: ([arg_map[eff_row['effect_id']]], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -105,33 +133,44 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 2)
         self.assertIn(1, data['modifiers'])
-        expected = {'modifier_id': 1, 'state': 2, 'context': 3, 'source_attribute_id': 4, 'operator': 5,
-                    'target_attribute_id': 6, 'location': 7, 'filter_type': 8, 'filter_value': 9}
+        expected = {
+            'modifier_id': 1, 'state': 2, 'context': 3, 'source_attribute_id': 4, 'operator': 5,
+            'target_attribute_id': 6, 'location': 7, 'filter_type': 8, 'filter_value': 9
+        }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(2, data['modifiers'])
-        expected = {'modifier_id': 2, 'state': 22, 'context': 33, 'source_attribute_id': 44, 'operator': 55,
-                    'target_attribute_id': 66, 'location': 77, 'filter_type': 88, 'filter_value': 99}
+        expected = {
+            'modifier_id': 2, 'state': 22, 'context': 33, 'source_attribute_id': 44, 'operator': 55,
+            'target_attribute_id': 66, 'location': 77, 'filter_type': 88, 'filter_value': 99
+        }
         self.assertEqual(data['modifiers'][2], expected)
-        self.assertIn(111, data['effects'])
-        modifiers = data['effects'][111]['modifiers']
+        self.assertIn(333, data['effects'])
+        modifiers = data['effects'][333]['modifiers']
         self.assertEqual(modifiers, [1])
-        self.assertIn(222, data['effects'])
-        modifiers = data['effects'][222]['modifiers']
+        self.assertIn(444, data['effects'])
+        modifiers = data['effects'][444]['modifiers']
         self.assertEqual(modifiers, [2])
 
-    def test_merge_signle_effect(self, mod_builder):
+    def test_merge_single_effect(self, mod_builder):
         # Check that if modifiers with the same values are generated on single effect,
         # they're assigned to single identifier and it is listed twice in list of
         # modifiers
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 22,
-                                           'postExpression': 22, 'effectCategory': 22})
-        mod1 = self.mod(state=32, context=43, source_attribute_id=54, operator=65,
-                        target_attribute_id=76, location=87, filter_type=98, filter_value=90)
-        mod2 = self.mod(state=32, context=43, source_attribute_id=54, operator=65,
-                        target_attribute_id=76, location=87, filter_type=98, filter_value=90)
-        mod_builder.return_value.build_effect.return_value = ([mod1, mod2], 0)
+        self.dh.data['dgmeffects'].append({
+            'effectID': 111, 'preExpression': 22,
+            'postExpression': 22, 'effectCategory': 22,
+            'modifierInfo': 'YAML stuff'
+        })
+        mod1 = self.mod(
+            state=32, context=43, source_attribute_id=54, operator=65,
+            target_attribute_id=76, location=87, filter_type=98, filter_value=90
+        )
+        mod2 = self.mod(
+            state=32, context=43, source_attribute_id=54, operator=65,
+            target_attribute_id=76, location=87, filter_type=98, filter_value=90
+        )
+        mod_builder.return_value.build.return_value = ([mod1, mod2], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -139,8 +178,10 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
-        expected = {'modifier_id': 1, 'state': 32, 'context': 43, 'source_attribute_id': 54, 'operator': 65,
-                    'target_attribute_id': 76, 'location': 87, 'filter_type': 98, 'filter_value': 90}
+        expected = {
+            'modifier_id': 1, 'state': 32, 'context': 43, 'source_attribute_id': 54, 'operator': 65,
+            'target_attribute_id': 76, 'location': 87, 'filter_type': 98, 'filter_value': 90
+        }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(111, data['effects'])
         modifiers = data['effects'][111]['modifiers']
@@ -150,18 +191,28 @@ class TestConversionModifier(GeneratorTestCase):
         # Check that if modifiers with the same values are generated on multiple effects,
         # they're assigned to single identifier
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 222})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 1,
-                                           'postExpression': 11, 'effectCategory': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 222, 'preExpression': 111,
-                                           'postExpression': 11, 'effectCategory': 1})
-        mod1 = self.mod(state=2, context=3, source_attribute_id=4, operator=5,
-                        target_attribute_id=6, location=7, filter_type=8, filter_value=9)
-        mod2 = self.mod(state=2, context=3, source_attribute_id=4, operator=5,
-                        target_attribute_id=6, location=7, filter_type=8, filter_value=9)
-        arg_map = {(1, 11, 111): mod1, (111, 11, 1): mod2}
-        mod_builder.return_value.build_effect.side_effect = lambda pre, post, cat: ([arg_map[(pre, post, cat)]], 0)
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 333})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 444})
+        self.dh.data['dgmeffects'].append({
+            'effectID': 333, 'preExpression': 1,
+            'postExpression': 11, 'effectCategory': 111,
+            'modifierInfo': 'YAML stuff'
+        })
+        self.dh.data['dgmeffects'].append({
+            'effectID': 444, 'preExpression': 111,
+            'postExpression': 11, 'effectCategory': 1,
+            'modifierInfo': 'YAML stuff'
+        })
+        mod1 = self.mod(
+            state=2, context=3, source_attribute_id=4, operator=5,
+            target_attribute_id=6, location=7, filter_type=8, filter_value=9
+        )
+        mod2 = self.mod(
+            state=2, context=3, source_attribute_id=4, operator=5,
+            target_attribute_id=6, location=7, filter_type=8, filter_value=9
+        )
+        arg_map = {333: mod1, 444: mod2}
+        mod_builder.return_value.build.side_effect = lambda eff_row: ([arg_map[eff_row['effect_id']]], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -169,32 +220,43 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
-        expected = {'modifier_id': 1, 'state': 2, 'context': 3, 'source_attribute_id': 4, 'operator': 5,
-                    'target_attribute_id': 6, 'location': 7, 'filter_type': 8, 'filter_value': 9}
+        expected = {
+            'modifier_id': 1, 'state': 2, 'context': 3, 'source_attribute_id': 4, 'operator': 5,
+            'target_attribute_id': 6, 'location': 7, 'filter_type': 8, 'filter_value': 9
+        }
         self.assertEqual(data['modifiers'][1], expected)
-        self.assertIn(111, data['effects'])
-        modifiers = data['effects'][111]['modifiers']
+        self.assertIn(333, data['effects'])
+        modifiers = data['effects'][333]['modifiers']
         self.assertEqual(modifiers, [1])
-        self.assertIn(111, data['effects'])
-        modifiers = data['effects'][111]['modifiers']
+        self.assertIn(333, data['effects'])
+        modifiers = data['effects'][333]['modifiers']
         self.assertEqual(modifiers, [1])
-        self.assertIn(222, data['effects'])
-        modifiers = data['effects'][222]['modifiers']
+        self.assertIn(444, data['effects'])
+        modifiers = data['effects'][444]['modifiers']
         self.assertEqual(modifiers, [1])
 
     def test_builder_usage(self, mod_builder):
         # Check that modifier builder is properly used
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 56,
-                                           'postExpression': 107, 'effectCategory': 108})
-        self.dh.data['dgmexpressions'].append({'expressionID': 107, 'operandID': None, 'arg1': None, 'arg2': None,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        self.dh.data['dgmexpressions'].append({'expressionID': 56, 'operandID': None, 'arg1': None, 'arg2': None,
-                                               'expressionValue': None, 'expressionTypeID': None,
-                                               'expressionGroupID': None, 'expressionAttributeID': None})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmeffects'].append({
+            'effectID': 111, 'preExpression': 56, 'postExpression': 107,
+            'effectCategory': 108, 'modifierInfo': None,
+            'modifierInfo': 'some YAML'
+        })
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 107, 'operandID': None, 'arg1': None, 'arg2': None,
+            'expressionValue': None, 'expressionTypeID': None,
+            'expressionGroupID': None, 'expressionAttributeID': None
+        })
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 56, 'operandID': None, 'arg1': None, 'arg2': None,
+            'expressionValue': None, 'expressionTypeID': None,
+            'expressionGroupID': None, 'expressionAttributeID': None
+        })
+        builder_args = []
+        self._setup_args_capture(mod_builder.return_value.build, builder_args)
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -214,7 +276,19 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(expression_ids, {56, 107})
         self.assertTrue(isinstance(logger, Logger))
         # Check request for building
-        name, args, kwargs = call2
-        self.assertEqual(name, '().build_effect')
-        self.assertEqual(args, (56, 107, 108))
+        name, _, _ = call2
+        self.assertEqual(len(builder_args), 1)
+        args, kwargs = builder_args[0]
+        self.assertEqual(name, '().build')
+        self.assertEqual(len(args), 1)
         self.assertEqual(len(kwargs), 0)
+        expected = {
+            'effect_id': 111,
+            'pre_expression_id': 56,
+            'post_expression_id': 107,
+            'effect_category': 108,
+            'modifier_info': 'some YAML'
+        }
+        # Filter out fields we do not want to check
+        actual = dict((k, args[0][k]) for k in filter(lambda k: k in expected, args[0]))
+        self.assertEqual(actual, expected)

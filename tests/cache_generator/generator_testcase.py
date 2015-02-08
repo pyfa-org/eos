@@ -44,10 +44,12 @@ class GeneratorTestCase(EosTestCase):
         """
         generator = CacheGenerator(Logger())
         data = generator.run(self.dh)
-        keys = {'types': 'type_id',
-                'attributes': 'attribute_id',
-                'effects': 'effect_id',
-                'modifiers': 'modifier_id'}
+        keys = {
+            'types': 'type_id',
+            'attributes': 'attribute_id',
+            'effects': 'effect_id',
+            'modifiers': 'modifier_id'
+        }
         keyed_data = {}
         for table_name in data:
             keyed_table = {}

@@ -39,10 +39,14 @@ class TestConversionEffect(GeneratorTestCase):
             'postExpression': 11, 'effectID': 112, 'isOffensive': True, 'falloffAttributeID': 3,
             'rangeAttributeID': 2, 'fittingUsageChanceAttributeID': 96, 'preExpression': 1,
             'durationAttributeID': 781, 'randomField': 666,  'dischargeAttributeID': 72,
-            'isAssistance': False, 'effectCategory': 111, 'trackingSpeedAttributeID': 6})
-        mod = self.mod(state=2, context=3, source_attribute_id=4, operator=5,
-                       target_attribute_id=6, location=7, filter_type=8, filter_value=9)
-        mod_builder.return_value.build_effect.return_value = ([mod], 29)
+            'isAssistance': False, 'effectCategory': 111, 'trackingSpeedAttributeID': 6,
+            'modifierInfo': None
+        })
+        mod = self.mod(
+            state=2, context=3, source_attribute_id=4, operator=5,
+            target_attribute_id=6, location=7, filter_type=8, filter_value=9
+        )
+        mod_builder.return_value.build.return_value = ([mod], 29)
         data = self.run_generator()
         self.assertEqual(len(self.log), 1)
         clean_stats = self.log[0]
@@ -50,9 +54,11 @@ class TestConversionEffect(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(112, data['effects'])
-        expected = {'effect_id': 112, 'effect_category': 111, 'is_offensive': True,
-                    'is_assistance': False, 'duration_attribute_id': 781,
-                    'discharge_attribute_id': 72, 'range_attribute_id': 2,
-                    'falloff_attribute_id': 3, 'tracking_speed_attribute_id': 6,
-                    'fitting_usage_chance_attribute_id': 96, 'build_status': 29, 'modifiers': [1]}
+        expected = {
+            'effect_id': 112, 'effect_category': 111, 'is_offensive': True,
+            'is_assistance': False, 'duration_attribute_id': 781,
+            'discharge_attribute_id': 72, 'range_attribute_id': 2,
+            'falloff_attribute_id': 3, 'tracking_speed_attribute_id': 6,
+            'fitting_usage_chance_attribute_id': 96, 'build_status': 29, 'modifiers': [1]
+        }
         self.assertEqual(data['effects'][112], expected)

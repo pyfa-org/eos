@@ -65,8 +65,10 @@ class TestDefaultEffects(GeneratorTestCase):
         log_record = self.log[1]
         self.assertEqual(log_record.name, 'eos_test.cache_generator')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        self.assertEqual(log_record.msg,
-                         'data contains 1 excessive default effects, marking them as non-default')
+        self.assertEqual(
+            log_record.msg,
+            'data contains 1 excessive default effects, marking them as non-default'
+        )
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
         # Make sure effects are not removed

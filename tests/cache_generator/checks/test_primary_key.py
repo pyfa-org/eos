@@ -272,13 +272,17 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 62, 'postExpression': 83})
-        self.dh.data['dgmexpressions'].append({'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
-                                               'expressionValue': None, 'expressionTypeID': 502,
-                                               'expressionGroupID': 451, 'expressionAttributeID': 90})
-        self.dh.data['dgmexpressions'].append({'expressionID': 83, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
-                                               'expressionValue': None, 'expressionTypeID': 502,
-                                               'expressionGroupID': 451, 'expressionAttributeID': 90})
-        mod_builder.return_value.build_effect.return_value = ([], 0)
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
+            'expressionValue': None, 'expressionTypeID': 502,
+            'expressionGroupID': 451, 'expressionAttributeID': 90
+        })
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 83, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
+            'expressionValue': None, 'expressionTypeID': 502,
+            'expressionGroupID': 451, 'expressionAttributeID': 90
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
@@ -290,9 +294,11 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
-                    'expressionValue': None, 'expressionTypeID': 502,
-                    'expressionGroupID': 451, 'expressionAttributeID': 90}
-        # Filter out service fields
+        expected = {
+            'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
+            'expressionValue': None, 'expressionTypeID': 502,
+            'expressionGroupID': 451, 'expressionAttributeID': 90
+        }
+        # Filter out fields we do not want to check
         actual = dict((k, expressions[0][k]) for k in filter(lambda k: k in expected, expressions[0]))
         self.assertEqual(actual, expected)
