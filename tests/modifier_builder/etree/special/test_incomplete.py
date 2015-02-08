@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestIncomplete(ModBuilderTestCase):
+class TestBuilderEtreeIncomplete(ModBuilderTestCase):
     """Test parsing of trees, which include actions, which are not converted into modifiers"""
 
     def setUp(self):

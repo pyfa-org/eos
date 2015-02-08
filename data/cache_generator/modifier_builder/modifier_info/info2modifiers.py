@@ -114,55 +114,65 @@ class Info2Modifiers:
         Parse YAML and pass each parsed modifier info to other
         method for actual conversion.
         """
-        # Assume everything goes as we want
-        build_status = EffectBuildStatus.ok_full
-        # Parse modifierInfo field (which is actually YAML)
-        modifier_infos_yaml = effect_row['modifier_info']
         try:
-            modifier_infos = yaml.safe_load(modifier_infos_yaml)
-        except KeyboardInterrupt:
-            raise
-        except Exception:
-            effect_id = effect_row['effect_id']
-            msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
-            signature = (YamlParseError, effect_id)
-            self._logger.error(msg, child_name='modifier_builder', signature=signature)
-            # We cannot recover any data in this case, thus return empty list
-            return (), EffectBuildStatus.error
-        # Go through modifier objects and attempt to convert them one-by-one
-        modifiers = []
-        for modifier_info in modifier_infos:
-            modifier = Modifier()
+            # Assume everything goes as we want
+            build_status = EffectBuildStatus.ok_full
+            # Parse modifierInfo field (which is actually YAML)
+            modifier_infos_yaml = effect_row['modifier_info']
             try:
-                self._conv_generic(modifier, modifier_info)
-                self._conv_filter(modifier, modifier_info)
-            except (UnknownFuncError, NoFilterValueError, UnexpectedDomainError, UnknownOperatorError) as e:
+                modifier_infos = yaml.safe_load(modifier_infos_yaml)
+            except KeyboardInterrupt:
+                raise
+            except Exception:
                 effect_id = effect_row['effect_id']
-                msg = 'failed to build one of the modifiers of effect {}: {}'.format(effect_id, e.args[0])
+                msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
+                signature = (YamlParseError, effect_id)
+                self._logger.error(msg, child_name='modifier_builder', signature=signature)
+                # We cannot recover any data in this case, thus return empty list
+                return (), EffectBuildStatus.error
+            # Go through modifier objects and attempt to convert them one-by-one
+            modifiers = []
+            for modifier_info in modifier_infos:
+                modifier = Modifier()
+                try:
+                    self._conv_generic(modifier, modifier_info)
+                    self._conv_filter(modifier, modifier_info)
+                except (UnknownFuncError, NoFilterValueError, UnexpectedDomainError, UnknownOperatorError) as e:
+                    effect_id = effect_row['effect_id']
+                    msg = 'failed to build one of the modifiers of effect {}: {}'.format(effect_id, e.args[0])
+                    signature = (type(e), effect_id)
+                    self._logger.warning(msg, child_name='modifier_builder', signature=signature)
+                    # When conversion of one of modifiers failed, mark build status
+                    # as partially corrupted
+                    build_status = EffectBuildStatus.ok_partial
+                else:
+                    modifiers.append(modifier)
+            # If after conversion process we have some modifiers skipped and ended up
+            # with no modifiers in the list, consider whole conversion process to be
+            # a failure
+            if build_status == EffectBuildStatus.ok_partial and len(modifiers) == 0:
+                return (), EffectBuildStatus.error
+            try:
+                self._conv_state(modifiers, effect_row)
+            except UnknownStateError as e:
+                effect_id = effect_row['effect_id']
+                msg = 'failed build modifiers for effect {}: {}'.format(effect_id, e.args[0])
                 signature = (type(e), effect_id)
                 self._logger.warning(msg, child_name='modifier_builder', signature=signature)
-                # When conversion of one of modifiers failed, mark build status
-                # as partially corrupted
-                build_status = EffectBuildStatus.ok_partial
-            else:
-                modifiers.append(modifier)
-        # If after conversion process we have some modifiers skipped and ended up
-        # with no modifiers in the list, consider whole conversion process to be
-        # a failure
-        if build_status == EffectBuildStatus.ok_partial and len(modifiers) == 0:
-            return (), EffectBuildStatus.error
-        try:
-            self._conv_state(modifiers, effect_row)
-        except UnknownStateError as e:
+                # Modifiers without state data will be useless, and we cannot do any
+                # safe assumptions here, , thus consider that everything went wrong
+                # and return empty list
+                return (), EffectBuildStatus.error
+        except KeyboardInterrupt:
+            raise
+        except Exception as e:
             effect_id = effect_row['effect_id']
-            msg = 'failed build modifiers for effect {}: {}'.format(effect_id, e.args[0])
-            signature = (type(e), effect_id)
-            self._logger.warning(msg, child_name='modifier_builder', signature=signature)
-            # Modifiers without state data will be useless, and we cannot do any
-            # safe assumptions here, , thus consider that everything went wrong
-            # and return empty list
+            msg = 'failed build modifiers for effect {} due to unknown reason'.format(effect_id)
+            signature = (UnexpectedBuilderError, effect_id)
+            self._logger.error(msg, child_name='modifier_builder', signature=signature)
             return (), EffectBuildStatus.error
-        return modifiers, build_status
+        else:
+            return modifiers, build_status
 
     def _conv_generic(self, modifier, modifier_info):
         """

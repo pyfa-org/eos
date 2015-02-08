@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestSelfType(ModBuilderTestCase):
+class TestBuilderEtreeSelfType(ModBuilderTestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
     def test_build_success(self):

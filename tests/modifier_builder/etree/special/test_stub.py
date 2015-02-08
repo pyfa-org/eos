@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestStubInt0(ModBuilderTestCase):
+class TestBuilderEtreeStubInt0(ModBuilderTestCase):
     """Test parsing of trees describing integer-0 stub"""
 
     def test_build_success(self):
@@ -41,7 +41,7 @@ class TestStubInt0(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
 
-class TestStubInt1(ModBuilderTestCase):
+class TestBuilderEtreeStubInt1(ModBuilderTestCase):
     """Test parsing of trees describing integer-1 stub"""
 
     def test_build_success(self):
@@ -58,7 +58,7 @@ class TestStubInt1(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
 
-class TestStubBoolTrue(ModBuilderTestCase):
+class TestBuilderEtreeStubBoolTrue(ModBuilderTestCase):
     """Test parsing of trees describing boolean-True stub"""
 
     def test_build_success(self):
@@ -75,7 +75,7 @@ class TestStubBoolTrue(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
 
-class TestStubMixed(ModBuilderTestCase):
+class TestBuilderEtreeStubMixed(ModBuilderTestCase):
     """Test parsing of trees describing mixed form stubs"""
 
     def test_build_success(self):

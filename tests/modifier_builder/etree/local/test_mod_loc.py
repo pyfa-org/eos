@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestModLoc(ModBuilderTestCase):
+class TestBuilderEtreeModLoc(ModBuilderTestCase):
     """Test parsing of trees describing modification filtered by location"""
 
     def setUp(self):

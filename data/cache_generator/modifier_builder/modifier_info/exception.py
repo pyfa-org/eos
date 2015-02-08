@@ -28,7 +28,8 @@ __all__ = (
     'UnknownOperatorError',
     'UnknownFuncError',
     'NoFilterValueError',
-    'UnexpectedDomainError'
+    'UnexpectedDomainError',
+    'UnexpectedBuilderError'
 )
 
 
@@ -67,4 +68,8 @@ class NoFilterValueError(ModifierInfoCnvError):
 
 
 class UnexpectedDomainError(ModifierInfoCnvError):
+    pass
+
+
+class UnexpectedBuilderError(ModifierInfoCnvError):
     pass

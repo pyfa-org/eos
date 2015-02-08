@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestSplicing(ModBuilderTestCase):
+class TestBuilderEtreeSplicing(ModBuilderTestCase):
     """Test parsing of trees describing joins of multiple operations applied onto items"""
 
     def test_build_success(self):

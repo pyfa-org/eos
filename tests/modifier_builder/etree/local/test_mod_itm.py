@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestModItm(ModBuilderTestCase):
+class TestBuilderEtreeModItm(ModBuilderTestCase):
     """Test parsing of trees describing direct item modification"""
 
     def setUp(self):

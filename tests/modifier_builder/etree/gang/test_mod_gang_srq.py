@@ -24,7 +24,7 @@ from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestModGangSrq(ModBuilderTestCase):
+class TestBuilderEtreeModGangSrq(ModBuilderTestCase):
     """Test parsing of trees describing gang-mates' ship modules modification filtered by skill requirement"""
 
     def setUp(self):

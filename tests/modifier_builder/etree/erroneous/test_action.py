@@ -25,7 +25,7 @@ from eos.tests.environment import Logger
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestActionBuilderError(ModBuilderTestCase):
+class TestBuilderEtreeActionError(ModBuilderTestCase):
     """Test reaction to errors occurred during action building stage"""
 
     def test_data_indirect(self):

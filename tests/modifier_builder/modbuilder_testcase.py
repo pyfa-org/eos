@@ -40,6 +40,8 @@ class ModBuilderTestCase(EosTestCase):
 
     def run_builder(self, effect_row):
         effect_row.setdefault('effect_id', 1)
+        effect_row.setdefault('pre_expression_id', None)
+        effect_row.setdefault('post_expression_id', None)
         effect_row.setdefault('modifier_info', None)
         builder = ModifierBuilder(self.ef.data, Logger())
         return builder.build(effect_row)
