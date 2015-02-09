@@ -60,7 +60,7 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed build modifiers for effect 36: cannot convert effect category 99 into state'
+        expected = 'failed to build modifiers for effect 36: cannot convert effect category 99 into state'
         self.assertEqual(log_record.msg, expected)
 
     def test_error_unknown(self):
@@ -78,5 +78,5 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.modifier_builder')
         self.assertEqual(log_record.levelno, Logger.ERROR)
-        expected = 'failed build modifiers for effect 22 due to unknown reason'
+        expected = 'failed to build modifiers for effect 22 due to unknown reason'
         self.assertEqual(log_record.msg, expected)

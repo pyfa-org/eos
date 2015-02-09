@@ -156,7 +156,7 @@ class Info2Modifiers:
                 self._conv_state(modifiers, effect_row)
             except UnknownStateError as e:
                 effect_id = effect_row['effect_id']
-                msg = 'failed build modifiers for effect {}: {}'.format(effect_id, e.args[0])
+                msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
                 signature = (type(e), effect_id)
                 self._logger.warning(msg, child_name='modifier_builder', signature=signature)
                 # Modifiers without state data will be useless, and we cannot do any
@@ -167,7 +167,7 @@ class Info2Modifiers:
             raise
         except Exception as e:
             effect_id = effect_row['effect_id']
-            msg = 'failed build modifiers for effect {} due to unknown reason'.format(effect_id)
+            msg = 'failed to build modifiers for effect {} due to unknown reason'.format(effect_id)
             signature = (UnexpectedBuilderError, effect_id)
             self._logger.error(msg, child_name='modifier_builder', signature=signature)
             return (), EffectBuildStatus.error
