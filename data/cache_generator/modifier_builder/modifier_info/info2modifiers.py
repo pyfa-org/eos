@@ -40,6 +40,14 @@ filter_map = {
             None: (Context.local, Location.self_)
         }
     ),
+    'LocationModifier': (
+        FilterType.all_, None,
+        {
+            'shipID': (Context.local, Location.ship),
+            'charID': (Context.local, Location.character),
+            'targetID': (Context.projected, Location.ship)
+        }
+    ),
     'LocationGroupModifier': (
         FilterType.group, 'groupID',
         {
