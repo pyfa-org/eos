@@ -19,7 +19,10 @@
 #===============================================================================
 
 
+import yaml
+
 from eos.const.eve import Group, Category
+from eos.util.cached_property import CachedProperty
 
 
 class Cleaner:
@@ -164,6 +167,7 @@ class Cleaner:
         # going to be restored
         # Format: {(target table name, target column name): {data}}}
         target_data = {}
+        # Use references to data stored in relational format
         for source_table_name, table_fks in foreign_keys.items():
             for source_field_name, fk_target in table_fks.items():
                 target_table_name, target_field_name = fk_target
@@ -175,6 +179,22 @@ class Cleaner:
                         continue
                     data_set = target_data.setdefault((target_table_name, target_field_name), set())
                     data_set.add(fk_value)
+        # Use references to data stored in YAML format
+        for effect_row in self.data['dgmeffects']:
+            effect_id = effect_row['effectID']
+            try:
+                types, groups, attrs = self._yaml_modinfo_relations[effect_id]
+            except KeyError:
+                continue
+            if len(types) > 0:
+                data_set = target_data.setdefault(('invtypes', 'typeID'), set())
+                data_set.update(types)
+            if len(groups) > 0:
+                data_set = target_data.setdefault(('invgroups', 'groupID'), set())
+                data_set.update(groups)
+            if len(attrs) > 0:
+                data_set = target_data.setdefault(('dgmattribs', 'attributeID'), set())
+                data_set.update(attrs)
         # Now, when we have all the target data values, we may look for
         # rows, which have matching values, and restore them
         for target_spec, target_values in target_data.items():
@@ -205,6 +225,59 @@ class Cleaner:
         if table_msgs:
             msg = 'cleaned: {}'.format(', '.join(table_msgs))
             self._logger.info(msg, child_name='cache_generator')
+
+    @CachedProperty
+    def _yaml_modinfo_relations(self):
+        """
+        Generate auxiliary map to avoid re-parsing YAML
+        on each cleanup cycle.
+        """
+
+        # Helper function to fetch actual attribute values
+        # from modinfo dicts
+        def add_item(modinfo, attr_name, items):
+            try:
+                item_id = modinfo[attr_name]
+            except KeyError:
+                pass
+            else:
+                items.add(item_id)
+
+        # Format:
+        # {effect ID: ({types}, {groups}, {attribs})}
+        relations = {}
+        for effect_row in self.data['dgmeffects']:
+            # We do not need anything here if modifier info is empty
+            modinfos_yaml = effect_row.get('modifierInfo')
+            if modinfos_yaml is None:
+                continue
+            # Skip row in case of any YAML parsing errors
+            try:
+                modinfos = yaml.safe_load(modinfos_yaml)
+            except KeyboardInterrupt:
+                raise
+            except:
+                continue
+            # Modinfos should be basic python iterable
+            if not isinstance(modinfos, (list, tuple, set)):
+                continue
+            types = set()
+            groups = set()
+            attrs = set()
+            # Fill in sets with IDs from each modifier info dict
+            for modinfo in modinfos:
+                add_item(modinfo, 'skillTypeID', types)
+                add_item(modinfo, 'groupID', groups)
+                add_item(modinfo, 'modifyingAttributeID', attrs)
+                add_item(modinfo, 'modifiedAttributeID', attrs)
+            # If all of the sets are empty, do not add anything to
+            # primary container
+            if len(types) == 0 and len(groups) == 0 and len(attrs) == 0:
+                continue
+            # Otherwise, add all the data we've gathered for current
+            # effect to container
+            relations[effect_row['effectID']] = (types, groups, attrs)
+        return relations
 
     def _pump_data(self, table_name, datarows):
         """
