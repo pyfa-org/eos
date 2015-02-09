@@ -36,7 +36,8 @@ filter_map = {
             'shipID': (Context.local, Location.ship),
             'charID': (Context.local, Location.character),
             'otherID': (Context.local, Location.other),
-            'targetID': (Context.projected, Location.ship)
+            'targetID': (Context.projected, Location.ship),
+            None: (Context.local, Location.self_)
         }
     ),
     'LocationGroupModifier': (

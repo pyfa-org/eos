@@ -31,7 +31,7 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         yaml = '- domain: {}\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n'
         return yaml.format(domain)
 
-    def test_ship(self):
+    def test_domain_ship(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('shipID')
@@ -50,7 +50,7 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertIsNone(modifier.filter_value)
         self.assertEqual(len(self.log), 0)
 
-    def test_char(self):
+    def test_domain_char(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('charID')
@@ -69,7 +69,7 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertIsNone(modifier.filter_value)
         self.assertEqual(len(self.log), 0)
 
-    def test_other(self):
+    def test_domain_other(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('otherID')
@@ -88,7 +88,7 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertIsNone(modifier.filter_value)
         self.assertEqual(len(self.log), 0)
 
-    def test_target(self):
+    def test_domain_target(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('targetID')
@@ -99,6 +99,25 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.context, Context.projected)
         self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.state, State.offline)
+        self.assertEqual(modifier.source_attribute_id, 11)
+        self.assertEqual(modifier.operator, Operator.post_percent)
+        self.assertEqual(modifier.target_attribute_id, 22)
+        self.assertIsNone(modifier.filter_type)
+        self.assertIsNone(modifier.filter_value)
+        self.assertEqual(len(self.log), 0)
+
+    def test_domain_none(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('null')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(len(modifiers), 1)
+        modifier = modifiers[0]
+        self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(modifier.location, Location.self_)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)

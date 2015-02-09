@@ -31,7 +31,7 @@ class TestBuilderModinfoModGangItm(ModBuilderTestCase):
         yaml = '- domain: {}\n  func: GangItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n'
         return yaml.format(domain)
 
-    def test_ship(self):
+    def test_domain_ship(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('shipID')
@@ -50,7 +50,7 @@ class TestBuilderModinfoModGangItm(ModBuilderTestCase):
         self.assertIsNone(modifier.filter_value)
         self.assertEqual(len(self.log), 0)
 
-    def test_char(self):
+    def test_domain_char(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('charID')
@@ -69,7 +69,7 @@ class TestBuilderModinfoModGangItm(ModBuilderTestCase):
         self.assertIsNone(modifier.filter_value)
         self.assertEqual(len(self.log), 0)
 
-    def test_other(self):
+    def test_domain_other(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('otherID')
@@ -79,10 +79,20 @@ class TestBuilderModinfoModGangItm(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
-    def test_target(self):
+    def test_domain_target(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('targetID')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
+
+    def test_domain_none(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('null')
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
