@@ -20,6 +20,7 @@
 
 
 import yaml
+from itertools import chain
 
 from eos.const.eve import Group, Category
 from eos.util.cached_property import CachedProperty
@@ -127,9 +128,34 @@ class Cleaner:
 
     def _reestablish_broken_relationships(self):
         """
-        Restore all rows targeted by FKs of rows, which
+        Restore all rows targeted by references of rows, which
         exist in actual data.
         """
+        # Container for 'target data', matches with which are
+        # going to be restored
+        # Format: {(target table name, target column name): {values to have}}}
+        target_data = {}
+        self._get_targets_relational(target_data)
+        self._get_targets_yaml(target_data)
+        # Now, when we have all the target data values, we may look for
+        # rows, which have matching values, and restore them
+        for target_spec, target_values in target_data.items():
+            target_table_name, target_field_name = target_spec
+            to_restore = set()
+            for row in self.trashed_data[target_table_name]:
+                if row.get(target_field_name) in target_values:
+                    to_restore.add(row)
+            if to_restore:
+                self._changed = True
+                self._restore_data(target_table_name, to_restore)
+
+    def _get_targets_relational(self, target_data):
+        """
+        Fill dictionary with target references taken from data
+        stored in relational format
+        """
+        # Format:
+        # {source table: {source column: (target table, target column)}}
         foreign_keys = {
             'dgmattribs': {
                 'maxAttributeID': ('dgmattribs', 'attributeID')
@@ -163,11 +189,6 @@ class Cleaner:
                 'groupID': ('invgroups', 'groupID')
             }
         }
-        # Container for 'target data', matches with which are
-        # going to be restored
-        # Format: {(target table name, target column name): {data}}}
-        target_data = {}
-        # Use references to data stored in relational format
         for source_table_name, table_fks in foreign_keys.items():
             for source_field_name, fk_target in table_fks.items():
                 target_table_name, target_field_name = fk_target
@@ -177,60 +198,37 @@ class Cleaner:
                     # this is not a valid FK reference
                     if fk_value is None:
                         continue
-                    data_set = target_data.setdefault((target_table_name, target_field_name), set())
-                    data_set.add(fk_value)
-        # Use references to data stored in YAML format
+                    target_values = target_data.setdefault((target_table_name, target_field_name), set())
+                    target_values.add(fk_value)
+
+    def _get_targets_yaml(self, target_data):
+        """
+        Fill dictionary with target references taken from data
+        stored in YAML format
+        """
         for effect_row in self.data['dgmeffects']:
             effect_id = effect_row['effectID']
             try:
                 types, groups, attrs = self._yaml_modinfo_relations[effect_id]
             except KeyError:
                 continue
-            if len(types) > 0:
-                data_set = target_data.setdefault(('invtypes', 'typeID'), set())
-                data_set.update(types)
-            if len(groups) > 0:
-                data_set = target_data.setdefault(('invgroups', 'groupID'), set())
-                data_set.update(groups)
-            if len(attrs) > 0:
-                data_set = target_data.setdefault(('dgmattribs', 'attributeID'), set())
-                data_set.update(attrs)
-        # Now, when we have all the target data values, we may look for
-        # rows, which have matching values, and restore them
-        for target_spec, target_values in target_data.items():
-            target_table_name, target_field_name = target_spec
-            to_restore = set()
-            for row in self.trashed_data[target_table_name]:
-                if row.get(target_field_name) in target_values:
-                    to_restore.add(row)
-            if to_restore:
-                self._changed = True
-                self._restore_data(target_table_name, to_restore)
-
-    def _report_results(self):
-        """
-        Run calculations to report about cleanup results
-        to the logger.
-        """
-        table_msgs = []
-        for table_name in sorted(self.data):
-            datalen = len(self.data[table_name])
-            trashedlen = len(self.trashed_data[table_name])
-            try:
-                ratio = trashedlen / (datalen + trashedlen)
-            # Skip results if table was empty
-            except ZeroDivisionError:
-                continue
-            table_msgs.append('{:.1%} from {}'.format(ratio, table_name))
-        if table_msgs:
-            msg = 'cleaned: {}'.format(', '.join(table_msgs))
-            self._logger.info(msg, child_name='cache_generator')
+            for references, target_table, target_column in (
+                (types, 'invtypes', 'typeID'),
+                (groups, 'invgroups', 'groupID'),
+                (attrs, 'dgmattribs', 'attributeID')
+            ):
+                # If there're any references for given entity, add them to
+                # dictionary
+                if len(references) > 0:
+                    target_values = target_data.setdefault((target_table, target_column), set())
+                    target_values.update(references)
 
     @CachedProperty
     def _yaml_modinfo_relations(self):
         """
         Generate auxiliary map to avoid re-parsing YAML
-        on each cleanup cycle.
+        on each cleanup cycle. It is used when collecting
+        data about references from modifier info YAMLs.
         """
 
         # Helper function to fetch actual attribute values
@@ -246,7 +244,9 @@ class Cleaner:
         # Format:
         # {effect ID: ({types}, {groups}, {attribs})}
         relations = {}
-        for effect_row in self.data['dgmeffects']:
+        # Cycle through both data and trashed data, to make sure all rows are
+        # processed regardless of stage during which this property is accessed
+        for effect_row in chain(self.data['dgmeffects'], self.trashed_data['dgmeffects']):
             # We do not need anything here if modifier info is empty
             modinfos_yaml = effect_row.get('modifierInfo')
             if modinfos_yaml is None:
@@ -278,6 +278,25 @@ class Cleaner:
             # effect to container
             relations[effect_row['effectID']] = (types, groups, attrs)
         return relations
+
+    def _report_results(self):
+        """
+        Run calculations to report about cleanup results
+        to the logger.
+        """
+        table_msgs = []
+        for table_name in sorted(self.data):
+            datalen = len(self.data[table_name])
+            trashedlen = len(self.trashed_data[table_name])
+            try:
+                ratio = trashedlen / (datalen + trashedlen)
+            # Skip results if table was empty
+            except ZeroDivisionError:
+                continue
+            table_msgs.append('{:.1%} from {}'.format(ratio, table_name))
+        if table_msgs:
+            msg = 'cleaned: {}'.format(', '.join(table_msgs))
+            self._logger.info(msg, child_name='cache_generator')
 
     def _pump_data(self, table_name, datarows):
         """
