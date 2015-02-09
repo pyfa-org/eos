@@ -44,13 +44,15 @@ class Checker:
         data -- data to check
         """
         self.data = data
-        primary_keys = {'dgmattribs': ('attributeID',),
-                        'dgmeffects': ('effectID',),
-                        'dgmexpressions': ('expressionID',),
-                        'dgmtypeattribs': ('typeID', 'attributeID'),
-                        'dgmtypeeffects': ('typeID', 'effectID'),
-                        'invgroups': ('groupID',),
-                        'invtypes': ('typeID',)}
+        primary_keys = {
+            'dgmattribs': ('attributeID',),
+            'dgmeffects': ('effectID',),
+            'dgmexpressions': ('expressionID',),
+            'dgmtypeattribs': ('typeID', 'attributeID'),
+            'dgmtypeeffects': ('typeID', 'effectID'),
+            'invgroups': ('groupID',),
+            'invtypes': ('typeID',)
+        }
         for table_name, key_names in primary_keys.items():
             self._table_pk(table_name, key_names)
 

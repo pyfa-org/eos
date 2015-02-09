@@ -27,8 +27,8 @@ from .exception import *
 
 
 # Format:
-# info func: (mod filter type, info attribute name for mod filter value,
-# {info domain: (mod context, mod location)}
+# {info func: (mod filter type, info attribute name for mod filter value,
+#   {info domain: (mod context, mod location)})}
 filter_map = {
     'ItemModifier': (
         None, None,
@@ -111,8 +111,8 @@ class Info2Modifiers:
 
     def convert(self, effect_row):
         """
-        Parse YAML and pass each parsed modifier info to other
-        method for actual conversion.
+        Parse YAML and handle overall workflow and error handling
+        flow for modifier info-to-modifier conversion process.
         """
         try:
             # Assume everything goes as we want

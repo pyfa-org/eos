@@ -35,8 +35,14 @@ class ModifierBuilder:
 
     def build(self, effect_row):
         """
-        Take effect data row and convert it into modifiers. Also
-        report build status for passed effect as 2nd returned value.
+        Generate modifiers using passed data.
+
+        Required arguments:
+        effect_row -- effect row with effect category, pre-/post-
+        expression ID, modifier info data.
+
+        Return value:
+        Tuple with list of modifiers and effect build status
         """
         if effect_row['modifier_info']:
             modifiers, build_status = self._info.convert(effect_row)

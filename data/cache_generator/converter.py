@@ -48,10 +48,12 @@ class Converter:
         We do not need them there, for data consistency it's worth
         to move them to dgmtypeattribs table.
         """
-        atrrib_map = {'radius': Attribute.radius,
-                      'mass': Attribute.mass,
-                      'volume': Attribute.volume,
-                      'capacity': Attribute.capacity}
+        atrrib_map = {
+            'radius': Attribute.radius,
+            'mass': Attribute.mass,
+            'volume': Attribute.volume,
+            'capacity': Attribute.capacity
+        }
         attr_ids = tuple(atrrib_map.values())
         # Here we will store pairs (typeID, attrID) already
         # defined in table
@@ -81,9 +83,11 @@ class Converter:
                         attrs_skipped += 1
                         continue
                     # Generate row and add it to proper attribute table
-                    dgmtypeattribs.add(FrozenDict({'typeID': type_id,
-                                                   'attributeID': attr_id,
-                                                   'value': value}))
+                    dgmtypeattribs.add(FrozenDict({
+                        'typeID': type_id,
+                        'attributeID': attr_id,
+                        'value': value
+                    }))
                 else:
                     new_row[field] = value
             new_invtypes.add(FrozenDict(new_row))
@@ -316,8 +320,16 @@ class Converter:
         values assigned according to modifier's ones.
         """
         # Fields which we need to write into row
-        fields = ('state', 'context', 'source_attribute_id', 'operator',
-                  'target_attribute_id', 'location', 'filter_type', 'filter_value')
+        fields = (
+            'state',
+            'context',
+            'source_attribute_id',
+            'operator',
+            'target_attribute_id',
+            'location',
+            'filter_type',
+            'filter_value'
+        )
         modifier_row = {}
         for field in fields:
             modifier_row[field] = getattr(modifier, field)
