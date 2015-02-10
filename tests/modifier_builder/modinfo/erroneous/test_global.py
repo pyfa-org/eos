@@ -42,7 +42,7 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.ERROR)
         expected = 'failed to parse modifier info YAML for effect 94'
         self.assertEqual(log_record.msg, expected)
@@ -58,7 +58,7 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         expected = 'failed to build modifiers for effect 36: cannot convert effect category 99 into state'
         self.assertEqual(log_record.msg, expected)
@@ -76,7 +76,7 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.ERROR)
         expected = 'failed to build modifiers for effect 22 due to unknown reason'
         self.assertEqual(log_record.msg, expected)

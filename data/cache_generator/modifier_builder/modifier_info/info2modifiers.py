@@ -136,7 +136,7 @@ class Info2Modifiers:
                 effect_id = effect_row['effect_id']
                 msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
                 signature = (YamlParseError, effect_id)
-                self._logger.error(msg, child_name='modifier_builder', signature=signature)
+                self._logger.error(msg, child_name='modinfo_builder', signature=signature)
                 # We cannot recover any data in this case, thus return empty list
                 return (), EffectBuildStatus.error
             # Go through modifier objects and attempt to convert them one-by-one
@@ -150,7 +150,7 @@ class Info2Modifiers:
                     effect_id = effect_row['effect_id']
                     msg = 'failed to build one of the modifiers of effect {}: {}'.format(effect_id, e.args[0])
                     signature = (type(e), effect_id)
-                    self._logger.warning(msg, child_name='modifier_builder', signature=signature)
+                    self._logger.warning(msg, child_name='modinfo_builder', signature=signature)
                     # When conversion of one of modifiers failed, mark build status
                     # as partially corrupted
                     build_status = EffectBuildStatus.ok_partial
@@ -167,7 +167,7 @@ class Info2Modifiers:
                 effect_id = effect_row['effect_id']
                 msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
                 signature = (type(e), effect_id)
-                self._logger.warning(msg, child_name='modifier_builder', signature=signature)
+                self._logger.warning(msg, child_name='modinfo_builder', signature=signature)
                 # Modifiers without state data will be useless, and we cannot do any
                 # safe assumptions here, , thus consider that everything went wrong
                 # and return empty list
@@ -178,7 +178,7 @@ class Info2Modifiers:
             effect_id = effect_row['effect_id']
             msg = 'failed to build modifiers for effect {} due to unknown reason'.format(effect_id)
             signature = (UnexpectedBuilderError, effect_id)
-            self._logger.error(msg, child_name='modifier_builder', signature=signature)
+            self._logger.error(msg, child_name='modinfo_builder', signature=signature)
             return (), EffectBuildStatus.error
         else:
             return modifiers, build_status

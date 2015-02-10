@@ -108,7 +108,7 @@ class Effect2Modifiers:
                 effect_id = effect_row['effect_id']
                 msg = 'unused actions left after parsing expression tree of effect {}'.format(effect_id)
                 signature = (UnusedActionError, effect_id)
-                self._logger.warning(msg, child_name='modifier_builder', signature=signature)
+                self._logger.warning(msg, child_name='etree_builder', signature=signature)
                 return modifiers, EffectBuildStatus.ok_partial
 
         # Handle raised exceptions
@@ -116,19 +116,19 @@ class Effect2Modifiers:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
             signature = (type(e), effect_id)
-            self._logger.error(msg, child_name='modifier_builder', signature=signature)
+            self._logger.error(msg, child_name='etree_builder', signature=signature)
             return (), EffectBuildStatus.error
         except ETree2ActionError as e:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
             signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
-            self._logger.warning(msg, child_name='modifier_builder', signature=signature)
+            self._logger.warning(msg, child_name='etree_builder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError as e:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {} due to unknown reason'.format(effect_id)
             signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
-            self._logger.error(msg, child_name='modifier_builder', signature=signature)
+            self._logger.error(msg, child_name='etree_builder', signature=signature)
             return (), EffectBuildStatus.error
 
         return modifiers, build_status

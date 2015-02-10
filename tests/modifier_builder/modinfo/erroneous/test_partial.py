@@ -44,7 +44,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         expected = 'failed to build one of the modifiers of effect 1: unknown filter function GangItemModifiero'
         self.assertEqual(log_record.msg, expected)
@@ -62,7 +62,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         expected = 'failed to build one of the modifiers of effect 1: unable to find attribute groupID for filter value'
         self.assertEqual(log_record.msg, expected)
@@ -80,7 +80,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         expected = 'failed to build one of the modifiers of effect 58: unexpected domain targetID for filter function GangItemModifier'
         self.assertEqual(log_record.msg, expected)
@@ -98,7 +98,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modifier_builder')
+        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         expected = 'failed to build one of the modifiers of effect 36: unknown operator 99'
         self.assertEqual(log_record.msg, expected)
