@@ -34,12 +34,23 @@ class TestAssociatedData(GeneratorTestCase):
 
     def __generate_data(self):
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 200, 'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 201, 'isDefault': False})
         self.dh.data['dgmeffects'].append({
-            'effectID': 100, 'effectCategory': 26, 'isOffensive': True, 'isAssistance': False,
+            'effectID': 200, 'effectCategory': 26, 'isOffensive': True, 'isAssistance': False,
             'fittingUsageChanceAttributeID': 1000, 'preExpression': 100, 'postExpression': 101,
             'durationAttributeID': 1001, 'dischargeAttributeID': 1002, 'rangeAttributeID': 1003,
-            'falloffAttributeID': 1004, 'trackingSpeedAttributeID': 1005
+            'falloffAttributeID': 1004, 'trackingSpeedAttributeID': 1005, 'modifierInfo': None
+        })
+        self.dh.data['dgmeffects'].append({
+            'effectID': 201, 'effectCategory': 33, 'isOffensive': False, 'isAssistance': False,
+            'fittingUsageChanceAttributeID': None, 'preExpression': None, 'postExpression': None,
+            'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
+            'falloffAttributeID': None, 'trackingSpeedAttributeID': None,
+            'modifierInfo': ('- domain: shipID\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 1009\n'
+                '  modifyingAttributeID: 1008\n  operator: 6\n  skillTypeID: 3\n- domain: shipID\n'
+                '  func: LocationGroupModifier\n  groupID: 501\n  modifiedAttributeID: 1008\n'
+                '  modifyingAttributeID: 1009\n  operator: 6\n')
         })
         self.dh.data['dgmattribs'].append({
             'attributeID': 5, 'maxAttributeID': 1006, 'defaultValue': 0.0,
@@ -93,11 +104,22 @@ class TestAssociatedData(GeneratorTestCase):
             'expressionValue': None, 'expressionTypeID': None,
             'expressionGroupID': None, 'expressionAttributeID': None
         })
-        # Weak type in any case, but linked through expression
+        # Weak entities in any case, but linked through expression
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6, 'typeName': ''})
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'groupName': ''})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1007, 'maxAttributeID': None, 'default_value': 0.0,
+            'high_is_good': False, 'stackable': False, 'attributeName': ''
+        })
+        # Also weak entities, but linked through modifier info
+        self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 7, 'typeName': ''})
+        self.dh.data['invgroups'].append({'groupID': 7, 'categoryID': 51, 'groupName': ''})
+        self.dh.data['dgmattribs'].append({
+            'attributeID': 1008, 'maxAttributeID': None, 'default_value': 0.0,
+            'high_is_good': False, 'stackable': False, 'attributeName': ''
+        })
+        self.dh.data['dgmattribs'].append({
+            'attributeID': 1009, 'maxAttributeID': None, 'default_value': 0.0,
             'high_is_good': False, 'stackable': False, 'attributeName': ''
         })
 
@@ -116,10 +138,14 @@ class TestAssociatedData(GeneratorTestCase):
             'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, 0.0% from dgmexpressions, '
             '0.0% from dgmtypeattribs, 0.0% from dgmtypeeffects, 0.0% from invgroups, 0.0% from invtypes'
         )
-        self.assertEqual(len(data['types']), 2)
+        self.assertEqual(len(data['types']), 3)
         self.assertIn(1, data['types'])
+        self.assertEqual(data['types'][1]['category_id'], 16)
         self.assertIn(2, data['types'])
-        self.assertEqual(len(data['attributes']), 9)
+        self.assertEqual(data['types'][2]['category_id'], 50)
+        self.assertIn(3, data['types'])
+        self.assertEqual(data['types'][3]['category_id'], 51)
+        self.assertEqual(len(data['attributes']), 11)
         self.assertIn(5, data['attributes'])
         self.assertIn(1000, data['attributes'])
         self.assertIn(1001, data['attributes'])
@@ -129,8 +155,11 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertIn(1005, data['attributes'])
         self.assertIn(1006, data['attributes'])
         self.assertIn(1007, data['attributes'])
-        self.assertEqual(len(data['effects']), 1)
-        self.assertIn(100, data['effects'])
+        self.assertIn(1008, data['attributes'])
+        self.assertIn(1009, data['attributes'])
+        self.assertEqual(len(data['effects']), 2)
+        self.assertIn(200, data['effects'])
+        self.assertIn(201, data['effects'])
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 4)
         expression_ids = set(row['expressionID'] for row in expressions)
@@ -184,16 +213,20 @@ class TestAssociatedData(GeneratorTestCase):
             'effectID': 100, 'effectCategory': 8888, 'isOffensive': True, 'isAssistance': False,
             'fittingUsageChanceAttributeID': None, 'preExpression': 101, 'postExpression': None,
             'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
-            'falloffAttributeID': None, 'trackingSpeedAttributeID': None
+            'falloffAttributeID': None, 'trackingSpeedAttributeID': None,
+            'modifierInfo': '- domain: shipID\n  func: LocationRequiredSkillModifier\n'
+                '  modifiedAttributeID: 1009\n  modifyingAttributeID: 1008\n  operator: 6\n'
+                '  skillTypeID: 3\n'
         })
         self.dh.data['dgmexpressions'].append({
             'expressionID': 101, 'operandID': 6, 'arg1': None, 'arg2': None,
             'expressionValue': None, 'expressionTypeID': 2,
             'expressionGroupID': None, 'expressionAttributeID': None
         })
-        # Weak type, but linked through expression
+        # 2 weak type, but linked through expression/YAML
         self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6, 'typeName': ''})
         self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 6, 'typeName': ''})
+        self.dh.data['invtypes'].append({'typeID': 4, 'groupID': 6, 'typeName': ''})
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'groupName': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
@@ -204,11 +237,12 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(
             clean_stats.msg,
             'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, 0.0% from dgmtypeeffects, '
-            '0.0% from invgroups, 33.3% from invtypes'
+            '0.0% from invgroups, 25.0% from invtypes'
         )
-        self.assertEqual(len(data['types']), 2)
+        self.assertEqual(len(data['types']), 3)
         self.assertIn(1, data['types'])
         self.assertIn(2, data['types'])
+        self.assertIn(3, data['types'])
         self.assertEqual(len(data['attributes']), 0)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(100, data['effects'])
