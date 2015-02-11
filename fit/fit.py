@@ -52,9 +52,11 @@ class Fit:
         self.boosters = HolderSet(self, Booster)
         # Ship-related containers
         self.subsystems = HolderSet(self, Subsystem)
-        self.modules = ModuleRacks(high=HolderList(self, ModuleHigh),
-                                   med=HolderList(self, ModuleMed),
-                                   low=HolderList(self, ModuleLow))
+        self.modules = ModuleRacks(
+            high=HolderList(self, ModuleHigh),
+            med=HolderList(self, ModuleMed),
+            low=HolderList(self, ModuleLow)
+        )
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
         # Service containers
@@ -69,6 +71,7 @@ class Fit:
         self.character = Character(Type.character_static)
 
     ship = HolderDescriptorOnFit('_ship', Ship)
+    stance = HolderDescriptorOnFit('_stance', Stance)
     character = HolderDescriptorOnFit('_character', Character)
     effect_beacon = HolderDescriptorOnFit('_effect_beacon', EffectBeacon)
 

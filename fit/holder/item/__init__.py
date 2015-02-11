@@ -29,6 +29,7 @@ from .module import ModuleHigh, ModuleMed, ModuleLow
 from .rig import Rig
 from .ship import Ship
 from .skill import Skill
+from .stance import Stance
 from .subsystem import Subsystem
 
 __all__ = (
@@ -44,5 +45,6 @@ __all__ = (
     'Rig',
     'Ship',
     'Skill',
+    'Stance',
     'Subsystem'
 )

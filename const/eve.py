@@ -148,6 +148,7 @@ class Group(IntEnum):
     missile_launcher_heavy_assault = 771
     effect_beacon = 920
     missile_launcher_rapid_heavy = 1245
+    ship_modifier = 1306
 
 
 @unique

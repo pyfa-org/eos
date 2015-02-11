@@ -26,10 +26,12 @@ from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
 
 
-class Drone(MutableStateMixin,
-            DamageDealerMixin,
-            BufferTankingMixin,
-            DefaultEffectAttribMixin):
+class Drone(
+        MutableStateMixin,
+        DamageDealerMixin,
+        BufferTankingMixin,
+        DefaultEffectAttribMixin
+    ):
     """
     Single drone.
 

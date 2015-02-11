@@ -32,26 +32,41 @@ HolderClassErrorData = namedtuple('HolderClassErrorData', ('holder_class', 'expe
 
 
 CLASS_VALIDATORS = {
-    Booster: lambda item: (item.category_id == Category.implant and
-                           Attribute.boosterness in item.attributes),
+    Booster: lambda item: (
+        item.category_id == Category.implant and
+        Attribute.boosterness in item.attributes
+    ),
     Character: lambda item: item.group_id == Group.character,
     Charge: lambda item: item.category_id == Category.charge,
     Drone: lambda item: item.category_id == Category.drone,
     EffectBeacon: lambda item: item.group_id == Group.effect_beacon,
-    Implant: lambda item: (item.category_id == Category.implant and
-                           Attribute.implantness in item.attributes),
-    ModuleHigh: lambda item: (item.category_id == Category.module and
-                              Slot.module_high in item.slots),
-    ModuleMed: lambda item: (item.category_id == Category.module and
-                             Slot.module_med in item.slots),
-    ModuleLow: lambda item: (item.category_id == Category.module and
-                             Slot.module_low in item.slots),
-    Rig: lambda item: (item.category_id == Category.module and
-                       Slot.rig in item.slots),
+    Implant: lambda item: (
+        item.category_id == Category.implant and
+        Attribute.implantness in item.attributes
+    ),
+    ModuleHigh: lambda item: (
+        item.category_id == Category.module and
+        Slot.module_high in item.slots
+    ),
+    ModuleMed: lambda item: (
+        item.category_id == Category.module and
+        Slot.module_med in item.slots
+    ),
+    ModuleLow: lambda item: (
+        item.category_id == Category.module and
+        Slot.module_low in item.slots
+    ),
+    Rig: lambda item: (
+        item.category_id == Category.module and
+        Slot.rig in item.slots
+    ),
     Ship: lambda item: item.category_id == Category.ship,
     Skill: lambda item: item.category_id == Category.skill,
-    Subsystem: lambda item: (item.category_id == Category.subsystem and
-                             Slot.subsystem in item.slots)
+    Stance: lambda item: item.group_id == Group.ship_modifier,
+    Subsystem: lambda item: (
+        item.category_id == Category.subsystem and
+        Slot.subsystem in item.slots
+    )
 }
 
 

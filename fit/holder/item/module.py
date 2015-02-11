@@ -27,10 +27,12 @@ from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 
 
-class Module(MutableStateMixin,
-             ChargeableMixin,
-             DamageDealerMixin,
-             DefaultEffectAttribMixin):
+class Module(
+        MutableStateMixin,
+        ChargeableMixin,
+        DamageDealerMixin,
+        DefaultEffectAttribMixin
+    ):
 
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
