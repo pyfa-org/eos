@@ -402,6 +402,30 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
+    def test_stance_pass(self):
+        item = self.ch.type_(type_id=1, group_id=Group.ship_modifier)
+        holder = Stance(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNone(restriction_error)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_stance_fail_group(self):
+        item = self.ch.type_(type_id=1, group_id=1008)
+        holder = Stance(1)
+        holder.item = item
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.holder_class, Stance)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.untrack_holder(holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
     def test_subsystem_pass(self):
         item = self.ch.type_(type_id=1, category_id=Category.subsystem)
         item.slots = {Slot.subsystem}
