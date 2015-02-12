@@ -43,8 +43,8 @@ class Ship(
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
-    def _location(self):
+    def _domain(self):
         # Ship is self-sufficient entity with regard to
-        # location too (not assigned to anything besides
-        # fit), thus its location is None
+        # domain too (not assigned to anything besides
+        # fit), thus its domain is None
         return None

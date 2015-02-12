@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
+from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.holder import HolderBase
 from eos.fit.holder.mixin.state import ImmutableStateMixin
@@ -49,8 +49,8 @@ class Skill(
         self.level = level
 
     @property
-    def _location(self):
-        return Location.character
+    def _domain(self):
+        return Domain.character
 
     @property
     def level(self):

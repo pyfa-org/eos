@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModLoc(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by location"""
+    """Test parsing of YAML describing modification filtered by domain"""
 
     def _make_yaml(self, domain):
-        yaml = '- domain: {}\n  func: LocationModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n'
+        yaml = '- domain: {}\n  func: DomainModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n'
         return yaml.format(domain)
 
     def test_domain_ship(self):
@@ -41,7 +41,7 @@ class TestBuilderModinfoModLoc(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)
@@ -60,7 +60,7 @@ class TestBuilderModinfoModLoc(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.character)
+        self.assertEqual(modifier.domain, Domain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)
@@ -89,7 +89,7 @@ class TestBuilderModinfoModLoc(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.projected)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)

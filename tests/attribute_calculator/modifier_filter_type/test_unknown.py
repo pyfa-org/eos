@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -28,7 +28,7 @@ from eos.tests.environment import Logger
 
 
 class TestFilterUnknown(AttrCalcTestCase):
-    """Test location filter"""
+    """Test domain filter"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -40,7 +40,7 @@ class TestFilterUnknown(AttrCalcTestCase):
         invalid_modifier.source_attribute_id = src_attr.id
         invalid_modifier.operator = Operator.post_percent
         invalid_modifier.target_attribute_id = tgt_attr.id
-        invalid_modifier.location = Location.self_
+        invalid_modifier.domain = Domain.self_
         invalid_modifier.filter_type = 26500
         invalid_modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -65,7 +65,7 @@ class TestFilterUnknown(AttrCalcTestCase):
         valid_modifier.source_attribute_id = self.src_attr.id
         valid_modifier.operator = Operator.post_percent
         valid_modifier.target_attribute_id = self.tgt_attr.id
-        valid_modifier.location = Location.self_
+        valid_modifier.domain = Domain.self_
         valid_modifier.filter_type = None
         valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)

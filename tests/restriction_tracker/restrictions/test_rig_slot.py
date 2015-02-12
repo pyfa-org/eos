@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Location, Restriction, State
+from eos.const.eos import Domain, Restriction, State
 from eos.fit.holder.item import Implant, Rig
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
@@ -33,7 +33,7 @@ class TestRigSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         self.fit.rigs.add(holder)
         self.track_holder(holder)
         self.fit.stats.rig_slots.used = 1
@@ -46,10 +46,10 @@ class TestRigSlot(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_fail_excess_signle_other_class_location(self):
+    def test_fail_excess_signle_other_class_domain(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Implant(1))
         self.fit.rigs.add(holder)
         self.track_holder(holder)
         self.fit.stats.rig_slots.used = 1
@@ -66,7 +66,7 @@ class TestRigSlot(RestrictionTestCase):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         self.fit.rigs.add(holder)
         self.track_holder(holder)
         self.fit.stats.rig_slots.used = 1
@@ -82,8 +82,8 @@ class TestRigSlot(RestrictionTestCase):
     def test_fail_excess_multiple(self):
         # Check that error works for multiple holders
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         self.fit.rigs.add(holder1)
         self.fit.rigs.add(holder2)
         self.track_holder(holder1)
@@ -105,8 +105,8 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         self.fit.rigs.add(holder1)
         self.fit.rigs.add(holder2)
         self.track_holder(holder1)
@@ -124,8 +124,8 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         self.fit.rigs.add(holder1)
         self.fit.rigs.add(holder2)
         self.track_holder(holder1)
@@ -143,7 +143,7 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_other_container(self):
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=Rig(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         self.fit.subsystems.add(holder)
         self.track_holder(holder)
         self.fit.stats.rig_slots.used = 1

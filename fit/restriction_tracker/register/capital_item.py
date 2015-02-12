@@ -21,7 +21,7 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Location, Restriction
+from eos.const.eos import Domain, Restriction
 from eos.const.eve import Type, Attribute
 from eos.fit.restriction_tracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
@@ -54,7 +54,7 @@ class CapitalItemRegister(RestrictionRegister):
 
     def register_holder(self, holder):
         # Ignore holders which do not belong to ship
-        if holder._location != Location.ship:
+        if holder._domain != Domain.ship:
             return
         # Ignore holders with no volume attribute and holders with
         # volume which satisfies us regardless of ship type

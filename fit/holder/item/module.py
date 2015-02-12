@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
+from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.chargeable import ChargeableMixin
 from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
@@ -38,8 +38,8 @@ class Module(
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
 
     @property
-    def _location(self):
-        return Location.ship
+    def _domain(self):
+        return Domain.ship
 
     @property
     def reactivation_delay(self):

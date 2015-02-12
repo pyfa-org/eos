@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, EffectBuildStatus, FilterType
+from eos.const.eos import Domain, EffectBuildStatus, FilterType
 from eos.const.eve import Operand
 from eos.data.cache_object import Modifier
 from .etree2actions import ETree2Actions
@@ -177,39 +177,39 @@ class Effect2Modifiers:
 
     # Block with conversion methods, called depending on action type
     def _convert_gang_grp(self, action, modifier):
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         modifier.filter_type = FilterType.group
         modifier.filter_value = action.target_group_id
 
     def _convert_gang_itm(self, action, modifier):
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
 
     def _convert_gang_own_srq(self, action, modifier):
-        modifier.location = Location.space
+        modifier.domain = Domain.space
         self._fill_srq_filter(action, modifier)
 
     def _convert_gang_srq(self, action, modifier):
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         self._fill_srq_filter(action, modifier)
 
     def _convert_itm(self, action, modifier):
-        modifier.location = action.target_location
+        modifier.domain = action.target_domain
 
     def _convert_loc_grp(self, action, modifier):
-        modifier.location = action.target_location
+        modifier.domain = action.target_domain
         modifier.filter_type = FilterType.group
         modifier.filter_value = action.target_group_id
 
     def _convert_loc(self, action, modifier):
-        modifier.location = action.target_location
+        modifier.domain = action.target_domain
         modifier.filter_type = FilterType.all_
 
     def _convert_loc_srq(self, action, modifier):
-        modifier.location = action.target_location
+        modifier.domain = action.target_domain
         self._fill_srq_filter(action, modifier)
 
     def _convert_own_srq(self, action, modifier):
-        modifier.location = Location.space
+        modifier.domain = Domain.space
         self._fill_srq_filter(action, modifier)
 
     def _fill_srq_filter(self, action, modifier):

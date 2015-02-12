@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -42,7 +42,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_off.source_attribute_id = src_attr1.id
         modifier_off.operator = Operator.post_mul
         modifier_off.target_attribute_id = self.tgt_attr.id
-        modifier_off.location = Location.self_
+        modifier_off.domain = Domain.self_
         modifier_off.filter_type = None
         modifier_off.filter_value = None
         modifier_on = Modifier()
@@ -51,7 +51,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_on.source_attribute_id = src_attr2.id
         modifier_on.operator = Operator.post_mul
         modifier_on.target_attribute_id = self.tgt_attr.id
-        modifier_on.location = Location.self_
+        modifier_on.domain = Domain.self_
         modifier_on.filter_type = None
         modifier_on.filter_value = None
         modifier_act = Modifier()
@@ -60,7 +60,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_act.source_attribute_id = src_attr3.id
         modifier_act.operator = Operator.post_mul
         modifier_act.target_attribute_id = self.tgt_attr.id
-        modifier_act.location = Location.self_
+        modifier_act.domain = Domain.self_
         modifier_act.filter_type = None
         modifier_act.filter_value = None
         modifier_over = Modifier()
@@ -69,7 +69,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_over.source_attribute_id = src_attr4.id
         modifier_over.operator = Operator.post_mul
         modifier_over.target_attribute_id = self.tgt_attr.id
-        modifier_over.location = Location.self_
+        modifier_over.domain = Domain.self_
         modifier_over.filter_type = None
         modifier_over.filter_value = None
         # Overload category will make sure that holder can enter all states

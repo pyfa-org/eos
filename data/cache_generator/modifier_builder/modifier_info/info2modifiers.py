@@ -20,7 +20,7 @@
 
 import yaml
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object import Modifier
 from .exception import *
@@ -28,60 +28,60 @@ from .exception import *
 
 # Format:
 # {info func: (mod filter type, info attribute name for mod filter value,
-#   {info domain: (mod scope, mod location)})}
+#   {info domain: (mod scope, mod domain)})}
 filter_map = {
     'ItemModifier': (
         None, None,
         {
-            'shipID': (Scope.local, Location.ship),
-            'charID': (Scope.local, Location.character),
-            'otherID': (Scope.local, Location.other),
-            'targetID': (Scope.projected, Location.ship),
-            None: (Scope.local, Location.self_)
+            'shipID': (Scope.local, Domain.ship),
+            'charID': (Scope.local, Domain.character),
+            'otherID': (Scope.local, Domain.other),
+            'targetID': (Scope.projected, Domain.ship),
+            None: (Scope.local, Domain.self_)
         }
     ),
-    'LocationModifier': (
+    'DomainModifier': (
         FilterType.all_, None,
         {
-            'shipID': (Scope.local, Location.ship),
-            'charID': (Scope.local, Location.character),
-            'targetID': (Scope.projected, Location.ship)
+            'shipID': (Scope.local, Domain.ship),
+            'charID': (Scope.local, Domain.character),
+            'targetID': (Scope.projected, Domain.ship)
         }
     ),
-    'LocationGroupModifier': (
+    'DomainGroupModifier': (
         FilterType.group, 'groupID',
         {
-            'shipID': (Scope.local, Location.ship),
-            'charID': (Scope.local, Location.character),
-            'targetID': (Scope.projected, Location.ship)
+            'shipID': (Scope.local, Domain.ship),
+            'charID': (Scope.local, Domain.character),
+            'targetID': (Scope.projected, Domain.ship)
         }
     ),
-    'LocationRequiredSkillModifier': (
+    'DomainRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
-            'shipID': (Scope.local, Location.ship),
-            'charID': (Scope.local, Location.character),
-            'targetID': (Scope.projected, Location.ship)
+            'shipID': (Scope.local, Domain.ship),
+            'charID': (Scope.local, Domain.character),
+            'targetID': (Scope.projected, Domain.ship)
         }
     ),
     'OwnerRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
-            'charID': (Scope.local, Location.space)
+            'charID': (Scope.local, Domain.space)
         }
     ),
     'GangItemModifier': (
         None, None,
         {
-            'shipID': (Scope.gang, Location.ship),
-            'charID': (Scope.gang, Location.character)
+            'shipID': (Scope.gang, Domain.ship),
+            'charID': (Scope.gang, Domain.character)
         }
     ),
     'GangRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
-            'shipID': (Scope.gang, Location.ship),
-            'charID': (Scope.gang, Location.character)
+            'shipID': (Scope.gang, Domain.ship),
+            'charID': (Scope.gang, Domain.character)
         }
     )
 }
@@ -222,15 +222,15 @@ class Info2Modifiers:
             except KeyError as e:
                 msg = 'unable to find attribute {} for filter value'.format(fattr)
                 raise NoFilterValueError(msg) from e
-        # Scope and location
+        # Scope and domain
         domain = modifier_info['domain']
         try:
-            scope, location = domain_data[domain]
+            scope, domain = domain_data[domain]
         except KeyError as e:
             msg = 'unexpected domain {} for filter function {}'.format(domain, func_name)
             raise UnexpectedDomainError(msg) from e
         modifier.scope = scope
-        modifier.location = location
+        modifier.domain = domain
 
     def _conv_state(self, modifiers, effect_row):
         """

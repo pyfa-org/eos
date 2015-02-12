@@ -127,7 +127,7 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(log_record.msg, expected)
 
     def test_validation(self):
-        # To make invalid action, we've just took location
+        # To make invalid action, we've just took domain
         # and group- filtered expression tree and replaced its
         # actual top-level operands with operand describing
         # direct modification

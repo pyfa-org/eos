@@ -21,6 +21,6 @@
 
 """
 Check that target holders are modified, or expected entries are written to log,
-according to location field of modifier. Location field meaning differs, depending
+according to domain field of modifier. Domain field meaning differs, depending
 on filter presence, thus two test sets are required.
 """

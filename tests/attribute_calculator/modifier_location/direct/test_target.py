@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -27,8 +27,8 @@ from eos.tests.attribute_calculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
-class TestLocationDirectTarget(AttrCalcTestCase):
-    """Test location.target for direct modifications"""
+class TestDomainDirectTarget(AttrCalcTestCase):
+    """Test domain.target for direct modifications"""
 
     def test_error(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
@@ -39,7 +39,7 @@ class TestLocationDirectTarget(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = tgt_attr.id
-        modifier.location = Location.target
+        modifier.domain = Domain.target
         modifier.filter_type = None
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -53,6 +53,6 @@ class TestLocationDirectTarget(AttrCalcTestCase):
         self.assertEqual(log_record.levelno, Logger.WARNING)
         self.assertEqual(log_record.msg,
                          'malformed modifier on item 102: unsupported target '
-                         'location {} for direct modification'.format(Location.target))
+                         'domain {} for direct modification'.format(Domain.target))
         self.fit.items.remove(influence_source)
         self.assert_link_buffers_empty(self.fit)

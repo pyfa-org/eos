@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by location and skill requirement"""
+    """Test parsing of YAML describing modification filtered by domain and skill requirement"""
 
     def _make_yaml(self, domain):
-        yaml = ('- domain: {}\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 22\n'
+        yaml = ('- domain: {}\n  func: DomainRequiredSkillModifier\n  modifiedAttributeID: 22\n'
             '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n')
         return yaml.format(domain)
 
@@ -42,7 +42,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)
@@ -61,7 +61,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.character)
+        self.assertEqual(modifier.domain, Domain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)
@@ -90,7 +90,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.projected)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)

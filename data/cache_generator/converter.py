@@ -326,7 +326,7 @@ class Converter:
             'source_attribute_id',
             'operator',
             'target_attribute_id',
-            'location',
+            'domain',
             'filter_type',
             'filter_value'
         )

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -27,8 +27,8 @@ from eos.tests.attribute_calculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
-class TestLocationFilterTarget(AttrCalcTestCase):
-    """Test location.target for filtered modifications"""
+class TestDomainFilterTarget(AttrCalcTestCase):
+    """Test domain.target for filtered modifications"""
 
     def test_error(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
@@ -39,7 +39,7 @@ class TestLocationFilterTarget(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = tgt_attr.id
-        modifier.location = Location.target
+        modifier.domain = Domain.target
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -53,7 +53,7 @@ class TestLocationFilterTarget(AttrCalcTestCase):
         self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         self.assertEqual(log_record.msg,
-                         'malformed modifier on item 88: unsupported target location '
-                         '{} for filtered modification'.format(Location.target))
+                         'malformed modifier on item 88: unsupported target domain '
+                         '{} for filtered modification'.format(Domain.target))
         self.fit.items.remove(influence_source)
         self.assert_link_buffers_empty(self.fit)

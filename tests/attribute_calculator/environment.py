@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location
+from eos.const.eos import State, Domain
 from eos.fit.attribute_calculator import LinkTracker, MutableAttributeMap
 from eos.tests.environment import Logger
 
@@ -145,7 +145,7 @@ class IndependentItem(Holder):
         Holder.__init__(self, type_)
 
     @property
-    def _location(self):
+    def _domain(self):
         return None
 
 
@@ -155,8 +155,8 @@ class CharacterItem(Holder):
         Holder.__init__(self, type_)
 
     @property
-    def _location(self):
-        return Location.character
+    def _domain(self):
+        return Domain.character
 
 
 class ShipItem(Holder):
@@ -165,8 +165,8 @@ class ShipItem(Holder):
         Holder.__init__(self, type_)
 
     @property
-    def _location(self):
-        return Location.ship
+    def _domain(self):
+        return Domain.ship
 
 
 class SpaceItem(Holder):
@@ -175,8 +175,8 @@ class SpaceItem(Holder):
         Holder.__init__(self, type_)
 
     @property
-    def _location(self):
-        return Location.space
+    def _domain(self):
+        return Domain.space
 
 
 class Skill(IndependentItem):

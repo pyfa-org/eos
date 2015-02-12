@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -52,7 +52,7 @@ class TestBuilderModinfoModOwnSrq(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.space)
+        self.assertEqual(modifier.domain, Domain.space)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)

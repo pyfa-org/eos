@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, Operator
+from eos.const.eos import Domain, Operator
 from eos.const.eve import Operand
 from .action import Action
 from .exception import ETree2ActionError, ExpressionFetchError, ActionValidationError
@@ -167,20 +167,20 @@ class ETree2Actions:
         action.target_attribute_id = self._get_attribute(arg2)
 
     def _tgt_loc(self, expression, action):
-        """Get target location and store it"""
-        action.target_location = self._get_location(expression)
+        """Get target domain and store it"""
+        action.target_domain = self._get_domain(expression)
 
     def _tgt_loc_grp(self, expression, action):
-        """Get target location filter and group filter"""
+        """Get target domain filter and group filter"""
         arg1 = self._get_exp(expression.get('arg1'))
-        action.target_location = self._get_location(arg1)
+        action.target_domain = self._get_domain(arg1)
         arg2 = self._get_exp(expression.get('arg2'))
         action.target_group_id = self._get_group(arg2)
 
     def _tgt_loc_srq(self, expression, action):
-        """Get target location filter and skill requirement filter"""
+        """Get target domain filter and skill requirement filter"""
         arg1 = self._get_exp(expression.get('arg1'))
-        action.target_location = self._get_location(arg1)
+        action.target_domain = self._get_domain(arg1)
         arg2 = self._get_exp(expression.get('arg2'))
         self._get_type(arg2, action)
 
@@ -212,18 +212,18 @@ class ETree2Actions:
         operator = conversion_map[expression.get('expressionValue')]
         return operator
 
-    def _get_location(self, expression):
-        # Format: {location name: location ID}
+    def _get_domain(self, expression):
+        # Format: {domain name: domain ID}
         conversion_map = {
-            'Self': Location.self_,
-            'Char': Location.character,
-            'Ship': Location.ship,
-            'Target': Location.target,
-            'Other': Location.other,
-            'Area': Location.area
+            'Self': Domain.self_,
+            'Char': Domain.character,
+            'Ship': Domain.ship,
+            'Target': Domain.target,
+            'Other': Domain.other,
+            'Area': Domain.area
         }
-        location = conversion_map[expression.get('expressionValue')]
-        return location
+        domain = conversion_map[expression.get('expressionValue')]
+        return domain
 
     def _get_attribute(self, expression):
         attribute = int(expression.get('expressionAttributeID'))
@@ -239,7 +239,7 @@ class ETree2Actions:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
             arg1 = self._get_exp(expression.get('arg1'))
-            if self._get_location(arg1) == Location.self_:
+            if self._get_domain(arg1) == Domain.self_:
                 action.target_skill_requirement_self = True
         else:
             action.target_skill_requirement_id = int(expression.get('expressionTypeID'))
@@ -317,7 +317,7 @@ class ETree2Actions:
     # Block with validating methods, called depending on action type
     def _validate_gang_grp(self, action):
         if (
-            action.target_location is not None or
+            action.target_domain is not None or
             action.target_skill_requirement_id is not None or
             action.target_skill_requirement_self is not False
         ):
@@ -328,7 +328,7 @@ class ETree2Actions:
 
     def _validate_gang_itm(self, action):
         if (
-            action.target_location is not None or
+            action.target_domain is not None or
             action.target_group_id is not None or
             action.target_skill_requirement_id is not None or
             action.target_skill_requirement_self is not False
@@ -338,7 +338,7 @@ class ETree2Actions:
 
     def _validate_gang_own_srq(self, action):
         if (
-            action.target_location is not None or
+            action.target_domain is not None or
             action.target_group_id is not None
         ):
             return False
@@ -348,7 +348,7 @@ class ETree2Actions:
 
     def _validate_gang_srq(self, action):
         if (
-            action.target_location is not None or
+            action.target_domain is not None or
             action.target_group_id is not None
         ):
             return False
@@ -363,7 +363,7 @@ class ETree2Actions:
             action.target_skill_requirement_self is not False
         ):
             return False
-        if action.target_location not in Location:
+        if action.target_domain not in Domain:
             return False
         return True
 
@@ -373,9 +373,9 @@ class ETree2Actions:
             action.target_skill_requirement_self is not False
         ):
             return False
-        valid_locs = (Location.character, Location.ship, Location.target, Location.self_)
+        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
         if (
-            action.target_location not in valid_locs or
+            action.target_domain not in valid_locs or
             isinstance(action.target_group_id, int) is not True
         ):
             return False
@@ -388,17 +388,17 @@ class ETree2Actions:
             action.target_skill_requirement_self is not False
         ):
             return False
-        valid_locs = (Location.character, Location.ship, Location.target, Location.self_)
-        if action.target_location not in valid_locs:
+        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
+        if action.target_domain not in valid_locs:
             return False
         return True
 
     def _validate_loc_srq(self, action):
         if action.target_group_id is not None:
             return False
-        valid_locs = (Location.character, Location.ship, Location.target, Location.self_)
+        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
         if (
-            action.target_location not in valid_locs or
+            action.target_domain not in valid_locs or
             self._validate_skill_req(action) is not True
         ):
             return False
@@ -407,9 +407,9 @@ class ETree2Actions:
     def _validate_own_srq(self, action):
         if action.target_group_id is not None:
             return False
-        valid_locs = (Location.character, Location.ship)
+        valid_locs = (Domain.character, Domain.ship)
         if (
-            action.target_location not in valid_locs or
+            action.target_domain not in valid_locs or
             self._validate_skill_req(action) is not True
         ):
             return False

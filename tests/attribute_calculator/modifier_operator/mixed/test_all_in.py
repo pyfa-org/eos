@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -38,7 +38,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_pre_ass.source_attribute_id = src_attr.id
         modifier_pre_ass.operator = Operator.pre_assignment
         modifier_pre_ass.target_attribute_id = tgt_attr.id
-        modifier_pre_ass.location = Location.ship
+        modifier_pre_ass.domain = Domain.ship
         modifier_pre_ass.filter_type = FilterType.all_
         modifier_pre_ass.filter_value = None
         effect_pre_ass = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -53,7 +53,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_pre_mul.source_attribute_id = src_attr.id
         modifier_pre_mul.operator = Operator.pre_mul
         modifier_pre_mul.target_attribute_id = tgt_attr.id
-        modifier_pre_mul.location = Location.ship
+        modifier_pre_mul.domain = Domain.ship
         modifier_pre_mul.filter_type = FilterType.all_
         modifier_pre_mul.filter_value = None
         effect_pre_mul = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
@@ -68,7 +68,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_pre_div.source_attribute_id = src_attr.id
         modifier_pre_div.operator = Operator.pre_div
         modifier_pre_div.target_attribute_id = tgt_attr.id
-        modifier_pre_div.location = Location.ship
+        modifier_pre_div.domain = Domain.ship
         modifier_pre_div.filter_type = FilterType.all_
         modifier_pre_div.filter_value = None
         effect_pre_div = self.ch.effect(effect_id=3, category_id=EffectCategory.passive)
@@ -83,7 +83,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_mod_add.source_attribute_id = src_attr.id
         modifier_mod_add.operator = Operator.mod_add
         modifier_mod_add.target_attribute_id = tgt_attr.id
-        modifier_mod_add.location = Location.ship
+        modifier_mod_add.domain = Domain.ship
         modifier_mod_add.filter_type = FilterType.all_
         modifier_mod_add.filter_value = None
         effect_mod_add = self.ch.effect(effect_id=4, category_id=EffectCategory.passive)
@@ -98,7 +98,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_mod_sub.source_attribute_id = src_attr.id
         modifier_mod_sub.operator = Operator.mod_sub
         modifier_mod_sub.target_attribute_id = tgt_attr.id
-        modifier_mod_sub.location = Location.ship
+        modifier_mod_sub.domain = Domain.ship
         modifier_mod_sub.filter_type = FilterType.all_
         modifier_mod_sub.filter_value = None
         effect_mod_sub = self.ch.effect(effect_id=5, category_id=EffectCategory.passive)
@@ -113,7 +113,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_post_mul.source_attribute_id = src_attr.id
         modifier_post_mul.operator = Operator.post_mul
         modifier_post_mul.target_attribute_id = tgt_attr.id
-        modifier_post_mul.location = Location.ship
+        modifier_post_mul.domain = Domain.ship
         modifier_post_mul.filter_type = FilterType.all_
         modifier_post_mul.filter_value = None
         effect_post_mul = self.ch.effect(effect_id=6, category_id=EffectCategory.passive)
@@ -128,7 +128,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_post_div.source_attribute_id = src_attr.id
         modifier_post_div.operator = Operator.post_div
         modifier_post_div.target_attribute_id = tgt_attr.id
-        modifier_post_div.location = Location.ship
+        modifier_post_div.domain = Domain.ship
         modifier_post_div.filter_type = FilterType.all_
         modifier_post_div.filter_value = None
         effect_post_div = self.ch.effect(effect_id=7, category_id=EffectCategory.passive)
@@ -143,7 +143,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_post_perc.source_attribute_id = src_attr.id
         modifier_post_perc.operator = Operator.post_percent
         modifier_post_perc.target_attribute_id = tgt_attr.id
-        modifier_post_perc.location = Location.ship
+        modifier_post_perc.domain = Domain.ship
         modifier_post_perc.filter_type = FilterType.all_
         modifier_post_perc.filter_value = None
         effect_post_perc = self.ch.effect(effect_id=8, category_id=EffectCategory.passive)

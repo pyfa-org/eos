@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Location, State
+from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Ship, Implant
 from eos.tests.stat_tracker.stat_testcase import StatTestCase
@@ -33,7 +33,7 @@ class TestPowergrid(StatTestCase):
     def test_output(self):
         # Check that modified attribute of ship is used
         ship_item = self.ch.type_(type_id=1, attributes={Attribute.power_output: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.power_output: 50}
         self.set_ship(ship_holder)
         self.assertEqual(self.st.powergrid.output, 50)
@@ -50,7 +50,7 @@ class TestPowergrid(StatTestCase):
     def test_output_no_attr(self):
         # None for output when no attribute on ship
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         self.assertIsNone(self.st.powergrid.output)
@@ -60,7 +60,7 @@ class TestPowergrid(StatTestCase):
 
     def test_use_single_rounding_up(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 55.5555555555}
         self.track_holder(holder)
         self.assertEqual(self.st.powergrid.used, 55.56)
@@ -70,7 +70,7 @@ class TestPowergrid(StatTestCase):
 
     def test_use_single_rounding_down(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.power: 44.4444444444}
         self.track_holder(holder)
         self.assertEqual(self.st.powergrid.used, 44.44)
@@ -80,10 +80,10 @@ class TestPowergrid(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.powergrid.used, 80)
@@ -94,10 +94,10 @@ class TestPowergrid(StatTestCase):
 
     def test_use_negative(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: -30}
         self.track_holder(holder2)
         self.assertEqual(self.st.powergrid.used, 20)
@@ -113,10 +113,10 @@ class TestPowergrid(StatTestCase):
 
     def test_use_state(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.powergrid.used, 50)
@@ -125,12 +125,12 @@ class TestPowergrid(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_other_class_location(self):
+    def test_use_other_class_domain(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.character, spec_set=Implant(1))
+        holder2 = Mock(state=State.online, item=item, _domain=Domain.character, spec_set=Implant(1))
         holder2.attributes = {Attribute.power: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.powergrid.used, 80)
@@ -141,14 +141,14 @@ class TestPowergrid(StatTestCase):
 
     def test_cache(self):
         ship_item = self.ch.type_(type_id=1, attributes={Attribute.power_output: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.power_output: 50}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.powergrid.used, 80)
@@ -165,14 +165,14 @@ class TestPowergrid(StatTestCase):
 
     def test_volatility(self):
         ship_item = self.ch.type_(type_id=1, attributes={Attribute.power_output: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.power_output: 50}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.power: 50}
         self.track_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.power: 30}
         self.track_holder(holder2)
         self.assertEqual(self.st.powergrid.used, 80)

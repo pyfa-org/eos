@@ -19,13 +19,13 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeModLocSrq(ModBuilderTestCase):
-    """Test parsing of trees describing modification filtered by location and skill requirement"""
+    """Test parsing of trees describing modification filtered by domain and skill requirement"""
 
     def setUp(self):
         ModBuilderTestCase.setUp(self)
@@ -74,7 +74,7 @@ class TestBuilderEtreeModLocSrq(ModBuilderTestCase):
         self.assertEqual(modifier.source_attribute_id, 491)
         self.assertEqual(modifier.operator, Operator.post_percent)
         self.assertEqual(modifier.target_attribute_id, 54)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.filter_type, FilterType.skill)
         self.assertEqual(modifier.filter_value, 3307)
         self.assertEqual(len(self.log), 0)

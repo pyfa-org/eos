@@ -28,19 +28,19 @@ class AttributeCalculatorError(EosError):
 
 
 # Exception classes used by link register
-class DirectLocationError(AttributeCalculatorError):
+class DirectDomainError(AttributeCalculatorError):
     """
-    Raised when location in Modifier object being processed cannot be
-    handled by register (set of unsupported locations is different
+    Raised when domain in Modifier object being processed cannot be
+    handled by register (set of unsupported domains is different
     for direct and filtered modifications).
     """
     pass
 
 
-class FilteredLocationError(AttributeCalculatorError):
+class FilteredDomainError(AttributeCalculatorError):
     """
-    Raised when location in Modifier object being processed cannot be
-    handled by register (set of unsupported locations is different
+    Raised when domain in Modifier object being processed cannot be
+    handled by register (set of unsupported domains is different
     for direct and filtered modifications).
     """
     pass

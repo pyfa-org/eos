@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -27,8 +27,8 @@ from eos.tests.attribute_calculator.environment import IndependentItem
 from eos.tests.environment import Logger
 
 
-class TestLocationDirectArea(AttrCalcTestCase):
-    """Test location.area for direct modifications"""
+class TestDomainDirectArea(AttrCalcTestCase):
+    """Test domain.area for direct modifications"""
 
     def test_error(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
@@ -39,20 +39,20 @@ class TestLocationDirectArea(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = tgt_attr.id
-        modifier.location = Location.area
+        modifier.domain = Domain.area
         modifier.filter_type = None
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type_(type_id=772, effects=(effect,), attributes={src_attr.id: 20}))
-        # This location just isn't used in EVE and unsupported by Eos by design
+        # This domain just isn't used in EVE and unsupported by Eos by design
         self.fit.items.add(influence_source)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         self.assertEqual(log_record.msg,
-                         'malformed modifier on item 772: unsupported target location '
-                         '{} for direct modification'.format(Location.area))
+                         'malformed modifier on item 772: unsupported target domain '
+                         '{} for direct modification'.format(Domain.area))
         self.fit.items.remove(influence_source)
         self.assert_link_buffers_empty(self.fit)

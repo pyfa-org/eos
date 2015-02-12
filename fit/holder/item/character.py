@@ -40,7 +40,7 @@ class Character(ImmutableStateMixin):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
-    def _location(self):
+    def _domain(self):
         # As character is self-sufficient entity,
         # it's not assigned to anything
         return None

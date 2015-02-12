@@ -31,7 +31,7 @@ class TestEhp(StatTestCase):
     def test_relay(self):
         # Check that stat tracker relays ehp stats properly
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.get_ehp.return_value = Mock(hull=20, armor=30, shield=40, total=60)
         self.set_ship(ship_holder)
         damage_profile = Mock()

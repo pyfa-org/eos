@@ -58,9 +58,9 @@ class Slot(IntEnum):
 
 # Class used by Modifiers and Item definitions
 @unique
-class Location(IntEnum):
+class Domain(IntEnum):
     """
-    Location specification, often relative, thus item
+    Domain specification, often relative, thus item
     context must be taken into account. Used only
     internally by Info class, item classes and calculation
     engine in general.
@@ -79,7 +79,7 @@ class Location(IntEnum):
     # is area-of-effect repair, but it's not assigned to any effects)
     area = 6
     # Target stuff in space (e.g. your launched drones and missiles);
-    # this location is Eos-specific and not taken from EVE
+    # this domain is Eos-specific and not taken from EVE
     space = 7
 
 
@@ -118,11 +118,11 @@ class FilterType(IntEnum):
     Filter type ID holder, used only internally
     by Modifier class and classes interacting with it
     """
-    # Affects all items in target location
+    # Affects all items in target domain
     all_ = 1
-    # Affects items in target location with additional filter by group
+    # Affects items in target domain with additional filter by group
     group = 2
-    # Affects items in target location with additional filter by skill
+    # Affects items in target domain with additional filter by skill
     # requirement
     skill = 3
     # Same as skill, but instead of specifying typeID of skill in filter

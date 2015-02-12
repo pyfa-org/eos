@@ -19,15 +19,15 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem, ShipItem
 
 
-class TestLocationDirectShip(AttrCalcTestCase):
-    """Test location.ship for direct modifications"""
+class TestDomainDirectShip(AttrCalcTestCase):
+    """Test domain.ship for direct modifications"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -39,7 +39,7 @@ class TestLocationDirectShip(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = self.tgt_attr.id
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         modifier.filter_type = None
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)

@@ -19,14 +19,14 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import ChargeHolder, ContainerHolder
 
 
-class TestLocationDirectOtherSwitch(AttrCalcTestCase):
+class TestDomainDirectOtherSwitch(AttrCalcTestCase):
     """Test direct modification of "other" (e.g. module's charge) when it's changed"""
 
     def setUp(self):
@@ -39,7 +39,7 @@ class TestLocationDirectOtherSwitch(AttrCalcTestCase):
         modifier.source_attribute_id = self.src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = self.tgt_attr.id
-        modifier.location = Location.other
+        modifier.domain = Domain.other
         modifier.filter_type = None
         modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)

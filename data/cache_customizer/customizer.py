@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import Type, Group, Attribute, Effect, EffectCategory
 
 
@@ -61,7 +61,7 @@ class CacheCustomizer:
                 'source_attribute_id': Attribute.missile_damage_multiplier,
                 'operator': Operator.pre_mul,
                 'target_attribute_id': damageAttr,
-                'location': Location.space,
+                'domain': Domain.space,
                 'filter_type': FilterType.skill,
                 'filter_value': Type.missile_launcher_operation
             }

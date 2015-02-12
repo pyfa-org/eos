@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
+from eos.const.eos import Domain, State
 from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
@@ -51,5 +51,5 @@ class Drone(
         super().__init__(type_id=type_id, state=state, **kwargs)
 
     @property
-    def _location(self):
-        return Location.space
+    def _domain(self):
+        return Domain.space

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -69,7 +69,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(modifier.source_attribute_id, 349)
         self.assertEqual(modifier.operator, Operator.post_percent)
         self.assertEqual(modifier.target_attribute_id, 158)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.filter_type, FilterType.group)
         self.assertEqual(modifier.filter_value, 80)
         self.assertEqual(len(self.log), 0)

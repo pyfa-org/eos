@@ -47,9 +47,9 @@ class TestAssociatedData(GeneratorTestCase):
             'fittingUsageChanceAttributeID': None, 'preExpression': None, 'postExpression': None,
             'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
             'falloffAttributeID': None, 'trackingSpeedAttributeID': None,
-            'modifierInfo': ('- domain: shipID\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 1009\n'
+            'modifierInfo': ('- domain: shipID\n  func: DomainRequiredSkillModifier\n  modifiedAttributeID: 1009\n'
                 '  modifyingAttributeID: 1008\n  operator: 6\n  skillTypeID: 3\n- domain: shipID\n'
-                '  func: LocationGroupModifier\n  groupID: 501\n  modifiedAttributeID: 1008\n'
+                '  func: DomainGroupModifier\n  groupID: 501\n  modifiedAttributeID: 1008\n'
                 '  modifyingAttributeID: 1009\n  operator: 6\n')
         })
         self.dh.data['dgmattribs'].append({
@@ -214,7 +214,7 @@ class TestAssociatedData(GeneratorTestCase):
             'fittingUsageChanceAttributeID': None, 'preExpression': 101, 'postExpression': None,
             'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
             'falloffAttributeID': None, 'trackingSpeedAttributeID': None,
-            'modifierInfo': '- domain: shipID\n  func: LocationRequiredSkillModifier\n'
+            'modifierInfo': '- domain: shipID\n  func: DomainRequiredSkillModifier\n'
                 '  modifiedAttributeID: 1009\n  modifyingAttributeID: 1008\n  operator: 6\n'
                 '  skillTypeID: 3\n'
         })

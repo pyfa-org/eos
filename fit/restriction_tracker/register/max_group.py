@@ -21,7 +21,7 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Location, Restriction
+from eos.const.eos import Domain, Restriction
 from eos.const.eve import Attribute
 from eos.fit.restriction_tracker.exception import RegisterValidationError
 from eos.util.keyed_set import KeyedSet
@@ -54,7 +54,7 @@ class MaxGroupRegister(RestrictionRegister):
 
     def register_holder(self, holder):
         # Ignore holders which do not belong to ship
-        if holder._location != Location.ship:
+        if holder._domain != Domain.ship:
             return
         group_id = holder.item.group_id
         # Ignore holders, whose item isn't assigned

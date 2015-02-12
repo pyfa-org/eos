@@ -177,7 +177,7 @@ class JsonCacheHandler(CacheHandler):
                 source_attribute_id=modifier_data[2],
                 operator=modifier_data[3],
                 target_attribute_id=modifier_data[4],
-                location=modifier_data[5],
+                domain=modifier_data[5],
                 filter_type=modifier_data[6],
                 filter_value=modifier_data[7]
             )
@@ -263,7 +263,7 @@ class JsonCacheHandler(CacheHandler):
                 modifier_row['source_attribute_id'],
                 modifier_row['operator'],
                 modifier_row['target_attribute_id'],
-                modifier_row['location'],
+                modifier_row['domain'],
                 modifier_row['filter_type'],
                 modifier_row['filter_value']
             )

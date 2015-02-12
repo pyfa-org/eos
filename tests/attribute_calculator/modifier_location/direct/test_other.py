@@ -19,15 +19,15 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import ChargeHolder, ContainerHolder, IndependentItem
 
 
-class TestLocationDirectOther(AttrCalcTestCase):
-    """Test location.other for direct modifications"""
+class TestDomainDirectOther(AttrCalcTestCase):
+    """Test domain.other for direct modifications"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -39,13 +39,13 @@ class TestLocationDirectOther(AttrCalcTestCase):
         modifier.source_attribute_id = self.src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = self.tgt_attr.id
-        modifier.location = Location.other
+        modifier.domain = Domain.other
         modifier.filter_type = None
         modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
-    def test_other_location_container(self):
+    def test_other_domain_container(self):
         influence_source = ContainerHolder(self.ch.type_(type_id=1, effects=(self.effect,),
                                            attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
@@ -62,7 +62,7 @@ class TestLocationDirectOther(AttrCalcTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
-    def test_other_location_charge(self):
+    def test_other_domain_charge(self):
         influence_source = ChargeHolder(self.ch.type_(type_id=1, effects=(self.effect,),
                                         attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)

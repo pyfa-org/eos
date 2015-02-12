@@ -39,5 +39,5 @@ class EffectBeacon(ImmutableStateMixin):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
-    def _location(self):
+    def _domain(self):
         return None

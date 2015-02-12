@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.tests.environment import Logger
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
@@ -54,7 +54,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
             'effect_id': 1,
             'effect_category': EffectCategory.passive,
             'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: LocationGroupModifier\n'
+                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: DomainGroupModifier\n'
                 '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
         }
         modifiers, status = self.run_builder(effect_row)
@@ -116,7 +116,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.character)
+        self.assertEqual(modifier.domain, Domain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 44)
         self.assertEqual(modifier.operator, Operator.post_assignment)
@@ -138,7 +138,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.location, Location.ship)
+        self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 11)
         self.assertEqual(modifier.operator, Operator.post_percent)

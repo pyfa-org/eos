@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Restriction, Location, State
+from eos.const.eos import Restriction, Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
@@ -34,9 +34,9 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure error is raised for all holders exceeding
         # their group restriction
         item = self.ch.type_(type_id=1, group_id=6, attributes={Attribute.max_group_fitted: 1})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
         self.assertIsNotNone(restriction_error1)
@@ -57,10 +57,10 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure error is raised for just holders which excess
         # restriction, even if both are from the same group
         item1 = self.ch.type_(type_id=1, group_id=92, attributes={Attribute.max_group_fitted: 1})
-        holder1 = Mock(state=State.offline, item=item1, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item1, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
         item2 = self.ch.type_(type_id=2, group_id=92, attributes={Attribute.max_group_fitted: 2})
-        holder2 = Mock(state=State.offline, item=item2, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item2, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
         self.assertIsNotNone(restriction_error1)
@@ -77,11 +77,11 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_mix_excess_original(self):
         # Check that original item attributes are used
         item1 = self.ch.type_(type_id=1, group_id=61, attributes={Attribute.max_group_fitted: 1})
-        holder1 = Mock(state=State.offline, item=item1, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item1, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.max_group_fitted: 2}
         self.track_holder(holder1)
         item2 = self.ch.type_(type_id=2, group_id=61, attributes={Attribute.max_group_fitted: 2})
-        holder2 = Mock(state=State.offline, item=item2, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item2, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.max_group_fitted: 1}
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
@@ -100,9 +100,9 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure no errors are raised when number of added
         # items doesn't exceed any restrictions
         item = self.ch.type_(type_id=1, group_id=860, attributes={Attribute.max_group_fitted: 2})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
         self.assertIsNone(restriction_error1)
@@ -116,9 +116,9 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_pass_holder_none_group(self):
         # Check that holders with None group are not affected
         item = self.ch.type_(type_id=1, group_id=None, attributes={Attribute.max_group_fitted: 1})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
         self.assertIsNone(restriction_error1)
@@ -132,9 +132,9 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_pass_holder_non_ship(self):
         # Holders not belonging to ship shouldn't be affected
         item = self.ch.type_(type_id=1, group_id=12, attributes={Attribute.max_group_fitted: 1})
-        holder1 = Mock(state=State.offline, item=item, _location=None, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _location=None, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=ModuleHigh(1))
         self.track_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
         self.assertIsNone(restriction_error1)

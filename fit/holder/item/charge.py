@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, State
+from eos.const.eos import Domain, State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 
 
@@ -41,5 +41,5 @@ class Charge(ImmutableStateMixin):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
-    def _location(self):
-        return Location.space
+    def _domain(self):
+        return Domain.space

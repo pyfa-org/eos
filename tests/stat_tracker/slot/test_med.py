@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Location, State
+from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Ship
 from eos.tests.stat_tracker.stat_testcase import StatTestCase
@@ -32,7 +32,7 @@ class TestMedSlot(StatTestCase):
     def test_output(self):
         # Check that modified attribute of ship is used
         ship_item = self.ch.type_(type_id=1, attributes={Attribute.med_slots: 2})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_holder)
         self.assertEqual(self.st.med_slots.total, 6)
@@ -49,7 +49,7 @@ class TestMedSlot(StatTestCase):
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         self.assertIsNone(self.st.med_slots.total)
@@ -64,8 +64,8 @@ class TestMedSlot(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.med.append(holder1)
         self.fit.modules.med.append(holder2)
         self.assertEqual(self.st.med_slots.used, 2)
@@ -74,8 +74,8 @@ class TestMedSlot(StatTestCase):
 
     def test_use_multiple_with_none(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.med.append(None)
         self.fit.modules.med.append(holder1)
         self.fit.modules.med.append(None)
@@ -86,7 +86,7 @@ class TestMedSlot(StatTestCase):
 
     def test_use_other_container(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder)
         self.assertEqual(self.st.med_slots.used, 0)
         self.assertEqual(len(self.log), 0)
@@ -94,12 +94,12 @@ class TestMedSlot(StatTestCase):
 
     def test_cache(self):
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.med.append(holder1)
         self.fit.modules.med.append(holder2)
         self.assertEqual(self.st.med_slots.used, 2)
@@ -114,12 +114,12 @@ class TestMedSlot(StatTestCase):
 
     def test_volatility(self):
         ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.med.append(holder1)
         self.fit.modules.med.append(holder2)
         self.assertEqual(self.st.med_slots.used, 2)

@@ -35,7 +35,7 @@ class Modifier:
         source_attribute_id=None,
         operator=None,
         target_attribute_id=None,
-        location=None,
+        domain=None,
         filter_type=None,
         filter_value=None
     ):
@@ -64,9 +64,9 @@ class Modifier:
         # must be integer which refers attribute via ID.
         self.target_attribute_id = target_attribute_id
 
-        # Target location to change, must be eos.const.eos.Location
+        # Target domain to change, must be eos.const.eos.Domain
         # class' attribute value.
-        self.location = location
+        self.domain = domain
 
         # Filter type of the modification, must be None or
         # eos.const.eos.FilterType class' attribute value.

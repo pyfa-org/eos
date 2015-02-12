@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -74,7 +74,7 @@ class TestBuilderEtreeModOwnSrq(ModBuilderTestCase):
         self.assertEqual(modifier.source_attribute_id, 1156)
         self.assertEqual(modifier.operator, Operator.post_percent)
         self.assertEqual(modifier.target_attribute_id, 1372)
-        self.assertEqual(modifier.location, Location.space)
+        self.assertEqual(modifier.domain, Domain.space)
         self.assertEqual(modifier.filter_type, FilterType.skill)
         self.assertEqual(modifier.filter_value, 3412)
         self.assertEqual(len(self.log), 0)

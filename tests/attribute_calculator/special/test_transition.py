@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -48,7 +48,7 @@ class TestTransitionFit(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = tgt_attr.id
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -89,7 +89,7 @@ class TestTransitionFit(AttrCalcTestCase):
         modifier.source_attribute_id = 1
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = 2
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
         effect1 = cache_handler1.effect(effect_id=1, category_id=EffectCategory.passive)

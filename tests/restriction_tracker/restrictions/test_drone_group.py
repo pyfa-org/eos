@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Location, Restriction, State
+from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Drone, Ship, Implant
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
@@ -35,10 +35,10 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # first restriction attribute
         item = self.ch.type_(type_id=1, group_id=56)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNotNone(restriction_error)
@@ -54,10 +54,10 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # second restriction attribute
         item = self.ch.type_(type_id=1, group_id=797)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_2: 69})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNotNone(restriction_error)
@@ -73,11 +73,11 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # both restriction attributes
         item = self.ch.type_(type_id=1, group_id=803)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 48,
                                                          Attribute.allowed_drone_group_2: 106})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNotNone(restriction_error)
@@ -95,10 +95,10 @@ class TestDroneGroup(RestrictionTestCase):
         # to modified restriction attribute. Effectively
         # we check that original attribute value is taken
         item = self.ch.type_(type_id=1, group_id=37)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 59})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.allowed_drone_group_1: 37}
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -114,10 +114,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that drone from None group is subject
         # to restriction
         item = self.ch.type_(type_id=1, group_id=None)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 1896})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNotNone(restriction_error)
@@ -132,7 +132,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction isn't applied
         # when fit doesn't have ship
         item = self.ch.type_(type_id=1, group_id=None)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNone(restriction_error)
@@ -145,10 +145,10 @@ class TestDroneGroup(RestrictionTestCase):
         # when fit has ship, but without restriction
         # attribute
         item = self.ch.type_(type_id=1, group_id=71)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2)
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNone(restriction_error)
@@ -161,10 +161,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction is not applied
         # to holders which are not drones
         item = self.ch.type_(type_id=1, group_id=56)
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Implant(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNone(restriction_error)
@@ -177,10 +177,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to first restriction attribute is added
         item = self.ch.type_(type_id=1, group_id=22)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 22})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNone(restriction_error)
@@ -193,10 +193,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to second restriction attribute is added
         item = self.ch.type_(type_id=1, group_id=67)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_2: 67})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNone(restriction_error)
@@ -210,11 +210,11 @@ class TestDroneGroup(RestrictionTestCase):
         # matching to any of two restriction attributes
         # is added
         item = self.ch.type_(type_id=1, group_id=53)
-        holder = Mock(state=State.offline, item=item, _location=Location.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 907,
                                                          Attribute.allowed_drone_group_2: 53})
-        ship_holder = Mock(state=State.offline, item=ship_item, _location=None, spec_set=Ship(1))
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
         self.assertIsNone(restriction_error)

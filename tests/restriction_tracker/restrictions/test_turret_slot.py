@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Location, Restriction, Slot, State
+from eos.const.eos import Domain, Restriction, Slot, State
 from eos.fit.holder.item import Implant, ModuleHigh
 from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
@@ -34,7 +34,7 @@ class TestTurretSlot(RestrictionTestCase):
         # slots exceeds slot amount provided by ship
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = 0
@@ -46,11 +46,11 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_fail_excess_signle_other_class_location(self):
+    def test_fail_excess_signle_other_class_domain(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _location=Location.character, spec_set=Implant(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Implant(1))
         self.track_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = 0
@@ -67,7 +67,7 @@ class TestTurretSlot(RestrictionTestCase):
         # make sure it's assumed to be 0
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = None
@@ -83,8 +83,8 @@ class TestTurretSlot(RestrictionTestCase):
         # Check that error works for multiple holders
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.fit.stats.turret_slots.used = 2
@@ -105,8 +105,8 @@ class TestTurretSlot(RestrictionTestCase):
     def test_pass_equal(self):
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.fit.stats.turret_slots.used = 2
@@ -123,8 +123,8 @@ class TestTurretSlot(RestrictionTestCase):
     def test_pass_greater(self):
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder1)
         self.track_holder(holder2)
         self.fit.stats.turret_slots.used = 2
@@ -141,7 +141,7 @@ class TestTurretSlot(RestrictionTestCase):
     def test_pass_other_slot(self):
         item = self.ch.type_(type_id=1)
         item.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, item=item, _location=Location.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = 0

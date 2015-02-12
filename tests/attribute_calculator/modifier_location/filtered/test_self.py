@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -27,8 +27,8 @@ from eos.tests.attribute_calculator.environment import IndependentItem, Characte
 from eos.tests.environment import Logger
 
 
-class TestLocationFilterSelf(AttrCalcTestCase):
-    """Test location.self (self-reference) for filtered modifications"""
+class TestDomainFilterSelf(AttrCalcTestCase):
+    """Test domain.self (self-reference) for filtered modifications"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -40,7 +40,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = self.tgt_attr.id
-        modifier.location = Location.self_
+        modifier.domain = Domain.self_
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -72,7 +72,7 @@ class TestLocationFilterSelf(AttrCalcTestCase):
 
     def test_unpositioned_error(self):
         # Here we do not position holder in fit, this way attribute
-        # calculator won't know that source is 'owner' of some location
+        # calculator won't know that source is 'owner' of some domain
         # and will log corresponding error
         self.fit.items.add(self.influence_source)
         self.assertEqual(len(self.log), 1)

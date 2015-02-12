@@ -50,11 +50,11 @@ class Action:
         # must be integer which refers attribute via ID.
         self.target_attribute_id = None
 
-        # Target location to change:
+        # Target domain to change:
         # For action types belonging to gang group, must be None
-        # For other action types must be eos.const.eos.Location
+        # For other action types must be eos.const.eos.Domain
         # class' attribute value.
-        self.target_location = None
+        self.target_domain = None
 
         # Items only belonging to this group will be affected by action:
         # For action types which include group filter, must be integer
@@ -99,7 +99,7 @@ class Action:
             self.source_attribute_id != other.source_attribute_id or
             self.operator != other.operator or
             self.target_attribute_id != other.target_attribute_id or
-            self.target_location != other.target_location or
+            self.target_domain != other.target_domain or
             self.target_group_id != other.target_group_id or
             self.target_skill_requirement_id != other.target_skill_requirement_id or
             self.target_skill_requirement_self is not other.target_skill_requirement_self

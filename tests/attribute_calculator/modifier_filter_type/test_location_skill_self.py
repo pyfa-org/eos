@@ -19,16 +19,16 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem, ShipItem
 
 
-class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
+class TestFilterDomainSkillrqSelf(AttrCalcTestCase):
     """
-    Test location-skill requirement filter, where skill
+    Test domain-skill requirement filter, where skill
     requirement references typeID of modifier carrier
     """
 
@@ -42,7 +42,7 @@ class TestFilterLocationSkillrqSelf(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = self.tgt_attr.id
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         modifier.filter_type = FilterType.skill_self
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
         effect.modifiers = (modifier,)

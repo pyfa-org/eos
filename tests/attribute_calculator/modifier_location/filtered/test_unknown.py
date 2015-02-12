@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -27,8 +27,8 @@ from eos.tests.attribute_calculator.environment import IndependentItem, ShipItem
 from eos.tests.environment import Logger
 
 
-class TestLocationFilterUnknown(AttrCalcTestCase):
-    """Test reaction to unknown location specification for filtered modification"""
+class TestDomainFilterUnknown(AttrCalcTestCase):
+    """Test reaction to unknown domain specification for filtered modification"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -40,7 +40,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         invalid_modifier.source_attribute_id = self.src_attr.id
         invalid_modifier.operator = Operator.post_percent
         invalid_modifier.target_attribute_id = self.tgt_attr.id
-        invalid_modifier.location = 1972
+        invalid_modifier.domain = 1972
         invalid_modifier.filter_type = FilterType.all_
         invalid_modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -56,7 +56,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.assertEqual(log_record.levelno, Logger.WARNING)
         self.assertEqual(log_record.msg,
                          'malformed modifier on item 754: unsupported target '
-                         'location 1972 for filtered modification')
+                         'domain 1972 for filtered modification')
         self.fit.items.remove(holder)
         self.assert_link_buffers_empty(self.fit)
 
@@ -67,7 +67,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         valid_modifier.source_attribute_id = self.src_attr.id
         valid_modifier.operator = Operator.post_percent
         valid_modifier.target_attribute_id = self.tgt_attr.id
-        valid_modifier.location = Location.ship
+        valid_modifier.domain = Domain.ship
         valid_modifier.filter_type = FilterType.all_
         valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
@@ -76,7 +76,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.fit.items.add(influence_source)
         influence_target = ShipItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
-        # Invalid location in modifier should prevent proper processing of other modifiers
+        # Invalid domain in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target)
         self.fit.items.remove(influence_source)

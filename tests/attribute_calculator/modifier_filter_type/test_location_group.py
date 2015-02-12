@@ -19,15 +19,15 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem, ShipItem, SpaceItem
 
 
-class TestFilterLocationGroup(AttrCalcTestCase):
-    """Test location-group filter"""
+class TestFilterDomainGroup(AttrCalcTestCase):
+    """Test domain-group filter"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -39,7 +39,7 @@ class TestFilterLocationGroup(AttrCalcTestCase):
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = self.tgt_attr.id
-        modifier.location = Location.ship
+        modifier.domain = Domain.ship
         modifier.filter_type = FilterType.group
         modifier.filter_value = 35
         effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -58,7 +58,7 @@ class TestFilterLocationGroup(AttrCalcTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
-    def test_other_location(self):
+    def test_other_domain(self):
         influence_target = SpaceItem(self.ch.type_(type_id=2, group_id=35, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)

@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from eos.const.eos import Location, FilterType
+from eos.const.eos import Domain, FilterType
 from eos.util.keyed_set import KeyedSet
-from .exception import DirectLocationError, FilteredLocationError, FilteredSelfReferenceError, FilterTypeError
+from .exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, FilterTypeError
 
 
 class LinkRegister:
@@ -42,36 +42,36 @@ class LinkRegister:
         # keeping data for
         self._fit = fit
 
-        # Keep track of holders belonging to certain location
-        # Format: {location: {targetHolders}}
-        self.__affectee_location = KeyedSet()
+        # Keep track of holders belonging to certain domain
+        # Format: {domain: {targetHolders}}
+        self.__affectee_domain = KeyedSet()
 
-        # Keep track of holders belonging to certain location and group
-        # Format: {(location, group): {targetHolders}}
-        self.__affectee_location_group = KeyedSet()
+        # Keep track of holders belonging to certain domain and group
+        # Format: {(domain, group): {targetHolders}}
+        self.__affectee_domain_group = KeyedSet()
 
-        # Keep track of holders belonging to certain location and having certain skill requirement
-        # Format: {(location, skill): {targetHolders}}
-        self.__affectee_location_skill = KeyedSet()
+        # Keep track of holders belonging to certain domain and having certain skill requirement
+        # Format: {(domain, skill): {targetHolders}}
+        self.__affectee_domain_skill = KeyedSet()
 
-        # Keep track of affectors influencing all holders belonging to certain location
-        # Format: {location: {affectors}}
-        self.__affector_location = KeyedSet()
+        # Keep track of affectors influencing all holders belonging to certain domain
+        # Format: {domain: {affectors}}
+        self.__affector_domain = KeyedSet()
 
-        # Keep track of affectors influencing holders belonging to certain location and group
-        # Format: {(location, group): {affectors}}
-        self.__affector_location_group = KeyedSet()
+        # Keep track of affectors influencing holders belonging to certain domain and group
+        # Format: {(domain, group): {affectors}}
+        self.__affector_domain_group = KeyedSet()
 
-        # Keep track of affectors influencing holders belonging to certain location and having certain skill requirement
-        # Format: {(location, skill): {affectors}}
-        self.__affector_location_skill = KeyedSet()
+        # Keep track of affectors influencing holders belonging to certain domain and having certain skill requirement
+        # Format: {(domain, skill): {affectors}}
+        self.__affector_domain_skill = KeyedSet()
 
         # Keep track of affectors influencing holders directly
         # Format: {targetHolder: {affectors}}
         self.__active_direct_affectors = KeyedSet()
 
         # Keep track of affectors which influence something directly,
-        # but are disabled as their target location is not available
+        # but are disabled as their target domain is not available
         # Format: {source_holder: {affectors}}
         self.__disabled_direct_affectors = KeyedSet()
 
@@ -88,12 +88,12 @@ class LinkRegister:
             affectee_map.add_data(key, target_holder)
         # Check if we have affectors which should directly influence passed holder,
         # but are disabled; enable them if there're any
-        enable_direct = self.__get_holder_direct_location(target_holder)
+        enable_direct = self.__get_holder_direct_domain(target_holder)
         if enable_direct is None:
             return
-        if enable_direct == Location.other:
+        if enable_direct == Domain.other:
             self.__enable_direct_other(target_holder)
-        elif enable_direct in (Location.character, Location.ship):
+        elif enable_direct in (Domain.character, Domain.ship):
             self.__enable_direct_spec(target_holder, enable_direct)
 
     def unregister_affectee(self, target_holder):
@@ -108,12 +108,12 @@ class LinkRegister:
             affectee_map.rm_data(key, target_holder)
         # When removing holder from register, make sure to move modifiers which
         # originate from 'other' holders and directly affect it to disabled map
-        disable_direct = self.__get_holder_direct_location(target_holder)
+        disable_direct = self.__get_holder_direct_domain(target_holder)
         if disable_direct is None:
             return
-        if disable_direct == Location.other:
+        if disable_direct == Domain.other:
             self.__disable_direct_other(target_holder)
-        elif disable_direct in (Location.character, Location.ship):
+        elif disable_direct in (Domain.character, Domain.ship):
             self.__disable_direct_spec(target_holder)
 
     def register_affector(self, affector):
@@ -162,40 +162,40 @@ class LinkRegister:
         source_holder, modifier = affector
         affectees = set()
         try:
-            # For direct modification, make set out of single target location
+            # For direct modification, make set out of single target domain
             if modifier.filter_type is None:
-                if modifier.location == Location.self_:
+                if modifier.domain == Domain.self_:
                     target = {source_holder}
-                elif modifier.location == Location.character:
+                elif modifier.domain == Domain.character:
                     char = self._fit.character
                     target = {char} if char is not None else None
-                elif modifier.location == Location.ship:
+                elif modifier.domain == Domain.ship:
                     ship = self._fit.ship
                     target = {ship} if ship is not None else None
-                elif modifier.location == Location.other:
+                elif modifier.domain == Domain.other:
                     other_holder = self.__get_other_linked_holder(source_holder)
                     target = {other_holder} if other_holder is not None else None
                 else:
-                    raise DirectLocationError(modifier.location)
+                    raise DirectDomainError(modifier.domain)
             # For filtered modifications, pick appropriate dictionary and get set
             # with target holders
             elif modifier.filter_type == FilterType.all_:
-                key = self.__contextize_filter_location(affector)
-                target = self.__affectee_location.get(key) or set()
+                key = self.__contextize_filter_domain(affector)
+                target = self.__affectee_domain.get(key) or set()
             elif modifier.filter_type == FilterType.group:
-                location = self.__contextize_filter_location(affector)
-                key = (location, modifier.filter_value)
-                target = self.__affectee_location_group.get(key) or set()
+                domain = self.__contextize_filter_domain(affector)
+                key = (domain, modifier.filter_value)
+                target = self.__affectee_domain_group.get(key) or set()
             elif modifier.filter_type == FilterType.skill:
-                location = self.__contextize_filter_location(affector)
+                domain = self.__contextize_filter_domain(affector)
                 skill = affector.modifier.filter_value
-                key = (location, skill)
-                target = self.__affectee_location_skill.get(key) or set()
+                key = (domain, skill)
+                target = self.__affectee_domain_skill.get(key) or set()
             elif modifier.filter_type == FilterType.skill_self:
-                location = self.__contextize_filter_location(affector)
+                domain = self.__contextize_filter_domain(affector)
                 skill = affector.source_holder.item.id
-                key = (location, skill)
-                target = self.__affectee_location_skill.get(key) or set()
+                key = (domain, skill)
+                target = self.__affectee_domain_skill.get(key) or set()
             else:
                 raise FilterTypeError(modifier.filter_type)
             # Add our set to affectees
@@ -222,15 +222,15 @@ class LinkRegister:
         affectors = set()
         # Add all affectors which directly affect it
         affectors.update(self.__active_direct_affectors.get(target_holder) or set())
-        # Then all affectors which affect location of passed holder
-        location = target_holder._location
-        affectors.update(self.__affector_location.get(location) or set())
-        # All affectors which affect location and group of passed holder
+        # Then all affectors which affect domain of passed holder
+        domain = target_holder._domain
+        affectors.update(self.__affector_domain.get(domain) or set())
+        # All affectors which affect domain and group of passed holder
         group = target_holder.item.group_id
-        affectors.update(self.__affector_location_group.get((location, group)) or set())
-        # Same, but for location & skill requirement of passed holder
+        affectors.update(self.__affector_domain_group.get((domain, group)) or set())
+        # Same, but for domain & skill requirement of passed holder
         for skill in target_holder.item.required_skills:
-            affectors.update(self.__affector_location_skill.get((location, skill)) or set())
+            affectors.update(self.__affector_domain_skill.get((domain, skill)) or set())
         return affectors
 
     # General-purpose auxiliary methods
@@ -247,14 +247,14 @@ class LinkRegister:
         """
         # Container which temporarily holds (key, map) tuples
         affectee_maps = []
-        location = target_holder._location
-        if location is not None:
-            affectee_maps.append((location, self.__affectee_location))
+        domain = target_holder._domain
+        if domain is not None:
+            affectee_maps.append((domain, self.__affectee_domain))
             group = target_holder.item.group_id
             if group is not None:
-                affectee_maps.append(((location, group), self.__affectee_location_group))
+                affectee_maps.append(((domain, group), self.__affectee_domain_group))
             for skill in target_holder.item.required_skills:
-                affectee_maps.append(((location, skill), self.__affectee_location_skill))
+                affectee_maps.append(((domain, skill), self.__affectee_domain_skill))
         return affectee_maps
 
     def __get_affector_map(self, affector):
@@ -270,12 +270,12 @@ class LinkRegister:
 
         Possible exceptions:
         FilteredSelfReferenceError -- raised if affector's modifier specifies
-        filtered modification and target location refers self, but affector's
+        filtered modification and target domain refers self, but affector's
         holder isn't in position to be target for filtered modifications
-        DirectLocationError -- raised when affector's modifier target
-        location is not supported for direct modification
-        FilteredLocationError -- raised when affector's modifier target
-        location is not supported for filtered modification
+        DirectDomainError -- raised when affector's modifier target
+        domain is not supported for direct modification
+        FilteredDomainError -- raised when affector's modifier target
+        domain is not supported for filtered modification
         FilterTypeError -- raised when affector's modifier filter type is not
         supported
         """
@@ -283,11 +283,11 @@ class LinkRegister:
         # For each filter type, define affector map and key to use
         if modifier.filter_type is None:
             # For direct modifications, we need to properly pick
-            # target holder (it's key) based on location
-            if modifier.location == Location.self_:
+            # target holder (it's key) based on domain
+            if modifier.domain == Domain.self_:
                 affector_map = self.__active_direct_affectors
                 key = source_holder
-            elif modifier.location == Location.character:
+            elif modifier.domain == Domain.character:
                 char = self._fit.character
                 if char is not None:
                     affector_map = self.__active_direct_affectors
@@ -295,7 +295,7 @@ class LinkRegister:
                 else:
                     affector_map = self.__disabled_direct_affectors
                     key = source_holder
-            elif modifier.location == Location.ship:
+            elif modifier.domain == Domain.ship:
                 ship = self._fit.ship
                 if ship is not None:
                     affector_map = self.__active_direct_affectors
@@ -303,9 +303,9 @@ class LinkRegister:
                 else:
                     affector_map = self.__disabled_direct_affectors
                     key = source_holder
-            # When other location is referenced, it means direct reference to module's charge
+            # When other domain is referenced, it means direct reference to module's charge
             # or to charge's module-container
-            elif modifier.location == Location.other:
+            elif modifier.domain == Domain.other:
                 other_holder = self.__get_other_linked_holder(source_holder)
                 if other_holder is not None:
                     affector_map = self.__active_direct_affectors
@@ -316,27 +316,27 @@ class LinkRegister:
                     affector_map = self.__disabled_direct_affectors
                     key = source_holder
             else:
-                raise DirectLocationError(modifier.location)
+                raise DirectDomainError(modifier.domain)
         # For filtered modifications, compose key, making sure reference to self
-        # is converted into appropriate real location
+        # is converted into appropriate real domain
         elif modifier.filter_type == FilterType.all_:
-            affector_map = self.__affector_location
-            location = self.__contextize_filter_location(affector)
-            key = location
+            affector_map = self.__affector_domain
+            domain = self.__contextize_filter_domain(affector)
+            key = domain
         elif modifier.filter_type == FilterType.group:
-            affector_map = self.__affector_location_group
-            location = self.__contextize_filter_location(affector)
-            key = (location, modifier.filter_value)
+            affector_map = self.__affector_domain_group
+            domain = self.__contextize_filter_domain(affector)
+            key = (domain, modifier.filter_value)
         elif modifier.filter_type == FilterType.skill:
-            affector_map = self.__affector_location_skill
-            location = self.__contextize_filter_location(affector)
+            affector_map = self.__affector_domain_skill
+            domain = self.__contextize_filter_domain(affector)
             skill = affector.modifier.filter_value
-            key = (location, skill)
+            key = (domain, skill)
         elif modifier.filter_type == FilterType.skill_self:
-            affector_map = self.__affector_location_skill
-            location = self.__contextize_filter_location(affector)
+            affector_map = self.__affector_domain_skill
+            domain = self.__contextize_filter_domain(affector)
             skill = affector.source_holder.item.id
-            key = (location, skill)
+            key = (domain, skill)
         else:
             raise FilterTypeError(modifier.filter_type)
         return key, affector_map
@@ -352,13 +352,13 @@ class LinkRegister:
         error -- Exception instance which was caught and needs to be handled
         affector -- affector object, which was being processed when error occurred
         """
-        if isinstance(error, DirectLocationError):
-            msg = 'malformed modifier on item {}: unsupported target location {} for direct modification'.format(
+        if isinstance(error, DirectDomainError):
+            msg = 'malformed modifier on item {}: unsupported target domain {} for direct modification'.format(
                 affector.source_holder.item.id, error.args[0])
             signature = (type(error), affector.source_holder.item.id, error.args[0])
             self._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
-        elif isinstance(error, FilteredLocationError):
-            msg = 'malformed modifier on item {}: unsupported target location {} for filtered modification'.format(
+        elif isinstance(error, FilteredDomainError):
+            msg = 'malformed modifier on item {}: unsupported target domain {} for filtered modification'.format(
                 affector.source_holder.item.id, error.args[0])
             signature = (type(error), affector.source_holder.item.id, error.args[0])
             self._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
@@ -376,79 +376,79 @@ class LinkRegister:
             raise error
 
     # Methods which help to process filtered modifications
-    def __contextize_filter_location(self, affector):
+    def __contextize_filter_domain(self, affector):
         """
-        Convert location self-reference to real location, like
+        Convert domain self-reference to real domain, like
         character or ship. Used only in modifications of multiple
         filtered holders, direct modifications are processed out
         of the context of this method.
 
         Required arguments:
-        affector -- affector, whose modifier refers location in question
+        affector -- affector, whose modifier refers domain in question
 
         Return value:
-        Real contextized location
+        Real contextized domain
 
         Possible exceptions:
         FilteredSelfReferenceError -- raised if affector's modifier
         refers self, but affector's holder isn't in position to be
         target for filtered modifications
-        FilteredLocationError -- raised when affector's modifier
-        target location is not supported for filtered modification
+        FilteredDomainError -- raised when affector's modifier
+        target domain is not supported for filtered modification
         """
         source_holder = affector.source_holder
-        target_location = affector.modifier.location
+        target_domain = affector.modifier.domain
         # Reference to self is sparingly used in ship effects, so we must convert
-        # it to real location
-        if target_location == Location.self_:
+        # it to real domain
+        if target_domain == Domain.self_:
             if source_holder is self._fit.ship:
-                return Location.ship
+                return Domain.ship
             elif source_holder is self._fit.character:
-                return Location.character
+                return Domain.character
             else:
                 raise FilteredSelfReferenceError
-        # Just return untouched location for all other valid cases
-        elif target_location in (Location.character, Location.ship, Location.space):
-            return target_location
-        # Raise error if location is invalid
+        # Just return untouched domain for all other valid cases
+        elif target_domain in (Domain.character, Domain.ship, Domain.space):
+            return target_domain
+        # Raise error if domain is invalid
         else:
-            raise FilteredLocationError(target_location)
+            raise FilteredDomainError(target_domain)
 
     # Methods which help to process direct modifications
-    def __get_holder_direct_location(self, holder):
+    def __get_holder_direct_domain(self, holder):
         """
-        Get location which you need to target to apply
+        Get domain which you need to target to apply
         direct modification to passed holder.
 
         Required arguments:
         holder -- holder in question
 
         Return value:
-        Location specification, if holder can be targeted directly
+        Domain specification, if holder can be targeted directly
         from the outside, or None if it can't
         """
         # For ship and character it's easy, we're just picking
-        # corresponding location
+        # corresponding domain
         if holder is self._fit.ship:
-            location = Location.ship
+            domain = Domain.ship
         elif holder is self._fit.character:
-            location = Location.character
-        # For "other" location, we should've checked for presence
+            domain = Domain.character
+        # For "other" domain, we should've checked for presence
         # of other entity - charge's container or module's charge
         elif self.__get_other_linked_holder(holder) is not None:
-            location = Location.other
+            domain = Domain.other
         else:
-            location = None
-        return location
+            domain = None
+        return domain
 
-    def __enable_direct_spec(self, target_holder, target_location):
+    def __enable_direct_spec(self, target_holder, target_domain):
         """
         Enable temporarily disabled affectors, directly targeting holder in
-        specific location.
+        specific domain.
 
         Required arguments:
         target_holder -- holder which is being registered
-        target_location -- location, to which holder is being registered
+        target_domain -- domain, to which holder is being registered
         """
         # Format: {source_holder: [affectors]}
         affectors_to_enable = {}
@@ -457,8 +457,8 @@ class LinkRegister:
             for affector in affector_set:
                 modifier = affector.modifier
                 # Mark affector as to-be-enabled only when it
-                # targets passed target location
-                if modifier.location == target_location:
+                # targets passed target domain
+                if modifier.domain == target_domain:
                     source_affectors = affectors_to_enable.setdefault(source_holder, [])
                     source_affectors.append(affector)
         # Bail if we have nothing to do
@@ -471,7 +471,7 @@ class LinkRegister:
 
     def __disable_direct_spec(self, target_holder):
         """
-        Disable affectors, directly targeting holder in specific location.
+        Disable affectors, directly targeting holder in specific domain.
 
         Required arguments:
         target_holder -- holder which is being unregistered
@@ -495,13 +495,13 @@ class LinkRegister:
     def __enable_direct_other(self, target_holder):
         """
         Enable temporarily disabled affectors, directly targeting passed holder,
-        originating from holder in "other" location.
+        originating from holder in "other" domain.
 
         Required arguments:
         target_holder -- holder which is being registered
         """
         other_holder = self.__get_other_linked_holder(target_holder)
-        # If passed holder doesn't have other location (charge's module
+        # If passed holder doesn't have other domain (charge's module
         # or module's charge), do nothing
         if other_holder is None:
             return
@@ -509,7 +509,7 @@ class LinkRegister:
         affectors_to_enable = set()
         for affector in self.__disabled_direct_affectors.get(other_holder) or ():
             modifier = affector.modifier
-            if modifier.location == Location.other:
+            if modifier.domain == Domain.other:
                 affectors_to_enable.add(affector)
         # Bail if we have nothing to do
         if not affectors_to_enable:
@@ -521,7 +521,7 @@ class LinkRegister:
     def __disable_direct_other(self, target_holder):
         """
         Disable affectors, directly targeting passed holder, originating from
-        holder in "other" location.
+        holder in "other" domain.
 
         Required arguments:
         target_holder -- holder which is being unregistered

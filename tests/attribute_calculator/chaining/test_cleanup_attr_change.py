@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -39,7 +39,7 @@ class TestCleanupChainChange(AttrCalcTestCase):
         modifier1.source_attribute_id = attr1.id
         modifier1.operator = Operator.post_mul
         modifier1.target_attribute_id = attr2.id
-        modifier1.location = Location.ship
+        modifier1.domain = Domain.ship
         modifier1.filter_type = None
         modifier1.filter_value = None
         effect1 = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
@@ -51,7 +51,7 @@ class TestCleanupChainChange(AttrCalcTestCase):
         modifier2.source_attribute_id = attr2.id
         modifier2.operator = Operator.post_percent
         modifier2.target_attribute_id = attr3.id
-        modifier2.location = Location.ship
+        modifier2.domain = Domain.ship
         modifier2.filter_type = FilterType.all_
         modifier2.filter_value = None
         effect2 = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
