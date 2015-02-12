@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Context, Operator
+from eos.const.eos import State, Location, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -38,7 +38,7 @@ class TestStateSwitching(AttrCalcTestCase):
         src_attr4 = self.ch.attribute(attribute_id=5)
         modifier_off = Modifier()
         modifier_off.state = State.offline
-        modifier_off.context = Context.local
+        modifier_off.scope = Scope.local
         modifier_off.source_attribute_id = src_attr1.id
         modifier_off.operator = Operator.post_mul
         modifier_off.target_attribute_id = self.tgt_attr.id
@@ -47,7 +47,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_off.filter_value = None
         modifier_on = Modifier()
         modifier_on.state = State.online
-        modifier_on.context = Context.local
+        modifier_on.scope = Scope.local
         modifier_on.source_attribute_id = src_attr2.id
         modifier_on.operator = Operator.post_mul
         modifier_on.target_attribute_id = self.tgt_attr.id
@@ -56,7 +56,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_on.filter_value = None
         modifier_act = Modifier()
         modifier_act.state = State.active
-        modifier_act.context = Context.local
+        modifier_act.scope = Scope.local
         modifier_act.source_attribute_id = src_attr3.id
         modifier_act.operator = Operator.post_mul
         modifier_act.target_attribute_id = self.tgt_attr.id
@@ -65,7 +65,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_act.filter_value = None
         modifier_over = Modifier()
         modifier_over.state = State.overload
-        modifier_over.context = Context.local
+        modifier_over.scope = Scope.local
         modifier_over.source_attribute_id = src_attr4.id
         modifier_over.operator = Operator.post_mul
         modifier_over.target_attribute_id = self.tgt_attr.id

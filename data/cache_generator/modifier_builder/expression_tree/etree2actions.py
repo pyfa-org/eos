@@ -278,7 +278,7 @@ class ETree2Actions:
         ):
             return False
         # It should be possible to convert gang flag and effect
-        # category ID into state and context
+        # category ID into state and scope
         try:
             operand_meta = operand_data[action.type]
         except KeyError:

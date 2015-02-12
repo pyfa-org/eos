@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Context, FilterType, Operator
+from eos.const.eos import State, Location, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -36,7 +36,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
         self.src_attr = self.ch.attribute(attribute_id=2)
         self.invalid_modifier = invalid_modifier = Modifier()
         invalid_modifier.state = State.offline
-        invalid_modifier.context = Context.local
+        invalid_modifier.scope = Scope.local
         invalid_modifier.source_attribute_id = self.src_attr.id
         invalid_modifier.operator = Operator.post_percent
         invalid_modifier.target_attribute_id = self.tgt_attr.id
@@ -63,7 +63,7 @@ class TestLocationFilterUnknown(AttrCalcTestCase):
     def test_combination(self):
         valid_modifier = Modifier()
         valid_modifier.state = State.offline
-        valid_modifier.context = Context.local
+        valid_modifier.scope = Scope.local
         valid_modifier.source_attribute_id = self.src_attr.id
         valid_modifier.operator = Operator.post_percent
         valid_modifier.target_attribute_id = self.tgt_attr.id

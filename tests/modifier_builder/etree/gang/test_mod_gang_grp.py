@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Context, FilterType, Operator
+from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -65,7 +65,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.context, Context.gang)
+        self.assertEqual(modifier.scope, Scope.gang)
         self.assertEqual(modifier.source_attribute_id, 349)
         self.assertEqual(modifier.operator, Operator.post_percent)
         self.assertEqual(modifier.target_attribute_id, 158)
@@ -85,7 +85,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.context, Context.gang)
+        self.assertEqual(modifier.scope, Scope.gang)
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_active(self):
@@ -99,7 +99,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.active)
-        self.assertEqual(modifier.context, Context.gang)
+        self.assertEqual(modifier.scope, Scope.gang)
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_target(self):
@@ -135,7 +135,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.online)
-        self.assertEqual(modifier.context, Context.gang)
+        self.assertEqual(modifier.scope, Scope.gang)
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_overload(self):
@@ -149,7 +149,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.overload)
-        self.assertEqual(modifier.context, Context.gang)
+        self.assertEqual(modifier.scope, Scope.gang)
         self.assertEqual(len(self.log), 0)
 
     def test_eff_category_dungeon(self):
@@ -174,5 +174,5 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.context, Context.gang)
+        self.assertEqual(modifier.scope, Scope.gang)
         self.assertEqual(len(self.log), 0)

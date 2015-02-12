@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Context, Operator
+from eos.const.eos import State, Location, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -35,7 +35,7 @@ class TestLocationDirectArea(AttrCalcTestCase):
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
         modifier.state = State.offline
-        modifier.context = Context.local
+        modifier.scope = Scope.local
         modifier.source_attribute_id = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.target_attribute_id = tgt_attr.id

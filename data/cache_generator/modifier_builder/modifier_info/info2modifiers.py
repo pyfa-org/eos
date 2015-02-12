@@ -20,7 +20,7 @@
 
 import yaml
 
-from eos.const.eos import State, Location, EffectBuildStatus, Context, FilterType, Operator
+from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object import Modifier
 from .exception import *
@@ -28,60 +28,60 @@ from .exception import *
 
 # Format:
 # {info func: (mod filter type, info attribute name for mod filter value,
-#   {info domain: (mod context, mod location)})}
+#   {info domain: (mod scope, mod location)})}
 filter_map = {
     'ItemModifier': (
         None, None,
         {
-            'shipID': (Context.local, Location.ship),
-            'charID': (Context.local, Location.character),
-            'otherID': (Context.local, Location.other),
-            'targetID': (Context.projected, Location.ship),
-            None: (Context.local, Location.self_)
+            'shipID': (Scope.local, Location.ship),
+            'charID': (Scope.local, Location.character),
+            'otherID': (Scope.local, Location.other),
+            'targetID': (Scope.projected, Location.ship),
+            None: (Scope.local, Location.self_)
         }
     ),
     'LocationModifier': (
         FilterType.all_, None,
         {
-            'shipID': (Context.local, Location.ship),
-            'charID': (Context.local, Location.character),
-            'targetID': (Context.projected, Location.ship)
+            'shipID': (Scope.local, Location.ship),
+            'charID': (Scope.local, Location.character),
+            'targetID': (Scope.projected, Location.ship)
         }
     ),
     'LocationGroupModifier': (
         FilterType.group, 'groupID',
         {
-            'shipID': (Context.local, Location.ship),
-            'charID': (Context.local, Location.character),
-            'targetID': (Context.projected, Location.ship)
+            'shipID': (Scope.local, Location.ship),
+            'charID': (Scope.local, Location.character),
+            'targetID': (Scope.projected, Location.ship)
         }
     ),
     'LocationRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
-            'shipID': (Context.local, Location.ship),
-            'charID': (Context.local, Location.character),
-            'targetID': (Context.projected, Location.ship)
+            'shipID': (Scope.local, Location.ship),
+            'charID': (Scope.local, Location.character),
+            'targetID': (Scope.projected, Location.ship)
         }
     ),
     'OwnerRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
-            'charID': (Context.local, Location.space)
+            'charID': (Scope.local, Location.space)
         }
     ),
     'GangItemModifier': (
         None, None,
         {
-            'shipID': (Context.gang, Location.ship),
-            'charID': (Context.gang, Location.character)
+            'shipID': (Scope.gang, Location.ship),
+            'charID': (Scope.gang, Location.character)
         }
     ),
     'GangRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
-            'shipID': (Context.gang, Location.ship),
-            'charID': (Context.gang, Location.character)
+            'shipID': (Scope.gang, Location.ship),
+            'charID': (Scope.gang, Location.character)
         }
     )
 }
@@ -222,14 +222,14 @@ class Info2Modifiers:
             except KeyError as e:
                 msg = 'unable to find attribute {} for filter value'.format(fattr)
                 raise NoFilterValueError(msg) from e
-        # Context and location
+        # Scope and location
         domain = modifier_info['domain']
         try:
-            context, location = domain_data[domain]
+            scope, location = domain_data[domain]
         except KeyError as e:
             msg = 'unexpected domain {} for filter function {}'.format(domain, func_name)
             raise UnexpectedDomainError(msg) from e
-        modifier.context = context
+        modifier.scope = scope
         modifier.location = location
 
     def _conv_state(self, modifiers, effect_row):

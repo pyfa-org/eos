@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import Context
+from eos.const.eos import Scope
 from .affector import Affector
 from .register import LinkRegister
 
@@ -29,7 +29,7 @@ class LinkTracker:
     Serve as intermediate layer between fit and holder link register.
     Implements methods which make it easier for fit to add, modify and
     remove holders (by implementing higher-level logic which deals with
-    state, context and attribute filters), and exposes two main register
+    state, scope and attribute filters), and exposes two main register
     getters for external use.
 
     Required arguments:
@@ -106,9 +106,9 @@ class LinkTracker:
         states -- iterable with states, which are passed
         during state switch, except for initial state
         """
-        processed_contexts = (Context.local,)
+        processed_scopes = (Scope.local,)
         enabled_affectors = self.__generate_affectors(
-            holder, state_filter=states, context_filter=processed_contexts)
+            holder, state_filter=states, scope_filter=processed_scopes)
         # Clear attributes only after registration jobs
         for affector in enabled_affectors:
             self._register.register_affector(affector)
@@ -123,9 +123,9 @@ class LinkTracker:
         states -- iterable with states, which are passed
         during state switch, except for final state
         """
-        processed_contexts = (Context.local,)
+        processed_scopes = (Scope.local,)
         disabled_affectors = self.__generate_affectors(
-            holder, state_filter=states, context_filter=processed_contexts)
+            holder, state_filter=states, scope_filter=processed_scopes)
         # Clear attributes before unregistering, otherwise
         # we won't clean them up properly
         self.__clear_affectors_dependents(disabled_affectors)
@@ -169,7 +169,7 @@ class LinkTracker:
                 # And remove target attribute
                 del target_holder.attributes[affector.modifier.target_attribute_id]
 
-    def __generate_affectors(self, holder, state_filter=None, context_filter=None):
+    def __generate_affectors(self, holder, state_filter=None, scope_filter=None):
         """
         Get all affectors spawned by holder.
 
@@ -180,7 +180,7 @@ class LinkTracker:
         state_filter -- filter results by affector's required state,
         which should be in this iterable; if None, no filtering
         occurs (default None)
-        context_filter -- filter results by affector's required state,
+        scope_filter -- filter results by affector's required state,
         which should be in this iterable; if None, no filtering
         occurs (default None)
 
@@ -191,7 +191,7 @@ class LinkTracker:
         for modifier in holder.item.modifiers:
             if state_filter is not None and modifier.state not in state_filter:
                 continue
-            if context_filter is not None and modifier.context not in context_filter:
+            if scope_filter is not None and modifier.scope not in scope_filter:
                 continue
             affector = Affector(holder, modifier)
             affectors.add(affector)

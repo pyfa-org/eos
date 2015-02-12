@@ -30,7 +30,7 @@ class LinkRegister:
     (Affector objects) and affectees (holders). This is hard
     requirement for efficient partial attribute recalculation.
     Register is not aware of links between specific attributes,
-    doesn't know anything about states and contexts, just
+    doesn't know anything about states and scopes, just
     affectors and affectees.
 
     Required arguments:

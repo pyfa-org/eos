@@ -147,7 +147,7 @@ class Effect2Modifiers:
         """
         # Create object and fill generic fields
         modifier = Modifier()
-        modifier.state, modifier.context = state_data[(effect_category_id, operand_data[action.type].gang)]
+        modifier.state, modifier.scope = state_data[(effect_category_id, operand_data[action.type].gang)]
         modifier.source_attribute_id = action.source_attribute_id
         modifier.operator = action.operator
         modifier.target_attribute_id = action.target_attribute_id

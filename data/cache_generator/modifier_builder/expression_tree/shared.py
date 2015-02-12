@@ -27,7 +27,7 @@ is used by several converters.
 
 from collections import namedtuple
 
-from eos.const.eos import State, Context
+from eos.const.eos import State, Scope
 from eos.const.eve import EffectCategory, Operand
 
 
@@ -81,18 +81,18 @@ operand_data = {
 }
 
 # Dictionary which assists conversion of effect category
-# and operand gang/local modification to state and context
-# Format: {(effect category, gang flag): (state, context)}
+# and operand gang/local modification to state and scope
+# Format: {(effect category, gang flag): (state, scope)}
 state_data = {
-    (EffectCategory.passive, False): (State.offline, Context.local),
-    (EffectCategory.passive, True): (State.offline, Context.gang),
-    (EffectCategory.active, False): (State.active, Context.local),
-    (EffectCategory.active, True): (State.active, Context.gang),
-    (EffectCategory.target, False): (State.active, Context.projected),
-    (EffectCategory.online, False): (State.online, Context.local),
-    (EffectCategory.online, True): (State.online, Context.gang),
-    (EffectCategory.overload, False): (State.overload, Context.local),
-    (EffectCategory.overload, True): (State.overload, Context.gang),
-    (EffectCategory.system, False): (State.offline, Context.local),
-    (EffectCategory.system, True): (State.offline, Context.gang)
+    (EffectCategory.passive, False): (State.offline, Scope.local),
+    (EffectCategory.passive, True): (State.offline, Scope.gang),
+    (EffectCategory.active, False): (State.active, Scope.local),
+    (EffectCategory.active, True): (State.active, Scope.gang),
+    (EffectCategory.target, False): (State.active, Scope.projected),
+    (EffectCategory.online, False): (State.online, Scope.local),
+    (EffectCategory.online, True): (State.online, Scope.gang),
+    (EffectCategory.overload, False): (State.overload, Scope.local),
+    (EffectCategory.overload, True): (State.overload, Scope.gang),
+    (EffectCategory.system, False): (State.offline, Scope.local),
+    (EffectCategory.system, True): (State.offline, Scope.gang)
 }

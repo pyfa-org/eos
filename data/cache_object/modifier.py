@@ -31,7 +31,7 @@ class Modifier:
         self,
         modifier_id=None,
         state=None,
-        context=None,
+        scope=None,
         source_attribute_id=None,
         operator=None,
         target_attribute_id=None,
@@ -48,9 +48,9 @@ class Modifier:
         # class' attribute value.
         self.state = state
 
-        # Describes context in which modifier is applied, must
-        # be eos.const.eos.Context class' attribute value.
-        self.context = context
+        # Describes scope in which modifier is applied, must
+        # be eos.const.eos.Scope class' attribute value.
+        self.scope = scope
 
         # Which attribute will be taken as source value,
         # must be integer which refers attribute via ID.

@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Context, FilterType, Operator
+from eos.const.eos import State, Location, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import Type, Group, Attribute, Effect, EffectCategory
 
 
@@ -57,7 +57,7 @@ class CacheCustomizer:
             modifier_row = {
                 'modifier_id': modifier_id,
                 'state': State.offline,
-                'context': Context.local,
+                'scope': Scope.local,
                 'source_attribute_id': Attribute.missile_damage_multiplier,
                 'operator': Operator.pre_mul,
                 'target_attribute_id': damageAttr,

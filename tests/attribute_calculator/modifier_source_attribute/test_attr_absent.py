@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Context, Operator
+from eos.const.eos import State, Location, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -36,7 +36,7 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         src_attr = self.ch.attribute(attribute_id=3)
         invalid_modifier = Modifier()
         invalid_modifier.state = State.offline
-        invalid_modifier.context = Context.local
+        invalid_modifier.scope = Scope.local
         invalid_modifier.source_attribute_id = abs_attr.id
         invalid_modifier.operator = Operator.post_percent
         invalid_modifier.target_attribute_id = tgt_attr.id
@@ -45,7 +45,7 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         invalid_modifier.filter_value = None
         valid_modifier = Modifier()
         valid_modifier.state = State.offline
-        valid_modifier.context = Context.local
+        valid_modifier.scope = Scope.local
         valid_modifier.source_attribute_id = src_attr.id
         valid_modifier.operator = Operator.post_mul
         valid_modifier.target_attribute_id = tgt_attr.id

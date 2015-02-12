@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Context, FilterType, Operator
+from eos.const.eos import State, Location, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -34,7 +34,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         src_attr = self.ch.attribute(attribute_id=2)
         modifier_pre_ass = Modifier()
         modifier_pre_ass.state = State.offline
-        modifier_pre_ass.context = Context.local
+        modifier_pre_ass.scope = Scope.local
         modifier_pre_ass.source_attribute_id = src_attr.id
         modifier_pre_ass.operator = Operator.pre_assignment
         modifier_pre_ass.target_attribute_id = tgt_attr.id
@@ -49,7 +49,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_pre_ass)
         modifier_pre_mul = Modifier()
         modifier_pre_mul.state = State.offline
-        modifier_pre_mul.context = Context.local
+        modifier_pre_mul.scope = Scope.local
         modifier_pre_mul.source_attribute_id = src_attr.id
         modifier_pre_mul.operator = Operator.pre_mul
         modifier_pre_mul.target_attribute_id = tgt_attr.id
@@ -64,7 +64,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_pre_mul)
         modifier_pre_div = Modifier()
         modifier_pre_div.state = State.offline
-        modifier_pre_div.context = Context.local
+        modifier_pre_div.scope = Scope.local
         modifier_pre_div.source_attribute_id = src_attr.id
         modifier_pre_div.operator = Operator.pre_div
         modifier_pre_div.target_attribute_id = tgt_attr.id
@@ -79,7 +79,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_pre_div)
         modifier_mod_add = Modifier()
         modifier_mod_add.state = State.offline
-        modifier_mod_add.context = Context.local
+        modifier_mod_add.scope = Scope.local
         modifier_mod_add.source_attribute_id = src_attr.id
         modifier_mod_add.operator = Operator.mod_add
         modifier_mod_add.target_attribute_id = tgt_attr.id
@@ -94,7 +94,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_mod_add)
         modifier_mod_sub = Modifier()
         modifier_mod_sub.state = State.offline
-        modifier_mod_sub.context = Context.local
+        modifier_mod_sub.scope = Scope.local
         modifier_mod_sub.source_attribute_id = src_attr.id
         modifier_mod_sub.operator = Operator.mod_sub
         modifier_mod_sub.target_attribute_id = tgt_attr.id
@@ -109,7 +109,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_mod_sub)
         modifier_post_mul = Modifier()
         modifier_post_mul.state = State.offline
-        modifier_post_mul.context = Context.local
+        modifier_post_mul.scope = Scope.local
         modifier_post_mul.source_attribute_id = src_attr.id
         modifier_post_mul.operator = Operator.post_mul
         modifier_post_mul.target_attribute_id = tgt_attr.id
@@ -124,7 +124,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_post_mul)
         modifier_post_div = Modifier()
         modifier_post_div.state = State.offline
-        modifier_post_div.context = Context.local
+        modifier_post_div.scope = Scope.local
         modifier_post_div.source_attribute_id = src_attr.id
         modifier_post_div.operator = Operator.post_div
         modifier_post_div.target_attribute_id = tgt_attr.id
@@ -139,7 +139,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         self.fit.items.add(influence_source_post_div)
         modifier_post_perc = Modifier()
         modifier_post_perc.state = State.offline
-        modifier_post_perc.context = Context.local
+        modifier_post_perc.scope = Scope.local
         modifier_post_perc.source_attribute_id = src_attr.id
         modifier_post_perc.operator = Operator.post_percent
         modifier_post_perc.target_attribute_id = tgt_attr.id

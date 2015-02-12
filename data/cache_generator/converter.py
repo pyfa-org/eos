@@ -322,7 +322,7 @@ class Converter:
         # Fields which we need to write into row
         fields = (
             'state',
-            'context',
+            'scope',
             'source_attribute_id',
             'operator',
             'target_attribute_id',

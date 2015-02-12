@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, Context, FilterType, Operator
+from eos.const.eos import State, Location, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -38,7 +38,7 @@ class TestCap(AttrCalcTestCase):
         # base, make some basic modification modifier
         modifier = Modifier()
         modifier.state = State.offline
-        modifier.context = Context.local
+        modifier.scope = Scope.local
         modifier.source_attribute_id = self.source_attr.id
         modifier.operator = Operator.post_mul
         modifier.target_attribute_id = self.capped_attr.id
@@ -77,7 +77,7 @@ class TestCap(AttrCalcTestCase):
         # modifications applied onto it
         modifier = Modifier()
         modifier.state = State.offline
-        modifier.context = Context.local
+        modifier.scope = Scope.local
         modifier.source_attribute_id = self.source_attr.id
         modifier.operator = Operator.post_mul
         modifier.target_attribute_id = self.capping_attr.id
@@ -108,7 +108,7 @@ class TestCap(AttrCalcTestCase):
         # Add something which changes capping attribute
         modifier = Modifier()
         modifier.state = State.offline
-        modifier.context = Context.local
+        modifier.scope = Scope.local
         modifier.source_attribute_id = self.source_attr.id
         modifier.operator = Operator.post_mul
         modifier.target_attribute_id = self.capping_attr.id

@@ -98,7 +98,7 @@ class EffectBuildStatus(IntEnum):
 
 
 @unique
-class Context(IntEnum):
+class Scope(IntEnum):
     """
     Describes when modification is applied, used only internally
     by Modifier class and classes interacting with it

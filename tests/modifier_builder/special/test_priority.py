@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Location, EffectBuildStatus, Context, Operator
+from eos.const.eos import State, Location, EffectBuildStatus, Scope, Operator
 from eos.const.eve import EffectCategory, Operand
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -65,7 +65,7 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(modifier.scope, Scope.local)
         self.assertEqual(modifier.location, Location.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 327)
@@ -86,7 +86,7 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.context, Context.local)
+        self.assertEqual(modifier.scope, Scope.local)
         self.assertEqual(modifier.location, Location.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.source_attribute_id, 175)
