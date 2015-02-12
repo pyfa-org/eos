@@ -36,9 +36,9 @@ class TestDomainDirectOther(AttrCalcTestCase):
         modifier = Modifier()
         modifier.state = State.offline
         modifier.scope = Scope.local
-        modifier.source_attribute_id = self.src_attr.id
+        modifier.src_attr = self.src_attr.id
         modifier.operator = Operator.post_percent
-        modifier.target_attribute_id = self.tgt_attr.id
+        modifier.tgt_attr = self.tgt_attr.id
         modifier.domain = Domain.other
         modifier.filter_type = None
         modifier.filter_value = None

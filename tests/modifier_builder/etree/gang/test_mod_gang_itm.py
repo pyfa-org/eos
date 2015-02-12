@@ -60,9 +60,9 @@ class TestBuilderEtreeModGangItm(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.gang)
-        self.assertEqual(modifier.source_attribute_id, 151)
+        self.assertEqual(modifier.src_attr, 151)
         self.assertEqual(modifier.operator, Operator.post_percent)
-        self.assertEqual(modifier.target_attribute_id, 70)
+        self.assertEqual(modifier.tgt_attr, 70)
         self.assertEqual(modifier.domain, Domain.ship)
         self.assertIsNone(modifier.filter_type)
         self.assertIsNone(modifier.filter_value)

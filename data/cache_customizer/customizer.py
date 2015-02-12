@@ -58,9 +58,9 @@ class CacheCustomizer:
                 'modifier_id': modifier_id,
                 'state': State.offline,
                 'scope': Scope.local,
-                'source_attribute_id': Attribute.missile_damage_multiplier,
+                'src_attr': Attribute.missile_damage_multiplier,
                 'operator': Operator.pre_mul,
-                'target_attribute_id': damageAttr,
+                'tgt_attr': damageAttr,
                 'domain': Domain.space,
                 'filter_type': FilterType.skill,
                 'filter_value': Type.missile_launcher_operation

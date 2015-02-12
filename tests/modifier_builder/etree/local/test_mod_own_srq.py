@@ -71,9 +71,9 @@ class TestBuilderEtreeModOwnSrq(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.source_attribute_id, 1156)
+        self.assertEqual(modifier.src_attr, 1156)
         self.assertEqual(modifier.operator, Operator.post_percent)
-        self.assertEqual(modifier.target_attribute_id, 1372)
+        self.assertEqual(modifier.tgt_attr, 1372)
         self.assertEqual(modifier.domain, Domain.space)
         self.assertEqual(modifier.filter_type, FilterType.skill)
         self.assertEqual(modifier.filter_value, 3412)

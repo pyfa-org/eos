@@ -39,9 +39,9 @@ class TestCap(AttrCalcTestCase):
         modifier = Modifier()
         modifier.state = State.offline
         modifier.scope = Scope.local
-        modifier.source_attribute_id = self.source_attr.id
+        modifier.src_attr = self.source_attr.id
         modifier.operator = Operator.post_mul
-        modifier.target_attribute_id = self.capped_attr.id
+        modifier.tgt_attr = self.capped_attr.id
         modifier.domain = Domain.self_
         modifier.filter_type = None
         modifier.filter_value = None
@@ -78,9 +78,9 @@ class TestCap(AttrCalcTestCase):
         modifier = Modifier()
         modifier.state = State.offline
         modifier.scope = Scope.local
-        modifier.source_attribute_id = self.source_attr.id
+        modifier.src_attr = self.source_attr.id
         modifier.operator = Operator.post_mul
-        modifier.target_attribute_id = self.capping_attr.id
+        modifier.tgt_attr = self.capping_attr.id
         modifier.domain = Domain.self_
         modifier.filter_type = None
         modifier.filter_value = None
@@ -109,9 +109,9 @@ class TestCap(AttrCalcTestCase):
         modifier = Modifier()
         modifier.state = State.offline
         modifier.scope = Scope.local
-        modifier.source_attribute_id = self.source_attr.id
+        modifier.src_attr = self.source_attr.id
         modifier.operator = Operator.post_mul
-        modifier.target_attribute_id = self.capping_attr.id
+        modifier.tgt_attr = self.capping_attr.id
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None

@@ -61,7 +61,7 @@ class LinkTracker:
         else:
             affectors = set()
             for affector in self._register.get_affectors(holder):
-                if affector.modifier.target_attribute_id == attr_id:
+                if affector.modifier.tgt_attr == attr_id:
                     affectors.add(affector)
         return affectors
 
@@ -149,12 +149,12 @@ class LinkTracker:
         for affector in self.__generate_affectors(holder):
             modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
-            if modifier.source_attribute_id != attr_id:
+            if modifier.src_attr != attr_id:
                 continue
             # Go through all holders targeted by modifier
             for target_holder in self.get_affectees(affector):
                 # And remove target attribute
-                del target_holder.attributes[modifier.target_attribute_id]
+                del target_holder.attributes[modifier.tgt_attr]
 
     def __clear_affectors_dependents(self, affectors):
         """
@@ -167,7 +167,7 @@ class LinkTracker:
             # Go through all holders targeted by modifier
             for target_holder in self.get_affectees(affector):
                 # And remove target attribute
-                del target_holder.attributes[affector.modifier.target_attribute_id]
+                del target_holder.attributes[affector.modifier.tgt_attr]
 
     def __generate_affectors(self, holder, state_filter=None, scope_filter=None):
         """

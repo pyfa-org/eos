@@ -115,7 +115,7 @@ class ETree2Actions:
         self._optr_tgt(arg1, action)
         # Write down source attribute from arg2
         arg2 = self._get_exp(expression.get('arg2'))
-        action.source_attribute_id = self._get_attribute(arg2)
+        action.src_attr = self._get_attribute(arg2)
         self._actions.append(action)
 
     def _optr_tgt(self, expression, action):
@@ -136,21 +136,21 @@ class ETree2Actions:
     def _tgt_attr(self, expression, action):
         """Get target attribute and store it"""
         arg1 = self._get_exp(expression.get('arg1'))
-        action.target_attribute_id = self._get_attribute(arg1)
+        action.tgt_attr = self._get_attribute(arg1)
 
     def _tgt_grp_attr(self, expression, action):
         """Get target group and target attribute"""
         arg1 = self._get_exp(expression.get('arg1'))
         action.target_group_id = self._get_group(arg1)
         arg2 = self._get_exp(expression.get('arg2'))
-        action.target_attribute_id = self._get_attribute(arg2)
+        action.tgt_attr = self._get_attribute(arg2)
 
     def _tgt_srq_attr(self, expression, action):
         """Get target skill requirement and target attribute"""
         arg1 = self._get_exp(expression.get('arg1'))
         self._get_type(arg1, action)
         arg2 = self._get_exp(expression.get('arg2'))
-        action.target_attribute_id = self._get_attribute(arg2)
+        action.tgt_attr = self._get_attribute(arg2)
 
     def _tgt_itm_attr(self, expression, action):
         """Handle target item specification and get target attribute"""
@@ -164,7 +164,7 @@ class ETree2Actions:
         itm_getter_map[arg1.get('operandID')](arg1, action)
         # Target attribute is always specified in arg2
         arg2 = self._get_exp(expression.get('arg2'))
-        action.target_attribute_id = self._get_attribute(arg2)
+        action.tgt_attr = self._get_attribute(arg2)
 
     def _tgt_loc(self, expression, action):
         """Get target domain and store it"""
@@ -273,8 +273,8 @@ class ETree2Actions:
         # have proper values in any case
         if (
             action.operator not in Operator or
-            isinstance(action.source_attribute_id, int) is not True or
-            isinstance(action.target_attribute_id, int) is not True
+            isinstance(action.src_attr, int) is not True or
+            isinstance(action.tgt_attr, int) is not True
         ):
             return False
         # It should be possible to convert gang flag and effect

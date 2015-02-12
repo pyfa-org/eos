@@ -174,9 +174,9 @@ class JsonCacheHandler(CacheHandler):
                 modifier_id=modifier_id,
                 state=modifier_data[0],
                 scope=modifier_data[1],
-                source_attribute_id=modifier_data[2],
+                src_attr=modifier_data[2],
                 operator=modifier_data[3],
-                target_attribute_id=modifier_data[4],
+                tgt_attr=modifier_data[4],
                 domain=modifier_data[5],
                 filter_type=modifier_data[6],
                 filter_value=modifier_data[7]
@@ -260,9 +260,9 @@ class JsonCacheHandler(CacheHandler):
             slim_modifiers[modifier_id] = (
                 modifier_row['state'],
                 modifier_row['scope'],
-                modifier_row['source_attribute_id'],
+                modifier_row['src_attr'],
                 modifier_row['operator'],
-                modifier_row['target_attribute_id'],
+                modifier_row['tgt_attr'],
                 modifier_row['domain'],
                 modifier_row['filter_type'],
                 modifier_row['filter_value']

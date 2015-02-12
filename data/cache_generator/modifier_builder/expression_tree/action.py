@@ -40,7 +40,7 @@ class Action:
 
         # Which attribute's data will be used as source data for action,
         # must be integer which refers attribute via ID.
-        self.source_attribute_id = None
+        self.src_attr = None
 
         # Which operation should be applied onto target attribute,
         # must be eos.const.eos.Operator class' attribute value.
@@ -48,7 +48,7 @@ class Action:
 
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
-        self.target_attribute_id = None
+        self.tgt_attr = None
 
         # Target domain to change:
         # For action types belonging to gang group, must be None
@@ -96,9 +96,9 @@ class Action:
             return False
         # Then, check all other fields of modifier
         if (
-            self.source_attribute_id != other.source_attribute_id or
+            self.src_attr != other.src_attr or
             self.operator != other.operator or
-            self.target_attribute_id != other.target_attribute_id or
+            self.tgt_attr != other.tgt_attr or
             self.target_domain != other.target_domain or
             self.target_group_id != other.target_group_id or
             self.target_skill_requirement_id != other.target_skill_requirement_id or

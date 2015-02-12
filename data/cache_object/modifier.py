@@ -32,9 +32,9 @@ class Modifier:
         modifier_id=None,
         state=None,
         scope=None,
-        source_attribute_id=None,
+        src_attr=None,
         operator=None,
-        target_attribute_id=None,
+        tgt_attr=None,
         domain=None,
         filter_type=None,
         filter_value=None
@@ -54,7 +54,7 @@ class Modifier:
 
         # Which attribute will be taken as source value,
         # must be integer which refers attribute via ID.
-        self.source_attribute_id = source_attribute_id
+        self.src_attr = src_attr
 
         # Which operation should be applied during modification,
         # must be eos.const.eos.Operator class' attribute value.
@@ -62,7 +62,7 @@ class Modifier:
 
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
-        self.target_attribute_id = target_attribute_id
+        self.tgt_attr = tgt_attr
 
         # Target domain to change, must be eos.const.eos.Domain
         # class' attribute value.

@@ -323,9 +323,9 @@ class Converter:
         fields = (
             'state',
             'scope',
-            'source_attribute_id',
+            'src_attr',
             'operator',
-            'target_attribute_id',
+            'tgt_attr',
             'domain',
             'filter_type',
             'filter_value'

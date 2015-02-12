@@ -37,9 +37,9 @@ class TestDomainDirectUnknown(AttrCalcTestCase):
         self.invalid_modifier = invalid_modifier = Modifier()
         invalid_modifier.state = State.offline
         invalid_modifier.scope = Scope.local
-        invalid_modifier.source_attribute_id = self.src_attr.id
+        invalid_modifier.src_attr = self.src_attr.id
         invalid_modifier.operator = Operator.post_percent
-        invalid_modifier.target_attribute_id = self.tgt_attr.id
+        invalid_modifier.tgt_attr = self.tgt_attr.id
         invalid_modifier.domain = 1972
         invalid_modifier.filter_type = None
         invalid_modifier.filter_value = None
@@ -64,9 +64,9 @@ class TestDomainDirectUnknown(AttrCalcTestCase):
         valid_modifier = Modifier()
         valid_modifier.state = State.offline
         valid_modifier.scope = Scope.local
-        valid_modifier.source_attribute_id = self.src_attr.id
+        valid_modifier.src_attr = self.src_attr.id
         valid_modifier.operator = Operator.post_percent
-        valid_modifier.target_attribute_id = self.tgt_attr.id
+        valid_modifier.tgt_attr = self.tgt_attr.id
         valid_modifier.domain = Domain.self_
         valid_modifier.filter_type = None
         valid_modifier.filter_value = None

@@ -45,9 +45,9 @@ class TestTransitionFit(AttrCalcTestCase):
         modifier = Modifier()
         modifier.state = State.offline
         modifier.scope = Scope.local
-        modifier.source_attribute_id = src_attr.id
+        modifier.src_attr = src_attr.id
         modifier.operator = Operator.post_percent
-        modifier.target_attribute_id = tgt_attr.id
+        modifier.tgt_attr = tgt_attr.id
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
@@ -86,9 +86,9 @@ class TestTransitionFit(AttrCalcTestCase):
         modifier = Modifier()
         modifier.state = State.offline
         modifier.scope = Scope.local
-        modifier.source_attribute_id = 1
+        modifier.src_attr = 1
         modifier.operator = Operator.post_percent
-        modifier.target_attribute_id = 2
+        modifier.tgt_attr = 2
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None

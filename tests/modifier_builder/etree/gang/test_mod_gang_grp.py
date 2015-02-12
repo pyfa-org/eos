@@ -66,9 +66,9 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.gang)
-        self.assertEqual(modifier.source_attribute_id, 349)
+        self.assertEqual(modifier.src_attr, 349)
         self.assertEqual(modifier.operator, Operator.post_percent)
-        self.assertEqual(modifier.target_attribute_id, 158)
+        self.assertEqual(modifier.tgt_attr, 158)
         self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.filter_type, FilterType.group)
         self.assertEqual(modifier.filter_value, 80)

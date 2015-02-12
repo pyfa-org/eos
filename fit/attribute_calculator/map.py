@@ -245,7 +245,7 @@ class MutableAttributeMap:
                             source_holder.item.category_id not in PENALTY_IMMUNE_CATEGORIES and
                             operator in PENALIZABLE_OPERATORS)
                 try:
-                    mod_value = source_holder.attributes[modifier.source_attribute_id]
+                    mod_value = source_holder.attributes[modifier.src_attr]
                 # Silently skip current affector: error should already
                 # be logged by map before it raised KeyError
                 except KeyError:

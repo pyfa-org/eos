@@ -65,9 +65,9 @@ class TestBuilderEtreeModLoc(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.source_attribute_id, 1503)
+        self.assertEqual(modifier.src_attr, 1503)
         self.assertEqual(modifier.operator, Operator.post_percent)
-        self.assertEqual(modifier.target_attribute_id, 1211)
+        self.assertEqual(modifier.tgt_attr, 1211)
         self.assertEqual(modifier.domain, Domain.ship)
         self.assertEqual(modifier.filter_type, FilterType.all_)
         self.assertIsNone(modifier.filter_value)

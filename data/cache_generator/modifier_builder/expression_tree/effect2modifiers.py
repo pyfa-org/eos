@@ -148,9 +148,9 @@ class Effect2Modifiers:
         # Create object and fill generic fields
         modifier = Modifier()
         modifier.state, modifier.scope = state_data[(effect_category_id, operand_data[action.type].gang)]
-        modifier.source_attribute_id = action.source_attribute_id
+        modifier.src_attr = action.src_attr
         modifier.operator = action.operator
-        modifier.target_attribute_id = action.target_attribute_id
+        modifier.tgt_attr = action.tgt_attr
         # Fill remaining fields on per-type-of-action basis
         conversion_map = {
             Operand.add_gang_grp_mod: self._convert_gang_grp,

@@ -196,9 +196,9 @@ class Info2Modifiers:
             msg = 'unknown operator {}'.format(info_operator)
             raise UnknownOperatorError(msg) from e
         # Source attribute
-        modifier.source_attribute_id = modifier_info.get('modifyingAttributeID')
+        modifier.src_attr = modifier_info.get('modifyingAttributeID')
         # Target attribute
-        modifier.target_attribute_id = modifier_info.get('modifiedAttributeID')
+        modifier.tgt_attr = modifier_info.get('modifiedAttributeID')
 
     def _conv_filter(self, modifier, modifier_info):
         """
