@@ -52,9 +52,11 @@ class ModuleHolderView:
         if value is None:
             return False
         racks = self.__racks
-        return (racks.high.__contains__(value) or
-                racks.med.__contains__(value) or
-                racks.low.__contains__(value))
+        return (
+            racks.high.__contains__(value) or
+            racks.med.__contains__(value) or
+            racks.low.__contains__(value)
+        )
 
     def __len__(self):
         racks_chain = chain(self.__racks.high, self.__racks.med, self.__racks.low)

@@ -69,9 +69,11 @@ class ResourceRegister(RestrictionRegister):
             # consume resource
             if resource_use <= 0:
                 continue
-            tainted_holders[holder] = ResourceErrorData(total_use=total_use,
-                                                        output=output,
-                                                        holder_use=resource_use)
+            tainted_holders[holder] = ResourceErrorData(
+                total_use=total_use,
+                output=output,
+                holder_use=resource_use
+            )
         raise RegisterValidationError(tainted_holders)
 
     @property

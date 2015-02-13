@@ -53,8 +53,8 @@ class TestConversionType(GeneratorTestCase):
         self.assertIn(1, data['types'])
         type_row = data['types'][1]
         self.assertEqual(len(type_row), 6)
-        self.assertEqual(type_row['group_id'], 6)
-        self.assertEqual(type_row['category_id'], 16)
+        self.assertEqual(type_row['group'], 6)
+        self.assertEqual(type_row['category'], 16)
         type_attributes = type_row['attributes']
         self.assertEqual(len(type_attributes), 2)
         self.assertEqual(type_attributes[5], 10.0)

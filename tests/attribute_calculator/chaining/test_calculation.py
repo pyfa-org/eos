@@ -43,7 +43,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier1.domain = Domain.self_
         modifier1.filter_type = None
         modifier1.filter_value = None
-        effect1 = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
         modifier2 = Modifier()
         modifier2.state = State.offline
@@ -54,7 +54,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier2.domain = Domain.ship
         modifier2.filter_type = None
         modifier2.filter_value = None
-        effect2 = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
+        effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
         modifier3 = Modifier()
@@ -66,7 +66,7 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier3.domain = Domain.ship
         modifier3.filter_type = FilterType.all_
         modifier3.filter_value = None
-        effect3 = self.ch.effect(effect_id=3, category_id=EffectCategory.passive)
+        effect3 = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect3.modifiers = (modifier3,)
         holder2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))
         holder3 = ShipItem(self.ch.type_(type_id=3, attributes={attr4.id: 12.5}))

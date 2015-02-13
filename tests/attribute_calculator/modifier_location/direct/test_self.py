@@ -42,7 +42,7 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         modifier.domain = Domain.self_
         modifier.filter_type = None
         modifier.filter_value = None
-        self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
     def test_independent(self):

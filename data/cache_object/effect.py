@@ -33,15 +33,15 @@ class Effect:
     def __init__(
         self,
         effect_id=None,
-        category_id=None,
+        category=None,
         is_offensive=None,
         is_assistance=None,
-        duration_attribute_id=None,
-        discharge_attribute_id=None,
-        range_attribute_id=None,
-        falloff_attribute_id=None,
-        tracking_speed_attribute_id=None,
-        fitting_usage_chance_attribute_id=None,
+        duration_attribute=None,
+        discharge_attribute=None,
+        range_attribute=None,
+        falloff_attribute=None,
+        tracking_speed_attribute=None,
+        fitting_usage_chance_attribute=None,
         build_status=None,
         modifiers=()
     ):
@@ -49,7 +49,7 @@ class Effect:
 
         # Effect category actually describes type of effect, which determines
         # when it is applied - always, when item is active, overloaded, etc.
-        self.category_id = category_id
+        self.category = category
 
         # Whether the effect is offensive (e.g. guns)
         self.is_offensive = bool(is_offensive) if is_offensive is not None else None
@@ -59,27 +59,27 @@ class Effect:
 
         # If effect is default effect of active holder, attribute
         # with this ID on holder defines cycle time
-        self.duration_attribute_id = duration_attribute_id
+        self.duration_attribute = duration_attribute
 
         # If effect is default effect of active holder, attribute
         # with this ID on holder defines ship's cap drained per cycle
-        self.discharge_attribute_id = discharge_attribute_id
+        self.discharge_attribute = discharge_attribute
 
         # If effect needs to know its optimal range, attribute value on
         # holder referenced by this ID will contain it
-        self.range_attribute_id = range_attribute_id
+        self.range_attribute = range_attribute
 
         # If effect needs to know its falloff range, attribute value on
         # holder referenced by this ID will contain it
-        self.falloff_attribute_id = falloff_attribute_id
+        self.falloff_attribute = falloff_attribute
 
         # If effect needs to know its tracking speed, attribute value on
         # holder referenced by this ID will contain it
-        self.tracking_speed_attribute_id = tracking_speed_attribute_id
+        self.tracking_speed_attribute = tracking_speed_attribute
 
         # Refers attribute, which determines chance of effect
         # getting applied when its carrier is added to fit
-        self.fitting_usage_chance_attribute_id = fitting_usage_chance_attribute_id
+        self.fitting_usage_chance_attribute = fitting_usage_chance_attribute
 
         # Stores expression->modifiers parsing status
         self.build_status = build_status
@@ -103,4 +103,4 @@ class Effect:
         Return state of effect - if holder takes this state or
         higher, effect activates.
         """
-        return self.__effect_state_map[self.category_id]
+        return self.__effect_state_map[self.category]

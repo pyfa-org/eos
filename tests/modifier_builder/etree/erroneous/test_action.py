@@ -34,8 +34,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         splice = self.ef.make(1, operandID=Operand.splice, arg1=37, arg2=105)
         effect_row = {
             'effect_id': 56,
-            'pre_expression_id': splice['expressionID'],
-            'post_expression_id': splice['expressionID'],
+            'pre_expression': splice['expressionID'],
+            'post_expression': splice['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -53,8 +53,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         e_post = self.ef.make(2, operandID=1009)
         effect_row = {
             'effect_id': 33,
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -72,8 +72,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         e_post = self.ef.make(2, operandID=Operand.def_int, expressionValue='6')
         effect_row = {
             'effect_id': 907,
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -91,8 +91,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         e_post = self.ef.make(2, operandID=Operand.def_bool, expressionValue='False')
         effect_row = {
             'effect_id': 0,
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -112,8 +112,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         e_post = self.ef.make(2, operandID=Operand.def_bool, expressionValue='Garbage')
         effect_row = {
             'effect_id': 3,
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -163,8 +163,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         )
         effect_row = {
             'effect_id': 66,
-            'pre_expression_id': e_add_mod['expressionID'],
-            'post_expression_id': e_rm_mod['expressionID'],
+            'pre_expression': e_add_mod['expressionID'],
+            'post_expression': e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

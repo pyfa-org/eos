@@ -89,7 +89,7 @@ filter_map = {
 # Format:
 # {CCP operator ID: eos operator ID}
 operator_map = {
-    -1: Operator.pre_assignment,
+    -1: Operator.pre_assign,
     0: Operator.pre_mul,
     1: Operator.pre_div,
     2: Operator.mod_add,
@@ -97,7 +97,7 @@ operator_map = {
     4: Operator.post_mul,
     5: Operator.post_div,
     6: Operator.post_percent,
-    7: Operator.post_assignment,
+    7: Operator.post_assign,
 }
 
 state_map = {
@@ -237,11 +237,11 @@ class Info2Modifiers:
         State is stored on effect object, thus run separate
         cycle for all modifiers we generated.
         """
-        effect_category_id = effect_row['effect_category']
+        effect_category = effect_row['effect_category']
         try:
-            state = state_map[effect_category_id]
+            state = state_map[effect_category]
         except KeyError as e:
-            msg = 'cannot convert effect category {} into state'.format(effect_category_id)
+            msg = 'cannot convert effect category {} into state'.format(effect_category)
             raise UnknownStateError(msg) from e
         for modifier in modifiers:
             modifier.state = state

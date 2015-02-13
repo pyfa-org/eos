@@ -42,15 +42,15 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
     def test_ship(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.ship,
+                                                          category=Category.ship,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=Category.ship,
+                                                          category=Category.ship,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
@@ -65,10 +65,10 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def test_charge(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.charge,
+                                                          category=Category.charge,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=Category.charge,
+                                                          category=Category.charge,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
@@ -83,10 +83,10 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def test_skill(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.skill,
+                                                          category=Category.skill,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=Category.skill,
+                                                          category=Category.skill,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
@@ -101,10 +101,10 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def test_implant(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.implant,
+                                                          category=Category.implant,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=Category.implant,
+                                                          category=Category.implant,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
@@ -119,10 +119,10 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def test_subsystem(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.subsystem,
+                                                          category=Category.subsystem,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=Category.subsystem,
+                                                          category=Category.subsystem,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
@@ -137,10 +137,10 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def test_mixed(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.charge,
+                                                          category=Category.charge,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=Category.implant,
+                                                          category=Category.implant,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
@@ -155,10 +155,10 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
 
     def test_with_not_immune(self):
         influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                          category_id=Category.charge,
+                                                          category=Category.charge,
                                                           attributes={self.src_attr.id: 50}))
         influence_source2 = IndependentItem(self.ch.type_(type_id=2, effects=(self.effect,),
-                                                          category_id=None,
+                                                          category=None,
                                                           attributes={self.src_attr.id: 100}))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)

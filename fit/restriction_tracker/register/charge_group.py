@@ -82,9 +82,11 @@ class ChargeGroupRegister(RestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            if charge.item.group_id not in allowed_groups:
-                tainted_holders[charge] = ChargeGroupErrorData(holder_group=charge.item.group_id,
-                                                               allowed_groups=allowed_groups)
+            if charge.item.group not in allowed_groups:
+                tainted_holders[charge] = ChargeGroupErrorData(
+                    holder_group=charge.item.group,
+                    allowed_groups=allowed_groups
+                )
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
 

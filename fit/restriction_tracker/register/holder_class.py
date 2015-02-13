@@ -33,38 +33,38 @@ HolderClassErrorData = namedtuple('HolderClassErrorData', ('holder_class', 'expe
 
 CLASS_VALIDATORS = {
     Booster: lambda item: (
-        item.category_id == Category.implant and
+        item.category == Category.implant and
         Attribute.boosterness in item.attributes
     ),
-    Character: lambda item: item.group_id == Group.character,
-    Charge: lambda item: item.category_id == Category.charge,
-    Drone: lambda item: item.category_id == Category.drone,
-    EffectBeacon: lambda item: item.group_id == Group.effect_beacon,
+    Character: lambda item: item.group == Group.character,
+    Charge: lambda item: item.category == Category.charge,
+    Drone: lambda item: item.category == Category.drone,
+    EffectBeacon: lambda item: item.group == Group.effect_beacon,
     Implant: lambda item: (
-        item.category_id == Category.implant and
+        item.category == Category.implant and
         Attribute.implantness in item.attributes
     ),
     ModuleHigh: lambda item: (
-        item.category_id == Category.module and
+        item.category == Category.module and
         Slot.module_high in item.slots
     ),
     ModuleMed: lambda item: (
-        item.category_id == Category.module and
+        item.category == Category.module and
         Slot.module_med in item.slots
     ),
     ModuleLow: lambda item: (
-        item.category_id == Category.module and
+        item.category == Category.module and
         Slot.module_low in item.slots
     ),
     Rig: lambda item: (
-        item.category_id == Category.module and
+        item.category == Category.module and
         Slot.rig in item.slots
     ),
-    Ship: lambda item: item.category_id == Category.ship,
-    Skill: lambda item: item.category_id == Category.skill,
-    Stance: lambda item: item.group_id == Group.ship_modifier,
+    Ship: lambda item: item.category == Category.ship,
+    Skill: lambda item: item.category == Category.skill,
+    Stance: lambda item: item.group == Group.ship_modifier,
     Subsystem: lambda item: (
-        item.category_id == Category.subsystem and
+        item.category == Category.subsystem and
         Slot.subsystem in item.slots
     )
 }
@@ -116,8 +116,10 @@ class HolderClassRegister(RestrictionRegister):
         for holder_class, validator_func in CLASS_VALIDATORS.items():
             if validator_func(holder.item) is True:
                 expected_classes.append(holder_class)
-        error_data = HolderClassErrorData(holder_class=type(holder),
-                                          expected_classes=tuple(expected_classes))
+        error_data = HolderClassErrorData(
+            holder_class=type(holder),
+            expected_classes=tuple(expected_classes)
+        )
         return error_data
 
     @property

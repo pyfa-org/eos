@@ -45,7 +45,7 @@ class TestConversionAttribute(GeneratorTestCase):
         self.assertEqual(len(data['attributes']), 1)
         self.assertIn(111, data['attributes'])
         expected = {
-            'attribute_id': 111, 'max_attribute_id': 84, 'default_value': 0.0,
+            'attribute_id': 111, 'max_attribute': 84, 'default_value': 0.0,
             'high_is_good': False, 'stackable': True
         }
         self.assertEqual(data['attributes'][111], expected)

@@ -75,8 +75,10 @@ class RigSizeRegister(RestrictionRegister):
             # If rig size specification on holder and ship differs,
             # then holder is tainted
             if holder_rig_size != allowed_rig_size:
-                tainted_holders[holder] = RigSizeErrorData(holder_size=holder_rig_size,
-                                                           allowed_size=allowed_rig_size)
+                tainted_holders[holder] = RigSizeErrorData(
+                    holder_size=holder_rig_size,
+                    allowed_size=allowed_rig_size
+                )
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
 

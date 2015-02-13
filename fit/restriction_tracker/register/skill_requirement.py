@@ -76,9 +76,11 @@ class SkillRequirementRegister(RestrictionRegister):
                 # Last check - if skill level is lower than expected, current holder
                 # is tainted; mark it so and move to the next one
                 if skill_level is None or skill_level < required_skill_level:
-                    skill_requirement_error = SkillRequirementErrorData(skill=required_skill_id,
-                                                                        level=skill_level,
-                                                                        required_level=required_skill_level)
+                    skill_requirement_error = SkillRequirementErrorData(
+                        skill=required_skill_id,
+                        level=skill_level,
+                        required_level=required_skill_level
+                    )
                     skill_requirement_errors.append(skill_requirement_error)
             if skill_requirement_errors:
                 tainted_holders[holder] = tuple(skill_requirement_errors)

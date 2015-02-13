@@ -226,7 +226,7 @@ class LinkRegister:
         domain = target_holder._domain
         affectors.update(self.__affector_domain.get(domain) or set())
         # All affectors which affect domain and group of passed holder
-        group = target_holder.item.group_id
+        group = target_holder.item.group
         affectors.update(self.__affector_domain_group.get((domain, group)) or set())
         # Same, but for domain & skill requirement of passed holder
         for skill in target_holder.item.required_skills:
@@ -250,7 +250,7 @@ class LinkRegister:
         domain = target_holder._domain
         if domain is not None:
             affectee_maps.append((domain, self.__affectee_domain))
-            group = target_holder.item.group_id
+            group = target_holder.item.group
             if group is not None:
                 affectee_maps.append(((domain, group), self.__affectee_domain_group))
             for skill in target_holder.item.required_skills:
@@ -397,10 +397,10 @@ class LinkRegister:
         target domain is not supported for filtered modification
         """
         source_holder = affector.source_holder
-        target_domain = affector.modifier.domain
+        domain = affector.modifier.domain
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real domain
-        if target_domain == Domain.self_:
+        if domain == Domain.self_:
             if source_holder is self._fit.ship:
                 return Domain.ship
             elif source_holder is self._fit.character:
@@ -408,11 +408,11 @@ class LinkRegister:
             else:
                 raise FilteredSelfReferenceError
         # Just return untouched domain for all other valid cases
-        elif target_domain in (Domain.character, Domain.ship, Domain.space):
-            return target_domain
+        elif domain in (Domain.character, Domain.ship, Domain.space):
+            return domain
         # Raise error if domain is invalid
         else:
-            raise FilteredDomainError(target_domain)
+            raise FilteredDomainError(domain)
 
     # Methods which help to process direct modifications
     def __get_holder_direct_domain(self, holder):
@@ -441,14 +441,14 @@ class LinkRegister:
             domain = None
         return domain
 
-    def __enable_direct_spec(self, target_holder, target_domain):
+    def __enable_direct_spec(self, target_holder, domain):
         """
         Enable temporarily disabled affectors, directly targeting holder in
         specific domain.
 
         Required arguments:
         target_holder -- holder which is being registered
-        target_domain -- domain, to which holder is being registered
+        domain -- domain, to which holder is being registered
         """
         # Format: {source_holder: [affectors]}
         affectors_to_enable = {}
@@ -458,7 +458,7 @@ class LinkRegister:
                 modifier = affector.modifier
                 # Mark affector as to-be-enabled only when it
                 # targets passed target domain
-                if modifier.domain == target_domain:
+                if modifier.domain == domain:
                     source_affectors = affectors_to_enable.setdefault(source_holder, [])
                     source_affectors.append(affector)
         # Bail if we have nothing to do

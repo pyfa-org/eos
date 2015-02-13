@@ -54,24 +54,24 @@ class Action:
         # For action types belonging to gang group, must be None
         # For other action types must be eos.const.eos.Domain
         # class' attribute value.
-        self.target_domain = None
+        self.domain = None
 
         # Items only belonging to this group will be affected by action:
         # For action types which include group filter, must be integer
         # which refers group via ID;
         # For other action types must be None.
-        self.target_group_id = None
+        self.tgt_group = None
 
         # Items only having this skill requirement will be targeted by
         # action:
         # For action types which include skill requirement filter,
         # must be integer which refers type via ID
         # For other action types must be None.
-        self.target_skill_requirement_id = None
+        self.tgt_skillrq = None
 
         # For action types which include skill requirement filter,
         # set to true if required skill is carrier of modification
-        self.target_skill_requirement_self = False
+        self.tgt_skillrq_self = False
 
     def is_mirror(self, other):
         """
@@ -99,10 +99,10 @@ class Action:
             self.src_attr != other.src_attr or
             self.operator != other.operator or
             self.tgt_attr != other.tgt_attr or
-            self.target_domain != other.target_domain or
-            self.target_group_id != other.target_group_id or
-            self.target_skill_requirement_id != other.target_skill_requirement_id or
-            self.target_skill_requirement_self is not other.target_skill_requirement_self
+            self.domain != other.domain or
+            self.tgt_group != other.tgt_group or
+            self.tgt_skillrq != other.tgt_skillrq or
+            self.tgt_skillrq_self is not other.tgt_skillrq_self
         ):
             return False
         # If all conditions were met, then it's actually mirror

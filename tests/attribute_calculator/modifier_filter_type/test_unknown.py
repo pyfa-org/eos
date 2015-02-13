@@ -43,7 +43,7 @@ class TestFilterUnknown(AttrCalcTestCase):
         invalid_modifier.domain = Domain.self_
         invalid_modifier.filter_type = 26500
         invalid_modifier.filter_value = None
-        self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
 
     def test_log(self):
         self.effect.modifiers = (self.invalid_modifier,)

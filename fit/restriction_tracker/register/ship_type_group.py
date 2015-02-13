@@ -47,8 +47,8 @@ GROUP_RESTRICTION_ATTRS = (
 )
 
 
-ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('ship_type', 'ship_group',
-                                                               'allowed_types', 'allowed_groups'))
+ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('ship_type',
+    'ship_group', 'allowed_types', 'allowed_groups'))
 
 
 # Helper class-container for metadata regarding allowed
@@ -89,8 +89,10 @@ class ShipTypeGroupRegister(RestrictionRegister):
         # which holder is allowed to fit
         allowed_types = set()
         allowed_groups = set()
-        for allowed_container, restriction_attrs in ((allowed_types, TYPE_RESTRICTION_ATTRS),
-                                                     (allowed_groups, GROUP_RESTRICTION_ATTRS)):
+        for allowed_container, restriction_attrs in (
+            (allowed_types, TYPE_RESTRICTION_ATTRS),
+            (allowed_groups, GROUP_RESTRICTION_ATTRS)
+        ):
             # Cycle through IDs of known restriction attributes
             for restriction_attr in restriction_attrs:
                 allowed_container.add(holder.item.attributes.get(restriction_attr))
@@ -99,7 +101,10 @@ class ShipTypeGroupRegister(RestrictionRegister):
         if not allowed_types and not allowed_groups:
             return
         # Finally, register holders which made it into here
-        self.__restricted_holders[holder] = AllowedData(types=tuple(allowed_types), groups=tuple(allowed_groups))
+        self.__restricted_holders[holder] = AllowedData(
+            types=tuple(allowed_types),
+            groups=tuple(allowed_groups)
+        )
 
     def unregister_holder(self, holder):
         if holder in self.__restricted_holders:
@@ -114,10 +119,10 @@ class ShipTypeGroupRegister(RestrictionRegister):
         ship_holder = self._fit.ship
         try:
             ship_type_id = ship_holder.item.id
-            ship_group_id = ship_holder.item.group_id
+            ship_group = ship_holder.item.group
         except AttributeError:
             ship_type_id = None
-            ship_group_id = None
+            ship_group = None
         # Container for tainted holders
         tainted_holders = {}
         # Go through all known restricted holders
@@ -125,11 +130,13 @@ class ShipTypeGroupRegister(RestrictionRegister):
             allowed_data = self.__restricted_holders[holder]
             # If ship's type isn't in allowed types and ship's
             # group isn't in allowed groups, holder is tainted
-            if ship_type_id not in allowed_data.types and ship_group_id not in allowed_data.groups:
-                tainted_holders[holder] = ShipTypeGroupErrorData(ship_type=ship_type_id,
-                                                                 ship_group=ship_group_id,
-                                                                 allowed_types=allowed_data.types,
-                                                                 allowed_groups=allowed_data.groups)
+            if ship_type_id not in allowed_data.types and ship_group not in allowed_data.groups:
+                tainted_holders[holder] = ShipTypeGroupErrorData(
+                    ship_type=ship_type_id,
+                    ship_group=ship_group,
+                    allowed_types=allowed_data.types,
+                    allowed_groups=allowed_data.groups
+                )
         # Raise error if there're any tainted holders
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)

@@ -206,11 +206,11 @@ class Converter:
         types = []
         for row in data['invtypes']:
             type_id = row['typeID']
-            group_id = row.get('groupID')
+            group = row.get('groupID')
             type_ = {
                 'type_id': type_id,
-                'group_id': group_id,
-                'category_id': invgroups_keyed.get(group_id, {}).get('categoryID'),
+                'group': group,
+                'category': invgroups_keyed.get(group, {}).get('categoryID'),
                 'effects': type_effects.get(type_id, []),
                 'attributes': type_attribs.get(type_id, {}),
                 'default_effect': type_defeff_map.get(type_id)
@@ -222,7 +222,7 @@ class Converter:
         for row in data['dgmattribs']:
             attribute = {
                 'attribute_id': row['attributeID'],
-                'max_attribute_id': row.get('maxAttributeID'),
+                'max_attribute': row.get('maxAttributeID'),
                 'default_value': row.get('defaultValue'),
                 'high_is_good': row.get('highIsGood'),
                 'stackable': row.get('stackable')
@@ -238,14 +238,14 @@ class Converter:
                 'effect_category': row.get('effectCategory'),
                 'is_offensive': row.get('isOffensive'),
                 'is_assistance': row.get('isAssistance'),
-                'duration_attribute_id': row.get('durationAttributeID'),
-                'discharge_attribute_id': row.get('dischargeAttributeID'),
-                'range_attribute_id': row.get('rangeAttributeID'),
-                'falloff_attribute_id': row.get('falloffAttributeID'),
-                'tracking_speed_attribute_id': row.get('trackingSpeedAttributeID'),
-                'fitting_usage_chance_attribute_id': row.get('fittingUsageChanceAttributeID'),
-                'pre_expression_id': row.get('preExpression'),
-                'post_expression_id': row.get('postExpression'),
+                'duration_attribute': row.get('durationAttributeID'),
+                'discharge_attribute': row.get('dischargeAttributeID'),
+                'range_attribute': row.get('rangeAttributeID'),
+                'falloff_attribute': row.get('falloffAttributeID'),
+                'tracking_speed_attribute': row.get('trackingSpeedAttributeID'),
+                'fitting_usage_chance_attribute': row.get('fittingUsageChanceAttributeID'),
+                'pre_expression': row.get('preExpression'),
+                'post_expression': row.get('postExpression'),
                 'modifier_info': row.get('modifierInfo')
             }
             effects.append(effect)
@@ -274,8 +274,8 @@ class Converter:
             # Update effects: add modifier build status and remove
             # fields which we needed only for this process
             effect_row['build_status'] = build_status
-            del effect_row['pre_expression_id']
-            del effect_row['post_expression_id']
+            del effect_row['pre_expression']
+            del effect_row['post_expression']
             del effect_row['modifier_info']
             for modifier in modifiers:
                 # Convert modifiers into frozen datarows to use

@@ -72,7 +72,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['group_id'], 1)
+        self.assertEqual(data['types'][1]['group'], 1)
 
     def test_single_duplicate_reverse(self):
         # Make sure first fed by data_handler row is accepted
@@ -88,7 +88,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['group_id'], 920)
+        self.assertEqual(data['types'][1]['group'], 920)
 
     def test_single_cleaned(self):
         # Make sure check is ran before cleanup
@@ -214,7 +214,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['category_id'], 7)
+        self.assertEqual(data['types'][1]['category'], 7)
 
     def test_dgmattribs(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
@@ -231,7 +231,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['attributes']), 1)
-        self.assertEqual(data['attributes'][7]['max_attribute_id'], 50)
+        self.assertEqual(data['attributes'][7]['max_attribute'], 50)
 
     def test_dgmeffects(self):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})

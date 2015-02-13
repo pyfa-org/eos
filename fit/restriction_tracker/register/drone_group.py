@@ -89,10 +89,12 @@ class DroneGroupRegister(RestrictionRegister):
         allowed_groups = tuple(allowed_groups)
         for holder in self.__restricted_holders:
             # Taint holders, whose group is not allowed
-            holder_group = holder.item.group_id
+            holder_group = holder.item.group
             if holder_group not in allowed_groups:
-                tainted_holders[holder] = DroneGroupErrorData(holder_group=holder_group,
-                                                              allowed_groups=allowed_groups)
+                tainted_holders[holder] = DroneGroupErrorData(
+                    holder_group=holder_group,
+                    allowed_groups=allowed_groups
+                )
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
 

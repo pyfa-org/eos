@@ -134,22 +134,22 @@ class Cleaner:
         # Container for 'target data', matches with which are
         # going to be restored
         # Format: {(target table name, target column name): {values to have}}}
-        target_data = {}
-        self._get_targets_relational(target_data)
-        self._get_targets_yaml(target_data)
+        tgt_data = {}
+        self._get_targets_relational(tgt_data)
+        self._get_targets_yaml(tgt_data)
         # Now, when we have all the target data values, we may look for
         # rows, which have matching values, and restore them
-        for target_spec, target_values in target_data.items():
-            target_table_name, target_field_name = target_spec
+        for tgt_spec, tgt_values in tgt_data.items():
+            tgt_table_name, tgt_column_name = tgt_spec
             to_restore = set()
-            for row in self.trashed_data[target_table_name]:
-                if row.get(target_field_name) in target_values:
+            for row in self.trashed_data[tgt_table_name]:
+                if row.get(tgt_column_name) in tgt_values:
                     to_restore.add(row)
             if to_restore:
                 self._changed = True
-                self._restore_data(target_table_name, to_restore)
+                self._restore_data(tgt_table_name, to_restore)
 
-    def _get_targets_relational(self, target_data):
+    def _get_targets_relational(self, tgt_data):
         """
         Fill dictionary with target references taken from data
         stored in relational format
@@ -189,19 +189,19 @@ class Cleaner:
                 'groupID': ('invgroups', 'groupID')
             }
         }
-        for source_table_name, table_fks in foreign_keys.items():
-            for source_field_name, fk_target in table_fks.items():
-                target_table_name, target_field_name = fk_target
-                for row in self.data[source_table_name]:
-                    fk_value = row.get(source_field_name)
+        for src_table_name, table_fks in foreign_keys.items():
+            for src_column_name, fk_target in table_fks.items():
+                tgt_table_name, tgt_column_name = fk_target
+                for row in self.data[src_table_name]:
+                    fk_value = row.get(src_column_name)
                     # If there's no such field in a row or it is None,
                     # this is not a valid FK reference
                     if fk_value is None:
                         continue
-                    target_values = target_data.setdefault((target_table_name, target_field_name), set())
-                    target_values.add(fk_value)
+                    tgt_values = tgt_data.setdefault((tgt_table_name, tgt_column_name), set())
+                    tgt_values.add(fk_value)
 
-    def _get_targets_yaml(self, target_data):
+    def _get_targets_yaml(self, tgt_data):
         """
         Fill dictionary with target references taken from data
         stored in YAML format
@@ -212,7 +212,7 @@ class Cleaner:
                 types, groups, attrs = self._yaml_modinfo_relations[effect_id]
             except KeyError:
                 continue
-            for references, target_table, target_column in (
+            for references, tgt_table_name, tgt_column_name in (
                 (types, 'invtypes', 'typeID'),
                 (groups, 'invgroups', 'groupID'),
                 (attrs, 'dgmattribs', 'attributeID')
@@ -220,8 +220,8 @@ class Cleaner:
                 # If there're any references for given entity, add them to
                 # dictionary
                 if len(references) > 0:
-                    target_values = target_data.setdefault((target_table, target_column), set())
-                    target_values.update(references)
+                    tgt_values = tgt_data.setdefault((tgt_table_name, tgt_column_name), set())
+                    tgt_values.update(references)
 
     @CachedProperty
     def _yaml_modinfo_relations(self):

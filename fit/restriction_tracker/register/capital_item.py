@@ -86,8 +86,10 @@ class CapitalItemRegister(RestrictionRegister):
             tainted_holders = {}
             for holder in self.__capital_holders:
                 holder_volume = holder.item.attributes[Attribute.volume]
-                tainted_holders[holder] = CapitalItemErrorData(holder_volume=holder_volume,
-                                                               max_allowed_volume=MAX_SUBCAP_VOLUME)
+                tainted_holders[holder] = CapitalItemErrorData(
+                    holder_volume=holder_volume,
+                    max_allowed_volume=MAX_SUBCAP_VOLUME
+                )
             raise RegisterValidationError(tainted_holders)
 
     @property

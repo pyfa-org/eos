@@ -284,8 +284,8 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(len(kwargs), 0)
         expected = {
             'effect_id': 111,
-            'pre_expression_id': 56,
-            'post_expression_id': 107,
+            'pre_expression': 56,
+            'post_expression': 107,
             'effect_category': 108,
             'modifier_info': 'some YAML'
         }

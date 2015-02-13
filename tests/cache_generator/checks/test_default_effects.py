@@ -52,7 +52,7 @@ class TestDefaultEffects(GeneratorTestCase):
         self.assertIn(1, data['types'])
         self.assertEqual(len(data['effects']), 2)
         self.assertIn(2, data['effects'])
-        self.assertEqual(data['effects'][2]['falloff_attribute_id'], 20)
+        self.assertEqual(data['effects'][2]['falloff_attribute'], 20)
 
     def test_duplicate(self):
         self.eff_link1['isDefault'] = True
@@ -75,7 +75,7 @@ class TestDefaultEffects(GeneratorTestCase):
         self.assertEqual(len(data['effects']), 2)
         self.assertIn(1, data['effects'])
         self.assertIn(2, data['effects'])
-        self.assertEqual(data['effects'][1]['falloff_attribute_id'], 10)
+        self.assertEqual(data['effects'][1]['falloff_attribute'], 10)
 
     def test_cleanup(self):
         del self.item['groupID']

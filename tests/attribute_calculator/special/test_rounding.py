@@ -58,7 +58,7 @@ class TestRounding(AttrCalcTestCase):
         modifier.domain = Domain.self_
         modifier.filter_type = None
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
 
         holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),

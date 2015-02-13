@@ -54,8 +54,8 @@ class TestBuilderEtreeIncomplete(ModBuilderTestCase):
             arg2=self.e_src_attr['expressionID']
         )
         effect_row = {
-            'pre_expression_id': e_add_mod['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': e_add_mod['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -70,8 +70,8 @@ class TestBuilderEtreeIncomplete(ModBuilderTestCase):
             arg2=self.e_src_attr['expressionID']
         )
         effect_row = {
-            'pre_expression_id': self.stub['expressionID'],
-            'post_expression_id': e_rm_mod['expressionID'],
+            'pre_expression': self.stub['expressionID'],
+            'post_expression': e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

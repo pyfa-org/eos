@@ -56,14 +56,14 @@ class MaxGroupRegister(RestrictionRegister):
         # Ignore holders which do not belong to ship
         if holder._domain != Domain.ship:
             return
-        group_id = holder.item.group_id
+        group = holder.item.group
         # Ignore holders, whose item isn't assigned
         # to any group
-        if group_id is None:
+        if group is None:
             return
         # Having group ID is sufficient condition
         # to enter container of all fitted holders
-        self.__group_all.add_data(group_id, holder)
+        self.__group_all.add_data(group, holder)
         # To enter restriction container, original
         # item must have restriction attribute
         if self.__max_group_attr not in holder.item.attributes:
@@ -72,8 +72,8 @@ class MaxGroupRegister(RestrictionRegister):
 
     def unregister_holder(self, holder):
         # Just clear data containers
-        group_id = holder.item.group_id
-        self.__group_all.rm_data(group_id, holder)
+        group = holder.item.group
+        self.__group_all.rm_data(group, holder)
         self.__group_restricted.discard(holder)
 
     def validate(self):
@@ -83,15 +83,17 @@ class MaxGroupRegister(RestrictionRegister):
         for holder in self.__group_restricted:
             # Get number of registered holders, assigned to group of current
             # restricted holder, and holder's restriction value
-            group_id = holder.item.group_id
-            group_holders = len(self.__group_all.get(group_id) or ())
+            group = holder.item.group
+            group_holders = len(self.__group_all.get(group) or ())
             max_group_restriction = holder.item.attributes[self.__max_group_attr]
             # If number of registered holders from this group is bigger,
             # then current holder is tainted
             if group_holders > max_group_restriction:
-                tainted_holders[holder] = MaxGroupErrorData(holder_group=group_id,
-                                                            max_group=max_group_restriction,
-                                                            group_holders=group_holders)
+                tainted_holders[holder] = MaxGroupErrorData(
+                    holder_group=group,
+                    max_group=max_group_restriction,
+                    group_holders=group_holders
+                )
         # Raise error if we detected any tainted holders
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)

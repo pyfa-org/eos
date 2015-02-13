@@ -34,8 +34,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_attack(self):
         disabled_pre = self.ef.make(1, operandID=Operand.attack)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -46,8 +46,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_cargo_scan(self):
         disabled_pre = self.ef.make(1, operandID=Operand.cargo_scan)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -58,8 +58,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_cheat_tele_dock(self):
         disabled_pre = self.ef.make(1, operandID=Operand.cheat_tele_dock)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -70,8 +70,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_cheat_tele_gate(self):
         disabled_pre = self.ef.make(1, operandID=Operand.cheat_tele_gate)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -82,8 +82,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_aoe_decloak(self):
         disabled_pre = self.ef.make(1, operandID=Operand.aoe_decloak)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -94,8 +94,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_ecm_burst(self):
         disabled_pre = self.ef.make(1, operandID=Operand.ecm_burst)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -106,8 +106,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_aoe_dmg(self):
         disabled_pre = self.ef.make(1, operandID=Operand.aoe_dmg)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -118,8 +118,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_missile_launch(self):
         disabled_pre = self.ef.make(1, operandID=Operand.missile_launch)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -130,8 +130,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_defender_launch(self):
         disabled_pre = self.ef.make(1, operandID=Operand.defender_launch)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -142,8 +142,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_fof_launch(self):
         disabled_pre = self.ef.make(1, operandID=Operand.fof_launch)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -154,8 +154,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_mine(self):
         disabled_pre = self.ef.make(1, operandID=Operand.mine)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -166,8 +166,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_power_booster(self):
         disabled_pre = self.ef.make(1, operandID=Operand.power_booster)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -178,8 +178,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_ship_scan(self):
         disabled_pre = self.ef.make(1, operandID=Operand.ship_scan)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -190,8 +190,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_survey_scan(self):
         disabled_pre = self.ef.make(1, operandID=Operand.survey_scan)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -202,8 +202,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_tgt_hostile(self):
         disabled_pre = self.ef.make(1, operandID=Operand.tgt_hostile)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -214,8 +214,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_tgt_silent(self):
         disabled_pre = self.ef.make(1, operandID=Operand.tgt_silent)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -226,8 +226,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_tool_tgt_skills(self):
         disabled_pre = self.ef.make(1, operandID=Operand.tool_tgt_skills)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -238,8 +238,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_user_error(self):
         disabled_pre = self.ef.make(1, operandID=Operand.user_error)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -250,8 +250,8 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     def test_vrf_tgt_grp(self):
         disabled_pre = self.ef.make(1, operandID=Operand.vrf_tgt_grp)
         effect_row = {
-            'pre_expression_id': disabled_pre['expressionID'],
-            'post_expression_id': self.stub['expressionID'],
+            'pre_expression': disabled_pre['expressionID'],
+            'post_expression': self.stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

@@ -40,7 +40,7 @@ class LinkTracker:
         self._fit = fit
         self._register = LinkRegister(fit)
 
-    def get_affectors(self, holder, attr_id=None):
+    def get_affectors(self, holder, attr=None):
         """
         Get affectors, influencing passed holder.
 
@@ -48,7 +48,7 @@ class LinkTracker:
         holder -- holder, for which we're getting affectors
 
         Optional arguments:
-        attr_id -- target attribute ID filter; only affectors
+        attr -- target attribute ID filter; only affectors
         which influence attribute with this ID will be returned.
         If None, all affectors influencing holder are returned
         (default None)
@@ -56,12 +56,12 @@ class LinkTracker:
         Return value:
         Set with Affector objects
         """
-        if attr_id is None:
+        if attr is None:
             affectors = self._register.get_affectors(holder)
         else:
             affectors = set()
             for affector in self._register.get_affectors(holder):
-                if affector.modifier.tgt_attr == attr_id:
+                if affector.modifier.tgt_attr == attr:
                     affectors.add(affector)
         return affectors
 
@@ -132,24 +132,24 @@ class LinkTracker:
         for affector in disabled_affectors:
             self._register.unregister_affector(affector)
 
-    def clear_holder_attribute_dependents(self, holder, attr_id):
+    def clear_holder_attribute_dependents(self, holder, attr):
         """
         Clear calculated attributes relying on passed attribute.
 
         Required arguments:
         holder -- holder, which carries attribute in question
-        attr_id -- ID of attribute
+        attr -- ID of attribute
         """
         # Clear attributes capped by this attribute
         cap_map = holder.attributes._cap_map
         if cap_map is not None:
-            for capped_attr_id in (cap_map.get(attr_id) or ()):
-                del holder.attributes[capped_attr_id]
+            for capped_attr in (cap_map.get(attr) or ()):
+                del holder.attributes[capped_attr]
         # Clear attributes using this attribute as data source
         for affector in self.__generate_affectors(holder):
             modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
-            if modifier.src_attr != attr_id:
+            if modifier.src_attr != attr:
                 continue
             # Go through all holders targeted by modifier
             for target_holder in self.get_affectees(affector):

@@ -40,7 +40,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.pre_assignment)
+        self.assertEqual(modifier.operator, Operator.pre_assign)
         self.assertEqual(len(self.log), 0)
 
     def test_premul(self):
@@ -136,5 +136,5 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.ok_full)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.post_assignment)
+        self.assertEqual(modifier.operator, Operator.post_assign)
         self.assertEqual(len(self.log), 0)

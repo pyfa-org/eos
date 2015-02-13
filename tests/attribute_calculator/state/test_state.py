@@ -73,7 +73,7 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_over.filter_type = None
         modifier_over.filter_value = None
         # Overload category will make sure that holder can enter all states
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.overload)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
         effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
         self.holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
                                                     attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1,

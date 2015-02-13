@@ -31,8 +31,8 @@ class TestBuilderEtreeStubInt0(ModBuilderTestCase):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         e_post_stub = self.ef.make(2, operandID=Operand.def_int, expressionValue='0')
         effect_row = {
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post_stub['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post_stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -48,8 +48,8 @@ class TestBuilderEtreeStubInt1(ModBuilderTestCase):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='1')
         e_post_stub = self.ef.make(2, operandID=Operand.def_int, expressionValue='1')
         effect_row = {
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post_stub['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post_stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -65,8 +65,8 @@ class TestBuilderEtreeStubBoolTrue(ModBuilderTestCase):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_bool, expressionValue='True')
         e_post_stub = self.ef.make(2, operandID=Operand.def_bool, expressionValue='True')
         effect_row = {
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post_stub['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post_stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -82,8 +82,8 @@ class TestBuilderEtreeStubMixed(ModBuilderTestCase):
         e_pre_stub = self.ef.make(1, operandID=Operand.def_bool, expressionValue='True')
         e_post_stub = self.ef.make(2, operandID=Operand.def_int, expressionValue='0')
         effect_row = {
-            'pre_expression_id': e_pre_stub['expressionID'],
-            'post_expression_id': e_post_stub['expressionID'],
+            'pre_expression': e_pre_stub['expressionID'],
+            'post_expression': e_post_stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

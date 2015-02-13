@@ -56,9 +56,9 @@ class TestConversionEffect(GeneratorTestCase):
         self.assertIn(112, data['effects'])
         expected = {
             'effect_id': 112, 'effect_category': 111, 'is_offensive': True,
-            'is_assistance': False, 'duration_attribute_id': 781,
-            'discharge_attribute_id': 72, 'range_attribute_id': 2,
-            'falloff_attribute_id': 3, 'tracking_speed_attribute_id': 6,
-            'fitting_usage_chance_attribute_id': 96, 'build_status': 29, 'modifiers': [1]
+            'is_assistance': False, 'duration_attribute': 781,
+            'discharge_attribute': 72, 'range_attribute': 2,
+            'falloff_attribute': 3, 'tracking_speed_attribute': 6,
+            'fitting_usage_chance_attribute': 96, 'build_status': 29, 'modifiers': [1]
         }
         self.assertEqual(data['effects'][112], expected)

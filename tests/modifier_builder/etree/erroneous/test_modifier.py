@@ -32,8 +32,8 @@ class TestBuilderEtreeModifierError(ModBuilderTestCase):
         # Check reaction to expression data fetch errors
         effect_row = {
             'effect_id': 915,
-            'pre_expression_id': 902,
-            'post_expression_id': 28,
+            'pre_expression': 902,
+            'post_expression': 28,
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -72,8 +72,8 @@ class TestBuilderEtreeModifierError(ModBuilderTestCase):
         e_post_stub = self.ef.make(8, operandID=Operand.def_int, expressionValue='1')
         effect_row = {
             'effect_id': 29,
-            'pre_expression_id': e_add_mod['expressionID'],
-            'post_expression_id': e_post_stub['expressionID'],
+            'pre_expression': e_add_mod['expressionID'],
+            'post_expression': e_post_stub['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

@@ -68,13 +68,13 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         )
         return TankingLayers(hull=hull, armor=armor, shield=shield)
 
-    def __get_resistance_by_attr(self, attribute):
+    def __get_resistance_by_attr(self, attr):
         """
         Get resonance by attribute ID and if there's any
         value, convert it to resistance.
         """
         try:
-            resonance = self.attributes[attribute]
+            resonance = self.attributes[attr]
         except KeyError:
             return None
         else:
@@ -109,7 +109,7 @@ class BufferTankingMixin(CooperativeVolatileMixin):
             total_ehp = None
         return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
 
-    def __get_layer_ehp(self, layer_hp, layer_resistances, damage_profile):
+    def __get_layer_ehp(self, layer_hp, layer_resists, damage_profile):
         """
         Calculate layer EHP according to passed data.
 
@@ -117,7 +117,7 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         """
         if not layer_hp:
             return layer_hp
-        return layer_hp * self.__get_tanking_efficiency(damage_profile, layer_resistances)
+        return layer_hp * self.__get_tanking_efficiency(damage_profile, layer_resists)
 
     def __get_tanking_efficiency(self, dmg, res):
         """
@@ -128,10 +128,12 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         they're assumed to be 0.
         """
         dealt = dmg.em + dmg.thermal + dmg.kinetic + dmg.explosive
-        absorbed = (dmg.em * (res.em or 0) +
-                    dmg.thermal * (res.thermal or 0) +
-                    dmg.kinetic * (res.kinetic or 0) +
-                    dmg.explosive * (res.explosive or 0))
+        absorbed = (
+            dmg.em * (res.em or 0) +
+            dmg.thermal * (res.thermal or 0) +
+            dmg.kinetic * (res.kinetic or 0) +
+            dmg.explosive * (res.explosive or 0)
+        )
         received = dealt - absorbed
         return dealt / received
 
@@ -157,7 +159,7 @@ class BufferTankingMixin(CooperativeVolatileMixin):
             total_ehp = None
         return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
 
-    def __get_layer_worst_case_ehp(self, layer_hp, layer_resistances):
+    def __get_layer_worst_case_ehp(self, layer_hp, layer_resists):
         """
         Calculate layer EHP according to passed data.
 
@@ -165,10 +167,12 @@ class BufferTankingMixin(CooperativeVolatileMixin):
         """
         if not layer_hp:
             return layer_hp
-        resistance = min(layer_resistances.em or 0,
-                         layer_resistances.thermal or 0,
-                         layer_resistances.kinetic or 0,
-                         layer_resistances.explosive or 0)
+        resistance = min(
+            layer_resists.em or 0,
+            layer_resists.thermal or 0,
+            layer_resists.kinetic or 0,
+            layer_resists.explosive or 0
+        )
         return layer_hp / (1 - resistance)
 
 

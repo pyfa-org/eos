@@ -60,10 +60,13 @@ class Slot(IntEnum):
 @unique
 class Domain(IntEnum):
     """
-    Domain specification, often relative, thus item
-    context must be taken into account. Used only
-    internally by Info class, item classes and calculation
-    engine in general.
+    Domain specification. Some legacy code (like old way
+    to define modifiers, via expression trees) sometimes
+    refer to it using 'location' term.
+
+    Some values are relative, thus item context must be taken
+    into account. Used only internally by Info class, item
+    classes and calculation engine in general.
     """
     # Self, i.e. carrier of modification source
     self_ = 1
@@ -89,7 +92,7 @@ class EffectBuildStatus(IntEnum):
     Statuses which indicate effect->modifiers conversion result,
     part of public API.
     """
-    not_parsed = 1
+    not_built = 1
     # Errors occurred during expression trees parsing or validation
     error = 2
     # Modifiers were generated, but some of elements were dropped as unsupported
@@ -107,8 +110,8 @@ class Scope(IntEnum):
     local = 1
     # Gang-wide modification
     gang = 2
-    # Modification which is applied only when its holder is projected
-    # onto something
+    # Modification which is applied to target only when modifier
+    # carrier is projected# onto it
     projected = 3
 
 
@@ -138,10 +141,10 @@ class Operator(IntEnum):
     """
     # Following operators are used in modifications
     # applied over some duration. We can deliberately assign
-    # these some ID, but we need to make sure they're sorted
-    # in the order they're kept here by python for proper
+    # these some ID, but we need to make sure their IDs are
+    # sorted in the order they're kept here for proper
     # attribute calculation process
-    pre_assignment = 1
+    pre_assign = 1
     pre_mul = 2
     pre_div = 3
     mod_add = 4
@@ -149,7 +152,7 @@ class Operator(IntEnum):
     post_mul = 6
     post_div = 7
     post_percent = 8
-    post_assignment = 9
+    post_assign = 9
 
 
 @unique

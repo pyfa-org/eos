@@ -102,11 +102,11 @@ class CacheHandler:
         except KeyError:
             raise TypeFetchError(type_id)
 
-    def get_attribute(self, attr_id):
+    def get_attribute(self, attr):
         try:
-            return self.__attribute_data[attr_id]
+            return self.__attribute_data[attr]
         except KeyError:
-            raise AttributeFetchError(attr_id)
+            raise AttributeFetchError(attr)
 
     def get_effect(self, eff_id):
         try:

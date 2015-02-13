@@ -56,7 +56,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         }
         self.assertIn(expected, expressions)
 
-    def test_group_idzing(self, mod_builder):
+    def test_groupzing(self, mod_builder):
         self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 668, 'typeName': ''})
         self.dh.data['invgroups'].append({'groupID': 668, 'categoryID': 16, 'groupName': 'Big Guns'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})

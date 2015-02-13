@@ -40,8 +40,8 @@ class Effect2Modifiers:
     def convert(self, effect_row):
         """Generate Modifier objects out of passed data."""
         try:
-            pre_expression_id = effect_row['pre_expression_id']
-            post_expression_id = effect_row['post_expression_id']
+            pre_expression_id = effect_row['pre_expression']
+            post_expression_id = effect_row['post_expression']
             effect_category_id = effect_row['effect_category']
             # By default, assume that our build is 100% successful
             build_status = EffectBuildStatus.ok_full
@@ -121,13 +121,13 @@ class Effect2Modifiers:
         except ETree2ActionError as e:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
-            signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
+            signature = (type(e), effect_id)
             self._logger.warning(msg, child_name='etree_builder', signature=signature)
             return (), EffectBuildStatus.error
         except TreeParsingUnexpectedError as e:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {} due to unknown reason'.format(effect_id)
-            signature = (type(e), pre_expression_id, post_expression_id, effect_category_id)
+            signature = (type(e), effect_id)
             self._logger.error(msg, child_name='etree_builder', signature=signature)
             return (), EffectBuildStatus.error
 
@@ -179,7 +179,7 @@ class Effect2Modifiers:
     def _convert_gang_grp(self, action, modifier):
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.group
-        modifier.filter_value = action.target_group_id
+        modifier.filter_value = action.tgt_group
 
     def _convert_gang_itm(self, action, modifier):
         modifier.domain = Domain.ship
@@ -193,19 +193,19 @@ class Effect2Modifiers:
         self._fill_srq_filter(action, modifier)
 
     def _convert_itm(self, action, modifier):
-        modifier.domain = action.target_domain
+        modifier.domain = action.domain
 
     def _convert_loc_grp(self, action, modifier):
-        modifier.domain = action.target_domain
+        modifier.domain = action.domain
         modifier.filter_type = FilterType.group
-        modifier.filter_value = action.target_group_id
+        modifier.filter_value = action.tgt_group
 
     def _convert_loc(self, action, modifier):
-        modifier.domain = action.target_domain
+        modifier.domain = action.domain
         modifier.filter_type = FilterType.all_
 
     def _convert_loc_srq(self, action, modifier):
-        modifier.domain = action.target_domain
+        modifier.domain = action.domain
         self._fill_srq_filter(action, modifier)
 
     def _convert_own_srq(self, action, modifier):
@@ -214,10 +214,10 @@ class Effect2Modifiers:
 
     def _fill_srq_filter(self, action, modifier):
         if (
-            action.target_skill_requirement_id is None and
-            action.target_skill_requirement_self is True
+            action.tgt_skillrq is None and
+            action.tgt_skillrq_self is True
         ):
             modifier.filter_type = FilterType.skill_self
         else:
             modifier.filter_type = FilterType.skill
-            modifier.filter_value = action.target_skill_requirement_id
+            modifier.filter_value = action.tgt_skillrq

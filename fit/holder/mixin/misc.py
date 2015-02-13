@@ -28,19 +28,19 @@ class DefaultEffectAttribMixin:
 
     @property
     def tracking_speed(self):
-        return self.__get_item_specific_attr('tracking_speed_attribute_id')
+        return self.__get_item_specific_attr('tracking_speed_attribute')
 
     @property
     def optimal_range(self):
-        return self.__get_item_specific_attr('range_attribute_id')
+        return self.__get_item_specific_attr('range_attribute')
 
     @property
     def falloff_range(self):
-        return self.__get_item_specific_attr('falloff_attribute_id')
+        return self.__get_item_specific_attr('falloff_attribute')
 
     @property
     def cycle_time(self):
-        raw_value = self.__get_item_specific_attr('duration_attribute_id')
+        raw_value = self.__get_item_specific_attr('duration_attribute')
         if raw_value is None:
             value = raw_value
         else:
@@ -56,10 +56,10 @@ class DefaultEffectAttribMixin:
         default_effect = getattr(self.item, 'default_effect', None)
         if default_effect is None:
             return None
-        attr_id = getattr(default_effect, attr_name, None)
-        if attr_id is None:
+        attr = getattr(default_effect, attr_name, None)
+        if attr is None:
             return None
         try:
-            return self.attributes[attr_id]
+            return self.attributes[attr]
         except KeyError:
             return None

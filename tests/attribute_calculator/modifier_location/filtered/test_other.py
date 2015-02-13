@@ -42,7 +42,7 @@ class TestDomainFilterOther(AttrCalcTestCase):
         modifier.domain = Domain.other
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type_(type_id=90, effects=(effect,), attributes={src_attr.id: 20}))
         # Charge's container or module's charge can't be 'owner'

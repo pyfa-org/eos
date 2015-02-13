@@ -42,7 +42,7 @@ class TestDomainDirectSpace(AttrCalcTestCase):
         modifier.domain = Domain.space
         modifier.filter_type = None
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type_(type_id=34, effects=(effect,), attributes={src_attr.id: 20}))
         # Space domain was introduced in Eos as holder to contain in-space

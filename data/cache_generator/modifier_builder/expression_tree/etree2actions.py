@@ -141,7 +141,7 @@ class ETree2Actions:
     def _tgt_grp_attr(self, expression, action):
         """Get target group and target attribute"""
         arg1 = self._get_exp(expression.get('arg1'))
-        action.target_group_id = self._get_group(arg1)
+        action.tgt_group = self._get_group(arg1)
         arg2 = self._get_exp(expression.get('arg2'))
         action.tgt_attr = self._get_attribute(arg2)
 
@@ -168,19 +168,19 @@ class ETree2Actions:
 
     def _tgt_loc(self, expression, action):
         """Get target domain and store it"""
-        action.target_domain = self._get_domain(expression)
+        action.domain = self._get_domain(expression)
 
     def _tgt_loc_grp(self, expression, action):
         """Get target domain filter and group filter"""
         arg1 = self._get_exp(expression.get('arg1'))
-        action.target_domain = self._get_domain(arg1)
+        action.domain = self._get_domain(arg1)
         arg2 = self._get_exp(expression.get('arg2'))
-        action.target_group_id = self._get_group(arg2)
+        action.tgt_group = self._get_group(arg2)
 
     def _tgt_loc_srq(self, expression, action):
         """Get target domain filter and skill requirement filter"""
         arg1 = self._get_exp(expression.get('arg1'))
-        action.target_domain = self._get_domain(arg1)
+        action.domain = self._get_domain(arg1)
         arg2 = self._get_exp(expression.get('arg2'))
         self._get_type(arg2, action)
 
@@ -199,7 +199,7 @@ class ETree2Actions:
     def _get_operator(self, expression):
         # Format: {operator name: operator ID}
         conversion_map = {
-            'PreAssignment': Operator.pre_assignment,
+            'PreAssignment': Operator.pre_assign,
             'PreMul': Operator.pre_mul,
             'PreDiv': Operator.pre_div,
             'ModAdd': Operator.mod_add,
@@ -207,13 +207,13 @@ class ETree2Actions:
             'PostMul': Operator.post_mul,
             'PostDiv': Operator.post_div,
             'PostPercent': Operator.post_percent,
-            'PostAssignment': Operator.post_assignment
+            'PostAssignment': Operator.post_assign
         }
         operator = conversion_map[expression.get('expressionValue')]
         return operator
 
     def _get_domain(self, expression):
-        # Format: {domain name: domain ID}
+        # Format: {eve location name: eos domain ID}
         conversion_map = {
             'Self': Domain.self_,
             'Char': Domain.character,
@@ -240,9 +240,9 @@ class ETree2Actions:
             # additional check if type getter is for self
             arg1 = self._get_exp(expression.get('arg1'))
             if self._get_domain(arg1) == Domain.self_:
-                action.target_skill_requirement_self = True
+                action.tgt_skillrq_self = True
         else:
-            action.target_skill_requirement_id = int(expression.get('expressionTypeID'))
+            action.tgt_skillrq = int(expression.get('expressionTypeID'))
 
     def _get_integer(self, expression):
         integer = int(expression.get('expressionValue'))
@@ -264,7 +264,7 @@ class ETree2Actions:
             msg = 'unable to fetch expression {}'.format(expression_id)
             raise ExpressionFetchError(msg)
 
-    def validate_action(self, action, effect_category_id):
+    def validate_action(self, action, effect_category):
         """
         Validation of action objects. Run few top-level action type-agnostic
         checks and then route to type-specific check methods.
@@ -285,7 +285,7 @@ class ETree2Actions:
             gang_flag = None
         else:
             gang_flag = operand_meta.gang
-        if (effect_category_id, gang_flag) not in state_data:
+        if (effect_category, gang_flag) not in state_data:
             return False
         # Other fields are optional, check them using action type
         validate_map = {
@@ -317,29 +317,29 @@ class ETree2Actions:
     # Block with validating methods, called depending on action type
     def _validate_gang_grp(self, action):
         if (
-            action.target_domain is not None or
-            action.target_skill_requirement_id is not None or
-            action.target_skill_requirement_self is not False
+            action.domain is not None or
+            action.tgt_skillrq is not None or
+            action.tgt_skillrq_self is not False
         ):
             return False
-        if isinstance(action.target_group_id, int) is not True:
+        if isinstance(action.tgt_group, int) is not True:
             return False
         return True
 
     def _validate_gang_itm(self, action):
         if (
-            action.target_domain is not None or
-            action.target_group_id is not None or
-            action.target_skill_requirement_id is not None or
-            action.target_skill_requirement_self is not False
+            action.domain is not None or
+            action.tgt_group is not None or
+            action.tgt_skillrq is not None or
+            action.tgt_skillrq_self is not False
         ):
             return False
         return True
 
     def _validate_gang_own_srq(self, action):
         if (
-            action.target_domain is not None or
-            action.target_group_id is not None
+            action.domain is not None or
+            action.tgt_group is not None
         ):
             return False
         if self._validate_skill_req(action) is not True:
@@ -348,8 +348,8 @@ class ETree2Actions:
 
     def _validate_gang_srq(self, action):
         if (
-            action.target_domain is not None or
-            action.target_group_id is not None
+            action.domain is not None or
+            action.tgt_group is not None
         ):
             return False
         if self._validate_skill_req(action) is not True:
@@ -358,58 +358,58 @@ class ETree2Actions:
 
     def _validate_itm(self, action):
         if (
-            action.target_group_id is not None or
-            action.target_skill_requirement_id is not None or
-            action.target_skill_requirement_self is not False
+            action.tgt_group is not None or
+            action.tgt_skillrq is not None or
+            action.tgt_skillrq_self is not False
         ):
             return False
-        if action.target_domain not in Domain:
+        if action.domain not in Domain:
             return False
         return True
 
     def _validate_loc_grp(self, action):
         if (
-            action.target_skill_requirement_id is not None or
-            action.target_skill_requirement_self is not False
+            action.tgt_skillrq is not None or
+            action.tgt_skillrq_self is not False
         ):
             return False
         valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
         if (
-            action.target_domain not in valid_locs or
-            isinstance(action.target_group_id, int) is not True
+            action.domain not in valid_locs or
+            isinstance(action.tgt_group, int) is not True
         ):
             return False
         return True
 
     def _validate_loc(self, action):
         if (
-            action.target_group_id is not None or
-            action.target_skill_requirement_id is not None or
-            action.target_skill_requirement_self is not False
+            action.tgt_group is not None or
+            action.tgt_skillrq is not None or
+            action.tgt_skillrq_self is not False
         ):
             return False
         valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
-        if action.target_domain not in valid_locs:
+        if action.domain not in valid_locs:
             return False
         return True
 
     def _validate_loc_srq(self, action):
-        if action.target_group_id is not None:
+        if action.tgt_group is not None:
             return False
         valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
         if (
-            action.target_domain not in valid_locs or
+            action.domain not in valid_locs or
             self._validate_skill_req(action) is not True
         ):
             return False
         return True
 
     def _validate_own_srq(self, action):
-        if action.target_group_id is not None:
+        if action.tgt_group is not None:
             return False
         valid_locs = (Domain.character, Domain.ship)
         if (
-            action.target_domain not in valid_locs or
+            action.domain not in valid_locs or
             self._validate_skill_req(action) is not True
         ):
             return False
@@ -418,10 +418,10 @@ class ETree2Actions:
     def _validate_skill_req(self, action):
         # We allow to specify skill either via integer ID or via carrier self-reference flag
         if (
-            (isinstance(action.target_skill_requirement_id, int) is True and
-             action.target_skill_requirement_self is False) or
-            (action.target_skill_requirement_id is None and
-             action.target_skill_requirement_self is True)
+            (isinstance(action.tgt_skillrq, int) is True and
+             action.tgt_skillrq_self is False) or
+            (action.tgt_skillrq is None and
+             action.tgt_skillrq_self is True)
         ):
             return True
         return False

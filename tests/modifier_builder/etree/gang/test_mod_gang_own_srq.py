@@ -57,8 +57,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_generic_build_success(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -76,8 +76,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_passive(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
@@ -90,8 +90,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_active(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.active
         }
         modifiers, status = self.run_builder(effect_row)
@@ -104,8 +104,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_target(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.target
         }
         modifiers, status = self.run_builder(effect_row)
@@ -115,8 +115,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_area(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.area
         }
         modifiers, status = self.run_builder(effect_row)
@@ -126,8 +126,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_online(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.online
         }
         modifiers, status = self.run_builder(effect_row)
@@ -140,8 +140,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_overload(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.overload
         }
         modifiers, status = self.run_builder(effect_row)
@@ -154,8 +154,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_dungeon(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.dungeon
         }
         modifiers, status = self.run_builder(effect_row)
@@ -165,8 +165,8 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
 
     def test_eff_category_system(self):
         effect_row = {
-            'pre_expression_id': self.e_add_mod['expressionID'],
-            'post_expression_id': self.e_rm_mod['expressionID'],
+            'pre_expression': self.e_add_mod['expressionID'],
+            'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.system
         }
         modifiers, status = self.run_builder(effect_row)

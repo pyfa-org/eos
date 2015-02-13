@@ -71,8 +71,10 @@ class ChargeSizeRegister(RestrictionRegister):
             container_size = container.item.attributes[Attribute.charge_size]
             charge_size = charge.item.attributes.get(Attribute.charge_size)
             if container_size != charge_size:
-                tainted_holders[charge] = ChargeSizeErrorData(holder_size=charge_size,
-                                                              allowed_size=container_size)
+                tainted_holders[charge] = ChargeSizeErrorData(
+                    holder_size=charge_size,
+                    allowed_size=container_size
+                )
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
 

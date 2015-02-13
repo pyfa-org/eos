@@ -60,8 +60,8 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
             arg2=e_src_attr['expressionID']
         )
         effect_row = {
-            'pre_expression_id': e_add_mod['expressionID'],
-            'post_expression_id': e_rm_mod['expressionID'],
+            'pre_expression': e_add_mod['expressionID'],
+            'post_expression': e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

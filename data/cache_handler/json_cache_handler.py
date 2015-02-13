@@ -95,8 +95,8 @@ class JsonCacheHandler(CacheHandler):
                 raise TypeFetchError(type_id) from e
             type_ = Type(
                 type_id=type_id,
-                group_id=type_data[0],
-                category_id=type_data[1],
+                group=type_data[0],
+                category=type_data[1],
                 attributes={attr_id: attr_val for attr_id, attr_val in type_data[2]},
                 effects=tuple(self.get_effect(effect_id) for effect_id in type_data[3]),
                 default_effect=None if type_data[4] is None else self.get_effect(type_data[4])
@@ -119,7 +119,7 @@ class JsonCacheHandler(CacheHandler):
                 raise AttributeFetchError(attr_id) from e
             attribute = Attribute(
                 attribute_id=attr_id,
-                max_attribute_id=attr_data[0],
+                max_attribute=attr_data[0],
                 default_value=attr_data[1],
                 high_is_good=attr_data[2],
                 stackable=attr_data[3]
@@ -142,15 +142,15 @@ class JsonCacheHandler(CacheHandler):
                 raise EffectFetchError(effect_id) from e
             effect = Effect(
                 effect_id=effect_id,
-                category_id=effect_data[0],
+                category=effect_data[0],
                 is_offensive=effect_data[1],
                 is_assistance=effect_data[2],
-                duration_attribute_id=effect_data[3],
-                discharge_attribute_id=effect_data[4],
-                range_attribute_id=effect_data[5],
-                falloff_attribute_id=effect_data[6],
-                tracking_speed_attribute_id=effect_data[7],
-                fitting_usage_chance_attribute_id=effect_data[8],
+                duration_attribute=effect_data[3],
+                discharge_attribute=effect_data[4],
+                range_attribute=effect_data[5],
+                falloff_attribute=effect_data[6],
+                tracking_speed_attribute=effect_data[7],
+                fitting_usage_chance_attribute=effect_data[8],
                 build_status=effect_data[9],
                 modifiers=tuple(self.get_modifier(modifier_id) for modifier_id in effect_data[10])
             )
@@ -217,8 +217,8 @@ class JsonCacheHandler(CacheHandler):
         for type_row in data['types']:
             type_id = type_row['type_id']
             slim_types[type_id] = (
-                type_row['group_id'],
-                type_row['category_id'],
+                type_row['group'],
+                type_row['category'],
                 tuple(type_row['attributes'].items()),  # Dictionary -> tuple
                 tuple(type_row['effects']),  # List -> tuple
                 type_row['default_effect']
@@ -229,7 +229,7 @@ class JsonCacheHandler(CacheHandler):
         for attr_row in data['attributes']:
             attribute_id = attr_row['attribute_id']
             slim_attribs[attribute_id] = (
-                attr_row['max_attribute_id'],
+                attr_row['max_attribute'],
                 attr_row['default_value'],
                 attr_row['high_is_good'],
                 attr_row['stackable']
@@ -243,12 +243,12 @@ class JsonCacheHandler(CacheHandler):
                 effect_row['effect_category'],
                 effect_row['is_offensive'],
                 effect_row['is_assistance'],
-                effect_row['duration_attribute_id'],
-                effect_row['discharge_attribute_id'],
-                effect_row['range_attribute_id'],
-                effect_row['falloff_attribute_id'],
-                effect_row['tracking_speed_attribute_id'],
-                effect_row['fitting_usage_chance_attribute_id'],
+                effect_row['duration_attribute'],
+                effect_row['discharge_attribute'],
+                effect_row['range_attribute'],
+                effect_row['falloff_attribute'],
+                effect_row['tracking_speed_attribute'],
+                effect_row['fitting_usage_chance_attribute'],
                 effect_row['build_status'],
                 tuple(effect_row['modifiers'])  # List -> tuple
             )

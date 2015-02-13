@@ -22,17 +22,19 @@
 class Attribute:
     """Class-holder for attribute metadata"""
 
-    def __init__(self,
-                 attribute_id=None,
-                 max_attribute_id=None,
-                 default_value=None,
-                 high_is_good=None,
-                 stackable=None):
+    def __init__(
+        self,
+        attribute_id=None,
+        max_attribute=None,
+        default_value=None,
+        high_is_good=None,
+        stackable=None
+    ):
         self.id = attribute_id
 
         # When value of this attribute is calculated on any item, it cannot
-        # be bigger than value of attribute referenced by max_attribute_id
-        self.max_attribute_id = max_attribute_id
+        # be bigger than value of attribute referenced by ID stored here
+        self.max_attribute = max_attribute
 
         # Default value of this attribute, used when base attribute value
         # is not available on item during calculation process

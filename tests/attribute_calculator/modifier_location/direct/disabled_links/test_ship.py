@@ -41,7 +41,7 @@ class TestDomainDirectShipSwitch(AttrCalcTestCase):
         modifier.domain = Domain.ship
         modifier.filter_type = None
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type_(type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)

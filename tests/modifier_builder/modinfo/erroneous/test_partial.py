@@ -119,7 +119,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(modifier.domain, Domain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 44)
-        self.assertEqual(modifier.operator, Operator.post_assignment)
+        self.assertEqual(modifier.operator, Operator.post_assign)
         self.assertEqual(modifier.tgt_attr, 33)
         self.assertIsNone(modifier.filter_type)
         self.assertIsNone(modifier.filter_value)

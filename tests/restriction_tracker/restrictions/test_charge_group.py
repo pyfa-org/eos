@@ -31,7 +31,7 @@ class TestChargeGroup(RestrictionTestCase):
     """Check functionality of charge group restriction"""
 
     def test_fail_group1(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -53,7 +53,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group2(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_2: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -75,7 +75,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group3(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_3: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -97,7 +97,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group4(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_4: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -119,7 +119,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group5(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_5: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -141,7 +141,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_charge_none(self):
-        charge_item = self.ch.type_(type_id=1, group_id=None)
+        charge_item = self.ch.type_(type_id=1, group=None)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -163,7 +163,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_multiple_same(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_3: 3,
                                                               Attribute.charge_group_5: 3})
@@ -186,7 +186,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_multiple_different(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_3: 5,
                                                               Attribute.charge_group_5: 3})
@@ -210,7 +210,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_original_attr(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -233,7 +233,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_match(self):
-        charge_item = self.ch.type_(type_id=1, group_id=3)
+        charge_item = self.ch.type_(type_id=1, group=3)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = Mock(state=State.offline, item=container_item,
@@ -252,7 +252,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_multiple(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.charge_group_3: 56,
                                                               Attribute.charge_group_5: 1008})
@@ -272,7 +272,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_no_attr(self):
-        charge_item = self.ch.type_(type_id=1, group_id=1008)
+        charge_item = self.ch.type_(type_id=1, group=1008)
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={})
         container_holder = Mock(state=State.offline, item=container_item,

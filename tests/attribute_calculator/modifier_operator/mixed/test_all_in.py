@@ -36,12 +36,12 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_pre_ass.state = State.offline
         modifier_pre_ass.scope = Scope.local
         modifier_pre_ass.src_attr = src_attr.id
-        modifier_pre_ass.operator = Operator.pre_assignment
+        modifier_pre_ass.operator = Operator.pre_assign
         modifier_pre_ass.tgt_attr = tgt_attr.id
         modifier_pre_ass.domain = Domain.ship
         modifier_pre_ass.filter_type = FilterType.all_
         modifier_pre_ass.filter_value = None
-        effect_pre_ass = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect_pre_ass = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect_pre_ass.modifiers = (modifier_pre_ass,)
         value_pre_ass = 5
         influence_source_pre_ass = IndependentItem(self.ch.type_(type_id=1, effects=(effect_pre_ass,),
@@ -56,7 +56,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_pre_mul.domain = Domain.ship
         modifier_pre_mul.filter_type = FilterType.all_
         modifier_pre_mul.filter_value = None
-        effect_pre_mul = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
+        effect_pre_mul = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect_pre_mul.modifiers = (modifier_pre_mul,)
         value_pre_mul = 50
         influence_source_pre_mul = IndependentItem(self.ch.type_(type_id=2, effects=(effect_pre_mul,),
@@ -71,7 +71,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_pre_div.domain = Domain.ship
         modifier_pre_div.filter_type = FilterType.all_
         modifier_pre_div.filter_value = None
-        effect_pre_div = self.ch.effect(effect_id=3, category_id=EffectCategory.passive)
+        effect_pre_div = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect_pre_div.modifiers = (modifier_pre_div,)
         value_pre_div = 0.5
         influence_source_pre_div = IndependentItem(self.ch.type_(type_id=3, effects=(effect_pre_div,),
@@ -86,7 +86,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_mod_add.domain = Domain.ship
         modifier_mod_add.filter_type = FilterType.all_
         modifier_mod_add.filter_value = None
-        effect_mod_add = self.ch.effect(effect_id=4, category_id=EffectCategory.passive)
+        effect_mod_add = self.ch.effect(effect_id=4, category=EffectCategory.passive)
         effect_mod_add.modifiers = (modifier_mod_add,)
         value_mod_add = 10
         influence_source_mod_add = IndependentItem(self.ch.type_(type_id=4, effects=(effect_mod_add,),
@@ -101,7 +101,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_mod_sub.domain = Domain.ship
         modifier_mod_sub.filter_type = FilterType.all_
         modifier_mod_sub.filter_value = None
-        effect_mod_sub = self.ch.effect(effect_id=5, category_id=EffectCategory.passive)
+        effect_mod_sub = self.ch.effect(effect_id=5, category=EffectCategory.passive)
         effect_mod_sub.modifiers = (modifier_mod_sub,)
         value_mod_sub = 63
         influence_source_mod_sub = IndependentItem(self.ch.type_(type_id=5, effects=(effect_mod_sub,),
@@ -116,7 +116,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_post_mul.domain = Domain.ship
         modifier_post_mul.filter_type = FilterType.all_
         modifier_post_mul.filter_value = None
-        effect_post_mul = self.ch.effect(effect_id=6, category_id=EffectCategory.passive)
+        effect_post_mul = self.ch.effect(effect_id=6, category=EffectCategory.passive)
         effect_post_mul.modifiers = (modifier_post_mul,)
         value_post_mul = 1.35
         influence_source_post_mul = IndependentItem(self.ch.type_(type_id=6, effects=(effect_post_mul,),
@@ -131,7 +131,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_post_div.domain = Domain.ship
         modifier_post_div.filter_type = FilterType.all_
         modifier_post_div.filter_value = None
-        effect_post_div = self.ch.effect(effect_id=7, category_id=EffectCategory.passive)
+        effect_post_div = self.ch.effect(effect_id=7, category=EffectCategory.passive)
         effect_post_div.modifiers = (modifier_post_div,)
         value_post_div = 2.7
         influence_source_post_div = IndependentItem(self.ch.type_(type_id=7, effects=(effect_post_div,),
@@ -146,7 +146,7 @@ class TestOperatorAllIn(AttrCalcTestCase):
         modifier_post_perc.domain = Domain.ship
         modifier_post_perc.filter_type = FilterType.all_
         modifier_post_perc.filter_value = None
-        effect_post_perc = self.ch.effect(effect_id=8, category_id=EffectCategory.passive)
+        effect_post_perc = self.ch.effect(effect_id=8, category=EffectCategory.passive)
         effect_post_perc.modifiers = (modifier_post_perc,)
         value_post_perc = 15
         influence_source_post_perc = IndependentItem(self.ch.type_(type_id=8, effects=(effect_post_perc,),

@@ -54,8 +54,10 @@ class StateRegister(RestrictionRegister):
         for holder in self.__holders:
             if holder.state > holder.item.max_state:
                 allowed_states = tuple(filter(lambda s: s <= holder.item.max_state, State))
-                tainted_holders[holder] = StateErrorData(current_state=holder.state,
-                                                         allowed_states=allowed_states)
+                tainted_holders[holder] = StateErrorData(
+                    current_state=holder.state,
+                    allowed_states=allowed_states
+                )
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
 

@@ -30,20 +30,22 @@ class Type:
     incursion system-wide effects are actually items.
     """
 
-    def __init__(self,
-                 type_id=None,
-                 group_id=None,
-                 category_id=None,
-                 attributes=None,
-                 effects=(),
-                 default_effect=None):
+    def __init__(
+        self,
+        type_id=None,
+        group=None,
+        category=None,
+        attributes=None,
+        effects=(),
+        default_effect=None
+    ):
         self.id = type_id
 
         # The groupID of the type, integer
-        self.group_id = group_id
+        self.group = group
 
         # The category ID of the type, integer
-        self.category_id = category_id
+        self.category = category
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
@@ -87,15 +89,15 @@ class Type:
         which are required to use type
         """
         required_skills = {}
-        for srq_attr_id in self.__skillrq_attrs:
+        for srq_attr in self.__skillrq_attrs:
             # Skip skill requirement attribute pair if any
             # of them is not available
             try:
-                srq = self.attributes[srq_attr_id]
+                srq = self.attributes[srq_attr]
             except KeyError:
                 continue
             try:
-                srq_lvl = self.attributes[self.__skillrq_attrs[srq_attr_id]]
+                srq_lvl = self.attributes[self.__skillrq_attrs[srq_attr]]
             except KeyError:
                 continue
             required_skills[int(srq)] = int(srq_lvl)
@@ -132,19 +134,21 @@ class Type:
         targeted = False
         for effect in self.effects:
             # If any of effects is targeted, then type is targeted
-            if effect.category_id == EffectCategory.target:
+            if effect.category == EffectCategory.target:
                 targeted = True
                 break
         return targeted
 
     # Format: {effect ID: slot ID}
-    __effect_slot_map = {Effect.lo_power: Slot.module_low,
-                         Effect.hi_power: Slot.module_high,
-                         Effect.med_power: Slot.module_med,
-                         Effect.launcher_fitted: Slot.launcher,
-                         Effect.turret_fitted: Slot.turret,
-                         Effect.rig_slot: Slot.rig,
-                         Effect.subsystem: Slot.subsystem}
+    __effect_slot_map = {
+        Effect.lo_power: Slot.module_low,
+        Effect.hi_power: Slot.module_high,
+        Effect.med_power: Slot.module_med,
+        Effect.launcher_fitted: Slot.launcher,
+        Effect.turret_fitted: Slot.turret,
+        Effect.rig_slot: Slot.rig,
+        Effect.subsystem: Slot.subsystem
+    }
 
     @CachedProperty
     def slots(self):

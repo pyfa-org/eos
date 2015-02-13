@@ -33,7 +33,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type1(self):
         # Check that first type-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
@@ -53,7 +53,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type2(self):
         # Check that second type-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_2: 10})
@@ -73,7 +73,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type3(self):
         # Check that third type-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_3: 10})
@@ -93,7 +93,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type4(self):
         # Check that fourth type-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_4: 10})
@@ -113,7 +113,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type5(self):
         # Check that fifth type-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.fits_to_shiptype: 10})
@@ -131,7 +131,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type_multiple_different(self):
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10,
@@ -150,7 +150,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type_multiple_same(self):
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10,
@@ -171,7 +171,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group1(self):
         # Check that first group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38})
@@ -191,7 +191,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group2(self):
         # Check that second group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_2: 38})
@@ -211,7 +211,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group3(self):
         # Check that third group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_3: 38})
@@ -231,7 +231,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group4(self):
         # Check that fourth group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_4: 38})
@@ -251,7 +251,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group5(self):
         # Check that fourth group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_5: 38})
@@ -271,7 +271,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group6(self):
         # Check that fourth group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_6: 38})
@@ -291,7 +291,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group7(self):
         # Check that fourth group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_7: 38})
@@ -311,7 +311,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group8(self):
         # Check that fourth group-restriction attribute affects
         # holder
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_8: 38})
@@ -329,7 +329,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group_multiple_different(self):
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38,
@@ -348,7 +348,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group_multiple_same(self):
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38,
@@ -369,7 +369,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_combined(self):
         # Check that failure is appropriately generated when
         # holder specifies both type and group restrictions
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089,
@@ -404,7 +404,7 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_attr_original(self):
         # Make sure original value is taken
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
@@ -425,7 +425,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_type_match(self):
         # When type of ship matches type-restriction attribute,
         # no error should be raised
-        ship_item = self.ch.type_(type_id=554, group_id=23)
+        ship_item = self.ch.type_(type_id=554, group=23)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 554})
@@ -441,7 +441,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_group_match(self):
         # When type of ship matches group-restriction attribute,
         # no error should be raised
-        ship_item = self.ch.type_(type_id=554, group_id=23)
+        ship_item = self.ch.type_(type_id=554, group=23)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 23})
@@ -457,7 +457,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_combined_type_match(self):
         # Check that it's enough to match type condition
         # to be fittable, even if both conditions are specified
-        ship_item = self.ch.type_(type_id=671, group_id=31)
+        ship_item = self.ch.type_(type_id=671, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 671,
@@ -474,7 +474,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_combined_group_atch(self):
         # Check that it's enough to match group condition
         # to be fittable, even if both conditions are specified
-        ship_item = self.ch.type_(type_id=554, group_id=23)
+        ship_item = self.ch.type_(type_id=554, group=23)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089,
@@ -490,7 +490,7 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_pass_non_ship_holder(self):
         # Holders not belonging to ship shouldn't be affected
-        ship_item = self.ch.type_(type_id=772, group_id=31)
+        ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})

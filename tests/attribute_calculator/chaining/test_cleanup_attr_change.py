@@ -42,7 +42,7 @@ class TestCleanupChainChange(AttrCalcTestCase):
         modifier1.domain = Domain.ship
         modifier1.filter_type = None
         modifier1.filter_value = None
-        effect1 = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
         holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
@@ -54,7 +54,7 @@ class TestCleanupChainChange(AttrCalcTestCase):
         modifier2.domain = Domain.ship
         modifier2.filter_type = FilterType.all_
         modifier2.filter_value = None
-        effect2 = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
+        effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         holder2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
         holder3 = ShipItem(self.ch.type_(type_id=3, attributes={attr3.id: 0.5}))

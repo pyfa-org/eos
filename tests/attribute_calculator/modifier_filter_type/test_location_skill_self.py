@@ -44,7 +44,7 @@ class TestFilterDomainSkillrqSelf(AttrCalcTestCase):
         modifier.tgt_attr = self.tgt_attr.id
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.skill_self
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type_(type_id=772, effects=(effect,),
                                                               attributes={src_attr.id: 20}))

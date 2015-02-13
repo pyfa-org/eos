@@ -66,8 +66,10 @@ class ChargeVolumeRegister(RestrictionRegister):
             charge_volume = charge.item.attributes.get(Attribute.volume, 0)
             container_capacity = container.item.attributes.get(Attribute.capacity, 0)
             if charge_volume > container_capacity:
-                tainted_holders[charge] = ChargeVolumeErrorData(holder_volume=charge_volume,
-                                                                max_allowed_volume=container_capacity)
+                tainted_holders[charge] = ChargeVolumeErrorData(
+                    holder_volume=charge_volume,
+                    max_allowed_volume=container_capacity
+                )
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
 

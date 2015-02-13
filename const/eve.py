@@ -228,24 +228,24 @@ class Operand(IntEnum):
     # format: (skill_requirement.targetAttribute).(operator)).AGRSM(sourceAttribute))
     add_gang_srq_mod = 5
     # Applies modification directly to some item,
-    # format: ((domain->targetAttribute).(operator)).AIM(sourceAttribute)
+    # format: ((location->targetAttribute).(operator)).AIM(sourceAttribute)
     add_itm_mod = 6
     # Applies modification to items belonging to some domain, filtered by group,
-    # format: ((domain..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
+    # format: ((location..groupFilter->targetAttribute).(operator)).ALGM(sourceAttribute)
     add_loc_grp_mod = 7
     # Applies modification to all items belonging to some domain,
-    # format: ((domain->targetAttribute).(operator)).ALM(sourceAttribute)
+    # format: ((location->targetAttribute).(operator)).ALM(sourceAttribute)
     add_loc_mod = 8
     # Applies modification to items belonging to some domain, filtered by skill requirement
-    # format: ((domain[skill_requirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
+    # format: ((location[skill_requirement]->targetAttribute).(operator)).ALRSM(sourceAttribute)
     add_loc_srq_mod = 9
     # Logical AND operator
     and_ = 10
     # Applies modification to items belonging to some domain, filtered by owner of source,
-    # format: ((domain[skill_requirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
+    # format: ((location[skill_requirement]->targetAttribute).(operator)).AORSM(sourceAttribute)
     add_own_srq_mod = 11
     # Joins target items and attribute into target definition,
-    # format: domain->targetAttribute
+    # format: location->targetAttribute
     itm_attr = 12
     # Special operand, handles turret attack
     attack = 13
@@ -267,7 +267,7 @@ class Operand(IntEnum):
     def_attr = 22
     # Define boolean constant, boolean in expressionValue field
     def_bool = 23
-    # Define domain, text in expressionValue field
+    # Define location, text in expressionValue field
     def_loc = 24
     # Define group, integer in expressionGroupID field
     def_grp = 26
@@ -278,7 +278,7 @@ class Operand(IntEnum):
     # Special operand, used in ECM Burst effects
     ecm_burst = 30
     # Joins operator and target (attribute of possibly filtered items) definitions,
-    # format: (domain->targetAttribute).(operator)
+    # format: (location->targetAttribute).(operator)
     optr_tgt = 31
     # Special operand, defines area-of-effect damage for modules like smartbombs and old doomsday
     aoe_dmg = 32
@@ -306,10 +306,10 @@ class Operand(IntEnum):
     defender_launch = 45
     # Special operand, handles friend-or-foe missile launching
     fof_launch = 47
-    # Joins domain and group definitions into single filter, format: domain..group
+    # Joins domain and group definitions into single filter, format: location..group
     loc_grp = 48
     # Joins domain and skill requirement definitions into single filter,
-    # format: domain[skill_requirement]
+    # format: location[skill_requirement]
     loc_srq = 49
     # Special operand, handles transfer of ore from asteroid to cargo
     mine = 50
@@ -329,19 +329,19 @@ class Operand(IntEnum):
     # format: (skill_requirement.targetAttribute).(operator)).RGRSM(sourceAttribute))
     rm_gang_srq_mod = 57
     # Undos modification directly from some item,
-    # format: ((domain->targetAttribute).(operator)).RIM(sourceAttribute)
+    # format: ((location->targetAttribute).(operator)).RIM(sourceAttribute)
     rm_itm_mod = 58
     # Undos modification from items belonging to some domain, filtered by group,
-    # format: ((domain..groupFilter->targetAttribute).(operator)).RLGM(sourceAttribute)
+    # format: ((location..groupFilter->targetAttribute).(operator)).RLGM(sourceAttribute)
     rm_loc_grp_mod = 59
     # Undos modification from all items belonging to some domain,
-    # format: ((domain->targetAttribute).(operator)).RLM(sourceAttribute)
+    # format: ((location->targetAttribute).(operator)).RLM(sourceAttribute)
     rm_loc_mod = 60
     # Undos modification from items belonging to some domain, filtered by skill requirement,
-    # format: ((domain[skill_requirement]->targetAttribute).(operator)).RLRSM(sourceAttribute)
+    # format: ((location[skill_requirement]->targetAttribute).(operator)).RLRSM(sourceAttribute)
     rm_loc_srq_mod = 61
     # Undos modification from items belonging to some domain, filtered by owner of source,
-    # format: ((domain[skill_requirement]->targetAttribute).(operator)).RORSM(sourceAttribute)
+    # format: ((location[skill_requirement]->targetAttribute).(operator)).RORSM(sourceAttribute)
     rm_own_srq_mod = 62
     # Joins skill requirement and attribute into target definition,
     # format: skill_requirement.targetAttribute

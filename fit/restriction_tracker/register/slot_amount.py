@@ -62,8 +62,10 @@ class SlotAmountRegister(RestrictionRegister):
         if slots_used > slots_max:
             tainted_holders = {}
             for holder in self._get_tainted_holders(slots_max):
-                tainted_holders[holder] = SlotAmountErrorData(slots_used=slots_used,
-                                                              slots_max_allowed=slots_max)
+                tainted_holders[holder] = SlotAmountErrorData(
+                    slots_used=slots_used,
+                    slots_max_allowed=slots_max
+                )
             raise RegisterValidationError(tainted_holders)
 
     @property

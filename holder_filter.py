@@ -49,7 +49,7 @@ def turret_filter(holder):
     hybrid and energy weapon groups.
     """
     try:
-        group = holder.item.group_id
+        group = holder.item.group
     except AttributeError:
         return False
     if group in TURRET_GROUPS:
@@ -64,7 +64,7 @@ def missile_filter(holder):
     launcher groups.
     """
     try:
-        group = holder.item.group_id
+        group = holder.item.group
     except AttributeError:
         return False
     if group in MISSILE_LAUNCHER_GROUPS:
@@ -78,7 +78,7 @@ def drone_filter(holder):
     True for all items belonging to drone category.
     """
     try:
-        category = holder.item.category_id
+        category = holder.item.category
     except AttributeError:
         return False
     if category == Category.drone:

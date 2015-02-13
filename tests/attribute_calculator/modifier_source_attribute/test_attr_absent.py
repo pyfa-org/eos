@@ -52,7 +52,7 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         valid_modifier.domain = Domain.self_
         valid_modifier.filter_type = None
         valid_modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
                                                attributes={src_attr.id: 1.5, tgt_attr.id: 100}))

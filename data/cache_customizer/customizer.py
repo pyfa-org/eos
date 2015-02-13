@@ -52,8 +52,12 @@ class CacheCustomizer:
         # Generate modifiers
         damage_modifiers = []
         modifier_id = max(self.data['modifiers'], key=lambda row: row['modifier_id'])['modifier_id'] + 1
-        for damageAttr in (Attribute.em_damage, Attribute.thermal_damage,
-                           Attribute.kinetic_damage, Attribute.explosive_damage):
+        for damageAttr in (
+            Attribute.em_damage,
+            Attribute.thermal_damage,
+            Attribute.kinetic_damage,
+            Attribute.explosive_damage
+        ):
             modifier_row = {
                 'modifier_id': modifier_id,
                 'state': State.offline,
@@ -75,19 +79,19 @@ class CacheCustomizer:
             'effect_category': EffectCategory.passive,
             'is_offensive': False,
             'is_assistance': False,
-            'duration_attribute_id': None,
-            'discharge_attribute_id': None,
-            'range_attribute_id': None,
-            'falloff_attribute_id': None,
-            'tracking_speed_attribute_id': None,
-            'fitting_usage_chance_attribute_id': None,
+            'duration_attribute': None,
+            'discharge_attribute': None,
+            'range_attribute': None,
+            'falloff_attribute': None,
+            'tracking_speed_attribute': None,
+            'fitting_usage_chance_attribute': None,
             'build_status': EffectBuildStatus.ok_full,
             'modifiers': [modifier_row['modifier_id'] for modifier_row in damage_modifiers]
         }
         self.data['effects'].append(effect_row)
         # Add effect to all characters
         for type_row in self.data['types']:
-            if type_row['group_id'] == Group.character:
+            if type_row['group'] == Group.character:
                 type_row['effects'].append(effect_id)
 
     def _fix_online_effect_category(self):

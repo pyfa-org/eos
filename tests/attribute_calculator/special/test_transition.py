@@ -51,7 +51,7 @@ class TestTransitionFit(AttrCalcTestCase):
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         ship1 = IndependentItem(self.ch.type_(type_id=1, effects=(effect,), attributes={src_attr.id: 10}))
         ship2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect,), attributes={src_attr.id: 20}))
@@ -78,10 +78,10 @@ class TestTransitionFit(AttrCalcTestCase):
         cache_handler1 = CacheHandler()
         cache_handler2 = CacheHandler()
         src_attr1 = cache_handler1.attribute(attribute_id=1)
-        tgt_attr1 = cache_handler1.attribute(attribute_id=2, max_attribute_id=33)
+        tgt_attr1 = cache_handler1.attribute(attribute_id=2, max_attribute=33)
         cache_handler1.attribute(attribute_id=33, default_value=100)
         src_attr2 = cache_handler2.attribute(attribute_id=1)
-        tgt_attr2 = cache_handler2.attribute(attribute_id=2, max_attribute_id=333)
+        tgt_attr2 = cache_handler2.attribute(attribute_id=2, max_attribute=333)
         cache_handler2.attribute(attribute_id=333, default_value=500)
         modifier = Modifier()
         modifier.state = State.offline
@@ -92,9 +92,9 @@ class TestTransitionFit(AttrCalcTestCase):
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        effect1 = cache_handler1.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect1 = cache_handler1.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier,)
-        effect2 = cache_handler1.effect(effect_id=111, category_id=EffectCategory.passive)
+        effect2 = cache_handler1.effect(effect_id=111, category=EffectCategory.passive)
         effect2.modifiers = (modifier,)
         # Our holders from test environment fo not update undelying
         # item automatically when eos instance is switched, thus we

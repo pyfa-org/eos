@@ -123,8 +123,8 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
             arg2=e_rm_splice1['expressionID']
         )
         effect_row = {
-            'pre_expression_id': e_add_splice2['expressionID'],
-            'post_expression_id': e_rm_splice2['expressionID'],
+            'pre_expression': e_add_splice2['expressionID'],
+            'post_expression': e_rm_splice2['expressionID'],
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)

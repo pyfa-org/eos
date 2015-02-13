@@ -37,12 +37,12 @@ class TestOperatorPreAssign(AttrCalcTestCase):
         modifier.state = State.offline
         modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
-        modifier.operator = Operator.pre_assignment
+        modifier.operator = Operator.pre_assign
         modifier.tgt_attr = self.tgt_attr.id
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source1 = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
                                                                attributes={src_attr.id: 10}))

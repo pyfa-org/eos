@@ -31,7 +31,7 @@ class TestCap(AttrCalcTestCase):
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
-        self.capped_attr = self.ch.attribute(attribute_id=1, max_attribute_id=2)
+        self.capped_attr = self.ch.attribute(attribute_id=1, max_attribute=2)
         self.capping_attr = self.ch.attribute(attribute_id=2, default_value=5)
         self.source_attr = self.ch.attribute(attribute_id=3)
         # Just to make sure cap is applied to final value, not
@@ -45,7 +45,7 @@ class TestCap(AttrCalcTestCase):
         modifier.domain = Domain.self_
         modifier.filter_type = None
         modifier.filter_value = None
-        self.effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
     def test_cap_default(self):
@@ -84,7 +84,7 @@ class TestCap(AttrCalcTestCase):
         modifier.domain = Domain.self_
         modifier.filter_type = None
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         holder = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect, effect),
                                                attributes={self.capped_attr.id: 3, self.source_attr.id: 6,
@@ -115,7 +115,7 @@ class TestCap(AttrCalcTestCase):
         modifier.domain = Domain.ship
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=2, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         cap_updater = IndependentItem(self.ch.type_(type_id=2, effects=(effect,),
                                                     attributes={self.source_attr.id: 3.5}))

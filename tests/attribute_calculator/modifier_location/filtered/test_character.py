@@ -42,7 +42,7 @@ class TestDomainFilterCharacter(AttrCalcTestCase):
         modifier.domain = Domain.character
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
-        effect = self.ch.effect(effect_id=1, category_id=EffectCategory.passive)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         # It doesn't matter holder of which type we're using,
         # the only thing which matters is its position in fit
