@@ -107,7 +107,7 @@ class Eos:
             logger = EosLogger(self.name, os.path.join(self.__path, 'logs'))
         self._logger = logger
 
-        logger.info('------------------------------------------------------------------------')
+        logger.info('-' * 72)
         logger.info('session started')
 
     def __initialize_cache(self, data_handler, cache_handler):
