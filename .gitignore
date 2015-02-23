@@ -1,5 +1,9 @@
-.project
-.pydevproject
+# Compiled python files
 *.pyc
 *.pyo
 __pycache__
+# Eclipse project files
+.project
+.pydevproject
+# Pycharm project files
+.idea
