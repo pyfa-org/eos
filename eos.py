@@ -19,17 +19,11 @@
 #===============================================================================
 
 
-import os.path
-
 from eos.data.cache_customizer import CacheCustomizer
 from eos.data.cache_generator import CacheGenerator
 
 
 EOS_VERSION = 'git'
-
-# Keeps instance of Eos which will be used when new fits are
-# created without passing Eos instance explicitly
-default_instance = None
 
 
 class Eos:
