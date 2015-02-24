@@ -77,8 +77,7 @@ class Eos:
     def __initialize_cache(self, data_handler, cache_handler):
         """
         Check if the cache is outdated and, if necessary, compose it
-        using passed data handler and cache handler. If cache handler
-        was specified as None, default on-disk JSON handler is used.
+        using passed data handler and cache handler.
         """
         self._cache_handler = cache_handler
 
