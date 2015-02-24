@@ -8,7 +8,7 @@ Currently you can use engine following way:
 
 
     logger = TextLogger('eos_tq', 'data_folder/logs/eos_tq.log')
-    data_handler = JsonDataHandler('data_folder/phobos/')
+    data_handler = JsonDataHandler('data_folder/phobos/')  # Folder with Phobos data dump
     cache_handler = JsonCacheHandler('data_folder/cache/eos_tq.json.bz2', logger)
     engine = Eos(data_handler, cache_handler, logger, make_default=True)
 
