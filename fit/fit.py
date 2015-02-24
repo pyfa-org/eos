@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos import eos as eos_module
+from eos import Eos
 from eos.const.eos import State
 from eos.const.eve import Type
 from .attribute_calculator import LinkTracker
@@ -43,7 +43,7 @@ class Fit:
         # Eos instance within which this fit exists; use default
         # if not specified explicitly
         if eos is None:
-            self.__eos = eos_module.default_instance
+            self.__eos = Eos._default_instance
         else:
             self.__eos = eos
         # Character-related holder containers

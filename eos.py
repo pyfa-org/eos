@@ -47,6 +47,11 @@ class Eos:
     specified, built-in JSON cache handler is used.
     logger -- logging implementation. If not specified,
     built-in plain text logger is used.
+
+    Optional arguments:
+    make_default -- fit objects during initialization need
+    Eos instance; this can be avoided if you set any Eos
+    instance as default using this flag.
     """
 
     def __init__(
@@ -63,8 +68,10 @@ class Eos:
         self.__initialize_cache(data_handler, cache_handler)
 
         if make_default is True:
-            global default_instance
-            default_instance = self
+            Eos._default_instance = self
+
+    # Keeps reference to default Eos instance
+    _default_instance = None
 
     # Context manager methods
     def __enter__(self):
