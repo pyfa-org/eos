@@ -28,7 +28,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
     """Test parsing of YAML describing modification filtered by domain and skill requirement"""
 
     def _make_yaml(self, domain):
-        yaml = ('- domain: {}\n  func: DomainRequiredSkillModifier\n  modifiedAttributeID: 22\n'
+        yaml = ('- domain: {}\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 22\n'
             '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n')
         return yaml.format(domain)
 

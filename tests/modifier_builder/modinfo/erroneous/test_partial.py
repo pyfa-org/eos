@@ -54,7 +54,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
             'effect_id': 1,
             'effect_category': EffectCategory.passive,
             'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: DomainGroupModifier\n'
+                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: LocationGroupModifier\n'
                 '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
         }
         modifiers, status = self.run_builder(effect_row)

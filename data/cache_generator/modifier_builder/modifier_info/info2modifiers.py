@@ -28,7 +28,7 @@ from .exception import *
 
 # Format:
 # {info func: (mod filter type, info attribute name for mod filter value,
-#   {info domain: (mod scope, mod domain)})}
+#   {info location: (mod scope, mod domain)})}
 filter_map = {
     'ItemModifier': (
         None, None,
@@ -40,7 +40,7 @@ filter_map = {
             None: (Scope.local, Domain.self_)
         }
     ),
-    'DomainModifier': (
+    'LocationModifier': (
         FilterType.all_, None,
         {
             'shipID': (Scope.local, Domain.ship),
@@ -48,7 +48,7 @@ filter_map = {
             'targetID': (Scope.projected, Domain.ship)
         }
     ),
-    'DomainGroupModifier': (
+    'LocationGroupModifier': (
         FilterType.group, 'groupID',
         {
             'shipID': (Scope.local, Domain.ship),
@@ -56,7 +56,7 @@ filter_map = {
             'targetID': (Scope.projected, Domain.ship)
         }
     ),
-    'DomainRequiredSkillModifier': (
+    'LocationRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
             'shipID': (Scope.local, Domain.ship),
