@@ -21,14 +21,14 @@
 import sqlite3
 import os.path
 
-from .abc import DataHandler
+from .abc import BaseDataHandler
 
 
 # SQLite stores bools as 0 or 1, convert them to python bool
-sqlite3.register_converter("BOOLEAN", lambda v: int(v) == 1)
+sqlite3.register_converter('BOOLEAN', lambda v: int(v) == 1)
 
 
-class SQLiteDataHandler(DataHandler):
+class SQLiteDataHandler(BaseDataHandler):
     """
     Handler for loading data from SQLite database. Data should be in Phobos-like
     format, for details on it refer to JSON data handler doc string.
@@ -64,7 +64,7 @@ class SQLiteDataHandler(DataHandler):
         return self.__fetch_table('dgmexpressions')
 
     def __fetch_table(self, tablename):
-        self.cursor.execute("SELECT * FROM {}".format(tablename))
+        self.cursor.execute('SELECT * FROM {}'.format(tablename))
         return [dict(row) for row in self.cursor]
 
     def get_version(self):

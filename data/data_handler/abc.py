@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class DataHandler(metaclass=ABCMeta):
+class BaseDataHandler(metaclass=ABCMeta):
     """
     Abstract base class, it handles fetching 'raw' data from
     external source. Its abstract methods are named against

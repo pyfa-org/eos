@@ -5,11 +5,12 @@ Currently you can use engine following way:
 
     from eos import *
     from eos.holder_filter import *
-    from eos.data.data_handler import JsonDataHandler
 
 
-    data_handler = JsonDataHandler('/path/to/phobos/data/dump/')
-    engine = Eos(data_handler, storage_path='~/path/to/logs/and/cache/', make_default=True)
+    logger = TextLogger('eos_tq', 'data_folder/logs/eos_tq.log')
+    data_handler = JsonDataHandler('data_folder/phobos/')
+    cache_handler = JsonCacheHandler('data_folder/cache/eos_tq.json.bz2', logger)
+    engine = Eos(data_handler, cache_handler, logger, make_default=True)
 
     fit = Fit()
     fit.ship = Ship(32311)  # Navy Typhoon

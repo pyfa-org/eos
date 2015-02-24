@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class CacheHandler(metaclass=ABCMeta):
+class BaseCacheHandler(metaclass=ABCMeta):
     """
     Abstract base class for cache handlers. Most of
     its methods (type, attribute, effect and modifier

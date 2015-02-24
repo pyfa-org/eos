@@ -22,6 +22,6 @@
 from .text_logger import TextLogger
 
 
-__all__ = (
-    'TextLogger',
-)
+__all__ = [
+    'TextLogger'
+]

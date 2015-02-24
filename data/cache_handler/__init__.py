@@ -19,6 +19,9 @@
 #===============================================================================
 
 
-from .abc import CacheHandler
 from .json_cache_handler import JsonCacheHandler
-from .exception import TypeFetchError
+
+
+__all__ = [
+    'JsonCacheHandler'
+]

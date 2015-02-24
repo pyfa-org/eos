@@ -43,19 +43,10 @@ class Eos:
     data_handler -- object which implements standard data
     interface (returns data rows for several tables as
     dicts and is able to get data version)
-
-    Optional arguments:
     cache_handler -- cache handler implementation. If not
     specified, built-in JSON cache handler is used.
     logger -- logging implementation. If not specified,
     built-in plain text logger is used.
-    name -- name of this eos instance, used as part of name
-    of cache and log files for built-in facilities, thus
-    should be unique for all running eos instances. Default
-    is 'eos'.
-    storage_path -- path to store various files. Default
-    is ~/.eos. Used by built-in cache handler and logger
-    implementations.
     """
 
     def __init__(
@@ -93,7 +84,7 @@ class Eos:
         # Compare fingerprints from data and cache
         cache_fp = cache_handler.get_fingerprint()
         data_version = data_handler.get_version()
-        current_fp = '{}_{}_{}'.format(self.name, data_version, EOS_VERSION)
+        current_fp = '{}_{}'.format(data_version, EOS_VERSION)
         # If data version is corrupt or fingerprints mismatch,
         # update cache
         if data_version is None or cache_fp != current_fp:

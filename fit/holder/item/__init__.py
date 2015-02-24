@@ -32,7 +32,7 @@ from .skill import Skill
 from .stance import Stance
 from .subsystem import Subsystem
 
-__all__ = (
+__all__ = [
     'Booster',
     'Character',
     'Charge',
@@ -47,4 +47,4 @@ __all__ = (
     'Skill',
     'Stance',
     'Subsystem'
-)
+]

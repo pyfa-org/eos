@@ -22,12 +22,12 @@
 from eos.const.eve import Type, Group, Category
 
 
-__all__ = (
+__all__ = [
     'turret_filter',
     'missile_filter',
     'drone_filter',
     'sentry_drone_filter'
-)
+]
 
 TURRET_GROUPS = (Group.projectile_weapon, Group.energy_weapon, Group.hydrid_weapon)
 MISSILE_LAUNCHER_GROUPS = (

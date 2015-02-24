@@ -25,7 +25,7 @@ from .resource_use import CpuUseRegister, PowerGridUseRegister, CalibrationUseRe
 from .slot_use import TurretUseRegister, LauncherUseRegister, LaunchedDroneRegister
 
 
-__all__ = (
+__all__ = [
     'DamageDealerRegister',
     'CpuUseRegister',
     'PowerGridUseRegister',
@@ -35,4 +35,4 @@ __all__ = (
     'TurretUseRegister',
     'LauncherUseRegister',
     'LaunchedDroneRegister'
-)
+]

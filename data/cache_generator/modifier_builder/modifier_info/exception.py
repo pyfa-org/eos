@@ -22,7 +22,7 @@
 from eos.exception import EosError
 
 
-__all__ = (
+__all__ = [
     'YamlParseError',
     'UnknownStateError',
     'UnknownOperatorError',
@@ -30,7 +30,7 @@ __all__ = (
     'NoFilterValueError',
     'UnexpectedDomainError',
     'UnexpectedBuilderError'
-)
+]
 
 
 # Exception classes used by converter which uses modifier

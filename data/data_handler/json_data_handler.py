@@ -21,10 +21,10 @@
 import json
 import os.path
 
-from .abc import DataHandler
+from .abc import BaseDataHandler
 
 
-class JsonDataHandler(DataHandler):
+class JsonDataHandler(BaseDataHandler):
     """
     Implements loading of raw data from JSON files produced by Phobos script, which can be found at
     https://github.com/DarkFenX/Phobos. Following command asks Phobos to gather all the data we need:

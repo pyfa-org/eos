@@ -37,7 +37,7 @@ from .slot_amount import HighSlotRegister, MediumSlotRegister, LowSlotRegister, 
 from .state import StateRegister
 
 
-__all__ = (
+__all__ = [
     'CapitalItemRegister',
     'ChargeGroupRegister',
     'ChargeSizeRegister',
@@ -67,4 +67,4 @@ __all__ = (
     'LauncherSlotRegister',
     'LaunchedDroneRegister',
     'StateRegister'
-)
+]

@@ -25,11 +25,11 @@ import os.path
 from weakref import WeakValueDictionary
 
 from eos.data.cache_object import *
-from .abc import CacheHandler
+from .abc import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 
 
-class JsonCacheHandler(CacheHandler):
+class JsonCacheHandler(BaseCacheHandler):
     """
     This cache handler implements on-disk cache store in the form
     of compressed JSON. To improve performance further, it also
@@ -37,13 +37,12 @@ class JsonCacheHandler(CacheHandler):
     object cache for assembled objects.
 
     Required arguments:
-    diskCacheFolder -- folder where on-disk cache files are stored
-    name -- unique indentifier of cache, e.g. Eos instance name
+    cache_path -- file name where on-disk cache will be stored (.json.bz2)
     logger -- logger to use for errors
     """
 
-    def __init__(self, disk_cache_folder, name, logger):
-        self._disk_cache_file = os.path.join(disk_cache_folder, '{}.json.bz2'.format(name))
+    def __init__(self, cache_path, logger):
+        self._cache_path = cache_path
         self._logger = logger
         # Initialize memory data cache
         self.__type_data_cache = {}
@@ -58,11 +57,11 @@ class JsonCacheHandler(CacheHandler):
         self.__modifier_obj_cache = WeakValueDictionary()
 
         # If cache doesn't exist, silently finish initialization
-        if not os.path.exists(self._disk_cache_file):
+        if not os.path.exists(self._cache_path):
             return
         # Read JSON into local variable
         try:
-            with bz2.BZ2File(self._disk_cache_file, 'r') as file:
+            with bz2.BZ2File(self._cache_path, 'r') as file:
                 json_data = file.read().decode('utf-8')
                 data = json.loads(json_data)
         except KeyboardInterrupt:
@@ -193,10 +192,10 @@ class JsonCacheHandler(CacheHandler):
         data = self.__strip_data(data)
         data['fingerprint'] = fingerprint
         # Update disk cache
-        cache_folder = os.path.dirname(self._disk_cache_file)
+        cache_folder = os.path.dirname(self._cache_path)
         if os.path.isdir(cache_folder) is not True:
             os.makedirs(cache_folder, mode=0o755)
-        with bz2.BZ2File(self._disk_cache_file, 'w') as file:
+        with bz2.BZ2File(self._cache_path, 'w') as file:
             json_data = json.dumps(data)
             file.write(json_data.encode('utf-8'))
         # Update data cache; encode to JSON and decode back
