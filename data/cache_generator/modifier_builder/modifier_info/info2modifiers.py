@@ -77,6 +77,13 @@ filter_map = {
             'charID': (Scope.gang, Domain.character)
         }
     ),
+    'GangGroupModifier': (
+        FilterType.group, 'groupID',
+        {
+            'shipID': (Scope.gang, Domain.ship),
+            'charID': (Scope.gang, Domain.character)
+        }
+    ),
     'GangRequiredSkillModifier': (
         FilterType.skill, 'skillTypeID',
         {
