@@ -19,9 +19,9 @@
 #===============================================================================
 
 
-from .eos_logger import EosTextLogger
+from .text_logger import TextLogger
 
 
 __all__ = (
-    'EosTextLogger',
+    'TextLogger',
 )

@@ -25,7 +25,7 @@ from logging import getLogger, FileHandler, Formatter, INFO
 from .abc import BaseLogger
 
 
-class EosTextLogger(BaseLogger):
+class TextLogger(BaseLogger):
     """
     Handles everything related to logs.
 
