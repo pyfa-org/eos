@@ -28,7 +28,7 @@ from .exception import *
 
 # Format:
 # {info func: (mod filter type, info attribute name for mod filter value,
-#   {info location: (mod scope, mod domain)})}
+#   {info domain: (mod scope, mod domain)})}
 filter_map = {
     'ItemModifier': (
         None, None,
