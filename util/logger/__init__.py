@@ -20,3 +20,8 @@
 
 
 from .eos_logger import EosTextLogger
+
+
+__all__ = (
+    'EosTextLogger',
+)

@@ -26,3 +26,4 @@ from .fit import Fit
 from .fit.holder.item import *
 from .fit.restriction_tracker.exception import ValidationError
 from .fit.tuples import DamageTypes
+from .util.logger import *
