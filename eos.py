@@ -23,8 +23,6 @@ import os.path
 
 from eos.data.cache_customizer import CacheCustomizer
 from eos.data.cache_generator import CacheGenerator
-from eos.data.cache_handler import JsonCacheHandler
-from eos.util.logger import EosLogger
 
 
 EOS_VERSION = 'git'
@@ -63,25 +61,19 @@ class Eos:
     def __init__(
         self,
         data_handler,
-        cache_handler=None,
-        logger=None,
-        name='eos',
-        storage_path=None,
+        cache_handler,
+        logger,
         make_default=False
     ):
-        self.__name = name
-        self.__path = self.__initialize_path(storage_path)
+        self._logger = logger
+        logger.info('-' * 72)
+        logger.info('session started')
 
-        self.__initialize_logger(logger)
         self.__initialize_cache(data_handler, cache_handler)
 
         if make_default is True:
             global default_instance
             default_instance = self
-
-    @property
-    def name(self):
-        return self.__name
 
     # Context manager methods
     def __enter__(self):
@@ -90,38 +82,12 @@ class Eos:
     def __exit__(self, *exc):
         return False
 
-    # Initialization methods
-    def __initialize_path(self, path):
-        """Process path we've received from user and return it."""
-        if path is None:
-            path = os.path.join('~', '.eos')
-        path = os.path.expanduser(path)
-        return path
-
-    def __initialize_logger(self, logger):
-        """
-        Initialize logging facilities and log a few initial messages. If logger
-        was specified as None, default to EosLogger.
-        """
-        if logger is None:
-            logger = EosLogger(self.name, os.path.join(self.__path, 'logs'))
-        self._logger = logger
-
-        logger.info('-' * 72)
-        logger.info('session started')
-
     def __initialize_cache(self, data_handler, cache_handler):
         """
         Check if the cache is outdated and, if necessary, compose it
         using passed data handler and cache handler. If cache handler
         was specified as None, default on-disk JSON handler is used.
         """
-        if cache_handler is None:
-            cache_handler = JsonCacheHandler(
-                os.path.join(self.__path, 'cache'),
-                self.__name,
-                self._logger
-            )
         self._cache_handler = cache_handler
 
         # Compare fingerprints from data and cache

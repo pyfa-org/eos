@@ -25,18 +25,18 @@ from logging import getLogger, FileHandler, Formatter, INFO
 from .abc import BaseLogger
 
 
-class EosLogger(BaseLogger):
+class EosTextLogger(BaseLogger):
     """
     Handles everything related to logs.
 
     Required arguments:
-    name -- name of root logger for this instance,
-    used in log filename
-    logFolder -- path to folder for logs
+    name -- name of root python logger which will be
+    used as root for our logger object
+    log_path -- path to file into which log will be written
     """
 
-    def __init__(self, name, log_folder):
-        self.__setup(name, log_folder)
+    def __init__(self, name, log_path):
+        self.__setup_logger(name, log_path)
         # Storage for signatures of logged entries,
         # to avoid logging them again when it's not desirable
         self.__known_signatures = set()
@@ -107,14 +107,14 @@ class EosLogger(BaseLogger):
             logger.error(msg)
             self.__known_signatures.add(signature)
 
-    def __setup(self, name, log_folder):
+    def __setup_logger(self, name, log_path):
         """
         Configure python logging system for our neeeds.
 
         Required arguments:
         name -- name of root python logger which will be
         used as root for our logger object
-        log_folder -- path to folder for logs
+        log_path -- path to file into which log will be written
         """
         self.__root_logger = getLogger(name)
         # Set level to INFO to enable handling of
@@ -123,10 +123,7 @@ class EosLogger(BaseLogger):
         # Clear any handlers this logger already may have
         for handler in self.__root_logger.handlers:
             self.__root_logger.removeHandler(handler)
-        # Define log storage options
-        if os.path.isdir(log_folder) is not True:
-            os.makedirs(log_folder, mode=0o755)
-        log_path = os.path.join(log_folder, '{}.log'.format(name))
+        log_path = self.__setup_paths(log_path)
         handler = FileHandler(log_path, mode='a', encoding='utf-8', delay=False)
         # Set up formatter options
         msg_format = '{asctime:19.19} | {levelname:7.7} | {name:23.23} | {message}'
@@ -134,6 +131,28 @@ class EosLogger(BaseLogger):
         formatter = Formatter(fmt=msg_format, datefmt=time_format, style='{')
         handler.setFormatter(formatter)
         self.__root_logger.addHandler(handler)
+
+    def __setup_paths(self, log_path):
+        """
+        Perform all necessary log path conversions and prepare
+        folder for log file.
+
+        Required arguments:
+        log_path -- raw path to file into which log will be written
+
+        Return value:
+        Processed path to log file
+        """
+        # Expand home folder symbol
+        log_path = os.path.expanduser(log_path)
+        # Convert to absolute path, as makedirs() fails if
+        # path contains relative segments like ..
+        log_path = os.path.abspath(log_path)
+        # Create folder for logger if it doesn't exist yet
+        log_folder = os.path.dirname(log_path)
+        if os.path.isdir(log_folder) is not True:
+            os.makedirs(log_folder, mode=0o755)
+        return log_path
 
     def __get_logger(self, child_name=None):
         """

@@ -19,4 +19,4 @@
 #===============================================================================
 
 
-from .eos_logger import EosLogger
+from .eos_logger import EosTextLogger
