@@ -48,6 +48,9 @@ class Eos:
     instance as default using this flag.
     """
 
+    # Keeps reference to default Eos instance
+    _default_instance = None
+
     def __init__(
         self,
         data_handler,
@@ -63,9 +66,6 @@ class Eos:
 
         if make_default is True:
             Eos._default_instance = self
-
-    # Keeps reference to default Eos instance
-    _default_instance = None
 
     # Context manager methods
     def __enter__(self):
