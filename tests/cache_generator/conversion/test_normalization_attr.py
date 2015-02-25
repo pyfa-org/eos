@@ -62,3 +62,18 @@ class TestNormalizationAttr(GeneratorTestCase):
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.capacity], 0.5)
+
+    def test_duplicate_definition(self):
+        # Check what happens if attribute is defined in both dgmtypeattribs and invtypes
+        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0, 'typeName': ''})
+        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': Attribute.mass, 'value': 6.0})
+        data = self.run_generator()
+        self.assertEqual(len(self.log), 2)
+        duplicate_error = self.log[0]
+        self.assertEqual(duplicate_error.name, 'eos_test.cache_generator')
+        self.assertEqual(duplicate_error.levelno, Logger.WARNING)
+        self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in dgmtypeattribs and were skipped')
+        clean_stats = self.log[1]
+        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 6.0)
