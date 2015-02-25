@@ -11,6 +11,9 @@ Currently you can use engine following way:
     data_handler = JsonDataHandler('data_folder/phobos/')  # Folder with Phobos data dump
     cache_handler = JsonCacheHandler('data_folder/cache/eos_tq.json.bz2', logger)
     engine = Eos(data_handler, cache_handler, logger, make_default=True)
+    
+    skill_groups = set(row['groupID'] for row in data_handler.get_invgroups() if row['categoryID'] == 16)
+    skills = set(row['typeID'] for row in data_handler.get_invtypes() if row['groupID'] in skill_groups)
 
     fit = Fit()
     fit.ship = Ship(32311)  # Navy Typhoon
