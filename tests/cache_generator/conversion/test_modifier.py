@@ -46,8 +46,11 @@ class TestConversionModifier(GeneratorTestCase):
         )
         mod_builder.return_value.build.return_value = ([mod], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 1)
@@ -80,8 +83,11 @@ class TestConversionModifier(GeneratorTestCase):
         )
         mod_builder.return_value.build.return_value = ([mod1, mod2], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 2)
@@ -127,8 +133,11 @@ class TestConversionModifier(GeneratorTestCase):
         arg_map = {333: mod1, 444: mod2}
         mod_builder.return_value.build.side_effect = lambda eff_row: ([arg_map[eff_row['effect_id']]], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 2)
@@ -172,8 +181,11 @@ class TestConversionModifier(GeneratorTestCase):
         )
         mod_builder.return_value.build.return_value = ([mod1, mod2], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 1)
@@ -214,8 +226,11 @@ class TestConversionModifier(GeneratorTestCase):
         arg_map = {333: mod1, 444: mod2}
         mod_builder.return_value.build.side_effect = lambda eff_row: ([arg_map[eff_row['effect_id']]], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['modifiers']), 1)
@@ -258,8 +273,11 @@ class TestConversionModifier(GeneratorTestCase):
         self._setup_args_capture(mod_builder.return_value.build, builder_args)
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         call1, call2 = mod_builder.mock_calls

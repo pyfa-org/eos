@@ -41,8 +41,13 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(
+            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         # As in expression conversion, we're verifying expressions
@@ -56,7 +61,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         }
         self.assertIn(expected, expressions)
 
-    def test_groupzing(self, mod_builder):
+    def test_group_idzing(self, mod_builder):
         self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 668, 'typeName': ''})
         self.dh.data['invgroups'].append({'groupID': 668, 'categoryID': 16, 'groupName': 'Big Guns'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
@@ -68,8 +73,13 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(
+            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
@@ -93,8 +103,13 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(
+            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
@@ -117,8 +132,13 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(
+            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
@@ -152,7 +172,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
-        self.assertEqual(len(self.log), 2)
+        self.assertEqual(len(self.log), 3)
         multiple_warning = self.log[0]
         self.assertEqual(multiple_warning.name, 'eos_test.cache_generator')
         self.assertEqual(multiple_warning.levelno, Logger.WARNING)
@@ -160,7 +180,12 @@ class TestNormalizationIdzing(GeneratorTestCase):
             multiple_warning.msg,
             'multiple typeIDs found for symbolic name "BigGun3": (556, 35, 22), using 556'
         )
-        clean_stats = self.log[1]
+        literal_stats = self.log[1]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(
+            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 2 successful, 0 failed')
+        clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
@@ -175,5 +200,36 @@ class TestNormalizationIdzing(GeneratorTestCase):
             'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507, 'arg2': 6,
             'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 57,
             'expressionAttributeID': 12, 'table_pos': 1
+        }
+        self.assertIn(expected, expressions)
+
+    def test_failed_conversion(self, mod_builder):
+        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 4'})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
+            'expressionGroupID': 567, 'expressionAttributeID': 102
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
+        self.run_generator()
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(
+            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 0 successful, 1 failed')
+        clean_stats = self.log[1]
+        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        # As in expression conversion, we're verifying expressions
+        # passed to modifier builder, as it's much easier to do
+        expressions = mod_builder.mock_calls[0][1][0]
+        self.assertEqual(len(expressions), 1)
+        expected = {
+            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': 'BigGun3', 'expressionTypeID': None, 'expressionGroupID': 567,
+            'expressionAttributeID': 102, 'table_pos': 0
         }
         self.assertIn(expected, expressions)

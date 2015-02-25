@@ -48,8 +48,11 @@ class TestConversionEffect(GeneratorTestCase):
         )
         mod_builder.return_value.build.return_value = ([mod], 29)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['effects']), 1)

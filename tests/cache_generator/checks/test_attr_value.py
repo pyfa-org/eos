@@ -34,8 +34,11 @@ class TestAttrValue(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
@@ -45,8 +48,11 @@ class TestAttrValue(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 1)
@@ -56,11 +62,14 @@ class TestAttrValue(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
         data = self.run_generator()
-        self.assertEqual(len(self.log), 2)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 3)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
-        log_record = self.log[1]
+        log_record = self.log[2]
         self.assertEqual(log_record.name, 'eos_test.cache_generator')
         self.assertEqual(log_record.levelno, Logger.WARNING)
         self.assertEqual(log_record.msg, '1 attribute rows have non-numeric value, removing them')
@@ -73,8 +82,11 @@ class TestAttrValue(GeneratorTestCase):
         self.dh.data['invtypes'].append({'typeID': 1, 'typeName': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(len(data['types']), 0)

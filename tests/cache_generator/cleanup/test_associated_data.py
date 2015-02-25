@@ -129,8 +129,11 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'groupName': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(
@@ -171,8 +174,11 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'groupName': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(clean_stats.msg,
@@ -188,8 +194,11 @@ class TestAssociatedData(GeneratorTestCase):
     def test_unlinked(self, mod_builder):
         self.__generate_data()
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(
@@ -230,8 +239,11 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'groupName': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
-        self.assertEqual(len(self.log), 1)
-        clean_stats = self.log[0]
+        self.assertEqual(len(self.log), 2)
+        literal_stats = self.log[0]
+        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
         self.assertEqual(clean_stats.levelno, Logger.INFO)
         self.assertEqual(
