@@ -104,6 +104,8 @@ class Converter:
         Some of entities in dgmexpressions table are defined not as
         IDs, but as symbolic references. Convert them to IDs here.
         """
+        successes = 0
+        failures = 0
         data = self.data
         dgmexpressions = data['dgmexpressions']
         replacement_desc = (
@@ -141,6 +143,7 @@ class Converter:
                 # If we don't have expression value in our name-id map,
                 # then we can't help anyhow too
                 if sym_name not in name_id_map:
+                    failures += 1
                     continue
                 repl_ids = name_id_map[sym_name]
                 repl_id = repl_ids[0]
@@ -151,7 +154,7 @@ class Converter:
                         self._logger.warning(msg, child_name='cache_generator')
                         warned_conflicts.add(sym_name)
                 # As rows are frozen dicts, we compose new mutable dict, update
-                # data there, freeze it, and only then replace old row with new
+                # data there, freeze it, and add to replacement maps
                 new_exp_row = {}
                 new_exp_row.update(exp_row)
                 new_exp_row['expressionValue'] = None
@@ -159,6 +162,12 @@ class Converter:
                 new_exp_row = FrozenDict(new_exp_row)
                 dgmexpressions.remove(exp_row)
                 dgmexpressions.add(new_exp_row)
+                successes += 1
+        # Report results to log, it will help to indicate when CCP finally stops
+        # using literal references, and we can get rid of this conversion
+        msg = 'conversion of literal references to IDs in dgmexpressions: {} successful, {} failed'.format(
+            successes, failures)
+        self._logger.info(msg, child_name='cache_generator')
 
     def convert(self, data):
         """
