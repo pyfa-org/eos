@@ -68,7 +68,7 @@ class SQLiteDataHandler(BaseDataHandler):
         return [dict(row) for row in self.cursor]
 
     def get_version(self):
-        metadata = self.__fetch_table('metadata')
+        metadata = self.__fetch_table('phbmetadata')
         # If we won't find version field, it will be None
         version = None
         for row in metadata:
