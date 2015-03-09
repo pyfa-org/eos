@@ -25,7 +25,7 @@ from eos.fit.holder.mixin.chargeable import ChargeableMixin
 from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
-from eos.util import make_repr_str
+from eos.util.repr import make_repr_str
 
 
 class Module(
@@ -50,7 +50,7 @@ class Module(
         return delay_ms / 1000
 
     def __repr__(self):
-        spec = (('type_id', '_type_id'), ('state', 'state'), ('charge', 'charge'))
+        spec = [['type_id', '_type_id'], 'state', 'charge']
         return make_repr_str(self, spec)
 
 

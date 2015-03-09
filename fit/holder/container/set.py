@@ -86,3 +86,6 @@ class HolderSet(HolderContainerBase):
 
     def __len__(self):
         return self.__set.__len__()
+
+    def __repr__(self):
+        return repr(self.__set)

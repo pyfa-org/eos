@@ -23,7 +23,7 @@ from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.holder import HolderBase
 from eos.fit.holder.mixin.state import ImmutableStateMixin
-from eos.util import make_repr_str
+from eos.util.repr import make_repr_str
 
 
 class Skill(
@@ -73,5 +73,5 @@ class Skill(
             fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)
 
     def __repr__(self):
-        spec = (('type_id', '_type_id'), ('level', 'level'))
+        spec = [['type_id', '_type_id'], 'level']
         return make_repr_str(self, spec)

@@ -26,11 +26,16 @@ def make_repr_str(instance, spec):
 
     Required arguments:
     instance -- instance for which line will be built
-    spec -- specification of what to print in ((representative
-    name, attribute name), ...) format
+    spec -- specification of what to print in (field spec), ...) format,
+    where field spec is (representative name, attribute name) tuple
+    if those two differ, or simply string if they match.
     """
     arg_list = []
-    for repr_name, attr_name in spec:
+    for field in spec:
+        if isinstance(field, str):
+            repr_name, attr_name = field, field
+        else:
+            repr_name, attr_name = field
         attr_val = getattr(instance, attr_name)
         arg_list.append('{}={}'.format(repr_name, attr_val))
     return '<{}({})>'.format(type(instance).__name__, ', '.join(arg_list))
