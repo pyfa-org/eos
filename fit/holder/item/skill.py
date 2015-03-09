@@ -70,3 +70,7 @@ class Skill(
         if fit is not None:
             fit._request_volatile_cleanup()
             fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)
+
+    def __repr__(self):
+        spec = (('type_id', '_type_id'), ('level', 'level'))
+        return self._make_repr_str(spec)

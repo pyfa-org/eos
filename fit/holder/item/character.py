@@ -44,3 +44,7 @@ class Character(ImmutableStateMixin):
         # As character is self-sufficient entity,
         # it's not assigned to anything
         return None
+
+    def __repr__(self):
+        spec = (('type_id', '_type_id'),)
+        return self._make_repr_str(spec)

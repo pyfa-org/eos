@@ -53,3 +53,7 @@ class Drone(
     @property
     def _domain(self):
         return Domain.space
+
+    def __repr__(self):
+        spec = (('type_id', '_type_id'), ('state', 'state'))
+        return self._make_repr_str(spec)

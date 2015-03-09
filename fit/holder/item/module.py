@@ -48,6 +48,10 @@ class Module(
             return None
         return delay_ms / 1000
 
+    def __repr__(self):
+        spec = (('type_id', '_type_id'), ('state', 'state'), ('charge', 'charge'))
+        return self._make_repr_str(spec)
+
 
 class ModuleHigh(Module):
     """

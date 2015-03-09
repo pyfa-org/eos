@@ -41,3 +41,7 @@ class EffectBeacon(ImmutableStateMixin):
     @property
     def _domain(self):
         return None
+
+    def __repr__(self):
+        spec = (('type_id', '_type_id'),)
+        return self._make_repr_str(spec)
