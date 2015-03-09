@@ -21,6 +21,7 @@
 
 from eos.data.cache_customizer import CacheCustomizer
 from eos.data.cache_generator import CacheGenerator
+from eos.util.repr import make_repr_str
 
 
 EOS_VERSION = 'git'
@@ -98,3 +99,11 @@ class Eos:
             cache_data = CacheGenerator(self._logger).run(data_handler)
             CacheCustomizer(self._logger).run_builtin(cache_data)
             cache_handler.update_cache(cache_data, current_fp)
+
+    @property
+    def is_default(self):
+        return True if self._default_instance is self else False
+
+    def __repr__(self):
+        spec = [['cache_handler', '_cache_handler'], ['default', 'is_default']]
+        return make_repr_str(self, spec)

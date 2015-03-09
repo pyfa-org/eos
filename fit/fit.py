@@ -213,7 +213,7 @@ class Fit:
 
     def __repr__(self):
         spec = [
-            'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
+            'eos', 'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
             'character', 'skills', 'implants', 'boosters'
         ]
         return make_repr_str(self, spec)
