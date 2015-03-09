@@ -23,6 +23,7 @@ from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.holder import HolderBase
 from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.util import make_repr_str
 
 
 class Skill(
@@ -73,4 +74,4 @@ class Skill(
 
     def __repr__(self):
         spec = (('type_id', '_type_id'), ('level', 'level'))
-        return self._make_repr_str(spec)
+        return make_repr_str(self, spec)

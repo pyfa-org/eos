@@ -21,6 +21,7 @@
 
 from eos.const.eos import Domain, State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.util import make_repr_str
 
 
 class Rig(ImmutableStateMixin):
@@ -44,4 +45,4 @@ class Rig(ImmutableStateMixin):
 
     def __repr__(self):
         spec = (('type_id', '_type_id'),)
-        return self._make_repr_str(spec)
+        return make_repr_str(self, spec)

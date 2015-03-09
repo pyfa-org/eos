@@ -77,18 +77,3 @@ class HolderBase:
         fit = self._fit
         if fit is not None:
             fit._request_volatile_cleanup()
-
-    def _make_repr_str(self, spec):
-        """
-        Return single string which includes holder class name and
-        attribute names/values from spec.
-
-        Required arguments:
-        spec -- specification of what to print in ((representative
-        name, attribute name), ...) format
-        """
-        arg_list = []
-        for repr_name, attr_name in spec:
-            attr_val = getattr(self, attr_name)
-            arg_list.append('{}={}'.format(repr_name, attr_val))
-        return '<{}({})>'.format(type(self).__name__, ', '.join(arg_list))

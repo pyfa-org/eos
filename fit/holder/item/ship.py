@@ -22,6 +22,7 @@
 from eos.const.eos import State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
+from eos.util import make_repr_str
 
 
 class Ship(
@@ -51,4 +52,4 @@ class Ship(
 
     def __repr__(self):
         spec = (('type_id', '_type_id'),)
-        return self._make_repr_str(spec)
+        return make_repr_str(self, spec)

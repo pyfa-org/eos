@@ -19,30 +19,18 @@
 #===============================================================================
 
 
-from eos.const.eos import Domain, State
-from eos.fit.holder.mixin.state import ImmutableStateMixin
-from eos.util import make_repr_str
-
-
-class Booster(ImmutableStateMixin):
+def make_repr_str(instance, spec):
     """
-    Booster with all its special properties.
+    Return single string which includes object class name and
+    attribute names/values from spec.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
-
-    Cooperative methods:
-    __init__
+    instance -- instance for which line will be built
+    spec -- specification of what to print in ((representative
+    name, attribute name), ...) format
     """
-
-    def __init__(self, type_id, **kwargs):
-        super().__init__(type_id=type_id, state=State.offline, **kwargs)
-
-    @property
-    def _domain(self):
-        return Domain.character
-
-    def __repr__(self):
-        spec = (('type_id', '_type_id'),)
-        return make_repr_str(self, spec)
+    arg_list = []
+    for repr_name, attr_name in spec:
+        attr_val = getattr(instance, attr_name)
+        arg_list.append('{}={}'.format(repr_name, attr_val))
+    return '<{}({})>'.format(type(instance).__name__, ', '.join(arg_list))
