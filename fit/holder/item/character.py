@@ -21,6 +21,7 @@
 
 from eos.const.eos import State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.util.repr import make_repr_str
 
 
 class Character(ImmutableStateMixin):
@@ -44,3 +45,7 @@ class Character(ImmutableStateMixin):
         # As character is self-sufficient entity,
         # it's not assigned to anything
         return None
+
+    def __repr__(self):
+        spec = [['type_id', '_type_id']]
+        return make_repr_str(self, spec)

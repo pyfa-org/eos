@@ -24,6 +24,7 @@ from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
+from eos.util.repr import make_repr_str
 
 
 class Drone(
@@ -53,3 +54,7 @@ class Drone(
     @property
     def _domain(self):
         return Domain.space
+
+    def __repr__(self):
+        spec = [['type_id', '_type_id'], 'state']
+        return make_repr_str(self, spec)

@@ -25,6 +25,7 @@ import os.path
 from weakref import WeakValueDictionary
 
 from eos.data.cache_object import *
+from eos.util.repr import make_repr_str
 from .abc import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 
@@ -288,3 +289,7 @@ class JsonCacheHandler(BaseCacheHandler):
         self.__attribute_obj_cache.clear()
         self.__effect_obj_cache.clear()
         self.__modifier_obj_cache.clear()
+
+    def __repr__(self):
+        spec = [['cache_path', '_cache_path']]
+        return make_repr_str(self, spec)

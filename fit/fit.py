@@ -22,6 +22,7 @@
 from eos import Eos
 from eos.const.eos import State
 from eos.const.eve import Type
+from eos.util.repr import make_repr_str
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
@@ -209,3 +210,10 @@ class Fit:
         if new_eos is not None:
             for holder in self._holders:
                 self._enable_services(holder)
+
+    def __repr__(self):
+        spec = [
+            'eos', 'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
+            'character', 'skills', 'implants', 'boosters'
+        ]
+        return make_repr_str(self, spec)

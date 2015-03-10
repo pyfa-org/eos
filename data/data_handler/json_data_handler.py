@@ -21,6 +21,7 @@
 import json
 import os.path
 
+from eos.util.repr import make_repr_str
 from .abc import BaseDataHandler
 
 
@@ -32,7 +33,7 @@ class JsonDataHandler(BaseDataHandler):
     """
 
     def __init__(self, basepath):
-        self.basepath = os.path.expanduser(basepath)
+        self.basepath = basepath
 
     def get_invtypes(self):
         return self.__fetch_file('invtypes')
@@ -62,9 +63,12 @@ class JsonDataHandler(BaseDataHandler):
 
     def get_version(self):
         metadata = self.__fetch_file('phbmetadata')
-
         for row in metadata:
             if row['field_name'] == 'client_build':
                 return row['field_value']
         else:
             return None
+
+    def __repr__(self):
+        spec = ['basepath']
+        return make_repr_str(self, spec)

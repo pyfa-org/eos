@@ -19,8 +19,8 @@
 
 
 import sqlite3
-import os.path
 
+from eos.util.repr import make_repr_str
 from .abc import BaseDataHandler
 
 
@@ -35,10 +35,7 @@ class SQLiteDataHandler(BaseDataHandler):
     """
 
     def __init__(self, dbpath):
-        conn = sqlite3.connect(
-            os.path.expanduser(dbpath),
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
+        conn = sqlite3.connect(dbpath, detect_types=sqlite3.PARSE_DECLTYPES)
         conn.row_factory = sqlite3.Row
         self.cursor = conn.cursor()
 
@@ -69,10 +66,11 @@ class SQLiteDataHandler(BaseDataHandler):
 
     def get_version(self):
         metadata = self.__fetch_table('phbmetadata')
-
         for row in metadata:
             if row['field_name'] == 'client_build':
                 return row['field_value']
         else:
             return None
 
+    def __repr__(self):
+        return make_repr_str(self, ())

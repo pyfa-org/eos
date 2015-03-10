@@ -239,6 +239,9 @@ class HolderList(HolderContainerBase):
         except IndexError:
             pass
 
+    def __repr__(self):
+        return repr(self.__list)
+
 
 class ListHolderView:
     """

@@ -21,6 +21,8 @@
 
 from itertools import chain
 
+from eos.util.repr import make_repr_str
+
 
 class ModuleRacks:
     """
@@ -36,6 +38,10 @@ class ModuleRacks:
     def holders(self):
         """Return view over all module holders."""
         return ModuleHolderView(self)
+
+    def __repr__(self):
+        spec = ['high', 'med', 'low']
+        return make_repr_str(self, spec)
 
 
 class ModuleHolderView:
