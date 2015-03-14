@@ -19,12 +19,17 @@
 #===============================================================================
 
 
+from logging import getLogger
+
 from eos.const.eos import Domain, EffectBuildStatus, FilterType
 from eos.const.eve import Operand
 from eos.data.cache_object import Modifier
 from .etree2actions import ETree2Actions
-from .exception import TreeParsingUnexpectedError, UnusedActionError, ETree2ActionError, ExpressionFetchError
+from .exception import TreeParsingUnexpectedError, ETree2ActionError, ExpressionFetchError
 from .shared import operand_data, state_data
+
+
+logger = getLogger(__name__)
 
 
 class Effect2Modifiers:
@@ -33,9 +38,8 @@ class Effect2Modifiers:
     actual modifier objects used by Eos.
     """
 
-    def __init__(self, expressions, logger):
+    def __init__(self, expressions):
         self._etree2actions = ETree2Actions(expressions)
-        self._logger = logger
 
     def convert(self, effect_row):
         """Generate Modifier objects out of passed data."""
@@ -107,28 +111,24 @@ class Effect2Modifiers:
             if pre_actions.difference(used_pre_actions) or post_actions.difference(used_post_actions):
                 effect_id = effect_row['effect_id']
                 msg = 'unused actions left after parsing expression tree of effect {}'.format(effect_id)
-                signature = (UnusedActionError, effect_id)
-                self._logger.warning(msg, child_name='etree_builder', signature=signature)
+                logger.warning(msg)
                 return modifiers, EffectBuildStatus.ok_partial
 
         # Handle raised exceptions
         except ExpressionFetchError as e:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
-            signature = (type(e), effect_id)
-            self._logger.error(msg, child_name='etree_builder', signature=signature)
+            logger.error(msg)
             return (), EffectBuildStatus.error
         except ETree2ActionError as e:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {}: {}'.format(effect_id, e.args[0])
-            signature = (type(e), effect_id)
-            self._logger.warning(msg, child_name='etree_builder', signature=signature)
+            logger.warning(msg)
             return (), EffectBuildStatus.error
-        except TreeParsingUnexpectedError as e:
+        except TreeParsingUnexpectedError:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse expression tree of effect {} due to unknown reason'.format(effect_id)
-            signature = (type(e), effect_id)
-            self._logger.error(msg, child_name='etree_builder', signature=signature)
+            logger.error(msg)
             return (), EffectBuildStatus.error
 
         return modifiers, build_status

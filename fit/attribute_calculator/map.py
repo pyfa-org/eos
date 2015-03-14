@@ -19,6 +19,7 @@
 #===============================================================================
 
 
+from logging import getLogger
 from math import exp
 
 from eos.const.eos import Operator
@@ -26,6 +27,9 @@ from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.util.keyed_set import KeyedSet
 from .exception import BaseValueError, AttributeMetaError, OperatorError
+
+
+logger = getLogger(__name__)
 
 
 # Stacking penalty base constant, used in attribute calculations
@@ -138,14 +142,12 @@ class MutableAttributeMap:
             except BaseValueError as e:
                 msg = 'unable to find base value for attribute {} on item {}'.format(
                     e.args[0], self.__holder.item.id)
-                signature = (type(e), self.__holder.item.id, e.args[0])
-                self.__holder._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
+                logger.warning(msg)
                 raise KeyError(attr) from e
             except AttributeMetaError as e:
                 msg = 'unable to fetch metadata for attribute {}, requested for item {}'.format(
                     e.args[0], self.__holder.item.id)
-                signature = (type(e), self.__holder.item.id, e.args[0])
-                self.__holder._fit.eos._logger.error(msg, child_name='attribute_calculator', signature=signature)
+                logger.error(msg)
                 raise KeyError(attr) from e
             self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
         return val
@@ -211,7 +213,7 @@ class MutableAttributeMap:
         """
         # Attribute object for attribute being calculated
         try:
-            attr_meta = self.__holder._fit.eos._cache_handler.get_attribute(attr)
+            attr_meta = self.__holder._fit.source.cache_handler.get_attribute(attr)
         # Raise error if we can't get to get_attribute method
         # or it can't find requested attribute
         except (AttributeError, AttributeFetchError) as e:
@@ -270,8 +272,7 @@ class MutableAttributeMap:
             except OperatorError as e:
                 msg = 'malformed modifier on item {}: unknown operator {}'.format(
                     source_holder.item.id, e.args[0])
-                signature = (type(e), source_holder.item.id, e.args[0])
-                self.__holder._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
+                logger.warning(msg)
                 continue
         # When data gathering is complete, process penalized modifiers
         # They are penalized on per-operator basis

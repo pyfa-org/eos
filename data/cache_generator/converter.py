@@ -20,10 +20,14 @@
 
 
 import re
+from logging import getLogger
 
 from eos.const.eve import Attribute, Operand
 from eos.util.frozen_dict import FrozenDict
 from .modifier_builder import ModifierBuilder
+
+
+logger = getLogger(__name__)
 
 
 class Converter:
@@ -32,9 +36,6 @@ class Converter:
     like moving data around or converting whole data
     structure.
     """
-
-    def __init__(self, logger):
-        self._logger = logger
 
     def normalize(self, data):
         """ Make data more consistent."""
@@ -97,7 +98,7 @@ class Converter:
         if attrs_skipped > 0:
             msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(
                 attrs_skipped)
-            self._logger.warning(msg, child_name='cache_generator')
+            logger.warning(msg)
 
     def _convert_expression_symbolic_references(self):
         """
@@ -151,7 +152,7 @@ class Converter:
                     if sym_name not in warned_conflicts:
                         msg = 'multiple {}s found for symbolic name "{}": ({}), using {}'.format(
                             id_column, sym_name, ', '.join(str(i) for i in repl_ids), repl_id)
-                        self._logger.warning(msg, child_name='cache_generator')
+                        logger.warning(msg)
                         warned_conflicts.add(sym_name)
                 # As rows are frozen dicts, we compose new mutable dict, update
                 # data there, freeze it, and add to replacement maps
@@ -167,7 +168,7 @@ class Converter:
         # using literal references, and we can get rid of this conversion
         msg = 'conversion of literal references to IDs in dgmexpressions: {} successful, {} failed'.format(
             successes, failures)
-        self._logger.info(msg, child_name='cache_generator')
+        logger.info(msg)
 
     def convert(self, data):
         """
@@ -269,7 +270,7 @@ class Converter:
         Replace expressions with generated out of
         them modifiers.
         """
-        builder = ModifierBuilder(data['expressions'], self._logger)
+        builder = ModifierBuilder(data['expressions'])
         # Lists effects, which are using given modifier
         # Format: {modifier row: [effect IDs]}
         modifier_effect_map = {}

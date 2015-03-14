@@ -44,12 +44,12 @@ class Modifier:
         self.id = modifier_id
 
         # Modifier can be applied only when its carrier holder
-        # is in this or greater state, must be eos.const.eos.State
+        # is in this or greater state, must be const_eos.State
         # class' attribute value.
         self.state = state
 
         # Describes scope in which modifier is applied, must
-        # be eos.const.eos.Scope class' attribute value.
+        # be const_eos.Scope class' attribute value.
         self.scope = scope
 
         # Which attribute will be taken as source value,
@@ -57,19 +57,19 @@ class Modifier:
         self.src_attr = src_attr
 
         # Which operation should be applied during modification,
-        # must be eos.const.eos.Operator class' attribute value.
+        # must be const_eos.Operator class' attribute value.
         self.operator = operator
 
         # Which attribute will be affected by operator on the target,
         # must be integer which refers attribute via ID.
         self.tgt_attr = tgt_attr
 
-        # Target domain to change, must be eos.const.eos.Domain
+        # Target domain to change, must be const_eos.Domain
         # class' attribute value.
         self.domain = domain
 
         # Filter type of the modification, must be None or
-        # eos.const.eos.FilterType class' attribute value.
+        # const_eos.FilterType class' attribute value.
         self.filter_type = filter_type
 
         # Filter value of the modification:

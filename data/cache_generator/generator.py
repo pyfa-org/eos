@@ -29,15 +29,12 @@ class CacheGenerator:
     """
     Refactors and optimizes data into format suitable
     for Eos.
-
-    Positional keywords:
-    logger -- logger to use for errors
     """
 
-    def __init__(self, logger):
-        self._checker = Checker(logger)
-        self._cleaner = Cleaner(logger)
-        self._converter = Converter(logger)
+    def __init__(self):
+        self._checker = Checker()
+        self._cleaner = Cleaner()
+        self._converter = Converter()
 
     def run(self, data_handler):
         """

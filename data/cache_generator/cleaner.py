@@ -21,9 +21,13 @@
 
 import yaml
 from itertools import chain
+from logging import getLogger
 
 from eos.const.eve import Group, Category
 from eos.util.cached_property import CachedProperty
+
+
+logger = getLogger(__name__)
 
 
 class Cleaner:
@@ -31,13 +35,7 @@ class Cleaner:
     Class responsible for cleaning up unnecessary data
     from the database in automatic mode, using several
     pre-defined data relations.
-
-    Required arguments:
-    logger -- logger to use
     """
-
-    def __init__(self, logger):
-        self._logger = logger
 
     def clean(self, data):
         self.data = data
@@ -296,7 +294,7 @@ class Cleaner:
             table_msgs.append('{:.1%} from {}'.format(ratio, table_name))
         if table_msgs:
             msg = 'cleaned: {}'.format(', '.join(table_msgs))
-            self._logger.info(msg, child_name='cache_generator')
+            logger.info(msg)
 
     def _pump_data(self, table_name, datarows):
         """

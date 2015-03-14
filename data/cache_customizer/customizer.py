@@ -19,8 +19,13 @@
 #===============================================================================
 
 
+from logging import getLogger
+
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import Type, Group, Attribute, Effect, EffectCategory
+
+
+logger = getLogger(__name__)
 
 
 class CacheCustomizer:
@@ -28,13 +33,7 @@ class CacheCustomizer:
     Run customizations on the cache. Currently only
     built-in customizations are supported, which are
     used to compensate some hardcoded data.
-
-    Positional keywords:
-    logger -- logger to use for errors
     """
-
-    def __init__(self, logger):
-        self._logger = logger
 
     def run_builtin(self, data):
         self.data = data
@@ -108,9 +107,9 @@ class CacheCustomizer:
                 break
         if online_effect is None:
             msg = 'unable to find online effect'
-            self._logger.warning(msg, child_name='cache_customizer')
+            logger.warning(msg, child_name='cache_customizer')
         elif online_effect['effect_category'] == EffectCategory.online:
             msg = 'online effect category does not need to be adjusted'
-            self._logger.warning(msg, child_name='cache_customizer')
+            logger.warning(msg, child_name='cache_customizer')
         else:
             online_effect['effect_category'] = EffectCategory.online

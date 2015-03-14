@@ -39,14 +39,6 @@ class TreeParsingUnexpectedError(Effect2ModifiersError):
     pass
 
 
-class UnusedActionError(Effect2ModifiersError):
-    """
-    Raised when some actions are not marked as used after
-    generating modifiers out of them.
-    """
-    pass
-
-
 # Exception classes used by expression tree to action converter
 class ETree2ActionError(EosError):
     """

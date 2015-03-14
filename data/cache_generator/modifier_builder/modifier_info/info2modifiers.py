@@ -19,12 +19,15 @@
 
 
 import yaml
+from logging import getLogger
 
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object import Modifier
 from .exception import *
 
+
+logger = getLogger(__name__)
 
 # Format:
 # {info func: (mod filter type, info attribute name for mod filter value,
@@ -122,9 +125,6 @@ class Info2Modifiers:
     Parse modifierInfos into actual Modifier objects.
     """
 
-    def __init__(self, logger):
-        self._logger = logger
-
     def convert(self, effect_row):
         """
         Parse YAML and handle overall workflow and error handling
@@ -142,8 +142,7 @@ class Info2Modifiers:
             except Exception:
                 effect_id = effect_row['effect_id']
                 msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
-                signature = (YamlParseError, effect_id)
-                self._logger.error(msg, child_name='modinfo_builder', signature=signature)
+                logger.error(msg, child_name='modinfo_builder')
                 # We cannot recover any data in this case, thus return empty list
                 return (), EffectBuildStatus.error
             # Go through modifier objects and attempt to convert them one-by-one
@@ -156,8 +155,7 @@ class Info2Modifiers:
                 except (UnknownFuncError, NoFilterValueError, UnexpectedDomainError, UnknownOperatorError) as e:
                     effect_id = effect_row['effect_id']
                     msg = 'failed to build one of the modifiers of effect {}: {}'.format(effect_id, e.args[0])
-                    signature = (type(e), effect_id)
-                    self._logger.warning(msg, child_name='modinfo_builder', signature=signature)
+                    logger.warning(msg)
                     # When conversion of one of modifiers failed, mark build status
                     # as partially corrupted
                     build_status = EffectBuildStatus.ok_partial
@@ -173,19 +171,17 @@ class Info2Modifiers:
             except UnknownStateError as e:
                 effect_id = effect_row['effect_id']
                 msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
-                signature = (type(e), effect_id)
-                self._logger.warning(msg, child_name='modinfo_builder', signature=signature)
+                logger.warning(msg)
                 # Modifiers without state data will be useless, and we cannot do any
                 # safe assumptions here, , thus consider that everything went wrong
                 # and return empty list
                 return (), EffectBuildStatus.error
         except KeyboardInterrupt:
             raise
-        except Exception as e:
+        except Exception:
             effect_id = effect_row['effect_id']
             msg = 'failed to build modifiers for effect {} due to unknown reason'.format(effect_id)
-            signature = (UnexpectedBuilderError, effect_id)
-            self._logger.error(msg, child_name='modinfo_builder', signature=signature)
+            logger.error(msg)
             return (), EffectBuildStatus.error
         else:
             return modifiers, build_status

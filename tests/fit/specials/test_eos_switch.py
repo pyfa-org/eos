@@ -67,7 +67,7 @@ class TestFitEosSwitch(FitTestCase):
         fit._link_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
         fit._restriction_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
         fit.stats.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
-        holder._refresh_context.side_effect = lambda: self.assertIs(holder._fit.eos, eos)
+        holder._refresh_source.side_effect = lambda: self.assertIs(holder._fit.eos, eos)
         # Action
         fit.eos = eos
         # Checks
@@ -77,7 +77,7 @@ class TestFitEosSwitch(FitTestCase):
         st_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(holder_calls_after - holder_calls_before, 2)
         holder_calls = holder.mock_calls[-2:]
-        self.assertIn(call._refresh_context(), holder_calls)
+        self.assertIn(call._refresh_source(), holder_calls)
         self.assertIn(call._clear_volatile_attrs(), holder_calls)
         self.assertEqual(lt_calls_after - lt_calls_before, 2)
         self.assertEqual(fit._link_tracker.mock_calls[-2], call.add_holder(holder))
@@ -110,7 +110,7 @@ class TestFitEosSwitch(FitTestCase):
         st_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(holder_calls_after - holder_calls_before, 2)
         holder_calls = holder.mock_calls[-2:]
-        self.assertIn(call._refresh_context(), holder_calls)
+        self.assertIn(call._refresh_source(), holder_calls)
         self.assertIn(call._clear_volatile_attrs(), holder_calls)
         self.assertEqual(lt_calls_after - lt_calls_before, 2)
         self.assertEqual(fit._link_tracker.mock_calls[-2], call.disable_states(holder, {State.offline}))
@@ -139,7 +139,7 @@ class TestFitEosSwitch(FitTestCase):
         fit._restriction_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos2)
         fit.stats.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos1)
         fit.stats.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos2)
-        holder._refresh_context.side_effect = lambda: self.assertIs(holder._fit.eos, eos2)
+        holder._refresh_source.side_effect = lambda: self.assertIs(holder._fit.eos, eos2)
         # Action
         fit.eos = eos2
         # Checks
@@ -149,7 +149,7 @@ class TestFitEosSwitch(FitTestCase):
         st_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(holder_calls_after - holder_calls_before, 2)
         holder_calls = holder.mock_calls[-2:]
-        self.assertIn(call._refresh_context(), holder_calls)
+        self.assertIn(call._refresh_source(), holder_calls)
         self.assertIn(call._clear_volatile_attrs(), holder_calls)
         self.assertEqual(lt_calls_after - lt_calls_before, 4)
         self.assertEqual(fit._link_tracker.mock_calls[-4], call.disable_states(holder, {State.offline}))

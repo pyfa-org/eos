@@ -19,21 +19,20 @@
 #===============================================================================
 
 
+from logging import getLogger
+
 from eos.const.eve import Effect
 from eos.util.frozen_dict import FrozenDict
+
+
+logger = getLogger(__name__)
 
 
 class Checker:
     """
     Class responsible for conducting checks and making
     data consistent for further stages of processing.
-
-    Required arguments:
-    logger -- logger to use
     """
-
-    def __init__(self, logger):
-        self._logger = logger
 
     def pre_cleanup(self, data):
         """
@@ -90,7 +89,7 @@ class Checker:
         if invalid_rows:
             msg = '{} rows in table {} have invalid PKs, removing them'.format(
                 len(invalid_rows), table_name)
-            self._logger.warning(msg, child_name='cache_generator')
+            logger.warning(msg)
             table.difference_update(invalid_rows)
 
     def _row_pk(self, key_names, datarow, used_keys, invalid_rows):
@@ -138,7 +137,7 @@ class Checker:
         if invalid_rows:
             msg = '{} attribute rows have non-numeric value, removing them'.format(
                 len(invalid_rows))
-            self._logger.warning(msg, child_name='cache_generator')
+            logger.warning(msg)
             table.difference_update(invalid_rows)
 
     def _multiple_default_effects(self):
@@ -167,7 +166,7 @@ class Checker:
         if invalid_rows:
             msg = 'data contains {} excessive default effects, marking them as non-default'.format(
                 len(invalid_rows))
-            self._logger.warning(msg, child_name='cache_generator')
+            logger.warning(msg)
             # Replace isDefault field value with False for invalid rows
             table.difference_update(invalid_rows)
             for invalid_row in invalid_rows:
@@ -204,5 +203,5 @@ class Checker:
         if invalid_rows:
             msg = '{} rows contain colliding module racks, removing them'.format(
                 len(invalid_rows))
-            self._logger.warning(msg, child_name='cache_generator')
+            logger.warning(msg)
             table.difference_update(invalid_rows)

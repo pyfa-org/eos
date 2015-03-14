@@ -29,9 +29,9 @@ class ModifierBuilder:
     effect data.
     """
 
-    def __init__(self, expressions, logger):
-        self._tree = Effect2Modifiers(expressions, logger)
-        self._info = Info2Modifiers(logger)
+    def __init__(self, expressions):
+        self._tree = Effect2Modifiers(expressions)
+        self._info = Info2Modifiers()
 
     def build(self, effect_row):
         """

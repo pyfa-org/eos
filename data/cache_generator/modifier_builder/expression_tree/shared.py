@@ -32,7 +32,7 @@ from eos.const.eve import EffectCategory, Operand
 
 
 # Named tuple for ease of access of operand metadata, where:
-# type -- OperandType class' attribute value
+# enabled -- defines if operand is enabled or disabled
 # gang -- boolean, indicating if it is local or gang modifier
 # mirror -- contains ID of operand which is "mirror"
 OperandMeta = namedtuple('OperandMeta', ('enabled', 'gang', 'mirror'))

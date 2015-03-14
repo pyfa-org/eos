@@ -23,7 +23,6 @@ from eos.exception import EosError
 
 
 __all__ = [
-    'YamlParseError',
     'UnknownStateError',
     'UnknownOperatorError',
     'UnknownFuncError',
@@ -39,14 +38,6 @@ class ModifierInfoCnvError(EosError):
     """
     All exceptions raised by modifierInfo-to-modifier
     converter are based on this class.
-    """
-    pass
-
-
-class YamlParseError(ModifierInfoCnvError):
-    """
-    Raised when modifier info cannot be parsed into
-    python data structures.
     """
     pass
 

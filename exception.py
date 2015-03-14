@@ -25,3 +25,12 @@ class EosError(Exception):
     operation are based on this class.
     """
     pass
+
+
+# Source manager exceptions
+class UnknownSourceError(EosError):
+    """
+    Raised when source corresponding to passed alias
+    cannot be found.
+    """
+    pass

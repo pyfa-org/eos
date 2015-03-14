@@ -19,8 +19,10 @@
 #===============================================================================
 
 
+__version__ = 'git'
+
+
 from .const.eos import State, Restriction
-from .eos import Eos, EOS_VERSION as __version__
 from .data.cache_handler import *
 from .data.cache_handler.exception import TypeFetchError
 from .data.data_handler import *
@@ -28,4 +30,4 @@ from .fit import Fit
 from .fit.holder.item import *
 from .fit.restriction_tracker.exception import ValidationError
 from .fit.tuples import DamageTypes
-from .util.logger import *
+from .source import SourceManager

@@ -22,12 +22,16 @@
 import bz2
 import json
 import os.path
+from logging import getLogger
 from weakref import WeakValueDictionary
 
 from eos.data.cache_object import *
 from eos.util.repr import make_repr_str
 from .abc import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
+
+
+logger = getLogger(__name__)
 
 
 class JsonCacheHandler(BaseCacheHandler):
@@ -39,12 +43,10 @@ class JsonCacheHandler(BaseCacheHandler):
 
     Required arguments:
     cache_path -- file name where on-disk cache will be stored (.json.bz2)
-    logger -- logger to use for errors
     """
 
-    def __init__(self, cache_path, logger):
+    def __init__(self, cache_path):
         self._cache_path = cache_path
-        self._logger = logger
         # Initialize memory data cache
         self.__type_data_cache = {}
         self.__attribute_data_cache = {}
@@ -72,7 +74,7 @@ class JsonCacheHandler(BaseCacheHandler):
         # and leave values as initialized
         except:
             msg = 'error during reading cache'
-            self._logger.error(msg, child_name='cache_handler')
+            logger.error(msg)
         # Load data into data cache, if no errors occurred
         # during JSON reading/parsing
         else:

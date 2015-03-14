@@ -19,9 +19,14 @@
 #===============================================================================
 
 
+from logging import getLogger
+
 from eos.const.eos import Domain, FilterType
 from eos.util.keyed_set import KeyedSet
 from .exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, FilterTypeError
+
+
+logger = getLogger(__name__)
 
 
 class LinkRegister:
@@ -143,9 +148,7 @@ class LinkRegister:
             key, affector_map = self.__get_affector_map(affector)
             affector_map.rm_data(key, affector)
         # Following block handles exceptions; all of them must be handled
-        # when registering affector too, thus they won't appear in log
-        # if logger's handler suppresses messages with duplicate
-        # signature
+        # when registering affector too
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 
@@ -201,9 +204,6 @@ class LinkRegister:
             # Add our set to affectees
             if target is not None:
                 affectees.update(target)
-        # If passed affector has already been registered and logger prefers
-        # to suppress messages with duplicate signatures, following error handling
-        # won't produce new log entries
         except Exception as e:
             self.__handle_affector_errors(e, affector)
         return affectees
@@ -355,23 +355,19 @@ class LinkRegister:
         if isinstance(error, DirectDomainError):
             msg = 'malformed modifier on item {}: unsupported target domain {} for direct modification'.format(
                 affector.source_holder.item.id, error.args[0])
-            signature = (type(error), affector.source_holder.item.id, error.args[0])
-            self._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
+            logger.warning(msg)
         elif isinstance(error, FilteredDomainError):
             msg = 'malformed modifier on item {}: unsupported target domain {} for filtered modification'.format(
                 affector.source_holder.item.id, error.args[0])
-            signature = (type(error), affector.source_holder.item.id, error.args[0])
-            self._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
+            logger.warning(msg)
         elif isinstance(error, FilteredSelfReferenceError):
             msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(
                 affector.source_holder.item.id)
-            signature = (type(error), affector.source_holder.item.id)
-            self._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
+            logger.warning(msg)
         elif isinstance(error, FilterTypeError):
             msg = 'malformed modifier on item {}: invalid filter type {}'.format(
                 affector.source_holder.item.id, error.args[0])
-            signature = (type(error), affector.source_holder.item.id, error.args[0])
-            self._fit.eos._logger.warning(msg, child_name='attribute_calculator', signature=signature)
+            logger.warning(msg)
         else:
             raise error
 

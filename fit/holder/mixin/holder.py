@@ -54,17 +54,18 @@ class HolderBase:
     @_fit.setter
     def _fit(self, new_fit):
         self.__fit = new_fit
-        self._refresh_context()
+        self._refresh_source()
 
-    def _refresh_context(self):
+    def _refresh_source(self):
         """
-        Each time holder's context is changed (holder's
-        fit or fit's eos), this method should be called;
-        it will refresh data which is context-dependent.
+        Each time holder's context is changed (the source it relies on,
+        which may change when holder switches fit or its fit switches
+        source), this method should be called; it will refresh data
+        which is source-dependent.
         """
         self.attributes.clear()
         try:
-            cache_handler = self.__fit.eos._cache_handler
+            cache_handler = self._fit.source.cache_handler
         except AttributeError:
             self.item = None
         else:
