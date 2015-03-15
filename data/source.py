@@ -23,10 +23,10 @@ from logging import getLogger
 from collections import namedtuple
 
 from eos import __version__ as eos_version
-from .data.cache_customizer import CacheCustomizer
-from .data.cache_generator import CacheGenerator
+from eos.util.repr import make_repr_str
+from .cache_customizer import CacheCustomizer
+from .cache_generator import CacheGenerator
 from .exception import UnknownSourceError
-from .util.repr import make_repr_str
 
 
 logger = getLogger(__name__)

@@ -22,9 +22,9 @@
 from unittest.mock import Mock
 
 from eos.const.eve import Attribute
+from eos.data.source import Source
 from eos.fit.holder.container import HolderSet
 from eos.fit.holder.item import Ship
-from eos.source import Source
 from eos.tests.fit.fit_testcase import FitTestCase
 
 

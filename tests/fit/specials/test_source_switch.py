@@ -22,8 +22,8 @@
 from unittest.mock import Mock, call, patch
 
 from eos.const.eos import State
+from eos.data.source import Source
 from eos.fit.holder.container import HolderSet
-from eos.source import Source
 from eos.tests.fit.environment import BaseHolder, CachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 

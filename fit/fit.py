@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import Type
-from eos.source import SourceManager, Source
+from eos.data.source import SourceManager, Source
 from eos.util.repr import make_repr_str
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
