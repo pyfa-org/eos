@@ -24,6 +24,7 @@ from unittest.mock import Mock
 from eos.const.eve import Attribute
 from eos.fit.holder.container import HolderSet
 from eos.fit.holder.item import Ship
+from eos.source import Source
 from eos.tests.fit.fit_testcase import FitTestCase
 
 
@@ -62,8 +63,8 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertIsNone(self.holder.hp.total)
 
     def test_override_set_int(self):
-        eos = Mock()
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         fit.container.add(holder)
         holder.attributes[Attribute.hp] = 8
@@ -102,8 +103,8 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertAlmostEqual(holder.hp.total, 600)
 
     def test_override_set_float(self):
-        eos = Mock()
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         fit.container.add(holder)
         holder.attributes[Attribute.hp] = 8
@@ -142,8 +143,8 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertAlmostEqual(holder.hp.total, 601.5)
 
     def test_override_set_other(self):
-        eos = Mock()
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         fit.container.add(holder)
         holder.attributes[Attribute.hp] = 8
@@ -182,8 +183,8 @@ class TestHolderMixinTankingHp(FitTestCase):
         self.assertAlmostEqual(holder.hp.total, 30)
 
     def test_override_del(self):
-        eos = Mock()
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         fit.container.add(holder)
         holder.attributes[Attribute.hp] = 8

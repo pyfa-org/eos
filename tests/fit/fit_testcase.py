@@ -70,8 +70,8 @@ class FitTestCase(EosTestCase):
     @patch('eos.fit.fit.StatTracker')
     @patch('eos.fit.fit.RestrictionTracker')
     @patch('eos.fit.fit.LinkTracker')
-    def make_fit(self, *args, eos=None):
-        fit = Fit(eos=eos)
+    def make_fit(self, *args, source=None):
+        fit = Fit(source=source)
         fit.character = None
         self.__setup_tracker_memory(fit)
         return fit

@@ -98,8 +98,8 @@ class TestModuleStateSwitch(FitTestCase):
         self.assert_object_buffers_empty(fit)
 
     def test_attached_upwards(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=())
+        fit = self.make_fit(source=source)
         holder = CachingModule(1, State.offline)
         fit.unordered.add(holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -141,8 +141,8 @@ class TestModuleStateSwitch(FitTestCase):
         self.assert_object_buffers_empty(fit)
 
     def test_attached_downwards(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=())
+        fit = self.make_fit(source=source)
         holder = CachingModule(1, State.overload)
         fit.unordered.add(holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)

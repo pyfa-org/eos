@@ -57,20 +57,28 @@ class TestContainerModuleRacks(FitTestCase):
 
     def test_holders_iter(self):
         module_holders = self.modules.holders()
-        expected = [self.holder1, self.holder2, self.holder3,
-                    self.holder4, self.holder5, self.holder6]
+        expected = [
+            self.holder1, self.holder2, self.holder3,
+            self.holder4, self.holder5, self.holder6
+        ]
         self.assertEqual(list(module_holders), expected)
         self.high_rack.remove(self.holder1)
-        expected = [self.holder2, self.holder3, self.holder4,
-                    self.holder5, self.holder6]
+        expected = [
+            self.holder2, self.holder3, self.holder4,
+            self.holder5, self.holder6
+        ]
         self.assertEqual(list(module_holders), expected)
         self.med_rack.remove(self.holder3)
-        expected = [self.holder2, self.holder4, self.holder5,
-                    self.holder6]
+        expected = [
+            self.holder2, self.holder4, self.holder5,
+            self.holder6
+        ]
         self.assertEqual(list(module_holders), expected)
         self.low_rack.append(self.holder1)
-        expected = [self.holder2, self.holder4, self.holder5,
-                    self.holder6, self.holder1]
+        expected = [
+            self.holder2, self.holder4, self.holder5,
+            self.holder6, self.holder1
+        ]
         self.assertEqual(list(module_holders), expected)
 
     def test_holder_contains(self):

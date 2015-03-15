@@ -23,6 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderSet
+from eos.source import Source
 from eos.tests.fit.environment import BaseHolder, CachingHolder, OtherCachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
@@ -203,8 +204,8 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_none(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         # Action
         self.assertRaises(TypeError, fit.container.add, None)
@@ -220,8 +221,8 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_holder(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -250,8 +251,8 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_holder_type_failure(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -272,9 +273,9 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_add_holder_value_failure(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
-        fit_other = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
+        fit_other = self.make_fit(source=source)
         holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
         fit_other.container.add(holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -313,8 +314,8 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit_other.container)
 
     def test_attached_remove_holder(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         fit.container.add(holder)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -336,8 +337,8 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_remove_holder_failure(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = Mock(_fit=None, state=State.online, spec_set=CachingHolder(1))
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
         holder_cleans_before = len(holder._clear_volatile_attrs.mock_calls)
@@ -358,8 +359,8 @@ class TestContainerSet(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_clear(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         holder2 = Mock(_fit=None, state=State.active, spec_set=CachingHolder(1))
         fit.container.add(holder1)

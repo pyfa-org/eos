@@ -100,7 +100,7 @@ class TestHolderMixinChargeQuantity(FitTestCase):
 
     def test_override_set_int(self):
         eos = Mock()
-        fit = self.make_fit(eos=eos)
+        fit = self.make_fit(source=eos)
         holder = self.holder
         charge = self.charge
         holder._clear_volatile_attrs = Mock()
@@ -125,7 +125,7 @@ class TestHolderMixinChargeQuantity(FitTestCase):
 
     def test_override_set_other(self):
         eos = Mock()
-        fit = self.make_fit(eos=eos)
+        fit = self.make_fit(source=eos)
         holder = self.holder
         charge = self.charge
         holder._clear_volatile_attrs = Mock()
@@ -150,7 +150,7 @@ class TestHolderMixinChargeQuantity(FitTestCase):
 
     def test_override_del(self):
         eos = Mock()
-        fit = self.make_fit(eos=eos)
+        fit = self.make_fit(source=eos)
         holder = self.holder
         charge = self.charge
         holder._clear_volatile_attrs = Mock()

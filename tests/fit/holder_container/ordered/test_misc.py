@@ -23,6 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
+from eos.source import Source
 from eos.tests.fit.environment import BaseHolder, CachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
@@ -120,8 +121,8 @@ class TestContainerOrderedMisc(FitTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_attached_clear(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder1 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         holder2 = Mock(_fit=None, state=State.overload, spec_set=CachingHolder(1))
         fit.container.append(holder1)

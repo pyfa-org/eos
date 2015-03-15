@@ -23,6 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
+from eos.source import Source
 from eos.tests.fit.environment import CachingCharge, CachingModule, OtherCachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
@@ -584,8 +585,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_none_to_none(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         fit.ordered.append(module)
         st_cleans_before = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -613,8 +614,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_none_to_free_charge(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
         fit.ordered.append(module)
@@ -656,8 +657,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_charge_to_free_charge(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge1 = CachingCharge(2)
         charge2 = CachingCharge(3)
@@ -706,8 +707,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_charge_to_none(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
         fit.ordered.append(module)
@@ -744,8 +745,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_none_to_non_charge(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
         fit.ordered.append(module)
@@ -779,8 +780,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_charge_to_non_charge(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
         non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherCachingHolder(1))
@@ -828,9 +829,9 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_none_to_bound_charge(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
-        fit_other = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
+        fit_other = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         module_other = CachingModule(3, state=State.active, charge=None)
         charge_other = CachingCharge(2)
@@ -894,9 +895,9 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit_other)
 
     def test_attached_fit_charge_to_bound_charge(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
-        fit_other = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
+        fit_other = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
         module_other = CachingModule(3, state=State.active, charge=None)
@@ -973,8 +974,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit_other)
 
     def test_attached_fit_add_charged_module(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
         module.charge = charge
@@ -1018,8 +1019,8 @@ class TestModuleCharge(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_attached_fit_remove_charged_module(self):
-        eos = Mock(spec_set=())
-        fit = self.make_fit(eos=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         module = CachingModule(1, state=State.active, charge=None)
         charge = CachingCharge(2)
         module.charge = charge

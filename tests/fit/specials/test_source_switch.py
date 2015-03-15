@@ -23,6 +23,7 @@ from unittest.mock import Mock, call
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderSet
+from eos.source import Source
 from eos.tests.fit.environment import BaseHolder, CachingHolder
 from eos.tests.fit.fit_testcase import FitTestCase
 
@@ -36,14 +37,14 @@ class TestFitEosSwitch(FitTestCase):
 
     def test_none_to_none(self):
         holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
-        fit = self.make_fit(eos=None)
+        fit = self.make_fit(source=None)
         fit.container.add(holder)
         holder_calls_before = len(holder.mock_calls)
         lt_calls_before = len(fit._link_tracker.mock_calls)
         rt_calls_before = len(fit._restriction_tracker.mock_calls)
         st_calls_before = len(fit.stats.mock_calls)
         # Action
-        fit.eos = None
+        fit.source = None
         # Checks
         holder_calls_after = len(holder.mock_calls)
         lt_calls_after = len(fit._link_tracker.mock_calls)
@@ -54,22 +55,22 @@ class TestFitEosSwitch(FitTestCase):
         self.assertEqual(rt_calls_after - rt_calls_before, 0)
         self.assertEqual(st_calls_after - st_calls_before, 0)
 
-    def test_none_to_eos(self):
-        eos = Mock()
+    def test_none_to_source(self):
+        source = Mock(spec_set=Source)
         holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
-        fit = self.make_fit(eos=None)
+        fit = self.make_fit(source=None)
         fit.container.add(holder)
         holder_calls_before = len(holder.mock_calls)
         lt_calls_before = len(fit._link_tracker.mock_calls)
         rt_calls_before = len(fit._restriction_tracker.mock_calls)
         st_calls_before = len(fit.stats.mock_calls)
-        fit._link_tracker.add_holder.side_effect = lambda h: self.assertIs(h._fit.eos, eos)
-        fit._link_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
-        fit._restriction_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
-        fit.stats.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
-        holder._refresh_source.side_effect = lambda: self.assertIs(holder._fit.eos, eos)
+        fit._link_tracker.add_holder.side_effect = lambda h: self.assertIs(h._fit.source, source)
+        fit._link_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source)
+        fit._restriction_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source)
+        fit.stats.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source)
+        holder._refresh_source.side_effect = lambda: self.assertIs(holder._fit.source, source)
         # Action
-        fit.eos = eos
+        fit.source = source
         # Checks
         holder_calls_after = len(holder.mock_calls)
         lt_calls_after = len(fit._link_tracker.mock_calls)
@@ -88,21 +89,21 @@ class TestFitEosSwitch(FitTestCase):
         self.assertEqual(fit.stats.mock_calls[-2], call._clear_volatile_attrs())
         self.assertEqual(fit.stats.mock_calls[-1], call._enable_states(holder, {State.offline}))
 
-    def test_eos_to_none(self):
-        eos = Mock()
+    def test_source_to_none(self):
+        source = Mock(spec_set=Source)
         holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
-        fit = self.make_fit(eos=eos)
+        fit = self.make_fit(source=source)
         fit.container.add(holder)
         holder_calls_before = len(holder.mock_calls)
         lt_calls_before = len(fit._link_tracker.mock_calls)
         rt_calls_before = len(fit._restriction_tracker.mock_calls)
         st_calls_before = len(fit.stats.mock_calls)
-        fit._link_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
-        fit._link_tracker.remove_holder.side_effect = lambda h: self.assertIs(h._fit.eos, eos)
-        fit._restriction_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
-        fit.stats.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos)
+        fit._link_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source)
+        fit._link_tracker.remove_holder.side_effect = lambda h: self.assertIs(h._fit.source, source)
+        fit._restriction_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source)
+        fit.stats.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source)
         # Action
-        fit.eos = None
+        fit.source = None
         # Checks
         holder_calls_after = len(holder.mock_calls)
         lt_calls_after = len(fit._link_tracker.mock_calls)
@@ -121,27 +122,27 @@ class TestFitEosSwitch(FitTestCase):
         self.assertEqual(fit.stats.mock_calls[-2], call._disable_states(holder, {State.offline}))
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
 
-    def test_eos_to_eos(self):
-        eos1 = Mock()
-        eos2 = Mock()
+    def test_source_to_source(self):
+        source1 = Mock(spec_set=Source)
+        source2 = Mock(spec_set=Source)
         holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
-        fit = self.make_fit(eos=eos1)
+        fit = self.make_fit(source=source1)
         fit.container.add(holder)
         holder_calls_before = len(holder.mock_calls)
         lt_calls_before = len(fit._link_tracker.mock_calls)
         rt_calls_before = len(fit._restriction_tracker.mock_calls)
         st_calls_before = len(fit.stats.mock_calls)
-        fit._link_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos1)
-        fit._link_tracker.remove_holder.side_effect = lambda h: self.assertIs(h._fit.eos, eos1)
-        fit._link_tracker.add_holder.side_effect = lambda h: self.assertIs(h._fit.eos, eos2)
-        fit._link_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos2)
-        fit._restriction_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos1)
-        fit._restriction_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos2)
-        fit.stats.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos1)
-        fit.stats.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.eos, eos2)
-        holder._refresh_source.side_effect = lambda: self.assertIs(holder._fit.eos, eos2)
+        fit._link_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source1)
+        fit._link_tracker.remove_holder.side_effect = lambda h: self.assertIs(h._fit.source, source1)
+        fit._link_tracker.add_holder.side_effect = lambda h: self.assertIs(h._fit.source, source2)
+        fit._link_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source2)
+        fit._restriction_tracker.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source1)
+        fit._restriction_tracker.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source2)
+        fit.stats.disable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source1)
+        fit.stats.enable_states.side_effect = lambda h, s: self.assertIs(h._fit.source, source2)
+        holder._refresh_source.side_effect = lambda: self.assertIs(holder._fit.source, source2)
         # Action
-        fit.eos = eos2
+        fit.source = source2
         # Checks
         holder_calls_after = len(holder.mock_calls)
         lt_calls_after = len(fit._link_tracker.mock_calls)
@@ -164,17 +165,17 @@ class TestFitEosSwitch(FitTestCase):
         self.assertEqual(fit.stats.mock_calls[-2], call._clear_volatile_attrs())
         self.assertEqual(fit.stats.mock_calls[-1], call._enable_states(holder, {State.offline}))
 
-    def test_eos_to_eos_same(self):
-        eos = Mock()
+    def test_source_to_source_same(self):
+        source = Mock(spec_set=Source)
         holder = Mock(_fit=None, state=State.offline, spec_set=CachingHolder(1))
-        fit = self.make_fit(eos=eos)
+        fit = self.make_fit(source=source)
         fit.container.add(holder)
         holder_calls_before = len(holder.mock_calls)
         lt_calls_before = len(fit._link_tracker.mock_calls)
         rt_calls_before = len(fit._restriction_tracker.mock_calls)
         st_calls_before = len(fit.stats.mock_calls)
         # Action
-        fit.eos = eos
+        fit.source = source
         # Checks
         holder_calls_after = len(holder.mock_calls)
         lt_calls_after = len(fit._link_tracker.mock_calls)
