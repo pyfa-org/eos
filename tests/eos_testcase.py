@@ -20,7 +20,7 @@
 
 
 from copy import deepcopy
-from logging import getLogger
+from logging import getLogger, DEBUG
 from logging.handlers import BufferingHandler
 from unittest import TestCase
 from unittest.mock import DEFAULT
@@ -67,9 +67,11 @@ class EosTestCase(TestCase):
     """
 
     def setUp(self):
-        # Save existing loggers for eos_test loggers
-        self.__removed_log_handlers = []
         logger = getLogger()
+        # Save existing data about logging system (log level and handlers)
+        self.__old_loglevel = logger.getEffectiveLevel()
+        logger.setLevel(DEBUG)
+        self.__removed_log_handlers = []
         for handler in logger.handlers:
             self.__removed_log_handlers.append(handler)
             logger.removeHandler(handler)
@@ -87,6 +89,7 @@ class EosTestCase(TestCase):
         self.__test_log_handler.close()
         for handler in self.__removed_log_handlers:
             logger.addHandler(handler)
+        logger.setLevel(self.__old_loglevel)
 
     @property
     def log(self):

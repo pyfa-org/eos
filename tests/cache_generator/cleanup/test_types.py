@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+import logging
+
 from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
-from eos.tests.environment import Logger
 
 
 class TestCleanupTypes(GeneratorTestCase):
@@ -33,11 +34,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -47,11 +48,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -61,11 +62,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 100.0% from invtypes')
         self.assertEqual(len(data['types']), 0)
 
@@ -74,11 +75,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -89,11 +90,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -104,11 +105,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -119,11 +120,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -134,11 +135,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -149,11 +150,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -164,11 +165,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -179,11 +180,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from invgroups, 0.0% from invtypes')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -194,11 +195,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 100.0% from invgroups, 100.0% from invtypes')
         self.assertEqual(len(data['types']), 0)
 
@@ -212,11 +213,11 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 50.0% from invgroups, 50.0% from invtypes')
         self.assertEqual(len(data['types']), 2)
         self.assertIn(1, data['types'])

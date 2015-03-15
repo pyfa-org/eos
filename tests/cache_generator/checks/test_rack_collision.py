@@ -19,8 +19,9 @@
 #===============================================================================
 
 
+import logging
+
 from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
-from eos.tests.environment import Logger
 
 
 class TestRackCollision(GeneratorTestCase):
@@ -44,14 +45,14 @@ class TestRackCollision(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         log_record = self.log[2]
-        self.assertEqual(log_record.name, 'eos_test.cache_generator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '2 rows contain colliding module racks, removing them')
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
@@ -65,10 +66,10 @@ class TestRackCollision(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['effects']), 0)

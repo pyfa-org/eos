@@ -19,10 +19,10 @@
 #===============================================================================
 
 
+import logging
 from unittest.mock import patch
 
 from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
-from eos.tests.environment import Logger
 
 
 @patch('eos.data.cache_generator.converter.ModifierBuilder')
@@ -48,11 +48,11 @@ class TestConversionModifier(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
         expected = {
@@ -85,11 +85,11 @@ class TestConversionModifier(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['modifiers']), 2)
         self.assertIn(1, data['modifiers'])
         expected = {
@@ -135,11 +135,11 @@ class TestConversionModifier(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['modifiers']), 2)
         self.assertIn(1, data['modifiers'])
         expected = {
@@ -183,11 +183,11 @@ class TestConversionModifier(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
         expected = {
@@ -228,11 +228,11 @@ class TestConversionModifier(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
         expected = {
@@ -275,24 +275,23 @@ class TestConversionModifier(GeneratorTestCase):
         self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         call1, call2 = mod_builder.mock_calls
         # Check initialization
         name, args, kwargs = call1
         self.assertEqual(name, '')
-        self.assertEqual(len(args), 2)
+        self.assertEqual(len(args), 1)
         self.assertEqual(len(kwargs), 0)
-        expressions, logger = args
+        expressions = args[0]
         # Expression order isn't stable in passed list, so verify
         # passed argument using membership check
         self.assertEqual(len(expressions), 2)
         expression_ids = set(row['expressionID'] for row in expressions)
         self.assertEqual(expression_ids, {56, 107})
-        self.assertTrue(isinstance(logger, Logger))
         # Check request for building
         name, _, _ = call2
         self.assertEqual(len(builder_args), 1)

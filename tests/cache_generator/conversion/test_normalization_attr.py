@@ -19,9 +19,10 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eve import Attribute
 from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
-from eos.tests.environment import Logger
 
 
 class TestNormalizationAttr(GeneratorTestCase):
@@ -32,11 +33,11 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.radius], 50.0)
 
     def test_basic_attr_mass(self):
@@ -44,11 +45,11 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 5.0)
 
     def test_basic_attr_volume(self):
@@ -56,11 +57,11 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.volume], 500.0)
 
     def test_basic_attr_capacity(self):
@@ -68,11 +69,11 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.capacity], 0.5)
 
     def test_duplicate_definition(self):
@@ -82,13 +83,13 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         duplicate_error = self.log[0]
-        self.assertEqual(duplicate_error.name, 'eos_test.cache_generator')
-        self.assertEqual(duplicate_error.levelno, Logger.WARNING)
+        self.assertEqual(duplicate_error.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(duplicate_error.levelno, logging.WARNING)
         self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in dgmtypeattribs and were skipped')
         literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(literal_stats.levelno, Logger.INFO)
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
-        self.assertEqual(clean_stats.levelno, Logger.INFO)
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 6.0)

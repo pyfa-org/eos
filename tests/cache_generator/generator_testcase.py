@@ -33,7 +33,7 @@ class GeneratorTestCase(EosTestCase):
     """
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        super().setUp()
         self.dh = DataHandler()
 
     def run_generator(self):

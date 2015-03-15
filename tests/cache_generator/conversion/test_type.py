@@ -48,10 +48,10 @@ class TestConversionType(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos_test.cache_generator')
+        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
