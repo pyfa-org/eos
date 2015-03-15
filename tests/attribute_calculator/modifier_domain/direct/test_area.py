@@ -19,16 +19,17 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+import logging
+
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
-from eos.tests.environment import Logger
 
 
-class TestDomainFilterArea(AttrCalcTestCase):
-    """Test domain.area for filtered modifications"""
+class TestDomainDirectArea(AttrCalcTestCase):
+    """Test domain.area for direct modifications"""
 
     def test_error(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
@@ -40,20 +41,22 @@ class TestDomainFilterArea(AttrCalcTestCase):
         modifier.operator = Operator.post_percent
         modifier.tgt_attr = tgt_attr.id
         modifier.domain = Domain.area
-        modifier.filter_type = FilterType.all_
+        modifier.filter_type = None
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(type_id=56, effects=(effect,),
-                                                         attributes={src_attr.id: 20}))
+        influence_source = IndependentItem(self.ch.type_(
+            type_id=772, effects=(effect,), attributes={src_attr.id: 20}))
         # This domain just isn't used in EVE and unsupported by Eos by design
         self.fit.items.add(influence_source)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
-        self.assertEqual(log_record.msg,
-                         'malformed modifier on item 56: unsupported target domain '
-                         '{} for filtered modification'.format(Domain.area))
+        self.assertEqual(len(self.log), 2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.fit.attribute_calculator.register')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg,
+                'malformed modifier on item 772: unsupported target domain '
+                '{} for direct modification'.format(Domain.area)
+            )
         self.fit.items.remove(influence_source)
         self.assert_link_buffers_empty(self.fit)

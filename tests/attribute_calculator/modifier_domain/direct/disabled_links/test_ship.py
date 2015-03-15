@@ -26,10 +26,10 @@ from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
 
 
-class TestDomainDirectCharacterSwitch(AttrCalcTestCase):
-    """Test direct modification of character when it's changed"""
+class TestDomainDirectShipSwitch(AttrCalcTestCase):
+    """Test direct modification of ship when it's changed"""
 
-    def test_character(self):
+    def test_ship(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
@@ -38,22 +38,23 @@ class TestDomainDirectCharacterSwitch(AttrCalcTestCase):
         modifier.src_attr = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = Domain.character
+        modifier.domain = Domain.ship
         modifier.filter_type = None
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
+        influence_source = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        item = self.ch.type_(type_id=2, attributes={tgt_attr.id: 100})
+        item = self.ch.type_(type_id=None, attributes={tgt_attr.id: 100})
         influence_target1 = IndependentItem(item)
-        self.fit.character = influence_target1
+        self.fit.ship = influence_target1
         self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
-        self.fit.character = None
+        self.fit.ship = None
         influence_target2 = IndependentItem(item)
-        self.fit.character = influence_target2
+        self.fit.ship = influence_target2
         self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
         self.fit.items.remove(influence_source)
-        self.fit.character = None
+        self.fit.ship = None
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)

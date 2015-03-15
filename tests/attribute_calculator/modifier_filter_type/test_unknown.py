@@ -19,12 +19,13 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
-from eos.tests.environment import Logger
 
 
 class TestFilterUnknown(AttrCalcTestCase):
@@ -47,14 +48,16 @@ class TestFilterUnknown(AttrCalcTestCase):
 
     def test_log(self):
         self.effect.modifiers = (self.invalid_modifier,)
-        holder = IndependentItem(self.ch.type_(type_id=31, effects=(self.effect,),
-                                               attributes={self.src_attr.id: 20, self.tgt_attr: 100}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=31, effects=(self.effect,),
+            attributes={self.src_attr.id: 20, self.tgt_attr: 100}
+        ))
         self.fit.items.add(holder)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on item 31: invalid filter type 26500')
+        self.assertEqual(len(self.log), 2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.fit.attribute_calculator.register')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(log_record.msg, 'malformed modifier on item 31: invalid filter type 26500')
         self.fit.items.remove(holder)
         self.assert_link_buffers_empty(self.fit)
 
@@ -69,11 +72,13 @@ class TestFilterUnknown(AttrCalcTestCase):
         valid_modifier.filter_type = None
         valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                               attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(self.effect,),
+            attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}
+        ))
         self.fit.items.add(holder)
         # Invalid filter type in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(holder)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.log), 5)
         self.assert_link_buffers_empty(self.fit)

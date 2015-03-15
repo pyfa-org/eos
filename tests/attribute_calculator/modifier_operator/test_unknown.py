@@ -19,12 +19,13 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
-from eos.tests.environment import Logger
 
 
 class TestOperatorUnknown(AttrCalcTestCase):
@@ -46,14 +47,14 @@ class TestOperatorUnknown(AttrCalcTestCase):
         invalid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier,)
-        holder = IndependentItem(self.ch.type_(type_id=83, effects=(effect,),
-                                               attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=83, effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 100)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.fit.attribute_calculator.map')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'malformed modifier on item 83: unknown operator 1008')
         self.fit.items.remove(holder)
         self.assert_link_buffers_empty(self.fit)
@@ -84,14 +85,14 @@ class TestOperatorUnknown(AttrCalcTestCase):
         valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(type_id=83, effects=(effect,),
-                                               attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=83, effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 120)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.fit.attribute_calculator.map')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'malformed modifier on item 83: unknown operator None')
         self.fit.items.remove(holder)
         self.assert_link_buffers_empty(self.fit)
@@ -119,8 +120,8 @@ class TestOperatorUnknown(AttrCalcTestCase):
         valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                               attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers

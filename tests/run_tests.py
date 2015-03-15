@@ -38,9 +38,11 @@ if __name__ == '__main__':
 
     # Parse command line option (which is optional and positional)
     parser = argparse.ArgumentParser(description='Run Eos tests')
-    parser.add_argument('suite', nargs='?', type=str,
-                        help='system or module path to test suite to run, defaults to all tests',
-                        default=script_dir)
+    parser.add_argument(
+        'suite', nargs='?', type=str,
+        help='system or module path to test suite to run, defaults to all tests',
+        default=script_dir
+    )
     args = parser.parse_args()
     # Get all tests into suite
     tests = unittest.TestLoader().discover(args.suite, 'test_*.py')

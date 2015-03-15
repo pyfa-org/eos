@@ -19,12 +19,13 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
-from eos.tests.environment import Logger
 
 
 class TestSourceAttrAbsent(AttrCalcTestCase):
@@ -54,15 +55,15 @@ class TestSourceAttrAbsent(AttrCalcTestCase):
         valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                               attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         # Invalid source value shouldn't screw whole calculation process
         self.assertNotAlmostEqual(holder.attributes[tgt_attr.id], 100)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.fit.attribute_calculator.map')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on item 1')
         self.fit.items.remove(holder)
         self.assert_link_buffers_empty(self.fit)

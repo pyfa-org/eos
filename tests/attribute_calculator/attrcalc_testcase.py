@@ -33,9 +33,9 @@ class AttrCalcTestCase(EosTestCase):
     """
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        super().setUp()
         self.fit = Fit(self.ch)
 
     def assert_link_buffers_empty(self, fit):
         register = fit._link_tracker._register
-        EosTestCase.assert_object_buffers_empty(self, register)
+        super().assert_object_buffers_empty(register)

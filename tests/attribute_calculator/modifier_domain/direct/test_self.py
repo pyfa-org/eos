@@ -46,8 +46,8 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         self.effect.modifiers = (modifier,)
 
     def test_independent(self):
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                               attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
         # We do not test attribute value after item removal here, because
@@ -58,8 +58,8 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         self.assert_link_buffers_empty(self.fit)
 
     def test_character(self):
-        holder = CharacterItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+        holder = CharacterItem(self.ch.type_(
+            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(holder)
@@ -67,8 +67,8 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         self.assert_link_buffers_empty(self.fit)
 
     def test_ship(self):
-        holder = ShipItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                        attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+        holder = ShipItem(self.ch.type_(
+            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(holder)
@@ -76,8 +76,8 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         self.assert_link_buffers_empty(self.fit)
 
     def test_space(self):
-        holder = SpaceItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                         attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+        holder = SpaceItem(self.ch.type_(
+            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(holder)
@@ -85,8 +85,8 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         self.assert_link_buffers_empty(self.fit)
 
     def test_positioned(self):
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                               attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.character = holder
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
         self.fit.character = None
@@ -98,8 +98,8 @@ class TestDomainDirectSelf(AttrCalcTestCase):
         # and nothing else is affected. We position item as character and
         # check character item to also check that items 'belonging' to self
         # are not affected too
-        influence_source = IndependentItem(self.ch.type_(type_id=1, effects=(self.effect,),
-                                                         attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+        influence_source = IndependentItem(self.ch.type_(
+            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.character = influence_source
         influence_target = CharacterItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)

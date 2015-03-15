@@ -54,9 +54,10 @@ class TestTargetAttribute(AttrCalcTestCase):
         modifier2.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier1, modifier2)
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                               attributes={tgt_attr1.id: 50, tgt_attr2.id: 80,
-                                                           tgt_attr3.id: 100, src_attr.id: 20}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,),
+            attributes={tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20}
+        ))
         self.fit.items.add(holder)
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(holder.attributes[tgt_attr1.id], 60)

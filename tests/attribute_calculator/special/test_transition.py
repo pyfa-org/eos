@@ -29,9 +29,8 @@ from eos.tests.environment import CacheHandler
 
 class TestTransitionFit(AttrCalcTestCase):
     """
-    Test cases when holder is transferred from fit to fit,
-    when both fits exist within the same eos instance (i.e.
-    holder's item doesn't change).
+    Test cases when holder is transferred from fit to fit, when both
+    fits have source assigned (i.e. holder's item doesn't change).
     """
 
     def test_fit_attr_update(self):
@@ -71,10 +70,10 @@ class TestTransitionFit(AttrCalcTestCase):
         fit2.items.remove(module)
         self.assert_link_buffers_empty(fit2)
 
-    def test_eos_attr_update(self):
-        # Here we check if attributes are updated if fit changes
-        # eos' instance; we do not actually switch eos instance,
-        # but we switch cache_handler, and it should be enough
+    def test_source_attr_update(self):
+        # Here we check if attributes are updated if fit gets new
+        # source instance; we do not actually switch source but we
+        # switch cache_handler, and it should be enough
         cache_handler1 = CacheHandler()
         cache_handler2 = CacheHandler()
         src_attr1 = cache_handler1.attribute(attribute_id=1)
@@ -97,8 +96,8 @@ class TestTransitionFit(AttrCalcTestCase):
         effect2 = cache_handler1.effect(effect_id=111, category=EffectCategory.passive)
         effect2.modifiers = (modifier,)
         # Our holders from test environment fo not update undelying
-        # item automatically when eos instance is switched, thus we
-        # do it manually
+        # item automatically when source is changed, thus we do it
+        # manually
         ship_item1 = cache_handler1.type_(type_id=8, effects=(effect1,), attributes={src_attr1.id: 10})
         ship_item2 = cache_handler2.type_(type_id=8, effects=(effect2,), attributes={src_attr2.id: 20})
         module_item1 = cache_handler1.type_(type_id=4, attributes={tgt_attr1.id: 50})
@@ -111,13 +110,13 @@ class TestTransitionFit(AttrCalcTestCase):
         self.assertAlmostEqual(module.attributes.get(tgt_attr1.id), 55)
         # As we have capped attr, this auxiliary map shouldn't be None
         self.assertIsNotNone(module.attributes._cap_map)
-        # Make an 'eos switch': remove holders from attribute_calculator
+        # Make an 'source switch': remove holders from attribute_calculator
         for holder in (ship, module):
             disabled_states = set(filter(lambda s: s <= holder.state, State))
             fit._link_tracker.disable_states(holder, disabled_states)
             fit._link_tracker.remove_holder(holder)
-        # Refresh holders and replace eos
-        fit.eos._cache_handler = cache_handler2
+        # Refresh holders and replace source
+        fit.source.cache_handler = cache_handler2
         ship.attributes.clear()
         ship.item = ship_item2
         module.attributes.clear()

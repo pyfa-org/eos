@@ -44,8 +44,8 @@ class TestFilterDomainSkillrq(AttrCalcTestCase):
         modifier.filter_value = 56
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.influence_source = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                                              attributes={src_attr.id: 20}))
+        self.influence_source = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(self.influence_source)
 
     def test_match(self):

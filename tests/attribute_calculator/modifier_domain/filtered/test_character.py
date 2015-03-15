@@ -23,11 +23,11 @@ from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import IndependentItem, CharacterItem, ShipItem
+from eos.tests.attribute_calculator.environment import IndependentItem, CharacterItem
 
 
-class TestDomainFilterShip(AttrCalcTestCase):
-    """Test domain.ship for filtered modifications"""
+class TestDomainFilterCharacter(AttrCalcTestCase):
+    """Test domain.character for filtered modifications"""
 
     def setUp(self):
         AttrCalcTestCase.setUp(self)
@@ -39,17 +39,19 @@ class TestDomainFilterShip(AttrCalcTestCase):
         modifier.src_attr = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = Domain.ship
+        modifier.domain = Domain.character
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.influence_source = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                                              attributes={src_attr.id: 20}))
+        # It doesn't matter holder of which type we're using,
+        # the only thing which matters is its position in fit
+        self.influence_source = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(self.influence_source)
 
     def test_match(self):
-        influence_target = ShipItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = CharacterItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)
@@ -59,7 +61,7 @@ class TestDomainFilterShip(AttrCalcTestCase):
         self.assert_link_buffers_empty(self.fit)
 
     def test_other_domain(self):
-        influence_target = CharacterItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = IndependentItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)

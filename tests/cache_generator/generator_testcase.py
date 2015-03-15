@@ -21,7 +21,6 @@
 
 from eos.data.cache_generator import CacheGenerator
 from eos.data.cache_object import Modifier
-from eos.tests.environment import Logger
 from eos.tests.eos_testcase import EosTestCase
 from .environment import DataHandler
 
@@ -42,7 +41,7 @@ class GeneratorTestCase(EosTestCase):
         Run generator and rework data structure into
         keyed tables so it's easier to check.
         """
-        generator = CacheGenerator(Logger())
+        generator = CacheGenerator()
         data = generator.run(self.dh)
         keys = {
             'types': 'type_id',

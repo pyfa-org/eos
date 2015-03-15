@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
@@ -61,8 +61,10 @@ class TestRounding(AttrCalcTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
 
-        holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                               attributes={src_attr.id: 20, tgt_attr.id: 1.9444}))
+        holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,),
+            attributes={src_attr.id: 20, tgt_attr.id: 1.9444}
+        ))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 2.33)
         self.fit.items.remove(holder)

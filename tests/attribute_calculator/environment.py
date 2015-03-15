@@ -19,9 +19,10 @@
 #===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const.eos import State, Domain
 from eos.fit.attribute_calculator import LinkTracker, MutableAttributeMap
-from eos.tests.environment import Logger
 
 
 class HolderContainer:
@@ -45,17 +46,16 @@ class HolderContainer:
         return iter(self.__set)
 
 
-class Eos:
+class Source:
 
     def __init__(self, cache_handler):
-        self._logger = Logger()
-        self._cache_handler = cache_handler
+        self.cache_handler = cache_handler
 
 
 class Fit:
 
     def __init__(self, cache_handler):
-        self.eos = Eos(cache_handler)
+        self.source = Source(cache_handler)
         self._link_tracker = LinkTracker(self)
         self.__ship = None
         self.__character = None

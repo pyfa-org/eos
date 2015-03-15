@@ -75,10 +75,13 @@ class TestStateSwitching(AttrCalcTestCase):
         # Overload category will make sure that holder can enter all states
         effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
         effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
-        self.holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-                                                    attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1,
-                                                                src_attr2.id: 1.3, src_attr3.id: 1.5,
-                                                                src_attr4.id: 1.7}))
+        self.holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,),
+            attributes={
+                self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
+                src_attr3.id: 1.5, src_attr4.id: 1.7
+            }
+        ))
 
     def test_fit_offline(self):
         self.holder.state = State.offline

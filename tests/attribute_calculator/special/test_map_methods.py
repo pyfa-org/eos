@@ -46,7 +46,7 @@ class TestMapMethods(AttrCalcTestCase):
         self.fit.items.remove(self.holder)
         # Attempt to fetch non-existent attribute generates
         # error, which is not related to this test
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.log), 2)
         self.assert_link_buffers_empty(self.fit)
 
     def test_len(self):

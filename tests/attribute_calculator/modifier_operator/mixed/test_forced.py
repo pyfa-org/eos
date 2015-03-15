@@ -43,8 +43,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_pre_ass.filter_value = None
         effect_pre_ass = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect_pre_ass.modifiers = (modifier_pre_ass,)
-        influence_source_pre_ass = IndependentItem(self.ch.type_(type_id=1, effects=(effect_pre_ass,),
-                                                                 attributes={src_attr.id: 5}))
+        influence_source_pre_ass = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect_pre_ass,), attributes={src_attr.id: 5}))
         self.fit.items.add(influence_source_pre_ass)
         modifier_pre_mul = Modifier()
         modifier_pre_mul.state = State.offline
@@ -57,8 +57,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_pre_mul.filter_value = None
         effect_pre_mul = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect_pre_mul.modifiers = (modifier_pre_mul,)
-        influence_source_pre_mul = IndependentItem(self.ch.type_(type_id=2, effects=(effect_pre_mul,),
-                                                                 attributes={src_attr.id: 50}))
+        influence_source_pre_mul = IndependentItem(self.ch.type_(
+            type_id=2, effects=(effect_pre_mul,), attributes={src_attr.id: 50}))
         self.fit.items.add(influence_source_pre_mul)
         modifier_pre_div = Modifier()
         modifier_pre_div.state = State.offline
@@ -71,8 +71,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_pre_div.filter_value = None
         effect_pre_div = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect_pre_div.modifiers = (modifier_pre_div,)
-        influence_source_pre_div = IndependentItem(self.ch.type_(type_id=3, effects=(effect_pre_div,),
-                                                                 attributes={src_attr.id: 0.5}))
+        influence_source_pre_div = IndependentItem(self.ch.type_(
+            type_id=3, effects=(effect_pre_div,), attributes={src_attr.id: 0.5}))
         self.fit.items.add(influence_source_pre_div)
         modifier_mod_add = Modifier()
         modifier_mod_add.state = State.offline
@@ -85,8 +85,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_mod_add.filter_value = None
         effect_mod_add = self.ch.effect(effect_id=4, category=EffectCategory.passive)
         effect_mod_add.modifiers = (modifier_mod_add,)
-        influence_source_mod_add = IndependentItem(self.ch.type_(type_id=4, effects=(effect_mod_add,),
-                                                                 attributes={src_attr.id: 10}))
+        influence_source_mod_add = IndependentItem(self.ch.type_(
+            type_id=4, effects=(effect_mod_add,), attributes={src_attr.id: 10}))
         self.fit.items.add(influence_source_mod_add)
         modifier_mod_sub = Modifier()
         modifier_mod_sub.state = State.offline
@@ -99,8 +99,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_mod_sub.filter_value = None
         effect_mod_sub = self.ch.effect(effect_id=5, category=EffectCategory.passive)
         effect_mod_sub.modifiers = (modifier_mod_sub,)
-        influence_source_mod_sub = IndependentItem(self.ch.type_(type_id=5, effects=(effect_mod_sub,),
-                                                                 attributes={src_attr.id: 63}))
+        influence_source_mod_sub = IndependentItem(self.ch.type_(
+            type_id=5, effects=(effect_mod_sub,), attributes={src_attr.id: 63}))
         self.fit.items.add(influence_source_mod_sub)
         modifier_post_mul = Modifier()
         modifier_post_mul.state = State.offline
@@ -113,8 +113,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_post_mul.filter_value = None
         effect_post_mul = self.ch.effect(effect_id=6, category=EffectCategory.passive)
         effect_post_mul.modifiers = (modifier_post_mul,)
-        influence_source_post_mul = IndependentItem(self.ch.type_(type_id=6, effects=(effect_post_mul,),
-                                                                  attributes={src_attr.id: 1.35}))
+        influence_source_post_mul = IndependentItem(self.ch.type_(
+            type_id=6, effects=(effect_post_mul,), attributes={src_attr.id: 1.35}))
         self.fit.items.add(influence_source_post_mul)
         modifier_post_div = Modifier()
         modifier_post_div.state = State.offline
@@ -127,8 +127,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_post_div.filter_value = None
         effect_post_div = self.ch.effect(effect_id=7, category=EffectCategory.passive)
         effect_post_div.modifiers = (modifier_post_div,)
-        influence_source_post_div = IndependentItem(self.ch.type_(type_id=7, effects=(effect_post_div,),
-                                                                  attributes={src_attr.id: 2.7}))
+        influence_source_post_div = IndependentItem(self.ch.type_(
+            type_id=7, effects=(effect_post_div,), attributes={src_attr.id: 2.7}))
         self.fit.items.add(influence_source_post_div)
         modifier_post_perc = Modifier()
         modifier_post_perc.state = State.offline
@@ -141,8 +141,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_post_perc.filter_value = None
         effect_post_perc = self.ch.effect(effect_id=8, category=EffectCategory.passive)
         effect_post_perc.modifiers = (modifier_post_perc,)
-        influence_source_post_perc = IndependentItem(self.ch.type_(type_id=8, effects=(effect_post_perc,),
-                                                                   attributes={src_attr.id: 15}))
+        influence_source_post_perc = IndependentItem(self.ch.type_(
+            type_id=8, effects=(effect_post_perc,), attributes={src_attr.id: 15}))
         self.fit.items.add(influence_source_post_perc)
         modifier_post_ass = Modifier()
         modifier_post_ass.state = State.offline
@@ -155,8 +155,8 @@ class TestOperatorForcedValue(AttrCalcTestCase):
         modifier_post_ass.filter_value = None
         effect_post_ass = self.ch.effect(effect_id=9, category=EffectCategory.passive)
         effect_post_ass.modifiers = (modifier_post_ass,)
-        influence_source_post_ass = IndependentItem(self.ch.type_(type_id=9, effects=(effect_post_ass,),
-                                                                  attributes={src_attr.id: 68}))
+        influence_source_post_ass = IndependentItem(self.ch.type_(
+            type_id=9, effects=(effect_post_ass,), attributes={src_attr.id: 68}))
         self.fit.items.add(influence_source_post_ass)
         influence_target = ShipItem(self.ch.type_(type_id=10, attributes={tgt_attr.id: 100}))
         self.fit.items.add(influence_target)

@@ -24,13 +24,12 @@ from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
 from eos.tests.attribute_calculator.environment import IndependentItem
-from eos.tests.environment import Logger
 
 
-class TestDomainDirectTarget(AttrCalcTestCase):
-    """Test domain.target for direct modifications"""
+class TestDomainDirectCharacterSwitch(AttrCalcTestCase):
+    """Test direct modification of character when it's changed"""
 
-    def test_error(self):
+    def test_character(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
@@ -39,20 +38,23 @@ class TestDomainDirectTarget(AttrCalcTestCase):
         modifier.src_attr = src_attr.id
         modifier.operator = Operator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = Domain.target
+        modifier.domain = Domain.character
         modifier.filter_type = None
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(type_id=102, effects=(effect,), attributes={src_attr.id: 20}))
-        # This functionality isn't implemented for now
+        influence_source = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.attribute_calculator')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
-        self.assertEqual(log_record.msg,
-                         'malformed modifier on item 102: unsupported target '
-                         'domain {} for direct modification'.format(Domain.target))
+        item = self.ch.type_(type_id=2, attributes={tgt_attr.id: 100})
+        influence_target1 = IndependentItem(item)
+        self.fit.character = influence_target1
+        self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
+        self.fit.character = None
+        influence_target2 = IndependentItem(item)
+        self.fit.character = influence_target2
+        self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
         self.fit.items.remove(influence_source)
+        self.fit.character = None
+        self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
