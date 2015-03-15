@@ -28,7 +28,7 @@ class TestBuilderEtreeInactive(ModBuilderTestCase):
     """Test parsing of trees involving disabled operands"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         self.stub = self.ef.make(-1, operandID=Operand.def_int, expressionValue='1')
 
     def test_attack(self):

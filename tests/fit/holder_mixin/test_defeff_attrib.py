@@ -28,7 +28,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinSpecialAttrib(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         self.mixin = DefaultEffectAttribMixin()
         self.mixin.attributes = {}
         self.mixin.item = Mock()

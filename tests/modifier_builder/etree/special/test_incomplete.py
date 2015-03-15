@@ -28,7 +28,7 @@ class TestBuilderEtreeIncomplete(ModBuilderTestCase):
     """Test parsing of trees, which include actions, which are not converted into modifiers"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         # Modifier, except for top-most expression, which
         # is added in test cases
         e_tgt = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')

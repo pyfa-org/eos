@@ -34,7 +34,7 @@ class TestModuleCharge(FitTestCase):
     """
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         # This variable will control check of
         # module <-> charge link
         self.expect_module_charge_link = None

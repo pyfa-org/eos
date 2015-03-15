@@ -28,7 +28,7 @@ class TestBuilderEtreeModGangGrp(ModBuilderTestCase):
     """Test parsing of trees describing gang-mates' ship modules modification filtered by group"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         # Manually composed example, as CCP doesn't use this modification type in any effect
         e_tgt_grp = self.ef.make(1, operandID=Operand.def_grp, expressionGroupID=80)
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=158)

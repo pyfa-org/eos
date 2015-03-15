@@ -28,7 +28,7 @@ class TestBuilderEtreeModGangItm(ModBuilderTestCase):
     """Test parsing of trees describing gang-mates' direct ship modification"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         e_tgt_attr = self.ef.make(1, operandID=Operand.def_attr, expressionAttributeID=70)
         e_optr = self.ef.make(2, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=151)

@@ -30,7 +30,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinDamageDoomsdayNominalVolley(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         mixin = DamageDealerMixin()
         mixin.item = Mock()
         mixin.item.default_effect.id = Effect.super_weapon_amarr

@@ -28,7 +28,7 @@ class TestBuilderEtreeModLocGrp(ModBuilderTestCase):
     """Test parsing of trees describing modification filtered by domain and group"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         e_tgt_loc = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')
         e_tgt_grp = self.ef.make(2, operandID=Operand.def_grp, expressionGroupID=46)
         e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=6)

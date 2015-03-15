@@ -28,8 +28,9 @@ class TestBuilderModinfoState(ModBuilderTestCase):
     """Test parsing of YAML describing modifiers applied at different states"""
 
     def setUp(self):
-        self.yaml = '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n'
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
+        self.yaml = ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
+            '  modifyingAttributeID: 11\n  operator: 6\n')
 
     def test_passive(self):
         effect_row = {

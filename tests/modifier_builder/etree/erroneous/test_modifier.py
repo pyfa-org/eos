@@ -19,9 +19,10 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectCategory, Operand
-from eos.tests.environment import Logger
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -41,8 +42,8 @@ class TestBuilderEtreeModifierError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.ERROR)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to parse expression tree of effect 915: unable to fetch expression 902'
         self.assertEqual(log_record.msg, expected)
 
@@ -81,7 +82,7 @@ class TestBuilderEtreeModifierError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'unused actions left after parsing expression tree of effect 29'
         self.assertEqual(log_record.msg, expected)

@@ -142,7 +142,7 @@ class Info2Modifiers:
             except Exception:
                 effect_id = effect_row['effect_id']
                 msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
-                logger.error(msg, child_name='modinfo_builder')
+                logger.error(msg)
                 # We cannot recover any data in this case, thus return empty list
                 return (), EffectBuildStatus.error
             # Go through modifier objects and attempt to convert them one-by-one

@@ -30,7 +30,7 @@ class TestOperatorPenaltyImmuneCategory(AttrCalcTestCase):
     """Test that items from several categories are immune to stacking penalty"""
 
     def setUp(self):
-        AttrCalcTestCase.setUp(self)
+        super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1, stackable=0)
         self.src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()

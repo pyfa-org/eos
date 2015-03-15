@@ -28,7 +28,7 @@ class TestBuilderEtreeModOwnSrq(ModBuilderTestCase):
     """Test parsing of trees describing modification filtered by owner and skill requirement"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         e_tgtOwn = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Char')
         e_tgt_srq = self.ef.make(2, operandID=Operand.def_type, expressionTypeID=3412)
         e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=1372)

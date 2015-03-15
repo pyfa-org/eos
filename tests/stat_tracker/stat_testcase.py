@@ -45,7 +45,7 @@ class StatTestCase(EosTestCase):
     """
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        super().setUp()
         self.fit = Mock()
         self.fit.ship = None
         self.fit.character = None

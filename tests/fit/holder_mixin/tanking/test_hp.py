@@ -31,7 +31,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinTankingHp(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         self.holder = Ship(type_id=None)
         self.holder._clear_volatile_attrs = Mock()
         self.holder.attributes = {}

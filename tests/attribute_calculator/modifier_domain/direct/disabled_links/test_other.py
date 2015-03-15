@@ -30,7 +30,7 @@ class TestDomainDirectOtherSwitch(AttrCalcTestCase):
     """Test direct modification of "other" (e.g. module's charge) when it's changed"""
 
     def setUp(self):
-        AttrCalcTestCase.setUp(self)
+        super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         self.src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()

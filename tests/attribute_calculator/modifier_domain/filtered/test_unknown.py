@@ -32,7 +32,7 @@ class TestDomainFilterUnknown(AttrCalcTestCase):
     """Test reaction to unknown domain specification for filtered modification"""
 
     def setUp(self):
-        AttrCalcTestCase.setUp(self)
+        super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         self.src_attr = self.ch.attribute(attribute_id=2)
         self.invalid_modifier = invalid_modifier = Modifier()

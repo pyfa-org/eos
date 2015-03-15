@@ -28,7 +28,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinTankingEhp(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         self.mixin = BufferTankingMixin()
         self.mixin.hp = Mock()
         self.mixin.resistances = Mock()

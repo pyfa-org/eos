@@ -30,7 +30,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinChargeQuantity(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         self.holder = ModuleHigh(type_id=None)
         self.holder.attributes = {}
         self.charge = Charge(type_id=None)

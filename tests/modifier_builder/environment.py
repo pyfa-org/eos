@@ -24,12 +24,22 @@ class ExpressionFactory:
     def __init__(self):
         self._expressions = []
 
-    def make(self, expressionID, operandID=None, arg1=None, arg2=None,
-             expressionValue=None, expressionTypeID=None, expressionGroupID=None,
-             expressionAttributeID=None):
-        exp_row = {'expressionID': expressionID, 'operandID': operandID, 'arg1': arg1, 'arg2': arg2,
-                   'expressionValue': expressionValue, 'expressionTypeID': expressionTypeID,
-                   'expressionGroupID': expressionGroupID, 'expressionAttributeID': expressionAttributeID}
+    def make(
+            self,
+            expressionID,
+            operandID=None,
+            arg1=None,
+            arg2=None,
+            expressionValue=None,
+            expressionTypeID=None,
+            expressionGroupID=None,
+            expressionAttributeID=None
+    ):
+        exp_row = {
+            'expressionID': expressionID, 'operandID': operandID, 'arg1': arg1, 'arg2': arg2,
+            'expressionValue': expressionValue, 'expressionTypeID': expressionTypeID,
+            'expressionGroupID': expressionGroupID, 'expressionAttributeID': expressionAttributeID
+        }
         self._expressions.append(exp_row)
         return exp_row
 

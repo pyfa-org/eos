@@ -31,7 +31,7 @@ class TestRackCollision(GeneratorTestCase):
     """
 
     def setUp(self):
-        GeneratorTestCase.setUp(self)
+        super().setUp()
         self.item = {'typeID': 1, 'groupID': 1, 'typeName': ''}
         self.dh.data['invtypes'].append(self.item)
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})

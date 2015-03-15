@@ -33,7 +33,7 @@ class TestFilterDomainSkillrqSelf(AttrCalcTestCase):
     """
 
     def setUp(self):
-        AttrCalcTestCase.setUp(self)
+        super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()

@@ -20,7 +20,6 @@
 
 
 from eos.data.cache_generator.modifier_builder import ModifierBuilder
-from eos.tests.environment import Logger
 from eos.tests.eos_testcase import EosTestCase
 from .environment import ExpressionFactory
 
@@ -35,7 +34,7 @@ class ModBuilderTestCase(EosTestCase):
     """
 
     def setUp(self):
-        EosTestCase.setUp(self)
+        super().setUp()
         self.ef = ExpressionFactory()
 
     def run_builder(self, effect_row):
@@ -43,5 +42,5 @@ class ModBuilderTestCase(EosTestCase):
         effect_row.setdefault('pre_expression', None)
         effect_row.setdefault('post_expression', None)
         effect_row.setdefault('modifier_info', None)
-        builder = ModifierBuilder(self.ef.data, Logger())
+        builder = ModifierBuilder(self.ef.data)
         return builder.build(effect_row)

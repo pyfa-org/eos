@@ -27,7 +27,7 @@ class TestMapMethods(AttrCalcTestCase):
     """Test map methods not covered by other test cases"""
 
     def setUp(self):
-        AttrCalcTestCase.setUp(self)
+        super().setUp()
         self.attr1 = self.ch.attribute(attribute_id=1)
         self.attr2 = self.ch.attribute(attribute_id=2)
         self.attr3 = self.ch.attribute(attribute_id=3)

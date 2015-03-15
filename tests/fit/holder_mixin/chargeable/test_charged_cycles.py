@@ -29,7 +29,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinChargedCycles(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         self.holder = ModuleHigh(type_id=None)
         self.holder.item = Mock()
         self.holder.item.attributes = {}

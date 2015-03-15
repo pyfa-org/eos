@@ -28,7 +28,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestContainerModuleRacks(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         self.holder1 = Mock(spec_set=())
         self.holder2 = Mock(spec_set=())
         self.holder3 = Mock(spec_set=())

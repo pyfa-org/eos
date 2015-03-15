@@ -28,7 +28,7 @@ class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):
     """Test parsing of trees describing gang-mates' in-space items modification filtered by skill requirement"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         # Manually composed example, as CCP doesn't use this modification type in any effect
         e_tgt_srq = self.ef.make(1, operandID=Operand.def_type, expressionTypeID=3326)
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=654)

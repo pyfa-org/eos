@@ -30,7 +30,7 @@ from eos.tests.fit.fit_testcase import FitTestCase
 class TestHolderMixinDamageDroneNominalVolley(FitTestCase):
 
     def setUp(self):
-        FitTestCase.setUp(self)
+        super().setUp()
         mixin = DamageDealerMixin()
         mixin.item = Mock()
         mixin.item.default_effect.id = Effect.target_attack

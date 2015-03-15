@@ -19,9 +19,10 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, Operator
 from eos.const.eve import EffectCategory
-from eos.tests.environment import Logger
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -44,8 +45,8 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'failed to build one of the modifiers of effect 1: unknown filter function GangItemModifiero'
         self.assertEqual(log_record.msg, expected)
 
@@ -62,9 +63,10 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed to build one of the modifiers of effect 1: unable to find attribute groupID for filter value'
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
+        expected = ('failed to build one of the modifiers of effect 1: unable to find '
+            'attribute groupID for filter value')
         self.assertEqual(log_record.msg, expected)
 
     def test_error_domain(self):
@@ -80,9 +82,10 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
-        expected = 'failed to build one of the modifiers of effect 58: unexpected domain targetID for filter function GangItemModifier'
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
+        expected = ('failed to build one of the modifiers of effect 58: unexpected domain targetID'
+            ' for filter function GangItemModifier')
         self.assertEqual(log_record.msg, expected)
 
     def test_error_operator(self):
@@ -98,8 +101,8 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.modinfo_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'failed to build one of the modifiers of effect 36: unknown operator 99'
         self.assertEqual(log_record.msg, expected)
 
@@ -146,29 +149,3 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertIsNone(modifier.filter_type)
         self.assertIsNone(modifier.filter_value)
         self.assertEqual(len(self.log), 1)
-
-    def test_error_both_same(self):
-        effect_row = {
-            'effect_id': 94,
-            'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier11\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: ItemModifier22\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.error)
-        self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
-
-    def test_error_both_different(self):
-        effect_row = {
-            'effect_id': 94,
-            'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier22\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID22\n  func: ItemModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.error)
-        self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 2)

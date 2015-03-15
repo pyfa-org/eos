@@ -28,7 +28,7 @@ class TestBuilderEtreeModGangSrq(ModBuilderTestCase):
     """Test parsing of trees describing gang-mates' ship modules modification filtered by skill requirement"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         e_tgt_srq = self.ef.make(1, operandID=Operand.def_type, expressionTypeID=3435)
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=54)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')

@@ -28,7 +28,7 @@ class TestBuilderEtreeModItm(ModBuilderTestCase):
     """Test parsing of trees describing direct item modification"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         e_tgt = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')

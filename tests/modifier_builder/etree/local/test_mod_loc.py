@@ -28,7 +28,7 @@ class TestBuilderEtreeModLoc(ModBuilderTestCase):
     """Test parsing of trees describing modification filtered by domain"""
 
     def setUp(self):
-        ModBuilderTestCase.setUp(self)
+        super().setUp()
         e_tgt = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=1211)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')

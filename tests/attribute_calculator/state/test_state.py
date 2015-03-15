@@ -30,7 +30,7 @@ class TestStateSwitching(AttrCalcTestCase):
     """Test holder state switching and modifier states"""
 
     def setUp(self):
-        AttrCalcTestCase.setUp(self)
+        super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1, stackable=1)
         src_attr1 = self.ch.attribute(attribute_id=2)
         src_attr2 = self.ch.attribute(attribute_id=3)

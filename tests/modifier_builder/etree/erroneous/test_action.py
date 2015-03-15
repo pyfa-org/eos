@@ -19,9 +19,10 @@
 #===============================================================================
 
 
+import logging
+
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectCategory, Operand
-from eos.tests.environment import Logger
 from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -43,8 +44,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.ERROR)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to parse expression tree of effect 56: unable to fetch expression 37'
         self.assertEqual(log_record.msg, expected)
 
@@ -62,8 +63,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'failed to parse expression tree of effect 33: unknown generic operand 1009'
         self.assertEqual(log_record.msg, expected)
 
@@ -81,8 +82,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'failed to parse expression tree of effect 907: integer stub with unexpected value 6'
         self.assertEqual(log_record.msg, expected)
 
@@ -100,8 +101,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'failed to parse expression tree of effect 0: boolean stub with unexpected value False'
         self.assertEqual(log_record.msg, expected)
 
@@ -121,8 +122,8 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.ERROR)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to parse expression tree of effect 3 due to unknown reason'
         self.assertEqual(log_record.msg, expected)
 
@@ -172,7 +173,7 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos_test.etree_builder')
-        self.assertEqual(log_record.levelno, Logger.WARNING)
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.effect2modifiers')
+        self.assertEqual(log_record.levelno, logging.WARNING)
         expected = 'failed to parse expression tree of effect 66: failed to validate action'
         self.assertEqual(log_record.msg, expected)
