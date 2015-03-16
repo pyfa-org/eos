@@ -19,37 +19,4 @@
 #===============================================================================
 
 
-from eos.exception import EosError
-
-
-class HolderAddError(EosError):
-    """
-    Base class for exceptions which occur during
-    adding holder to fit.
-    """
-    pass
-
-
-class HolderAlreadyAssignedError(HolderAddError):
-    """
-    Raised on attempt to add holder to fit, when
-    it's already assigned.
-    """
-    pass
-
-
-class HolderRemoveError(EosError):
-    """
-    Base class for exceptions which occur during
-    holder removal from fit.
-    """
-    pass
-
-
-class HolderFitMismatchError(HolderRemoveError):
-    """
-    Raised during removal of holder from fit,
-    when holder's fit reference does not reference
-    fit holder being removed from.
-    """
-    pass
+from .holder import HolderBase

@@ -20,8 +20,8 @@
 
 
 from eos.fit.attribute_calculator import MutableAttributeMap
-from eos.fit.exception import NoSourceError
-from eos.fit.null_source import NullSource
+from .exception import NoSourceError
+from .null_source import NullSource
 
 
 class HolderBase:
@@ -45,7 +45,8 @@ class HolderBase:
         self.attributes = MutableAttributeMap(self)
         # Which fit this holder is bound to
         self.__fit = None
-        # Which type this holder wraps
+        # Which type this holder wraps. Use null source object by default,
+        # as holder doesn't have fit with source yet
         self.item = NullSource
         super().__init__(**kwargs)
 
@@ -70,7 +71,8 @@ class HolderBase:
             self.item = self._cache_handler.get_type(self._type_id)
         # When we're asked to refresh source, but we have no fit or
         # fit has no valid source assigned, we assign NullSource object
-        # to an item as it's source-dependent
+        # to an item - it's needed to raise errors on access to source-
+        # dependent stuff
         except NoSourceError:
             self.item = NullSource
 
