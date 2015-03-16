@@ -68,20 +68,22 @@ class HolderBase:
         self.attributes.clear()
         try:
             self.item = self._cache_handler.get_type(self._type_id)
+        # When we're asked to refresh source, but we have no fit or
+        # fit has no valid source assigned, we assign NullSource object
+        # to an item as it's source-dependent
         except NoSourceError:
             self.item = NullSource
 
     @property
     def _cache_handler(self):
         """
-        Return cache handler attached to the fit to which holder is assigned.
+        Return cache handler attached to the source of fit.
         If source cannot be found, return NullSource object.
         """
         try:
-            cache_handler = self._fit.source.cache_handler
+            return self._fit.source.cache_handler
         except AttributeError:
             return NullSource
-        return cache_handler or NullSource
 
     def _request_volatile_cleanup(self):
         """
