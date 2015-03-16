@@ -20,6 +20,8 @@
 
 
 from eos.fit.attribute_calculator import MutableAttributeMap
+from eos.fit.exception import NoSourceError
+from eos.fit.null_source import NullSource
 
 
 class HolderBase:
@@ -65,11 +67,21 @@ class HolderBase:
         """
         self.attributes.clear()
         try:
+            self.item = self._cache_handler.get_type(self._type_id)
+        except NoSourceError:
+            self.item = NullSource
+
+    @property
+    def _cache_handler(self):
+        """
+        Return cache handler attached to the fit to which holder is assigned.
+        If source cannot be found, return NullSource object.
+        """
+        try:
             cache_handler = self._fit.source.cache_handler
         except AttributeError:
-            self.item = None
-        else:
-            self.item = cache_handler.get_type(self._type_id)
+            return NullSource
+        return cache_handler or NullSource
 
     def _request_volatile_cleanup(self):
         """

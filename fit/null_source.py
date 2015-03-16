@@ -19,45 +19,19 @@
 #===============================================================================
 
 
-from eos.exception import EosError
+from .exception import NoSourceError
 
 
-class HolderAddError(EosError):
+class NullSourceMeta(type):
+
+    def __getattr__(self, _):
+        raise NoSourceError
+
+
+class NullSource(metaclass=NullSourceMeta):
     """
-    Base class for exceptions which occur during
-    adding holder to fit.
-    """
-    pass
-
-
-class HolderAlreadyAssignedError(HolderAddError):
-    """
-    Raised on attempt to add holder to fit, when
-    it's already assigned.
-    """
-    pass
-
-
-class HolderRemoveError(EosError):
-    """
-    Base class for exceptions which occur during
-    holder removal from fit.
-    """
-    pass
-
-
-class HolderFitMismatchError(HolderRemoveError):
-    """
-    Raised during removal of holder from fit,
-    when holder's fit reference does not reference
-    fit holder being removed from.
-    """
-    pass
-
-
-class NoSourceError(EosError):
-    """
-    Raised on attempt to use anything which needs source
-    to be assigned to function.
+    This class is assigned to any object which should be blocked
+    from use when fit (or other entity) has no source assigned.
+    Any attempts to access its attributes will raise NoSourceError.
     """
     pass

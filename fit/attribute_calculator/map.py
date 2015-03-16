@@ -141,12 +141,12 @@ class MutableAttributeMap:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
             except BaseValueError as e:
                 msg = 'unable to find base value for attribute {} on item {}'.format(
-                    e.args[0], self.__holder._type_id)
+                    e.args[0], self.__holder.item.id)
                 logger.warning(msg)
                 raise KeyError(attr) from e
             except AttributeMetaError as e:
                 msg = 'unable to fetch metadata for attribute {}, requested for item {}'.format(
-                    e.args[0], self.__holder._type_id)
+                    e.args[0], self.__holder.item.id)
                 logger.error(msg)
                 raise KeyError(attr) from e
             self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
@@ -213,10 +213,9 @@ class MutableAttributeMap:
         """
         # Attribute object for attribute being calculated
         try:
-            attr_meta = self.__holder._fit.source.cache_handler.get_attribute(attr)
-        # Raise error if we can't get to get_attribute method
-        # or it can't find requested attribute
-        except (AttributeError, AttributeFetchError) as e:
+            attr_meta = self.__holder._cache_handler.get_attribute(attr)
+        # Raise error if we can't get metadata for requested attribute
+        except AttributeFetchError as e:
             raise AttributeMetaError(attr) from e
         # Base attribute value which we'll use for modification
         try:
