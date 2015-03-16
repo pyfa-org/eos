@@ -138,10 +138,6 @@ class Holder:
             self._fit._holder_state_switch(self, new_state)
         self.__state = new_state
 
-    @property
-    def _cache_handler(self):
-        return self._fit.source.cache_handler
-
 
 class IndependentItem(Holder):
 

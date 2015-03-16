@@ -211,15 +211,19 @@ class MutableAttributeMap:
         BaseValueError -- attribute cannot be calculated, as its
         base value is not available
         """
+        # Assign base item attributes first to make sure than in case when
+        # we're calculating attribute for item/fit without source, it fails
+        # with null source error (triggered by accessing item's attribute)
+        item_attrs = self.__holder.item.attributes
         # Attribute object for attribute being calculated
         try:
-            attr_meta = self.__holder._cache_handler.get_attribute(attr)
+            attr_meta = self.__holder._fit.source.cache_handler.get_attribute(attr)
         # Raise error if we can't get metadata for requested attribute
-        except AttributeFetchError as e:
+        except (AttributeError, AttributeFetchError) as e:
             raise AttributeMetaError(attr) from e
         # Base attribute value which we'll use for modification
         try:
-            result = self.__holder.item.attributes[attr]
+            result = item_attrs[attr]
         # If attribute isn't available on base item,
         # base off its default value
         except KeyError:

@@ -28,7 +28,7 @@ class NullSourceMeta(type):
         raise NoSourceError
 
 
-class NullSource(metaclass=NullSourceMeta):
+class NullSourceItem(metaclass=NullSourceMeta):
     """
     This class is assigned to any object which should be blocked
     from use when fit (or other entity) has no source assigned.
