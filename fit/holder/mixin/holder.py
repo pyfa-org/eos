@@ -46,7 +46,7 @@ class HolderBase:
         # Which fit this holder is bound to
         self.__fit = None
         # Which type this holder wraps
-        self.item = None
+        self.item = NullSource
         super().__init__(**kwargs)
 
     @property
