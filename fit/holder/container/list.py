@@ -35,7 +35,7 @@ class HolderList(HolderContainerBase):
     """
 
     def __init__(self, fit, holder_class):
-        HolderContainerBase.__init__(self, holder_class)
+        super().__init__(holder_class)
         self.__fit = fit
         self.__list = []
 
@@ -207,9 +207,9 @@ class HolderList(HolderContainerBase):
         """Get holder by index or holders by slice object."""
         return self.__list.__getitem__(index)
 
-    def index(self, holder):
-        """Get index by holder."""
-        return self.__list.index(holder)
+    def index(self, value):
+        """Get index by holder/None."""
+        return self.__list.index(value)
 
     def __iter__(self):
         return self.__list.__iter__()

@@ -34,7 +34,7 @@ class HolderSet(HolderContainerBase):
     """
 
     def __init__(self, fit, holder_class):
-        HolderContainerBase.__init__(self, holder_class)
+        super().__init__(holder_class)
         self.__fit = fit
         self.__set = set()
 

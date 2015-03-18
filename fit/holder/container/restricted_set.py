@@ -34,7 +34,7 @@ class HolderRestrictedSet(HolderSet):
     """
 
     def __init__(self, fit, holder_class):
-        HolderSet.__init__(self, fit, holder_class)
+        super().__init__(fit, holder_class)
         self.__type_id_map = {}
 
     def add(self, holder):
@@ -52,7 +52,7 @@ class HolderRestrictedSet(HolderSet):
         if type_id in self.__type_id_map:
             msg = 'holder with type ID {} already exists in this set'.format(type_id)
             raise ValueError(msg)
-        HolderSet.add(self, holder)
+        super().add(holder)
         self.__type_id_map[type_id] = holder
 
     def remove(self, holder):
@@ -63,12 +63,12 @@ class HolderRestrictedSet(HolderSet):
         KeyError -- raised when holder cannot be removed
         from container (e.g. it doesn't belong to it)
         """
-        HolderSet.remove(self, holder)
+        super().remove(holder)
         del self.__type_id_map[holder._type_id]
 
     def clear(self):
         """Remove everything from container."""
-        HolderSet.clear(self)
+        super().clear()
         self.__type_id_map.clear()
 
     def __getitem__(self, type_id):
