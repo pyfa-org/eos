@@ -40,10 +40,7 @@ class Fit:
     """
 
     def __init__(self, source=None):
-        # Use default source, unless specified otherwise
-        if source is None:
-            source = SourceManager.default
-        self.__source = source
+        self.__source = None
         # Character-related holder containers
         self.skills = HolderRestrictedSet(self, Skill)
         self.implants = HolderSet(self, Implant)
@@ -64,6 +61,10 @@ class Fit:
         self._link_tracker = LinkTracker(self)  # Tracks links between holders assigned to fit
         self._restriction_tracker = RestrictionTracker(self)  # Tracks various restrictions related to given fitting
         self.stats = StatTracker(self)  # Access point for all the fitting stats
+        # Use default source, unless specified otherwise
+        if source is None:
+            source = SourceManager.default
+        self.source = source
         # As character object shouldn't change in any sane
         # cases, initialize it here
         self.character = Character(Type.character_static)
