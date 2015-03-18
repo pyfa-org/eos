@@ -22,6 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eve import Attribute
+from eos.data.source import Source
 from eos.fit.holder.container import HolderSet
 from eos.fit.holder.item import ModuleHigh, Charge
 from eos.tests.fit.fit_testcase import FitTestCase
@@ -99,8 +100,8 @@ class TestHolderMixinChargeQuantity(FitTestCase):
         self.assertEqual(self.holder.charge_quantity, 200)
 
     def test_override_set_int(self):
-        eos = Mock()
-        fit = self.make_fit(source=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         charge = self.charge
         holder._clear_volatile_attrs = Mock()
@@ -124,8 +125,8 @@ class TestHolderMixinChargeQuantity(FitTestCase):
         self.assertEqual(holder.charge_quantity, 26)
 
     def test_override_set_other(self):
-        eos = Mock()
-        fit = self.make_fit(source=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         charge = self.charge
         holder._clear_volatile_attrs = Mock()
@@ -149,8 +150,8 @@ class TestHolderMixinChargeQuantity(FitTestCase):
         self.assertEqual(holder.charge_quantity, 10)
 
     def test_override_del(self):
-        eos = Mock()
-        fit = self.make_fit(source=eos)
+        source = Mock(spec_set=Source)
+        fit = self.make_fit(source=source)
         holder = self.holder
         charge = self.charge
         holder._clear_volatile_attrs = Mock()

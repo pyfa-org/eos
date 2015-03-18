@@ -22,6 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
+from eos.data.source import Source
 from eos.fit.holder.container import HolderSet
 from eos.tests.fit.environment import CachingModule
 from eos.tests.fit.fit_testcase import FitTestCase
@@ -98,7 +99,7 @@ class TestModuleStateSwitch(FitTestCase):
         self.assert_object_buffers_empty(fit)
 
     def test_attached_upwards(self):
-        source = Mock(spec_set=())
+        source = Mock(spec_set=Source)
         fit = self.make_fit(source=source)
         holder = CachingModule(1, State.offline)
         fit.unordered.add(holder)
@@ -141,7 +142,7 @@ class TestModuleStateSwitch(FitTestCase):
         self.assert_object_buffers_empty(fit)
 
     def test_attached_downwards(self):
-        source = Mock(spec_set=())
+        source = Mock(spec_set=Source)
         fit = self.make_fit(source=source)
         holder = CachingModule(1, State.overload)
         fit.unordered.add(holder)
