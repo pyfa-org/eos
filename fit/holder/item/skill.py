@@ -21,15 +21,11 @@
 
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
-from eos.fit.holder.mixin.holder import HolderBase
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
 
 
-class Skill(
-        ImmutableStateMixin,
-        HolderBase
-    ):
+class Skill(ImmutableStateMixin):
     """
     Skill with all its special properties.
 
