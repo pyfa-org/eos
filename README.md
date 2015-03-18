@@ -74,60 +74,62 @@ Currently you can use engine following way:
 
 Fit validation method currently raises exception if any fit check fails, its argument contains dictionary which explains what is wrong. If we make additional drone active, following data will be returned:
 
-    {<eos.fit.holder.item.drone.Drone object at 0x7fe1214a3910>: {
-        5: ResourceErrorData(total_use=150.0, output=125.0, holder_use=25.0),
-        6: SlotAmountErrorData(slots_used=6, slots_max_allowed=5)}, ...}
+    {<Drone(type_id=2446, state=3)>: {
+        <Restriction.drone_bandwidth: 5>: ResourceErrorData(total_use=150.0, output=125.0, holder_use=25.0),
+        <Restriction.launched_drone: 6>: SlotAmountErrorData(slots_used=6, slots_max_allowed=5)},
+    ...
+    }
 
 Keys of dictionary are problematic holders (in this case, all in-space drones of ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 5 being drone bandwidth restriction, and 6 being amount of drones this fit can use; values contain detailed data about the problem.
 
 Attributes of any item are accessible via dictionary-like objects like phoon.attributes, e.g.:
 
-    >>fit.ship.attributes[37] # maxVelocity
+    >>> fit.ship.attributes[37] # maxVelocity
     1841.6155389908258
 
 Stats of fit can be fetched using 'stats' access point. For example, few regular ones:
 
-    >>fit.stats.agility_factor
+    >>> fit.stats.agility_factor
     15.70747757338698
-    >>fit.stats.cpu.used
+    >>> fit.stats.cpu.used
     821.0
 
 And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
 
-    >>fit.stats.get_ehp(DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)).total
+    >>> fit.stats.get_ehp(DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)).total
     95329.19886256836
-    >>fit.stats.get_ehp(DamageTypes(em=1, thermal=0, kinetic=0, explosive=0)).shield
+    >>> fit.stats.get_ehp(DamageTypes(em=1, thermal=0, kinetic=0, explosive=0)).shield
     50013.690833719105
 
 DPS can be fetched with various parameters, for example, should it take reload into consideration or not:
 
-    >>fit.stats.get_nominal_dps(reload=False).total
+    >>> fit.stats.get_nominal_dps(reload=False).total
     1931.374697718373
-    >>fit.stats.get_nominal_dps(reload=True).total
+    >>> fit.stats.get_nominal_dps(reload=True).total
     1857.2875753203057
 
 Specific damage type is accessible too (in this case, hail deals some kinetic damage):
 
-    >>fit.stats.get_nominal_dps(reload=False).kinetic
+    >>> fit.stats.get_nominal_dps(reload=False).kinetic
     136.64914857525073
 
 Get effective DPS against passed damage profile:
 
-    >>fit.stats.get_nominal_dps(target_resistances=DamageTypes(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
+    >>> fit.stats.get_nominal_dps(target_resistances=DamageTypes(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
     1072.8636430538475
 
 Get dps using built-in filters:
 
-    >>fit.stats.get_nominal_dps(holder_filter=turret_filter).total
+    >>> fit.stats.get_nominal_dps(holder_filter=turret_filter).total
     637.6960266845034
-    >>fit.stats.get_nominal_dps(holder_filter=missile_filter).total
+    >>> fit.stats.get_nominal_dps(holder_filter=missile_filter).total
     826.1217743481901
-    >>fit.stats.get_nominal_dps(holder_filter=drone_filter).total
+    >>> fit.stats.get_nominal_dps(holder_filter=drone_filter).total
     467.55689668567936
 
 You can compose your own filters or combine existing:
 
-    >>fit.stats.get_nominal_dps(holder_filter=lambda h: turret_filter(h) or missile_filter(h)).total
+    >>> fit.stats.get_nominal_dps(holder_filter=lambda h: turret_filter(h) or missile_filter(h)).total
     1463.8178010326933
 
 Not all stats are implemented yet, more to come soon.
