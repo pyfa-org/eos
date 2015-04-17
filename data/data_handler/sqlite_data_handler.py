@@ -61,11 +61,11 @@ class SQLiteDataHandler(BaseDataHandler):
         return self.__fetch_table('dgmexpressions')
 
     def __fetch_table(self, tablename):
-        self.cursor.execute('SELECT * FROM ?', tablename)
+        self.cursor.execute('SELECT * FROM {}'.format(tablename))
         return [dict(row) for row in self.cursor]
 
     def get_version(self):
-        self.cursor.execute('SELECT field_value FROM phbmetadata WHERE field_name = \'client_build\'')
+        self.cursor.execute('SELECT field_value FROM phbmetadata WHERE field_name = "client_build"')
         for row in self.cursor:
             return row[0]
         else:
