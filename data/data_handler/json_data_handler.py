@@ -36,10 +36,10 @@ class JsonDataHandler(BaseDataHandler):
         self.basepath = basepath
 
     def get_invtypes(self):
-        return self.__fetch_file('invtypes')
+        return self.__fetch_file('evetypes', vals=True)
 
     def get_invgroups(self):
-        return self.__fetch_file('invgroups')
+        return self.__fetch_file('evegroups', vals=True)
 
     def get_dgmattribs(self):
         return self.__fetch_file('dgmattribs')
@@ -56,9 +56,11 @@ class JsonDataHandler(BaseDataHandler):
     def get_dgmexpressions(self):
         return self.__fetch_file('dgmexpressions')
 
-    def __fetch_file(self, filename):
+    def __fetch_file(self, filename, vals=False):
         with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r', encoding='utf8') as file:
             data = json.load(file)
+        if vals:
+           data = list(data.values())
         return data
 
     def get_version(self):
