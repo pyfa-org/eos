@@ -50,7 +50,7 @@ class CacheCustomizer:
         """
         # Generate modifiers
         damage_modifiers = []
-        modifier_id = max(self.data['modifiers'], key=lambda row: row['modifier_id'])['modifier_id'] + 1
+        modifier_id = max(self.data['modifiers'], key=lambda row: row['modifier_id'], default=0)['modifier_id'] + 1
         for damageAttr in (
             Attribute.em_damage,
             Attribute.thermal_damage,
@@ -72,7 +72,7 @@ class CacheCustomizer:
             modifier_id += 1
         self.data['modifiers'].extend(damage_modifiers)
         # Generate effect
-        effect_id = max(self.data['effects'], key=lambda row: row['effect_id'])['effect_id'] + 1
+        effect_id = max(self.data['effects'], key=lambda row: row['effect_id'], default=0)['effect_id'] + 1
         effect_row = {
             'effect_id': effect_id,
             'effect_category': EffectCategory.passive,
