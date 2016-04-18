@@ -119,7 +119,9 @@ class Converter:
             name_id_map = {}
             for entity_row in sorted(data[entity_table], key=lambda row: row['table_pos']):
                 entity_id = entity_row[id_column]
-                entity_name_normal = entity_row.get(symname_column, '')
+                entity_name_normal = entity_row.get(symname_column)
+                if not entity_name_normal:
+                    continue
                 ids_normal = name_id_map.setdefault(entity_name_normal, [])
                 ids_normal.append(entity_id)
                 # Entities can be referred via names with stripped space
