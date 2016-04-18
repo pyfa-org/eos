@@ -105,15 +105,15 @@ class TestAssociatedData(GeneratorTestCase):
             'expressionGroupID': None, 'expressionAttributeID': None
         })
         # Weak entities in any case, but linked through expression
-        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'groupName': ''})
+        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50, 'groupName_en-us': ''})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1007, 'maxAttributeID': None, 'default_value': 0.0,
             'high_is_good': False, 'stackable': False, 'attributeName': ''
         })
         # Also weak entities, but linked through modifier info
-        self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 7, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 7, 'categoryID': 51, 'groupName': ''})
+        self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 7, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 7, 'categoryID': 51, 'groupName_en-us': ''})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1008, 'maxAttributeID': None, 'default_value': 0.0,
             'high_is_good': False, 'stackable': False, 'attributeName': ''
@@ -125,8 +125,8 @@ class TestAssociatedData(GeneratorTestCase):
 
     def test_strong(self, mod_builder):
         self.__generate_data()
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'groupName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16, 'groupName_en-us': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
@@ -139,7 +139,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(
             clean_stats.msg,
             'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, 0.0% from dgmexpressions, '
-            '0.0% from dgmtypeattribs, 0.0% from dgmtypeeffects, 0.0% from invgroups, 0.0% from invtypes'
+            '0.0% from dgmtypeattribs, 0.0% from dgmtypeeffects, 0.0% from evegroups, 0.0% from evetypes'
         )
         self.assertEqual(len(data['types']), 3)
         self.assertIn(1, data['types'])
@@ -170,8 +170,8 @@ class TestAssociatedData(GeneratorTestCase):
 
     def test_weak(self, mod_builder):
         self.__generate_data()
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 101, 'groupName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 101, 'groupName_en-us': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
@@ -183,8 +183,8 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg,
             'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, 100.0% from dgmexpressions, '
-            '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from invgroups, '
-            '100.0% from invtypes'
+            '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from evegroups, '
+            '100.0% from evetypes'
         )
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['attributes']), 0)
@@ -204,8 +204,8 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(
             clean_stats.msg,
             'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, 100.0% from dgmexpressions, '
-            '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from invgroups, '
-            '100.0% from invtypes'
+            '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from evegroups, '
+            '100.0% from evetypes'
         )
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['attributes']), 0)
@@ -215,8 +215,8 @@ class TestAssociatedData(GeneratorTestCase):
     def test_reverse_types(self, mod_builder):
         # Check that single type included into table does not
         # pull other types belonging to same group
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 5, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 5, 'categoryID': 16, 'groupName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16, 'groupName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmeffects'].append({
             'effectID': 100, 'effectCategory': 8888, 'isOffensive': True, 'isAssistance': False,
@@ -233,10 +233,10 @@ class TestAssociatedData(GeneratorTestCase):
             'expressionGroupID': None, 'expressionAttributeID': None
         })
         # 2 weak type, but linked through expression/YAML
-        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 6, 'typeName': ''})
-        self.dh.data['invtypes'].append({'typeID': 3, 'groupID': 6, 'typeName': ''})
-        self.dh.data['invtypes'].append({'typeID': 4, 'groupID': 6, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 6, 'categoryID': 50, 'groupName': ''})
+        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 6, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 4, 'groupID': 6, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50, 'groupName_en-us': ''})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
@@ -249,7 +249,7 @@ class TestAssociatedData(GeneratorTestCase):
         self.assertEqual(
             clean_stats.msg,
             'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, 0.0% from dgmtypeeffects, '
-            '0.0% from invgroups, 25.0% from invtypes'
+            '0.0% from evegroups, 25.0% from evetypes'
         )
         self.assertEqual(len(data['types']), 3)
         self.assertIn(1, data['types'])

@@ -23,8 +23,8 @@ class DataHandler:
 
     def __init__(self):
         self.data = {
-            'invtypes': [],
-            'invgroups': [],
+            'evetypes': [],
+            'evegroups': [],
             'dgmattribs': [],
             'dgmtypeattribs': [],
             'dgmeffects': [],
@@ -32,11 +32,11 @@ class DataHandler:
             'dgmexpressions': []
         }
 
-    def get_invtypes(self):
-        return self.data['invtypes']
+    def get_evetypes(self):
+        return self.data['evetypes']
 
-    def get_invgroups(self):
-        return self.data['invgroups']
+    def get_evegroups(self):
+        return self.data['evegroups']
 
     def get_dgmattribs(self):
         return self.data['dgmattribs']

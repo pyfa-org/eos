@@ -31,7 +31,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
     def test_type_idzing(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 3'})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 3'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
@@ -62,8 +62,8 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertIn(expected, expressions)
 
     def test_group_idzing(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 668, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 668, 'categoryID': 16, 'groupName': 'Big Guns'})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 668, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 668, 'categoryID': 16, 'groupName_en-us': 'Big Guns'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
@@ -92,8 +92,8 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertIn(expected, expressions)
 
     def test_attribute_idzing(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 668, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 668, 'categoryID': 16, 'groupName': 'Big Guns'})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 668, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 668, 'categoryID': 16, 'groupName_en-us': 'Big Guns'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
@@ -122,7 +122,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertIn(expected, expressions)
 
     def test_unstripped(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 3'})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 3'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
@@ -151,11 +151,11 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertIn(expected, expressions)
 
     def test_multiple_warning(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 3'})
-        self.dh.data['invtypes'].append({'typeID': 35, 'groupID': 1, 'typeName': '     BigGun 3  '})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 3'})
+        self.dh.data['evetypes'].append({'typeID': 35, 'groupID': 1, 'typeName_en-us': '     BigGun 3  '})
         # Using this name, we'll also check that already 'stripped' name (without space
         # symbols) does not add carrier's ID multiple times anywhere, including warning
-        self.dh.data['invtypes'].append({'typeID': 22, 'groupID': 1, 'typeName': 'BigGun3'})
+        self.dh.data['evetypes'].append({'typeID': 22, 'groupID': 1, 'typeName_en-us': 'BigGun3'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmtypeeffects'].append({'typeID': 35, 'effectID': 11})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
@@ -204,7 +204,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertIn(expected, expressions)
 
     def test_failed_conversion(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 556, 'groupID': 1, 'typeName': 'Big Gun 4'})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 4'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({

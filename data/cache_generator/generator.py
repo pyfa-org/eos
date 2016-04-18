@@ -55,8 +55,8 @@ class CacheGenerator:
         # the generator.
         data = {}
         tables = {
-            'invtypes': data_handler.get_invtypes,
-            'invgroups': data_handler.get_invgroups,
+            'evetypes': data_handler.get_evetypes,
+            'evegroups': data_handler.get_evegroups,
             'dgmattribs': data_handler.get_dgmattribs,
             'dgmtypeattribs': data_handler.get_dgmtypeattribs,
             'dgmeffects': data_handler.get_dgmeffects,

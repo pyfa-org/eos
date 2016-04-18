@@ -49,8 +49,8 @@ class Checker:
             'dgmexpressions': ('expressionID',),
             'dgmtypeattribs': ('typeID', 'attributeID'),
             'dgmtypeeffects': ('typeID', 'effectID'),
-            'invgroups': ('groupID',),
-            'invtypes': ('typeID',)
+            'evegroups': ('groupID',),
+            'evetypes': ('typeID',)
         }
         for table_name, key_names in primary_keys.items():
             self._table_pk(table_name, key_names)

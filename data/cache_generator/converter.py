@@ -45,7 +45,7 @@ class Converter:
 
     def _move_attribs(self):
         """
-        Some of item attributes are defined in invtypes table.
+        Some of item attributes are defined in evetypes table.
         We do not need them there, for data consistency it's worth
         to move them to dgmtypeattribs table.
         """
@@ -65,10 +65,10 @@ class Converter:
                 continue
             defined_pairs.add((row['typeID'], row['attributeID']))
         attrs_skipped = 0
-        new_invtypes = set()
-        # Cycle through all invtypes, for each row moving each its field
+        new_evetypes = set()
+        # Cycle through all evetypes, for each row moving each its field
         # either to different table or container for updated rows
-        for row in self.data['invtypes']:
+        for row in self.data['evetypes']:
             type_id = row['typeID']
             new_row = {}
             for field, value in row.items():
@@ -91,10 +91,10 @@ class Converter:
                     }))
                 else:
                     new_row[field] = value
-            new_invtypes.add(FrozenDict(new_row))
-        # Update invtypes with rows which do not contain attributes
-        self.data['invtypes'].clear()
-        self.data['invtypes'].update(new_invtypes)
+            new_evetypes.add(FrozenDict(new_row))
+        # Update evetypes with rows which do not contain attributes
+        self.data['evetypes'].clear()
+        self.data['evetypes'].update(new_evetypes)
         if attrs_skipped > 0:
             msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(
                 attrs_skipped)
@@ -110,9 +110,9 @@ class Converter:
         data = self.data
         dgmexpressions = data['dgmexpressions']
         replacement_desc = (
-            ('dgmattribs', 'attributeID', 'attributeName_en-us', 'expressionAttributeID', Operand.def_attr),
-            ('invgroups', 'groupID', 'groupName_en-us', 'expressionGroupID', Operand.def_grp),
-            ('invtypes', 'typeID', 'typeName_en-us', 'expressionTypeID', Operand.def_type)
+            ('dgmattribs', 'attributeID', 'attributeName', 'expressionAttributeID', Operand.def_attr),
+            ('evegroups', 'groupID', 'groupName_en-us', 'expressionGroupID', Operand.def_grp),
+            ('evetypes', 'typeID', 'typeName_en-us', 'expressionTypeID', Operand.def_type)
         )
         for entry in replacement_desc:
             entity_table, id_column, symname_column, tgt_column, operand = entry
@@ -191,9 +191,9 @@ class Converter:
         for row in data['dgmeffects']:
             dgmeffects_keyed[row['effectID']] = row
         # Format: {group ID: group row}
-        invgroups_keyed = {}
-        for row in data['invgroups']:
-            invgroups_keyed[row['groupID']] = row
+        evegroups_keyed = {}
+        for row in data['evegroups']:
+            evegroups_keyed[row['groupID']] = row
         # Format: {type ID: default effect ID}
         type_defeff_map = {}
         for row in data['dgmtypeeffects']:
@@ -214,13 +214,13 @@ class Converter:
         assembly = {}
 
         types = []
-        for row in data['invtypes']:
+        for row in data['evetypes']:
             type_id = row['typeID']
             group = row.get('groupID')
             type_ = {
                 'type_id': type_id,
                 'group': group,
-                'category': invgroups_keyed.get(group, {}).get('categoryID'),
+                'category': evegroups_keyed.get(group, {}).get('categoryID'),
                 'effects': type_effects.get(type_id, []),
                 'attributes': type_attribs.get(type_id, {}),
                 'default_effect': type_defeff_map.get(type_id)

@@ -44,16 +44,16 @@ class Cleaner:
         # is the same as structure of general data container
         self.strong_data = {}
         # Move some rows to strong data container
-        self._pump_invtypes()
+        self._pump_evetypes()
         # Also contains data in the very same format, but tables/rows
         # in this table are considered as pending for removal
         self.trashed_data = {}
         self._autocleanup()
         self._report_results()
 
-    def _pump_invtypes(self):
+    def _pump_evetypes(self):
         """
-        Mark some hardcoded invtypes as strong.
+        Mark some hardcoded evetypes as strong.
         """
         # Tuple with categoryIDs of items we want to keep
         strong_categories = (
@@ -69,14 +69,14 @@ class Cleaner:
         # It is set because we will need to modify it
         strong_groups = {Group.character, Group.effect_beacon}
         # Go through table data, filling valid groups set according to valid categories
-        for datarow in self.data['invgroups']:
+        for datarow in self.data['evegroups']:
             if datarow.get('categoryID') in strong_categories:
                 strong_groups.add(datarow['groupID'])
         rows_to_pump = set()
-        for datarow in self.data['invtypes']:
+        for datarow in self.data['evetypes']:
             if datarow.get('groupID') in strong_groups:
                 rows_to_pump.add(datarow)
-        self._pump_data('invtypes', rows_to_pump)
+        self._pump_data('evetypes', rows_to_pump)
 
     def _autocleanup(self):
         """
@@ -85,7 +85,7 @@ class Cleaner:
         self._kill_weak()
         self._changed = True
         # Cycle as long as we have changes during previous iteration.
-        # We need this because contents of even invtypes may change, which,
+        # We need this because contents of even evetypes may change, which,
         # by turn, will need to pull additional data into other tables
         while self._changed is True:
             self._changed = False
@@ -104,12 +104,12 @@ class Cleaner:
 
     def _reanimate_auxiliary_friends(self):
         """
-        Restore rows in tables, which complement invtypes
-        or serve as m:n mapping between invtypes and other tables.
+        Restore rows in tables, which complement evetypes
+        or serve as m:n mapping between evetypes and other tables.
         """
-        # As we filter whole database using invtypes table,
-        # gather invtype IDs we currently have in there
-        type_ids = set(row['typeID'] for row in self.data['invtypes'])
+        # As we filter whole database using evetypes table,
+        # gather evetype IDs we currently have in there
+        type_ids = set(row['typeID'] for row in self.data['evetypes'])
         # Auxiliary tables are those which do not define
         # any entities, they just map one entities to others
         # or complement entities with additional data
@@ -171,20 +171,20 @@ class Cleaner:
             'dgmexpressions': {
                 'arg1': ('dgmexpressions', 'expressionID'),
                 'arg2': ('dgmexpressions', 'expressionID'),
-                'expressionTypeID': ('invtypes', 'typeID'),
-                'expressionGroupID': ('invgroups', 'groupID'),
+                'expressionTypeID': ('evetypes', 'typeID'),
+                'expressionGroupID': ('evegroups', 'groupID'),
                 'expressionAttributeID': ('dgmattribs', 'attributeID')
             },
             'dgmtypeattribs': {
-                'typeID': ('invtypes', 'typeID'),
+                'typeID': ('evetypes', 'typeID'),
                 'attributeID': ('dgmattribs', 'attributeID')
             },
             'dgmtypeeffects': {
-                'typeID': ('invtypes', 'typeID'),
+                'typeID': ('evetypes', 'typeID'),
                 'effectID': ('dgmeffects', 'effectID')
             },
-            'invtypes': {
-                'groupID': ('invgroups', 'groupID')
+            'evetypes': {
+                'groupID': ('evegroups', 'groupID')
             }
         }
         for src_table_name, table_fks in foreign_keys.items():
@@ -211,8 +211,8 @@ class Cleaner:
             except KeyError:
                 continue
             for references, tgt_table_name, tgt_column_name in (
-                (types, 'invtypes', 'typeID'),
-                (groups, 'invgroups', 'groupID'),
+                (types, 'evetypes', 'typeID'),
+                (groups, 'evegroups', 'groupID'),
                 (attrs, 'dgmattribs', 'attributeID')
             ):
                 # If there're any references for given entity, add them to

@@ -33,7 +33,7 @@ class TestConversionExpression(GeneratorTestCase):
 
     @patch('eos.data.cache_generator.converter.ModifierBuilder')
     def test_fields(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 41})
         self.dh.data['dgmexpressions'].append({

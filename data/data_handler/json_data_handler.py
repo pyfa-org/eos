@@ -28,18 +28,17 @@ from .abc import BaseDataHandler
 class JsonDataHandler(BaseDataHandler):
     """
     Implements loading of raw data from JSON files produced by Phobos script, which can be found at
-    https://github.com/DarkFenX/Phobos. Following command asks Phobos to gather all the data we need:
-    python run.py --eve=<eve path> --cache=<cache path> --json=~/Desktop/phobos_dump_tq -list=invtypes,invgroups,dgmattribs,dgmtypeattribs,dgmeffects,dgmtypeeffects,dgmexpressions,phbmetadata
+    https://github.com/pyfa-org/Phobos.
     """
 
     def __init__(self, basepath):
         self.basepath = basepath
 
-    def get_invtypes(self):
-        return self.__fetch_file('evetypes', vals=True)
+    def get_evetypes(self):
+        return self.__fetch_file('evetypes', values_only=True)
 
-    def get_invgroups(self):
-        return self.__fetch_file('evegroups', vals=True)
+    def get_evegroups(self):
+        return self.__fetch_file('evegroups', values_only=True)
 
     def get_dgmattribs(self):
         return self.__fetch_file('dgmattribs')
@@ -56,10 +55,10 @@ class JsonDataHandler(BaseDataHandler):
     def get_dgmexpressions(self):
         return self.__fetch_file('dgmexpressions')
 
-    def __fetch_file(self, filename, vals=False):
+    def __fetch_file(self, filename, values_only=False):
         with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r', encoding='utf8') as file:
             data = json.load(file)
-        if vals:
+        if values_only:
            data = list(data.values())
         return data
 

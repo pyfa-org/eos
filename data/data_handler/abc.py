@@ -32,11 +32,11 @@ class BaseDataHandler(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def get_invtypes(self):
+    def get_evetypes(self):
         ...
 
     @abstractmethod
-    def get_invgroups(self):
+    def get_evegroups(self):
         ...
 
     @abstractmethod

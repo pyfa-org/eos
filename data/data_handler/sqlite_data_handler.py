@@ -39,11 +39,11 @@ class SQLiteDataHandler(BaseDataHandler):
         conn.row_factory = sqlite3.Row
         self.cursor = conn.cursor()
 
-    def get_invtypes(self):
-        return self.__fetch_table('invtypes')
+    def get_evetypes(self):
+        return self.__fetch_table('evetypes')
 
-    def get_invgroups(self):
-        return self.__fetch_table('invgroups')
+    def get_evegroups(self):
+        return self.__fetch_table('evegroups')
 
     def get_dgmattribs(self):
         return self.__fetch_table('dgmattribs')

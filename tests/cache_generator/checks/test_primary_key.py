@@ -29,8 +29,8 @@ class TestPrimaryKey(GeneratorTestCase):
     """Check that only valid primary keys pass checks"""
 
     def test_single_proper_pk(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
-        self.dh.data['invtypes'].append({'typeID': 2, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 1, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]
@@ -43,40 +43,40 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertIn(2, data['types'])
 
     def test_single_no_pk(self):
-        self.dh.data['invtypes'].append({'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'groupID': 1, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 rows in table invtypes have invalid PKs, removing them')
+        self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
         self.assertEqual(len(data['types']), 0)
 
     def test_single_invalid(self):
-        self.dh.data['invtypes'].append({'typeID': 1.5, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1.5, 'groupID': 1, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 rows in table invtypes have invalid PKs, removing them')
+        self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
         self.assertEqual(len(data['types']), 0)
 
     def test_single_duplicate(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 rows in table invtypes have invalid PKs, removing them')
+        self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
@@ -88,14 +88,14 @@ class TestPrimaryKey(GeneratorTestCase):
 
     def test_single_duplicate_reverse(self):
         # Make sure first fed by data_handler row is accepted
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920, 'typeName': ''})
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 rows in table invtypes have invalid PKs, removing them')
+        self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
@@ -107,14 +107,14 @@ class TestPrimaryKey(GeneratorTestCase):
 
     def test_single_cleaned(self):
         # Make sure check is ran before cleanup
-        self.dh.data['invtypes'].append({'typeID': 1, 'typeName': ''})
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 920, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 rows in table invtypes have invalid PKs, removing them')
+        self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
@@ -124,7 +124,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(len(data['types']), 0)
 
     def test_dual_proper_pk(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 50, 'value': 100.0})
         data = self.run_generator()
@@ -140,7 +140,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(type_attributes[50], 100.0)
 
     def test_dual_no_pk(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'value': 50.0})
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
@@ -157,7 +157,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(len(data['types'][1]['attributes']), 0)
 
     def test_dual_invalid(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100.1, 'value': 50.0})
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
@@ -174,7 +174,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(len(data['types'][1]['attributes']), 0)
 
     def test_dual_duplicate(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
         data = self.run_generator()
@@ -195,7 +195,7 @@ class TestPrimaryKey(GeneratorTestCase):
 
     def test_dual_cleaned(self):
         # Make sure check is ran before cleanup
-        self.dh.data['invtypes'].append({'typeID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
         data = self.run_generator()
@@ -214,7 +214,7 @@ class TestPrimaryKey(GeneratorTestCase):
 
     def test_dual_duplicate_reverse(self):
         # Make sure first fed by data_handler row is accepted
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         data = self.run_generator()
@@ -233,19 +233,19 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(len(type_attributes), 1)
         self.assertEqual(type_attributes[100], 5.0)
 
-    # Now, when PK-related checks cover invtypes (single PK)
+    # Now, when PK-related checks cover evetypes (single PK)
     # and dgmtypeattribs (dual PK) tables, run simple tests on
     # the rest of the tables to make sure they are covered
-    def test_invgroups(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
-        self.dh.data['invgroups'].append({'groupID': 1, 'categoryID': 7, 'groupName': ''})
-        self.dh.data['invgroups'].append({'groupID': 1, 'categoryID': 32, 'groupName': ''})
+    def test_evegroups(self):
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 1, 'categoryID': 7, 'groupName_en-us': ''})
+        self.dh.data['evegroups'].append({'groupID': 1, 'categoryID': 32, 'groupName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 rows in table invgroups have invalid PKs, removing them')
+        self.assertEqual(log_record.msg, '1 rows in table evegroups have invalid PKs, removing them')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)
@@ -256,7 +256,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(data['types'][1]['category'], 7)
 
     def test_dgmattribs(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 7, 'value': 8.0})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 50, 'attributeName': ''})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 55, 'attributeName': ''})
@@ -276,7 +276,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(data['attributes'][7]['max_attribute'], 50)
 
     def test_dgmeffects(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 50})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 55})
@@ -296,7 +296,7 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(data['effects'][7]['effect_category'], 50)
 
     def test_dgmtypeeffects(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 100})
@@ -317,7 +317,7 @@ class TestPrimaryKey(GeneratorTestCase):
 
     @patch('eos.data.cache_generator.converter.ModifierBuilder')
     def test_dgmexpressions(self, mod_builder):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'preExpression': 62, 'postExpression': 83})
         self.dh.data['dgmexpressions'].append({

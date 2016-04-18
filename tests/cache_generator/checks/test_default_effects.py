@@ -32,8 +32,8 @@ class TestDefaultEffects(GeneratorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.item = {'typeID': 1, 'groupID': 1, 'typeName': ''}
-        self.dh.data['invtypes'].append(self.item)
+        self.item = {'typeID': 1, 'groupID': 1, 'typeName_en-us': ''}
+        self.dh.data['evetypes'].append(self.item)
         self.eff_link1 = {'typeID': 1, 'effectID': 1}
         self.eff_link2 = {'typeID': 1, 'effectID': 2}
         self.dh.data['dgmtypeeffects'].append(self.eff_link1)

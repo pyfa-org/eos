@@ -31,7 +31,7 @@ class TestConversionAttribute(GeneratorTestCase):
     """
 
     def test_fields(self):
-        self.dh.data['invtypes'].append({'typeID': 1, 'groupID': 1, 'typeName': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 111, 'value': 8.2})
         self.dh.data['dgmattribs'].append({
             'maxAttributeID': 84, 'randomField': None, 'stackable': True,
