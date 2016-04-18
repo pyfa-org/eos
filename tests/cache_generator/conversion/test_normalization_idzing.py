@@ -93,13 +93,15 @@ class TestNormalizationIdzing(GeneratorTestCase):
 
     def test_attribute_idzing(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 668, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 668, 'categoryID': 16, 'groupName_en-us': 'Big Guns'})
+        self.dh.data['evegroups'].append({'groupID': 668, 'categoryID': 16, 'groupName_en-us': ''})
+        self.dh.data['dgmtypeattribs'].append({'typeID': 556, 'attributeID': 334, 'value': 2})
+        self.dh.data['dgmattribs'].append({'attributeID': 334, 'attributeName': 'Big Goons'})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 34, 'postExpression': 34})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
-            'arg2': 66, 'expressionValue': 'BigGuns', 'expressionTypeID': 567,
-            'expressionGroupID': None, 'expressionAttributeID': 102
+            'expressionID': 34, 'operandID': Operand.def_attr, 'arg1': 2357,
+            'arg2': 66, 'expressionValue': 'BigGoons', 'expressionTypeID': 567,
+            'expressionGroupID': 322, 'expressionAttributeID': None
         })
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_generator()
@@ -115,9 +117,9 @@ class TestNormalizationIdzing(GeneratorTestCase):
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expected = {
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
-            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 668,
-            'expressionAttributeID': 102, 'table_pos': 0
+            'expressionID': 34, 'operandID': Operand.def_attr, 'arg1': 2357, 'arg2': 66,
+            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 322,
+            'expressionAttributeID': 334, 'table_pos': 0
         }
         self.assertIn(expected, expressions)
 
