@@ -61,9 +61,6 @@ class EosTestCase(TestCase):
     When overriding setUp and tearDown methods, make sure
     to call this class' original methods (before anything
     else is done for setUp, and after for tearDown).
-
-    Also make sure to use eos_test logger as root for
-    logging any data.
     """
 
     def setUp(self):

@@ -110,16 +110,16 @@ class Converter:
         data = self.data
         dgmexpressions = data['dgmexpressions']
         replacement_desc = (
-            ('dgmattribs', 'attributeID', 'attributeName', 'expressionAttributeID', Operand.def_attr),
-            ('invgroups', 'groupID', 'groupName', 'expressionGroupID', Operand.def_grp),
-            ('invtypes', 'typeID', 'typeName', 'expressionTypeID', Operand.def_type)
+            ('dgmattribs', 'attributeID', 'attributeName_en-us', 'expressionAttributeID', Operand.def_attr),
+            ('invgroups', 'groupID', 'groupName_en-us', 'expressionGroupID', Operand.def_grp),
+            ('invtypes', 'typeID', 'typeName_en-us', 'expressionTypeID', Operand.def_type)
         )
         for entry in replacement_desc:
             entity_table, id_column, symname_column, tgt_column, operand = entry
             name_id_map = {}
             for entity_row in sorted(data[entity_table], key=lambda row: row['table_pos']):
                 entity_id = entity_row[id_column]
-                entity_name_normal = entity_row[symname_column]
+                entity_name_normal = entity_row.get(symname_column, '')
                 ids_normal = name_id_map.setdefault(entity_name_normal, [])
                 ids_normal.append(entity_id)
                 # Entities can be referred via names with stripped space
