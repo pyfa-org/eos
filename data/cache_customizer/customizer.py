@@ -113,9 +113,9 @@ class CacheCustomizer:
                 break
         if online_effect is None:
             msg = 'unable to find online effect'
-            logger.warning(msg, child_name='cache_customizer')
+            logger.warning(msg)
         elif online_effect['effect_category'] == EffectCategory.online:
             msg = 'online effect category does not need to be adjusted'
-            logger.warning(msg, child_name='cache_customizer')
+            logger.warning(msg)
         else:
             online_effect['effect_category'] = EffectCategory.online
