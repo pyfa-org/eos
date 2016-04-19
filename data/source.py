@@ -26,7 +26,7 @@ from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str
 from .cache_customizer import CacheCustomizer
 from .cache_generator import CacheGenerator
-from .exception import UnknownSourceError
+from .exception import ExistingSourceError, UnknownSourceError
 
 
 logger = getLogger(__name__)
@@ -68,6 +68,8 @@ class SourceManager:
         by default for instantiating new fits
         """
         logger.info('adding source with alias "{}"'.format(alias))
+        if alias in cls._sources:
+            raise ExistingSourceError(alias)
         # Compare fingerprints from data and cache
         cache_fp = cache_handler.get_fingerprint()
         data_version = data_handler.get_version()
@@ -108,6 +110,24 @@ class SourceManager:
         except KeyError:
             raise UnknownSourceError(alias)
 
-    def __repr__(self):
+    @classmethod
+    def remove(cls, alias):
+        """
+        Remove source by alias.
+
+        Required arguments:
+        alias -- alias of source to remove
+        """
+        try:
+            del cls._sources[alias]
+        except KeyError:
+            raise UnknownSourceError(alias)
+
+    @classmethod
+    def list(cls):
+        return list(cls._sources.keys())
+
+    @classmethod
+    def __repr__(cls):
         spec = [['sources', '_sources']]
-        return make_repr_str(self, spec)
+        return make_repr_str(cls, spec)

@@ -29,3 +29,11 @@ class UnknownSourceError(EosError):
     cannot be found.
     """
     pass
+
+
+class ExistingSourceError(EosError):
+    """
+    Raised on attempt to add source with alias which
+    already exists.
+    """
+    pass
