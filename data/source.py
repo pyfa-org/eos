@@ -118,6 +118,7 @@ class SourceManager:
         Required arguments:
         alias -- alias of source to remove
         """
+        logger.info('removing source with alias "{}"'.format(alias))
         try:
             del cls._sources[alias]
         except KeyError:
