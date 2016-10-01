@@ -22,7 +22,7 @@
 from unittest.mock import patch
 
 from eos.fit import Fit
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 
 
 class FitTestCase(EosTestCase):

@@ -23,7 +23,7 @@ from unittest.mock import Mock, call
 
 from eos.const.eos import State
 from eos.fit.holder.item import ModuleHigh
-from eos.tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stat_tracker.stat_testcase import StatTestCase
 
 
 class TestStatsDamageDps(StatTestCase):

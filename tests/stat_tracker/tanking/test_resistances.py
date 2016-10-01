@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.item import Ship
-from eos.tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stat_tracker.stat_testcase import StatTestCase
 
 
 class TestResistances(StatTestCase):

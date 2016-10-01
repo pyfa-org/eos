@@ -24,8 +24,8 @@ from unittest.mock import Mock
 from eos.const.eos import State
 from eos.data.source import Source
 from eos.fit.holder.container import HolderList
-from eos.tests.fit.environment import BaseHolder, CachingHolder
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.environment import BaseHolder, CachingHolder
+from tests.fit.fit_testcase import FitTestCase
 
 
 class TestContainerOrderedMisc(FitTestCase):

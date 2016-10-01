@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
 class TestCleanupTypes(GeneratorTestCase):

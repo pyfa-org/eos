@@ -20,7 +20,7 @@
 
 
 from eos.data.cache_generator.modifier_builder import ModifierBuilder
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 from .environment import ExpressionFactory
 
 

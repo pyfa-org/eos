@@ -21,7 +21,7 @@
 
 from eos.const.eos import EffectBuildStatus, State
 from eos.const.eve import EffectCategory
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoState(ModBuilderTestCase):

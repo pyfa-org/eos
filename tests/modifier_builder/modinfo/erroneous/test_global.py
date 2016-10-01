@@ -23,7 +23,7 @@ import logging
 
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectCategory
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):

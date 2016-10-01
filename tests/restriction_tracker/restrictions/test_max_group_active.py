@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Restriction, Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh
-from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
 class TestMaxGroupActive(RestrictionTestCase):
