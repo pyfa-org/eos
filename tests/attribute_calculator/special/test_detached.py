@@ -19,8 +19,8 @@
 #===============================================================================
 
 
-from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import ShipItem
+from tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
+from tests.attribute_calculator.environment import ShipItem
 
 
 class TestDetached(AttrCalcTestCase):

@@ -21,7 +21,7 @@
 
 from unittest.mock import call
 
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.fit_testcase import FitTestCase
 
 
 class TestHolderStateSwitch(FitTestCase):

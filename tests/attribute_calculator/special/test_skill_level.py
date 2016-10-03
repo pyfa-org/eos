@@ -20,8 +20,8 @@
 
 
 from eos.const.eve import Attribute
-from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import IndependentItem, Skill
+from tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
+from tests.attribute_calculator.environment import IndependentItem, Skill
 
 
 class TestSkillLevel(AttrCalcTestCase):

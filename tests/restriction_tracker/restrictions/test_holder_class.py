@@ -22,7 +22,7 @@
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.holder.item import *
-from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
 class TestHolderClass(RestrictionTestCase):

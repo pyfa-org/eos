@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.fit_testcase import FitTestCase
 
 
 class TestHolderMixinTankingWorstCaseEhp(FitTestCase):

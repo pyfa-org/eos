@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Restriction, State
 from eos.fit.restriction_tracker import RestrictionTracker, ValidationError
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 
 
 class RestrictionTestCase(EosTestCase):

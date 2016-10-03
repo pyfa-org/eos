@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Booster, ModuleHigh
-from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
 class TestBoosterIndex(RestrictionTestCase):

@@ -23,7 +23,7 @@ import logging
 from unittest.mock import patch
 
 from eos.const.eve import Operand
-from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
 @patch('eos.data.cache_generator.converter.ModifierBuilder')

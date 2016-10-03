@@ -22,7 +22,7 @@
 import logging
 from unittest.mock import patch
 
-from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
 class TestConversionEffect(GeneratorTestCase):

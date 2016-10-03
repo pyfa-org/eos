@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eve import Attribute, Effect
 from eos.fit.holder.item import ModuleHigh, Charge
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.fit_testcase import FitTestCase
 
 
 class TestHolderMixinChargedCycles(FitTestCase):

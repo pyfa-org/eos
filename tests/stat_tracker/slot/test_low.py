@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Ship
-from eos.tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stat_tracker.stat_testcase import StatTestCase
 
 
 class TestLowSlot(StatTestCase):

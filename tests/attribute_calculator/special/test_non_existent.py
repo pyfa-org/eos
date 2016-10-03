@@ -21,8 +21,8 @@
 
 import logging
 
-from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import IndependentItem
+from tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
+from tests.attribute_calculator.environment import IndependentItem
 
 
 class TestNonExistent(AttrCalcTestCase):

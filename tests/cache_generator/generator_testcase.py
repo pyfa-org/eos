@@ -21,7 +21,7 @@
 
 from eos.data.cache_generator import CacheGenerator
 from eos.data.cache_object import Modifier
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 from .environment import DataHandler
 
 

@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.fit_testcase import FitTestCase
 
 
 class TestHolderMixinSpecialAttrib(FitTestCase):

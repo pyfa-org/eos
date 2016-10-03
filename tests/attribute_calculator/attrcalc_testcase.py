@@ -19,7 +19,7 @@
 #===============================================================================
 
 
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 from .environment import Fit
 
 

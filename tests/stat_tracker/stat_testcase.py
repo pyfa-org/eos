@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.stat_tracker import StatTracker
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 
 
 class StatTestCase(EosTestCase):

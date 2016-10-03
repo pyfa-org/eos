@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Domain, Restriction, State
 from eos.fit.holder.item import ModuleHigh, Skill
-from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
 class TestSkillRequirement(RestrictionTestCase):

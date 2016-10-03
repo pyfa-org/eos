@@ -22,8 +22,8 @@
 from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
-from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import IndependentItem, ShipItem, SpaceItem
+from tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
+from tests.attribute_calculator.environment import IndependentItem, ShipItem, SpaceItem
 
 
 class TestFilterDomain(AttrCalcTestCase):
