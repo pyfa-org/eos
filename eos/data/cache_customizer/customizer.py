@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from logging import getLogger
@@ -91,7 +91,7 @@ class CacheCustomizer:
             'tracking_speed_attribute': None,
             'fitting_usage_chance_attribute': None,
             'build_status': EffectBuildStatus.ok_full,
-            'modifiers': [modifier_row['modifier_id'] for modifier_row in damage_modifiers]
+            'modifiers': [modifier['modifier_id'] for modifier in damage_modifiers]
         }
         self.data['effects'].append(effect_row)
         # Add effect to all characters

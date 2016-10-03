@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State
@@ -26,9 +26,12 @@ from eos.util.repr import make_repr_str
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
-from .holder.item import *
 from .restriction_tracker import RestrictionTracker
 from .stat_tracker import StatTracker
+from .holder.item import (
+    Booster, Character, Drone, EffectBeacon, Implant, ModuleHigh,
+    ModuleMed, ModuleLow, Rig, Ship, Skill, Stance, Subsystem
+)
 
 
 class Fit:

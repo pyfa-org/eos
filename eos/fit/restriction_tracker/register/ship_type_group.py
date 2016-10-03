@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from collections import namedtuple
@@ -47,8 +47,10 @@ GROUP_RESTRICTION_ATTRS = (
 )
 
 
-ShipTypeGroupErrorData = namedtuple('ShipTypeGroupErrorData', ('ship_type',
-    'ship_group', 'allowed_types', 'allowed_groups'))
+ShipTypeGroupErrorData = namedtuple(
+    'ShipTypeGroupErrorData',
+    ('ship_type', 'ship_group', 'allowed_types', 'allowed_groups')
+)
 
 
 # Helper class-container for metadata regarding allowed

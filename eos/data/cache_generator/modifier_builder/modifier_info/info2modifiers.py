@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2015 Anton Vorobyov
 #
 # This file is part of Eos.
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import yaml
@@ -24,7 +24,9 @@ from logging import getLogger
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object import Modifier
-from .exception import *
+from .exception import (
+    UnknownStateError, UnknownOperatorError, UnknownFuncError, NoFilterValueError, UnexpectedDomainError
+)
 
 
 logger = getLogger(__name__)

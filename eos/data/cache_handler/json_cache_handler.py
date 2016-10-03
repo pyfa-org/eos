@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import bz2
@@ -25,7 +25,7 @@ import os.path
 from logging import getLogger
 from weakref import WeakValueDictionary
 
-from eos.data.cache_object import *
+from eos.data.cache_object import Attribute, Effect, Modifier, Type
 from eos.util.repr import make_repr_str
 from .abc import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError

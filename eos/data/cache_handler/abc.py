@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from abc import ABCMeta, abstractmethod
@@ -29,7 +29,6 @@ class BaseCacheHandler(metaclass=ABCMeta):
     getters) should return "assembled" objects for
     use in Eos; fingerprint is single string.
     """
-
 
     @abstractmethod
     def get_type(self, type_id):

@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State
@@ -25,10 +25,7 @@ from eos.fit.holder.mixin.tanking import BufferTankingMixin
 from eos.util.repr import make_repr_str
 
 
-class Ship(
-        ImmutableStateMixin,
-        BufferTankingMixin
-    ):
+class Ship(ImmutableStateMixin, BufferTankingMixin):
     """
     Ship with all its special properties.
 

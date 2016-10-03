@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,15 +16,19 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
-from eos.fit.holder.item import *
 from eos.fit.restriction_tracker.exception import RegisterValidationError
+from eos.fit.holder.item import (
+    Booster, Character, Charge, Drone, EffectBeacon, Implant,
+    ModuleHigh, ModuleMed, ModuleLow, Rig, Ship, Skill, Stance, Subsystem
+)
+
 from .abc import RestrictionRegister
 
 

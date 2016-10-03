@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eve import Attribute, Effect
@@ -128,8 +128,8 @@ class ChargeableMixin(CooperativeVolatileMixin):
         damage = charge_attribs.get(Attribute.crystal_volatility_damage)
         if (
             not damageable or
-            hp is None or chance is None
-            or damage is None or
+            hp is None or chance is None or
+            damage is None or
             charge_quantity is None
         ):
             return None
