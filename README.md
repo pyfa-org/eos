@@ -1,5 +1,7 @@
 #EOS
 
+[![Build Status](https://travis-ci.org/pyfa-org/eos.svg?branch=master)](https://travis-ci.org/pyfa-org/eos)
+
 Currently you can use engine following way:
 -------------------------------------------------------------------------------
 
