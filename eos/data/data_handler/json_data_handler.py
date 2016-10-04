@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2013-2015 Anton Vorobyov
 #
 # This file is part of Eos.
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import json
@@ -59,7 +59,7 @@ class JsonDataHandler(BaseDataHandler):
         with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r', encoding='utf8') as file:
             data = json.load(file)
         if values_only:
-           data = list(data.values())
+            data = list(data.values())
         return data
 
     def get_version(self):

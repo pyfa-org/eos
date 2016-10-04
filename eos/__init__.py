@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,18 +16,48 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
-__version__ = '0.0.0'
-
+# This should NOT be above the imports but there is a circular import to be solved first
+__version__ = '0.0.0'  # NOQA
 
 from .const.eos import State, Restriction
-from .data.cache_handler import *
 from .data.cache_handler.exception import TypeFetchError
-from .data.data_handler import *
 from .data.source import SourceManager
 from .fit import Fit
-from .fit.holder.item import *
 from .fit.restriction_tracker.exception import ValidationError
 from .fit.tuples import DamageTypes
+from .data.data_handler import JsonDataHandler, SQLiteDataHandler
+from .data.cache_handler import JsonCacheHandler
+from .fit.holder.item import (
+    Booster, Character, Drone, Charge, EffectBeacon, Implant,
+    ModuleHigh, ModuleMed, ModuleLow, Rig, Ship, Skill, Stance, Subsystem
+)
+
+__all__ = [
+    'State',
+    'Restriction',
+    'TypeFetchError',
+    'SourceManager',
+    'Fit',
+    'ValidationError',
+    'DamageTypes',
+    'JsonDataHandler',
+    'SQLiteDataHandler',
+    'JsonCacheHandler',
+    'Booster',
+    'Character',
+    'Charge',
+    'Drone',
+    'EffectBeacon',
+    'Implant',
+    'ModuleHigh',
+    'ModuleMed',
+    'ModuleLow',
+    'Rig',
+    'Ship',
+    'Skill',
+    'Stance',
+    'Subsystem',
+]

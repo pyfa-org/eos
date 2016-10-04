@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import Domain, State
@@ -28,13 +28,7 @@ from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.util.repr import make_repr_str
 
 
-class Module(
-        MutableStateMixin,
-        ChargeableMixin,
-        DamageDealerMixin,
-        DefaultEffectAttribMixin
-    ):
-
+class Module(MutableStateMixin, ChargeableMixin, DamageDealerMixin, DefaultEffectAttribMixin):
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
 

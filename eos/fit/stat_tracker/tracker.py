@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import math
@@ -25,8 +25,11 @@ from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
-from .container import *
-from .register import *
+from .container import ShipResource, ShipSlots, CharSlots
+from .register import (
+    DamageDealerRegister, CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister, DroneBayVolumeUseRegister,
+    DroneBandwidthUseRegister, TurretUseRegister, LauncherUseRegister, LaunchedDroneRegister
+)
 
 
 class StatTracker(InheritableVolatileMixin):
@@ -60,7 +63,7 @@ class StatTracker(InheritableVolatileMixin):
                 launcher_reg,
                 self._dd_reg
             ),
-            State.online:  (
+            State.online: (
                 cpu_reg,
                 powergrid_reg,
                 drone_bandwidth_reg,

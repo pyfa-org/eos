@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,19 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State
 from .exception import RegisterValidationError, ValidationError
-from .register import *
+from .register import (
+    CapitalItemRegister, ChargeGroupRegister, ChargeSizeRegister, ChargeVolumeRegister, DroneGroupRegister,
+    HolderClassRegister, MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister, CpuRegister,
+    PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister, DroneBandwidthRegister, RigSizeRegister,
+    ShipTypeGroupRegister, SkillRequirementRegister, SubsystemIndexRegister, ImplantIndexRegister,
+    BoosterIndexRegister, HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister,
+    SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister, LaunchedDroneRegister, StateRegister
+)
 
 
 class RestrictionTracker:

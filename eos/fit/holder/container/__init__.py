@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from .exception import SlotTakenError
@@ -26,3 +26,13 @@ from .restricted_set import HolderRestrictedSet
 from .set import HolderSet
 from .single_onfit import HolderDescriptorOnFit
 from .single_onholder import HolderDescriptorOnHolder
+
+__all__ = [
+    'SlotTakenError',
+    'HolderList',
+    'ModuleRacks',
+    'HolderRestrictedSet',
+    'HolderSet',
+    'HolderDescriptorOnFit',
+    'HolderDescriptorOnHolder',
+]
