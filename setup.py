@@ -1,7 +1,7 @@
 
 
 from pip.req import parse_requirements
-from setuptools import setup
+from setuptools import setup, find_packages
 from eos import __version__
 
 
@@ -16,6 +16,6 @@ setup(
     author='Pyfa Team',
     author_email='',
     url='https://github.com/pyfa-org/eos',
-    packages=['eos'],
+    packages=find_packages(exclude='tests'),
     install_requires=install_requires,
 )
