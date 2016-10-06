@@ -20,7 +20,7 @@
 
 
 # This should NOT be above the imports but there is a circular import to be solved first
-__version__ = '0.0.0.dev5'  # NOQA
+__version__ = '0.0.0.dev6'  # NOQA
 
 from .const.eos import State, Restriction
 from .data.cache_handler.exception import TypeFetchError
