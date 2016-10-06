@@ -3,6 +3,8 @@
 *.pyo
 __pycache__
 *.egg-info/
+dist/
+build/
 
 # Eclipse project files
 .project
@@ -10,3 +12,4 @@ __pycache__
 
 # Pycharm project files
 .idea
+eos.iml
