@@ -22,7 +22,6 @@
 from logging import getLogger
 from collections import namedtuple
 
-from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str
 from .cache_customizer import CacheCustomizer
 from .cache_generator import CacheGenerator
@@ -70,10 +69,12 @@ class SourceManager:
         logger.info('adding source with alias "{}"'.format(alias))
         if alias in cls._sources:
             raise ExistingSourceError(alias)
+
         # Compare fingerprints from data and cache
         cache_fp = cache_handler.get_fingerprint()
         data_version = data_handler.get_version()
-        current_fp = '{}_{}'.format(data_version, eos_version)
+        current_fp = cls.format_fingerprint(data_version)
+
         # If data version is corrupt or fingerprints mismatch, update cache
         if data_version is None or cache_fp != current_fp:
             if data_version is None:
@@ -82,10 +83,12 @@ class SourceManager:
                 msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(
                     cache_fp, current_fp)
                 logger.info(msg)
+
             # Generate cache, apply customizations and write it
             cache_data = CacheGenerator().run(data_handler)
             CacheCustomizer().run_builtin(cache_data)
             cache_handler.update_cache(cache_data, current_fp)
+
         # Finally, add record to list of sources
         source = Source(alias=alias, cache_handler=cache_handler)
         cls._sources[alias] = source
@@ -132,3 +135,15 @@ class SourceManager:
     def __repr__(cls):
         spec = [['sources', '_sources']]
         return make_repr_str(cls, spec)
+
+    @staticmethod
+    def format_fingerprint(data_version):
+        """
+
+        Required arguments:
+        data_version -- version from the data handler
+        """
+        # We import here to avoid a circular dependency
+        from eos import __version__ as eos_version
+
+        return '{}_{}'.format(data_version, eos_version)
