@@ -1,17 +1,4 @@
-# Compiled python files
-*.pyc
-*.pyo
-
-# Eclipse project files
-.project
-.pydevproject
-
-# Pycharm project files
-.idea
-eos.iml
-
-# Exceptions below from:
-# https://github.com/github/gitignore
+# Based on https://github.com/github/gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -103,3 +90,11 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Eclipse project settings
+.project
+.pydevproject
+
+# Pycharm project settings
+.idea
+eos.iml
