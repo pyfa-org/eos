@@ -13,3 +13,6 @@ build/
 # Pycharm project files
 .idea
 eos.iml
+
+# pyCharm cache for running tests
+.cache/
