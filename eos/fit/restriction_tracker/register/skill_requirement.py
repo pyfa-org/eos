@@ -22,11 +22,14 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
+from eos.fit.holder.item import Rig
 from eos.fit.restriction_tracker.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 
 SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'level', 'required_level'))
+
+EXCEPTIONS = (Rig,)
 
 
 class SkillRequirementRegister(RestrictionRegister):
@@ -50,8 +53,9 @@ class SkillRequirementRegister(RestrictionRegister):
         self.__restricted_holders = set()
 
     def register_holder(self, holder):
-        # Holders which have any skill requirement are tracked
-        if holder.item.required_skills:
+        # Holders which are not exceptions and which have any
+        # skill requirement are tracked
+        if holder.item.required_skills and not isinstance(holder, EXCEPTIONS):
             self.__restricted_holders.add(holder)
 
     def unregister_holder(self, holder):
