@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import Mock
@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Ship, Implant
-from eos.tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stat_tracker.stat_testcase import StatTestCase
 
 
 class TestPowergrid(StatTestCase):

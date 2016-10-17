@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import EffectBuildStatus, State
 from eos.const.eve import EffectCategory
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoState(ModBuilderTestCase):
@@ -30,7 +30,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
     def setUp(self):
         super().setUp()
         self.yaml = ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n')
+                     '  modifyingAttributeID: 11\n  operator: 6\n')
 
     def test_passive(self):
         effect_row = {

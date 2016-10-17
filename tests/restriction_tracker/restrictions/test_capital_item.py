@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import Mock
@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute, Type as ConstType
 from eos.fit.holder.item import ModuleHigh, Ship
-from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
 class TestCapitalItem(RestrictionTestCase):

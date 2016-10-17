@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,14 +16,14 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
-from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import IndependentItem, CharacterItem, ShipItem
+from tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
+from tests.attribute_calculator.environment import IndependentItem, CharacterItem, ShipItem
 
 
 class TestCalculationChain(AttrCalcTestCase):
@@ -56,7 +56,8 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier2.filter_value = None
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
+        holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1, effect2),
+                                attributes={attr1.id: 5, attr2.id: 20}))
         modifier3 = Modifier()
         modifier3.state = State.offline
         modifier3.scope = Scope.local

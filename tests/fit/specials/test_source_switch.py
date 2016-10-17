@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import Mock, call, patch
@@ -24,8 +24,9 @@ from unittest.mock import Mock, call, patch
 from eos.const.eos import State
 from eos.data.source import Source
 from eos.fit.holder.container import HolderSet
-from eos.tests.fit.environment import BaseHolder, CachingHolder
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.environment import BaseHolder, CachingHolder
+from tests.fit.fit_testcase import FitTestCase
+
 
 @patch('eos.fit.fit.SourceManager')
 class TestFitSourceSwitch(FitTestCase):

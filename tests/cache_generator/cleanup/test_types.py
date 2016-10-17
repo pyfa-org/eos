@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import logging
 
-from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
 class TestCleanupTypes(GeneratorTestCase):

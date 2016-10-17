@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, Operator
 from eos.const.eve import EffectCategory, Operand
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderPriority(ModBuilderTestCase):
@@ -80,7 +80,8 @@ class TestBuilderPriority(ModBuilderTestCase):
             'pre_expression': self.e_add_mod['expressionID'],
             'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive,
-            'modifier_info': '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
+            'modifier_info':
+                '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
                 '  modifyingAttributeID: 175\n  operator: 2\n'
         }
         modifiers, status = self.run_builder(effect_row)

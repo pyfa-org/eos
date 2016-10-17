@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, Operator
 from eos.const.eve import EffectCategory
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModGangItm(ModBuilderTestCase):
@@ -29,7 +29,7 @@ class TestBuilderModinfoModGangItm(ModBuilderTestCase):
 
     def _make_yaml(self, domain):
         yaml = ('- domain: {}\n  func: GangItemModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n')
+                '  modifyingAttributeID: 11\n  operator: 6\n')
         return yaml.format(domain)
 
     def test_domain_ship(self):

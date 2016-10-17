@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectCategory
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoMultiple(ModBuilderTestCase):
@@ -30,9 +30,10 @@ class TestBuilderModinfoMultiple(ModBuilderTestCase):
     def test_multiple(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifiedAttributeID: 33\n'
                 '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: ItemModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)

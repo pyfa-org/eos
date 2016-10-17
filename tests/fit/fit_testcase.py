@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import patch
 
 from eos.fit import Fit
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 
 
 class FitTestCase(EosTestCase):
@@ -60,7 +60,8 @@ class FitTestCase(EosTestCase):
             except TypeError:
                 pass
             else:
-                if attr_len > 0: print(attr_name)
+                if attr_len > 0:
+                    print(attr_name)
                 holder_num += attr_len
         if holder_num > 0:
             plu = 'y' if holder_num == 1 else 'ies'

@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,14 +16,14 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import Mock
 
 from eos.const.eos import Restriction, State
 from eos.fit.restriction_tracker import RestrictionTracker, ValidationError
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 
 
 class RestrictionTestCase(EosTestCase):

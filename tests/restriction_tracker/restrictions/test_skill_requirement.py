@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,14 +16,14 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import Mock
 
 from eos.const.eos import Domain, Restriction, State
-from eos.fit.holder.item import ModuleHigh, Skill
-from eos.tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from eos.fit.holder.item import ModuleHigh, Rig, Skill
+from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
 
 
 class TestSkillRequirement(RestrictionTestCase):
@@ -98,5 +98,17 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNone(restriction_error)
         self.untrack_holder(holder)
         self.untrack_holder(skill_holder)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_pass_exception_rig(self):
+        # Check that skillreqs on rigs are not checked
+        item = self.ch.type_(type_id=1)
+        item.required_skills = {50: 3}
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
+        self.assertIsNone(restriction_error)
+        self.untrack_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

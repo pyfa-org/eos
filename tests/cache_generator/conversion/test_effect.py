@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import logging
 from unittest.mock import patch
 
-from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
 class TestConversionEffect(GeneratorTestCase):
@@ -38,7 +38,7 @@ class TestConversionEffect(GeneratorTestCase):
         self.dh.data['dgmeffects'].append({
             'postExpression': 11, 'effectID': 112, 'isOffensive': True, 'falloffAttributeID': 3,
             'rangeAttributeID': 2, 'fittingUsageChanceAttributeID': 96, 'preExpression': 1,
-            'durationAttributeID': 781, 'randomField': 666,  'dischargeAttributeID': 72,
+            'durationAttributeID': 781, 'randomField': 666, 'dischargeAttributeID': 72,
             'isAssistance': False, 'effectCategory': 111, 'trackingSpeedAttributeID': 6,
             'modifierInfo': None
         })

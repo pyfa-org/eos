@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import logging
 
 from eos.const.eve import Attribute
-from eos.tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
 class TestNormalizationAttr(GeneratorTestCase):
@@ -85,7 +85,8 @@ class TestNormalizationAttr(GeneratorTestCase):
         duplicate_error = self.log[0]
         self.assertEqual(duplicate_error.name, 'eos.data.cache_generator.converter')
         self.assertEqual(duplicate_error.levelno, logging.WARNING)
-        self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in dgmtypeattribs and were skipped')
+        self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in'
+                                              ' dgmtypeattribs and were skipped')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)

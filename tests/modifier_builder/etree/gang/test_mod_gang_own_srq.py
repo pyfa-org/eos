@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory, Operand
-from eos.tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeModGangOwnSrq(ModBuilderTestCase):

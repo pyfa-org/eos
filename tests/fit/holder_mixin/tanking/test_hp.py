@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from unittest.mock import Mock
@@ -25,7 +25,7 @@ from eos.const.eve import Attribute
 from eos.data.source import Source
 from eos.fit.holder.container import HolderSet
 from eos.fit.holder.item import Ship
-from eos.tests.fit.fit_testcase import FitTestCase
+from tests.fit.fit_testcase import FitTestCase
 
 
 class TestHolderMixinTankingHp(FitTestCase):

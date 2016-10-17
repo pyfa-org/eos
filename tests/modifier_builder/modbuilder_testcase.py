@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 from eos.data.cache_generator.modifier_builder import ModifierBuilder
-from eos.tests.eos_testcase import EosTestCase
+from tests.eos_testcase import EosTestCase
 from .environment import ExpressionFactory
 
 

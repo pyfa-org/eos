@@ -1,5 +1,8 @@
 #EOS
 
+[![Build Status](https://travis-ci.org/pyfa-org/eos.svg?branch=master)](https://travis-ci.org/pyfa-org/eos)
+[![PyPI](https://img.shields.io/pypi/v/Eos.svg)](https://pypi.python.org/pypi/Eos/)
+
 Currently you can use engine following way:
 -------------------------------------------------------------------------------
 
@@ -37,7 +40,7 @@ Currently you can use engine following way:
     fit.modules.med.equip(ModuleMed(5443, state=State.active))  # Best named scram
     fit.modules.med.equip(ModuleMed(2281, state=State.active))  # T2 invuln
 
-    fit.modules.low.equip(ModuleLow(2048, state=State.active))   # T2 DC
+    fit.modules.low.equip(ModuleLow(2048, state=State.online))   # T2 DC
     fit.modules.low.equip(ModuleLow(519, state=State.online))    # T2 gyrostab
     fit.modules.low.equip(ModuleLow(519, state=State.online))    # T2 gyrostab
     fit.modules.low.equip(ModuleLow(22291, state=State.online))  # T2 BCU

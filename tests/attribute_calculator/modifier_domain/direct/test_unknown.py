@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2015 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+# ===============================================================================
 
 
 import logging
@@ -24,8 +24,8 @@ import logging
 from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
-from eos.tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
-from eos.tests.attribute_calculator.environment import IndependentItem
+from tests.attribute_calculator.attrcalc_testcase import AttrCalcTestCase
+from tests.attribute_calculator.environment import IndependentItem
 
 
 class TestDomainDirectUnknown(AttrCalcTestCase):
