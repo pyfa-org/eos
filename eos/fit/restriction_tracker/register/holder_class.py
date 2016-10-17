@@ -24,10 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.restriction_tracker.exception import RegisterValidationError
-from eos.fit.holder.item import (
-    Booster, Character, Charge, Drone, EffectBeacon, Implant,
-    ModuleHigh, ModuleMed, ModuleLow, Rig, Ship, Skill, Stance, Subsystem
-)
+from eos.fit.holder.item import *
 
 from .abc import RestrictionRegister
 

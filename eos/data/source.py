@@ -73,7 +73,7 @@ class SourceManager:
         # Compare fingerprints from data and cache
         cache_fp = cache_handler.get_fingerprint()
         data_version = data_handler.get_version()
-        current_fp = cls.format_fingerprint(data_version)
+        current_fp = cls.__format_fingerprint(data_version)
 
         # If data version is corrupt or fingerprints mismatch, update cache
         if data_version is None or cache_fp != current_fp:
@@ -131,15 +131,9 @@ class SourceManager:
     def list(cls):
         return list(cls._sources.keys())
 
-    @classmethod
-    def __repr__(cls):
-        spec = [['sources', '_sources']]
-        return make_repr_str(cls, spec)
-
     @staticmethod
-    def format_fingerprint(data_version):
+    def __format_fingerprint(data_version):
         """
-
         Required arguments:
         data_version -- version from the data handler
         """
@@ -147,3 +141,8 @@ class SourceManager:
         from eos import __version__ as eos_version
 
         return '{}_{}'.format(data_version, eos_version)
+
+    @classmethod
+    def __repr__(cls):
+        spec = [['sources', '_sources']]
+        return make_repr_str(cls, spec)

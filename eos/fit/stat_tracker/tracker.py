@@ -25,11 +25,8 @@ from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
-from .container import ShipResource, ShipSlots, CharSlots
-from .register import (
-    DamageDealerRegister, CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister, DroneBayVolumeUseRegister,
-    DroneBandwidthUseRegister, TurretUseRegister, LauncherUseRegister, LaunchedDroneRegister
-)
+from .container import *
+from .register import *
 
 
 class StatTracker(InheritableVolatileMixin):

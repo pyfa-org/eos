@@ -28,10 +28,7 @@ from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
 from .restriction_tracker import RestrictionTracker
 from .stat_tracker import StatTracker
-from .holder.item import (
-    Booster, Character, Drone, EffectBeacon, Implant, ModuleHigh,
-    ModuleMed, ModuleLow, Rig, Ship, Skill, Stance, Subsystem
-)
+from .holder.item import *
 
 
 class Fit:
