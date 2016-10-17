@@ -80,7 +80,8 @@ class TestBuilderPriority(ModBuilderTestCase):
             'pre_expression': self.e_add_mod['expressionID'],
             'post_expression': self.e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive,
-            'modifier_info': '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
+            'modifier_info':
+                '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
                 '  modifyingAttributeID: 175\n  operator: 2\n'
         }
         modifiers, status = self.run_builder(effect_row)

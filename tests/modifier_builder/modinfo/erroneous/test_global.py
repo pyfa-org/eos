@@ -52,7 +52,8 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         effect_row = {
             'effect_id': 36,
             'effect_category': 99,
-            'modifier_info': '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
                 '  modifyingAttributeID: 11\n  operator: 6\n'
         }
         modifiers, status = self.run_builder(effect_row)

@@ -56,7 +56,8 @@ class TestCalculationChain(AttrCalcTestCase):
         modifier2.filter_value = None
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}))
+        holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1, effect2),
+                                attributes={attr1.id: 5, attr2.id: 20}))
         modifier3 = Modifier()
         modifier3.state = State.offline
         modifier3.scope = Scope.local

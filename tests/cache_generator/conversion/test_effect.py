@@ -38,7 +38,7 @@ class TestConversionEffect(GeneratorTestCase):
         self.dh.data['dgmeffects'].append({
             'postExpression': 11, 'effectID': 112, 'isOffensive': True, 'falloffAttributeID': 3,
             'rangeAttributeID': 2, 'fittingUsageChanceAttributeID': 96, 'preExpression': 1,
-            'durationAttributeID': 781, 'randomField': 666,  'dischargeAttributeID': 72,
+            'durationAttributeID': 781, 'randomField': 666, 'dischargeAttributeID': 72,
             'isAssistance': False, 'effectCategory': 111, 'trackingSpeedAttributeID': 6,
             'modifierInfo': None
         })

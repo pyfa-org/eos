@@ -30,7 +30,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
     def setUp(self):
         super().setUp()
         self.yaml = ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n')
+                     '  modifyingAttributeID: 11\n  operator: 6\n')
 
     def test_passive(self):
         effect_row = {

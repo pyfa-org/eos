@@ -27,6 +27,7 @@ from eos.fit.holder.container import HolderSet
 from tests.fit.environment import BaseHolder, CachingHolder
 from tests.fit.fit_testcase import FitTestCase
 
+
 @patch('eos.fit.fit.SourceManager')
 class TestFitSourceSwitch(FitTestCase):
 

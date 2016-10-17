@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone, Ship, Implant
+from eos.fit.holder.item import Drone, Ship
 from tests.stat_tracker.stat_testcase import StatTestCase
 
 

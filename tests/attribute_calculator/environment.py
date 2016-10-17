@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-from collections import namedtuple
-
 from eos.const.eos import State, Domain
 from eos.fit.attribute_calculator import LinkTracker, MutableAttributeMap
 

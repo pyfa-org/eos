@@ -47,7 +47,8 @@ class TestAssociatedData(GeneratorTestCase):
             'fittingUsageChanceAttributeID': None, 'preExpression': None, 'postExpression': None,
             'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
             'falloffAttributeID': None, 'trackingSpeedAttributeID': None,
-            'modifierInfo': ('- domain: shipID\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 1009\n'
+            'modifierInfo': (
+                '- domain: shipID\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 1009\n'
                 '  modifyingAttributeID: 1008\n  operator: 6\n  skillTypeID: 3\n- domain: shipID\n'
                 '  func: LocationGroupModifier\n  groupID: 501\n  modifiedAttributeID: 1008\n'
                 '  modifyingAttributeID: 1009\n  operator: 6\n')
@@ -181,7 +182,8 @@ class TestAssociatedData(GeneratorTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(clean_stats.msg,
+        self.assertEqual(
+            clean_stats.msg,
             'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, 100.0% from dgmexpressions, '
             '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from evegroups, '
             '100.0% from evetypes'
@@ -223,9 +225,9 @@ class TestAssociatedData(GeneratorTestCase):
             'fittingUsageChanceAttributeID': None, 'preExpression': 101, 'postExpression': None,
             'durationAttributeID': None, 'dischargeAttributeID': None, 'rangeAttributeID': None,
             'falloffAttributeID': None, 'trackingSpeedAttributeID': None,
-            'modifierInfo': '- domain: shipID\n  func: LocationRequiredSkillModifier\n'
-                '  modifiedAttributeID: 1009\n  modifyingAttributeID: 1008\n  operator: 6\n'
-                '  skillTypeID: 3\n'
+            'modifierInfo':
+                '- domain: shipID\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 1009\n'
+                '  modifyingAttributeID: 1008\n  operator: 6\n  skillTypeID: 3\n'
         })
         self.dh.data['dgmexpressions'].append({
             'expressionID': 101, 'operandID': 6, 'arg1': None, 'arg2': None,

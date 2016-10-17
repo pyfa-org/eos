@@ -29,7 +29,7 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
 
     def _make_yaml(self, domain):
         yaml = ('- domain: {}\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n')
+                '  modifyingAttributeID: 11\n  operator: 6\n')
         return yaml.format(domain)
 
     def test_domain_ship(self):

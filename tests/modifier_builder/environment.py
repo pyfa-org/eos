@@ -46,5 +46,3 @@ class ExpressionFactory:
     @property
     def data(self):
         return self._expressions
-
-

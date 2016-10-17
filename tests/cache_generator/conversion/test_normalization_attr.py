@@ -85,7 +85,8 @@ class TestNormalizationAttr(GeneratorTestCase):
         duplicate_error = self.log[0]
         self.assertEqual(duplicate_error.name, 'eos.data.cache_generator.converter')
         self.assertEqual(duplicate_error.levelno, logging.WARNING)
-        self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in dgmtypeattribs and were skipped')
+        self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in'
+                                              ' dgmtypeattribs and were skipped')
         literal_stats = self.log[1]
         self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
         self.assertEqual(literal_stats.levelno, logging.INFO)

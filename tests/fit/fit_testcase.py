@@ -60,7 +60,8 @@ class FitTestCase(EosTestCase):
             except TypeError:
                 pass
             else:
-                if attr_len > 0: print(attr_name)
+                if attr_len > 0:
+                    print(attr_name)
                 holder_num += attr_len
         if holder_num > 0:
             plu = 'y' if holder_num == 1 else 'ies'

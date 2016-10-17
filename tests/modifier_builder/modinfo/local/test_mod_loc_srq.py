@@ -29,7 +29,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
 
     def _make_yaml(self, domain):
         yaml = ('- domain: {}\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n')
+                '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n')
         return yaml.format(domain)
 
     def test_domain_ship(self):

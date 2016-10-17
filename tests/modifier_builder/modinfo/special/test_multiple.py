@@ -30,9 +30,10 @@ class TestBuilderModinfoMultiple(ModBuilderTestCase):
     def test_multiple(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifiedAttributeID: 33\n'
                 '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: ItemModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_full)

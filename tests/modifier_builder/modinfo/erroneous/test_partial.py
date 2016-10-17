@@ -36,9 +36,10 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         effect_row = {
             'effect_id': 1,
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: GangItemModifiero\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: charID\n  func: GangItemModifiero\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
@@ -54,9 +55,10 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         effect_row = {
             'effect_id': 1,
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: LocationGroupModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: charID\n  func: LocationGroupModifier\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
@@ -66,16 +68,17 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
         self.assertEqual(log_record.levelno, logging.WARNING)
         expected = ('failed to build one of the modifiers of effect 1: unable to find '
-            'attribute groupID for filter value')
+                    'attribute groupID for filter value')
         self.assertEqual(log_record.msg, expected)
 
     def test_error_domain(self):
         effect_row = {
             'effect_id': 58,
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: targetID\n  func: GangItemModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: targetID\n  func: GangItemModifier\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
@@ -85,16 +88,17 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
         self.assertEqual(log_record.levelno, logging.WARNING)
         expected = ('failed to build one of the modifiers of effect 58: unexpected domain targetID'
-            ' for filter function GangItemModifier')
+                    ' for filter function GangItemModifier')
         self.assertEqual(log_record.msg, expected)
 
     def test_error_operator(self):
         effect_row = {
             'effect_id': 36,
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: ItemModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 99\n')
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 99\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
@@ -110,9 +114,10 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         effect_row = {
             'effect_id': 94,
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier22\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: ItemModifier\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier22\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
@@ -132,9 +137,10 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         effect_row = {
             'effect_id': 94,
             'effect_category': EffectCategory.passive,
-            'modifier_info': ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n- domain: charID\n  func: ItemModifier22\n'
-                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n  operator: 7\n')
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: charID\n  func: ItemModifier22\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.ok_partial)
