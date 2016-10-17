@@ -19,6 +19,9 @@
 # ===============================================================================
 
 
+__version__ = '0.0.0.dev8'
+
+
 from .const.eos import State, Restriction
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
@@ -30,31 +33,6 @@ from .data.data_handler import *
 from .fit.holder.item import *
 
 
-__version__ = '0.0.0.dev8'
 
-__all__ = [
-    'State',
-    'Restriction',
-    'TypeFetchError',
-    'SourceManager',
-    'Fit',
-    'ValidationError',
-    'DamageTypes',
-    'JsonDataHandler',
-    'SQLiteDataHandler',
-    'JsonCacheHandler',
-    'Booster',
-    'Character',
-    'Charge',
-    'Drone',
-    'EffectBeacon',
-    'Implant',
-    'ModuleHigh',
-    'ModuleMed',
-    'ModuleLow',
-    'Rig',
-    'Ship',
-    'Skill',
-    'Stance',
-    'Subsystem',
-]
+
+
