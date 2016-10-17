@@ -21,8 +21,3 @@
 
 from .map import MutableAttributeMap
 from .tracker import LinkTracker
-
-__all__ = [
-    'MutableAttributeMap',
-    'LinkTracker',
-]

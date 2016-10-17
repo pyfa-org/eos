@@ -20,7 +20,3 @@
 
 
 from .tracker import StatTracker
-
-__all__ = [
-    'StatTracker',
-]

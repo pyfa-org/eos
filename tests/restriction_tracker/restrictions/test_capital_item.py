@@ -45,9 +45,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_subcapital_ship(self):
-        # Check that error is raised on attempt
-        # to add capital item to fit with subcapital
-        # ship
+        # Check that error is raised on attempt to add
+        # capital item to fit with subcapital ship
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 4000})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
@@ -99,14 +98,15 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_fail_subcapital_ship_original(self):
-        # Make sure that original value is used for check
+    def test_fail_subcapital_ship_attr_original(self):
+        # Make sure that original value of is-capital
+        # attribute is used for check
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 4000})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.is_capital_size: 555})
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
-        ship_holder.attributes = {Attribute.is_capital_size: 1}
+        ship_holder.attributes = {Attribute.is_capital_size: 1.0}
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
         self.assertIsNotNone(restriction_error)
@@ -121,7 +121,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Make sure original volume value is taken
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 4000})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        # Set volume below 500 to check that even when
+        # Set volume below 4000 to check that even when
         # modified attributes are available, raw attributes
         # are taken
         holder.attributes = {Attribute.volume: 100}

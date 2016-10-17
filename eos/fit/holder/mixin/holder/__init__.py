@@ -20,7 +20,3 @@
 
 
 from .holder import HolderBase
-
-__all__ = [
-    'HolderBase',
-]

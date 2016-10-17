@@ -20,7 +20,3 @@
 
 
 from .generator import CacheGenerator
-
-__all__ = [
-    'CacheGenerator',
-]

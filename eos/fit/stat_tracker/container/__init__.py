@@ -19,12 +19,12 @@
 # ===============================================================================
 
 
-from .ship_resource import ShipResource
-from .slots import CharSlots, ShipSlots
-
-
 __all__ = [
     'ShipResource',
     'CharSlots',
     'ShipSlots'
 ]
+
+
+from .ship_resource import ShipResource
+from .slots import CharSlots, ShipSlots

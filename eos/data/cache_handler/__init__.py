@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from .json_cache_handler import JsonCacheHandler
-
-
 __all__ = [
     'JsonCacheHandler'
 ]
+
+
+from .json_cache_handler import JsonCacheHandler
