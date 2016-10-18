@@ -19,9 +19,14 @@
 # ===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const.eos import Domain, State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
+
+
+SideEffectData = namedtuple('SideEffectData', ('penalizing_attribs', 'chance'))
 
 
 class Booster(ImmutableStateMixin):
@@ -42,6 +47,16 @@ class Booster(ImmutableStateMixin):
     @property
     def _domain(self):
         return Domain.character
+
+    @property
+    def side_effects(self):
+        # Format: {effect ID: SideEffectData}
+        side_effect_map = {}
+        chance_map = self._chance_based_effects
+        for effect, chance in chance_map.items():
+            penalizing_attribs = set(m.src_attr for m in effect.modifiers)
+            side_effect_map[effect.id] = SideEffectData(penalizing_attribs, chance)
+        return side_effect_map
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

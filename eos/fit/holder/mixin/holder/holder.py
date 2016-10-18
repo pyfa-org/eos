@@ -58,6 +58,22 @@ class HolderBase:
         self.__fit = new_fit
         self._refresh_source()
 
+    @property
+    def _chance_based_effects(self):
+        """
+        Returns map with all the effects which might or might not be
+        applied when played uses corresponding item in game.
+        """
+        # Format: {effect: chance to run it}
+        chance_map = {}
+        for effect in self.item.effects:
+            chance_attr = effect.fitting_usage_chance_attribute
+            if chance_attr is None:
+                continue
+            chance_value = self.attributes[chance_attr]
+            chance_map[effect] = chance_value
+        return chance_map
+
     def _refresh_source(self):
         """
         Each time holder's context is changed (the source it relies on,

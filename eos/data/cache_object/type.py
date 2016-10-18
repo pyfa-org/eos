@@ -50,7 +50,7 @@ class Type:
 
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
-        # Format: {attributeId: attributeValue}
+        # Format: {attribute ID: attribute value}
         self.attributes = attributes if attributes is not None else {}
 
         # Iterable with effects this type has, they describe modifications
