@@ -50,6 +50,9 @@ class Booster(ImmutableStateMixin):
 
     @property
     def side_effects(self):
+        """
+        Get map with data about booster side-effects.
+        """
         # Format: {effect ID: SideEffectData}
         side_effect_map = {}
         chance_map = self._chance_based_effects
