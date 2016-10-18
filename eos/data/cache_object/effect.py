@@ -22,6 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import EffectCategory
 from eos.util.cached_property import CachedProperty
+from eos.util.repr import make_repr_str
 
 
 class Effect:
@@ -104,3 +105,7 @@ class Effect:
         higher, effect activates.
         """
         return self.__effect_state_map[self.category]
+
+    def __repr__(self):
+        spec = ['id']
+        return make_repr_str(self, spec)

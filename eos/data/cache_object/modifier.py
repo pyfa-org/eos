@@ -19,6 +19,9 @@
 # ===============================================================================
 
 
+from eos.util.repr import make_repr_str
+
+
 class Modifier:
     """
     Modifier objects are Eos-specific abstraction, they replace effects'
@@ -77,3 +80,7 @@ class Modifier:
         # For filter_type.group must be some integer, referring group via ID;
         # For filter_type.skill must be some integer, referring type via ID
         self.filter_value = filter_value
+
+    def __repr__(self):
+        spec = ['id']
+        return make_repr_str(self, spec)

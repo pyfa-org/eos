@@ -19,6 +19,9 @@
 # ===============================================================================
 
 
+from eos.util.repr import make_repr_str
+
+
 class Attribute:
     """Class-holder for attribute metadata"""
 
@@ -47,3 +50,7 @@ class Attribute:
         # Boolean which defines if attribute can be stacking penalized (False)
         # or not (True)
         self.stackable = bool(stackable) if stackable is not None else None
+
+    def __repr__(self):
+        spec = ['id']
+        return make_repr_str(self, spec)

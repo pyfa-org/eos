@@ -22,6 +22,7 @@
 from eos.const.eos import Slot, State
 from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.util.cached_property import CachedProperty
+from eos.util.repr import make_repr_str
 
 
 class Type:
@@ -170,3 +171,7 @@ class Type:
             else:
                 slots.add(slot)
         return slots
+
+    def __repr__(self):
+        spec = ['id']
+        return make_repr_str(self, spec)
