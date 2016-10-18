@@ -26,13 +26,3 @@ from .restricted_set import HolderRestrictedSet
 from .set import HolderSet
 from .single_onfit import HolderDescriptorOnFit
 from .single_onholder import HolderDescriptorOnHolder
-
-__all__ = [
-    'SlotTakenError',
-    'HolderList',
-    'ModuleRacks',
-    'HolderRestrictedSet',
-    'HolderSet',
-    'HolderDescriptorOnFit',
-    'HolderDescriptorOnHolder',
-]

@@ -20,7 +20,3 @@
 
 
 from .info2modifiers import Info2Modifiers
-
-__all__ = [
-    'Info2Modifiers',
-]

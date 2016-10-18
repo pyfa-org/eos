@@ -22,6 +22,7 @@
 from logging import getLogger
 from collections import namedtuple
 
+from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str
 from .cache_customizer import CacheCustomizer
 from .cache_generator import CacheGenerator
@@ -137,9 +138,6 @@ class SourceManager:
         Required arguments:
         data_version -- version from the data handler
         """
-        # We import here to avoid a circular dependency
-        from eos import __version__ as eos_version
-
         return '{}_{}'.format(data_version, eos_version)
 
     @classmethod

@@ -26,7 +26,3 @@ which help it to work with raw data.
 
 
 from .effect2modifiers import Effect2Modifiers
-
-__all__ = [
-    'Effect2Modifiers',
-]

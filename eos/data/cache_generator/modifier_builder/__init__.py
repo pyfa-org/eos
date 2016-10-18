@@ -26,7 +26,3 @@ which help it to work with raw data.
 
 
 from .builder import ModifierBuilder
-
-__all__ = [
-    'ModifierBuilder',
-]

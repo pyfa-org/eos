@@ -20,7 +20,3 @@
 
 
 from .customizer import CacheCustomizer
-
-__all__ = [
-    'CacheCustomizer',
-]

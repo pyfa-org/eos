@@ -19,9 +19,6 @@
 # ===============================================================================
 
 
-from eos.exception import EosError
-
-
 __all__ = [
     'UnknownStateError',
     'UnknownOperatorError',
@@ -30,6 +27,9 @@ __all__ = [
     'UnexpectedDomainError',
     'UnexpectedBuilderError'
 ]
+
+
+from eos.exception import EosError
 
 
 # Exception classes used by converter which uses modifier
