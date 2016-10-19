@@ -1,21 +1,24 @@
 language: python
 python:
-  - '3.5'
+- '3.5'
 env:
-  - TOXENV=py35
-  - TOXENV=pep8
+- TOXENV=py35
+- TOXENV=pep8
 before_install:
-  - pip install tox
+- pip install tox
 script:
-  - tox
+- tox
 after_success:
-  - coveralls
+- coveralls
 deploy:
   provider: pypi
-  distributions: "sdist bdist_wheel"
+  distributions: sdist bdist_wheel
   user: regner
   password:
     secure: tGXqvSK6YhPJILKOASN/UmHLzWrgOkwytbfsxPwHQSxkie6rf8dU77Fi/SNTcjcnk76aNVKN9ah/jQ1XPW+q2jupZ4YsaQ6MwA8Xb/xt64tuTN9MgLe6KHd03TsVbmV3a3QSb10aMJGOqpGdXSetq1Acg9NWoFH0k/WfGV5a7/u6OE0agGsd1QQxVWaHRNuAQ1+cgGh+Q6SSuCfSNrV4HG9+akF5O7rzE6ax0CO4ga3xxiV9iGKvV9kRplvpc2PDOqjn5X9PSAPt5SvnVWCJJe83Idgfvi3j/k0DVNQ/ohIJjZ2cqYsRfzi8xGVn0JD3IWz3NC1Pn/+ewVZFLKOdNPSvjpTqaRtRxY88vosW4bI3xcM9E2VHKAqFGPbg+KWWCfpmlse68fWAURGk7md+3VPMG9gcXW3EMv+beewrBc+kThymU3rnvQR0bU6m15lIvL4b39mKOXwB2wDRw34jTnwz6PUim96rPUXEN20c02opp5pSba8f107dBNAVfiyimmF8fBNJGwsqS0mfFJSvYmXum3vOfGgzTjGptGAbo3V9Wzj0Xn0MrXHIK6rnY19+V5qcIn851Y927SX8Pl8Tk04AQ04NcxY6f8djmShNcGc3X3JdGcC2cHEBF1SjTZHDY8qdXPxNWD0c2CTAHdRldOw3Nhj1X0y2nFklnYtgOmE=
   on:
     tags: true
     repo: pyfa-org/eos
+notifications:
+  slack:
+    secure: O669//gnFi4qSnDzff9Di+aXIyrlqKp4m7/+A04OqOGw8X6LcC7cUu6FNp3ccyI0CJ8qD5BeQm9vASMNMemOvX4n6b5nuDk66wvB6FstYzZACLs0Nhkcp1FvKQjOAAON7lcfaUiNJWJL6wQOz8qlarhb1nULJi+eeaZpWTcZZg+i11YCgS49gWNIaeWDHDGWl5aHXLZhoJMktWCONaxRUZgmqv0ikL8pW8wTKsk1VqE9ObqHbYRZjUVSmPqbcApZ4ACbCIR2uF1PP4VuF7IsOPAKQ1DQXGRn5PGPhmmRzTNyCpw37zkn61lMSQa01vyM0rul2TgggKPZxtAwEy87SXd0/sm6a6BZ5z4PPQu70Pj7AwtTLJzXdRgKmcfpr4d1ajxiL1GcjmSE1rtxBs/mEtwRZEyoFCFDzg1Uo1k0GCcitoCkEzCk+o9LCzdhNSR+aaK9a/Pxip1bcsofXzliU024PvJeVh+Xeq9QwEsa2tvO7MKIDnn/msuVDZzN+lf8zg8spIIqL6gw282GU5xLfBSMI3esCD3zgaLS17IKjDUbLgEmtBmaW71ZR2zYzdFx7k84BAIvLqLFLCdHFBiLBnsmFrbEe6rOldolAxLFF7HIXz2T9eq7G83odahwlankw7SIdcyTbVXsrzGHySUDwFJdcWrFeHbsPqQZ4x140yI=
