@@ -78,7 +78,7 @@ class CapitalItemRegister(RestrictionRegister):
         except AttributeError:
             pass
         else:
-            if ship_item.attributes.get(Attribute.is_capital_size) == 1:
+            if ship_item.attributes.get(Attribute.is_capital_size):
                 return
         # If we got here, then we're dealing with non-capital
         # ship, and all registered holders are tainted
