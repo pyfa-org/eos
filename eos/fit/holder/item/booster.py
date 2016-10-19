@@ -53,7 +53,7 @@ class Booster(ImmutableStateMixin):
         """
         Get map with data about booster side-effects.
 
-        Format: {effect ID: side-effect chance}
+        Format: {effect: side-effect chance}
         """
         return self._chance_based_effects
 
