@@ -97,6 +97,8 @@ class HolderBase:
         Required arguments:
         effect_id -- ID of effect to disable
         """
+        if effect_id not in self._disabled_effects:
+            return
         self._disabled_effects.discard(effect_id)
         self._fit._link_tracker.enable_effect(self, effect_id)
 
@@ -108,6 +110,8 @@ class HolderBase:
         Required arguments:
         effect_id -- ID of effect to disable
         """
+        if effect_id in self._disabled_effects:
+            return
         self._fit._link_tracker.disable_effect(self, effect_id)
         self._disabled_effects.add(effect_id)
 
