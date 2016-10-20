@@ -112,6 +112,7 @@ class Holder:
         self.__fit = None
         self.item = type_
         self.attributes = MutableAttributeMap(self)
+        self._disabled_effects = set()
         self.__state = State.offline
 
     @property
@@ -135,6 +136,10 @@ class Holder:
         if self._fit is not None:
             self._fit._holder_state_switch(self, new_state)
         self.__state = new_state
+
+    @property
+    def _enabled_effects(self):
+        return set(e.id for e in self.item.effects).difference(self._disabled_effects)
 
 
 class IndependentItem(Holder):

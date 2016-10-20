@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import Scope
+from eos.const.eos import State, Scope
 from .affector import Affector
 from .register import LinkRegister
 
@@ -107,12 +107,11 @@ class LinkTracker:
         during state switch, except for initial state
         """
         processed_scopes = (Scope.local,)
-        enabled_affectors = self.__generate_affectors(
-            holder, state_filter=states, scope_filter=processed_scopes)
-        # Clear attributes only after registration jobs
-        for affector in enabled_affectors:
-            self._register.register_affector(affector)
-        self.__clear_affectors_dependents(enabled_affectors)
+        affectors = self.__generate_affectors(
+            holder, effect_filter=holder._enabled_effects,
+            state_filter=states, scope_filter=processed_scopes
+        )
+        self.__enable_affectors(affectors)
 
     def disable_states(self, holder, states):
         """
@@ -124,13 +123,43 @@ class LinkTracker:
         during state switch, except for final state
         """
         processed_scopes = (Scope.local,)
-        disabled_affectors = self.__generate_affectors(
-            holder, state_filter=states, scope_filter=processed_scopes)
-        # Clear attributes before unregistering, otherwise
-        # we won't clean them up properly
-        self.__clear_affectors_dependents(disabled_affectors)
-        for affector in disabled_affectors:
-            self._register.unregister_affector(affector)
+        affectors = self.__generate_affectors(
+            holder, effect_filter=holder._enabled_effects,
+            state_filter=states, scope_filter=processed_scopes
+        )
+        self.__disable_affectors(affectors)
+
+    def enable_effect(self, holder, effect_id):
+        """
+        Enable effect of given ID on holder.
+
+        Required arguments:
+        holder -- holder for which we're enabling effect
+        effect_id -- ID of effect to enable
+        """
+        processed_scopes = (Scope.local,)
+        processed_states = set(filter(lambda s: s <= holder.state, State))
+        affectors = self.__generate_affectors(
+            holder, effect_filter=(effect_id,), state_filter=processed_states,
+            scope_filter=processed_scopes
+        )
+        self.__enable_affectors(affectors)
+
+    def disable_effect(self, holder, effect_id):
+        """
+        Disable effect of given ID on holder.
+
+        Required arguments:
+        holder -- holder for which we're disabling effect
+        effect_id -- ID of effect to disable
+        """
+        processed_scopes = (Scope.local,)
+        processed_states = set(filter(lambda s: s <= holder.state, State))
+        affectors = self.__generate_affectors(
+            holder, effect_filter=(effect_id,), state_filter=processed_states,
+            scope_filter=processed_scopes
+        )
+        self.__disable_affectors(affectors)
 
     def clear_holder_attribute_dependents(self, holder, attr):
         """
@@ -146,7 +175,7 @@ class LinkTracker:
             for capped_attr in (cap_map.get(attr) or ()):
                 del holder.attributes[capped_attr]
         # Clear attributes using this attribute as data source
-        for affector in self.__generate_affectors(holder):
+        for affector in self.__generate_affectors(holder, effect_filter=holder._enabled_effects):
             modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
             if modifier.src_attr != attr:
@@ -155,6 +184,65 @@ class LinkTracker:
             for target_holder in self.get_affectees(affector):
                 # And remove target attribute
                 del target_holder.attributes[modifier.tgt_attr]
+
+    def __generate_affectors(self, holder, effect_filter=None, state_filter=None, scope_filter=None):
+        """
+        Get all affectors spawned by holder.
+
+        Required arguments:
+        holder -- holder, for which affectors are generated
+
+        Optional arguments:
+        effect filter -- filter results to include affectors, which
+        carry modifiers generated from effects with IDs on this list;
+        if None, no filtering occurs (default None)
+        state_filter -- filter results by state required by affector's
+        modifier, which should be in this iterable; if None, no
+        filtering occurs (default None)
+        scope_filter -- filter results by scope defined in affector's
+        modifier, which should be in this iterable; if None, no
+        filtering occurs (default None)
+
+        Return value:
+        Set with Affector objects, satisfying passed filters
+        """
+        affectors = set()
+        for effect in holder.item.effects:
+            if effect_filter is not None and effect.id not in effect_filter:
+                continue
+            for modifier in effect.modifiers:
+                if state_filter is not None and modifier.state not in state_filter:
+                    continue
+                if scope_filter is not None and modifier.scope not in scope_filter:
+                    continue
+                affector = Affector(holder, modifier)
+                affectors.add(affector)
+        return affectors
+
+    def __enable_affectors(self, affectors):
+        """
+        Enable effect of passed affectors on other items.
+
+        Required arguments:
+        affectors -- iterable with affectors to enable
+        """
+        # Clear attributes only after registration jobs
+        for affector in affectors:
+            self._register.register_affector(affector)
+        self.__clear_affectors_dependents(affectors)
+
+    def __disable_affectors(self, affectors):
+        """
+        Disable effect of passed affectors on other items.
+
+        Required arguments:
+        affectors -- iterable with affectors to disable
+        """
+        # Clear attributes before unregistering, otherwise
+        # we won't clean them up properly
+        self.__clear_affectors_dependents(affectors)
+        for affector in affectors:
+            self._register.unregister_affector(affector)
 
     def __clear_affectors_dependents(self, affectors):
         """
@@ -168,31 +256,3 @@ class LinkTracker:
             for target_holder in self.get_affectees(affector):
                 # And remove target attribute
                 del target_holder.attributes[affector.modifier.tgt_attr]
-
-    def __generate_affectors(self, holder, state_filter=None, scope_filter=None):
-        """
-        Get all affectors spawned by holder.
-
-        Required arguments:
-        holder -- holder, for which affectors are generated
-
-        Optional arguments:
-        state_filter -- filter results by affector's required state,
-        which should be in this iterable; if None, no filtering
-        occurs (default None)
-        scope_filter -- filter results by affector's required state,
-        which should be in this iterable; if None, no filtering
-        occurs (default None)
-
-        Return value:
-        Set with Affector objects, satisfying passed filters
-        """
-        affectors = set()
-        for modifier in holder.item.modifiers:
-            if state_filter is not None and modifier.state not in state_filter:
-                continue
-            if scope_filter is not None and modifier.scope not in scope_filter:
-                continue
-            affector = Affector(holder, modifier)
-            affectors.add(affector)
-        return affectors

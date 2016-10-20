@@ -84,6 +84,11 @@ class HolderBase:
             data[effect] = EffectData(chance, enabled)
         return data
 
+    @property
+    def _enabled_effects(self):
+        """Return set with enabled effects"""
+        return set(e.id for e in self.item.effects).difference(self._disabled_effects)
+
     def _enable_effect(self, effect_id):
         """
         Enable effect with passed ID. If such effect
@@ -92,7 +97,8 @@ class HolderBase:
         Required arguments:
         effect_id -- ID of effect to disable
         """
-        self._disabled_effects.add(effect_id)
+        self._disabled_effects.discard(effect_id)
+        self._fit._link_tracker.enable_effect(self, effect_id)
 
     def _disable_effect(self, effect_id):
         """
@@ -102,7 +108,8 @@ class HolderBase:
         Required arguments:
         effect_id -- ID of effect to disable
         """
-        self._disabled_effects.discard(effect_id)
+        self._fit._link_tracker.disable_effect(self, effect_id)
+        self._disabled_effects.add(effect_id)
 
     # Misc methods
     def _refresh_source(self):

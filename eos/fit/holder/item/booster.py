@@ -53,14 +53,13 @@ class Booster(ImmutableStateMixin):
         """
         Get map with data about booster side-effects.
 
-        Format: {effect: side-effect chance}
+        Format: {effect: (chance, enabled)}
         """
         side_effects = {}
         for effect, data in self.effect_data.items():
             if data.chance is not None:
-                side_effects[effect] = data.chance
+                side_effects[effect] = data
         return side_effects
-
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]
