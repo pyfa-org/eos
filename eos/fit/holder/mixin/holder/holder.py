@@ -86,7 +86,7 @@ class HolderBase:
 
     @property
     def _enabled_effects(self):
-        """Return set with enabled effects"""
+        """Return set with IDs of enabled effects"""
         return set(e.id for e in self.item.effects).difference(self._disabled_effects)
 
     def _enable_effect(self, effect_id):
