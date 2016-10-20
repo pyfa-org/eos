@@ -55,7 +55,12 @@ class Booster(ImmutableStateMixin):
 
         Format: {effect: side-effect chance}
         """
-        return self._chance_based_effects
+        side_effects = {}
+        for effect, data in self.effect_data.items():
+            if data.chance is not None:
+                side_effects[effect] = data.chance
+        return side_effects
+
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

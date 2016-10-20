@@ -19,8 +19,13 @@
 # ===============================================================================
 
 
+from collections import namedtuple
+
 from eos.fit.attribute_calculator import MutableAttributeMap
 from .null_source import NullSourceItem
+
+
+EffectData = namedtuple('EffectData', ('chance', 'enabled'))
 
 
 class HolderBase:
@@ -44,6 +49,8 @@ class HolderBase:
         self.attributes = MutableAttributeMap(self)
         # Which fit this holder is bound to
         self.__fit = None
+        # Contains IDs of effects which are prohibited to be run on this holder
+        self._disabled_effects = set()
         # Which type this holder wraps. Use null source item by default,
         # as holder doesn't have fit with source yet
         self.item = NullSourceItem
@@ -58,22 +65,46 @@ class HolderBase:
         self.__fit = new_fit
         self._refresh_source()
 
+    # Effect-related methods
     @property
-    def _chance_based_effects(self):
+    def effect_data(self):
         """
-        Returns map with all the effects which might or might not be
-        applied when played uses corresponding item in game.
-        """
-        # Format: {effect: chance to run it}
-        chance_map = {}
-        for effect in self.item.effects:
-            chance_attr = effect.fitting_usage_chance_attribute
-            if chance_attr is None:
-                continue
-            chance_value = self.attributes[chance_attr]
-            chance_map[effect] = chance_value
-        return chance_map
+        Return map with effects and their holder-specific data.
 
+        Return value:
+        Dictionary {effect: (chance, enabled)}
+        """
+        data = {}
+        for effect in self.item.effects:
+            # Get chance from modified attributes, if specified
+            chance_attr = effect.fitting_usage_chance_attribute
+            chance = self.attributes[chance_attr] if chance_attr is not None else None
+            # Get effect status
+            enabled = effect.id not in self._disabled_effects
+            data[effect] = EffectData(chance, enabled)
+        return data
+
+    def _enable_effect(self, effect_id):
+        """
+        Enable effect with passed ID. If such effect
+        is already enabled, do nothing.
+
+        Required arguments:
+        effect_id -- ID of effect to disable
+        """
+        self._disabled_effects.add(effect_id)
+
+    def _disable_effect(self, effect_id):
+        """
+        Disable effect with passed ID. If such effect
+        is already disabled, do nothing.
+
+        Required arguments:
+        effect_id -- ID of effect to disable
+        """
+        self._disabled_effects.discard(effect_id)
+
+    # Misc methods
     def _refresh_source(self):
         """
         Each time holder's context is changed (the source it relies on,
