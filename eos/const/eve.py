@@ -121,6 +121,24 @@ class Attribute(IntEnum):
     can_fit_ship_group_6 = 1879
     can_fit_ship_group_7 = 1880
     can_fit_ship_group_8 = 1881
+    can_fit_ship_type_5 = 1944
+    can_fit_ship_group_9 = 2065
+    can_fit_ship_type_6 = 2103
+    can_fit_ship_group_10 = 2396
+    can_fit_ship_type_7 = 2463
+    can_fit_ship_group_11 = 2476
+    can_fit_ship_group_12 = 2477
+    can_fit_ship_group_13 = 2478
+    can_fit_ship_group_14 = 2479
+    can_fit_ship_group_15 = 2480
+    can_fit_ship_group_16 = 2481
+    can_fit_ship_group_17 = 2482
+    can_fit_ship_group_18 = 2483
+    can_fit_ship_group_19 = 2484
+    can_fit_ship_group_20 = 2485
+    can_fit_ship_type_8 = 2486
+    can_fit_ship_type_9 = 2487
+    can_fit_ship_type_10 = 2488
 
 
 @unique
