@@ -67,7 +67,7 @@ class HolderBase:
 
     # Effect-related methods
     @property
-    def effect_data(self):
+    def _effect_data(self):
         """
         Return map with effects and their holder-specific data.
 
@@ -89,32 +89,34 @@ class HolderBase:
         """Return set with IDs of enabled effects"""
         return set(e.id for e in self.item.effects).difference(self._disabled_effects)
 
-    def _enable_effect(self, effect_id):
+    def _enable_effects(self, effect_ids):
         """
-        Enable effect with passed ID. If such effect
-        is already enabled, do nothing.
+        Enable effects with passed IDs. For effects which
+        are already enabled, do nothing.
 
         Required arguments:
-        effect_id -- ID of effect to disable
+        effect_ids -- iterable with effect IDs to enable
         """
-        if effect_id not in self._disabled_effects:
+        to_enable = self._disabled_effects.intersection(effect_ids)
+        if len(to_enable) == 0:
             return
-        self._disabled_effects.discard(effect_id)
-        self._fit._link_tracker.enable_effect(self, effect_id)
+        self._disabled_effects.difference_update(to_enable)
+        self._fit._link_tracker.enable_effects(self, to_enable)
         self._request_volatile_cleanup()
 
-    def _disable_effect(self, effect_id):
+    def _disable_effects(self, effect_ids):
         """
-        Disable effect with passed ID. If such effect
-        is already disabled, do nothing.
+        Disable effects with passed IDs. For effects which
+        are already disabled, do nothing.
 
         Required arguments:
-        effect_id -- ID of effect to disable
+        effect_ids -- iterable with effect IDs to disable
         """
-        if effect_id in self._disabled_effects:
+        to_disable = set(effect_ids).difference(self._disabled_effects)
+        if len(to_disable) == 0:
             return
-        self._fit._link_tracker.disable_effect(self, effect_id)
-        self._disabled_effects.add(effect_id)
+        self._fit._link_tracker.disable_effects(self, to_disable)
+        self._disabled_effects.update(to_disable)
         self._request_volatile_cleanup()
 
     # Misc methods

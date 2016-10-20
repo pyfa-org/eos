@@ -129,34 +129,34 @@ class LinkTracker:
         )
         self.__disable_affectors(affectors)
 
-    def enable_effect(self, holder, effect_id):
+    def enable_effects(self, holder, effect_ids):
         """
-        Enable effect of given ID on holder.
+        Enable effects of given IDs on a holder.
 
         Required arguments:
         holder -- holder for which we're enabling effect
-        effect_id -- ID of effect to enable
+        effect_ids -- iterable with IDs of effects to enable
         """
         processed_scopes = (Scope.local,)
         processed_states = set(filter(lambda s: s <= holder.state, State))
         affectors = self.__generate_affectors(
-            holder, effect_filter=(effect_id,), state_filter=processed_states,
+            holder, effect_filter=effect_ids, state_filter=processed_states,
             scope_filter=processed_scopes
         )
         self.__enable_affectors(affectors)
 
-    def disable_effect(self, holder, effect_id):
+    def disable_effect(self, holder, effect_ids):
         """
-        Disable effect of given ID on holder.
+        Disable effects of given IDs on a holder.
 
         Required arguments:
         holder -- holder for which we're disabling effect
-        effect_id -- ID of effect to disable
+        effect_ids -- iterable with IDs of effects to disable
         """
         processed_scopes = (Scope.local,)
         processed_states = set(filter(lambda s: s <= holder.state, State))
         affectors = self.__generate_affectors(
-            holder, effect_filter=(effect_id,), state_filter=processed_states,
+            holder, effect_filter=effect_ids, state_filter=processed_states,
             scope_filter=processed_scopes
         )
         self.__disable_affectors(affectors)
@@ -174,7 +174,7 @@ class LinkTracker:
         if cap_map is not None:
             for capped_attr in (cap_map.get(attr) or ()):
                 del holder.attributes[capped_attr]
-        # Clear attributes using this attribute as data source
+        # Clear attributes which are using this attribute as modification source
         for affector in self.__generate_affectors(holder, effect_filter=holder._enabled_effects):
             modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
@@ -221,7 +221,7 @@ class LinkTracker:
 
     def __enable_affectors(self, affectors):
         """
-        Enable effect of passed affectors on other items.
+        Enable effect of affectors on their target holders.
 
         Required arguments:
         affectors -- iterable with affectors to enable
@@ -233,7 +233,7 @@ class LinkTracker:
 
     def __disable_affectors(self, affectors):
         """
-        Disable effect of passed affectors on other items.
+        Remove effect of affectors from their target holders.
 
         Required arguments:
         affectors -- iterable with affectors to disable
@@ -246,7 +246,8 @@ class LinkTracker:
 
     def __clear_affectors_dependents(self, affectors):
         """
-        Clear calculated attributes relying on affectors.
+        Clear calculated attributes which are relying on
+        passed affectors.
 
         Required arguments:
         affectors -- iterable with affectors in question

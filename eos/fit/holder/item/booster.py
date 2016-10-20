@@ -51,7 +51,7 @@ class Booster(ImmutableStateMixin):
         Format: {effect: (chance, enabled)}
         """
         side_effects = {}
-        for effect, data in self.effect_data.items():
+        for effect, data in self._effect_data.items():
             if data.chance is not None:
                 side_effects[effect] = data
         return side_effects
