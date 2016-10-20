@@ -19,14 +19,9 @@
 # ===============================================================================
 
 
-from collections import namedtuple
-
 from eos.const.eos import Domain, State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
-
-
-SideEffectData = namedtuple('SideEffectData', ('penalizing_attribs', 'chance'))
 
 
 class Booster(ImmutableStateMixin):
