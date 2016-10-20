@@ -101,6 +101,7 @@ class HolderBase:
             return
         self._disabled_effects.discard(effect_id)
         self._fit._link_tracker.enable_effect(self, effect_id)
+        self._request_volatile_cleanup()
 
     def _disable_effect(self, effect_id):
         """
@@ -114,6 +115,7 @@ class HolderBase:
             return
         self._fit._link_tracker.disable_effect(self, effect_id)
         self._disabled_effects.add(effect_id)
+        self._request_volatile_cleanup()
 
     # Misc methods
     def _refresh_source(self):
