@@ -31,8 +31,6 @@ class TestShipTypeGroup(RestrictionTestCase):
     """Check functionality of 'can fit to ship type/group' restriction"""
 
     def test_fail_type1(self):
-        # Check that first type-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -51,8 +49,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type2(self):
-        # Check that second type-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -71,8 +67,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type3(self):
-        # Check that third type-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -91,8 +85,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type4(self):
-        # Check that fourth type-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -111,8 +103,114 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type5(self):
-        # Check that fifth type-restriction attribute affects
-        # holder
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_5: 10})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_groups, ())
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_type6(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_6: 10})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_groups, ())
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_type7(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_7: 10})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_groups, ())
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_type8(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_8: 10})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_groups, ())
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_type9(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_9: 10})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_groups, ())
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_type10(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_10: 10})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_groups, ())
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_type_11(self):
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -169,8 +267,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group1(self):
-        # Check that first group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -189,8 +285,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group2(self):
-        # Check that second group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -209,8 +303,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group3(self):
-        # Check that third group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -229,8 +321,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group4(self):
-        # Check that fourth group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -249,8 +339,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group5(self):
-        # Check that fourth group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -269,8 +357,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group6(self):
-        # Check that fourth group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -289,8 +375,6 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group7(self):
-        # Check that fourth group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -309,12 +393,226 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group8(self):
-        # Check that fourth group-restriction attribute affects
-        # holder
         ship_item = self.ch.type_(type_id=772, group=31)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_8: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group9(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_9: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group10(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_10: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group11(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_11: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group12(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_12: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group13(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_13: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group14(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_14: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group15(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_15: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group16(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_16: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group17(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_17: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group18(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_18: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group19(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_19: 38})
+        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        self.track_holder(holder)
+        restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error.allowed_types, ())
+        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_group, 31)
+        self.untrack_holder(holder)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_fail_group20(self):
+        ship_item = self.ch.type_(type_id=772, group=31)
+        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        self.set_ship(ship_holder)
+        item = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_20: 38})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.track_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)

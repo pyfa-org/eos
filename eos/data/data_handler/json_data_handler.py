@@ -32,7 +32,7 @@ class JsonDataHandler(BaseDataHandler):
     """
 
     def __init__(self, basepath):
-        self.basepath = basepath
+        self.basepath = os.path.abspath(basepath)
 
     def get_evetypes(self):
         return self.__fetch_file('evetypes', values_only=True)
