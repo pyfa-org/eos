@@ -145,7 +145,7 @@ class LinkTracker:
         )
         self.__enable_affectors(affectors)
 
-    def disable_effect(self, holder, effect_ids):
+    def disable_effects(self, holder, effect_ids):
         """
         Disable effects of given IDs on a holder.
 

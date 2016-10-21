@@ -25,7 +25,7 @@ from eos.fit.attribute_calculator import MutableAttributeMap
 from .null_source import NullSourceItem
 
 
-EffectData = namedtuple('EffectData', ('chance', 'enabled'))
+EffectData = namedtuple('EffectData', ('chance', 'active'))
 
 
 class HolderBase:
@@ -72,7 +72,7 @@ class HolderBase:
         Return map with effects and their holder-specific data.
 
         Return value:
-        Dictionary {effect: (chance, enabled)}
+        Dictionary {effect: (chance, active)}
         """
         data = {}
         for effect in self.item.effects:
@@ -80,8 +80,8 @@ class HolderBase:
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
             # Get effect status
-            enabled = effect.id not in self._disabled_effects
-            data[effect] = EffectData(chance, enabled)
+            active = effect.id not in self._disabled_effects
+            data[effect] = EffectData(chance, active)
         return data
 
     @property
