@@ -20,6 +20,7 @@
 
 
 from collections import namedtuple
+from random import random
 
 from eos.fit.attribute_calculator import MutableAttributeMap
 from .null_source import NullSourceItem
@@ -118,6 +119,26 @@ class HolderBase:
         self._request_volatile_cleanup()
         self._fit._link_tracker.disable_effects(self, to_disable)
         self._disabled_effects.update(to_disable)
+
+    def _randomize_effects(self):
+        """
+        Randomize status of effects on this holder, take value of
+        chance attribute into consideration when necessary.
+        """
+        to_enable = set()
+        to_disable = set()
+        for effect, data in self._effect_data.items():
+            # If effect is not chance-based, it always gets run
+            if data.chance is None:
+                to_enable.add(effect.id)
+                continue
+            # If it is, roll the floating dice
+            if random() < data.chance:
+                to_enable.add(effect.id)
+            else:
+                to_disable.add(effect.id)
+        self._enable_effects(to_enable)
+        self._disable_effects(to_disable)
 
     # Auxiliary methods
     def _refresh_source(self):

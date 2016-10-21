@@ -65,6 +65,10 @@ class Booster(ImmutableStateMixin):
         """Disable side-effect by effect ID"""
         self._disable_effects((effect_id,))
 
+    def randomize_side_effects(self):
+        """Randomize side-effects according to their chances."""
+        self._randomize_effects()
+
     # Auxiliary methods
     @property
     def _domain(self):
