@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import Domain, State
+from eos.const.eve import Attribute
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
 
@@ -40,21 +41,34 @@ class Booster(ImmutableStateMixin):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
-    def _domain(self):
-        return Domain.character
+    def slot(self):
+        return self.attributes.get(Attribute.boosterness)
 
+    # Side-effect methods
     @property
     def side_effects(self):
         """
         Get map with data about booster side-effects.
-
-        Format: {effect: (chance, active)}
+        Format: {effect: (chance, enabled)}
         """
         side_effects = {}
         for effect, data in self._effect_data.items():
             if data.chance is not None:
                 side_effects[effect] = data
         return side_effects
+
+    def enable_side_effect(self, effect_id):
+        """Enable side-effect by effect ID"""
+        self._enable_effects((effect_id,))
+
+    def disable_side_effect(self, effect_id):
+        """Disable side-effect by effect ID"""
+        self._disable_effects((effect_id,))
+
+    # Auxiliary methods
+    @property
+    def _domain(self):
+        return Domain.character
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

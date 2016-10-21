@@ -46,10 +46,6 @@ class Skill(ImmutableStateMixin):
         self.level = level
 
     @property
-    def _domain(self):
-        return Domain.character
-
-    @property
     def level(self):
         return self.__level
 
@@ -67,6 +63,10 @@ class Skill(ImmutableStateMixin):
         if fit is not None:
             fit._request_volatile_cleanup()
             fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)
+
+    @property
+    def _domain(self):
+        return Domain.character
 
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'level']

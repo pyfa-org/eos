@@ -33,15 +33,15 @@ class Module(MutableStateMixin, ChargeableMixin, DamageDealerMixin, DefaultEffec
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
 
     @property
-    def _domain(self):
-        return Domain.ship
-
-    @property
     def reactivation_delay(self):
         delay_ms = self.attributes.get(Attribute.module_reactivation_delay)
         if delay_ms is None:
             return None
         return delay_ms / 1000
+
+    @property
+    def _domain(self):
+        return Domain.ship
 
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'state', 'charge']

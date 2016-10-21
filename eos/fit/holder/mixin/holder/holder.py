@@ -25,7 +25,7 @@ from eos.fit.attribute_calculator import MutableAttributeMap
 from .null_source import NullSourceItem
 
 
-EffectData = namedtuple('EffectData', ('chance', 'active'))
+EffectData = namedtuple('EffectData', ('chance', 'enabled'))
 
 
 class HolderBase:
@@ -65,14 +65,14 @@ class HolderBase:
         self.__fit = new_fit
         self._refresh_source()
 
-    # Effect-related methods
+    # Effect methods
     @property
     def _effect_data(self):
         """
         Return map with effects and their holder-specific data.
 
         Return value:
-        Dictionary {effect: (chance, active)}
+        Dictionary {effect: (chance, enabled)}
         """
         data = {}
         for effect in self.item.effects:
@@ -80,8 +80,8 @@ class HolderBase:
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
             # Get effect status
-            active = effect.id not in self._disabled_effects
-            data[effect] = EffectData(chance, active)
+            enabled = effect.id not in self._disabled_effects
+            data[effect] = EffectData(chance, enabled)
         return data
 
     @property
@@ -100,9 +100,9 @@ class HolderBase:
         to_enable = self._disabled_effects.intersection(effect_ids)
         if len(to_enable) == 0:
             return
+        self._request_volatile_cleanup()
         self._disabled_effects.difference_update(to_enable)
         self._fit._link_tracker.enable_effects(self, to_enable)
-        self._request_volatile_cleanup()
 
     def _disable_effects(self, effect_ids):
         """
@@ -115,11 +115,11 @@ class HolderBase:
         to_disable = set(effect_ids).difference(self._disabled_effects)
         if len(to_disable) == 0:
             return
+        self._request_volatile_cleanup()
         self._fit._link_tracker.disable_effects(self, to_disable)
         self._disabled_effects.update(to_disable)
-        self._request_volatile_cleanup()
 
-    # Misc methods
+    # Auxiliary methods
     def _refresh_source(self):
         """
         Each time holder's context is changed (the source it relies on,
