@@ -26,7 +26,7 @@ from eos.fit.attribute_calculator import MutableAttributeMap
 from .null_source import NullSourceItem
 
 
-EffectData = namedtuple('EffectData', ('chance', 'enabled'))
+EffectData = namedtuple('EffectData', ('chance', 'status'))
 
 
 class HolderBase:
@@ -73,7 +73,7 @@ class HolderBase:
         Return map with effects and their holder-specific data.
 
         Return value:
-        Dictionary {effect: (chance, enabled)}
+        Dictionary {effect: (chance, status)}
         """
         data = {}
         for effect in self.item.effects:
@@ -81,53 +81,32 @@ class HolderBase:
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
             # Get effect status
-            enabled = effect.id not in self._disabled_effects
-            data[effect] = EffectData(chance, enabled)
+            status = effect.id not in self._disabled_effects
+            data[effect] = EffectData(chance, status)
         return data
 
-    @property
-    def _enabled_effects(self):
-        """Return set with IDs of enabled effects"""
-        return set(e.id for e in self.item.effects).difference(self._disabled_effects)
-
-    def _enable_effects(self, effect_ids):
+    def _set_effects_status(self, effect_ids, status):
         """
-        Enable effects with passed IDs. For effects which
-        are already enabled, do nothing.
+        Enable or disable effects with IDs from passed list.
 
         Required arguments:
-        effect_ids -- iterable with effect IDs to enable
+        effect_ids -- iterable with effect IDs, for which we're
+        changing status
+        status -- True for enabling, False for disabling
         """
-        to_enable = self._disabled_effects.intersection(effect_ids)
-        if len(to_enable) == 0:
-            return
-        self._request_volatile_cleanup()
-        self._disabled_effects.difference_update(to_enable)
-        self._fit._link_tracker.enable_effects(self, to_enable)
+        if status:
+            self.__enable_effects(effect_ids)
+        else:
+            self.__disable_effects(effect_ids)
 
-    def _disable_effects(self, effect_ids):
-        """
-        Disable effects with passed IDs. For effects which
-        are already disabled, do nothing.
-
-        Required arguments:
-        effect_ids -- iterable with effect IDs to disable
-        """
-        to_disable = set(effect_ids).difference(self._disabled_effects)
-        if len(to_disable) == 0:
-            return
-        self._request_volatile_cleanup()
-        self._fit._link_tracker.disable_effects(self, to_disable)
-        self._disabled_effects.update(to_disable)
-
-    def _randomize_effects(self, rand_all=True):
+    def _randomize_effects_status(self, rand_all=True):
         """
         Randomize status of effects on this holder, take value of
         chance attribute into consideration when necessary.
 
         Optional arguments:
-        rand_all -- if true, can change status of all effects on
-        this holder, If false, changes status only of chance-
+        rand_all -- if True, can change status of all effects on
+        this holder, If False, changes status only of chance-
         based effects.
         """
         to_enable = set()
@@ -144,8 +123,43 @@ class HolderBase:
                 to_enable.add(effect.id)
             else:
                 to_disable.add(effect.id)
-        self._enable_effects(to_enable)
-        self._disable_effects(to_disable)
+        self._set_effects_status(to_enable, True)
+        self._set_effects_status(to_disable, False)
+
+    @property
+    def _enabled_effects(self):
+        """Return set with IDs of enabled effects"""
+        return set(e.id for e in self.item.effects).difference(self._disabled_effects)
+
+    def __enable_effects(self, effect_ids):
+        """
+        Enable effects with passed IDs. For effects which
+        are already enabled, do nothing.
+
+        Required arguments:
+        effect_ids -- iterable with effect IDs to enable
+        """
+        to_enable = self._disabled_effects.intersection(effect_ids)
+        if len(to_enable) == 0:
+            return
+        self._request_volatile_cleanup()
+        self._disabled_effects.difference_update(to_enable)
+        self._fit._link_tracker.enable_effects(self, to_enable)
+
+    def __disable_effects(self, effect_ids):
+        """
+        Disable effects with passed IDs. For effects which
+        are already disabled, do nothing.
+
+        Required arguments:
+        effect_ids -- iterable with effect IDs to disable
+        """
+        to_disable = set(effect_ids).difference(self._disabled_effects)
+        if len(to_disable) == 0:
+            return
+        self._request_volatile_cleanup()
+        self._fit._link_tracker.disable_effects(self, to_disable)
+        self._disabled_effects.update(to_disable)
 
     # Auxiliary methods
     def _refresh_source(self):

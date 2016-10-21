@@ -49,7 +49,7 @@ class Booster(ImmutableStateMixin):
     def side_effects(self):
         """
         Get map with data about booster side-effects.
-        Format: {effect: (chance, enabled)}
+        Format: {effect: (chance, status)}
         """
         side_effects = {}
         for effect, data in self._effect_data.items():
@@ -57,17 +57,22 @@ class Booster(ImmutableStateMixin):
                 side_effects[effect] = data
         return side_effects
 
-    def enable_side_effect(self, effect_id):
-        """Enable side-effect by effect ID"""
-        self._enable_effects((effect_id,))
+    def set_side_effect_status(self, effect_id, status):
+        """
+        Enable or disable side-effect.
 
-    def disable_side_effect(self, effect_id):
-        """Disable side-effect by effect ID"""
-        self._disable_effects((effect_id,))
+        Required arguments:
+        effect_id -- ID of side-effect
+        status -- True for enabling, False for disabling
+        """
+        self._set_effects_status((effect_id,), status)
 
     def randomize_side_effects(self):
-        """Randomize side-effects according to their chances."""
-        self._randomize_effects(rand_all=False)
+        """
+        Randomize side-effects' status according to their
+        chances to set in.
+        """
+        self._randomize_effects_status(rand_all=False)
 
     # Auxiliary methods
     @property
