@@ -46,7 +46,7 @@ class JsonCacheHandler(BaseCacheHandler):
     """
 
     def __init__(self, cache_path):
-        self._cache_path = cache_path
+        self._cache_path = os.path.abspath(cache_path)
         # Initialize memory data cache
         self.__type_data_cache = {}
         self.__attribute_data_cache = {}
