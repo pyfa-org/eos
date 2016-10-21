@@ -120,17 +120,24 @@ class HolderBase:
         self._fit._link_tracker.disable_effects(self, to_disable)
         self._disabled_effects.update(to_disable)
 
-    def _randomize_effects(self):
+    def _randomize_effects(self, rand_all=True):
         """
         Randomize status of effects on this holder, take value of
         chance attribute into consideration when necessary.
+
+        Optional arguments:
+        rand_all -- if true, can change status of all effects on
+        this holder, If false, changes status only of chance-
+        based effects.
         """
         to_enable = set()
         to_disable = set()
         for effect, data in self._effect_data.items():
-            # If effect is not chance-based, it always gets run
             if data.chance is None:
-                to_enable.add(effect.id)
+                # If effect is not chance-based, it always gets run.
+                # But we are doing it only if we were asked for it.
+                if rand_all:
+                    to_enable.add(effect.id)
                 continue
             # If it is, roll the floating dice
             if random() < data.chance:
