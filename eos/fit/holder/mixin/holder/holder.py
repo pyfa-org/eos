@@ -26,7 +26,7 @@ from eos.fit.attribute_calculator import MutableAttributeMap
 from .null_source import NullSourceItem
 
 
-EffectData = namedtuple('EffectData', ('chance', 'status'))
+EffectData = namedtuple('EffectData', ('effect', 'chance', 'status'))
 
 
 class HolderBase:
@@ -72,8 +72,9 @@ class HolderBase:
         """
         Return map with effects and their holder-specific data.
 
-        Return value:
-        Dictionary {effect: (chance=chance, status=status)}
+        Return value as dictionary:
+        {effect ID: (effect=effect object, chance=chance to apply
+        on effect activation, status=effect status)}
         """
         data = {}
         for effect in self.item.effects:
@@ -82,7 +83,7 @@ class HolderBase:
             chance = self.attributes[chance_attr] if chance_attr is not None else None
             # Get effect status
             status = effect.id not in self._disabled_effects
-            data[effect] = EffectData(chance, status)
+            data[effect.id] = EffectData(effect, chance, status)
         return data
 
     def _set_effects_status(self, effect_ids, status):
@@ -111,18 +112,18 @@ class HolderBase:
         """
         to_enable = set()
         to_disable = set()
-        for effect, data in self._effect_data.items():
+        for effect_id, data in self._effect_data.items():
             if data.chance is None:
                 # If effect is not chance-based, it always gets run.
                 # But we are doing it only if we were asked for it.
                 if rand_all:
-                    to_enable.add(effect.id)
+                    to_enable.add(effect_id)
                 continue
             # If it is, roll the floating dice
             if random() < data.chance:
-                to_enable.add(effect.id)
+                to_enable.add(effect_id)
             else:
-                to_disable.add(effect.id)
+                to_disable.add(effect_id)
         self._set_effects_status(to_enable, True)
         self._set_effects_status(to_disable, False)
 

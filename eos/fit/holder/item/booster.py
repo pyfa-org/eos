@@ -49,12 +49,15 @@ class Booster(ImmutableStateMixin):
     def side_effects(self):
         """
         Get map with data about booster side-effects.
-        Format: {effect: (chance=chance, status=status)}
+
+        Return value as dictionary:
+        {side-effect ID: (effect=effect object for this side-effect,
+        chance=chance of setting in, status=side-effect status)}
         """
         side_effects = {}
-        for effect, data in self._effect_data.items():
+        for effect_id, data in self._effect_data.items():
             if data.chance is not None:
-                side_effects[effect] = data
+                side_effects[effect_id] = data
         return side_effects
 
     def set_side_effect_status(self, effect_id, status):
