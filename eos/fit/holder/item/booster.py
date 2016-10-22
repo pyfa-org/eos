@@ -84,10 +84,7 @@ class Booster(ImmutableStateMixin):
         fit with these will fail validation. This method enables all
         such effects.
         """
-        to_enable = set()
-        for effect_id, data in self._effect_data.items():
-            if not data.status and effect_id not in self.side_effects:
-                to_enable.add(effect_id)
+        to_enable = self._disabled_effects.difference(self.side_effects)
         self._set_effects_status(to_enable, True)
 
     # Auxiliary methods

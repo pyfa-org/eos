@@ -41,8 +41,10 @@ class BoosterEffectRegister(RestrictionRegister):
     are raised as an issue by this register.
 
     Details:
-    For validation, original values of allowed charge group
-    attributes are taken.
+    Uses list of actually disabled effects during validation,
+    rather than list of IDs of effects which are not allowed
+    to be active on this holder (see __disabled_effects vs
+    _disabled_effects comments on Holder class).
     """
 
     def __init__(self):

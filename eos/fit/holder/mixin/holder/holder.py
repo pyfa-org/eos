@@ -50,8 +50,13 @@ class HolderBase:
         self.attributes = MutableAttributeMap(self)
         # Which fit this holder is bound to
         self.__fit = None
-        # Contains IDs of effects which are prohibited to be run on this holder
-        self._disabled_effects = set()
+        # Contains IDs of effects which are prohibited to be run on this holder.
+        # It means that if there's an ID here - it does not mean that holder.item
+        # has such effect, but if holder has it, it will be disabled. We need to keep
+        # such IDs for case when holder has effect disabled, then it switches source
+        # where it doesn't have effect with this ID anymore, then when it switches
+        # back - this effect will be disabled like it has been before source switch
+        self.__disabled_effects = set()
         # Which type this holder wraps. Use null source item by default,
         # as holder doesn't have fit with source yet
         self.item = NullSourceItem
@@ -82,7 +87,7 @@ class HolderBase:
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
             # Get effect status
-            status = effect.id not in self._disabled_effects
+            status = effect.id not in self.__disabled_effects
             data[effect.id] = EffectData(effect, chance, status)
         return data
 
@@ -130,7 +135,18 @@ class HolderBase:
     @property
     def _enabled_effects(self):
         """Return set with IDs of enabled effects"""
-        return set(e.id for e in self.item.effects).difference(self._disabled_effects)
+        return set(e.id for e in self.item.effects).difference(self.__disabled_effects)
+
+    @property
+    def _disabled_effects(self):
+        """
+        Return set with IDs of effects which exist on this holder
+        and are disabled.
+
+        Unlike self.__disabled_effects, this property returns
+        IDs of actual effects which are not active on this holder.
+        """
+        return set(e.id for e in self.item.effects).intersection(self.__disabled_effects)
 
     def __enable_effects(self, effect_ids):
         """
@@ -140,11 +156,11 @@ class HolderBase:
         Required arguments:
         effect_ids -- iterable with effect IDs to enable
         """
-        to_enable = self._disabled_effects.intersection(effect_ids)
+        to_enable = self.__disabled_effects.intersection(effect_ids)
         if len(to_enable) == 0:
             return
         self._request_volatile_cleanup()
-        self._disabled_effects.difference_update(to_enable)
+        self.__disabled_effects.difference_update(to_enable)
         self._fit._link_tracker.enable_effects(self, to_enable)
 
     def __disable_effects(self, effect_ids):
@@ -155,12 +171,12 @@ class HolderBase:
         Required arguments:
         effect_ids -- iterable with effect IDs to disable
         """
-        to_disable = set(effect_ids).difference(self._disabled_effects)
+        to_disable = set(effect_ids).difference(self.__disabled_effects)
         if len(to_disable) == 0:
             return
         self._request_volatile_cleanup()
         self._fit._link_tracker.disable_effects(self, to_disable)
-        self._disabled_effects.update(to_disable)
+        self.__disabled_effects.update(to_disable)
 
     # Auxiliary methods
     def _refresh_source(self):
