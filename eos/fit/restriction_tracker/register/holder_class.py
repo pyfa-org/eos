@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
-from eos.fit.restriction_tracker.exception import RegisterValidationError
 from eos.fit.holder.item import *
+from eos.fit.restriction_tracker.exception import RegisterValidationError
 
 from .abc import RestrictionRegister
 
@@ -119,7 +119,7 @@ class HolderClassRegister(RestrictionRegister):
                 expected_classes.append(holder_class)
         error_data = HolderClassErrorData(
             holder_class=type(holder),
-            expected_classes=tuple(expected_classes)
+            expected_classes=set(expected_classes)
         )
         return error_data
 

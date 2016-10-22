@@ -189,3 +189,4 @@ class Restriction(IntEnum):
     charge_group = 28
     charge_size = 29
     charge_volume = 30
+    booster_effect = 31

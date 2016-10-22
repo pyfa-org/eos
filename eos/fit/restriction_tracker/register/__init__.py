@@ -20,6 +20,7 @@
 
 
 __all__ = [
+    'BoosterEffectRegister',
     'CapitalItemRegister',
     'ChargeGroupRegister',
     'ChargeSizeRegister',
@@ -52,6 +53,7 @@ __all__ = [
 ]
 
 
+from .booster_effect import BoosterEffectRegister
 from .capital_item import CapitalItemRegister
 from .charge_group import ChargeGroupRegister
 from .charge_size import ChargeSizeRegister
