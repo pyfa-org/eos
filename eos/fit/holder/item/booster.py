@@ -21,17 +21,8 @@
 
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
-from eos.exception import EosError
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
-
-
-class NotSideEffectError(EosError):
-    """
-    Raised on attempt to enable/disable effect which
-    is not a side-effect,
-    """
-    pass
 
 
 class Booster(ImmutableStateMixin):
@@ -77,8 +68,6 @@ class Booster(ImmutableStateMixin):
         effect_id -- ID of side-effect
         status -- True for enabling, False for disabling
         """
-        if effect_id not in self.side_effects:
-            raise NotSideEffectError(effect_id)
         self._set_effects_status((effect_id,), status)
 
     def randomize_side_effects(self):
@@ -87,6 +76,19 @@ class Booster(ImmutableStateMixin):
         chances to set in.
         """
         self._randomize_effects_status(effect_filter=set(self.side_effects))
+
+    def enable_non_side_effects(self):
+        """
+        In certain circumstances non-side-effect can become disabled.
+        Statuses of such effects are not exposed via Booster API, but
+        fit with these will fail validation. This method enables all
+        such effects.
+        """
+        to_enable = set()
+        for effect_id, data in self._effect_data.items():
+            if not data.status and effect_id not in self.side_effects:
+                to_enable.add(effect_id)
+        self._set_effects_status(to_enable, True)
 
     # Auxiliary methods
     @property
