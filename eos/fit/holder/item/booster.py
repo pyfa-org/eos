@@ -77,16 +77,6 @@ class Booster(ImmutableStateMixin):
         """
         self._randomize_effects_status(effect_filter=set(self.side_effects))
 
-    def enable_non_side_effects(self):
-        """
-        In certain circumstances non-side-effect can become disabled.
-        Statuses of such effects are not exposed via Booster API, but
-        fit with these will fail validation. This method enables all
-        such effects.
-        """
-        to_enable = self._disabled_effects.difference(self.side_effects)
-        self._set_effects_status(to_enable, True)
-
     # Auxiliary methods
     @property
     def _domain(self):
