@@ -106,9 +106,10 @@ class LinkTracker:
         states -- iterable with states, which are passed
         during state switch, except for initial state
         """
+        processed_effects = holder._enabled_effects
         processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
-            holder, effect_filter=holder._enabled_effects,
+            holder, effect_filter=processed_effects,
             state_filter=states, scope_filter=processed_scopes
         )
         self.__enable_affectors(affectors)
@@ -122,23 +123,24 @@ class LinkTracker:
         states -- iterable with states, which are passed
         during state switch, except for final state
         """
+        processed_effects = holder._enabled_effects
         processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
-            holder, effect_filter=holder._enabled_effects,
+            holder, effect_filter=processed_effects,
             state_filter=states, scope_filter=processed_scopes
         )
         self.__disable_affectors(affectors)
 
     def enable_effects(self, holder, effect_ids):
         """
-        Enable effects of given IDs on a holder.
+        Enable effects carried by a holder.
 
         Required arguments:
         holder -- holder for which we're enabling effect
         effect_ids -- iterable with IDs of effects to enable
         """
-        processed_scopes = (Scope.local,)
         processed_states = set(filter(lambda s: s <= holder.state, State))
+        processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
             holder, effect_filter=effect_ids, state_filter=processed_states,
             scope_filter=processed_scopes
@@ -147,14 +149,14 @@ class LinkTracker:
 
     def disable_effects(self, holder, effect_ids):
         """
-        Disable effects of given IDs on a holder.
+        Disable effects carried by a holder.
 
         Required arguments:
         holder -- holder for which we're disabling effect
         effect_ids -- iterable with IDs of effects to disable
         """
-        processed_scopes = (Scope.local,)
         processed_states = set(filter(lambda s: s <= holder.state, State))
+        processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
             holder, effect_filter=effect_ids, state_filter=processed_states,
             scope_filter=processed_scopes

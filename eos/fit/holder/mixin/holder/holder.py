@@ -73,7 +73,7 @@ class HolderBase:
         Return map with effects and their holder-specific data.
 
         Return value:
-        Dictionary {effect: (chance, status)}
+        Dictionary {effect: (chance=chance, status=status)}
         """
         data = {}
         for effect in self.item.effects:
@@ -87,7 +87,7 @@ class HolderBase:
 
     def _set_effects_status(self, effect_ids, status):
         """
-        Enable or disable effects with IDs from passed list.
+        Enable or disable effects for this holder.
 
         Required arguments:
         effect_ids -- iterable with effect IDs, for which we're
