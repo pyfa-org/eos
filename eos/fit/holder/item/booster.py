@@ -86,7 +86,7 @@ class Booster(ImmutableStateMixin):
         Randomize side-effects' status according to their
         chances to set in.
         """
-        self._randomize_effects_status(rand_all=False)
+        self._randomize_effects_status(effect_filter=set(self.side_effects))
 
     # Auxiliary methods
     @property

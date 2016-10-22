@@ -100,24 +100,24 @@ class HolderBase:
         else:
             self.__disable_effects(effect_ids)
 
-    def _randomize_effects_status(self, rand_all=True):
+    def _randomize_effects_status(self, effect_filter=None):
         """
         Randomize status of effects on this holder, take value of
         chance attribute into consideration when necessary.
 
         Optional arguments:
-        rand_all -- if True, can change status of all effects on
-        this holder, If False, changes status only of chance-
-        based effects.
+        effect_filter -- randomize statuses of effects whose IDs
+        are in this iterable. When None, randomize all effects.
+        Default is None.
         """
         to_enable = set()
         to_disable = set()
         for effect_id, data in self._effect_data.items():
+            if effect_filter is not None and effect_id not in effect_filter:
+                continue
+            # If effect is not chance-based, it always gets run
             if data.chance is None:
-                # If effect is not chance-based, it always gets run.
-                # But we are doing it only if we were asked for it.
-                if rand_all:
-                    to_enable.add(effect_id)
+                to_enable.add(effect_id)
                 continue
             # If it is, roll the floating dice
             if random() < data.chance:
