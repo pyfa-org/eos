@@ -42,7 +42,7 @@ class LinkTracker:
 
     def get_affectors(self, holder, attr=None):
         """
-        Get affectors, influencing passed holder.
+        Get affectors which are influencing the holder.
 
         Required arguments:
         holder -- holder, for which we're getting affectors
@@ -67,7 +67,7 @@ class LinkTracker:
 
     def get_affectees(self, affector):
         """
-        Get affectees being influenced by affector.
+        Get affectees being influenced by the affector.
 
         Required arguments:
         affector -- affector, for which we're getting affectees
@@ -79,8 +79,7 @@ class LinkTracker:
 
     def add_holder(self, holder):
         """
-        Track links between passed holder and already
-        tracked holders.
+        Put the holder under influence of registered affectors.
 
         Required arguments:
         holder -- holder which is added to tracker
@@ -89,8 +88,7 @@ class LinkTracker:
 
     def remove_holder(self, holder):
         """
-        Stop tracking links between passed holder
-        and remaining tracked holders.
+        Remove the holder from influence of registered affectors.
 
         Required arguments:
         holder -- holder which is removed from tracker
@@ -133,7 +131,7 @@ class LinkTracker:
 
     def enable_effects(self, holder, effect_ids):
         """
-        Enable effects carried by a holder.
+        Enable effects carried by the holder.
 
         Required arguments:
         holder -- holder for which we're enabling effect
@@ -149,7 +147,7 @@ class LinkTracker:
 
     def disable_effects(self, holder, effect_ids):
         """
-        Disable effects carried by a holder.
+        Disable effects carried by the holder.
 
         Required arguments:
         holder -- holder for which we're disabling effect
@@ -165,7 +163,7 @@ class LinkTracker:
 
     def clear_holder_attribute_dependents(self, holder, attr):
         """
-        Clear calculated attributes relying on passed attribute.
+        Clear calculated attributes relying on the passed attribute.
 
         Required arguments:
         holder -- holder, which carries attribute in question
@@ -189,7 +187,7 @@ class LinkTracker:
 
     def __generate_affectors(self, holder, effect_filter=None, state_filter=None, scope_filter=None):
         """
-        Get all affectors spawned by holder.
+        Get all affectors spawned by the holder.
 
         Required arguments:
         holder -- holder, for which affectors are generated
