@@ -27,8 +27,8 @@ import unittest
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-# Add Eos module to python paths
-sys.path.insert(0, os.path.realpath(os.path.join(script_dir, '..')))
+# As script is in subdirectory. add parent dir to python syspath
+sys.path.insert(0, os.path.abspath(os.path.join(script_dir, '..')))
 
 if __name__ == '__main__':
 
