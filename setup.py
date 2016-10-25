@@ -16,6 +16,6 @@ setup(
     author='Pyfa Team',
     author_email='',
     url='https://github.com/pyfa-org/eos',
-    packages=find_packages(exclude='tests'),
+    packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=install_requires,
 )
