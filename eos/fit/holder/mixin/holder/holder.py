@@ -77,7 +77,7 @@ class HolderBase:
         """
         Return map with effects and their holder-specific data.
 
-        Return value as dictionary:
+        Return data as dictionary:
         {effect ID: (effect=effect object, chance=chance to apply
         on effect activation, status=effect status)}
         """

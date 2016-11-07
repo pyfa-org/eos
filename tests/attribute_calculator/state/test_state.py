@@ -36,6 +36,7 @@ class TestStateSwitching(AttrCalcTestCase):
         src_attr2 = self.ch.attribute(attribute_id=3)
         src_attr3 = self.ch.attribute(attribute_id=4)
         src_attr4 = self.ch.attribute(attribute_id=5)
+        src_attr5 = self.ch.attribute(attribute_id=6)
         modifier_off = Modifier()
         modifier_off.state = State.offline
         modifier_off.scope = Scope.local
@@ -72,16 +73,28 @@ class TestStateSwitching(AttrCalcTestCase):
         modifier_over.domain = Domain.self_
         modifier_over.filter_type = None
         modifier_over.filter_value = None
+        modifier_separate = Modifier()
+        modifier_separate.state = State.active
+        modifier_separate.scope = Scope.local
+        modifier_separate.src_attr = src_attr3.id
+        modifier_separate.operator = Operator.post_mul
+        modifier_separate.tgt_attr = self.tgt_attr.id
+        modifier_separate.domain = Domain.self_
+        modifier_separate.filter_type = None
+        modifier_separate.filter_value = None
         # Overload category will make sure that holder can enter all states
-        effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
-        effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
+        effect1 = self.ch.effect(effect_id=1, category=EffectCategory.overload)
+        effect1.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
+        effect2 = self.ch.effect(effect_id=2, category=EffectCategory.active)
+        effect2.modifiers = (modifier_separate,)
         self.holder = IndependentItem(self.ch.type_(
-            type_id=1, effects=(effect,),
+            type_id=1, effects=(effect1, effect2),
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
-                src_attr3.id: 1.5, src_attr4.id: 1.7
+                src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
             }
         ))
+        self.holder._disabled_effects.add(effect2.id)
 
     def test_fit_offline(self):
         self.holder.state = State.offline

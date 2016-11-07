@@ -50,7 +50,7 @@ class Booster(ImmutableStateMixin):
         """
         Get map with data about booster side-effects.
 
-        Return value as dictionary:
+        Return data as dictionary:
         {side-effect ID: (effect=effect object for this side-effect,
         chance=chance of setting in, status=side-effect status)}
         """
