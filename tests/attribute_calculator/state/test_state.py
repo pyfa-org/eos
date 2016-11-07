@@ -97,69 +97,101 @@ class TestStateSwitching(AttrCalcTestCase):
         self.holder._disabled_effects.add(effect2.id)
 
     def test_fit_offline(self):
+        # Setup
         self.holder.state = State.offline
+        # Action
         self.fit.items.add(self.holder)
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_fit_online(self):
+        # Setup
         self.holder.state = State.online
+        # Action
         self.fit.items.add(self.holder)
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_fit_active(self):
+        # Setup
         self.holder.state = State.active
+        # Action
         self.fit.items.add(self.holder)
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_fit_overloaded(self):
+        # Setup
         self.holder.state = State.overload
+        # Action
         self.fit.items.add(self.holder)
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_switch_up_single(self):
+        # Setup
         self.holder.state = State.offline
+        # Action
         self.fit.items.add(self.holder)
         self.holder.state = State.online
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_switch_up_multiple(self):
+        # Setup
         self.holder.state = State.online
         self.fit.items.add(self.holder)
+        # Action
         self.holder.state = State.overload
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_switch_down_single(self):
+        # Setup
         self.holder.state = State.overload
         self.fit.items.add(self.holder)
+        # Action
         self.holder.state = State.active
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
 
     def test_switch_down_multiple(self):
+        # Setup
         self.holder.state = State.active
         self.fit.items.add(self.holder)
+        # Action
         self.holder.state = State.offline
+        # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
+        # Cleanup
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_link_buffers_empty(self.fit)
