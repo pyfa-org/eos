@@ -28,7 +28,7 @@ class TestHolderMixinTankingResistances(FitTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mixin = BufferTankingMixin()
+        self.mixin = BufferTankingMixin(type_id=None)
         self.mixin.attributes = {}
 
     def test_generic(self):

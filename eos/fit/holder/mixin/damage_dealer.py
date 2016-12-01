@@ -24,6 +24,7 @@ from enum import IntEnum, unique
 from eos.const.eve import Attribute, Effect
 from eos.fit.tuples import DamageTypesTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
+from .holder import HolderBase
 
 
 @unique
@@ -60,7 +61,7 @@ MISSILE_EFFECT_WEAPON_MAP = {
 }
 
 
-class DamageDealerMixin(CooperativeVolatileMixin):
+class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to deal damage (modules, drones).

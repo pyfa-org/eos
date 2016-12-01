@@ -147,8 +147,8 @@ class TestStateSwitching(AttrCalcTestCase):
     def test_switch_up_single(self):
         # Setup
         self.holder.state = State.offline
-        # Action
         self.fit.items.add(self.holder)
+        # Action
         self.holder.state = State.online
         # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)

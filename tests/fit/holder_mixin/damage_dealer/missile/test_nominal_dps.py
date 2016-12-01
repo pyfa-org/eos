@@ -31,7 +31,7 @@ class TestHolderMixinDamageMissileNominalDps(FitTestCase):
 
     def setUp(self):
         super().setUp()
-        mixin = DamageDealerMixin()
+        mixin = DamageDealerMixin(type_id=None)
         mixin.item = Mock()
         mixin.item.default_effect.id = Effect.use_missiles
         mixin.item.default_effect._state = State.active

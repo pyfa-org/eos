@@ -29,7 +29,7 @@ class TestHolderMixinSpecialAttrib(FitTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mixin = DefaultEffectAttribMixin()
+        self.mixin = DefaultEffectAttribMixin(type_id=None)
         self.mixin.attributes = {}
         self.mixin.item = Mock()
 

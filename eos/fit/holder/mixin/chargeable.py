@@ -24,6 +24,7 @@ from eos.fit.holder.container import HolderDescriptorOnHolder
 from eos.fit.holder.item import Charge
 from eos.util.override import OverrideDescriptor
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
+from .holder import HolderBase
 
 
 def _float_to_int(value):
@@ -35,7 +36,7 @@ def _float_to_int(value):
     return int(round(value, 9))
 
 
-class ChargeableMixin(CooperativeVolatileMixin):
+class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with holders which can have charge loaded
     into them.
