@@ -161,7 +161,12 @@ class HolderBase:
             return
         self._request_volatile_cleanup()
         self.__disabled_effects.difference_update(to_enable)
-        self._fit._link_tracker.enable_effects(self, to_enable)
+        try:
+            link_tracker = self._fit._link_tracker
+        except AttributeError:
+            pass
+        else:
+            link_tracker.enable_effects(self, to_enable)
 
     def __disable_effects(self, effect_ids):
         """
@@ -175,7 +180,12 @@ class HolderBase:
         if len(to_disable) == 0:
             return
         self._request_volatile_cleanup()
-        self._fit._link_tracker.disable_effects(self, to_disable)
+        try:
+            link_tracker = self._fit._link_tracker
+        except AttributeError:
+            pass
+        else:
+            link_tracker.disable_effects(self, to_disable)
         self.__disabled_effects.update(to_disable)
 
     # Auxiliary methods

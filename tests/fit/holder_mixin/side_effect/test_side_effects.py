@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
+from unittest.mock import Mock, call
 
 from eos.fit.holder.mixin.side_effect import SideEffectMixin
 from tests.fit.fit_testcase import FitTestCase
@@ -30,6 +30,53 @@ class TestHolderMixinSideEffect(FitTestCase):
     def setUp(self):
         super().setUp()
         self.mixin = SideEffectMixin(type_id=None)
+        self.mixin.item = Mock()
+        self.mixin.item.effects = ()
 
-    def test_disabling(self):
+    def test_data_attached(self):
         pass
+
+    def test_data_detached(self):
+        pass
+
+    def test_disabling_attached(self):
+        # Setup
+        fit_mock = Mock()
+        self.mixin._HolderBase__fit = fit_mock
+        fit_calls_before = len(fit_mock.mock_calls)
+        # Action
+        self.mixin.set_side_effect_status(5, False)
+        # Verification
+        fit_calls_after = len(fit_mock.mock_calls)
+        self.assertEqual(fit_calls_after - fit_calls_before, 2)
+        fit_calls = fit_mock.mock_calls[-2:]
+        self.assertIn(call._request_volatile_cleanup(), fit_calls)
+        self.assertIn(call._link_tracker.disable_effects(self.mixin, {5}), fit_calls)
+
+    def test_disabling_detached(self):
+        # Setup
+        self.mixin._HolderBase__fit = None
+        # Action & verification - we just make sure it doesn't crash
+        self.mixin.set_side_effect_status(16, False)
+
+    def test_enabling_attached(self):
+        # Setup
+        fit_mock = Mock()
+        self.mixin._HolderBase__fit = fit_mock
+        self.mixin.set_side_effect_status(11, False)
+        fit_calls_before = len(fit_mock.mock_calls)
+        # Action
+        self.mixin.set_side_effect_status(11, True)
+        # Verification
+        fit_calls_after = len(fit_mock.mock_calls)
+        self.assertEqual(fit_calls_after - fit_calls_before, 2)
+        fit_calls = fit_mock.mock_calls[-2:]
+        self.assertIn(call._request_volatile_cleanup(), fit_calls)
+        self.assertIn(call._link_tracker.enable_effects(self.mixin, {11}), fit_calls)
+
+    def test_enabling_detached(self):
+        # Setup
+        self.mixin._HolderBase__fit = None
+        self.mixin.set_side_effect_status(99, False)
+        # Action & verification - we just make sure it doesn't crash
+        self.mixin.set_side_effect_status(99, True)
