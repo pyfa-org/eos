@@ -52,6 +52,12 @@ class TestHolderMixinSideEffect(FitTestCase):
         fit_calls = fit_mock.mock_calls[-2:]
         self.assertIn(call._request_volatile_cleanup(), fit_calls)
         self.assertIn(call._link_tracker.disable_effects(self.mixin, {5}), fit_calls)
+        fit_calls_before = len(fit_mock.mock_calls)
+        # Action
+        self.mixin.set_side_effect_status(5, False)
+        # Verification
+        fit_calls_after = len(fit_mock.mock_calls)
+        self.assertEqual(fit_calls_after - fit_calls_before, 0)
 
     def test_disabling_detached(self):
         # Setup
@@ -73,6 +79,12 @@ class TestHolderMixinSideEffect(FitTestCase):
         fit_calls = fit_mock.mock_calls[-2:]
         self.assertIn(call._request_volatile_cleanup(), fit_calls)
         self.assertIn(call._link_tracker.enable_effects(self.mixin, {11}), fit_calls)
+        fit_calls_before = len(fit_mock.mock_calls)
+        # Action
+        self.mixin.set_side_effect_status(11, True)
+        # Verification
+        fit_calls_after = len(fit_mock.mock_calls)
+        self.assertEqual(fit_calls_after - fit_calls_before, 0)
 
     def test_enabling_detached(self):
         # Setup
