@@ -31,13 +31,34 @@ class TestHolderMixinSideEffect(FitTestCase):
         super().setUp()
         self.mixin = SideEffectMixin(type_id=None)
         self.mixin.item = Mock()
-        self.mixin.item.effects = ()
 
-    def test_data_attached(self):
-        pass
-
-    def test_data_detached(self):
-        pass
+    def test_data(self):
+        # Setup
+        effect1 = Mock()
+        effect1.id = 22
+        effect1.fitting_usage_chance_attribute = 2
+        effect2 = Mock()
+        effect2.id = 555
+        effect2.fitting_usage_chance_attribute = 55
+        effect3 = Mock()
+        effect3.id = 999
+        effect3.fitting_usage_chance_attribute = None
+        self.mixin.set_side_effect_status(555, False)
+        self.mixin.item.effects = (effect1, effect2, effect3)
+        self.mixin.attributes = {2: 0.5, 55: 0.1}
+        # Verification
+        side_effects = self.mixin.side_effects
+        self.assertEqual(len(side_effects), 2)
+        self.assertIn(22, side_effects)
+        side_effect1 = side_effects[22]
+        self.assertEqual(side_effect1.effect, effect1)
+        self.assertEqual(side_effect1.chance, 0.5)
+        self.assertEqual(side_effect1.status, True)
+        self.assertIn(555, side_effects)
+        side_effect2 = side_effects[555]
+        self.assertEqual(side_effect2.effect, effect2)
+        self.assertEqual(side_effect2.chance, 0.1)
+        self.assertEqual(side_effect2.status, False)
 
     def test_disabling_attached(self):
         # Setup
