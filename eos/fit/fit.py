@@ -22,6 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import Type
 from eos.data.source import SourceManager, Source
+from eos.util.pubsub import MessageBroker
 from eos.util.repr import make_repr_str
 from .attribute_calculator import LinkTracker
 from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
@@ -31,7 +32,7 @@ from .stat_tracker import StatTracker
 from .holder.item import *
 
 
-class Fit:
+class Fit(MessageBroker):
     """
     Fit holds all fit items and facilities to calculate their attributes.
 
@@ -40,6 +41,7 @@ class Fit:
     """
 
     def __init__(self, source=None):
+        MessageBroker.__init__(self)
         self.__source = None
         # Character-related holder containers
         self.skills = HolderRestrictedSet(self, Skill)

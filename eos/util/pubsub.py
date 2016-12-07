@@ -37,22 +37,24 @@ class MessageBroker:
         # Format: {event class: subscribers}
         self.__subscribers = {}
 
-    def _subscribe(self, subscriber, event_class):
+    def _subscribe(self, subscriber, message_types):
         """
-        Register subscriber for an event class.
+        Register subscriber for passed message types.
         """
-        subscribers = self.__subscribers.setdefault(event_class, set())
-        subscribers.add(subscriber)
+        for message_type in message_types:
+            subscribers = self.__subscribers.setdefault(message_type, set())
+            subscribers.add(subscriber)
 
-    def _unsubscribe(self, subscriber, event_class):
+    def _unsubscribe(self, subscriber, message_types):
         """
-        Unregister subscriber from an event class.
+        Unregister subscriber from passed message types.
         """
-        try:
-            subscribers = self.__subscribers[event_class]
-        except KeyError:
-            return
-        subscribers.discard(subscriber)
+        for message_type in message_types:
+            try:
+                subscribers = self.__subscribers[message_type]
+            except KeyError:
+                continue
+            subscribers.discard(subscriber)
 
     def _publish(self, message):
         """

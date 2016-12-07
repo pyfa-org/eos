@@ -20,11 +20,13 @@
 
 
 from eos.const.eos import State, Scope
+from eos.fit.messages import HolderStateChanged
+from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
 from .register import LinkRegister
 
 
-class LinkTracker:
+class LinkTracker(BaseSubscriber):
     """
     Serve as intermediate layer between fit and holder link register.
     Implements methods which make it easier for fit to add, modify and
@@ -39,6 +41,7 @@ class LinkTracker:
     def __init__(self, fit):
         self._fit = fit
         self._register = LinkRegister(fit)
+        fit._subscribe(self, (HolderStateChanged,))
 
     def get_affectors(self, holder, attr=None):
         """
@@ -76,6 +79,9 @@ class LinkTracker:
         Set with holders
         """
         return self._register.get_affectees(affector)
+
+    def _notify(self, message):
+        print(self, message)
 
     def add_holder(self, holder):
         """

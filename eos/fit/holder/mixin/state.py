@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos.fit.messages import HolderStateChanged
 from .holder import HolderBase
 
 
@@ -65,11 +66,13 @@ class MutableStateMixin(HolderBase):
 
     @state.setter
     def state(self, new_state):
-        if new_state == self.__state:
+        old_state = self.__state
+        if new_state == old_state:
             return
         # When holder is assigned to some fit, ask fit to perform
         # fit-specific state switch of our holder
         fit = self._fit
         if fit is not None:
             fit._holder_state_switch(self, new_state)
+            fit._publish(HolderStateChanged(self, old_state, new_state))
         self.__state = new_state

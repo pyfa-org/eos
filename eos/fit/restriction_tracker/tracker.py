@@ -20,11 +20,13 @@
 
 
 from eos.const.eos import State
+from eos.fit.messages import HolderStateChanged
+from eos.util.pubsub import BaseSubscriber
 from .exception import RegisterValidationError, ValidationError
 from .register import *
 
 
-class RestrictionTracker:
+class RestrictionTracker(BaseSubscriber):
     """
     Track all restrictions applied to fitting and expose functionality
     to validate against various criteria. Actually works as middle-layer
@@ -82,42 +84,7 @@ class RestrictionTracker:
                 MaxGroupActiveRegister(),
             )
         }
-
-    def enable_states(self, holder, states):
-        """
-        Handle state switch upwards.
-
-        Required arguments:
-        holder -- holder, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for initial state
-        """
-        for state in states:
-            # Not all states have corresponding registers,
-            # just skip those which don't
-            try:
-                registers = self.__registers[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.register_holder(holder)
-
-    def disable_states(self, holder, states):
-        """
-        Handle state switch downwards.
-
-        Required arguments:
-        holder -- holder, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for final state
-        """
-        for state in states:
-            try:
-                registers = self.__registers[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.unregister_holder(holder)
+        fit._subscribe(self, (HolderStateChanged,))
 
     def validate(self, skip_checks):
         """
@@ -160,3 +127,42 @@ class RestrictionTracker:
         # failures
         if invalid_holders:
             raise ValidationError(invalid_holders)
+
+    def _notify(self, message):
+        print(self, message)
+
+    def enable_states(self, holder, states):
+        """
+        Handle state switch upwards.
+
+        Required arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for initial state
+        """
+        for state in states:
+            # Not all states have corresponding registers,
+            # just skip those which don't
+            try:
+                registers = self.__registers[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.register_holder(holder)
+
+    def disable_states(self, holder, states):
+        """
+        Handle state switch downwards.
+
+        Required arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for final state
+        """
+        for state in states:
+            try:
+                registers = self.__registers[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.unregister_holder(holder)

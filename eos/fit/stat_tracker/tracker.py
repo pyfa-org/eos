@@ -23,13 +23,15 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
+from eos.fit.messages import HolderStateChanged
 from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
+from eos.util.pubsub import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
 from .container import *
 from .register import *
 
 
-class StatTracker(InheritableVolatileMixin):
+class StatTracker(InheritableVolatileMixin, BaseSubscriber):
     """
     Object which is used as access points for all
     fit statistics.
@@ -39,6 +41,8 @@ class StatTracker(InheritableVolatileMixin):
     """
 
     def __init__(self, fit):
+        InheritableVolatileMixin.__init__(self)
+        BaseSubscriber.__init__(self)
         self._fit = fit
         # Initialize registers
         cpu_reg = CpuUseRegister(fit)
@@ -96,51 +100,7 @@ class StatTracker(InheritableVolatileMixin):
             self.launcher_slots,
             self.launched_drones
         )
-        super().__init__()
-
-    def _enable_states(self, holder, states):
-        """
-        Handle state switch upwards.
-
-        Required arguments:
-        holder -- holder, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for initial state
-        """
-        for state in states:
-            # Not all states have corresponding registers,
-            # just skip those which don't
-            try:
-                registers = self.__registers[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.register_holder(holder)
-
-    def _disable_states(self, holder, states):
-        """
-        Handle state switch downwards.
-
-        Required arguments:
-        holder -- holder, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for final state
-        """
-        for state in states:
-            try:
-                registers = self.__registers[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.unregister_holder(holder)
-
-    def _clear_volatile_attrs(self):
-        """
-        Clear volatile cache for self and all child objects.
-        """
-        for container in self._volatile_containers:
-            container._clear_volatile_attrs()
-        InheritableVolatileMixin._clear_volatile_attrs(self)
+        fit._subscribe(self, (HolderStateChanged,))
 
     @VolatileProperty
     def hp(self):
@@ -277,3 +237,51 @@ class StatTracker(InheritableVolatileMixin):
             return math.ceil(self.agility_factor)
         except TypeError:
             return None
+
+    def _notify(self, message):
+        print(self, message)
+
+    def _enable_states(self, holder, states):
+        """
+        Handle state switch upwards.
+
+        Required arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for initial state
+        """
+        for state in states:
+            # Not all states have corresponding registers,
+            # just skip those which don't
+            try:
+                registers = self.__registers[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.register_holder(holder)
+
+    def _disable_states(self, holder, states):
+        """
+        Handle state switch downwards.
+
+        Required arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for final state
+        """
+        for state in states:
+            try:
+                registers = self.__registers[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.unregister_holder(holder)
+
+    def _clear_volatile_attrs(self):
+        """
+        Clear volatile cache for self and all child objects.
+        """
+        for container in self._volatile_containers:
+            container._clear_volatile_attrs()
+        InheritableVolatileMixin._clear_volatile_attrs(self)
+
