@@ -128,8 +128,41 @@ class RestrictionTracker(BaseSubscriber):
         if invalid_holders:
             raise ValidationError(invalid_holders)
 
+    def _handle_holder_state_change(self, message):
+        """
+        Handle state switch.
+
+        Required arguments:
+        holder -- holder, for which state is switched
+        message -- message with relevant information
+        """
+        holder, old_state, new_state = message
+        min_state = min(old_state, new_state)
+        max_state = max(old_state, new_state)
+        states = set(filter(lambda s: min_state < s <= max_state, State))
+        for state in states:
+            # Not all states have corresponding registers,
+            # just skip those which don't
+            try:
+                registers = self.__registers[state]
+            except KeyError:
+                continue
+            for register in registers:
+                if new_state > old_state:
+                    register.register_holder(holder)
+                else:
+                    register.unregister_holder(holder)
+
+    _handler_map = {
+        HolderStateChanged: _handle_holder_state_change
+    }
+
     def _notify(self, message):
-        print(self, message)
+        try:
+            handler = self._handler_map[type(message)]
+        except KeyError:
+            return
+        handler(self, message)
 
     def enable_states(self, holder, states):
         """

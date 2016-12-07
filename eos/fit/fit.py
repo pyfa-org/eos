@@ -182,11 +182,9 @@ class Fit(MessageBroker):
         # Ask trackers to perform corresponding actions
         if len(enabled_states) > 0:
             self._link_tracker.enable_states(holder, enabled_states)
-            self._restriction_tracker.enable_states(holder, enabled_states)
             self.stats._enable_states(holder, enabled_states)
         elif len(disabled_states) > 0:
             self._link_tracker.disable_states(holder, disabled_states)
-            self._restriction_tracker.disable_states(holder, disabled_states)
             self.stats._disable_states(holder, disabled_states)
 
     @property
