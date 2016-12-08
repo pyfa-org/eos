@@ -19,9 +19,8 @@
 # ===============================================================================
 
 
-from eos.fit.exception import HolderAlreadyAssignedError
 from .base import HolderContainerBase
-from .exception import SlotTakenError
+from .exception import HolderAlreadyAssignedError, SlotTakenError
 
 
 class HolderList(HolderContainerBase):
@@ -35,7 +34,7 @@ class HolderList(HolderContainerBase):
     """
 
     def __init__(self, fit, holder_class):
-        super().__init__(holder_class)
+        HolderContainerBase.__init__(self, holder_class)
         self.__fit = fit
         self.__list = []
 
@@ -61,12 +60,11 @@ class HolderList(HolderContainerBase):
             self._cleanup()
         else:
             try:
-                self.__fit._add_holder(value)
+                self._handle_holder_addition(self.__fit, value)
             except HolderAlreadyAssignedError as e:
                 del self.__list[index]
                 self._cleanup()
                 raise ValueError(*e.args) from e
-        self.__fit._request_volatile_cleanup()
 
     def append(self, holder):
         """
@@ -81,11 +79,10 @@ class HolderList(HolderContainerBase):
         self._check_class(holder)
         self.__list.append(holder)
         try:
-            self.__fit._add_holder(holder)
+            self._handle_holder_addition(self.__fit, holder)
         except HolderAlreadyAssignedError as e:
             del self.__list[-1]
             raise ValueError(*e.args) from e
-        self.__fit._request_volatile_cleanup()
 
     def place(self, index, holder):
         """
@@ -111,12 +108,11 @@ class HolderList(HolderContainerBase):
                 raise SlotTakenError(index)
         self.__list[index] = holder
         try:
-            self.__fit._add_holder(holder)
+            self._handle_holder_addition(self.__fit, holder)
         except HolderAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
-        self.__fit._request_volatile_cleanup()
 
     def equip(self, holder):
         """
@@ -139,12 +135,11 @@ class HolderList(HolderContainerBase):
         else:
             self.__list[index] = holder
         try:
-            self.__fit._add_holder(holder)
+            self._handle_holder_addition(self.__fit, holder)
         except HolderAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
-        self.__fit._request_volatile_cleanup()
 
     def remove(self, value):
         """
@@ -162,9 +157,8 @@ class HolderList(HolderContainerBase):
         else:
             holder = value
             index = self.__list.index(holder)
-        self.__fit._request_volatile_cleanup()
         if holder is not None:
-            self.__fit._remove_holder(holder)
+            self._handle_holder_removal(self.__fit, holder)
         del self.__list[index]
         self._cleanup()
 
@@ -186,8 +180,7 @@ class HolderList(HolderContainerBase):
             index = self.__list.index(holder)
         if holder is None:
             return
-        self.__fit._request_volatile_cleanup()
-        self.__fit._remove_holder(holder)
+        self._handle_holder_removal(self.__fit, holder)
         self.__list[index] = None
         self._cleanup()
 
@@ -197,10 +190,9 @@ class HolderList(HolderContainerBase):
 
     def clear(self):
         """Remove everything from container."""
-        self.__fit._request_volatile_cleanup()
         for holder in self.__list:
             if holder is not None:
-                self.__fit._remove_holder(holder)
+                self._handle_holder_removal(self.__fit, holder)
         self.__list.clear()
 
     def __getitem__(self, index):

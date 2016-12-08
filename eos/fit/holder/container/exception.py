@@ -30,6 +30,22 @@ class HolderContainerError(EosError):
     pass
 
 
+class HolderAlreadyAssignedError(HolderContainerError):
+    """
+    Raised on attempt to add holder, when
+    it's already assigned to fit.
+    """
+    pass
+
+
+class HolderFitMismatchError(HolderContainerError):
+    """
+    Raised during removal of holder, when holder's fit reference
+    does not reference fit holder being removed from.
+    """
+    pass
+
+
 class SlotTakenError(HolderContainerError):
     """
     When attempt to overwrite another holder in ordered container

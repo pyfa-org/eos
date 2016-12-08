@@ -19,6 +19,10 @@
 # ===============================================================================
 
 
+from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
+from eos.fit.messages import HolderAdded, HolderRemoved
+
+
 class HolderContainerBase:
     """
     Base class for any containers which are intended
@@ -35,6 +39,28 @@ class HolderContainerBase:
 
     def __init__(self, holder_class):
         self.__holder_class = holder_class
+
+    def _handle_holder_addition(self, fit, holder):
+        """
+        Do all the generic work to add holder to container.
+        Must be called after holder has been assigned to
+        specific container.
+        """
+        if holder._fit is not None:
+            raise HolderAlreadyAssignedError(holder)
+        holder._fit = fit
+        fit._publish(HolderAdded(holder))
+
+    def _handle_holder_removal(self, fit, holder):
+        """
+        Do all the generic work to remove holder to container.
+        Must be called before holder has been removed from
+        specific container.
+        """
+        if holder._fit is not fit:
+            raise HolderFitMismatchError(holder)
+        fit._publish(HolderRemoved(holder))
+        holder._fit = None
 
     def _check_class(self, holder, allow_none=False):
         """

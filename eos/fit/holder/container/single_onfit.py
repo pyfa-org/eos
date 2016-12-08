@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
-from eos.fit.exception import HolderAlreadyAssignedError
 from .base import HolderContainerBase
+from .exception import HolderAlreadyAssignedError
 
 
 class HolderDescriptorOnFit(HolderContainerBase):
@@ -49,15 +49,13 @@ class HolderDescriptorOnFit(HolderContainerBase):
         attr_name = self.__attr_name
         old_holder = getattr(instance, attr_name, None)
         if old_holder is not None:
-            instance._request_volatile_cleanup()
-            instance._remove_holder(old_holder)
+            self._handle_holder_removal(instance, old_holder)
         setattr(instance, attr_name, new_holder)
         if new_holder is not None:
             try:
-                instance._add_holder(new_holder)
+                self._handle_holder_addition(instance, new_holder)
             except HolderAlreadyAssignedError as e:
                 setattr(instance, attr_name, old_holder)
                 if old_holder is not None:
-                    instance._add_holder(old_holder)
+                    self._handle_holder_addition(instance, old_holder)
                 raise ValueError(*e.args) from e
-            instance._request_volatile_cleanup()

@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
-from eos.fit.exception import HolderAlreadyAssignedError
 from .base import HolderContainerBase
+from .exception import HolderAlreadyAssignedError
 
 
 class HolderSet(HolderContainerBase):
@@ -34,7 +34,7 @@ class HolderSet(HolderContainerBase):
     """
 
     def __init__(self, fit, holder_class):
-        super().__init__(holder_class)
+        HolderContainerBase.__init__(self, holder_class)
         self.__fit = fit
         self.__set = set()
 
@@ -51,11 +51,10 @@ class HolderSet(HolderContainerBase):
         self._check_class(holder)
         self.__set.add(holder)
         try:
-            self.__fit._add_holder(holder)
+            self._handle_holder_addition(self.__fit, holder)
         except HolderAlreadyAssignedError as e:
             self.__set.remove(holder)
-            raise ValueError(*e.args) from e
-        self.__fit._request_volatile_cleanup()
+            raise ValueError from e
 
     def remove(self, holder):
         """
@@ -67,15 +66,13 @@ class HolderSet(HolderContainerBase):
         """
         if holder not in self.__set:
             raise KeyError(holder)
-        self.__fit._request_volatile_cleanup()
-        self.__fit._remove_holder(holder)
+        self._handle_holder_removal(self.__fit, holder)
         self.__set.remove(holder)
 
     def clear(self):
         """Remove everything from container."""
-        self.__fit._request_volatile_cleanup()
         for holder in self.__set:
-            self.__fit._remove_holder(holder)
+            self._handle_holder_removal(self.__fit, holder)
         self.__set.clear()
 
     def __iter__(self):

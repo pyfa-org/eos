@@ -25,7 +25,7 @@ from eos.data.source import SourceManager, Source
 from eos.util.pubsub import MessageBroker
 from eos.util.repr import make_repr_str
 from .attribute_calculator import LinkTracker
-from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
+from .holder.container.exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
 from .restriction_tracker import RestrictionTracker
 from .stat_tracker import StatTracker

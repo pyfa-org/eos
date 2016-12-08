@@ -22,4 +22,8 @@
 from collections import namedtuple
 
 
+HolderAdded = namedtuple('HolderAdded', ('holder',))
+HolderRemoved = namedtuple('HolderRemoved', ('holder',))
 HolderStateChanged = namedtuple('HolderStateChanged', ('holder', 'old', 'new'))
+EffectStateChanged = namedtuple('EffectStateChanged', ('holder', 'effect', 'old', 'new'))
+SourceChanged = namedtuple('SourceChanged', ())
