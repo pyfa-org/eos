@@ -46,9 +46,21 @@ class HolderContainerBase:
         Must be called after holder has been assigned to
         specific container.
         """
+        # Make sure we're not adding holder which already
+        # belongs to other fit
         if holder._fit is not None:
             raise HolderAlreadyAssignedError(holder)
+        # Finalize linking holders before handling sub-holders
+        # and firing an event. This way we ensure that all
+        # services  which may rely on fit/holder links will
+        # work properly
         holder._fit = fit
+        # Do not check if charge has proper fit link, because
+        # consistency is kept by charge descriptor. We should
+        # never get an exception here
+        charge = getattr(holder, 'charge', None)
+        if charge is not None:
+            self._handle_holder_addition(fit, charge)
         fit._publish(HolderAdded(holder))
 
     def _handle_holder_removal(self, fit, holder):
@@ -57,9 +69,16 @@ class HolderContainerBase:
         Must be called before holder has been removed from
         specific container.
         """
+        # If everything is alright, this should never
+        # be raised regardless of user actions
         if holder._fit is not fit:
             raise HolderFitMismatchError(holder)
+        # Fire removal event before unlinking, same reason
+        # as in addition handling method
         fit._publish(HolderRemoved(holder))
+        charge = getattr(holder, 'charge', None)
+        if charge is not None:
+            self._handle_holder_removal(fit, charge)
         holder._fit = None
 
     def _check_class(self, holder, allow_none=False):
