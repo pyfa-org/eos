@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State, Scope
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged
+from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
 from .register import LinkRegister
@@ -158,6 +158,9 @@ class LinkTracker(BaseSubscriber):
         self._register.unregister_affectee(message.holder)
 
     def _handle_holder_state_change(self, message):
+        """
+        Enable/disable affectors based on state change direction.
+        """
         holder, old_state, new_state = message
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
@@ -166,10 +169,36 @@ class LinkTracker(BaseSubscriber):
             states = set(filter(lambda s: new_state < s <= old_state, State))
             self.__disable_states(holder, states)
 
+    def _handle_holder_effects_enabling(self, message):
+        """
+        Enable effects carried by the holder.
+        """
+        processed_states = set(filter(lambda s: s <= message.holder.state, State))
+        processed_scopes = (Scope.local,)
+        affectors = self.__generate_affectors(
+            message.holder, effect_filter=message.effects, state_filter=processed_states,
+            scope_filter=processed_scopes
+        )
+        self.__enable_affectors(affectors)
+
+    def _handle_holder_effects_disabling(self, message):
+        """
+        Disable effects carried by the holder.
+        """
+        processed_states = set(filter(lambda s: s <= message.holder.state, State))
+        processed_scopes = (Scope.local,)
+        affectors = self.__generate_affectors(
+            message.holder, effect_filter=message.effects, state_filter=processed_states,
+            scope_filter=processed_scopes
+        )
+        self.__disable_affectors(affectors)
+
     _handler_map = {
         HolderAdded: _handle_holder_addition,
         HolderRemoved: _handle_holder_removal,
-        HolderStateChanged: _handle_holder_state_change
+        HolderStateChanged: _handle_holder_state_change,
+        EffectsEnabled: _handle_holder_effects_enabling,
+        EffectsDisabled: _handle_holder_effects_disabling
     }
 
     def _notify(self, message):
@@ -215,38 +244,6 @@ class LinkTracker(BaseSubscriber):
         affectors = self.__generate_affectors(
             holder, effect_filter=processed_effects,
             state_filter=states, scope_filter=processed_scopes
-        )
-        self.__disable_affectors(affectors)
-
-    def enable_effects(self, holder, effect_ids):
-        """
-        Enable effects carried by the holder.
-
-        Required arguments:
-        holder -- holder for which we're enabling effect
-        effect_ids -- iterable with IDs of effects to enable
-        """
-        processed_states = set(filter(lambda s: s <= holder.state, State))
-        processed_scopes = (Scope.local,)
-        affectors = self.__generate_affectors(
-            holder, effect_filter=effect_ids, state_filter=processed_states,
-            scope_filter=processed_scopes
-        )
-        self.__enable_affectors(affectors)
-
-    def disable_effects(self, holder, effect_ids):
-        """
-        Disable effects carried by the holder.
-
-        Required arguments:
-        holder -- holder for which we're disabling effect
-        effect_ids -- iterable with IDs of effects to disable
-        """
-        processed_states = set(filter(lambda s: s <= holder.state, State))
-        processed_scopes = (Scope.local,)
-        affectors = self.__generate_affectors(
-            holder, effect_filter=effect_ids, state_filter=processed_states,
-            scope_filter=processed_scopes
         )
         self.__disable_affectors(affectors)
 

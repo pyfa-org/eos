@@ -23,6 +23,7 @@ from collections import namedtuple
 from random import random
 
 from eos.fit.attribute_calculator import MutableAttributeMap
+from eos.fit.messages import EffectsEnabled, EffectsDisabled
 from .null_source import NullSourceItem
 
 
@@ -159,14 +160,9 @@ class HolderBase:
         to_enable = self.__disabled_effects.intersection(effect_ids)
         if len(to_enable) == 0:
             return
-        self._request_volatile_cleanup()
         self.__disabled_effects.difference_update(to_enable)
-        try:
-            link_tracker = self._fit._link_tracker
-        except AttributeError:
-            pass
-        else:
-            link_tracker.enable_effects(self, to_enable)
+        if self.__fit is not None:
+            self.__fit._publish(EffectsEnabled(self, to_enable))
 
     def __disable_effects(self, effect_ids):
         """
@@ -179,13 +175,8 @@ class HolderBase:
         to_disable = set(effect_ids).difference(self.__disabled_effects)
         if len(to_disable) == 0:
             return
-        self._request_volatile_cleanup()
-        try:
-            link_tracker = self._fit._link_tracker
-        except AttributeError:
-            pass
-        else:
-            link_tracker.disable_effects(self, to_disable)
+        if self.__fit is not None:
+            self.__fit._publish(EffectsDisabled(self, to_disable))
         self.__disabled_effects.update(to_disable)
 
     # Auxiliary methods
@@ -207,11 +198,3 @@ class HolderBase:
             self.item = NullSourceItem
         else:
             self.item = type_getter(self._type_id)
-
-    def _request_volatile_cleanup(self):
-        """
-        Request fit to clear all fit volatile data.
-        """
-        fit = self._fit
-        if fit is not None:
-            fit._request_volatile_cleanup()

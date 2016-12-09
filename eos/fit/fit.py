@@ -137,30 +137,6 @@ class Fit(MessageBroker):
         self._volatile_holders.discard(holder)
         holder._fit = None
 
-    def _enable_services(self, holder):
-        """
-        Make all of the fit services aware of passed holder.
-        Should be called when fit has valid source as services
-        cannot work without it.
-        """
-        self._link_tracker.add_holder(holder)
-        # Switch states upwards up to holder's state
-        enabled_states = set(filter(lambda s: s <= holder.state, State))
-        if len(enabled_states) > 0:
-            self._link_tracker.enable_states(holder, enabled_states)
-            self._restriction_tracker.enable_states(holder, enabled_states)
-            self.stats._enable_states(holder, enabled_states)
-
-    def _disable_services(self, holder):
-        """Remove holder from all source-relying services."""
-        # Switch states downwards from current holder's state
-        disabled_states = set(filter(lambda s: s <= holder.state, State))
-        if len(disabled_states) > 0:
-            self.stats._disable_states(holder, disabled_states)
-            self._restriction_tracker.disable_states(holder, disabled_states)
-            self._link_tracker.disable_states(holder, disabled_states)
-        self._link_tracker.remove_holder(holder)
-
     def _holder_state_switch(self, holder, new_state):
         """
         Handle fit-specific part of holder state switch.
@@ -175,17 +151,6 @@ class Fit(MessageBroker):
         if self.source is None:
             return
         self._request_volatile_cleanup()
-        # Get states which are passed during enabling/disabling
-        # into single set (other should stay empty)
-        enabled_states = set(filter(lambda s: holder.state < s <= new_state, State))
-        disabled_states = set(filter(lambda s: new_state < s <= holder.state, State))
-        # Ask trackers to perform corresponding actions
-        if len(enabled_states) > 0:
-            self._link_tracker.enable_states(holder, enabled_states)
-            self.stats._enable_states(holder, enabled_states)
-        elif len(disabled_states) > 0:
-            self._link_tracker.disable_states(holder, disabled_states)
-            self.stats._disable_states(holder, disabled_states)
 
     @property
     def source(self):
