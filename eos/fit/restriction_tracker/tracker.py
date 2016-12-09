@@ -84,7 +84,7 @@ class RestrictionTracker(BaseSubscriber):
                 MaxGroupActiveRegister(),
             )
         }
-        fit._subscribe(self, (HolderStateChanged,))
+        fit._subscribe(self, self._handler_map.keys())
 
     def validate(self, skip_checks):
         """
