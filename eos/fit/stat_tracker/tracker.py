@@ -23,7 +23,7 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.messages import HolderStateChanged
+from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged
 from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.pubsub import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
@@ -100,7 +100,7 @@ class StatTracker(InheritableVolatileMixin, BaseSubscriber):
             self.launcher_slots,
             self.launched_drones
         )
-        fit._subscribe(self, (HolderStateChanged,))
+        fit._subscribe(self, self._handler_map.keys())
 
     @VolatileProperty
     def hp(self):
@@ -238,10 +238,51 @@ class StatTracker(InheritableVolatileMixin, BaseSubscriber):
         except TypeError:
             return None
 
-    def _notify(self, message):
-        print(self, message)
+    def _clear_volatile_attrs(self):
+        """
+        Clear volatile cache for self and all child objects.
+        """
+        for container in self._volatile_containers:
+            container._clear_volatile_attrs()
+        InheritableVolatileMixin._clear_volatile_attrs(self)
 
-    def _enable_states(self, holder, states):
+    # Message handling
+    def _handle_holder_addition(self, message):
+        states = set(filter(lambda s: s <= message.holder.state, State))
+        self.__enable_states(message.holder, states)
+
+    def _handle_holder_removal(self, message):
+        states = set(filter(lambda s: s <= message.holder.state, State))
+        self.__disable_states(message.holder, states)
+
+    def _handle_holder_state_change(self, message):
+        holder, old_state, new_state = message
+        if new_state > old_state:
+            states = set(filter(lambda s: old_state < s <= new_state, State))
+            self.__enable_states(holder, states)
+        elif old_state < new_state:
+            states = set(filter(lambda s: new_state < s <= old_state, State))
+            self.__disable_states(holder, states)
+
+    _handler_map = {
+        HolderAdded: _handle_holder_addition,
+        HolderRemoved: _handle_holder_removal,
+        HolderStateChanged: _handle_holder_state_change
+    }
+
+    def _notify(self, message):
+        # Attribute calculations need source for base attributes
+        # and attributes metadata
+        if self._fit.source is None:
+            return
+        try:
+            handler = self._handler_map[type(message)]
+        except KeyError:
+            return
+        handler(self, message)
+
+    # Private methods for message handlers
+    def __enable_states(self, holder, states):
         """
         Handle state switch upwards.
 
@@ -260,7 +301,7 @@ class StatTracker(InheritableVolatileMixin, BaseSubscriber):
             for register in registers:
                 register.register_holder(holder)
 
-    def _disable_states(self, holder, states):
+    def __disable_states(self, holder, states):
         """
         Handle state switch downwards.
 
@@ -276,12 +317,3 @@ class StatTracker(InheritableVolatileMixin, BaseSubscriber):
                 continue
             for register in registers:
                 register.unregister_holder(holder)
-
-    def _clear_volatile_attrs(self):
-        """
-        Clear volatile cache for self and all child objects.
-        """
-        for container in self._volatile_containers:
-            container._clear_volatile_attrs()
-        InheritableVolatileMixin._clear_volatile_attrs(self)
-

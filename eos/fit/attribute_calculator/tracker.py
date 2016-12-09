@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State, Scope
-from eos.fit.messages import HolderStateChanged
+from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
 from .register import LinkRegister
@@ -41,7 +41,7 @@ class LinkTracker(BaseSubscriber):
     def __init__(self, fit):
         self._fit = fit
         self._register = LinkRegister(fit)
-        fit._subscribe(self, (HolderStateChanged,))
+        fit._subscribe(self, self._handler_map.keys())
 
     def get_affectors(self, holder, attr=None):
         """
@@ -79,93 +79,6 @@ class LinkTracker(BaseSubscriber):
         Set with holders
         """
         return self._register.get_affectees(affector)
-
-    def _notify(self, message):
-        print(self, message)
-
-    def add_holder(self, holder):
-        """
-        Put the holder under influence of registered affectors.
-
-        Required arguments:
-        holder -- holder which is added to tracker
-        """
-        self._register.register_affectee(holder)
-
-    def remove_holder(self, holder):
-        """
-        Remove the holder from influence of registered affectors.
-
-        Required arguments:
-        holder -- holder which is removed from tracker
-        """
-        self._register.unregister_affectee(holder)
-
-    def enable_states(self, holder, states):
-        """
-        Handle state switch upwards.
-
-        Required arguments:
-        holder -- holder, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for initial state
-        """
-        processed_effects = holder._enabled_effects
-        processed_scopes = (Scope.local,)
-        affectors = self.__generate_affectors(
-            holder, effect_filter=processed_effects,
-            state_filter=states, scope_filter=processed_scopes
-        )
-        self.__enable_affectors(affectors)
-
-    def disable_states(self, holder, states):
-        """
-        Handle state switch downwards.
-
-        Required arguments:
-        holder -- holder, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for final state
-        """
-        processed_effects = holder._enabled_effects
-        processed_scopes = (Scope.local,)
-        affectors = self.__generate_affectors(
-            holder, effect_filter=processed_effects,
-            state_filter=states, scope_filter=processed_scopes
-        )
-        self.__disable_affectors(affectors)
-
-    def enable_effects(self, holder, effect_ids):
-        """
-        Enable effects carried by the holder.
-
-        Required arguments:
-        holder -- holder for which we're enabling effect
-        effect_ids -- iterable with IDs of effects to enable
-        """
-        processed_states = set(filter(lambda s: s <= holder.state, State))
-        processed_scopes = (Scope.local,)
-        affectors = self.__generate_affectors(
-            holder, effect_filter=effect_ids, state_filter=processed_states,
-            scope_filter=processed_scopes
-        )
-        self.__enable_affectors(affectors)
-
-    def disable_effects(self, holder, effect_ids):
-        """
-        Disable effects carried by the holder.
-
-        Required arguments:
-        holder -- holder for which we're disabling effect
-        effect_ids -- iterable with IDs of effects to disable
-        """
-        processed_states = set(filter(lambda s: s <= holder.state, State))
-        processed_scopes = (Scope.local,)
-        affectors = self.__generate_affectors(
-            holder, effect_filter=effect_ids, state_filter=processed_states,
-            scope_filter=processed_scopes
-        )
-        self.__disable_affectors(affectors)
 
     def clear_holder_attribute_dependents(self, holder, attr):
         """
@@ -224,6 +137,118 @@ class LinkTracker(BaseSubscriber):
                 affector = Affector(holder, modifier)
                 affectors.add(affector)
         return affectors
+
+    # Message handling
+    def _handle_holder_addition(self, message):
+        """
+        Put the holder under influence of registered affectors
+        and enable its affectors according to its state.
+        """
+        self._register.register_affectee(message.holder)
+        states = set(filter(lambda s: s <= message.holder.state, State))
+        self.__enable_states(message.holder, states)
+
+    def _handle_holder_removal(self, message):
+        """
+        Disable holder affectors and remove it from influence
+        of of registered affectors.
+        """
+        states = set(filter(lambda s: s <= message.holder.state, State))
+        self.__disable_states(message.holder, states)
+        self._register.unregister_affectee(message.holder)
+
+    def _handle_holder_state_change(self, message):
+        holder, old_state, new_state = message
+        if new_state > old_state:
+            states = set(filter(lambda s: old_state < s <= new_state, State))
+            self.__enable_states(holder, states)
+        elif old_state < new_state:
+            states = set(filter(lambda s: new_state < s <= old_state, State))
+            self.__disable_states(holder, states)
+
+    _handler_map = {
+        HolderAdded: _handle_holder_addition,
+        HolderRemoved: _handle_holder_removal,
+        HolderStateChanged: _handle_holder_state_change
+    }
+
+    def _notify(self, message):
+        # Attribute calculations need source for base attributes
+        # and attributes metadata
+        if self._fit.source is None:
+            return
+        try:
+            handler = self._handler_map[type(message)]
+        except KeyError:
+            return
+        handler(self, message)
+
+    # Private methods for message handlers
+    def __enable_states(self, holder, states):
+        """
+        Handle state switch upwards.
+
+        Required arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for initial state
+        """
+        processed_effects = holder._enabled_effects
+        processed_scopes = (Scope.local,)
+        affectors = self.__generate_affectors(
+            holder, effect_filter=processed_effects,
+            state_filter=states, scope_filter=processed_scopes
+        )
+        self.__enable_affectors(affectors)
+
+    def __disable_states(self, holder, states):
+        """
+        Handle state switch downwards.
+
+        Required arguments:
+        holder -- holder, for which states are switched
+        states -- iterable with states, which are passed
+        during state switch, except for final state
+        """
+        processed_effects = holder._enabled_effects
+        processed_scopes = (Scope.local,)
+        affectors = self.__generate_affectors(
+            holder, effect_filter=processed_effects,
+            state_filter=states, scope_filter=processed_scopes
+        )
+        self.__disable_affectors(affectors)
+
+    def enable_effects(self, holder, effect_ids):
+        """
+        Enable effects carried by the holder.
+
+        Required arguments:
+        holder -- holder for which we're enabling effect
+        effect_ids -- iterable with IDs of effects to enable
+        """
+        processed_states = set(filter(lambda s: s <= holder.state, State))
+        processed_scopes = (Scope.local,)
+        affectors = self.__generate_affectors(
+            holder, effect_filter=effect_ids, state_filter=processed_states,
+            scope_filter=processed_scopes
+        )
+        self.__enable_affectors(affectors)
+
+    def disable_effects(self, holder, effect_ids):
+        """
+        Disable effects carried by the holder.
+
+        Required arguments:
+        holder -- holder for which we're disabling effect
+        effect_ids -- iterable with IDs of effects to disable
+        """
+        processed_states = set(filter(lambda s: s <= holder.state, State))
+        processed_scopes = (Scope.local,)
+        affectors = self.__generate_affectors(
+            holder, effect_filter=effect_ids, state_filter=processed_states,
+            scope_filter=processed_scopes
+        )
+        self.__disable_affectors(affectors)
 
     def __enable_affectors(self, affectors):
         """

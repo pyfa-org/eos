@@ -20,7 +20,6 @@
 
 
 from .base import HolderContainerBase
-from .exception import HolderAlreadyAssignedError
 
 
 class HolderDescriptorOnHolder(HolderContainerBase):
