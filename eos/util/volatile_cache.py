@@ -52,7 +52,7 @@ class InheritableVolatileMixin:
 
     def _clear_volatile_attrs(self):
         """
-        Remove all the caches values which were
+        Remove all the cached values which were
         stored since the last cleanup.
         """
         for attr_name in self._volatile_attrs:
@@ -81,7 +81,7 @@ class CooperativeVolatileMixin:
 
     def _clear_volatile_attrs(self):
         """
-        Remove all the caches values which were
+        Remove all the cached values which were
         stored since the last cleanup.
 
         Attempt to call next method in MRO, do nothing
@@ -93,6 +93,7 @@ class CooperativeVolatileMixin:
             except AttributeError:
                 pass
         self._volatile_attrs.clear()
+        # Attempt to call next implementation
         next_in_mro = super()
         try:
             method = next_in_mro._clear_volatile_attrs
@@ -100,3 +101,14 @@ class CooperativeVolatileMixin:
             pass
         else:
             method()
+
+class VolatileManager:
+    """
+    Class which tracks objects with volatile data
+    and clears this data when requested.
+    """
+
+    def __init__(self, msg_broker, msg_classes):
+        self.__msg_broker = msg_broker
+        self.__msg_classes = msg_classes
+        self.__volatile_objects = set()
