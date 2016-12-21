@@ -73,6 +73,5 @@ class MutableStateMixin(HolderBase):
         # fit-specific state switch of our holder
         fit = self._fit
         if fit is not None:
-            fit._holder_state_switch(self, new_state)
             fit._publish(HolderStateChanged(self, old_state, new_state))
         self.__state = new_state

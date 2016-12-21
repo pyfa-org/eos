@@ -19,17 +19,17 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
 from eos.const.eve import Type
 from eos.data.source import SourceManager, Source
 from eos.util.pubsub import MessageBroker
 from eos.util.repr import make_repr_str
 from .attribute_calculator import LinkTracker
-from .holder.container.exception import HolderAlreadyAssignedError, HolderFitMismatchError
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
+from .holder.container.exception import HolderAlreadyAssignedError, HolderFitMismatchError
+from .holder.item import *
 from .restriction_tracker import RestrictionTracker
 from .stat_tracker import StatTracker
-from .holder.item import *
+from .volatile import FitVolatileManager
 
 
 class Fit(MessageBroker):
@@ -58,11 +58,11 @@ class Fit(MessageBroker):
         self.drones = HolderSet(self, Drone)
         # Service containers
         self._holders = set()
-        self._volatile_holders = set()
         # Initialize services
         self._link_tracker = LinkTracker(self)  # Tracks links between holders assigned to fit
         self._restriction_tracker = RestrictionTracker(self)  # Tracks various restrictions related to given fitting
         self.stats = StatTracker(self)  # Access point for all the fitting stats
+        self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))  # Handles volatile cache cleanup
         # Use default source, unless specified otherwise
         if source is None:
             source = SourceManager.default
@@ -87,22 +87,6 @@ class Fit(MessageBroker):
         ValidationError -- raised when validation fails
         """
         self._restriction_tracker.validate(skip_checks)
-
-    def _request_volatile_cleanup(self, source_check=True):
-        """
-        Clear all the 'cached', but volatile stats, which should
-        be no longer actual on any fit/holder changes. Called
-        automatically be eos components when needed.
-
-        Optional arguments:
-        source_check -- check if fit has source assigned, do not
-        clean if it doesn't. Default is True (do check).
-        """
-        if source_check is True and self.source is None:
-            return
-        self.stats._clear_volatile_attrs()
-        for holder in self._volatile_holders:
-            holder._clear_volatile_attrs()
 
     def _add_holder(self, holder):
         """Handle adding of holder to fit."""
@@ -137,21 +121,6 @@ class Fit(MessageBroker):
         self._volatile_holders.discard(holder)
         holder._fit = None
 
-    def _holder_state_switch(self, holder, new_state):
-        """
-        Handle fit-specific part of holder state switch.
-
-        Required arguments:
-        holder -- holder, for which state should be switched
-        new_state -- state, which holder should take
-        """
-        # At the moment only source-dependent services are affected
-        # by state switch, thus we have nothing to do if fit doesn't
-        # have source assigned
-        if self.source is None:
-            return
-        self._request_volatile_cleanup()
-
     @property
     def source(self):
         return self.__source
@@ -172,7 +141,6 @@ class Fit(MessageBroker):
                 self._disable_services(holder)
         # Assign new source and feed new data to all holders
         self.__source = new_source
-        self._request_volatile_cleanup(source_check=False)
         for holder in self._holders:
             holder._refresh_source()
         # Enable source-dependent services

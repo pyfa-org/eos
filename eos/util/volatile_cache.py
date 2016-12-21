@@ -101,14 +101,3 @@ class CooperativeVolatileMixin:
             pass
         else:
             method()
-
-class VolatileManager:
-    """
-    Class which tracks objects with volatile data
-    and clears this data when requested.
-    """
-
-    def __init__(self, msg_broker, msg_classes):
-        self.__msg_broker = msg_broker
-        self.__msg_classes = msg_classes
-        self.__volatile_objects = set()
