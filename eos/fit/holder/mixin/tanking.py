@@ -21,7 +21,6 @@
 
 from eos.const.eve import Attribute
 from eos.fit.tuples import TankingLayers, TankingLayersTotal, DamageTypes
-from eos.util.override import OverrideDescriptor
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
 
@@ -30,14 +29,24 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to sustain damage (ships, drones, maybe some charges).
-
-    Cooperative methods:
-    __init__
     """
 
-    def __init__(self, **kwargs):
-        self.hp = OverridableHp(self)
-        super().__init__(**kwargs)
+    @VolatileProperty
+    def hp(self):
+        """
+        Access point to fetch hp of item. Provides following data:
+
+        .hull, .armor, .shield -- number, or None if data can't
+        .total -- total amount of HP, if data for
+        some layer is not available, defaults hp of this layer to 0
+        """
+        hull = self.attributes.get(Attribute.hp, None)
+        armor = self.attributes.get(Attribute.armor_hp, None)
+        shield = self.attributes.get(Attribute.shield_capacity, None)
+        total = (hull or 0) + (armor or 0) + (shield or 0)
+        if total == 0 and hull is None and armor is None and shield is None:
+            total = None
+        return TankingLayersTotal(hull=hull, armor=armor, shield=shield, total=total)
 
     @VolatileProperty
     def resistances(self):
@@ -175,42 +184,3 @@ class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):
             layer_resists.explosive or 0
         )
         return layer_hp / (1 - resistance)
-
-
-class OverridableHp:
-    """
-    Access point to fetch hp of item. Provides following data:
-
-    .hull, .armor, .shield -- number (overridable), or None if data can't
-    be fetched
-    .hull_max, .armor_max, .shield_max -- number, or None if data can't
-    be fetched
-    .total -- total amount of HP based on overridable data, if data for
-    some layer is not available, defaults hp of this layer to 0
-    """
-
-    def __init__(self, holder):
-        self.__holder = holder
-
-    @property
-    def hull_max(self):
-        return self.__holder.attributes.get(Attribute.hp, None)
-
-    @property
-    def armor_max(self):
-        return self.__holder.attributes.get(Attribute.armor_hp, None)
-
-    @property
-    def shield_max(self):
-        return self.__holder.attributes.get(Attribute.shield_capacity, None)
-
-    hull = OverrideDescriptor('hull_max', class_check=(int, float))
-    armor = OverrideDescriptor('armor_max', class_check=(int, float))
-    shield = OverrideDescriptor('shield_max', class_check=(int, float))
-
-    @property
-    def total(self):
-        total_hp = (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
-        if total_hp == 0 and self.hull is None and self.armor is None and self.shield is None:
-            total_hp = None
-        return total_hp

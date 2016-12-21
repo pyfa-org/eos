@@ -22,7 +22,6 @@
 from eos.const.eve import Attribute, Effect
 from eos.fit.holder.container import HolderDescriptorOnHolder
 from eos.fit.holder.item import Charge
-from eos.util.override import OverrideDescriptor
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder import HolderBase
 
@@ -55,7 +54,7 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
     charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
 
     @VolatileProperty
-    def charge_quantity_max(self):
+    def charge_quantity(self):
         """
         Return max quantity of loadable charges as integer, based
         on the container capacity and charge volume. If any of these
@@ -70,17 +69,8 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         charges = _float_to_int(container_capacity / charge_volume)
         return charges
 
-    charge_quantity = OverrideDescriptor('charge_quantity_max', class_check=int)
-
     @VolatileProperty
-    def fully_charged_cycles_max(self):
-        return self.__get_fully_charged_cycles(self.charge_quantity_max)
-
-    @VolatileProperty
-    def fully_charged_cycles(self):
-        return self.__get_fully_charged_cycles(self.charge_quantity)
-
-    def __get_fully_charged_cycles(self, charge_quantity):
+    def charged_cycles(self):
         """
         Return amount of cycles this container can run until charges are
         depleted. If amount of cycles can vary, mean value if taken
@@ -88,9 +78,6 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         cycle is more than left in container, are ignored (possible with
         ancillary armor repairers). None is returned if container can
         cycle without ammo consumption.
-
-        Required arguments:
-        charge_quantity -- run calculations against this amount of charges
         """
         # Various types of items consume charges during cycle,
         # detect them based on presence of charge_rate attribute
@@ -104,24 +91,24 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
             pass
         else:
             if Attribute.charge_rate in item_attribs:
-                return self.__get_ammo_full_cycles(charge_quantity)
+                return self.__get_ammo_cycles()
         # Detect crystal-based items using effects
         try:
             defeff_id = holder_item.default_effect.id
         except AttributeError:
             defeff_id = None
         if defeff_id in (Effect.target_attack, Effect.mining_laser):
-            return self.__get_crystal_mean_cycles(charge_quantity)
+            return self.__get_crystal_mean_cycles()
         return None
 
-    def __get_ammo_full_cycles(self, charge_quantity):
+    def __get_ammo_cycles(self):
         charge_rate = self.attributes.get(Attribute.charge_rate)
-        if not charge_rate or charge_quantity is None:
+        if not charge_rate or self.charge_quantity is None:
             return None
-        cycles = charge_quantity // int(charge_rate)
+        cycles = self.charge_quantity // int(charge_rate)
         return cycles
 
-    def __get_crystal_mean_cycles(self, charge_quantity):
+    def __get_crystal_mean_cycles(self):
         charge_attribs = self.charge.attributes
         damageable = charge_attribs.get(Attribute.crystals_get_damaged)
         hp = charge_attribs.get(Attribute.hp)
@@ -131,10 +118,10 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
             not damageable or
             hp is None or chance is None or
             damage is None or
-            charge_quantity is None
+            self.charge_quantity is None
         ):
             return None
-        cycles = _float_to_int(hp / damage / chance) * charge_quantity
+        cycles = _float_to_int(hp / damage / chance) * self.charge_quantity
         return cycles
 
     @VolatileProperty
