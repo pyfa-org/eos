@@ -19,7 +19,17 @@
 # ===============================================================================
 
 
-from collections import namedtuple
+from collections import namedtuple\
+
+
+__all__ = [
+    'HolderAdded',
+    'HolderRemoved',
+    'HolderStateChanged',
+    'EffectsEnabled',
+    'EffectsDisabled',
+    'SourceChanged'
+]
 
 
 HolderAdded = namedtuple('HolderAdded', ('holder',))

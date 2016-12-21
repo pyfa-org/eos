@@ -19,8 +19,7 @@
 # ===============================================================================
 
 
-from eos.fit.messages import (HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled,
-    EffectsDisabled, SourceChanged)
+from .messages import *
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 
 
@@ -95,4 +94,3 @@ class FitVolatileManager:
         """
         for volatile in self.__volatile_objects:
             volatile._clear_volatile_attrs()
-
