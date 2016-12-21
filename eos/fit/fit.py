@@ -56,8 +56,6 @@ class Fit(MessageBroker):
         )
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
-        # Service containers
-        self._holders = set()
         # Initialize services
         self._link_tracker = LinkTracker(self)  # Tracks links between holders assigned to fit
         self._restriction_tracker = RestrictionTracker(self)  # Tracks various restrictions related to given fitting
@@ -88,39 +86,6 @@ class Fit(MessageBroker):
         """
         self._restriction_tracker.validate(skip_checks)
 
-    def _add_holder(self, holder):
-        """Handle adding of holder to fit."""
-        # Make sure the holder isn't used already
-        if holder._fit is not None:
-            raise HolderAlreadyAssignedError(holder)
-        holder._fit = self
-        self._holders.add(holder)
-        if hasattr(holder, '_clear_volatile_attrs'):
-            self._volatile_holders.add(holder)
-        if self.source is not None:
-            self._enable_services(holder)
-        # If holder has charge, register it too
-        charge = getattr(holder, 'charge', None)
-        if charge is not None:
-            self._add_holder(charge)
-
-    def _remove_holder(self, holder):
-        """Handle removal of holder from fit."""
-        # Check that removed holder belongs to fit
-        # it's removed from
-        if holder._fit is not self:
-            raise HolderFitMismatchError(holder)
-        # If there's charge in target holder, unset it before
-        # removing holder itself
-        charge = getattr(holder, 'charge', None)
-        if charge is not None:
-            self._remove_holder(charge)
-        if self.source is not None:
-            self._disable_services(holder)
-        self._holders.remove(holder)
-        self._volatile_holders.discard(holder)
-        holder._fit = None
-
     @property
     def source(self):
         return self.__source
@@ -135,18 +100,8 @@ class Fit(MessageBroker):
         # Do not update anything if sources are the same
         if new_source is old_source:
             return
-        # Disable everything dependent on old source prior to switch
-        if old_source is not None:
-            for holder in self._holders:
-                self._disable_services(holder)
         # Assign new source and feed new data to all holders
         self.__source = new_source
-        for holder in self._holders:
-            holder._refresh_source()
-        # Enable source-dependent services
-        if new_source is not None:
-            for holder in self._holders:
-                self._enable_services(holder)
 
     def __repr__(self):
         spec = [
