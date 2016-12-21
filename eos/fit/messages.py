@@ -28,7 +28,8 @@ __all__ = [
     'HolderStateChanged',
     'EffectsEnabled',
     'EffectsDisabled',
-    'SourceChanged'
+    'SourceChanged',
+    'SkillLevelChanged'
 ]
 
 
@@ -38,3 +39,4 @@ HolderStateChanged = namedtuple('HolderStateChanged', ('holder', 'old', 'new'))
 EffectsEnabled = namedtuple('EffectsEnabled', ('holder', 'effects'))
 EffectsDisabled = namedtuple('EffectsDisabled', ('holder', 'effects'))
 SourceChanged = namedtuple('SourceChanged', ())
+SkillLevelChanged = namedtuple('SkillLevelChanged', ('skill', 'old', 'new'))

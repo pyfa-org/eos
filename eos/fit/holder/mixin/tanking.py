@@ -214,6 +214,3 @@ class OverridableHp:
         if total_hp == 0 and self.hull is None and self.armor is None and self.shield is None:
             total_hp = None
         return total_hp
-
-    def _request_volatile_cleanup(self):
-        self.__holder._request_volatile_cleanup()

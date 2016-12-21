@@ -22,6 +22,7 @@
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.fit.messages import SkillLevelChanged
 from eos.util.repr import make_repr_str
 
 
@@ -50,18 +51,19 @@ class Skill(ImmutableStateMixin):
         return self.__level
 
     @level.setter
-    def level(self, value):
-        value = int(value)
+    def level(self, new_lvl):
+        new_lvl = int(new_lvl)
         # Skip everything if level isn't actually
         # changed
-        if self.__level == value:
+        old_lvl = self.__level
+        if old_lvl == new_lvl:
             return
-        self.__level = value
+        self.__level = new_lvl
         # Clear everything relying on skill level,
         # if skill is assigned to fit
         fit = self._fit
         if fit is not None:
-            fit._request_volatile_cleanup()
+            fit._publish(SkillLevelChanged(self, old_lvl, new_lvl))
             fit._link_tracker.clear_holder_attribute_dependents(self, Attribute.skill_level)
 
     @property
