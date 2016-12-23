@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from .holder import HolderBase
+from .holder.holder import HolderBase
 
 
 class DefaultEffectAttribMixin(HolderBase):

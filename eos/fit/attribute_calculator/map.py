@@ -19,14 +19,19 @@
 # ===============================================================================
 
 
+from collections import namedtuple
 from logging import getLogger
 from math import exp
 
 from eos.const.eos import Operator
 from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
+from eos.fit.holder.mixin.holder.exception import NoSourceError
 from eos.util.keyed_set import KeyedSet
 from .exception import BaseValueError, AttributeMetaError, OperatorError
+
+
+OverrideData = namedtuple('OverrideData', ('value', 'persistent'))
 
 
 logger = getLogger(__name__)
@@ -108,31 +113,22 @@ class MutableAttributeMap:
         # Actual container of calculated attributes
         # Format: {attribute ID: value}
         self.__modified_attributes = {}
-        # This variable stores map of attributes which cap
-        # something, and attributes capped by them. Initialized
+        # Container for overriden attributes. Initialized
         # to None to not waste memory, will be changed to dict
         # when needed.
+        # Format: {attribute ID: (value, persistent)}
+        self.__overridden_attributes = None
+        # This variable stores map of attributes which cap
+        # something, and attributes capped by them. Initialized
+        # to None due to the same reasons as override.
         # Format {capping attribute ID: {capped attribute IDs}}
         self.__cap_map = None
 
     def __getitem__(self, attr):
-        # Special handling for skill level attribute
-        if attr == Attribute.skill_level:
-            # Attempt to return level attribute of holder
-            try:
-                val = self.__holder.level
-            # Try regular way of getting attribute, if accessing
-            # level attribute failed
-            except AttributeError:
-                pass
-            else:
-                return val
-        # If carrier holder isn't assigned to any fit, then
-        # we can use just item's original attributes
-        if self.__holder._fit is None:
-            val = self.__holder.item.attributes[attr]
-            return val
-        # If value is stored, it's considered valid
+        # Try getting override first
+        if attr in self._overrides:
+            return self._overrides[attr].value
+        # If value is stored in modified map, it's considered as valid
         try:
             val = self.__modified_attributes[attr]
         # Else, we have to run full calculation process
@@ -141,13 +137,15 @@ class MutableAttributeMap:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
             except BaseValueError as e:
                 msg = 'unable to find base value for attribute {} on item {}'.format(
-                    e.args[0], self.__holder.item.id)
+                    e.args[0], self.__holder._type_id)
                 logger.warning(msg)
                 raise KeyError(attr) from e
             except AttributeMetaError as e:
                 msg = 'unable to fetch metadata for attribute {}, requested for item {}'.format(
-                    e.args[0], self.__holder.item.id)
+                    e.args[0], self.__holder._type_id)
                 logger.error(msg)
+                raise KeyError(attr) from e
+            except NoSourceError as e:
                 raise KeyError(attr) from e
             self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
         return val
@@ -156,10 +154,7 @@ class MutableAttributeMap:
         return len(self.keys())
 
     def __contains__(self, attr):
-        # Seek for attribute in both modified attribute container
-        # and original item attributes
-        result = attr in self.__modified_attributes or attr in self.__holder.item.attributes
-        return result
+        return attr in self.keys()
 
     def __iter__(self):
         for k in self.keys():
@@ -177,11 +172,6 @@ class MutableAttributeMap:
         else:
             self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
 
-    def __setitem__(self, attr, value):
-        # Write value and clear all attributes relying on it
-        self.__modified_attributes[attr] = value
-        self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
-
     def get(self, attr, default=None):
         try:
             return self[attr]
@@ -189,13 +179,22 @@ class MutableAttributeMap:
             return default
 
     def keys(self):
-        # Return union of both dicts
-        return self.__modified_attributes.keys() | self.__holder.item.attributes.keys()
+        try:
+            base_attrs = self.__holder.item.attributes
+        except NoSourceError:
+            base_attrs = {}
+        # Return union of attributes from base, modified and override dictionary
+        return self.__modified_attributes.keys() | base_attrs.keys() | self._overrides.keys()
 
     def clear(self):
         """Reset map to its initial state."""
         self.__modified_attributes.clear()
         self.__cap_map = None
+        # Clear only non-persistent overrides
+        if self.__overridden_attributes is not None:
+            overrides = self.__overridden_attributes
+            for attr in tuple(filter(lambda attr: overrides[attr].persistent is False, overrides)):
+                self._override_del(attr)
 
     def __calculate(self, attr):
         """
@@ -274,7 +273,7 @@ class MutableAttributeMap:
             # Handle operator type failure
             except OperatorError as e:
                 msg = 'malformed modifier on item {}: unknown operator {}'.format(
-                    source_holder.item.id, e.args[0])
+                    source_holder._type_id, e.args[0])
                 logger.warning(msg)
                 continue
         # When data gathering is complete, process penalized modifiers
@@ -354,6 +353,44 @@ class MutableAttributeMap:
                 chain_result *= 1 + modifier * PENALTY_BASE ** (position ** 2)
             list_result *= chain_result
         return list_result
+
+    # Override-related methods
+    @property
+    def _overrides(self):
+        return self.__overridden_attributes or {}
+
+    def _override_set(self, attr, value, persist=False):
+        """
+        Override attribute value. Persist flag controls
+        if this value will be kept throughout map cleanups.
+        """
+        # Get old value, regardless if it was override or not
+        old_value = self.get(attr)
+        if self.__overridden_attributes is None:
+            self.__overridden_attributes = {}
+        self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
+        # If value of attribute is changing after operation, force refresh
+        # of attributes which rely on it
+        fit = self.__holder._fit
+        if value != old_value and fit is not None:
+            fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+
+    def _override_del(self, attr):
+        overrides = self.__overridden_attributes
+        if attr not in overrides:
+            return
+        old_value = overrides[attr].value
+        del overrides[attr]
+        # Set overrides map to None if there're none left
+        # to save some memory
+        if len(overrides) == 0:
+            self.__overridden_attributes = None
+        # If value of attribute is changing after operation, force refresh
+        # of attributes which rely on it
+        new_value = self.get(attr)
+        fit = self.__holder._fit
+        if new_value != old_value and fit is not None:
+            fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
 
     # Cap-related methods
     @property

@@ -62,8 +62,7 @@ class FitVolatileManager:
         HolderStateChanged: _handle_other_changes,
         EffectsEnabled: _handle_other_changes,
         EffectsDisabled: _handle_other_changes,
-        SourceChanged: _handle_other_changes,
-        SkillLevelChanged: _handle_other_changes
+        SourceChanged: _handle_other_changes
     }
 
     def _notify(self, message):

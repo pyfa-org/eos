@@ -23,20 +23,18 @@ from collections import namedtuple\
 
 
 __all__ = [
+    'EffectsDisabled',
+    'EffectsEnabled',
     'HolderAdded',
     'HolderRemoved',
     'HolderStateChanged',
-    'EffectsEnabled',
-    'EffectsDisabled',
-    'SourceChanged',
-    'SkillLevelChanged'
+    'SourceChanged'
 ]
 
 
+EffectsDisabled = namedtuple('EffectsDisabled', ('holder', 'effects'))
+EffectsEnabled = namedtuple('EffectsEnabled', ('holder', 'effects'))
 HolderAdded = namedtuple('HolderAdded', ('holder',))
 HolderRemoved = namedtuple('HolderRemoved', ('holder',))
 HolderStateChanged = namedtuple('HolderStateChanged', ('holder', 'old', 'new'))
-EffectsEnabled = namedtuple('EffectsEnabled', ('holder', 'effects'))
-EffectsDisabled = namedtuple('EffectsDisabled', ('holder', 'effects'))
 SourceChanged = namedtuple('SourceChanged', ())
-SkillLevelChanged = namedtuple('SkillLevelChanged', ('skill', 'old', 'new'))

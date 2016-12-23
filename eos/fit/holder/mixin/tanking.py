@@ -22,7 +22,7 @@
 from eos.const.eve import Attribute
 from eos.fit.tuples import TankingLayers, TankingLayersTotal, DamageTypes
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
-from .holder import HolderBase
+from .holder.holder import HolderBase
 
 
 class BufferTankingMixin(HolderBase, CooperativeVolatileMixin):

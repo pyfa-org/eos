@@ -20,7 +20,7 @@
 
 
 from eos.fit.messages import HolderStateChanged
-from .holder import HolderBase
+from .holder.holder import HolderBase
 
 
 class ImmutableStateMixin(HolderBase):
