@@ -113,7 +113,7 @@ class MutableAttributeMap:
         # to None to not waste memory, will be changed to dict
         # when needed.
         # Format {capping attribute ID: {capped attribute IDs}}
-        self._cap_map = None
+        self.__cap_map = None
 
     def __getitem__(self, attr):
         # Special handling for skill level attribute
@@ -195,7 +195,7 @@ class MutableAttributeMap:
     def clear(self):
         """Reset map to its initial state."""
         self.__modified_attributes.clear()
-        self._cap_map = None
+        self.__cap_map = None
 
     def __calculate(self, attr):
         """
@@ -308,10 +308,7 @@ class MutableAttributeMap:
                 result = min(result, max_value)
                 # Let map know that capping attribute
                 # restricts current attribute
-                if self._cap_map is None:
-                    self._cap_map = KeyedSet()
-                # Fill cap map with data: capping attribute and capped attribute
-                self._cap_map.add_data(attr_meta.max_attribute, attr)
+                self._cap_set(attr_meta.max_attribute, attr)
         # Some of attributes are rounded for whatever reason,
         # deal with it after all the calculations
         if attr in LIMITED_PRECISION:
@@ -357,3 +354,18 @@ class MutableAttributeMap:
                 chain_result *= 1 + modifier * PENALTY_BASE ** (position ** 2)
             list_result *= chain_result
         return list_result
+
+    # Cap-related methods
+    @property
+    def _cap_map(self):
+        return self.__cap_map or {}
+
+    def _cap_set(self, capping_attr, capped_attr):
+        if self.__cap_map is None:
+            self.__cap_map = KeyedSet()
+        self.__cap_map.add_data(capping_attr, capped_attr)
+
+    def _cap_del(self, capping_attr, capped_attr):
+        self.__cap_map.rm_data(capping_attr, capped_attr)
+        if len(self.__cap_map) == 0:
+            self.__cap_map = None

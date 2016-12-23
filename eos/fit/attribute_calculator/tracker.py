@@ -89,10 +89,8 @@ class LinkTracker(BaseSubscriber):
         attr -- ID of attribute
         """
         # Clear attributes capped by this attribute
-        cap_map = holder.attributes._cap_map
-        if cap_map is not None:
-            for capped_attr in (cap_map.get(attr) or ()):
-                del holder.attributes[capped_attr]
+        for capped_attr in (holder.attributes._cap_map.get(attr) or ()):
+            del holder.attributes[capped_attr]
         # Clear attributes which are using this attribute as modification source
         for affector in self.__generate_affectors(holder, effect_filter=holder._enabled_effects):
             modifier = affector.modifier
