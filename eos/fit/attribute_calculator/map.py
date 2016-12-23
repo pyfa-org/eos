@@ -27,6 +27,7 @@ from eos.const.eos import Operator
 from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.holder.mixin.holder.exception import NoSourceError
+from eos.fit.messages import AttrOverrideChanged
 from eos.util.keyed_set import KeyedSet
 from .exception import BaseValueError, AttributeMetaError, OperatorError
 
@@ -365,21 +366,23 @@ class MutableAttributeMap:
         if this value will be kept throughout map cleanups.
         """
         # Get old value, regardless if it was override or not
-        old_value = self.get(attr)
+        old_composite = self.get(attr)
+        old_override = self._overrides.get(attr)
         if self.__overridden_attributes is None:
             self.__overridden_attributes = {}
         self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
         # If value of attribute is changing after operation, force refresh
         # of attributes which rely on it
         fit = self.__holder._fit
-        if value != old_value and fit is not None:
+        if value != old_composite and fit is not None:
             fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+            fit._publish(AttrOverrideChanged(holder=self.__holder, attr=attr, old=old_override, new=value))
 
     def _override_del(self, attr):
         overrides = self.__overridden_attributes
         if attr not in overrides:
             return
-        old_value = overrides[attr].value
+        old_override = overrides[attr].value
         del overrides[attr]
         # Set overrides map to None if there're none left
         # to save some memory
@@ -387,10 +390,11 @@ class MutableAttributeMap:
             self.__overridden_attributes = None
         # If value of attribute is changing after operation, force refresh
         # of attributes which rely on it
-        new_value = self.get(attr)
+        new_modified = self.get(attr)
         fit = self.__holder._fit
-        if new_value != old_value and fit is not None:
+        if new_modified != old_override and fit is not None:
             fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+            fit._publish(AttrOverrideChanged(holder=self.__holder, attr=attr, old=old_override, new=None))
 
     # Cap-related methods
     @property

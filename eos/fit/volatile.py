@@ -57,12 +57,12 @@ class FitVolatileManager:
         self.__clear_volatile_attrs()
 
     _handler_map = {
+        AttrOverrideChanged: _handle_other_changes,
         EffectsDisabled: _handle_other_changes,
         EffectsEnabled: _handle_other_changes,
         HolderAdded: _handle_holder_addition,
         HolderRemoved: _handle_holder_removal,
         HolderStateChanged: _handle_other_changes,
-        SkillLevelChanged: _handle_other_changes,
         SourceChanged: _handle_other_changes
     }
 
