@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.stat_tracker import StatTracker
+from eos.fit.stat_tracker import StatService
 from tests.eos_testcase import EosTestCase
 
 
@@ -55,7 +55,7 @@ class StatTestCase(EosTestCase):
         self.fit.rigs = set()
         self.fit.subsystems = set()
         self.fit.drones = set()
-        self.st = StatTracker(self.fit)
+        self.st = StatService(self.fit)
 
     def set_ship(self, holder):
         self.fit.ship = holder
@@ -73,7 +73,7 @@ class StatTestCase(EosTestCase):
         entry_num = 0
         # Get dictionary-container with all registers used by tracker,
         # and cycle through all of them
-        tracker_container = self.st._StatTracker__registers
+        tracker_container = self.st._StatService__registers
         for register_group in tracker_container.values():
             for register in register_group:
                 entry_num += self._get_object_buffer_entry_amount(register)

@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State, Domain
-from eos.fit.attribute_calculator import LinkTracker, MutableAttributeMap
+from eos.fit.attribute_calculator import CalculationService, MutableAttributeMap
 
 
 class HolderContainer:
@@ -54,7 +54,7 @@ class Fit:
 
     def __init__(self, cache_handler):
         self.source = Source(cache_handler)
-        self._link_tracker = LinkTracker(self)
+        self._link_tracker = CalculationService(self)
         self.__ship = None
         self.__character = None
         self.items = HolderContainer(self)

@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Drone
-from eos.fit.restriction_tracker.exception import RegisterValidationError
+from eos.fit.restrictions.exception import RegisterValidationError
 from .abc import RestrictionRegister
 
 

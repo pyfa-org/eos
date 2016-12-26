@@ -22,7 +22,7 @@
 from collections import namedtuple
 from random import random
 
-from eos.fit.attribute_calculator import MutableAttributeMap
+from eos.fit.calculator import MutableAttributeMap
 from eos.fit.messages import EffectsEnabled, EffectsDisabled
 from .null_source import NullSourceItem
 

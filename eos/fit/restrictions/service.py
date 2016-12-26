@@ -26,7 +26,7 @@ from .exception import RegisterValidationError, ValidationError
 from .register import *
 
 
-class RestrictionTracker(BaseSubscriber):
+class RestrictionService(BaseSubscriber):
     """
     Track all restrictions applied to fitting and expose functionality
     to validate against various criteria. Actually works as middle-layer

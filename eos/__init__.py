@@ -26,7 +26,7 @@ from .const.eos import State, Restriction
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
 from .fit import Fit
-from .fit.restriction_tracker.exception import ValidationError
+from .fit.restrictions.exception import ValidationError
 from .fit.tuples import DamageTypes
 from .data.cache_handler import *
 from .data.data_handler import *

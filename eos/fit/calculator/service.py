@@ -26,7 +26,7 @@ from .affector import Affector
 from .register import LinkRegister
 
 
-class LinkTracker(BaseSubscriber):
+class CalculationService(BaseSubscriber):
     """
     Serve as intermediate layer between fit and holder link register.
     Implements methods which make it easier for fit to add, modify and

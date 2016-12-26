@@ -23,11 +23,11 @@ from eos.const.eve import Type
 from eos.data.source import SourceManager, Source
 from eos.util.pubsub import MessageBroker
 from eos.util.repr import make_repr_str
-from .attribute_calculator import LinkTracker
+from .calculator import CalculationService
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
 from .holder.item import *
-from .restriction_tracker import RestrictionTracker
-from .stat_tracker import StatTracker
+from .restrictions import RestrictionService
+from .stats import StatService
 from .volatile import FitVolatileManager
 
 
@@ -56,9 +56,9 @@ class Fit(MessageBroker):
         self.rigs = HolderList(self, Rig)
         self.drones = HolderSet(self, Drone)
         # Initialize services
-        self._link_tracker = LinkTracker(self)  # Tracks links between holders assigned to fit
-        self._restriction_tracker = RestrictionTracker(self)  # Tracks various restrictions related to given fitting
-        self.stats = StatTracker(self)  # Access point for all the fitting stats
+        self._link_tracker = CalculationService(self)  # Tracks links between holders assigned to fit
+        self._restriction_tracker = RestrictionService(self)  # Tracks various restrictions related to given fitting
+        self.stats = StatService(self)  # Access point for all the fitting stats
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))  # Handles volatile cache cleanup
         # Use default source, unless specified otherwise
         if source is None:

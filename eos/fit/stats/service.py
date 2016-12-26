@@ -31,7 +31,7 @@ from .container import *
 from .register import *
 
 
-class StatTracker(InheritableVolatileMixin, BaseSubscriber):
+class StatService(InheritableVolatileMixin, BaseSubscriber):
     """
     Object which is used as access points for all
     fit statistics.

@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eos import Restriction, State
-from eos.fit.restriction_tracker import RestrictionTracker, ValidationError
+from eos.fit.restriction_tracker import RestrictionService, ValidationError
 from tests.eos_testcase import EosTestCase
 
 
@@ -56,7 +56,7 @@ class RestrictionTestCase(EosTestCase):
         self.fit.rigs = set()
         self.fit.subsystems = set()
         self.fit.drones = set()
-        self.rt = RestrictionTracker(self.fit)
+        self.rt = RestrictionService(self.fit)
 
     def set_ship(self, holder):
         self.fit.ship = holder
@@ -86,7 +86,7 @@ class RestrictionTestCase(EosTestCase):
         entry_num = 0
         # Get dictionary-container with all registers used by tracker,
         # and cycle through all of them
-        tracker_container = self.rt._RestrictionTracker__registers
+        tracker_container = self.rt._RestrictionService__registers
         for register_group in tracker_container.values():
             for register in register_group:
                 entry_num += self._get_object_buffer_entry_amount(register)

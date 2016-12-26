@@ -19,5 +19,26 @@
 # ===============================================================================
 
 
-from .map import MutableAttributeMap
-from .tracker import LinkTracker
+from eos.exception import EosError
+
+
+class RestrictionServiceError(EosError):
+    """
+    All restriction tracker exceptions are based on this class.
+    """
+    pass
+
+
+class RegisterValidationError(RestrictionServiceError):
+    """
+    All errors raised during validation process on register level
+    are instances of this class.
+    """
+    pass
+
+
+class ValidationError(RestrictionServiceError):
+    """
+    Raised when tracker-wide validation fails.
+    """
+    pass
