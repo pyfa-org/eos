@@ -21,13 +21,8 @@
 
 from eos.const.eos import State, Scope
 from eos.fit.messages import (
-    HolderAdded,
-    HolderRemoved,
-    HolderStateChanged,
-    EffectsEnabled,
-    EffectsDisabled,
-    EnableServices,
-    DisableServices
+    HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
+    EnableServices, DisableServices
 )
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector

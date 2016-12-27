@@ -20,13 +20,8 @@
 
 
 from .messages import (
-    HolderAdded,
-    HolderRemoved,
-    HolderStateChanged,
-    EffectsEnabled,
-    EffectsDisabled,
-    RefreshSource,
-    AttrOverrideChanged
+    HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled,
+    EffectsDisabled, RefreshSource, AttrOverrideChanged
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 
