@@ -23,20 +23,27 @@ from collections import namedtuple
 
 
 __all__ = [
-    'AttrOverrideChanged',
-    'EffectsDisabled',
-    'EffectsEnabled',
     'HolderAdded',
     'HolderRemoved',
     'HolderStateChanged',
-    'SourceChanged'
+    'EffectsEnabled',
+    'EffectsDisabled',
+    'EnableServices',
+    'DisableServices',
+    'RefreshSource',
+    'AttrOverrideChanged'
 ]
 
 
-AttrOverrideChanged = namedtuple('AttrOverrideChanged', ('holder', 'attr', 'old', 'new'))
-EffectsDisabled = namedtuple('EffectsDisabled', ('holder', 'effects'))
-EffectsEnabled = namedtuple('EffectsEnabled', ('holder', 'effects'))
+# Holder-related messages
 HolderAdded = namedtuple('HolderAdded', ('holder',))
 HolderRemoved = namedtuple('HolderRemoved', ('holder',))
 HolderStateChanged = namedtuple('HolderStateChanged', ('holder', 'old', 'new'))
-SourceChanged = namedtuple('SourceChanged', ())
+EffectsEnabled = namedtuple('EffectsEnabled', ('holder', 'effects'))
+EffectsDisabled = namedtuple('EffectsDisabled', ('holder', 'effects'))
+# Source change-related
+EnableServices = namedtuple('EnableServices', ('holders',))
+DisableServices = namedtuple('DisableServices', ('holders',))
+RefreshSource = namedtuple('RefreshSource', ())
+# Misc
+AttrOverrideChanged = namedtuple('AttrOverrideChanged', ('holder', 'attr', 'old', 'new'))

@@ -23,7 +23,7 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged
+from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
 from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.pubsub import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
@@ -44,7 +44,6 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         InheritableVolatileMixin.__init__(self)
         BaseSubscriber.__init__(self)
         self.__enabled = False
-        self.__holders = set()
         self._fit = fit
         # Initialize registers
         cpu_reg = CpuUseRegister(fit)
@@ -250,14 +249,18 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
 
     # Message handling
     def _handle_holder_addition(self, message):
-        states = set(filter(lambda s: s <= message.holder.state, State))
-        self.__enable_states(message.holder, states)
+        if not self.__enabled:
+            return
+        self.__add_holder(message.holder)
 
     def _handle_holder_removal(self, message):
-        states = set(filter(lambda s: s <= message.holder.state, State))
-        self.__disable_states(message.holder, states)
+        if not self.__enabled:
+            return
+        self.__remove_holder(message.holder)
 
     def _handle_holder_state_change(self, message):
+        if not self.__enabled:
+            return
         holder, old_state, new_state = message
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
@@ -266,15 +269,32 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             states = set(filter(lambda s: new_state < s <= old_state, State))
             self.__disable_states(holder, states)
 
+    def _handle_enable_services(self, message):
+        """
+        Enable service and register passed holders.
+        """
+        self.__enabled = True
+        for holder in message.holders:
+            self.__add_holder(holder)
+
+    def _handle_disable_services(self, message):
+        """
+        Unregister passed holders from this service and
+        disable it.
+        """
+        for holder in message.holders:
+            self.__remove_holder(holder)
+
     _handler_map = {
         HolderAdded: _handle_holder_addition,
         HolderRemoved: _handle_holder_removal,
-        HolderStateChanged: _handle_holder_state_change
+        HolderStateChanged: _handle_holder_state_change,
+        EnableServices: _handle_enable_services,
+        DisableServices: _handle_disable_services
     }
 
     def _notify(self, message):
-        if not self.__enabled:
-            return
+
         try:
             handler = self._handler_map[type(message)]
         except KeyError:
@@ -282,6 +302,14 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         handler(self, message)
 
     # Private methods for message handlers
+    def __add_holder(self, holder):
+        states = set(filter(lambda s: s <= holder.state, State))
+        self.__enable_states(holder, states)
+
+    def __remove_holder(self, holder):
+        states = set(filter(lambda s: s <= holder.state, State))
+        self.__disable_states(holder, states)
+
     def __enable_states(self, holder, states):
         """
         Handle state switch upwards.

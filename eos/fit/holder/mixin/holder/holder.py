@@ -23,14 +23,15 @@ from collections import namedtuple
 from random import random
 
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.messages import EffectsEnabled, EffectsDisabled
+from eos.fit.messages import EffectsEnabled, EffectsDisabled, RefreshSource
+from eos.util.pubsub import BaseSubscriber
 from .null_source import NullSourceItem
 
 
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'status'))
 
 
-class HolderBase:
+class HolderBase(BaseSubscriber):
     """
     Base holder class inherited by all classes that
     need to keep track of modified attributes.
@@ -70,7 +71,7 @@ class HolderBase:
     @_fit.setter
     def _fit(self, new_fit):
         self.__fit = new_fit
-        self._refresh_source()
+        self.__refresh_source()
 
     # Effect methods
     @property
@@ -179,8 +180,23 @@ class HolderBase:
             self.__fit._publish(EffectsDisabled(self, to_disable))
         self.__disabled_effects.update(to_disable)
 
-    # Auxiliary methods
-    def _refresh_source(self):
+    # Message handling
+    def _handle_refresh_source(self, message):
+        self.__refresh_source()
+
+    _handler_map = {
+        RefreshSource: _handle_refresh_source
+    }
+
+    def _notify(self, message):
+        try:
+            handler = self._handler_map[type(message)]
+        except KeyError:
+            return
+        handler(self, message)
+
+    # Private methods for message handlers
+    def __refresh_source(self):
         """
         Each time holder's context is changed (the source it relies on,
         which may change when holder switches fit or its fit switches

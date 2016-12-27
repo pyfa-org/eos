@@ -20,7 +20,15 @@
 
 
 from eos.const.eos import State, Scope
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled
+from eos.fit.messages import (
+    HolderAdded,
+    HolderRemoved,
+    HolderStateChanged,
+    EffectsEnabled,
+    EffectsDisabled,
+    EnableServices,
+    DisableServices
+)
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
 from .register import LinkRegister
@@ -40,7 +48,6 @@ class CalculationService(BaseSubscriber):
 
     def __init__(self, fit):
         self.__enabled = False
-        self.__holders = set()
         self._fit = fit
         self._register = LinkRegister(fit)
         fit._subscribe(self, self._handler_map.keys())
@@ -144,23 +151,25 @@ class CalculationService(BaseSubscriber):
         Put the holder under influence of registered affectors
         and enable its affectors according to its state.
         """
-        self._register.register_affectee(message.holder)
-        states = set(filter(lambda s: s <= message.holder.state, State))
-        self.__enable_states(message.holder, states)
+        if not self.__enabled:
+            return
+        self.__add_holder(message.holder)
 
     def _handle_holder_removal(self, message):
         """
         Disable holder affectors and remove it from influence
         of of registered affectors.
         """
-        states = set(filter(lambda s: s <= message.holder.state, State))
-        self.__disable_states(message.holder, states)
-        self._register.unregister_affectee(message.holder)
+        if not self.__enabled:
+            return
+        self.__remove_holder(message.holder)
 
     def _handle_holder_state_change(self, message):
         """
         Enable/disable affectors based on state change direction.
         """
+        if not self.__enabled:
+            return
         holder, old_state, new_state = message
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
@@ -173,6 +182,8 @@ class CalculationService(BaseSubscriber):
         """
         Enable effects carried by the holder.
         """
+        if not self.__enabled:
+            return
         processed_states = set(filter(lambda s: s <= message.holder.state, State))
         processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
@@ -185,6 +196,8 @@ class CalculationService(BaseSubscriber):
         """
         Disable effects carried by the holder.
         """
+        if not self.__enabled:
+            return
         processed_states = set(filter(lambda s: s <= message.holder.state, State))
         processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
@@ -193,17 +206,34 @@ class CalculationService(BaseSubscriber):
         )
         self.__disable_affectors(affectors)
 
+    def _handle_enable_services(self, message):
+        """
+        Enable service and register passed holders.
+        """
+        self.__enabled = True
+        for holder in message.holders:
+            self.__add_holder(holder)
+
+    def _handle_disable_services(self, message):
+        """
+        Unregister passed holders from this service and
+        disable it.
+        """
+        for holder in message.holders:
+            self.__remove_holder(holder)
+        self.__enabled = False
+
     _handler_map = {
         HolderAdded: _handle_holder_addition,
         HolderRemoved: _handle_holder_removal,
         HolderStateChanged: _handle_holder_state_change,
         EffectsEnabled: _handle_holder_effects_enabling,
-        EffectsDisabled: _handle_holder_effects_disabling
+        EffectsDisabled: _handle_holder_effects_disabling,
+        EnableServices: _handle_enable_services,
+        DisableServices: _handle_disable_services
     }
 
     def _notify(self, message):
-        if not self.__enabled:
-            return
         try:
             handler = self._handler_map[type(message)]
         except KeyError:
@@ -211,6 +241,16 @@ class CalculationService(BaseSubscriber):
         handler(self, message)
 
     # Private methods for message handlers
+    def __add_holder(self, holder):
+        self._register.register_affectee(holder)
+        states = set(filter(lambda s: s <= holder.state, State))
+        self.__enable_states(holder, states)
+
+    def __remove_holder(self, holder):
+        states = set(filter(lambda s: s <= holder.state, State))
+        self.__disable_states(holder, states)
+        self._register.unregister_affectee(holder)
+
     def __enable_states(self, holder, states):
         """
         Handle state switch upwards.

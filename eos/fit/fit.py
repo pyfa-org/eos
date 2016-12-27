@@ -21,17 +21,18 @@
 
 from eos.const.eve import Type
 from eos.data.source import SourceManager, Source
-from eos.util.pubsub import MessageBroker
+from eos.util.pubsub import MessageBroker, BaseSubscriber
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
 from .holder.item import *
+from .messages import HolderAdded, HolderRemoved, EnableServices, DisableServices, RefreshSource
 from .restrictions import RestrictionService
 from .stats import StatService
 from .volatile import FitVolatileManager
 
 
-class Fit(MessageBroker):
+class Fit(MessageBroker, BaseSubscriber):
     """
     Fit holds all fit items and facilities to calculate their attributes.
 
@@ -42,6 +43,9 @@ class Fit(MessageBroker):
     def __init__(self, source=None):
         MessageBroker.__init__(self)
         self.__source = None
+        # Keep list of all holders which belong to this fit
+        self.__holders = set()
+        self._subscribe(self, self._handler_map.keys())
         # Character-related holder containers
         self.skills = HolderRestrictedSet(self, Skill)
         self.implants = HolderSet(self, Implant)
@@ -53,19 +57,24 @@ class Fit(MessageBroker):
             med=HolderList(self, ModuleMed),
             low=HolderList(self, ModuleLow)
         )
-        self.rigs = HolderList(self, Rig)
+        self.rigs = HolderSet(self, Rig)
         self.drones = HolderSet(self, Drone)
-        # Initialize services
-        self._link_tracker = CalculationService(self)  # Tracks links between holders assigned to fit
-        self._restriction_tracker = RestrictionService(self)  # Tracks various restrictions related to given fitting
-        self.stats = StatService(self)  # Access point for all the fitting stats
-        self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))  # Handles volatile cache cleanup
-        # Use default source, unless specified otherwise
+        # Initialize services. Some of services rely on fit structure
+        # (module racks, implant set), thus they have to be initialized
+        # after it
+        self._link_tracker = CalculationService(self)
+        self._restriction_tracker = RestrictionService(self)
+        self.stats = StatService(self)
+        self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
+        # Use default source, unless specified otherwise. Source setting may
+        # enable services (if there's source), thus it has to be after service
+        # initialization
         if source is None:
             source = SourceManager.default
         self.source = source
-        # As character object shouldn't change in any sane
-        # cases, initialize it here
+        # As character object shouldn't change in any sane cases, initialize it
+        # here. It has to be assigned after fit starts to track list of holders
+        # to make sure it's part of it
         self.character = Character(Type.character_static)
 
     ship = HolderDescriptorOnFit('_ship', Ship)
@@ -99,9 +108,36 @@ class Fit(MessageBroker):
         # Do not update anything if sources are the same
         if new_source is old_source:
             return
+        # Disable everything dependent on old source prior to switch
+        if old_source is not None:
+            self._publish(DisableServices(self.__holders))
         # Assign new source and feed new data to all holders
         self.__source = new_source
+        self._publish(RefreshSource())
+        # Enable source-dependent services
+        if new_source is not None:
+            self._publish(EnableServices(self.__holders))
 
+    # Message handling
+    def _handle_holder_addition(self, message):
+        self.__holders.add(message.holder)
+
+    def _handle_holder_removal(self, message):
+        self.__holders.discard(message.holder)
+
+    _handler_map = {
+        HolderAdded: _handle_holder_addition,
+        HolderRemoved: _handle_holder_removal
+    }
+
+    def _notify(self, message):
+        try:
+            handler = self._handler_map[type(message)]
+        except KeyError:
+            return
+        handler(self, message)
+
+    # Auxiliary methods
     def __repr__(self):
         spec = [
             'source', 'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
