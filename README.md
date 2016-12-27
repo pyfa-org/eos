@@ -48,9 +48,9 @@ Currently you can use engine following way:
     fit.modules.low.equip(ModuleLow(4405, state=State.online))   # T2 DDA
     fit.modules.low.equip(ModuleLow(4405, state=State.online))   # T2 DDA
 
-    fit.rigs.equip(Rig(26082))  # T1 therm rig
-    fit.rigs.equip(Rig(26088))  # T1 extender
-    fit.rigs.equip(Rig(26088))  # T1 extender
+    fit.rigs.add(Rig(26082))  # T1 therm rig
+    fit.rigs.add(Rig(26088))  # T1 extender
+    fit.rigs.add(Rig(26088))  # T1 extender
 
     # 8x Ogre II
     fit.drones.add(Drone(2446, state=State.active))
