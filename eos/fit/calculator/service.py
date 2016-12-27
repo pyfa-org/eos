@@ -39,6 +39,8 @@ class CalculationService(BaseSubscriber):
     """
 
     def __init__(self, fit):
+        self.__enabled = False
+        self.__holders = set()
         self._fit = fit
         self._register = LinkRegister(fit)
         fit._subscribe(self, self._handler_map.keys())
@@ -200,9 +202,7 @@ class CalculationService(BaseSubscriber):
     }
 
     def _notify(self, message):
-        # Attribute calculations need source for base attributes
-        # and attributes metadata
-        if self._fit.source is None:
+        if not self.__enabled:
             return
         try:
             handler = self._handler_map[type(message)]

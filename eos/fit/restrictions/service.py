@@ -38,6 +38,8 @@ class RestrictionService(BaseSubscriber):
     """
 
     def __init__(self, fit):
+        self.__enabled = False
+        self.__holders = set()
         # Fit reference, to which this restriction tracker
         # is attached
         self._fit = fit
@@ -153,10 +155,7 @@ class RestrictionService(BaseSubscriber):
     }
 
     def _notify(self, message):
-        # Restrictions rely on holder attributes, we're not
-        # interested in checking anything if attributes are
-        # not available, and they are not available w/o source
-        if self._fit.source is None:
+        if not self.__enabled:
             return
         try:
             handler = self._handler_map[type(message)]

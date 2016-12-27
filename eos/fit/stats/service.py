@@ -43,6 +43,8 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
     def __init__(self, fit):
         InheritableVolatileMixin.__init__(self)
         BaseSubscriber.__init__(self)
+        self.__enabled = False
+        self.__holders = set()
         self._fit = fit
         # Initialize registers
         cpu_reg = CpuUseRegister(fit)
@@ -271,9 +273,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
     }
 
     def _notify(self, message):
-        # Attribute calculations need source for base attributes
-        # and attributes metadata
-        if self._fit.source is None:
+        if not self.__enabled:
             return
         try:
             handler = self._handler_map[type(message)]
