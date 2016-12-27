@@ -46,6 +46,7 @@ class RestrictionService(BaseSubscriber):
         self._fit = fit
         # Set with 'stateless' holders. Holders are always
         # tracked by these, regardless of state
+        # Format: (registers,)
         self.__regs_stateless = (
             CalibrationRegister(fit),
             DroneBayVolumeRegister(fit),

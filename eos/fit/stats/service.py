@@ -55,15 +55,20 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         launcher_reg = LauncherUseRegister(fit)
         launched_drone_reg = LaunchedDroneRegister(fit)
         self._dd_reg = DamageDealerRegister()
-        # Dictionary which keeps all stats registers
+        # List of registers which do not rely on holder state
+        # Format: (register,)
+        self.__regs_stateless = (
+            calibration_reg,
+            dronebay_reg,
+            turret_reg,
+            launcher_reg
+        )
+        # Dictionary which keeps stat registers which
+        # use holder state as some input/condition
         # Format: {triggering state: {registers}}
-        self.__registers = {
+        self.__regs_stateful = {
             State.offline: (
-                calibration_reg,
-                dronebay_reg,
-                turret_reg,
-                launcher_reg,
-                self._dd_reg
+                self._dd_reg,
             ),
             State.online: (
                 cpu_reg,
@@ -303,12 +308,16 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
 
     # Private methods for message handlers
     def __add_holder(self, holder):
+        for register in self.__regs_stateless:
+            register.register_holder(holder)
         states = set(filter(lambda s: s <= holder.state, State))
         self.__enable_states(holder, states)
 
     def __remove_holder(self, holder):
         states = set(filter(lambda s: s <= holder.state, State))
         self.__disable_states(holder, states)
+        for register in self.__regs_stateless:
+            register.unregister_holder(holder)
 
     def __enable_states(self, holder, states):
         """
@@ -323,7 +332,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             # Not all states have corresponding registers,
             # just skip those which don't
             try:
-                registers = self.__registers[state]
+                registers = self.__regs_stateful[state]
             except KeyError:
                 continue
             for register in registers:
@@ -340,7 +349,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         """
         for state in states:
             try:
-                registers = self.__registers[state]
+                registers = self.__regs_stateful[state]
             except KeyError:
                 continue
             for register in registers:
