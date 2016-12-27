@@ -19,6 +19,8 @@
 # ===============================================================================
 
 
+from itertools import chain
+
 from eos.const.eos import State
 from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
 from eos.util.pubsub import BaseSubscriber
@@ -42,44 +44,47 @@ class RestrictionService(BaseSubscriber):
         # Fit reference, to which this restriction tracker
         # is attached
         self._fit = fit
-        # Dictionary which keeps all restriction registers
-        # used by tracker. When some holder passes state stored
-        # as key, it's registered/unregistered in registers
-        # stored as value.
+        # Set with 'stateless' holders. Holders are always
+        # tracked by these, regardless of state
+        self.__regs_stateless = (
+            CalibrationRegister(fit),
+            DroneBayVolumeRegister(fit),
+            HolderClassRegister(),
+            HighSlotRegister(fit),
+            MediumSlotRegister(fit),
+            LowSlotRegister(fit),
+            RigSlotRegister(fit),
+            SubsystemSlotRegister(fit),
+            TurretSlotRegister(fit),
+            LauncherSlotRegister(fit),
+            SubsystemIndexRegister(),
+            ImplantIndexRegister(),
+            BoosterIndexRegister(),
+            ShipTypeGroupRegister(fit),
+            CapitalItemRegister(fit),
+            MaxGroupFittedRegister(),
+            DroneGroupRegister(fit),
+            RigSizeRegister(fit),
+            SkillRequirementRegister(fit),
+            ChargeGroupRegister(),
+            ChargeSizeRegister(),
+            ChargeVolumeRegister(),
+            BoosterEffectRegister()
+        )
+        # Dictionary with 'stateful' registers. When holders
+        # is in corresponding state or above, register tracks
+        # such holder and may raise restriction violations
         # Format: {triggering state: {registers}}
-        self.__registers = {
+        self.__regs_stateful = {
             State.offline: (
-                CalibrationRegister(fit),
-                DroneBayVolumeRegister(fit),
-                HolderClassRegister(),
-                HighSlotRegister(fit),
-                MediumSlotRegister(fit),
-                LowSlotRegister(fit),
-                RigSlotRegister(fit),
-                SubsystemSlotRegister(fit),
-                TurretSlotRegister(fit),
-                LauncherSlotRegister(fit),
-                SubsystemIndexRegister(),
-                ImplantIndexRegister(),
-                BoosterIndexRegister(),
-                ShipTypeGroupRegister(fit),
-                CapitalItemRegister(fit),
-                MaxGroupFittedRegister(),
-                DroneGroupRegister(fit),
-                RigSizeRegister(fit),
-                SkillRequirementRegister(fit),
-                ChargeGroupRegister(),
-                ChargeSizeRegister(),
-                ChargeVolumeRegister(),
-                BoosterEffectRegister()
+                StateRegister(),
             ),
             State.online: (
                 CpuRegister(fit),
                 PowerGridRegister(fit),
                 DroneBandwidthRegister(fit),
                 MaxGroupOnlineRegister(),
-                LaunchedDroneRegister(fit),
-                StateRegister()
+                LaunchedDroneRegister(fit)
             ),
             State.active: (
                 MaxGroupActiveRegister(),
@@ -104,26 +109,25 @@ class RestrictionService(BaseSubscriber):
         # Format: {holder: {error type: error data}}
         invalid_holders = {}
         # Go through all known registers
-        for state in self.__registers:
-            for register in self.__registers[state]:
-                # Skip check if we're told to do so, based
-                # on exception class assigned to register
-                restriction_type = register.restriction_type
-                if restriction_type in skip_checks:
-                    continue
-                # Run validation for current register, if validation
-                # failure exception is raised - add it to container
-                try:
-                    register.validate()
-                except RegisterValidationError as e:
-                    # All erroneous holders should be in 1st argument
-                    # of raised exception
-                    exception_data = e.args[0]
-                    for holder in exception_data:
-                        holder_error = exception_data[holder]
-                        # Fill container for invalid holders
-                        holder_errors = invalid_holders.setdefault(holder, {})
-                        holder_errors[restriction_type] = holder_error
+        for register in chain(self.__regs_stateless, *self.__regs_stateful.values()):
+            # Skip check if we're told to do so, based
+            # on exception class assigned to register
+            restriction_type = register.restriction_type
+            if restriction_type in skip_checks:
+                continue
+            # Run validation for current register, if validation
+            # failure exception is raised - add it to container
+            try:
+                register.validate()
+            except RegisterValidationError as e:
+                # All erroneous holders should be in 1st argument
+                # of raised exception
+                exception_data = e.args[0]
+                for holder in exception_data:
+                    holder_error = exception_data[holder]
+                    # Fill container for invalid holders
+                    holder_errors = invalid_holders.setdefault(holder, {})
+                    holder_errors[restriction_type] = holder_error
         # Raise validation error only if we got any
         # failures
         if invalid_holders:
@@ -185,12 +189,16 @@ class RestrictionService(BaseSubscriber):
 
     # Private methods for message handlers
     def __add_holder(self, holder):
+        for register in self.__regs_stateless:
+            register.register_holder(holder)
         states = set(filter(lambda s: s <= holder.state, State))
         self.__enable_states(holder, states)
 
     def __remove_holder(self, holder):
         states = set(filter(lambda s: s <= holder.state, State))
         self.__disable_states(holder, states)
+        for register in self.__regs_stateless:
+            register.unregister_holder(holder)
 
     def __enable_states(self, holder, states):
         """
@@ -205,7 +213,7 @@ class RestrictionService(BaseSubscriber):
             # Not all states have corresponding registers,
             # just skip those which don't
             try:
-                registers = self.__registers[state]
+                registers = self.__regs_stateful[state]
             except KeyError:
                 continue
             for register in registers:
@@ -222,7 +230,7 @@ class RestrictionService(BaseSubscriber):
         """
         for state in states:
             try:
-                registers = self.__registers[state]
+                registers = self.__regs_stateful[state]
             except KeyError:
                 continue
             for register in registers:

@@ -148,7 +148,8 @@ class MutableAttributeMap:
                 raise KeyError(attr) from e
             except NoSourceError as e:
                 raise KeyError(attr) from e
-            self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+            else:
+                self.__holder._fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
         return val
 
     def __len__(self):
@@ -171,7 +172,7 @@ class MutableAttributeMap:
         # And make sure all other attributes relying on it
         # are cleared too
         else:
-            self.__holder._fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+            self.__holder._fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
 
     def get(self, attr, default=None):
         try:
@@ -240,7 +241,7 @@ class MutableAttributeMap:
         # Format: {operator: [values]}
         penalized_mods = {}
         # Now, go through all affectors affecting our holder
-        for affector in self.__holder._fit._link_tracker.get_affectors(self.__holder, attr=attr):
+        for affector in self.__holder._fit._calculator.get_affectors(self.__holder, attr=attr):
             try:
                 source_holder, modifier = affector
                 operator = modifier.operator
@@ -375,7 +376,7 @@ class MutableAttributeMap:
         # of attributes which rely on it
         fit = self.__holder._fit
         if value != old_composite and fit is not None:
-            fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+            fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
             fit._publish(AttrOverrideChanged(holder=self.__holder, attr=attr, old=old_override, new=value))
 
     def _override_del(self, attr):
@@ -393,7 +394,7 @@ class MutableAttributeMap:
         new_modified = self.get(attr)
         fit = self.__holder._fit
         if new_modified != old_override and fit is not None:
-            fit._link_tracker.clear_holder_attribute_dependents(self.__holder, attr)
+            fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
             fit._publish(AttrOverrideChanged(holder=self.__holder, attr=attr, old=old_override, new=None))
 
     # Cap-related methods

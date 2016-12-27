@@ -62,8 +62,8 @@ class Fit(MessageBroker, BaseSubscriber):
         # Initialize services. Some of services rely on fit structure
         # (module racks, implant set), thus they have to be initialized
         # after it
-        self._link_tracker = CalculationService(self)
-        self._restriction_tracker = RestrictionService(self)
+        self._calculator = CalculationService(self)
+        self._restriction = RestrictionService(self)
         self.stats = StatService(self)
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
         # Use default source, unless specified otherwise. Source setting may
@@ -92,7 +92,7 @@ class Fit(MessageBroker, BaseSubscriber):
         Possible exceptions:
         ValidationError -- raised when validation fails
         """
-        self._restriction_tracker.validate(skip_checks)
+        self._restriction.validate(skip_checks)
 
     @property
     def source(self):
