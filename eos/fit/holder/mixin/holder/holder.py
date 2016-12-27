@@ -70,8 +70,13 @@ class HolderBase(BaseSubscriber):
 
     @_fit.setter
     def _fit(self, new_fit):
+        old_fit = self.__fit
+        if old_fit is not None:
+            old_fit._unsubscribe(self, (RefreshSource,))
         self.__fit = new_fit
         self.__refresh_source()
+        if new_fit is not None:
+            new_fit._subscribe(self, (RefreshSource,))
 
     # Effect methods
     @property
