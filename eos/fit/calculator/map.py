@@ -373,7 +373,11 @@ class MutableAttributeMap:
         """
         # Get old value, regardless if it was override or not
         old_composite = self.get(attr)
+        # Get override value, it will be used for info spread
+        # across the fit
         old_override = self._overrides.get(attr)
+        if old_override is not None:
+            old_override = old_override.value
         if self.__overridden_attributes is None:
             self.__overridden_attributes = {}
         self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
