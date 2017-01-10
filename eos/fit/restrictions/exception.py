@@ -24,7 +24,7 @@ from eos.exception import EosError
 
 class RestrictionServiceError(EosError):
     """
-    All restriction tracker exceptions are based on this class.
+    All restriction service exceptions are based on this class.
     """
     pass
 
@@ -39,6 +39,6 @@ class RegisterValidationError(RestrictionServiceError):
 
 class ValidationError(RestrictionServiceError):
     """
-    Raised when tracker-wide validation fails.
+    Raised when service-wide validation fails.
     """
     pass

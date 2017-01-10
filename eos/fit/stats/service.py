@@ -37,7 +37,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
     fit statistics.
 
     Required arguments:
-    fit -- Fit object to which tracker is assigned
+    fit -- Fit object to which service is assigned
     """
 
     def __init__(self, fit):

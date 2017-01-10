@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State, Domain
-from eos.fit.attribute_calculator import CalculationService, MutableAttributeMap
+from eos.fit.calculator import CalculationService, MutableAttributeMap
 
 
 class HolderContainer:

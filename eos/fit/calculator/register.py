@@ -43,8 +43,7 @@ class LinkRegister:
     """
 
     def __init__(self, fit):
-        # Link tracker which is assigned to fit we're
-        # keeping data for
+        # Fit reference, to which this register is attached
         self._fit = fit
 
         # Keep track of holders belonging to certain domain

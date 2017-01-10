@@ -40,7 +40,7 @@ class SlotAmountRegister(RestrictionRegister):
     def __init__(self, fit, stat_name, restriction_type):
         self.__restrictionType = restriction_type
         self._fit = fit
-        # Use this stat name to get numbers from stats tracker
+        # Use this stat name to get numbers from stats service
         self.__stat_name = stat_name
         self._slot_consumers = set()
 

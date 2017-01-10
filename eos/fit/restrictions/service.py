@@ -36,12 +36,12 @@ class RestrictionService(BaseSubscriber):
     results to fit.
 
     Required arguments:
-    fit -- Fit object to which tracker is assigned
+    fit -- Fit object to which service is assigned
     """
 
     def __init__(self, fit):
         self.__enabled = False
-        # Fit reference, to which this restriction tracker
+        # Fit reference, to which this restriction service
         # is attached
         self._fit = fit
         # Set with 'stateless' holders. Holders are always
