@@ -22,6 +22,7 @@
 from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
+from eos.fit.messages import EnableServices, DisableServices
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import Fit, IndependentItem, ShipItem
 from tests.environment import CacheHandler
@@ -109,12 +110,9 @@ class TestTransitionFit(CalculatorTestCase):
         fit.items.add(module)
         self.assertAlmostEqual(module.attributes.get(tgt_attr1.id), 55)
         # As we have capped attr, this auxiliary map shouldn't be None
-        self.assertIsNotNone(module.attributes._cap_map)
-        # Make an 'source switch': remove holders from calculator
-        for holder in (ship, module):
-            disabled_states = set(filter(lambda s: s <= holder.state, State))
-            fit._link_tracker.disable_states(holder, disabled_states)
-            fit._link_tracker.remove_holder(holder)
+        self.assertGreater(len(module.attributes._cap_map), 0)
+        # Make an 'source switch': disable services
+        fit._calculator._notify(DisableServices(holders=(ship, module)))
         # Refresh holders and replace source
         fit.source.cache_handler = cache_handler2
         ship.attributes.clear()
@@ -127,12 +125,9 @@ class TestTransitionFit(CalculatorTestCase):
         # capping-capped attribute pair won't exist, thus if attribute with ID which
         # used to cap is changed, it will clear attribute which used to be capped -
         # and we do not want it within scope of new data.
-        self.assertIsNone(module.attributes._cap_map)
-        # Add holders again, when new items are in holders
-        for holder in (ship, module):
-            fit._link_tracker.add_holder(holder)
-            enabled_states = set(filter(lambda s: s <= holder.state, State))
-            fit._link_tracker.enable_states(holder, enabled_states)
+        self.assertEqual(len(module.attributes._cap_map), 0)
+        # Enable services once switch is complete
+        fit._calculator._notify(EnableServices(holders=(ship, module)))
         # Now we should have calculated value based on both updated attribs
         # if attribs weren't refreshed, we would use old value for modification
         # (10 instead of 20)

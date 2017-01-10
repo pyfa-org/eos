@@ -129,6 +129,11 @@ class MutableAttributeMap:
         # Try getting override first
         if attr in self._overrides:
             return self._overrides[attr].value
+        # If carrier holder isn't assigned to any fit, then
+        # we can use just item's original attributes
+        if self.__holder._fit is None:
+            val = self.__holder.item.attributes[attr]
+            return val
         # If value is stored in modified map, it's considered as valid
         try:
             val = self.__modified_attributes[attr]

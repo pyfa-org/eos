@@ -22,6 +22,7 @@
 from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
+from eos.fit.messages import EffectsEnabled, EffectsDisabled
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
@@ -66,8 +67,8 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder.state = State.offline
         self.fit.items.add(self.holder)
         # Action
-        self.fit._link_tracker.disable_effects(self.holder, (self.effect1.id,))
         self.holder._disabled_effects.add(self.effect1.id)
+        self.fit._calculator._notify(EffectsDisabled(self.holder, (self.effect1.id,)))
         # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 130)
         # Cleanup
@@ -80,8 +81,8 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder.state = State.offline
         self.fit.items.add(self.holder)
         # Action
-        self.fit._link_tracker.disable_effects(self.holder, (self.effect1.id, self.effect2.id))
         self.holder._disabled_effects.update((self.effect1.id, self.effect2.id))
+        self.fit._calculator._notify(EffectsDisabled(self.holder, (self.effect1.id, self.effect2.id)))
         # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 100)
         # Cleanup
@@ -95,8 +96,8 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder._disabled_effects.add(self.effect1.id)
         self.fit.items.add(self.holder)
         # Action
+        self.fit._calculator._notify(EffectsEnabled(self.holder, (self.effect1.id,)))
         self.holder._disabled_effects.discard(self.effect1.id)
-        self.fit._link_tracker.enable_effects(self.holder, (self.effect1.id,))
         # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
         # Cleanup
@@ -110,8 +111,8 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder._disabled_effects.update((self.effect1.id, self.effect2.id))
         self.fit.items.add(self.holder)
         # Action
+        self.fit._calculator._notify(EffectsEnabled(self.holder, (self.effect1.id, self.effect2.id)))
         self.holder._disabled_effects.difference_update((self.effect1.id, self.effect2.id))
-        self.fit._link_tracker.enable_effects(self.holder, (self.effect1.id, self.effect2.id))
         # Verification
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
         # Cleanup
