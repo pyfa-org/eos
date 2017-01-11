@@ -29,7 +29,7 @@ from tests.stats.stat_testcase import StatTestCase
 class TestResistances(StatTestCase):
 
     def test_relay(self):
-        # Check that stat tracker relays resistance stats properly
+        # Check that stats service relays resistance stats properly
         ship_item = self.ch.type_(type_id=1)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.resistances.hull.em = 5

@@ -29,7 +29,7 @@ from tests.stats.stat_testcase import StatTestCase
 class TestHp(StatTestCase):
 
     def test_relay(self):
-        # Check that stat tracker relays hp stats properly
+        # Check that stats service relays hp stats properly
         ship_item = self.ch.type_(type_id=1)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.hp.hull = 50

@@ -270,7 +270,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
             self.__enable_states(holder, states)
-        elif old_state < new_state:
+        elif new_state < old_state:
             states = set(filter(lambda s: new_state < s <= old_state, State))
             self.__disable_states(holder, states)
 

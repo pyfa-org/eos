@@ -29,7 +29,7 @@ from tests.stats.stat_testcase import StatTestCase
 class TestWorstCaseEhp(StatTestCase):
 
     def test_relay(self):
-        # Check that stat tracker relays wcehp stats properly
+        # Check that stats service relays wcehp stats properly
         ship_item = self.ch.type_(type_id=1)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.worst_case_ehp.hull = 50
