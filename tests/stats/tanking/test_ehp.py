@@ -23,7 +23,7 @@ from unittest.mock import Mock, call
 
 from eos.const.eos import State
 from eos.fit.holder.item import Ship
-from tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stats.stat_testcase import StatTestCase
 
 
 class TestEhp(StatTestCase):
@@ -36,7 +36,7 @@ class TestEhp(StatTestCase):
         self.set_ship(ship_holder)
         damage_profile = Mock()
         ehp_calls_before = len(ship_holder.get_ehp.mock_calls)
-        ehp_stats = self.st.get_ehp(damage_profile)
+        ehp_stats = self.ss.get_ehp(damage_profile)
         ehp_calls_after = len(ship_holder.get_ehp.mock_calls)
         self.assertEqual(ehp_calls_after - ehp_calls_before, 1)
         self.assertEqual(ship_holder.get_ehp.mock_calls[-1], call.get_ehp(damage_profile))
@@ -51,7 +51,7 @@ class TestEhp(StatTestCase):
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
         damage_profile = Mock()
-        ehp_stats = self.st.get_ehp(damage_profile)
+        ehp_stats = self.ss.get_ehp(damage_profile)
         self.assertIsNone(ehp_stats.hull)
         self.assertIsNone(ehp_stats.armor)
         self.assertIsNone(ehp_stats.shield)

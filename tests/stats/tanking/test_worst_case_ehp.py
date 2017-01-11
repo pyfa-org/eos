@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.item import Ship
-from tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stats.stat_testcase import StatTestCase
 
 
 class TestWorstCaseEhp(StatTestCase):
@@ -37,20 +37,20 @@ class TestWorstCaseEhp(StatTestCase):
         ship_holder.worst_case_ehp.shield = 70
         ship_holder.worst_case_ehp.total = 80
         self.set_ship(ship_holder)
-        self.assertEqual(self.st.worst_case_ehp.hull, 50)
-        self.assertEqual(self.st.worst_case_ehp.armor, 60)
-        self.assertEqual(self.st.worst_case_ehp.shield, 70)
-        self.assertEqual(self.st.worst_case_ehp.total, 80)
+        self.assertEqual(self.ss.worst_case_ehp.hull, 50)
+        self.assertEqual(self.ss.worst_case_ehp.armor, 60)
+        self.assertEqual(self.ss.worst_case_ehp.shield, 70)
+        self.assertEqual(self.ss.worst_case_ehp.total, 80)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
-        self.assertIsNone(self.st.worst_case_ehp.hull)
-        self.assertIsNone(self.st.worst_case_ehp.armor)
-        self.assertIsNone(self.st.worst_case_ehp.shield)
-        self.assertIsNone(self.st.worst_case_ehp.total)
+        self.assertIsNone(self.ss.worst_case_ehp.hull)
+        self.assertIsNone(self.ss.worst_case_ehp.armor)
+        self.assertIsNone(self.ss.worst_case_ehp.shield)
+        self.assertIsNone(self.ss.worst_case_ehp.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -59,15 +59,15 @@ class TestWorstCaseEhp(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         ship_holder.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
-        self.assertEqual(self.st.worst_case_ehp.hull, 50)
-        self.assertEqual(self.st.worst_case_ehp.armor, 60)
-        self.assertEqual(self.st.worst_case_ehp.shield, 70)
-        self.assertEqual(self.st.worst_case_ehp.total, 80)
+        self.assertEqual(self.ss.worst_case_ehp.hull, 50)
+        self.assertEqual(self.ss.worst_case_ehp.armor, 60)
+        self.assertEqual(self.ss.worst_case_ehp.shield, 70)
+        self.assertEqual(self.ss.worst_case_ehp.total, 80)
         ship_holder.worst_case_ehp = Mock(hull=150, armor=160, shield=170, total=180)
-        self.assertEqual(self.st.worst_case_ehp.hull, 50)
-        self.assertEqual(self.st.worst_case_ehp.armor, 60)
-        self.assertEqual(self.st.worst_case_ehp.shield, 70)
-        self.assertEqual(self.st.worst_case_ehp.total, 80)
+        self.assertEqual(self.ss.worst_case_ehp.hull, 50)
+        self.assertEqual(self.ss.worst_case_ehp.armor, 60)
+        self.assertEqual(self.ss.worst_case_ehp.shield, 70)
+        self.assertEqual(self.ss.worst_case_ehp.total, 80)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -77,16 +77,16 @@ class TestWorstCaseEhp(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         ship_holder.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
-        self.assertEqual(self.st.worst_case_ehp.hull, 50)
-        self.assertEqual(self.st.worst_case_ehp.armor, 60)
-        self.assertEqual(self.st.worst_case_ehp.shield, 70)
-        self.assertEqual(self.st.worst_case_ehp.total, 80)
+        self.assertEqual(self.ss.worst_case_ehp.hull, 50)
+        self.assertEqual(self.ss.worst_case_ehp.armor, 60)
+        self.assertEqual(self.ss.worst_case_ehp.shield, 70)
+        self.assertEqual(self.ss.worst_case_ehp.total, 80)
         ship_holder.worst_case_ehp = Mock(hull=150, armor=160, shield=170, total=180)
-        self.st._clear_volatile_attrs()
-        self.assertEqual(self.st.worst_case_ehp.hull, 150)
-        self.assertEqual(self.st.worst_case_ehp.armor, 160)
-        self.assertEqual(self.st.worst_case_ehp.shield, 170)
-        self.assertEqual(self.st.worst_case_ehp.total, 180)
+        self.ss._clear_volatile_attrs()
+        self.assertEqual(self.ss.worst_case_ehp.hull, 150)
+        self.assertEqual(self.ss.worst_case_ehp.armor, 160)
+        self.assertEqual(self.ss.worst_case_ehp.shield, 170)
+        self.assertEqual(self.ss.worst_case_ehp.total, 180)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

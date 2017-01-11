@@ -19,10 +19,12 @@
 # ===============================================================================
 
 
+from itertools import chain
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.stat_tracker import StatService
+from eos.fit.stats import StatService
+from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices
 from tests.eos_testcase import EosTestCase
 
 
@@ -30,18 +32,15 @@ class StatTestCase(EosTestCase):
     """
     Additional functionality provided:
 
-    self.rt -- restriction tracker instance for tests
-    self.set_ship -- set ship to fit which uses self.rt
+    self.ss -- stats service instance for tests
+    self.set_ship -- set ship to fit which uses stats
+    service
     self.set_character -- set character to fit whic uses
-    self.rt
-    self.track_holder -- add holder to restriction tracker
-    self.untrack_holder -- remove holder from restriction
-    tracker
-    self.get_restriction_error -- get restriction error for
-    passed holder of passed restriction type. If no error
-    occurred, return None
-    self.assert_restriction_buffers_empty -- checks if
-    restriction tracker buffers are clear
+    stats service
+    self.add_holder -- add holder to stats service
+    self.remove_holder -- remove holder from stats service
+    self.assert_stat_buffers_empty -- checks if stats
+    service buffers are clear
     """
 
     def setUp(self):
@@ -55,7 +54,8 @@ class StatTestCase(EosTestCase):
         self.fit.rigs = set()
         self.fit.subsystems = set()
         self.fit.drones = set()
-        self.st = StatService(self.fit)
+        self.ss = StatService(self.fit)
+        self.ss._notify(EnableServices(holders=()))
 
     def set_ship(self, holder):
         self.fit.ship = holder
@@ -63,20 +63,20 @@ class StatTestCase(EosTestCase):
     def set_character(self, holder):
         self.fit.character = holder
 
-    def track_holder(self, holder):
-        self.st._enable_states(holder, set(filter(lambda s: s <= holder.state, State)))
+    def add_holder(self, holder):
+        self.ss._notify(HolderAdded(holder))
 
-    def untrack_holder(self, holder):
-        self.st._disable_states(holder, set(filter(lambda s: s <= holder.state, State)))
+    def remove_holder(self, holder):
+        self.ss._notify(HolderRemoved(holder))
 
     def assert_stat_buffers_empty(self):
         entry_num = 0
-        # Get dictionary-container with all registers used by tracker,
-        # and cycle through all of them
-        tracker_container = self.st._StatService__registers
-        for register_group in tracker_container.values():
-            for register in register_group:
-                entry_num += self._get_object_buffer_entry_amount(register)
+        # Get all registers used by service and cycle through all of them
+        for register in chain(
+                self.ss._StatService__regs_stateless,
+                *self.ss._StatService__regs_stateful.values()
+        ):
+            entry_num += self._get_object_buffer_entry_amount(register)
         # Raise error if we found any data in any register
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'

@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.item import Ship
-from tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stats.stat_testcase import StatTestCase
 
 
 class TestHp(StatTestCase):
@@ -37,20 +37,20 @@ class TestHp(StatTestCase):
         ship_holder.hp.shield = 70
         ship_holder.hp.total = 80
         self.set_ship(ship_holder)
-        self.assertEqual(self.st.hp.hull, 50)
-        self.assertEqual(self.st.hp.armor, 60)
-        self.assertEqual(self.st.hp.shield, 70)
-        self.assertEqual(self.st.hp.total, 80)
+        self.assertEqual(self.ss.hp.hull, 50)
+        self.assertEqual(self.ss.hp.armor, 60)
+        self.assertEqual(self.ss.hp.shield, 70)
+        self.assertEqual(self.ss.hp.total, 80)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
-        self.assertIsNone(self.st.hp.hull)
-        self.assertIsNone(self.st.hp.armor)
-        self.assertIsNone(self.st.hp.shield)
-        self.assertIsNone(self.st.hp.total)
+        self.assertIsNone(self.ss.hp.hull)
+        self.assertIsNone(self.ss.hp.armor)
+        self.assertIsNone(self.ss.hp.shield)
+        self.assertIsNone(self.ss.hp.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -59,15 +59,15 @@ class TestHp(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         ship_holder.hp = Mock(hull=50, armor=60, shield=70, total=80)
-        self.assertEqual(self.st.hp.hull, 50)
-        self.assertEqual(self.st.hp.armor, 60)
-        self.assertEqual(self.st.hp.shield, 70)
-        self.assertEqual(self.st.hp.total, 80)
+        self.assertEqual(self.ss.hp.hull, 50)
+        self.assertEqual(self.ss.hp.armor, 60)
+        self.assertEqual(self.ss.hp.shield, 70)
+        self.assertEqual(self.ss.hp.total, 80)
         ship_holder.hp = Mock(hull=150, armor=160, shield=170, total=180)
-        self.assertEqual(self.st.hp.hull, 50)
-        self.assertEqual(self.st.hp.armor, 60)
-        self.assertEqual(self.st.hp.shield, 70)
-        self.assertEqual(self.st.hp.total, 80)
+        self.assertEqual(self.ss.hp.hull, 50)
+        self.assertEqual(self.ss.hp.armor, 60)
+        self.assertEqual(self.ss.hp.shield, 70)
+        self.assertEqual(self.ss.hp.total, 80)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -77,16 +77,16 @@ class TestHp(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         ship_holder.hp = Mock(hull=50, armor=60, shield=70, total=80)
-        self.assertEqual(self.st.hp.hull, 50)
-        self.assertEqual(self.st.hp.armor, 60)
-        self.assertEqual(self.st.hp.shield, 70)
-        self.assertEqual(self.st.hp.total, 80)
+        self.assertEqual(self.ss.hp.hull, 50)
+        self.assertEqual(self.ss.hp.armor, 60)
+        self.assertEqual(self.ss.hp.shield, 70)
+        self.assertEqual(self.ss.hp.total, 80)
         ship_holder.hp = Mock(hull=150, armor=160, shield=170, total=180)
-        self.st._clear_volatile_attrs()
-        self.assertEqual(self.st.hp.hull, 150)
-        self.assertEqual(self.st.hp.armor, 160)
-        self.assertEqual(self.st.hp.shield, 170)
-        self.assertEqual(self.st.hp.total, 180)
+        self.ss._clear_volatile_attrs()
+        self.assertEqual(self.ss.hp.hull, 150)
+        self.assertEqual(self.ss.hp.armor, 160)
+        self.assertEqual(self.ss.hp.shield, 170)
+        self.assertEqual(self.ss.hp.total, 180)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

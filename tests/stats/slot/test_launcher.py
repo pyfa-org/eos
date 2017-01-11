@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Slot, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Ship
-from tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stats.stat_testcase import StatTestCase
 
 
 class TestLauncherSlot(StatTestCase):
@@ -35,14 +35,14 @@ class TestLauncherSlot(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.launcher_slots_left: 6}
         self.set_ship(ship_holder)
-        self.assertEqual(self.st.launcher_slots.total, 6)
+        self.assertEqual(self.ss.launcher_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_output_no_ship(self):
         # None for slot amount when no ship
-        self.assertIsNone(self.st.launcher_slots.total)
+        self.assertIsNone(self.ss.launcher_slots.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -52,13 +52,13 @@ class TestLauncherSlot(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
-        self.assertIsNone(self.st.launcher_slots.total)
+        self.assertIsNone(self.ss.launcher_slots.total)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_empty(self):
-        self.assertEqual(self.st.launcher_slots.used, 0)
+        self.assertEqual(self.ss.launcher_slots.used, 0)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -66,9 +66,9 @@ class TestLauncherSlot(StatTestCase):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.launcher}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
-        self.assertEqual(self.st.launcher_slots.used, 1)
-        self.untrack_holder(holder)
+        self.add_holder(holder)
+        self.assertEqual(self.ss.launcher_slots.used, 1)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -76,9 +76,9 @@ class TestLauncherSlot(StatTestCase):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.turret}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
-        self.assertEqual(self.st.launcher_slots.used, 0)
-        self.untrack_holder(holder)
+        self.add_holder(holder)
+        self.assertEqual(self.ss.launcher_slots.used, 0)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -87,11 +87,11 @@ class TestLauncherSlot(StatTestCase):
         item.slots = {Slot.launcher}
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launcher_slots.used, 2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launcher_slots.used, 2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -102,11 +102,11 @@ class TestLauncherSlot(StatTestCase):
         item2 = self.ch.type_(type_id=2, attributes={})
         item2.slots = {Slot.turret}
         holder2 = Mock(state=State.offline, item=item2, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launcher_slots.used, 1)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launcher_slots.used, 1)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -119,16 +119,16 @@ class TestLauncherSlot(StatTestCase):
         item.slots = {Slot.launcher}
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launcher_slots.used, 2)
-        self.assertEqual(self.st.launcher_slots.total, 6)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launcher_slots.used, 2)
+        self.assertEqual(self.ss.launcher_slots.total, 6)
         ship_holder.attributes[Attribute.launcher_slots_left] = 4
-        self.untrack_holder(holder1)
-        self.assertEqual(self.st.launcher_slots.used, 2)
-        self.assertEqual(self.st.launcher_slots.total, 6)
+        self.remove_holder(holder1)
+        self.assertEqual(self.ss.launcher_slots.used, 2)
+        self.assertEqual(self.ss.launcher_slots.total, 6)
         self.set_ship(None)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -141,16 +141,16 @@ class TestLauncherSlot(StatTestCase):
         item.slots = {Slot.launcher}
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launcher_slots.used, 2)
-        self.assertEqual(self.st.launcher_slots.total, 6)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launcher_slots.used, 2)
+        self.assertEqual(self.ss.launcher_slots.total, 6)
         ship_holder.attributes[Attribute.launcher_slots_left] = 4
-        self.untrack_holder(holder1)
-        self.st._clear_volatile_attrs()
-        self.assertEqual(self.st.launcher_slots.used, 1)
-        self.assertEqual(self.st.launcher_slots.total, 4)
+        self.remove_holder(holder1)
+        self.ss._clear_volatile_attrs()
+        self.assertEqual(self.ss.launcher_slots.used, 1)
+        self.assertEqual(self.ss.launcher_slots.total, 4)
         self.set_ship(None)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

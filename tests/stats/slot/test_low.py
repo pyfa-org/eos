@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Ship
-from tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stats.stat_testcase import StatTestCase
 
 
 class TestLowSlot(StatTestCase):
@@ -35,14 +35,14 @@ class TestLowSlot(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.low_slots: 6}
         self.set_ship(ship_holder)
-        self.assertEqual(self.st.low_slots.total, 6)
+        self.assertEqual(self.ss.low_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_output_no_ship(self):
         # None for slot amount when no ship
-        self.assertIsNone(self.st.low_slots.total)
+        self.assertIsNone(self.ss.low_slots.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -52,13 +52,13 @@ class TestLowSlot(StatTestCase):
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
-        self.assertIsNone(self.st.low_slots.total)
+        self.assertIsNone(self.ss.low_slots.total)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_empty(self):
-        self.assertEqual(self.st.low_slots.used, 0)
+        self.assertEqual(self.ss.low_slots.used, 0)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -68,7 +68,7 @@ class TestLowSlot(StatTestCase):
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(holder2)
-        self.assertEqual(self.st.low_slots.used, 2)
+        self.assertEqual(self.ss.low_slots.used, 2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -80,7 +80,7 @@ class TestLowSlot(StatTestCase):
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(None)
         self.fit.modules.low.append(holder2)
-        self.assertEqual(self.st.low_slots.used, 4)
+        self.assertEqual(self.ss.low_slots.used, 4)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -88,7 +88,7 @@ class TestLowSlot(StatTestCase):
         item = self.ch.type_(type_id=1, attributes={})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder)
-        self.assertEqual(self.st.low_slots.used, 0)
+        self.assertEqual(self.ss.low_slots.used, 0)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -102,12 +102,12 @@ class TestLowSlot(StatTestCase):
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(holder2)
-        self.assertEqual(self.st.low_slots.used, 2)
-        self.assertEqual(self.st.low_slots.total, 6)
+        self.assertEqual(self.ss.low_slots.used, 2)
+        self.assertEqual(self.ss.low_slots.total, 6)
         ship_holder.attributes[Attribute.low_slots] = 4
         self.fit.modules.low.remove(holder1)
-        self.assertEqual(self.st.low_slots.used, 2)
-        self.assertEqual(self.st.low_slots.total, 6)
+        self.assertEqual(self.ss.low_slots.used, 2)
+        self.assertEqual(self.ss.low_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -122,13 +122,13 @@ class TestLowSlot(StatTestCase):
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.low.append(holder1)
         self.fit.modules.low.append(holder2)
-        self.assertEqual(self.st.low_slots.used, 2)
-        self.assertEqual(self.st.low_slots.total, 6)
+        self.assertEqual(self.ss.low_slots.used, 2)
+        self.assertEqual(self.ss.low_slots.total, 6)
         ship_holder.attributes[Attribute.low_slots] = 4
         self.fit.modules.low.remove(holder1)
-        self.st._clear_volatile_attrs()
-        self.assertEqual(self.st.low_slots.used, 1)
-        self.assertEqual(self.st.low_slots.total, 4)
+        self.ss._clear_volatile_attrs()
+        self.assertEqual(self.ss.low_slots.used, 1)
+        self.assertEqual(self.ss.low_slots.total, 4)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

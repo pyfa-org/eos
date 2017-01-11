@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Character, Drone, Implant
-from tests.stat_tracker.stat_testcase import StatTestCase
+from tests.stats.stat_testcase import StatTestCase
 
 
 class TestLaunchedDrone(StatTestCase):
@@ -35,14 +35,14 @@ class TestLaunchedDrone(StatTestCase):
         char_holder = Mock(state=State.offline, item=char_item, _domain=None, spec_set=Character(1))
         char_holder.attributes = {Attribute.max_active_drones: 6}
         self.set_character(char_holder)
-        self.assertEqual(self.st.launched_drones.total, 6)
+        self.assertEqual(self.ss.launched_drones.total, 6)
         self.set_character(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_output_no_ship(self):
         # None for max launched amount when no ship
-        self.assertIsNone(self.st.launched_drones.total)
+        self.assertIsNone(self.ss.launched_drones.total)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -52,22 +52,22 @@ class TestLaunchedDrone(StatTestCase):
         char_holder = Mock(state=State.offline, item=char_item, _domain=None, spec_set=Character(1))
         char_holder.attributes = {}
         self.set_character(char_holder)
-        self.assertIsNone(self.st.launched_drones.total)
+        self.assertIsNone(self.ss.launched_drones.total)
         self.set_character(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_empty(self):
-        self.assertEqual(self.st.launched_drones.used, 0)
+        self.assertEqual(self.ss.launched_drones.used, 0)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_single(self):
         item = self.ch.type_(type_id=1, attributes={})
         holder = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        self.track_holder(holder)
-        self.assertEqual(self.st.launched_drones.used, 1)
-        self.untrack_holder(holder)
+        self.add_holder(holder)
+        self.assertEqual(self.ss.launched_drones.used, 1)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -75,29 +75,29 @@ class TestLaunchedDrone(StatTestCase):
         item = self.ch.type_(type_id=1, attributes={})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launched_drones.used, 2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launched_drones.used, 2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_other_class(self):
         item = self.ch.type_(type_id=1, attributes={})
         holder = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Implant(1))
-        self.track_holder(holder)
-        self.assertEqual(self.st.launched_drones.used, 0)
-        self.untrack_holder(holder)
+        self.add_holder(holder)
+        self.assertEqual(self.ss.launched_drones.used, 0)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_state(self):
         item = self.ch.type_(type_id=1, attributes={})
         holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
-        self.track_holder(holder)
-        self.assertEqual(self.st.launched_drones.used, 0)
-        self.untrack_holder(holder)
+        self.add_holder(holder)
+        self.assertEqual(self.ss.launched_drones.used, 0)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -109,16 +109,16 @@ class TestLaunchedDrone(StatTestCase):
         item = self.ch.type_(type_id=2, attributes={})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launched_drones.used, 2)
-        self.assertEqual(self.st.launched_drones.total, 6)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launched_drones.used, 2)
+        self.assertEqual(self.ss.launched_drones.total, 6)
         char_holder.attributes[Attribute.max_active_drones] = 4
-        self.untrack_holder(holder1)
-        self.assertEqual(self.st.launched_drones.used, 2)
-        self.assertEqual(self.st.launched_drones.total, 6)
+        self.remove_holder(holder1)
+        self.assertEqual(self.ss.launched_drones.used, 2)
+        self.assertEqual(self.ss.launched_drones.total, 6)
         self.set_character(None)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -130,16 +130,16 @@ class TestLaunchedDrone(StatTestCase):
         item = self.ch.type_(type_id=2, attributes={})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        self.track_holder(holder1)
-        self.track_holder(holder2)
-        self.assertEqual(self.st.launched_drones.used, 2)
-        self.assertEqual(self.st.launched_drones.total, 6)
+        self.add_holder(holder1)
+        self.add_holder(holder2)
+        self.assertEqual(self.ss.launched_drones.used, 2)
+        self.assertEqual(self.ss.launched_drones.total, 6)
         char_holder.attributes[Attribute.max_active_drones] = 4
-        self.untrack_holder(holder1)
-        self.st._clear_volatile_attrs()
-        self.assertEqual(self.st.launched_drones.used, 1)
-        self.assertEqual(self.st.launched_drones.total, 4)
+        self.remove_holder(holder1)
+        self.ss._clear_volatile_attrs()
+        self.assertEqual(self.ss.launched_drones.used, 1)
+        self.assertEqual(self.ss.launched_drones.total, 4)
         self.set_character(None)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
