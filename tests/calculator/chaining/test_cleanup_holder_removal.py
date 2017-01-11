@@ -30,6 +30,7 @@ class TestCleanupChainRemoval(CalculatorTestCase):
     """Check that removed item damages all attributes which were relying on its attributes"""
 
     def test_attribute(self):
+        # Setup
         attr1 = self.ch.attribute(attribute_id=1)
         attr2 = self.ch.attribute(attribute_id=2)
         attr3 = self.ch.attribute(attribute_id=3)
@@ -62,10 +63,13 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         self.fit.ship = holder2
         self.fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
+        # Action
         self.fit.items.remove(holder1)
+        # Verification
         # When holder1 is removed, attr2 of holder2 and attr3 of holder3
         # must be cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
+        # Cleanup
         self.fit.ship = None
         self.fit.items.remove(holder3)
         self.assertEqual(len(self.log), 0)

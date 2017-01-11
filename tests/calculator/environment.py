@@ -92,9 +92,10 @@ class Fit:
             new_char._fit = self
             self._calculator._notify(HolderAdded(new_char))
 
-    _subscribe = Mock()
+    def _publish(self, message):
+        self._calculator._notify(message)
 
-    _publish = Mock()
+    _subscribe = Mock()
 
 
 class Holder:

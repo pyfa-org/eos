@@ -27,7 +27,7 @@ from eos.const.eos import Operator
 from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.holder.mixin.holder.exception import NoSourceError
-from eos.fit.messages import AttrOverrideChanged
+from eos.fit.messages import AttrValueChanged, OverrideValueChanged
 from eos.util.keyed_set import KeyedSet
 from .exception import BaseValueError, AttributeMetaError, OperatorError
 
@@ -129,11 +129,6 @@ class MutableAttributeMap:
         # Try getting override first
         if attr in self._overrides:
             return self._overrides[attr].value
-        # If carrier holder isn't assigned to any fit, then
-        # we can use just item's original attributes
-        if self.__holder._fit is None:
-            val = self.__holder.item.attributes[attr]
-            return val
         # If value is stored in modified map, it's considered as valid
         try:
             val = self.__modified_attributes[attr]
@@ -154,7 +149,7 @@ class MutableAttributeMap:
             except NoSourceError as e:
                 raise KeyError(attr) from e
             else:
-                self.__holder._fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
+                self.__holder._fit._publish(AttrValueChanged(holder=self.__holder, attr=attr))
         return val
 
     def __len__(self):
@@ -174,10 +169,10 @@ class MutableAttributeMap:
         # Do nothing if it wasn't calculated
         except KeyError:
             pass
-        # And make sure all other attributes relying on it
-        # are cleared too
+        # And make sure services are aware of changed value if it
+        # actually was changed
         else:
-            self.__holder._fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
+            self.__holder._fit._publish(AttrValueChanged(holder=self.__holder, attr=attr))
 
     def get(self, attr, default=None):
         try:
@@ -373,8 +368,7 @@ class MutableAttributeMap:
         """
         # Get old value, regardless if it was override or not
         old_composite = self.get(attr)
-        # Get override value, it will be used for info spread
-        # across the fit
+        # Get override value
         old_override = self._overrides.get(attr)
         if old_override is not None:
             old_override = old_override.value
@@ -384,9 +378,11 @@ class MutableAttributeMap:
         # If value of attribute is changing after operation, force refresh
         # of attributes which rely on it
         fit = self.__holder._fit
-        if value != old_composite and fit is not None:
-            fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
-            fit._publish(AttrOverrideChanged(holder=self.__holder, attr=attr, old=old_override, new=value))
+        if fit is not None:
+            if value != old_composite:
+                fit._publish(AttrValueChanged(holder=self.__holder, attr=attr))
+            if value != old_override:
+                fit._publish(OverrideValueChanged(holder=self.__holder, attr=attr))
 
     def _override_del(self, attr):
         overrides = self.__overridden_attributes
@@ -402,9 +398,10 @@ class MutableAttributeMap:
         # of attributes which rely on it
         new_modified = self.get(attr)
         fit = self.__holder._fit
-        if new_modified != old_override and fit is not None:
-            fit._calculator.clear_holder_attribute_dependents(self.__holder, attr)
-            fit._publish(AttrOverrideChanged(holder=self.__holder, attr=attr, old=old_override, new=None))
+        if fit is not None:
+            if new_modified != old_override:
+                fit._publish(AttrValueChanged(holder=self.__holder, attr=attr))
+            fit._publish(OverrideValueChanged(holder=self.__holder, attr=attr))
 
     # Cap-related methods
     @property

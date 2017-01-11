@@ -24,7 +24,6 @@ from unittest.mock import call
 from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
-from eos.fit.messages import AttrOverrideChanged
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
@@ -56,15 +55,12 @@ class TestOverride(CalculatorTestCase):
     def test_override_set(self):
         # Setup
         holder = self.holder
-        pub_calls_before = len(self.fit._publish.mock_calls)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 55)
         # Action
-        holder.attributes._override_set(self.tgt_attr.id, 77)
+        holder.attributes._override_set(self.src_attr.id, 77)
         # Verification
-        pub_calls_after = len(self.fit._publish.mock_calls)
-        self.assertEqual(pub_calls_after - pub_calls_before, 1)
-        self.assertEqual(self.fit._publish.mock_calls[-1],
-            call(AttrOverrideChanged(holder, self.tgt_attr.id, None, 77)))
-        self.assertEqual(holder.attributes[self.tgt_attr.id], 77)
+        self.assertEqual(holder.attributes[self.src_attr.id], 77)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
         # Cleanup
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
@@ -72,16 +68,13 @@ class TestOverride(CalculatorTestCase):
     def test_override_reset(self):
         # Setup
         holder = self.holder
-        holder.attributes._override_set(self.tgt_attr.id, 77)
-        pub_calls_before = len(self.fit._publish.mock_calls)
+        holder.attributes._override_set(self.src_attr.id, 77)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
         # Action
-        holder.attributes._override_set(self.tgt_attr.id, 88)
+        holder.attributes._override_set(self.src_attr.id, 88)
         # Verification
-        pub_calls_after = len(self.fit._publish.mock_calls)
-        self.assertEqual(pub_calls_after - pub_calls_before, 1)
-        self.assertEqual(self.fit._publish.mock_calls[-1],
-            call(AttrOverrideChanged(holder, self.tgt_attr.id, 77, 88)))
-        self.assertEqual(holder.attributes[self.tgt_attr.id], 88)
+        self.assertEqual(holder.attributes[self.src_attr.id], 88)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 94)
         # Cleanup
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
@@ -89,16 +82,55 @@ class TestOverride(CalculatorTestCase):
     def test_override_delete(self):
         # Setup
         holder = self.holder
-        holder.attributes._override_set(self.tgt_attr.id, 77)
-        pub_calls_before = len(self.fit._publish.mock_calls)
+        holder.attributes._override_set(self.src_attr.id, 77)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
         # Action
-        holder.attributes._override_del(self.tgt_attr.id)
+        holder.attributes._override_del(self.src_attr.id)
         # Verification
-        pub_calls_after = len(self.fit._publish.mock_calls)
-        self.assertEqual(pub_calls_after - pub_calls_before, 1)
-        self.assertEqual(self.fit._publish.mock_calls[-1],
-            call(AttrOverrideChanged(holder, self.tgt_attr.id, 77, None)))
+        self.assertEqual(holder.attributes[self.src_attr.id], 10)
         self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 55)
+        # Cleanup
+        self.fit.items.remove(holder)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_override_delete_persistent(self):
+        # Setup
+        holder = self.holder
+        holder.attributes._override_set(self.src_attr.id, 77, persist=True)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
+        # Action
+        holder.attributes._override_del(self.src_attr.id)
+        # Verification
+        self.assertEqual(holder.attributes[self.src_attr.id], 10)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 55)
+        # Cleanup
+        self.fit.items.remove(holder)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_override_clear(self):
+        # Setup
+        holder = self.holder
+        holder.attributes._override_set(self.src_attr.id, 77)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
+        # Action
+        holder.attributes.clear()
+        # Verification
+        self.assertEqual(holder.attributes[self.src_attr.id], 10)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 55)
+        # Cleanup
+        self.fit.items.remove(holder)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_override_clear_persistent(self):
+        # Setup
+        holder = self.holder
+        holder.attributes._override_set(self.src_attr.id, 77, persist=True)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
+        # Action
+        holder.attributes.clear()
+        # Verification
+        self.assertEqual(holder.attributes[self.src_attr.id], 77)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 88.5)
         # Cleanup
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)

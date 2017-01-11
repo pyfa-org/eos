@@ -22,7 +22,7 @@
 from eos.const.eos import State, Scope
 from eos.fit.messages import (
     HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
-    EnableServices, DisableServices
+    AttrValueChanged, EnableServices, DisableServices
 )
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
@@ -83,62 +83,6 @@ class CalculationService(BaseSubscriber):
         Set with holders
         """
         return self._register.get_affectees(affector)
-
-    def clear_holder_attribute_dependents(self, holder, attr):
-        """
-        Clear calculated attributes relying on the passed attribute.
-
-        Required arguments:
-        holder -- holder, which carries attribute in question
-        attr -- ID of attribute
-        """
-        # Clear attributes capped by this attribute
-        for capped_attr in (holder.attributes._cap_map.get(attr) or ()):
-            del holder.attributes[capped_attr]
-        # Clear attributes which are using this attribute as modification source
-        for affector in self.__generate_affectors(holder, effect_filter=holder._enabled_effects):
-            modifier = affector.modifier
-            # Skip affectors which do not use attribute being damaged as source
-            if modifier.src_attr != attr:
-                continue
-            # Go through all holders targeted by modifier
-            for target_holder in self.get_affectees(affector):
-                # And remove target attribute
-                del target_holder.attributes[modifier.tgt_attr]
-
-    def __generate_affectors(self, holder, effect_filter=None, state_filter=None, scope_filter=None):
-        """
-        Get all affectors spawned by the holder.
-
-        Required arguments:
-        holder -- holder, for which affectors are generated
-
-        Optional arguments:
-        effect filter -- filter results to include affectors, which
-        carry modifiers generated from effects with IDs on this list;
-        if None, no filtering occurs (default None)
-        state_filter -- filter results by state required by affector's
-        modifier, which should be in this iterable; if None, no
-        filtering occurs (default None)
-        scope_filter -- filter results by scope defined in affector's
-        modifier, which should be in this iterable; if None, no
-        filtering occurs (default None)
-
-        Return value:
-        Set with Affector objects, satisfying passed filters
-        """
-        affectors = set()
-        for effect in holder.item.effects:
-            if effect_filter is not None and effect.id not in effect_filter:
-                continue
-            for modifier in effect.modifiers:
-                if state_filter is not None and modifier.state not in state_filter:
-                    continue
-                if scope_filter is not None and modifier.scope not in scope_filter:
-                    continue
-                affector = Affector(holder, modifier)
-                affectors.add(affector)
-        return affectors
 
     # Message handling
     def _handle_holder_addition(self, message):
@@ -201,6 +145,25 @@ class CalculationService(BaseSubscriber):
         )
         self.__disable_affectors(affectors)
 
+    def _clear_holder_attribute_dependents(self, message):
+        """
+        Clear calculated attributes relying on the attribute of a holder..
+        """
+        holder, attr = message
+        # Clear attributes capped by this attribute
+        for capped_attr in (holder.attributes._cap_map.get(attr) or ()):
+            del holder.attributes[capped_attr]
+        # Clear attributes which are using this attribute as modification source
+        for affector in self.__generate_affectors(holder, effect_filter=holder._enabled_effects):
+            modifier = affector.modifier
+            # Skip affectors which do not use attribute being damaged as source
+            if modifier.src_attr != attr:
+                continue
+            # Go through all holders targeted by modifier
+            for target_holder in self.get_affectees(affector):
+                # And remove target attribute
+                del target_holder.attributes[modifier.tgt_attr]
+
     def _handle_enable_services(self, message):
         """
         Enable service and register passed holders.
@@ -224,6 +187,7 @@ class CalculationService(BaseSubscriber):
         HolderStateChanged: _handle_holder_state_change,
         EffectsEnabled: _handle_holder_effects_enabling,
         EffectsDisabled: _handle_holder_effects_disabling,
+        AttrValueChanged: _clear_holder_attribute_dependents,
         EnableServices: _handle_enable_services,
         DisableServices: _handle_disable_services
     }
@@ -318,3 +282,37 @@ class CalculationService(BaseSubscriber):
             for target_holder in self.get_affectees(affector):
                 # And remove target attribute
                 del target_holder.attributes[affector.modifier.tgt_attr]
+
+    def __generate_affectors(self, holder, effect_filter=None, state_filter=None, scope_filter=None):
+        """
+        Get all affectors spawned by the holder.
+
+        Required arguments:
+        holder -- holder, for which affectors are generated
+
+        Optional arguments:
+        effect filter -- filter results to include affectors, which
+        carry modifiers generated from effects with IDs on this list;
+        if None, no filtering occurs (default None)
+        state_filter -- filter results by state required by affector's
+        modifier, which should be in this iterable; if None, no
+        filtering occurs (default None)
+        scope_filter -- filter results by scope defined in affector's
+        modifier, which should be in this iterable; if None, no
+        filtering occurs (default None)
+
+        Return value:
+        Set with Affector objects, satisfying passed filters
+        """
+        affectors = set()
+        for effect in holder.item.effects:
+            if effect_filter is not None and effect.id not in effect_filter:
+                continue
+            for modifier in effect.modifiers:
+                if state_filter is not None and modifier.state not in state_filter:
+                    continue
+                if scope_filter is not None and modifier.scope not in scope_filter:
+                    continue
+                affector = Affector(holder, modifier)
+                affectors.add(affector)
+        return affectors

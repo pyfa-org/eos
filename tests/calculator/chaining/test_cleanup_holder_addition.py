@@ -30,6 +30,7 @@ class TestCleanupChainAddition(CalculatorTestCase):
     """Check that added item damages all attributes which are now relying on its attributes"""
 
     def test_attribute(self):
+        # Setup
         attr1 = self.ch.attribute(attribute_id=1)
         attr2 = self.ch.attribute(attribute_id=2)
         attr3 = self.ch.attribute(attribute_id=3)
@@ -61,10 +62,13 @@ class TestCleanupChainAddition(CalculatorTestCase):
         self.fit.ship = holder2
         self.fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
+        # Action
         self.fit.items.add(holder1)
+        # Verification
         # Added holder must clean all already calculated attributes
         # which are now affected by it, to allow recalculation
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
+        # Cleanup
         self.fit.items.remove(holder1)
         self.fit.ship = None
         self.fit.items.remove(holder3)

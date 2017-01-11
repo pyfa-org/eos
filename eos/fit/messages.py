@@ -28,10 +28,11 @@ __all__ = [
     'HolderStateChanged',
     'EffectsEnabled',
     'EffectsDisabled',
+    'AttrValueChanged',
+    'OverrideValueChanged',
     'EnableServices',
     'DisableServices',
-    'RefreshSource',
-    'AttrOverrideChanged'
+    'RefreshSource'
 ]
 
 
@@ -41,9 +42,10 @@ HolderRemoved = namedtuple('HolderRemoved', ('holder',))
 HolderStateChanged = namedtuple('HolderStateChanged', ('holder', 'old', 'new'))
 EffectsEnabled = namedtuple('EffectsEnabled', ('holder', 'effects'))
 EffectsDisabled = namedtuple('EffectsDisabled', ('holder', 'effects'))
+# Attribute-related
+AttrValueChanged = namedtuple('AttrValueChanged', ('holder', 'attr'))
+OverrideValueChanged = namedtuple('OverrideValueChanged', ('holder', 'attr'))
 # Source change-related
 EnableServices = namedtuple('EnableServices', ('holders',))
 DisableServices = namedtuple('DisableServices', ('holders',))
 RefreshSource = namedtuple('RefreshSource', ())
-# Misc
-AttrOverrideChanged = namedtuple('AttrOverrideChanged', ('holder', 'attr', 'old', 'new'))
