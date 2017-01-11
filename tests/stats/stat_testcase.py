@@ -22,7 +22,6 @@
 from itertools import chain
 from unittest.mock import Mock
 
-from eos.const.eos import State
 from eos.fit.stats import StatService
 from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices
 from tests.eos_testcase import EosTestCase
