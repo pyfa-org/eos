@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Implant
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestCpu(RestrictionTestCase):
@@ -36,7 +36,7 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.cpu: 50}
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.cpu.used = 50
         self.fit.stats.cpu.output = 40
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
@@ -44,7 +44,7 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -53,7 +53,7 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder = Mock(state=State.online, item=item, _domain=Domain.character, spec_set=Implant(1))
         holder.attributes = {Attribute.cpu: 50}
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.cpu.used = 50
         self.fit.stats.cpu.output = 40
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
@@ -61,7 +61,7 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -71,7 +71,7 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.cpu: 5}
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.cpu.used = 5
         self.fit.stats.cpu.output = None
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
@@ -79,7 +79,7 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 0)
         self.assertEqual(restriction_error.total_use, 5)
         self.assertEqual(restriction_error.holder_use, 5)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -90,10 +90,10 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.cpu: 25}
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.cpu: 20}
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.cpu.used = 45
         self.fit.stats.cpu.output = 40
         restriction_error1 = self.get_restriction_error(holder1, Restriction.cpu)
@@ -106,8 +106,8 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error2.output, 40)
         self.assertEqual(restriction_error2.total_use, 45)
         self.assertEqual(restriction_error2.holder_use, 20)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -116,7 +116,7 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 40})
         holder = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.cpu: 100}
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.cpu.used = 100
         self.fit.stats.cpu.output = 50
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
@@ -124,7 +124,7 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 50)
         self.assertEqual(restriction_error.total_use, 100)
         self.assertEqual(restriction_error.holder_use, 100)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -135,10 +135,10 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.cpu: 100}
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.cpu: -10}
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.cpu.used = 90
         self.fit.stats.cpu.output = 50
         restriction_error1 = self.get_restriction_error(holder1, Restriction.cpu)
@@ -148,8 +148,8 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error1.holder_use, 100)
         restriction_error2 = self.get_restriction_error(holder2, Restriction.cpu)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -160,10 +160,10 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.cpu: 100}
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.cpu: 0}
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.cpu.used = 100
         self.fit.stats.cpu.output = 50
         restriction_error1 = self.get_restriction_error(holder1, Restriction.cpu)
@@ -173,8 +173,8 @@ class TestCpu(RestrictionTestCase):
         self.assertEqual(restriction_error1.holder_use, 100)
         restriction_error2 = self.get_restriction_error(holder2, Restriction.cpu)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -184,18 +184,18 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.cpu: 25}
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.cpu: 20}
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.cpu.used = 45
         self.fit.stats.cpu.output = 50
         restriction_error1 = self.get_restriction_error(holder1, Restriction.cpu)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(holder2, Restriction.cpu)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -206,12 +206,12 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         holder = Mock(state=State.online, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.cpu: 100}
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.cpu.used = 100
         self.fit.stats.cpu.output = 50
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -220,11 +220,11 @@ class TestCpu(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
         holder.attributes = {Attribute.cpu: 50}
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.cpu.used = 50
         self.fit.stats.cpu.output = 40
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

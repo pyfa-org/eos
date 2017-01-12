@@ -34,7 +34,7 @@ class StatTestCase(EosTestCase):
     self.ss -- stats service instance for tests
     self.set_ship -- set ship to fit which uses stats
     service
-    self.set_character -- set character to fit whic uses
+    self.set_character -- set character to fit which uses
     stats service
     self.add_holder -- add holder to stats service
     self.remove_holder -- remove holder from stats service
@@ -70,7 +70,7 @@ class StatTestCase(EosTestCase):
 
     def assert_stat_buffers_empty(self):
         entry_num = 0
-        # Get all registers used by service and cycle through all of them
+        # Get all registers used by service and cycle through them
         for register in chain(
                 self.ss._StatService__regs_stateless,
                 *self.ss._StatService__regs_stateful.values()

@@ -19,10 +19,12 @@
 # ===============================================================================
 
 
+from itertools import chain
 from unittest.mock import Mock
 
 from eos.const.eos import Restriction, State
-from eos.fit.restriction_tracker import RestrictionService, ValidationError
+from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices
+from eos.fit.restrictions import RestrictionService, ValidationError
 from tests.eos_testcase import EosTestCase
 
 
@@ -30,18 +32,19 @@ class RestrictionTestCase(EosTestCase):
     """
     Additional functionality provided:
 
-    self.rt -- restriction tracker instance for tests
-    self.set_ship -- set ship to fit which uses self.rt
-    self.set_character -- set character to fit whic uses
-    self.rt
-    self.track_holder -- add holder to restriction tracker
-    self.untrack_holder -- remove holder from restriction
-    tracker
+    self.rs -- restriction service instance for tests
+    self.set_ship -- set ship to fit which uses restriction
+    service
+    self.set_character -- set character to fit which uses
+    restriction service
+    self.add_holder -- add holder to restriction service
+    self.remove_holder -- remove holder from restriction
+    service
     self.get_restriction_error -- get restriction error for
     passed holder of passed restriction type. If no error
     occurred, return None
     self.assert_restriction_buffers_empty -- checks if
-    restriction tracker buffers are clear
+    restriction service buffers are clear
     """
 
     def setUp(self):
@@ -56,21 +59,22 @@ class RestrictionTestCase(EosTestCase):
         self.fit.rigs = set()
         self.fit.subsystems = set()
         self.fit.drones = set()
-        self.rt = RestrictionService(self.fit)
+        self.rs = RestrictionService(self.fit)
+        self.rs._notify(EnableServices(holders=()))
 
     def set_ship(self, holder):
         self.fit.ship = holder
 
-    def track_holder(self, holder):
-        self.rt.enable_states(holder, set(filter(lambda s: s <= holder.state, State)))
+    def add_holder(self, holder):
+        self.rs._notify(HolderAdded(holder))
 
-    def untrack_holder(self, holder):
-        self.rt.disable_states(holder, set(filter(lambda s: s <= holder.state, State)))
+    def remove_holder(self, holder):
+        self.rs._notify(HolderRemoved(holder))
 
     def get_restriction_error(self, holder, restriction):
         skip_checks = set(Restriction).difference((restriction,))
         try:
-            self.rt.validate(skip_checks)
+            self.rs.validate(skip_checks)
         except ValidationError as e:
             error_data = e.args[0]
             if holder not in error_data:
@@ -84,12 +88,12 @@ class RestrictionTestCase(EosTestCase):
 
     def assert_restriction_buffers_empty(self):
         entry_num = 0
-        # Get dictionary-container with all registers used by tracker,
-        # and cycle through all of them
-        tracker_container = self.rt._RestrictionService__registers
-        for register_group in tracker_container.values():
-            for register in register_group:
-                entry_num += self._get_object_buffer_entry_amount(register)
+        # Get all registers used by service and cycle through them
+        for register in chain(
+                self.rs._RestrictionService__regs_stateless,
+                *self.rs._RestrictionService__regs_stateful.values()
+        ):
+            entry_num += self._get_object_buffer_entry_amount(register)
         # Raise error if we found any data in any register
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'

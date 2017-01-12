@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Domain, Restriction, State
 from eos.fit.holder.item import ModuleHigh
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestState(RestrictionTestCase):
@@ -33,10 +33,10 @@ class TestState(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.max_state = State.active
         holder = Mock(state=State.online, item=item, _domain=Domain.character, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -44,10 +44,10 @@ class TestState(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.max_state = State.active
         holder = Mock(state=State.active, item=item, _domain=Domain.character, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -55,11 +55,11 @@ class TestState(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.max_state = State.active
         holder = Mock(state=State.overload, item=item, _domain=Domain.character, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.current_state, State.overload)
         self.assertCountEqual(restriction_error.allowed_states, (State.offline, State.online, State.active))
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Drone
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestDroneBayVolume(RestrictionTestCase):
@@ -37,7 +37,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder)
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.dronebay.used = 50
         self.fit.stats.dronebay.output = 40
         restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
@@ -45,7 +45,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -56,7 +56,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 5}
         self.fit.drones.add(holder)
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.dronebay.used = 5
         self.fit.stats.dronebay.output = None
         restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
@@ -64,7 +64,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 0)
         self.assertEqual(restriction_error.total_use, 5)
         self.assertEqual(restriction_error.holder_use, 5)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -76,11 +76,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 25}
         self.fit.drones.add(holder1)
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: 20}
         self.fit.drones.add(holder2)
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.dronebay.used = 45
         self.fit.stats.dronebay.output = 40
         restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
@@ -93,8 +93,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error2.output, 40)
         self.assertEqual(restriction_error2.total_use, 45)
         self.assertEqual(restriction_error2.holder_use, 20)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -104,7 +104,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder)
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
         restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
@@ -112,7 +112,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 50)
         self.assertEqual(restriction_error.total_use, 100)
         self.assertEqual(restriction_error.holder_use, 100)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -124,11 +124,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder1)
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: -10}
         self.fit.drones.add(holder2)
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.dronebay.used = 90
         self.fit.stats.dronebay.output = 50
         restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
@@ -138,8 +138,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error1.holder_use, 100)
         restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -151,11 +151,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder1)
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: 0}
         self.fit.drones.add(holder2)
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
         restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
@@ -165,8 +165,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error1.holder_use, 100)
         restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -177,19 +177,19 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 25}
         self.fit.drones.add(holder1)
-        self.track_holder(holder1)
+        self.add_holder(holder1)
         holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: 20}
         self.fit.drones.add(holder2)
-        self.track_holder(holder2)
+        self.add_holder(holder2)
         self.fit.stats.dronebay.used = 45
         self.fit.stats.dronebay.output = 50
         restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(holder1)
-        self.untrack_holder(holder2)
+        self.remove_holder(holder1)
+        self.remove_holder(holder2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -201,12 +201,12 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder)
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
         restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -216,11 +216,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 50}
         self.fit.rigs.add(holder)
-        self.track_holder(holder)
+        self.add_holder(holder)
         self.fit.stats.dronebay.used = 50
         self.fit.stats.dronebay.output = 40
         restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

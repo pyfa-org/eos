@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Charge
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestChargeSize(RestrictionTestCase):
@@ -38,16 +38,16 @@ class TestChargeSize(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_size)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.holder_size, 2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -59,16 +59,16 @@ class TestChargeSize(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_size)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.allowed_size, 1)
         self.assertEqual(restriction_error2.holder_size, 2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -80,16 +80,16 @@ class TestChargeSize(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_size)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.holder_size, None)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -101,14 +101,14 @@ class TestChargeSize(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -123,14 +123,14 @@ class TestChargeSize(RestrictionTestCase):
         container_holder.attributes = {Attribute.charge_size: 3}
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -142,13 +142,13 @@ class TestChargeSize(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_size)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

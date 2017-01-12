@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Domain, Restriction, State
 from eos.fit.holder.item import Booster, Implant
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestBoosterEffect(RestrictionTestCase):
@@ -35,12 +35,12 @@ class TestBoosterEffect(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Booster(1))
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.illegally_disabled, {77, 99})
         self.assertEqual(restriction_error.disablable, {55, 66})
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -49,10 +49,10 @@ class TestBoosterEffect(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Booster(1))
         holder.side_effects = {55, 66}
         holder._disabled_effects = {55, 66}
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -63,10 +63,10 @@ class TestBoosterEffect(RestrictionTestCase):
         # these containers
         holder.side_effects = {}
         holder._disabled_effects = set()
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -75,9 +75,9 @@ class TestBoosterEffect(RestrictionTestCase):
         holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec=Implant(1))
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

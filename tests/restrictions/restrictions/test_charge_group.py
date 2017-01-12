@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import ModuleHigh, Charge
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestChargeGroup(RestrictionTestCase):
@@ -38,8 +38,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -47,8 +47,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -60,8 +60,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -69,8 +69,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -82,8 +82,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -91,8 +91,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -104,8 +104,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -113,8 +113,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -126,8 +126,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -135,8 +135,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -148,8 +148,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -157,8 +157,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, None)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -171,8 +171,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -180,8 +180,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -194,8 +194,8 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -204,8 +204,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertIn(5, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -218,8 +218,8 @@ class TestChargeGroup(RestrictionTestCase):
         container_holder.attributes = {Attribute.charge_group_1: 1008}
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
@@ -227,8 +227,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.holder_group, 1008)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -240,14 +240,14 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -260,14 +260,14 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -279,13 +279,13 @@ class TestChargeGroup(RestrictionTestCase):
                                 _domain=Domain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
-        self.track_holder(container_holder)
-        self.track_holder(charge_holder)
+        self.add_holder(container_holder)
+        self.add_holder(charge_holder)
         restriction_error1 = self.get_restriction_error(container_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error1)
         restriction_error2 = self.get_restriction_error(charge_holder, Restriction.charge_group)
         self.assertIsNone(restriction_error2)
-        self.untrack_holder(container_holder)
-        self.untrack_holder(charge_holder)
+        self.remove_holder(container_holder)
+        self.remove_holder(charge_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

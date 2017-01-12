@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import Domain, Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.holder.item import Rig, Ship
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestRigSize(RestrictionTestCase):
@@ -35,7 +35,7 @@ class TestRigSize(RestrictionTestCase):
         # is added to ship
         item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.rig_size: 6})
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
@@ -43,7 +43,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.allowed_size, 6)
         self.assertEqual(restriction_error.holder_size, 10)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -53,7 +53,7 @@ class TestRigSize(RestrictionTestCase):
         item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
         holder.attributes = {Attribute.rig_size: 5}
-        self.track_holder(holder)
+        self.add_holder(holder)
         ship_item = self.ch.type_(type_id=2, attributes={Attribute.rig_size: 6})
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.rig_size: 5}
@@ -62,7 +62,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.allowed_size, 6)
         self.assertEqual(restriction_error.holder_size, 10)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -72,10 +72,10 @@ class TestRigSize(RestrictionTestCase):
         # should be applied to ships
         item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.rig_size)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -84,14 +84,14 @@ class TestRigSize(RestrictionTestCase):
         # no restriction is applied onto rigs
         item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         ship_item = self.ch.type_(type_id=2)
         ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.rig_size)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import Domain, Restriction, State
 from eos.fit.holder.item import ModuleHigh, Rig, Skill
-from tests.restriction_tracker.restriction_testcase import RestrictionTestCase
+from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestSkillRequirement(RestrictionTestCase):
@@ -35,11 +35,11 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.required_skills = {50: 3}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 3),))
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -48,17 +48,17 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.required_skills = {48: 1, 50: 5}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         skill_item = self.ch.type_(type_id=50)
         skill_holder = Mock(state=State.offline, item=skill_item, _domain=Domain.character, spec_set=Skill(1))
         skill_holder.level = 2
-        self.track_holder(skill_holder)
+        self.add_holder(skill_holder)
         self.fit.skills[50] = skill_holder
         restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, 2, 5), (48, None, 1)))
-        self.untrack_holder(holder)
-        self.untrack_holder(skill_holder)
+        self.remove_holder(holder)
+        self.remove_holder(skill_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -68,17 +68,17 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.required_skills = {48: 1, 50: 5}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         skill_item = self.ch.type_(type_id=48)
         skill_holder = Mock(state=State.offline, item=skill_item, _domain=Domain.character, spec_set=Skill(1))
         skill_holder.level = 5
-        self.track_holder(skill_holder)
+        self.add_holder(skill_holder)
         self.fit.skills[48] = skill_holder
         restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 5),))
-        self.untrack_holder(holder)
-        self.untrack_holder(skill_holder)
+        self.remove_holder(holder)
+        self.remove_holder(skill_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -88,16 +88,16 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.required_skills = {50: 3}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         skill_item = self.ch.type_(type_id=50)
         skill_holder = Mock(state=State.offline, item=skill_item, _domain=Domain.character, spec_set=Skill(1))
         skill_holder.level = 3
-        self.track_holder(skill_holder)
+        self.add_holder(skill_holder)
         self.fit.skills[50] = skill_holder
         restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
-        self.untrack_holder(skill_holder)
+        self.remove_holder(holder)
+        self.remove_holder(skill_holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -106,9 +106,9 @@ class TestSkillRequirement(RestrictionTestCase):
         item = self.ch.type_(type_id=1)
         item.required_skills = {50: 3}
         holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Rig(1))
-        self.track_holder(holder)
+        self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
         self.assertIsNone(restriction_error)
-        self.untrack_holder(holder)
+        self.remove_holder(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
