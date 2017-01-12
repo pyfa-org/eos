@@ -262,7 +262,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = None
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(module.charge)
@@ -286,7 +286,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = charge
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(module.charge, charge)
@@ -317,7 +317,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = charge2
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(module.charge, charge2)
@@ -350,7 +350,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = None
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(module.charge)
@@ -378,7 +378,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIsNone(module.charge)
@@ -408,7 +408,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(module.charge, charge)
@@ -445,7 +445,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit_other.lt), 0)
@@ -493,7 +493,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit_other.lt), 0)
@@ -536,7 +536,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         fit.ordered.append(module)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.ordered), 1)
@@ -567,7 +567,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         fit.ordered.remove(module)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.ordered), 0)
@@ -594,9 +594,9 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = None
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -626,11 +626,11 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = charge
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
-        self.assertIn(charge, fit.lt)
-        self.assertEqual(fit.lt[charge], {State.offline})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.cs)
+        self.assertEqual(fit.cs[charge], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -672,11 +672,11 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = charge2
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
-        self.assertIn(charge2, fit.lt)
-        self.assertEqual(fit.lt[charge2], {State.offline})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
+        self.assertIn(charge2, fit.cs)
+        self.assertEqual(fit.cs[charge2], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -720,9 +720,9 @@ class TestModuleCharge(FitTestCase):
         # Action
         module.charge = None
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -757,9 +757,9 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(module, fit.rt)
         self.assertEqual(len(fit.st), 1)
@@ -795,11 +795,11 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
-        self.assertIn(charge, fit.lt)
-        self.assertEqual(fit.lt[charge], {State.offline})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.cs)
+        self.assertEqual(fit.cs[charge], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -847,9 +847,9 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -916,11 +916,11 @@ class TestModuleCharge(FitTestCase):
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
-        self.assertIn(charge, fit.lt)
-        self.assertEqual(fit.lt[charge], {State.offline})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.cs)
+        self.assertEqual(fit.cs[charge], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -986,11 +986,11 @@ class TestModuleCharge(FitTestCase):
         # Action
         fit.ordered.append(module)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(module, fit.lt)
-        self.assertEqual(fit.lt[module], {State.offline, State.online, State.active})
-        self.assertIn(charge, fit.lt)
-        self.assertEqual(fit.lt[charge], {State.offline})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(module, fit.cs)
+        self.assertEqual(fit.cs[module], {State.offline, State.online, State.active})
+        self.assertIn(charge, fit.cs)
+        self.assertEqual(fit.cs[charge], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(module, fit.rt)
         self.assertEqual(fit.rt[module], {State.offline, State.online, State.active})
@@ -1032,7 +1032,7 @@ class TestModuleCharge(FitTestCase):
         # Action
         fit.ordered.remove(module)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.ordered), 0)

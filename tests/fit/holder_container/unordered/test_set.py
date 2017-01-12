@@ -44,7 +44,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, None)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -62,7 +62,7 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.add(holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 1)
@@ -85,7 +85,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -109,7 +109,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -141,7 +141,7 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.remove(holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -162,7 +162,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -187,7 +187,7 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.clear()
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -210,7 +210,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, None)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -229,9 +229,9 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.add(holder)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline, State.online})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online})
@@ -259,7 +259,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -284,7 +284,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -323,7 +323,7 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.remove(holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -345,7 +345,7 @@ class TestContainerSet(FitTestCase):
         # Action
         self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -371,7 +371,7 @@ class TestContainerSet(FitTestCase):
         # Action
         fit.container.clear()
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)

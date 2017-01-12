@@ -29,11 +29,11 @@ class FitTestCase(EosTestCase):
     """
     Additional functionality provided:
 
-    self.assert_object_buffers_empty -- checks if fit has
-    any holders assigned to it.
+    self.assert_fit_buffers_empty -- checks if fit has any
+    holders assigned to it.
     self.make_fit -- create fit with all services replaced
     by mocks. Everything added to link tracker is stored in
-    fit.lt in {holder: {enabled states}} format, everything
+    fit.cs in {holder: {enabled states}} format, everything
     added to restriction tracker is stored in fit.rt in
     {holder: {enabled states}} format. If any specific
     membership checks need to be performed upon holder
@@ -79,34 +79,34 @@ class FitTestCase(EosTestCase):
 
     def __setup_tracker_memory(self, fit):
         # Buffer which will keep track of holders added to
-        # link tracker
+        # attribute calculator service
         # Format: {holder: {states}}
-        fit.lt = {}
+        fit.cs = {}
 
         def handle_lt_add_holder(holder):
-            self.assertNotIn(holder, fit.lt)
-            fit.lt[holder] = set()
+            self.assertNotIn(holder, fit.cs)
+            fit.cs[holder] = set()
             if hasattr(self, 'custom_membership_check'):
                 self.custom_membership_check(fit, holder)
 
         def handle_lt_enable_states(holder, states):
-            self.assertIn(holder, fit.lt)
-            self.assertEqual(len(set(states).intersection(fit.lt[holder])), 0)
-            fit.lt[holder].update(set(states))
+            self.assertIn(holder, fit.cs)
+            self.assertEqual(len(set(states).intersection(fit.cs[holder])), 0)
+            fit.cs[holder].update(set(states))
             if hasattr(self, 'custom_membership_check'):
                 self.custom_membership_check(fit, holder)
 
         def handle_lt_disable_states(holder, states):
-            self.assertIn(holder, fit.lt)
-            self.assertEqual(len(set(states).difference(fit.lt[holder])), 0)
-            fit.lt[holder].difference_update(set(states))
+            self.assertIn(holder, fit.cs)
+            self.assertEqual(len(set(states).difference(fit.cs[holder])), 0)
+            fit.cs[holder].difference_update(set(states))
             if hasattr(self, 'custom_membership_check'):
                 self.custom_membership_check(fit, holder)
 
         def handle_lt_remove_holder(holder):
-            self.assertIn(holder, fit.lt)
-            self.assertEqual(len(fit.lt[holder]), 0)
-            del fit.lt[holder]
+            self.assertIn(holder, fit.cs)
+            self.assertEqual(len(fit.cs[holder]), 0)
+            del fit.cs[holder]
             if hasattr(self, 'custom_membership_check'):
                 self.custom_membership_check(fit, holder)
 

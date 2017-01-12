@@ -105,7 +105,7 @@ class TestContainerOrderedMisc(FitTestCase):
         # Action
         fit.container.clear()
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -133,7 +133,7 @@ class TestContainerOrderedMisc(FitTestCase):
         # Action
         fit.container.clear()
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)

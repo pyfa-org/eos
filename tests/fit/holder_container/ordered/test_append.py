@@ -44,7 +44,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.append, None)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -63,7 +63,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         fit.container.append(holder1)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 1)
@@ -79,7 +79,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         fit.container.append(holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 2)
@@ -106,7 +106,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.append, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -129,7 +129,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.append, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -157,7 +157,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.append, None)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -177,9 +177,9 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         fit.container.append(holder1)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online})
@@ -199,11 +199,11 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         fit.container.append(holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online})
-        self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online})
+        self.assertIn(holder2, fit.cs)
+        self.assertEqual(fit.cs[holder2], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online})
@@ -239,7 +239,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         self.assertRaises(TypeError, fit.container.append, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -263,7 +263,7 @@ class TestContainerOrderedAppend(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.append, holder)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)

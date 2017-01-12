@@ -47,7 +47,7 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.online
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -57,7 +57,7 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.overload
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -77,7 +77,7 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.active
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         st_cleans_between = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -87,7 +87,7 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.offline
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         st_cleans_after = len(fit.stats._clear_volatile_attrs.mock_calls)
@@ -108,9 +108,9 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.online
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline, State.online})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online})
@@ -124,9 +124,9 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.overload
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline, State.online, State.active, State.overload})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active, State.overload})
@@ -151,9 +151,9 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.active
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active})
@@ -167,9 +167,9 @@ class TestModuleStateSwitch(FitTestCase):
         # Action
         holder.state = State.offline
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline})

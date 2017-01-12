@@ -50,7 +50,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.free, None)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 2)
@@ -72,7 +72,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(None)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 2)
@@ -102,7 +102,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder1)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 2)
@@ -119,7 +119,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertIs(len(fit.container), 0)
@@ -145,7 +145,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.free, holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 1)
@@ -166,7 +166,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.free, holder1)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -196,7 +196,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 7)
@@ -221,7 +221,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder3)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 1)
@@ -253,7 +253,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(0)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 2)
@@ -270,7 +270,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(1)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -294,7 +294,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(0)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 2)
@@ -324,7 +324,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(3)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 7)
@@ -349,7 +349,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(6)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 1)
@@ -378,7 +378,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(IndexError, fit.container.free, 5)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 1)
@@ -405,11 +405,11 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.free, None)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active, State.overload})
-        self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online, State.active, State.overload})
+        self.assertIn(holder2, fit.cs)
+        self.assertEqual(fit.cs[holder2], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active, State.overload})
@@ -439,9 +439,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(None)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder2, fit.cs)
+        self.assertEqual(fit.cs[holder2], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder2, fit.rt)
         self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
@@ -476,9 +476,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder1)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder2, fit.cs)
+        self.assertEqual(fit.cs[holder2], {State.offline})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder2, fit.rt)
         self.assertEqual(fit.rt[holder2], {State.offline})
@@ -499,7 +499,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
@@ -525,9 +525,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.free, holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online, State.active, State.overload})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active, State.overload})
@@ -552,7 +552,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(ValueError, fit.container.free, holder1)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.st), 0)
         self.assertEqual(len(fit.container), 0)
@@ -583,11 +583,11 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder2)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
-        self.assertIn(holder3, fit.lt)
-        self.assertEqual(fit.lt[holder3], {State.offline})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online, State.active})
+        self.assertIn(holder3, fit.cs)
+        self.assertEqual(fit.cs[holder3], {State.offline})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
@@ -620,9 +620,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(holder3)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active})
@@ -659,9 +659,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(0)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder2, fit.lt)
-        self.assertEqual(fit.lt[holder2], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder2, fit.cs)
+        self.assertEqual(fit.cs[holder2], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder2, fit.rt)
         self.assertEqual(fit.rt[holder2], {State.offline, State.online, State.active})
@@ -682,7 +682,7 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(1)
         # Checks
-        self.assertEqual(len(fit.lt), 0)
+        self.assertEqual(len(fit.cs), 0)
         self.assertEqual(len(fit.rt), 0)
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
@@ -706,9 +706,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(0)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline, State.online})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online})
@@ -743,11 +743,11 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(3)
         # Checks
-        self.assertEqual(len(fit.lt), 2)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active, State.overload})
-        self.assertIn(holder3, fit.lt)
-        self.assertEqual(fit.lt[holder3], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.cs), 2)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online, State.active, State.overload})
+        self.assertIn(holder3, fit.cs)
+        self.assertEqual(fit.cs[holder3], {State.offline, State.online, State.active, State.overload})
         self.assertEqual(len(fit.rt), 2)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active, State.overload})
@@ -780,9 +780,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         fit.container.free(6)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder1, fit.lt)
-        self.assertEqual(fit.lt[holder1], {State.offline, State.online, State.active, State.overload})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder1, fit.cs)
+        self.assertEqual(fit.cs[holder1], {State.offline, State.online, State.active, State.overload})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder1, fit.rt)
         self.assertEqual(fit.rt[holder1], {State.offline, State.online, State.active, State.overload})
@@ -816,9 +816,9 @@ class TestContainerOrderedFree(FitTestCase):
         # Action
         self.assertRaises(IndexError, fit.container.free, 5)
         # Checks
-        self.assertEqual(len(fit.lt), 1)
-        self.assertIn(holder, fit.lt)
-        self.assertEqual(fit.lt[holder], {State.offline, State.online, State.active})
+        self.assertEqual(len(fit.cs), 1)
+        self.assertIn(holder, fit.cs)
+        self.assertEqual(fit.cs[holder], {State.offline, State.online, State.active})
         self.assertEqual(len(fit.rt), 1)
         self.assertIn(holder, fit.rt)
         self.assertEqual(fit.rt[holder], {State.offline, State.online, State.active})
