@@ -45,7 +45,7 @@ class FitTestCase(EosTestCase):
     def assert_fit_buffers_empty(self, fit):
         holder_num = 0
         # Check if we have anything in our single holder  storages
-        single_holders = ('character', 'ship', 'effect_beacon')
+        single_holders = ('character', 'ship', 'stance', 'effect_beacon')
         for attr_name in single_holders:
             holder = getattr(fit, attr_name, None)
             if holder is not None:

@@ -25,10 +25,10 @@ from eos.const.eos import State
 from eos.data.source import Source
 from eos.fit.holder.container import HolderList
 from tests.fit.environment import CachingCharge, CachingModule, OtherCachingHolder
-from tests.fit.fit_testcase import FitTestCase
+from tests.holder_container.container_testcase import ContainerTestCase
 
 
-class TestModuleCharge(FitTestCase):
+class TestModuleCharge(ContainerTestCase):
     """
     Everything related to charge switching is tested here.
     """

@@ -25,10 +25,10 @@ from eos.const.eos import State
 from eos.data.source import Source
 from eos.fit.holder.container import HolderRestrictedSet
 from tests.fit.environment import BaseHolder, CachingHolder, OtherCachingHolder
-from tests.fit.fit_testcase import FitTestCase
+from tests.holder_container.container_testcase import ContainerTestCase
 
 
-class TestContainerRestrictedSet(FitTestCase):
+class TestContainerRestrictedSet(ContainerTestCase):
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)

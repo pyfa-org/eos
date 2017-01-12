@@ -22,10 +22,10 @@
 from unittest.mock import Mock
 
 from eos.fit.holder.container import ModuleRacks
-from tests.fit.fit_testcase import FitTestCase
+from tests.holder_container.container_testcase import ContainerTestCase
 
 
-class TestContainerModuleRacks(FitTestCase):
+class TestContainerModuleRacks(ContainerTestCase):
 
     def setUp(self):
         super().setUp()
