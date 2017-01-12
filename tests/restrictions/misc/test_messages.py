@@ -42,7 +42,7 @@ class TestMessages(RestrictionTestCase):
         self.fit.stats.calibration.output = 40
         # Action
         self.rs._notify(HolderAdded(holder))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.calibration)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
@@ -62,7 +62,7 @@ class TestMessages(RestrictionTestCase):
         self.fit.stats.cpu.output = 40
         # Action
         self.rs._notify(HolderAdded(holder))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
@@ -82,7 +82,7 @@ class TestMessages(RestrictionTestCase):
         self.fit.stats.cpu.output = 40
         # Action
         self.rs._notify(HolderAdded(holder))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
         # Cleanup
@@ -100,7 +100,7 @@ class TestMessages(RestrictionTestCase):
         self.rs._notify(HolderAdded(holder))
         # Action
         self.rs._notify(HolderRemoved(holder))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.calibration)
         self.assertIsNone(restriction_error)
         # Cleanup
@@ -117,7 +117,7 @@ class TestMessages(RestrictionTestCase):
         self.rs._notify(HolderAdded(holder))
         # Action
         self.rs._notify(HolderRemoved(holder))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
         # Cleanup
@@ -135,7 +135,7 @@ class TestMessages(RestrictionTestCase):
         # Action
         self.rs._notify(HolderStateChanged(holder, State.offline, State.online))
         holder.state = State.online
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
@@ -157,7 +157,7 @@ class TestMessages(RestrictionTestCase):
         # Action
         self.rs._notify(HolderStateChanged(holder, State.online, State.offline))
         holder.state = State.offline
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
         # Cleanup
@@ -178,7 +178,7 @@ class TestMessages(RestrictionTestCase):
         # Action
         self.rs._notify(HolderAdded(holder))
         self.rs._notify(EnableServices(holders=(holder,)))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
@@ -199,7 +199,7 @@ class TestMessages(RestrictionTestCase):
         self.rs._notify(HolderAdded(holder))
         # Action
         self.rs._notify(DisableServices(holders=(holder,)))
-        # Verification
+        # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
         # Cleanup

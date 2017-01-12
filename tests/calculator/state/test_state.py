@@ -101,7 +101,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.offline
         # Action
         self.fit.items.add(self.holder)
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -113,7 +113,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.online
         # Action
         self.fit.items.add(self.holder)
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -125,7 +125,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.active
         # Action
         self.fit.items.add(self.holder)
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -137,7 +137,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.overload
         # Action
         self.fit.items.add(self.holder)
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -150,7 +150,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Action
         self.holder.state = State.online
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -163,7 +163,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Action
         self.holder.state = State.overload
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -176,7 +176,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Action
         self.holder.state = State.active
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
         self.fit.items.remove(self.holder)
@@ -189,7 +189,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Action
         self.holder.state = State.offline
-        # Verification
+        # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
         # Cleanup
         self.fit.items.remove(self.holder)

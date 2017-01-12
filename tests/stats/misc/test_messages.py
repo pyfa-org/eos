@@ -40,7 +40,7 @@ class TestMessages(StatTestCase):
         holder.attributes = {Attribute.upgrade_cost: 33}
         # Action
         self.ss._notify(HolderAdded(holder))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.calibration.used, 33)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
@@ -54,7 +54,7 @@ class TestMessages(StatTestCase):
         holder.attributes = {Attribute.cpu: 35}
         # Action
         self.ss._notify(HolderAdded(holder))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 35)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
@@ -68,7 +68,7 @@ class TestMessages(StatTestCase):
         holder.attributes = {Attribute.cpu: 35}
         # Action
         self.ss._notify(HolderAdded(holder))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
@@ -83,7 +83,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderAdded(holder))
         # Action
         self.ss._notify(HolderRemoved(holder))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.calibration.used, 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -97,7 +97,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderAdded(holder))
         # Action
         self.ss._notify(HolderRemoved(holder))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -112,7 +112,7 @@ class TestMessages(StatTestCase):
         # Action
         self.ss._notify(HolderStateChanged(holder, State.offline, State.online))
         holder.state = State.online
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 35)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
@@ -130,7 +130,7 @@ class TestMessages(StatTestCase):
         # Action
         self.ss._notify(HolderStateChanged(holder, State.online, State.offline))
         holder.state = State.offline
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
@@ -148,7 +148,7 @@ class TestMessages(StatTestCase):
         # Action
         self.ss._notify(HolderAdded(holder))
         self.ss._notify(EnableServices(holders=(holder,)))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 35)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
@@ -163,7 +163,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderAdded(holder))
         # Action
         self.ss._notify(DisableServices(holders=(holder,)))
-        # Verification
+        # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Cleanup
         self.ss._notify(HolderRemoved(holder))
