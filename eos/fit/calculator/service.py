@@ -1,6 +1,6 @@
 # ===============================================================================
 # Copyright (C) 2011 Diego Duclos
-# Copyright (C) 2011-2015 Anton Vorobyov
+# Copyright (C) 2011-2017 Anton Vorobyov
 #
 # This file is part of Eos.
 #
@@ -147,7 +147,7 @@ class CalculationService(BaseSubscriber):
 
     def _clear_holder_attribute_dependents(self, message):
         """
-        Clear calculated attributes relying on the attribute of a holder..
+        Clear calculated attributes relying on the attribute of a holder.
         """
         holder, attr = message
         # Clear attributes capped by this attribute

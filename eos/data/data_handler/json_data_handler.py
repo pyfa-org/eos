@@ -1,5 +1,5 @@
 # ===============================================================================
-# Copyright (C) 2013-2015 Anton Vorobyov
+# Copyright (C) 2013-2017 Anton Vorobyov
 #
 # This file is part of Eos.
 #
