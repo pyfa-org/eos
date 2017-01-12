@@ -32,15 +32,11 @@ class ContainerTestCase(EosTestCase):
 
     self.assert_fit_buffers_empty -- checks if fit has any
     holders assigned to it.
-    self.make_fit -- create fit with all services replaced
-    by mocks. Everything added to link tracker is stored in
-    fit.cs in {holder: {enabled states}} format, everything
-    added to restriction tracker is stored in fit.rt in
-    {holder: {enabled states}} format. If any specific
-    membership checks need to be performed upon holder
-    addition to and removal from trackers, they can be
-    specified in custom_membership_check(fit, holder) of
-    child classes.
+    self.make_fit -- create fit, which keeps track of list
+    of holders which were added via messages, and provides
+    ability for tests to do some verifications when holder
+    is being added/removed via custom_membership_check
+    method.
     """
 
     def assert_fit_buffers_empty(self, fit):
@@ -83,6 +79,8 @@ class ContainerTestCase(EosTestCase):
         def handle_message(message):
             handler_map[type(message)](message)
 
+        fit._subscribe = Mock()
+        fit._unsubscribe = Mock()
         fit._publish = Mock()
         fit._publish.side_effect = handle_message
 

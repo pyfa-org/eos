@@ -68,7 +68,7 @@ class TestCleanupChainAddition(CalculatorTestCase):
         # Added holder must clean all already calculated attributes
         # which are now affected by it, to allow recalculation
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
-        # Cleanup
+        # Misc
         self.fit.items.remove(holder1)
         self.fit.ship = None
         self.fit.items.remove(holder3)

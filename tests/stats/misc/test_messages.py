@@ -42,7 +42,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderAdded(holder))
         # Checks
         self.assertEqual(self.ss.calibration.used, 33)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -56,7 +56,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderAdded(holder))
         # Checks
         self.assertEqual(self.ss.cpu.used, 35)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -70,7 +70,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderAdded(holder))
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -85,7 +85,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderRemoved(holder))
         # Checks
         self.assertEqual(self.ss.calibration.used, 0)
-        # Cleanup
+        # Misc
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -99,7 +99,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(HolderRemoved(holder))
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
-        # Cleanup
+        # Misc
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -114,7 +114,7 @@ class TestMessages(StatTestCase):
         holder.state = State.online
         # Checks
         self.assertEqual(self.ss.cpu.used, 35)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -132,7 +132,7 @@ class TestMessages(StatTestCase):
         holder.state = State.offline
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -150,7 +150,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(EnableServices(holders=(holder,)))
         # Checks
         self.assertEqual(self.ss.cpu.used, 35)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -165,7 +165,7 @@ class TestMessages(StatTestCase):
         self.ss._notify(DisableServices(holders=(holder,)))
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
-        # Cleanup
+        # Misc
         self.ss._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

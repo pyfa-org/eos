@@ -103,7 +103,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -115,7 +115,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -127,7 +127,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -139,7 +139,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -152,7 +152,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.online
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -165,7 +165,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.overload
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -178,7 +178,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.active
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -191,7 +191,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.holder.state = State.offline
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
-        # Cleanup
+        # Misc
         self.fit.items.remove(self.holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

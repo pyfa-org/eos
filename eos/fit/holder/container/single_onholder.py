@@ -62,7 +62,7 @@ class HolderDescriptorOnHolder(HolderContainerBase):
         old_holder = getattr(instance, direct_attr_name, None)
         if old_holder is not None:
             if fit is not None:
-                self._handle_holder_removal(instance, old_holder)
+                self._handle_holder_removal(fit, old_holder)
             if reverse_attr_name is not None:
                 setattr(old_holder, reverse_attr_name, None)
         setattr(instance, direct_attr_name, new_holder)
@@ -70,4 +70,4 @@ class HolderDescriptorOnHolder(HolderContainerBase):
             if reverse_attr_name is not None:
                 setattr(new_holder, reverse_attr_name, instance)
             if fit is not None:
-                self._handle_holder_addition(instance, new_holder)
+                self._handle_holder_addition(fit, new_holder)

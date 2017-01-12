@@ -116,6 +116,9 @@ class EosTestCase(TestCase):
             except TypeError:
                 pass
             else:
+                if attr_len > 0:
+                    print(attr_name)
+                    print(getattr(object_, attr_name))
                 entry_num += attr_len
         return entry_num
 

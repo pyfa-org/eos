@@ -53,7 +53,11 @@ class HolderRestrictedSet(HolderSet):
             msg = 'holder with type ID {} already exists in this set'.format(type_id)
             raise ValueError(msg)
         self.__type_id_map[type_id] = holder
-        HolderSet.add(self, holder)
+        try:
+            HolderSet.add(self, holder)
+        except (TypeError, ValueError):
+            del self.__type_id_map[type_id]
+            raise
 
     def remove(self, holder):
         """

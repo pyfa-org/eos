@@ -48,7 +48,7 @@ class TestMessages(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -68,7 +68,7 @@ class TestMessages(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -85,7 +85,7 @@ class TestMessages(RestrictionTestCase):
         # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -103,7 +103,7 @@ class TestMessages(RestrictionTestCase):
         # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.calibration)
         self.assertIsNone(restriction_error)
-        # Cleanup
+        # Misc
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -120,7 +120,7 @@ class TestMessages(RestrictionTestCase):
         # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Cleanup
+        # Misc
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -141,7 +141,7 @@ class TestMessages(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -160,7 +160,7 @@ class TestMessages(RestrictionTestCase):
         # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -184,7 +184,7 @@ class TestMessages(RestrictionTestCase):
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.holder_use, 50)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -202,7 +202,7 @@ class TestMessages(RestrictionTestCase):
         # Checks
         restriction_error = self.get_restriction_error(holder, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Cleanup
+        # Misc
         self.rs._notify(HolderRemoved(holder))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
