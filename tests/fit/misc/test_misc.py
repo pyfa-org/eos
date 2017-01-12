@@ -24,7 +24,7 @@ from unittest.mock import call
 from tests.fit.fit_testcase import FitTestCase
 
 
-class TestHolderStateSwitch(FitTestCase):
+class TestMiscellanea(FitTestCase):
 
     def test_restriction_validator(self):
         fit = self.make_fit()
