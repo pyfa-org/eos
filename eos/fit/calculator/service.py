@@ -22,7 +22,7 @@
 from eos.const.eos import State, Scope
 from eos.fit.messages import (
     HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
-    AttrValueChanged, EnableServices, DisableServices
+    AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
 )
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
@@ -188,6 +188,7 @@ class CalculationService(BaseSubscriber):
         EffectsEnabled: _handle_holder_effects_enabling,
         EffectsDisabled: _handle_holder_effects_disabling,
         AttrValueChanged: _clear_holder_attribute_dependents,
+        AttrValueChangedOverride: _clear_holder_attribute_dependents,
         EnableServices: _handle_enable_services,
         DisableServices: _handle_disable_services
     }
