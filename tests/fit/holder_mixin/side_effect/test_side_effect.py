@@ -22,6 +22,7 @@
 from unittest.mock import Mock, call
 
 from eos.fit.holder.mixin.side_effect import SideEffectMixin
+from eos.fit.messages import EffectsEnabled, EffectsDisabled
 from tests.fit.fit_testcase import FitTestCase
 
 
@@ -69,10 +70,8 @@ class TestHolderMixinSideEffect(FitTestCase):
         self.mixin.set_side_effect_status(5, False)
         # Verification
         fit_calls_after = len(fit_mock.mock_calls)
-        self.assertEqual(fit_calls_after - fit_calls_before, 2)
-        fit_calls = fit_mock.mock_calls[-2:]
-        self.assertIn(call._request_volatile_cleanup(), fit_calls)
-        self.assertIn(call._link_tracker.disable_effects(self.mixin, {5}), fit_calls)
+        self.assertEqual(fit_calls_after - fit_calls_before, 1)
+        self.assertEqual(fit_mock.mock_calls[-1], call._publish(EffectsDisabled(self.mixin, {5})))
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(5, False)
@@ -96,10 +95,8 @@ class TestHolderMixinSideEffect(FitTestCase):
         self.mixin.set_side_effect_status(11, True)
         # Verification
         fit_calls_after = len(fit_mock.mock_calls)
-        self.assertEqual(fit_calls_after - fit_calls_before, 2)
-        fit_calls = fit_mock.mock_calls[-2:]
-        self.assertIn(call._request_volatile_cleanup(), fit_calls)
-        self.assertIn(call._link_tracker.enable_effects(self.mixin, {11}), fit_calls)
+        self.assertEqual(fit_calls_after - fit_calls_before, 1)
+        self.assertEqual(fit_mock.mock_calls[-1], call._publish(EffectsEnabled(self.mixin, {11})))
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(11, True)
