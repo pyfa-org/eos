@@ -377,10 +377,8 @@ class MutableAttributeMap:
         # Get old value, regardless if it was override or not
         if attr in self.__overridden_attributes:
             old_composite = self.__overridden_attributes[attr].value
-        elif attr in self.__modified_attributes:
-            old_composite = self.__modified_attributes[attr]
         else:
-            old_composite = None
+            old_composite = self.__modified_attributes.get(attr)
         self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
         # If value of attribute is changing after operation, force refresh
         # of attributes which rely on it
@@ -392,16 +390,19 @@ class MutableAttributeMap:
         overrides = self.__overridden_attributes
         if attr not in overrides:
             return
-        old_override = overrides[attr].value
         del overrides[attr]
         # Set overrides map to None if there're none left
         # to save some memory
         if len(overrides) == 0:
             self.__overridden_attributes = None
-        # If value of attribute is already calculated, get it
-        modified = self.__modified_attributes.get(attr)
+        # If value of attribute was calculated at some point,
+        # remove it - as potentially it might've changed
+        try:
+            del self.__modified_attributes[attr]
+        except KeyError:
+            pass
         fit = self.__holder._fit
-        if fit is not None and modified != old_override:
+        if fit is not None:
             fit._publish(AttrValueChangedOverride(holder=self.__holder, attr=attr))
 
     # Cap-related methods
