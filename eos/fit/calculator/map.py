@@ -163,6 +163,12 @@ class MutableAttributeMap:
             yield k
 
     def __delitem__(self, attr):
+        # If there's an override, do nothing. While override is
+        # present, fetched value of this attribute will not
+        # change anyway. Overrides are removed using override-
+        # specific method
+        if attr in self._overrides:
+            return
         # Clear the value in our calculated attributes dictionary
         try:
             del self.__modified_attributes[attr]
@@ -366,10 +372,15 @@ class MutableAttributeMap:
         Override attribute value. Persist flag controls
         if this value will be kept throughout map cleanups.
         """
-        # Get old value, regardless if it was override or not
-        old_composite = self.get(attr)
         if self.__overridden_attributes is None:
             self.__overridden_attributes = {}
+        # Get old value, regardless if it was override or not
+        if attr in self.__overridden_attributes:
+            old_composite = self.__overridden_attributes[attr].value
+        elif attr in self.__modified_attributes:
+            old_composite = self.__modified_attributes[attr]
+        else:
+            old_composite = None
         self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
         # If value of attribute is changing after operation, force refresh
         # of attributes which rely on it

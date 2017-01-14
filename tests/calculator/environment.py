@@ -54,13 +54,15 @@ class Source:
 
 class Fit:
 
-    def __init__(self, cache_handler):
+    def __init__(self, cache_handler, msgstore_filter=None):
         self.source = Source(cache_handler)
         self._calculator = CalculationService(self)
         self._calculator._notify(EnableServices(holders=()))
         self.__ship = None
         self.__character = None
         self.items = HolderContainer(self)
+        self.__msgstore_filter = msgstore_filter
+        self.message_store = []
 
     @property
     def ship(self):
@@ -93,6 +95,8 @@ class Fit:
             self._calculator._notify(HolderAdded(new_char))
 
     def _publish(self, message):
+        if self.__msgstore_filter is None or self.__msgstore_filter(message) is True:
+            self.message_store.append(message)
         self._calculator._notify(message)
 
     _subscribe = Mock()
