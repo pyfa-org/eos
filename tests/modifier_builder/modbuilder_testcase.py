@@ -30,7 +30,7 @@ class ModBuilderTestCase(EosTestCase):
 
     self.ef -- factory to generate and store expressions
     self.run_builder -- run builder using data from
-    expression factory
+        expression factory
     """
 
     def setUp(self):

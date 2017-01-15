@@ -28,9 +28,9 @@ class FitTestCase(EosTestCase):
     Additional functionality provided:
 
     self.assert_fit_buffers_empty -- checks if fit has any
-    holders assigned to it
+        holders assigned to it
     self.fit_assertions -- returns context manager which
-    turns on on-fit per-message type assertions
+        turns on on-fit per-message type assertions
     """
 
     def assert_fit_buffers_empty(self, fit):

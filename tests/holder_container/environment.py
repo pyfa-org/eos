@@ -21,7 +21,6 @@
 
 from unittest.mock import Mock
 
-
 from eos.const.eos import State
 from eos.fit.holder.container import HolderDescriptorOnFit
 from eos.fit.holder.item import Ship

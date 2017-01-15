@@ -32,14 +32,13 @@ class StatTestCase(EosTestCase):
     Additional functionality provided:
 
     self.ss -- stats service instance for tests
-    self.set_ship -- set ship to fit which uses stats
-    service
-    self.set_character -- set character to fit which uses
-    stats service
+    self.set_ship -- set ship to fit which uses stats service
+    self.set_character -- set character to fit which uses stats
+        service
     self.add_holder -- add holder to stats service
     self.remove_holder -- remove holder from stats service
-    self.assert_stat_buffers_empty -- checks if stats
-    service buffers are clear
+    self.assert_stat_buffers_empty -- checks if stats service
+        buffers are clear
     """
 
     def setUp(self):

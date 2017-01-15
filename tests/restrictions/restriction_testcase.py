@@ -33,18 +33,14 @@ class RestrictionTestCase(EosTestCase):
     Additional functionality provided:
 
     self.rs -- restriction service instance for tests
-    self.set_ship -- set ship to fit which uses restriction
-    service
-    self.set_character -- set character to fit which uses
-    restriction service
+    self.set_ship -- set ship to fit which uses restriction service
     self.add_holder -- add holder to restriction service
-    self.remove_holder -- remove holder from restriction
-    service
-    self.get_restriction_error -- get restriction error for
-    passed holder of passed restriction type. If no error
-    occurred, return None
-    self.assert_restriction_buffers_empty -- checks if
-    restriction service buffers are clear
+    self.remove_holder -- remove holder from restriction service
+    self.get_restriction_error -- get restriction error for passed
+        holder of passed restriction type. If no error occurred,
+        return None
+    self.assert_restriction_buffers_empty -- checks if restriction
+        service buffers are clear
     """
 
     def setUp(self):

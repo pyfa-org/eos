@@ -29,7 +29,7 @@ class CalculatorTestCase(EosTestCase):
 
     self.fit -- precreated fit with self.ch used as cache handler
     self.assert_calculator_buffers_empty -- checks if calculator
-    buffers of passed fit are clear
+        buffers of passed fit are clear
     """
 
     def setUp(self):
