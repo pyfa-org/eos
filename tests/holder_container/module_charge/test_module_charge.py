@@ -51,8 +51,8 @@ class TestModuleCharge(ContainerTestCase):
     def custom_membership_check(self, fit, holder):
         # If link variable is True, we make sure
         # there's link between module and charge upon
-        # addition to both of trackers. If False, we
-        # ensure there's no link.
+        # addition to services. If False, we ensure
+        # there's no link.
         if self.expect_module_charge_link is True:
             if hasattr(holder, 'charge'):
                 self.assertIn(holder, fit.ordered)
