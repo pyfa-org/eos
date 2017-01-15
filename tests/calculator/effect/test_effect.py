@@ -35,6 +35,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.tgt_attr = self.ch.attribute(attribute_id=1, stackable=1)
         src_attr1 = self.ch.attribute(attribute_id=2)
         src_attr2 = self.ch.attribute(attribute_id=3)
+        src_attr3 = self.ch.attribute(attribute_id=4)
         modifier1 = Modifier()
         modifier1.state = State.offline
         modifier1.scope = Scope.local
@@ -53,13 +54,24 @@ class TestEffectToggling(CalculatorTestCase):
         modifier2.domain = Domain.self_
         modifier2.filter_type = None
         modifier2.filter_value = None
+        modifier_active = Modifier()
+        modifier_active.state = State.active
+        modifier_active.scope = Scope.local
+        modifier_active.src_attr = src_attr3.id
+        modifier_active.operator = Operator.post_mul
+        modifier_active.tgt_attr = self.tgt_attr.id
+        modifier_active.domain = Domain.self_
+        modifier_active.filter_type = None
+        modifier_active.filter_value = None
         self.effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect1.modifiers = (modifier1,)
         self.effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         self.effect2.modifiers = (modifier2,)
+        self.effect_active = self.ch.effect(effect_id=3, category=EffectCategory.active)
+        self.effect_active.modifiers = (modifier_active,)
         self.holder = IndependentItem(self.ch.type_(
-            type_id=1, effects=(self.effect1, self.effect2),
-            attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3}
+            type_id=1, effects=(self.effect1, self.effect2, self.effect_active),
+            attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2}
         ))
 
     def test_effect_disabling(self):
@@ -81,8 +93,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder.state = State.offline
         self.fit.items.add(self.holder)
         # Action
-        self.holder._disabled_effects.update((self.effect1.id, self.effect2.id))
-        self.fit._calculator._notify(EffectsDisabled(self.holder, (self.effect1.id, self.effect2.id)))
+        self.holder._disabled_effects.update((self.effect1.id, self.effect2.id, self.effect_active.id))
+        self.fit._calculator._notify(
+            EffectsDisabled(self.holder, (self.effect1.id, self.effect2.id, self.effect_active.id)))
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 100)
         # Misc
@@ -111,8 +124,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder._disabled_effects.update((self.effect1.id, self.effect2.id))
         self.fit.items.add(self.holder)
         # Action
-        self.fit._calculator._notify(EffectsEnabled(self.holder, (self.effect1.id, self.effect2.id)))
-        self.holder._disabled_effects.difference_update((self.effect1.id, self.effect2.id))
+        self.fit._calculator._notify(
+            EffectsEnabled(self.holder, (self.effect1.id, self.effect2.id, self.effect_active.id)))
+        self.holder._disabled_effects.difference_update((self.effect1.id, self.effect2.id, self.effect_active.id))
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
         # Misc

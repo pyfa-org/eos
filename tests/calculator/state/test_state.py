@@ -73,28 +73,28 @@ class TestStateSwitching(CalculatorTestCase):
         modifier_over.domain = Domain.self_
         modifier_over.filter_type = None
         modifier_over.filter_value = None
-        modifier_separate = Modifier()
-        modifier_separate.state = State.active
-        modifier_separate.scope = Scope.local
-        modifier_separate.src_attr = src_attr3.id
-        modifier_separate.operator = Operator.post_mul
-        modifier_separate.tgt_attr = self.tgt_attr.id
-        modifier_separate.domain = Domain.self_
-        modifier_separate.filter_type = None
-        modifier_separate.filter_value = None
+        modifier_disabled = Modifier()
+        modifier_disabled.state = State.active
+        modifier_disabled.scope = Scope.local
+        modifier_disabled.src_attr = src_attr3.id
+        modifier_disabled.operator = Operator.post_mul
+        modifier_disabled.tgt_attr = self.tgt_attr.id
+        modifier_disabled.domain = Domain.self_
+        modifier_disabled.filter_type = None
+        modifier_disabled.filter_value = None
         # Overload category will make sure that holder can enter all states
-        effect1 = self.ch.effect(effect_id=1, category=EffectCategory.overload)
-        effect1.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
-        effect2 = self.ch.effect(effect_id=2, category=EffectCategory.active)
-        effect2.modifiers = (modifier_separate,)
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
+        effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
+        effect_disabled = self.ch.effect(effect_id=2, category=EffectCategory.active)
+        effect_disabled.modifiers = (modifier_disabled,)
         self.holder = IndependentItem(self.ch.type_(
-            type_id=1, effects=(effect1, effect2),
+            type_id=1, effects=(effect, effect_disabled),
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
             }
         ))
-        self.holder._disabled_effects.add(effect2.id)
+        self.holder._disabled_effects.add(effect_disabled.id)
 
     def test_fit_offline(self):
         # Setup
