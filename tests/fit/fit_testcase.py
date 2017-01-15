@@ -35,25 +35,14 @@ class FitTestCase(EosTestCase):
 
     def assert_fit_buffers_empty(self, fit):
         holder_num = 0
-        # Check if we have anything in our single holder storages
-        single_holders = ('character', 'ship', 'stance', 'effect_beacon')
-        for attr_name in single_holders:
-            holder = getattr(fit, attr_name, None)
-            if holder is not None:
-                holder_num += 1
-        # Seek for multiple holder storages
-        for attr_name in dir(fit):
-            if attr_name.startswith("__") and attr_name.endswith("__"):
-                continue
-            if attr_name in ('message_store', '_message_assertions', '_handler_map', '_MessageBroker__subscribers'):
-                continue
-            attr_val = getattr(fit, attr_name)
-            try:
-                attr_len = len(attr_val)
-            except TypeError:
-                pass
-            else:
-                holder_num += attr_len
+        holder_num += self._get_object_buffer_entry_amount(
+            fit, ignore=('message_store', '_message_assertions', '_MessageBroker__subscribers'))
+        # As volatile manager always has one entry added to it
+        # (stats service), make sure it's ignored for calculation
+        # purposes
+        fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(fit.stats)
+        holder_num += self._get_object_buffer_entry_amount(fit._volatile_mgr)
+        fit._volatile_mgr._FitVolatileManager__volatile_objects.add(fit.stats)
         if holder_num > 0:
             plu = 'y' if holder_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(holder_num, plu)

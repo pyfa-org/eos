@@ -35,11 +35,7 @@ class ContainerTestCase(EosTestCase):
 
     def assert_fit_buffers_empty(self, fit):
         holder_num = 0
-        # Fit here is simple stub - check ship and
-        # test holder storage
-        if fit.ship is not None:
-            holder_num += 1
-        holder_num += len(fit.test_holders)
+        holder_num += self._get_object_buffer_entry_amount(fit, ignore=('_message_assertions',))
         if holder_num > 0:
             plu = 'y' if holder_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(holder_num, plu)

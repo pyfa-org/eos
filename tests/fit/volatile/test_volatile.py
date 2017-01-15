@@ -30,7 +30,7 @@ from tests.fit.environment import TestFit
 from tests.fit.fit_testcase import FitTestCase
 
 
-class TestFitSourceSwitch(FitTestCase):
+class TestVolatileData(FitTestCase):
 
     def test_carrier_builtin(self):
         # Setup

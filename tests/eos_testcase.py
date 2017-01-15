@@ -92,23 +92,27 @@ class EosTestCase(TestCase):
     def log(self):
         return self.__test_log_handler.buffer
 
-    def assert_object_buffers_empty(self, object_):
-        entry_num = self._get_object_buffer_entry_amount(object_)
+    def assert_object_buffers_empty(self, object_, ignore=()):
+        entry_num = self._get_object_buffer_entry_amount(object_, ignore=ignore)
         # Raise error if we found any data in any attached storage
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(entry_num, plu)
             self.fail(msg=msg)
 
-    def _get_object_buffer_entry_amount(self, object_):
+    def _get_object_buffer_entry_amount(self, object_, ignore=()):
+        """
+        Returns amount of entries stored on this instance,
+        useful to detect memory leaks.
+        """
         entry_num = 0
-        # Cycle through all attributes of object, besides
-        # __special__ ones and "strings", and add count their
-        # lengths as number of detected entries
-        for attr_name in dir(object_):
-            if attr_name.startswith("__") and attr_name.endswith("__"):
+        for attr_name, attr_val in object_.__dict__.items():
+            if attr_name in ignore:
                 continue
             attr_val = getattr(object_, attr_name)
+            # Ignore strings, as Eos doesn't deal with them -
+            # they are mostly used to refer various attributes
+            # and are stored on object permanently
             if isinstance(attr_val, str):
                 continue
             try:
