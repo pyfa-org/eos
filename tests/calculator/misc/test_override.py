@@ -82,7 +82,10 @@ class TestOverride(CalculatorTestCase):
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
-        self.assertEqual(self.fit.message_store[-1], AttrValueChangedOverride(self.holder, self.attr3.id))
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.holder, self.holder)
+        self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 77)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 88.5)
         # Cleanup
@@ -116,7 +119,10 @@ class TestOverride(CalculatorTestCase):
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
-        self.assertEqual(self.fit.message_store[-1], AttrValueChangedOverride(self.holder, self.attr3.id))
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.holder, self.holder)
+        self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 88)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 94)
         # Cleanup
@@ -158,7 +164,10 @@ class TestOverride(CalculatorTestCase):
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
-        self.assertEqual(self.fit.message_store[-1], AttrValueChangedOverride(self.holder, self.attr3.id))
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.holder, self.holder)
+        self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 12.5)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 56.25)
         # Cleanup
@@ -183,7 +192,10 @@ class TestOverride(CalculatorTestCase):
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
-        self.assertEqual(self.fit.message_store[-1], AttrValueChangedOverride(self.holder, self.attr3.id))
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.holder, self.holder)
+        self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 15)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 57.5)
         # Cleanup
@@ -201,7 +213,10 @@ class TestOverride(CalculatorTestCase):
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
-        self.assertEqual(self.fit.message_store[-1], AttrValueChangedOverride(self.holder, self.attr3.id))
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.holder, self.holder)
+        self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 10)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 55)
         # Cleanup
@@ -219,7 +234,10 @@ class TestOverride(CalculatorTestCase):
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
-        self.assertEqual(self.fit.message_store[-1], AttrValueChangedOverride(self.holder, self.attr3.id))
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.holder, self.holder)
+        self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 10)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 55)
         # Cleanup
@@ -261,10 +279,11 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
         message = fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChanged))
+        self.assertIs(message.holder, self.holder)
         # Only attr2 has been changed as attr3 is overriden. Calculator
         # doesn't receive any messages about changed value of attr3
-        self.assertTrue(isinstance(message, AttrValueChanged))
-        self.assertEqual(message, AttrValueChanged(self.holder, self.attr2.id))
+        self.assertEqual(message.attr, self.attr2.id)
         self.assertAlmostEqual(holder.attributes[self.attr3.id], 77)
         self.assertAlmostEqual(holder.attributes[self.attr4.id], 88.5)
         # Cleanup

@@ -22,7 +22,7 @@
 from itertools import chain
 from unittest.mock import Mock
 
-from eos.const.eos import Restriction, State
+from eos.const.eos import Restriction
 from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices
 from eos.fit.restrictions import RestrictionService, ValidationError
 from tests.eos_testcase import EosTestCase

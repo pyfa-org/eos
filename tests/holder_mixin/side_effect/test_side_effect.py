@@ -71,7 +71,14 @@ class TestHolderMixinSideEffect(EosTestCase):
         # Checks
         fit_calls_after = len(fit_mock.mock_calls)
         self.assertEqual(fit_calls_after - fit_calls_before, 1)
-        self.assertEqual(fit_mock.mock_calls[-1], call._publish(EffectsDisabled(self.mixin, {5})))
+        fit_call_name, fit_call_args, fit_call_kwargs = fit_mock.mock_calls[-1]
+        self.assertEqual(fit_call_name, '_publish')
+        self.assertEqual(len(fit_call_args), 1)
+        self.assertEqual(len(fit_call_kwargs), 0)
+        message = fit_call_args[0]
+        self.assertTrue(isinstance(message, EffectsDisabled))
+        self.assertIs(message.holder, self.mixin)
+        self.assertEqual(message.effects, {5})
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(5, False)
@@ -96,7 +103,14 @@ class TestHolderMixinSideEffect(EosTestCase):
         # Checks
         fit_calls_after = len(fit_mock.mock_calls)
         self.assertEqual(fit_calls_after - fit_calls_before, 1)
-        self.assertEqual(fit_mock.mock_calls[-1], call._publish(EffectsEnabled(self.mixin, {11})))
+        fit_call_name, fit_call_args, fit_call_kwargs = fit_mock.mock_calls[-1]
+        self.assertEqual(fit_call_name, '_publish')
+        self.assertEqual(len(fit_call_args), 1)
+        self.assertEqual(len(fit_call_kwargs), 0)
+        message = fit_call_args[0]
+        self.assertTrue(isinstance(message, EffectsEnabled))
+        self.assertIs(message.holder, self.mixin)
+        self.assertEqual(message.effects, {11})
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(11, True)
