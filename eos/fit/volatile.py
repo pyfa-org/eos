@@ -56,7 +56,7 @@ class FitVolatileManager:
         self.__clear_volatile_attrs()
         self.__remove_volatile_object(message.holder)
 
-    def _handle_other_changes(self, message):
+    def _handle_other_changes(self, _):
         self.__clear_volatile_attrs()
 
     _handler_map = {
