@@ -46,7 +46,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.free, None)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -57,7 +57,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Misc
         fit.container.free(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(None)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -77,7 +77,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(holder1)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -86,7 +86,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(holder2)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -102,7 +102,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit.container.append(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.free, holder2)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -112,7 +112,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Misc
         fit.container.free(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.free, holder1)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -131,7 +131,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(holder2)
         # Checks
         self.assertEqual(len(fit.container), 7)
@@ -146,7 +146,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(holder2._fit)
         self.assertIs(holder3._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(holder3)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -166,7 +166,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(0)
         # Checks
         self.assertEqual(len(fit.container), 2)
@@ -175,7 +175,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(1)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -190,7 +190,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         fit.container.place(1, holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(0)
         # Checks
         self.assertEqual(len(fit.container), 2)
@@ -211,7 +211,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(3)
         # Checks
         self.assertEqual(len(fit.container), 7)
@@ -226,7 +226,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(holder2._fit)
         self.assertIs(holder3._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.free(6)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -244,7 +244,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         holder = Mock(_fit=None, state=State.online, spec_set=Holder(1))
         fit.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(IndexError, fit.container.free, 5)
         # Checks
         self.assertEqual(len(fit.container), 1)

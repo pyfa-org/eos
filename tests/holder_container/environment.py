@@ -46,7 +46,7 @@ class Fit:
     def __init__(self, test, message_assertions=None):
         self.test = test
         self._message_assertions = message_assertions
-        self.check_assertions = False
+        self.assertions_enabled = False
         self.test_holders = set()
         self._subscribe = Mock()
         self._unsubscribe = Mock()
@@ -67,7 +67,7 @@ class Fit:
     }
 
     def _publish(self, message):
-        if self._message_assertions is not None and self.check_assertions is True:
+        if self._message_assertions is not None and self.assertions_enabled is True:
             try:
                 assertion = self._message_assertions[type(message)]
             except KeyError:
@@ -77,13 +77,13 @@ class Fit:
         self.handler_map[type(message)](self, message)
 
 
-class FitAssertionChecks:
+class FitAssertion:
 
     def __init__(self, fit):
         self.fit = fit
 
     def __enter__(self):
-        self.fit.check_assertions = True
+        self.fit.assertions_enabled = True
 
     def __exit__(self, *args):
-        self.fit.check_assertions = False
+        self.fit.assertions_enabled = False

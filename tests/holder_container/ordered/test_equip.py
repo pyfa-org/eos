@@ -42,7 +42,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
     def test_none_to_empty(self):
         fit = self.make_fit()
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.equip, None)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -54,7 +54,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.equip(holder)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -69,7 +69,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.equip, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -84,7 +84,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit_other.container.equip(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.equip, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -105,7 +105,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.equip(holder3)
         # Checks
         self.assertIs(len(fit.container), 3)
@@ -129,7 +129,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.container.insert(3, holder2)
         fit.container.insert(6, holder3)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.equip(holder4)
         # Checks
         self.assertIs(len(fit.container), 7)

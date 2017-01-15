@@ -47,7 +47,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.insert(0, holder3)
         # Checks
         self.assertIs(len(fit.container), 3)
@@ -72,7 +72,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.insert(2, holder3)
         # Checks
         self.assertIs(len(fit.container), 3)
@@ -95,7 +95,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         fit.container.append(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.insert(3, holder2)
         # Checks
         self.assertIs(len(fit.container), 4)
@@ -119,7 +119,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.insert, 1, holder3)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -144,7 +144,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.container.append(holder2)
         fit_other.container.append(holder3)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.insert, 1, holder3)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -168,7 +168,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.insert, 4, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -183,7 +183,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         fit_other.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.insert, 4, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -204,7 +204,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.insert(1, None)
         # Checks
         self.assertIs(len(fit.container), 3)
@@ -226,7 +226,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.insert(6, None)
         # Checks
         self.assertIs(len(fit.container), 2)

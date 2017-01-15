@@ -104,7 +104,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.clear()
         # Checks
         self.assertIs(len(fit.container), 0)

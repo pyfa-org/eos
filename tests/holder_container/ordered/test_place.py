@@ -45,7 +45,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit.container.append(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.place(3, holder2)
         # Checks
         self.assertIs(len(fit.container), 4)
@@ -66,7 +66,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 3, None)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -85,7 +85,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.insert(3, holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.place(1, holder3)
         # Checks
         self.assertIs(len(fit.container), 4)
@@ -110,7 +110,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.insert(3, holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 1, None)
         # Checks
         self.assertIs(len(fit.container), 4)
@@ -132,7 +132,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit.container.append(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(SlotTakenError, fit.container.place, 0, holder2)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -149,7 +149,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         fit.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 0, None)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -164,7 +164,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.overload, spec_set=OtherHolder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 2, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -179,7 +179,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit_other.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.place, 2, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -199,7 +199,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.online, spec_set=OtherHolder(1))
         fit.container.insert(1, holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 0, holder2)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -220,7 +220,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.container.insert(1, holder1)
         fit_other.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.place, 0, holder2)
         # Checks
         self.assertIs(len(fit.container), 2)

@@ -29,17 +29,17 @@ from tests.holder_container.environment import Fit, OtherHolder
 from tests.holder_container.container_testcase import ContainerTestCase
 
 
-class LoadedAssertionChecks:
+class ChargeableAssertion:
 
     def __init__(self, test, loaded):
         self.test = test
         self.loaded = loaded
 
     def __enter__(self):
-        self.test.expect_module_charge_link = self.loaded
+        self.test.charged_flag = self.loaded
 
     def __exit__(self, *args):
-        del self.test.expect_module_charge_link
+        del self.test.charged_flag
 
 
 class TestModuleCharge(ContainerTestCase):
@@ -47,8 +47,8 @@ class TestModuleCharge(ContainerTestCase):
     Everything related to charge switching is tested here.
     """
 
-    def run_loaded_assertions(self, loaded):
-        return LoadedAssertionChecks(self, loaded)
+    def chargeable_assertions(self, charged):
+        return ChargeableAssertion(self, charged)
 
     def make_fit(self):
 
@@ -58,8 +58,8 @@ class TestModuleCharge(ContainerTestCase):
             # there's link between module and charge upon
             # addition to services. If False, we ensure
             # there's no link.
-            loaded = getattr(self, 'expect_module_charge_link', None)
-            if loaded is True:
+            charged = getattr(self, 'charged_flag', None)
+            if charged is True:
                 if hasattr(holder, 'charge'):
                     self.assertIn(holder, fit.ordered)
                     charge = holder.charge
@@ -70,7 +70,7 @@ class TestModuleCharge(ContainerTestCase):
                     container = holder.container
                     self.assertIsNotNone(container)
                     self.assertIs(container.charge, holder)
-            elif loaded is False:
+            elif charged is False:
                 self.assertIn(holder, fit.ordered)
                 if hasattr(holder, 'charge'):
                     self.assertIsNone(holder.charge)
@@ -204,7 +204,7 @@ class TestModuleCharge(ContainerTestCase):
         module = ModuleHigh(1, state=State.active, charge=None)
         fit.ordered.append(module)
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = None
         # Checks
         self.assertIsNone(module.charge)
@@ -219,7 +219,7 @@ class TestModuleCharge(ContainerTestCase):
         charge = Charge(2)
         fit.ordered.append(module)
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = charge
         # Checks
         self.assertIs(module.charge, charge)
@@ -238,7 +238,7 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         module.charge = charge1
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = charge2
         # Checks
         self.assertIs(module.charge, charge2)
@@ -258,7 +258,7 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         module.charge = charge
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = None
         # Checks
         self.assertIsNone(module.charge)
@@ -275,7 +275,7 @@ class TestModuleCharge(ContainerTestCase):
         non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         fit.ordered.append(module)
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
         self.assertIsNone(module.charge)
@@ -293,7 +293,7 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         module.charge = charge
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
         self.assertIs(module.charge, charge)
@@ -315,7 +315,7 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
         self.assertIsNone(module.charge)
@@ -342,7 +342,7 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
         self.assertIs(module.charge, charge)
@@ -365,7 +365,7 @@ class TestModuleCharge(ContainerTestCase):
         charge = Charge(2)
         module.charge = charge
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             fit.ordered.append(module)
         # Checks
         self.assertEqual(len(fit.ordered), 1)
@@ -385,7 +385,7 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         fit.ordered.append(module)
         # Action
-        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             fit.ordered.remove(module)
         # Checks
         self.assertEqual(len(fit.ordered), 0)

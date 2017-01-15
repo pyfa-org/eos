@@ -42,7 +42,7 @@ class TestContainerSet(ContainerTestCase):
     def test_add_none(self):
         fit = self.make_fit()
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, None)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -54,7 +54,7 @@ class TestContainerSet(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.add(holder)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -69,7 +69,7 @@ class TestContainerSet(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -84,7 +84,7 @@ class TestContainerSet(ContainerTestCase):
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit_other.container.add(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -103,7 +103,7 @@ class TestContainerSet(ContainerTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -116,7 +116,7 @@ class TestContainerSet(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -132,7 +132,7 @@ class TestContainerSet(ContainerTestCase):
         fit.container.add(holder1)
         fit.container.add(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.clear()
         # Checks
         self.assertEqual(len(fit.container), 0)

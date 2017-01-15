@@ -42,7 +42,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
     def test_add_none(self):
         fit = self.make_fit()
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, None)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -54,7 +54,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=Holder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.add(holder)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -70,7 +70,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=OtherHolder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -85,7 +85,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=Holder(1))
         fit_other.container.add(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -106,7 +106,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         holder2 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=Holder(1))
         fit.container.add(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.add, holder2)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -124,7 +124,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -137,7 +137,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=Holder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -151,7 +151,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             del fit.container[1]
         # Checks
         self.assertEqual(len(fit.container), 0)
@@ -165,7 +165,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(KeyError, fit.container.__delitem__, 3)
         # Checks
         self.assertEqual(len(fit.container), 1)
@@ -182,7 +182,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         fit.container.add(holder1)
         fit.container.add(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.clear()
         # Checks
         self.assertEqual(len(fit.container), 0)

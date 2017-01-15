@@ -20,7 +20,7 @@
 
 
 from tests.eos_testcase import EosTestCase
-from .environment import FitAssertionChecks
+from .environment import FitAssertion
 
 
 class FitTestCase(EosTestCase):
@@ -29,7 +29,7 @@ class FitTestCase(EosTestCase):
 
     self.assert_fit_buffers_empty -- checks if fit has any
     holders assigned to it
-    self.run_fit_assertions -- returns context manager which
+    self.fit_assertions -- returns context manager which
     turns on on-fit per-message type assertions
     """
 
@@ -59,5 +59,5 @@ class FitTestCase(EosTestCase):
             msg = '{} entr{} in buffers: buffers must be empty'.format(holder_num, plu)
             self.fail(msg=msg)
 
-    def run_fit_assertions(self, fit):
-        return FitAssertionChecks(fit)
+    def fit_assertions(self, fit):
+        return FitAssertion(fit)

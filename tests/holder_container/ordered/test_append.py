@@ -45,7 +45,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
     def test_none(self):
         fit = self.make_fit()
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.append, None)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -58,7 +58,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         holder1 = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.append(holder1)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -66,7 +66,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.append(holder2)
         # Checks
         self.assertIs(len(fit.container), 2)
@@ -84,7 +84,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.overload, spec_set=OtherHolder(1))
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.append, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -99,7 +99,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit_other.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.append, holder)
         # Checks
         self.assertIs(len(fit.container), 0)

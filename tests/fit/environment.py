@@ -19,9 +19,11 @@
 # ===============================================================================
 
 
-from unittest.mock import patch, DEFAULT
+from contextlib import ExitStack
+from unittest.mock import patch
 
 from eos.fit import Fit
+from eos.util.volatile_cache import InheritableVolatileMixin
 
 
 class Holder:
@@ -33,18 +35,21 @@ class TestFit(Fit):
 
     def __init__(self, source=None, message_assertions=None):
         self._message_assertions = message_assertions
-        self.check_assertions = False
+        self.assertions_enabled = False
         self.message_store = []
-        with patch.multiple('eos.fit.fit',
-                CalculationService=DEFAULT,
-                RestrictionService=DEFAULT,
-                StatService=DEFAULT
-        ):
+        ctx_managers = (
+            patch('eos.fit.fit.CalculationService'),
+            patch('eos.fit.fit.RestrictionService'),
+            patch('eos.fit.fit.StatService', spec=InheritableVolatileMixin)
+        )
+        with ExitStack() as stack:
+            for mgr in ctx_managers:
+                stack.enter_context(mgr)
             Fit.__init__(self, source=source)
         self.character = None
 
     def _publish(self, message):
-        if self._message_assertions is not None and self.check_assertions is True:
+        if self._message_assertions is not None and self.assertions_enabled is True:
             try:
                 assertion = self._message_assertions[type(message)]
             except KeyError:
@@ -55,13 +60,13 @@ class TestFit(Fit):
         Fit._publish(self, message)
 
 
-class FitAssertionChecks:
+class FitAssertion:
 
     def __init__(self, fit):
         self.fit = fit
 
     def __enter__(self):
-        self.fit.check_assertions = True
+        self.fit.assertions_enabled = True
 
     def __exit__(self, *args):
-        self.fit.check_assertions = False
+        self.fit.assertions_enabled = False

@@ -37,7 +37,7 @@ class TestFitSourceSwitch(FitTestCase):
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.source = None
         # Checks
         messages_after = len(fit.message_store)
@@ -58,7 +58,7 @@ class TestFitSourceSwitch(FitTestCase):
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.source = source
         # Checks
         messages_after = len(fit.message_store)
@@ -84,7 +84,7 @@ class TestFitSourceSwitch(FitTestCase):
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.source = None
         # Checks
         messages_after = len(fit.message_store)
@@ -112,7 +112,7 @@ class TestFitSourceSwitch(FitTestCase):
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.source = source2
         # Checks
         messages_after = len(fit.message_store)
@@ -137,7 +137,7 @@ class TestFitSourceSwitch(FitTestCase):
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.source = source
         # Checks
         messages_after = len(fit.message_store)
@@ -159,7 +159,7 @@ class TestFitSourceSwitch(FitTestCase):
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.source = 'src_alias'
         # Checks
         messages_after = len(fit.message_store)

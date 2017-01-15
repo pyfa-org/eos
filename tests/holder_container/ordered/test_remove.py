@@ -46,7 +46,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(holder1)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -54,7 +54,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(holder2)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -73,7 +73,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(holder2)
         # Checks
         self.assertIs(len(fit.container), 6)
@@ -87,7 +87,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIsNone(holder2._fit)
         self.assertIs(holder3._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(holder3)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -106,7 +106,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.online, spec_set=Holder(1))
         fit.container.append(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.remove, holder2)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -116,7 +116,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Misc
         fit.container.remove(holder1)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.remove, holder1)
         # checks
         self.assertIs(len(fit.container), 0)
@@ -134,7 +134,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         fit.container.place(1, holder1)
         fit.container.place(3, holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(None)
         # Checks
         self.assertIs(len(fit.container), 3)
@@ -154,7 +154,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.remove, None)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -172,7 +172,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(0)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -180,7 +180,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIsNone(holder1._fit)
         self.assertIs(holder2._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(0)
         # Checks
         self.assertIs(len(fit.container), 0)
@@ -195,7 +195,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         holder = Mock(_fit=None, state=State.online, spec_set=Holder(1))
         fit.container.place(1, holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(0)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -215,7 +215,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         fit.container.place(3, holder2)
         fit.container.place(6, holder3)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(3)
         # Checks
         self.assertIs(len(fit.container), 6)
@@ -229,7 +229,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIsNone(holder2._fit)
         self.assertIs(holder3._fit, fit)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             fit.container.remove(5)
         # Checks
         self.assertIs(len(fit.container), 1)
@@ -247,7 +247,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         fit.container.append(holder)
         # Action
-        with self.run_fit_assertions(fit):
+        with self.fit_assertions(fit):
             self.assertRaises(IndexError, fit.container.remove, 5)
         # Checks
         self.assertIs(len(fit.container), 1)
