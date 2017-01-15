@@ -17,20 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ===============================================================================
-
-
-from unittest.mock import call
-
-from tests.fit.fit_testcase import FitTestCase
-from tests.fit.environment import TestFit
-
-
-class TestMiscellanea(FitTestCase):
-
-    def test_restriction_validator(self):
-        fit = TestFit()
-        rs_calls_before = len(fit._restriction.mock_calls)
-        fit.validate()
-        rs_calls_after = len(fit._restriction.mock_calls)
-        self.assertEqual(rs_calls_after - rs_calls_before, 1)
-        self.assertEqual(fit._restriction.mock_calls[-1], call.validate(()))

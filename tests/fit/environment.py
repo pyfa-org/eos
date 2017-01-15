@@ -19,39 +19,49 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
+from unittest.mock import patch, DEFAULT
 
-from eos.const.eos import State
-from eos.fit.holder.item import Charge, ModuleHigh
-from eos.fit.holder.mixin.state import MutableStateMixin
-from eos.util.volatile_cache import InheritableVolatileMixin
+from eos.fit import Fit
 
 
-class BaseHolder(MutableStateMixin):
+class Holder:
 
-    def __init__(self, type_id, state=State.offline, **kwargs):
-        super().__init__(type_id=type_id, state=state, **kwargs)
+    def __init__(self):
+        self._fit = None
+
+class TestFit(Fit):
+
+    def __init__(self, source=None, message_assertions=None):
+        self._message_assertions = message_assertions
+        self.check_assertions = False
+        self.message_store = []
+        with patch.multiple('eos.fit.fit',
+                CalculationService=DEFAULT,
+                RestrictionService=DEFAULT,
+                StatService=DEFAULT
+        ):
+            Fit.__init__(self, source=source)
+        self.character = None
+
+    def _publish(self, message):
+        if self._message_assertions is not None and self.check_assertions is True:
+            try:
+                assertion = self._message_assertions[type(message)]
+            except KeyError:
+                pass
+            else:
+                assertion(self)
+        self.message_store.append(message)
+        Fit._publish(self, message)
 
 
-class CachingHolder(BaseHolder, InheritableVolatileMixin):
-    pass
+class FitAssertionChecks:
 
+    def __init__(self, fit):
+        self.fit = fit
 
-class OtherCachingHolder(MutableStateMixin, InheritableVolatileMixin):
+    def __enter__(self):
+        self.fit.check_assertions = True
 
-    def __init__(self, type_id, state=State.offline, **kwargs):
-        super().__init__(type_id=type_id, state=state, **kwargs)
-
-
-class CachingModule(ModuleHigh, InheritableVolatileMixin):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._clear_volatile_attrs = Mock()
-
-
-class CachingCharge(Charge, InheritableVolatileMixin):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._clear_volatile_attrs = Mock()
+    def __exit__(self, *args):
+        self.fit.check_assertions = False
