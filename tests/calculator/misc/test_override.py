@@ -67,8 +67,10 @@ class TestOverride(CalculatorTestCase):
         modifier3.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier1, modifier2, modifier3)
-        self.holder = IndependentItem(self.ch.type_(type_id=1, effects=(effect,),
-            attributes={self.attr1.id: 50, self.attr2.id: 100, self.attr3.id: 5, self.attr4.id: 50}))
+        self.holder = IndependentItem(self.ch.type_(
+            type_id=1, effects=(effect,),
+            attributes={self.attr1.id: 50, self.attr2.id: 100, self.attr3.id: 5, self.attr4.id: 50}
+        ))
         self.fit = Fit(self.ch, msgstore_filter=lambda m: isinstance(m, AttrValueChangedOverride))
         self.fit.items.add(self.holder)
 

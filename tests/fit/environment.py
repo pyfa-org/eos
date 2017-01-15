@@ -31,6 +31,7 @@ class Holder:
     def __init__(self):
         self._fit = None
 
+
 class TestFit(Fit):
 
     def __init__(self, source=None, message_assertions=None):

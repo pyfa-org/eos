@@ -256,8 +256,7 @@ class TestConversionModifier(GeneratorTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
         self.dh.data['dgmeffects'].append({
             'effectID': 111, 'preExpression': 56, 'postExpression': 107,
-            'effectCategory': 108, 'modifierInfo': None,
-            'modifierInfo': 'some YAML'
+            'effectCategory': 108, 'modifierInfo': 'some YAML'
         })
         self.dh.data['dgmexpressions'].append({
             'expressionID': 107, 'operandID': None, 'arg1': None, 'arg2': None,
