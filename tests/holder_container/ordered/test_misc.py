@@ -23,23 +23,21 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from tests.holder_container.environment import Holder
+from eos.fit.messages import HolderAdded, HolderRemoved
+from tests.holder_container.environment import Fit, Holder
 from tests.holder_container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedMisc(ContainerTestCase):
 
     def make_fit(self):
-        fit = super().make_fit()
+        assertions = {
+            HolderAdded: lambda f, m: self.assertIn(m.holder, f.container),
+            HolderRemoved: lambda f, m: self.assertIn(m.holder, f.container)
+        }
+        fit = Fit(self, message_assertions=assertions)
         fit.container = HolderList(fit, Holder)
         return fit
-
-    def assert_fit_buffers_empty(self, fit):
-        super().assert_fit_buffers_empty(fit)
-        super().assert_object_buffers_empty(fit.container)
-
-    def custom_membership_check(self, fit, holder):
-        self.assertIn(holder, fit.container)
 
     def test_len(self):
         fit = self.make_fit()
@@ -55,6 +53,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.container.remove(holder2)
         self.assertEqual(len(fit.container), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_contains(self):
         fit = self.make_fit()
@@ -80,6 +79,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(None in fit.container)
         self.assertFalse(holder2 in fit.container)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_iter(self):
         fit = self.make_fit()
@@ -95,6 +95,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.container.remove(holder2)
         self.assertEqual(list(holder for holder in fit.container), [])
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_clear(self):
         fit = self.make_fit()
@@ -103,13 +104,15 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.place(3, holder2)
         # Action
-        fit.container.clear()
+        with self.run_fit_assertions(fit):
+            fit.container.clear()
         # Checks
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
         self.assertIsNone(holder2._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_slice(self):
         fit = self.make_fit()
@@ -138,6 +141,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.container.remove(holder1)
         fit.container.remove(holder2)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_view(self):
         fit = self.make_fit()
@@ -174,3 +178,4 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(holder2 in view)
         self.assertFalse(None in view)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)

@@ -19,15 +19,14 @@
 # ===============================================================================
 
 
+from unittest.mock import Mock
+
+
 from eos.const.eos import State
 from eos.fit.holder.container import HolderDescriptorOnFit
 from eos.fit.holder.item import Ship
 from eos.fit.holder.mixin.state import MutableStateMixin
-
-
-class Fit:
-
-    ship = HolderDescriptorOnFit('_ship', Ship)
+from eos.fit.messages import HolderAdded, HolderRemoved
 
 
 class Holder(MutableStateMixin):
@@ -40,3 +39,51 @@ class OtherHolder(MutableStateMixin):
 
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)
+
+
+class Fit:
+
+    def __init__(self, test, message_assertions=None):
+        self.test = test
+        self._message_assertions = message_assertions
+        self.check_assertions = False
+        self.test_holders = set()
+        self._subscribe = Mock()
+        self._unsubscribe = Mock()
+
+    ship = HolderDescriptorOnFit('_ship', Ship)
+
+    def handle_add_holder(self, message):
+        self.test.assertNotIn(message.holder, self.test_holders)
+        self.test_holders.add(message.holder)
+
+    def handle_remove_holder(self, message):
+        self.test.assertIn(message.holder, self.test_holders)
+        self.test_holders.remove(message.holder)
+
+    handler_map = {
+        HolderAdded: handle_add_holder,
+        HolderRemoved: handle_remove_holder
+    }
+
+    def _publish(self, message):
+        if self._message_assertions is not None and self.check_assertions is True:
+            try:
+                assertion = self._message_assertions[type(message)]
+            except KeyError:
+                pass
+            else:
+                assertion(self, message)
+        self.handler_map[type(message)](self, message)
+
+
+class FitAssertionChecks:
+
+    def __init__(self, fit):
+        self.fit = fit
+
+    def __enter__(self):
+        self.fit.check_assertions = True
+
+    def __exit__(self, *args):
+        self.fit.check_assertions = False

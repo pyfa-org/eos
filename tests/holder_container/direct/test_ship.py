@@ -23,19 +23,26 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.item import Ship
-from tests.holder_container.environment import OtherHolder
+from eos.fit.messages import HolderAdded, HolderRemoved
+from tests.holder_container.environment import Fit, OtherHolder
 from tests.holder_container.container_testcase import ContainerTestCase
 
 
 class TestDirectHolderShip(ContainerTestCase):
 
-    def custom_membership_check(self, fit, holder):
-        self.assertIs(fit.ship, holder)
+    def make_fit(self):
+        assertions = {
+            HolderAdded: lambda f, m: self.assertIs(f.ship, m.holder),
+            HolderRemoved: lambda f, m: self.assertIs(f.ship, m.holder)
+        }
+        fit = Fit(self, message_assertions=assertions)
+        return fit
 
     def test_none_to_none(self):
         fit = self.make_fit()
         # Action
-        fit.ship = None
+        with self.run_fit_assertions(fit):
+            fit.ship = None
         # Checks
         self.assertIsNone(fit.ship)
         # Misc
@@ -46,19 +53,22 @@ class TestDirectHolderShip(ContainerTestCase):
         fit.ship = None
         holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         # Action
-        fit.ship = holder
+        with self.run_fit_assertions(fit):
+            fit.ship = holder
         # Checks
         self.assertIs(fit.ship, holder)
         self.assertIs(holder._fit, fit)
         # Misc
         fit.ship = None
+        self.assertIsNone(fit.ship)
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_holder_type_failure(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.active, spec_set=OtherHolder(1))
         # Action
-        self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
         # Checks
         self.assertIsNone(fit.ship)
         self.assertIsNone(holder._fit)
@@ -71,7 +81,8 @@ class TestDirectHolderShip(ContainerTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit_other.ship = holder
         # Action
-        self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
         # Checks
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, holder)
@@ -87,7 +98,8 @@ class TestDirectHolderShip(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit.ship = holder1
         # Action
-        fit.ship = holder2
+        with self.run_fit_assertions(fit):
+            fit.ship = holder2
         # Checks
         self.assertIs(fit.ship, holder2)
         self.assertIsNone(holder1._fit)
@@ -102,7 +114,8 @@ class TestDirectHolderShip(ContainerTestCase):
         holder2 = Mock(_fit=None, state=State.overload, spec_set=OtherHolder(1))
         fit.ship = holder1
         # Action
-        self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
         # Checks
         self.assertIs(fit.ship, holder1)
         self.assertIs(holder1._fit, fit)
@@ -119,7 +132,8 @@ class TestDirectHolderShip(ContainerTestCase):
         fit.ship = holder1
         fit_other.ship = holder2
         # Action
-        self.assertRaises(ValueError, fit.__setattr__, 'ship', holder2)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(ValueError, fit.__setattr__, 'ship', holder2)
         # Checks
         self.assertIs(fit.ship, holder1)
         self.assertIs(fit_other.ship, holder2)
@@ -136,7 +150,8 @@ class TestDirectHolderShip(ContainerTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         fit.ship = holder
         # Action
-        fit.ship = None
+        with self.run_fit_assertions(fit):
+            fit.ship = None
         # Checks
         self.assertIsNone(fit.ship)
         self.assertIsNone(holder._fit)

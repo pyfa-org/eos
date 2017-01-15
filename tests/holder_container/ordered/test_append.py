@@ -23,20 +23,21 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from tests.holder_container.environment import Holder, OtherHolder
+from eos.fit.messages import HolderAdded, HolderRemoved
+from tests.holder_container.environment import Fit, Holder, OtherHolder
 from tests.holder_container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedAppend(ContainerTestCase):
 
     def make_fit(self):
-        fit = super().make_fit()
+        assertions = {
+            HolderAdded: lambda f, m: self.assertIn(m.holder, f.container),
+            HolderRemoved: lambda f, m: self.assertIn(m.holder, f.container)
+        }
+        fit = Fit(self, message_assertions=assertions)
         fit.container = HolderList(fit, Holder)
         return fit
-
-    def assert_fit_buffers_empty(self, fit):
-        super().assert_fit_buffers_empty(fit)
-        super().assert_object_buffers_empty(fit.container)
 
     def custom_membership_check(self, fit, holder):
         self.assertIn(holder, fit.container)
@@ -44,25 +45,29 @@ class TestContainerOrderedAppend(ContainerTestCase):
     def test_none(self):
         fit = self.make_fit()
         # Action
-        self.assertRaises(TypeError, fit.container.append, None)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.container.append, None)
         # Checks
         self.assertIs(len(fit.container), 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder(self):
         fit = self.make_fit()
         holder1 = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         holder2 = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         # Action
-        fit.container.append(holder1)
+        with self.run_fit_assertions(fit):
+            fit.container.append(holder1)
         # Checks
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], holder1)
         self.assertIs(holder1._fit, fit)
         self.assertIsNone(holder2._fit)
         # Action
-        fit.container.append(holder2)
+        with self.run_fit_assertions(fit):
+            fit.container.append(holder2)
         # Checks
         self.assertIs(len(fit.container), 2)
         self.assertIs(fit.container[0], holder1)
@@ -73,17 +78,20 @@ class TestContainerOrderedAppend(ContainerTestCase):
         fit.container.remove(holder1)
         fit.container.remove(holder2)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_type_failure(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.overload, spec_set=OtherHolder(1))
         # Action
-        self.assertRaises(TypeError, fit.container.append, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.container.append, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(holder._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_value_failure(self):
         fit = self.make_fit()
@@ -91,7 +99,8 @@ class TestContainerOrderedAppend(ContainerTestCase):
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit_other.container.append(holder)
         # Action
-        self.assertRaises(ValueError, fit.container.append, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(ValueError, fit.container.append, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
         self.assertIs(len(fit_other.container), 1)
@@ -100,4 +109,6 @@ class TestContainerOrderedAppend(ContainerTestCase):
         # Misc
         fit_other.container.remove(holder)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
         self.assert_fit_buffers_empty(fit_other)
+        self.assert_object_buffers_empty(fit_other.container)

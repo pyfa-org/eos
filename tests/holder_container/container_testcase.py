@@ -19,11 +19,8 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.fit.messages import HolderAdded, HolderRemoved
 from tests.eos_testcase import EosTestCase
-from .environment import Fit
+from .environment import FitAssertionChecks
 
 
 class ContainerTestCase(EosTestCase):
@@ -31,12 +28,9 @@ class ContainerTestCase(EosTestCase):
     Additional functionality provided:
 
     self.assert_fit_buffers_empty -- checks if fit has any
-    holders assigned to it.
-    self.make_fit -- create fit, which keeps track of list
-    of holders which were added via messages, and provides
-    ability for tests to do some verifications when holder
-    is being added/removed via custom_membership_check
-    method.
+    holders assigned to it
+    self.run_fit_assertions -- returns context manager which
+    turns on on-fit per-message type assertions
     """
 
     def assert_fit_buffers_empty(self, fit):
@@ -51,37 +45,5 @@ class ContainerTestCase(EosTestCase):
             msg = '{} entr{} in buffers: buffers must be empty'.format(holder_num, plu)
             self.fail(msg=msg)
 
-    def make_fit(self):
-        fit = Fit()
-        self.__add_membership_checks(fit)
-        return fit
-
-    def __add_membership_checks(self, fit):
-        fit.test_holders = set()
-
-        def handle_add_holder(message):
-            self.assertNotIn(message.holder, fit.test_holders)
-            if hasattr(self, 'custom_membership_check'):
-                self.custom_membership_check(fit, message.holder)
-            fit.test_holders.add(message.holder)
-
-        def handle_remove_holder(message):
-            self.assertIn(message.holder, fit.test_holders)
-            if hasattr(self, 'custom_membership_check'):
-                self.custom_membership_check(fit, message.holder)
-            fit.test_holders.remove(message.holder)
-
-        handler_map = {
-            HolderAdded: handle_add_holder,
-            HolderRemoved: handle_remove_holder
-        }
-
-        def handle_message(message):
-            handler_map[type(message)](message)
-
-        fit._subscribe = Mock()
-        fit._unsubscribe = Mock()
-        fit._publish = Mock()
-        fit._publish.side_effect = handle_message
-
-        return fit
+    def run_fit_assertions(self, fit):
+        return FitAssertionChecks(fit)

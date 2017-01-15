@@ -23,38 +23,39 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from tests.holder_container.environment import Holder, OtherHolder
+from eos.fit.messages import HolderAdded, HolderRemoved
+from tests.holder_container.environment import Fit, Holder, OtherHolder
 from tests.holder_container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedEquip(ContainerTestCase):
 
     def make_fit(self):
-        fit = super().make_fit()
+        assertions = {
+            HolderAdded: lambda f, m: self.assertIn(m.holder, f.container),
+            HolderRemoved: lambda f, m: self.assertIn(m.holder, f.container)
+        }
+        fit = Fit(self, message_assertions=assertions)
         fit.container = HolderList(fit, Holder)
         return fit
-
-    def assert_fit_buffers_empty(self, fit):
-        super().assert_fit_buffers_empty(fit)
-        super().assert_object_buffers_empty(fit.container)
-
-    def custom_membership_check(self, fit, holder):
-        self.assertIn(holder, fit.container)
 
     def test_none_to_empty(self):
         fit = self.make_fit()
         # Action
-        self.assertRaises(TypeError, fit.container.equip, None)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.container.equip, None)
         # Checks
         self.assertIs(len(fit.container), 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_to_empty(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         # Action
-        fit.container.equip(holder)
+        with self.run_fit_assertions(fit):
+            fit.container.equip(holder)
         # Checks
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], holder)
@@ -62,17 +63,20 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Misc
         fit.container.remove(holder)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_to_empty_type_failure(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         # Action
-        self.assertRaises(TypeError, fit.container.equip, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.container.equip, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(holder._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_to_empty_value_failure(self):
         fit = self.make_fit()
@@ -80,7 +84,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
         holder = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit_other.container.equip(holder)
         # Action
-        self.assertRaises(ValueError, fit.container.equip, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(ValueError, fit.container.equip, holder)
         # Checks
         self.assertIs(len(fit.container), 0)
         self.assertIs(len(fit_other.container), 1)
@@ -89,6 +94,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Misc
         fit_other.container.remove(holder)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_solid(self):
         # Check case when all slots of list are filled
@@ -99,7 +105,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.container.append(holder1)
         fit.container.append(holder2)
         # Action
-        fit.container.equip(holder3)
+        with self.run_fit_assertions(fit):
+            fit.container.equip(holder3)
         # Checks
         self.assertIs(len(fit.container), 3)
         self.assertIs(fit.container[2], holder3)
@@ -109,6 +116,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.container.remove(holder2)
         fit.container.remove(holder3)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_holder_first_hole(self):
         # Check that leftmost empty slot is taken
@@ -121,7 +129,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.container.insert(3, holder2)
         fit.container.insert(6, holder3)
         # Action
-        fit.container.equip(holder4)
+        with self.run_fit_assertions(fit):
+            fit.container.equip(holder4)
         # Checks
         self.assertIs(len(fit.container), 7)
         self.assertIs(fit.container[1], holder4)
@@ -132,3 +141,4 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.container.remove(holder3)
         fit.container.remove(holder4)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)

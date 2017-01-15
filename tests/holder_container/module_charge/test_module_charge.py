@@ -23,9 +23,23 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderList
-from eos.fit.holder.item import Charge, ModuleHigh
-from tests.holder_container.environment import OtherHolder
+from eos.fit.holder.item import ModuleHigh, Charge
+from eos.fit.messages import HolderAdded, HolderRemoved
+from tests.holder_container.environment import Fit, OtherHolder
 from tests.holder_container.container_testcase import ContainerTestCase
+
+
+class LoadedAssertionChecks:
+
+    def __init__(self, test, loaded):
+        self.test = test
+        self.loaded = loaded
+
+    def __enter__(self):
+        self.test.expect_module_charge_link = self.loaded
+
+    def __exit__(self, *args):
+        del self.test.expect_module_charge_link
 
 
 class TestModuleCharge(ContainerTestCase):
@@ -33,43 +47,43 @@ class TestModuleCharge(ContainerTestCase):
     Everything related to charge switching is tested here.
     """
 
-    def setUp(self):
-        super().setUp()
-        # This variable will control check of
-        # module <-> charge link
-        self.expect_module_charge_link = None
+    def run_loaded_assertions(self, loaded):
+        return LoadedAssertionChecks(self, loaded)
 
     def make_fit(self):
-        fit = super().make_fit()
+
+        def charge_relationship_assertion(fit, message):
+            holder = message.holder
+            # If link variable is True, we make sure
+            # there's link between module and charge upon
+            # addition to services. If False, we ensure
+            # there's no link.
+            loaded = getattr(self, 'expect_module_charge_link', None)
+            if loaded is True:
+                if hasattr(holder, 'charge'):
+                    self.assertIn(holder, fit.ordered)
+                    charge = holder.charge
+                    self.assertIsNotNone(charge)
+                    self.assertIs(charge.container, holder)
+                if hasattr(holder, 'container'):
+                    self.assertNotIn(holder, fit.ordered)
+                    container = holder.container
+                    self.assertIsNotNone(container)
+                    self.assertIs(container.charge, holder)
+            elif loaded is False:
+                self.assertIn(holder, fit.ordered)
+                if hasattr(holder, 'charge'):
+                    self.assertIsNone(holder.charge)
+                if hasattr(holder, 'container'):
+                    self.assertIsNone(holder.container)
+
+        assertions = {
+            HolderAdded: charge_relationship_assertion,
+            HolderRemoved: charge_relationship_assertion
+        }
+        fit = Fit(self, message_assertions=assertions)
         fit.ordered = HolderList(fit, ModuleHigh)
         return fit
-
-    def assert_fit_buffers_empty(self, fit):
-        super().assert_fit_buffers_empty(fit)
-        super().assert_object_buffers_empty(fit.ordered)
-
-    def custom_membership_check(self, fit, holder):
-        # If link variable is True, we make sure
-        # there's link between module and charge upon
-        # addition to services. If False, we ensure
-        # there's no link.
-        if self.expect_module_charge_link is True:
-            if hasattr(holder, 'charge'):
-                self.assertIn(holder, fit.ordered)
-                charge = holder.charge
-                self.assertIsNotNone(charge)
-                self.assertIs(charge.container, holder)
-            if hasattr(holder, 'container'):
-                self.assertNotIn(holder, fit.ordered)
-                container = holder.container
-                self.assertIsNotNone(container)
-                self.assertIs(container.charge, holder)
-        elif self.expect_module_charge_link is False:
-            self.assertIn(holder, fit.ordered)
-            if hasattr(holder, 'charge'):
-                self.assertIsNone(holder.charge)
-            if hasattr(holder, 'container'):
-                self.assertIsNone(holder.container)
 
     def test_detached_module_none_to_none(self):
         module = ModuleHigh(1, state=State.active, charge=None)
@@ -190,9 +204,8 @@ class TestModuleCharge(ContainerTestCase):
         module = ModuleHigh(1, state=State.active, charge=None)
         fit.ordered.append(module)
         # Action
-        self.expect_module_charge_link = False
-        module.charge = None
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            module.charge = None
         # Checks
         self.assertIsNone(module.charge)
         self.assertIs(module._fit, fit)
@@ -206,9 +219,8 @@ class TestModuleCharge(ContainerTestCase):
         charge = Charge(2)
         fit.ordered.append(module)
         # Action
-        self.expect_module_charge_link = True
-        module.charge = charge
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            module.charge = charge
         # Checks
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
@@ -226,9 +238,8 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         module.charge = charge1
         # Action
-        self.expect_module_charge_link = True
-        module.charge = charge2
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            module.charge = charge2
         # Checks
         self.assertIs(module.charge, charge2)
         self.assertIsNone(charge1.container)
@@ -247,9 +258,8 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         module.charge = charge
         # Action
-        self.expect_module_charge_link = True
-        module.charge = None
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            module.charge = None
         # Checks
         self.assertIsNone(module.charge)
         self.assertIsNone(charge.container)
@@ -265,9 +275,8 @@ class TestModuleCharge(ContainerTestCase):
         non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         fit.ordered.append(module)
         # Action
-        self.expect_module_charge_link = True
-        self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
         self.assertIsNone(module.charge)
         self.assertIs(module._fit, fit)
@@ -284,9 +293,8 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         module.charge = charge
         # Action
-        self.expect_module_charge_link = True
-        self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Checks
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
@@ -307,9 +315,8 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
         # Action
-        self.expect_module_charge_link = True
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
@@ -335,9 +342,8 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        self.expect_module_charge_link = True
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Checks
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
@@ -359,9 +365,8 @@ class TestModuleCharge(ContainerTestCase):
         charge = Charge(2)
         module.charge = charge
         # Action
-        self.expect_module_charge_link = True
-        fit.ordered.append(module)
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            fit.ordered.append(module)
         # Checks
         self.assertEqual(len(fit.ordered), 1)
         self.assertIs(fit.ordered[0], module)
@@ -380,9 +385,8 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         fit.ordered.append(module)
         # Action
-        self.expect_module_charge_link = True
-        fit.ordered.remove(module)
-        self.expect_module_charge_link = None
+        with self.run_fit_assertions(fit), self.run_loaded_assertions(loaded=True):
+            fit.ordered.remove(module)
         # Checks
         self.assertEqual(len(fit.ordered), 0)
         self.assertIs(module.charge, charge)

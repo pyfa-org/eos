@@ -23,38 +23,39 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.holder.container import HolderSet
-from tests.holder_container.environment import Holder, OtherHolder
+from eos.fit.messages import HolderAdded, HolderRemoved
+from tests.holder_container.environment import Fit, Holder, OtherHolder
 from tests.holder_container.container_testcase import ContainerTestCase
 
 
 class TestContainerSet(ContainerTestCase):
 
     def make_fit(self):
-        fit = super().make_fit()
+        assertions = {
+            HolderAdded: lambda f, m: self.assertIn(m.holder, f.container),
+            HolderRemoved: lambda f, m: self.assertIn(m.holder, f.container)
+        }
+        fit = Fit(self, message_assertions=assertions)
         fit.container = HolderSet(fit, Holder)
         return fit
-
-    def assert_fit_buffers_empty(self, fit):
-        super().assert_fit_buffers_empty(fit)
-        super().assert_object_buffers_empty(fit.container)
-
-    def custom_membership_check(self, fit, holder):
-        self.assertIn(holder, fit.container)
 
     def test_add_none(self):
         fit = self.make_fit()
         # Action
-        self.assertRaises(TypeError, fit.container.add, None)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.container.add, None)
         # Checks
         self.assertEqual(len(fit.container), 0)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_add_holder(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=Holder(1))
         # Action
-        fit.container.add(holder)
+        with self.run_fit_assertions(fit):
+            fit.container.add(holder)
         # Checks
         self.assertEqual(len(fit.container), 1)
         self.assertIn(holder, fit.container)
@@ -62,17 +63,20 @@ class TestContainerSet(ContainerTestCase):
         # Misc
         fit.container.remove(holder)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_add_holder_type_failure(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.offline, spec_set=OtherHolder(1))
         # Action
-        self.assertRaises(TypeError, fit.container.add, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(TypeError, fit.container.add, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_add_holder_value_failure(self):
         fit = self.make_fit()
@@ -80,7 +84,8 @@ class TestContainerSet(ContainerTestCase):
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         fit_other.container.add(holder)
         # Action
-        self.assertRaises(ValueError, fit.container.add, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(ValueError, fit.container.add, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
         self.assertEqual(len(fit_other.container), 1)
@@ -89,25 +94,30 @@ class TestContainerSet(ContainerTestCase):
         # Misc
         fit_other.container.remove(holder)
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
         self.assert_fit_buffers_empty(fit_other)
+        self.assert_object_buffers_empty(fit_other.container)
 
     def test_remove_holder(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
-        fit.container.remove(holder)
+        with self.run_fit_assertions(fit):
+            fit.container.remove(holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)
+        self.assert_object_buffers_empty(fit.container)
 
     def test_remove_holder_failure(self):
         fit = self.make_fit()
         holder = Mock(_fit=None, state=State.overload, spec_set=Holder(1))
         # Action
-        self.assertRaises(KeyError, fit.container.remove, holder)
+        with self.run_fit_assertions(fit):
+            self.assertRaises(KeyError, fit.container.remove, holder)
         # Checks
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder._fit)
@@ -122,7 +132,8 @@ class TestContainerSet(ContainerTestCase):
         fit.container.add(holder1)
         fit.container.add(holder2)
         # Action
-        fit.container.clear()
+        with self.run_fit_assertions(fit):
+            fit.container.clear()
         # Checks
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(holder1._fit)
