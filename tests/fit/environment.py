@@ -22,7 +22,7 @@
 from contextlib import ExitStack
 from unittest.mock import patch
 
-from eos.fit import Fit
+from eos.fit import Fit as FitBase
 from eos.util.volatile_cache import InheritableVolatileMixin
 
 
@@ -32,7 +32,7 @@ class Holder:
         self._fit = None
 
 
-class TestFit(Fit):
+class Fit(FitBase):
 
     def __init__(self, source=None, message_assertions=None):
         self._message_assertions = message_assertions
@@ -46,7 +46,7 @@ class TestFit(Fit):
         with ExitStack() as stack:
             for mgr in ctx_managers:
                 stack.enter_context(mgr)
-            Fit.__init__(self, source=source)
+            FitBase.__init__(self, source=source)
         self.character = None
 
     def _publish(self, message):
@@ -58,7 +58,7 @@ class TestFit(Fit):
             else:
                 assertion(self)
         self.message_store.append(message)
-        Fit._publish(self, message)
+        FitBase._publish(self, message)
 
 
 class FitAssertion:

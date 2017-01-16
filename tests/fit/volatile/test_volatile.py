@@ -26,7 +26,7 @@ from eos.fit.messages import (
     AttrValueChangedOverride, RefreshSource
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
-from tests.fit.environment import TestFit
+from tests.fit.environment import Fit
 from tests.fit.fit_testcase import FitTestCase
 
 
@@ -34,7 +34,7 @@ class TestVolatileData(FitTestCase):
 
     def test_carrier_builtin(self):
         # Setup
-        fit = TestFit()
+        fit = Fit()
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(RefreshSource())
@@ -48,7 +48,7 @@ class TestVolatileData(FitTestCase):
     def test_carrier_inheritable(self):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         # Action
@@ -64,7 +64,7 @@ class TestVolatileData(FitTestCase):
     def test_carrier_cooperative(self):
         # Setup
         holder = Mock(spec=CooperativeVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         # Action
@@ -81,7 +81,7 @@ class TestVolatileData(FitTestCase):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
         holder_other = Mock()
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
@@ -103,7 +103,7 @@ class TestVolatileData(FitTestCase):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
         holder_other = Mock()
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         fit._publish(HolderAdded(holder_other))
         holder_calls_before = len(holder.mock_calls)
@@ -124,7 +124,7 @@ class TestVolatileData(FitTestCase):
     def test_message_holder_state_changed(self):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
@@ -144,7 +144,7 @@ class TestVolatileData(FitTestCase):
     def test_message_effects_enabled(self):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
@@ -164,7 +164,7 @@ class TestVolatileData(FitTestCase):
     def test_message_effects_disabled(self):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
@@ -184,7 +184,7 @@ class TestVolatileData(FitTestCase):
     def test_message_override(self):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
@@ -204,7 +204,7 @@ class TestVolatileData(FitTestCase):
     def test_message_refresh_source(self):
         # Setup
         holder = Mock(spec=InheritableVolatileMixin)
-        fit = TestFit()
+        fit = Fit()
         fit._publish(HolderAdded(holder))
         holder_calls_before = len(holder.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)

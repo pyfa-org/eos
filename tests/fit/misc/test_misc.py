@@ -22,13 +22,13 @@
 from unittest.mock import call
 
 from tests.fit.fit_testcase import FitTestCase
-from tests.fit.environment import TestFit
+from tests.fit.environment import Fit
 
 
 class TestMiscellanea(FitTestCase):
 
     def test_restriction_validator(self):
-        fit = TestFit()
+        fit = Fit()
         rs_calls_before = len(fit._restriction.mock_calls)
         fit.validate()
         rs_calls_after = len(fit._restriction.mock_calls)

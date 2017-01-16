@@ -23,17 +23,17 @@ from unittest.mock import Mock, patch
 
 from eos.data.source import Source
 from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices, DisableServices, RefreshSource
-from tests.fit.environment import TestFit, Holder
+from tests.fit.environment import Fit, Holder
 from tests.fit.fit_testcase import FitTestCase
 
 
 @patch('eos.fit.fit.SourceManager')
-class TestFitSourceSwitch(FitTestCase):
+class FitSourceSwitch(FitTestCase):
 
     def test_none_to_none(self, source_mgr):
         source_mgr.default = None
         holder = Holder()
-        fit = TestFit(source=None)
+        fit = Fit(source=None)
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
@@ -54,7 +54,7 @@ class TestFitSourceSwitch(FitTestCase):
             RefreshSource: lambda f: self.assertIs(f.source, source),
             EnableServices: lambda f: self.assertIs(f.source, source)
         }
-        fit = TestFit(source=None, message_assertions=assertions)
+        fit = Fit(source=None, message_assertions=assertions)
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
@@ -80,7 +80,7 @@ class TestFitSourceSwitch(FitTestCase):
             DisableServices: lambda f: self.assertIs(f.source, source),
             RefreshSource: lambda f: self.assertIsNone(f.source)
         }
-        fit = TestFit(source=source, message_assertions=assertions)
+        fit = Fit(source=source, message_assertions=assertions)
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
@@ -108,7 +108,7 @@ class TestFitSourceSwitch(FitTestCase):
             RefreshSource: lambda f: self.assertIs(f.source, source2),
             EnableServices: lambda f: self.assertIs(f.source, source2)
         }
-        fit = TestFit(source=source1, message_assertions=assertions)
+        fit = Fit(source=source1, message_assertions=assertions)
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
@@ -133,7 +133,7 @@ class TestFitSourceSwitch(FitTestCase):
         source_mgr.default = None
         source = Mock(spec_set=Source)
         holder = Holder()
-        fit = TestFit(source=source)
+        fit = Fit(source=source)
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
@@ -155,7 +155,7 @@ class TestFitSourceSwitch(FitTestCase):
             RefreshSource: lambda f: self.assertIs(f.source, source),
             EnableServices: lambda f: self.assertIs(f.source, source)
         }
-        fit = TestFit(source=None, message_assertions=assertions)
+        fit = Fit(source=None, message_assertions=assertions)
         fit._publish(HolderAdded(holder))
         messages_before = len(fit.message_store)
         # Action
