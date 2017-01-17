@@ -23,9 +23,9 @@ from collections import namedtuple
 
 from eos.const.eos import Domain, Restriction
 from eos.const.eve import Attribute
-from eos.fit.restrictions.exception import RegisterValidationError
 from eos.util.keyed_set import KeyedSet
 from .abc import RestrictionRegister
+from ..exception import RegisterValidationError
 
 
 MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('holder_group', 'max_group', 'group_holders'))

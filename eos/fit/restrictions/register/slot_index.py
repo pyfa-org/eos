@@ -23,9 +23,9 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from eos.fit.restrictions.exception import RegisterValidationError
 from eos.util.keyed_set import KeyedSet
 from .abc import RestrictionRegister
+from ..exception import RegisterValidationError
 
 
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('holder_slot_index',))

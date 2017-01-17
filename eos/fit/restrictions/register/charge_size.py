@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from eos.fit.restrictions.exception import RegisterValidationError
 from .abc import RestrictionRegister
+from ..exception import RegisterValidationError
 
 
 ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('holder_size', 'allowed_size'))

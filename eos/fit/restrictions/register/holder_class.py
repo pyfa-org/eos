@@ -24,9 +24,8 @@ from collections import namedtuple
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.holder.item import *
-from eos.fit.restrictions.exception import RegisterValidationError
-
 from .abc import RestrictionRegister
+from ..exception import RegisterValidationError
 
 
 HolderClassErrorData = namedtuple('HolderClassErrorData', ('holder_class', 'expected_classes'))

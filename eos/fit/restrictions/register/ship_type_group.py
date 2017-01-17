@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Domain, Restriction
 from eos.const.eve import Attribute
-from eos.fit.restrictions.exception import RegisterValidationError
 from .abc import RestrictionRegister
+from ..exception import RegisterValidationError
 
 
 # Containers for attribute IDs which are used to restrict fitting
