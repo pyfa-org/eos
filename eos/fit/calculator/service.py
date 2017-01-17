@@ -26,7 +26,7 @@ from eos.fit.messages import (
 )
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
-from .register import LinkRegister
+from .register import DogmaRegister
 
 
 class CalculationService(BaseSubscriber):
@@ -44,7 +44,7 @@ class CalculationService(BaseSubscriber):
     def __init__(self, fit):
         self.__enabled = False
         self._fit = fit
-        self._register = LinkRegister(fit)
+        self._register_dogma = DogmaRegister(fit)
         fit._subscribe(self, self._handler_map.keys())
 
     def get_affectors(self, holder, attr=None):
@@ -64,10 +64,10 @@ class CalculationService(BaseSubscriber):
         Set with Affector objects
         """
         if attr is None:
-            affectors = self._register.get_affectors(holder)
+            affectors = self._register_dogma.get_affectors(holder)
         else:
             affectors = set()
-            for affector in self._register.get_affectors(holder):
+            for affector in self._register_dogma.get_affectors(holder):
                 if affector.modifier.tgt_attr == attr:
                     affectors.add(affector)
         return affectors
@@ -82,7 +82,7 @@ class CalculationService(BaseSubscriber):
         Return value:
         Set with holders
         """
-        return self._register.get_affectees(affector)
+        return self._register_dogma.get_affectees(affector)
 
     # Message handling
     def _handle_holder_addition(self, message):
@@ -202,14 +202,14 @@ class CalculationService(BaseSubscriber):
 
     # Private methods for message handlers
     def __add_holder(self, holder):
-        self._register.register_affectee(holder)
+        self._register_dogma.register_affectee(holder)
         states = set(filter(lambda s: s <= holder.state, State))
         self.__enable_states(holder, states)
 
     def __remove_holder(self, holder):
         states = set(filter(lambda s: s <= holder.state, State))
         self.__disable_states(holder, states)
-        self._register.unregister_affectee(holder)
+        self._register_dogma.unregister_affectee(holder)
 
     def __enable_states(self, holder, states):
         """
@@ -254,7 +254,7 @@ class CalculationService(BaseSubscriber):
         """
         # Clear attributes only after registration jobs
         for affector in affectors:
-            self._register.register_affector(affector)
+            self._register_dogma.register_affector(affector)
         self.__clear_affectors_dependents(affectors)
 
     def __disable_affectors(self, affectors):
@@ -268,7 +268,7 @@ class CalculationService(BaseSubscriber):
         # we won't clean them up properly
         self.__clear_affectors_dependents(affectors)
         for affector in affectors:
-            self._register.unregister_affector(affector)
+            self._register_dogma.unregister_affector(affector)
 
     def __clear_affectors_dependents(self, affectors):
         """

@@ -19,23 +19,4 @@
 # ===============================================================================
 
 
-from tests.eos_testcase import EosTestCase
-from .environment import Fit
-
-
-class CalculatorTestCase(EosTestCase):
-    """
-    Additional functionality provided:
-
-    self.fit -- precreated fit with self.ch used as cache handler
-    self.assert_calculator_buffers_empty -- checks if calculator
-        buffers of passed fit are clear
-    """
-
-    def setUp(self):
-        super().setUp()
-        self.fit = Fit(self.ch)
-
-    def assert_calculator_buffers_empty(self, fit):
-        register = fit._calculator._register_dogma
-        super().assert_object_buffers_empty(register)
+from .dogma import DogmaRegister

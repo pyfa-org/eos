@@ -52,7 +52,7 @@ class TestDomainFilterOther(CalculatorTestCase):
         self.fit.items.add(influence_source)
         self.assertEqual(len(self.log), 2)
         for log_record in self.log:
-            self.assertEqual(log_record.name, 'eos.fit.calculator.register')
+            self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,

@@ -23,20 +23,18 @@ from logging import getLogger
 
 from eos.const.eos import Domain, FilterType
 from eos.util.keyed_set import KeyedSet
-from .exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, FilterTypeError
+from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, FilterTypeError
 
 
 logger = getLogger(__name__)
 
 
-class LinkRegister:
+class DogmaRegister:
     """
-    Keep track of currently existing links between affectors
-    (Affector objects) and affectees (holders). This is hard
-    requirement for efficient partial attribute recalculation.
-    Register is not aware of links between specific attributes,
-    doesn't know anything about states and scopes, just
-    affectors and affectees.
+    Keep track of connections between Affector objects and affectee
+    holders, only for connections defined as regular modifiers. Having
+    this data is hard requirement for efficient partial attribute
+    recalculation.
 
     Required arguments:
     fit -- fit, to which this register is bound to
@@ -72,12 +70,12 @@ class LinkRegister:
 
         # Keep track of affectors influencing holders directly
         # Format: {targetHolder: {affectors}}
-        self.__active_direct_affectors = KeyedSet()
+        self.__affector_direct_active = KeyedSet()
 
         # Keep track of affectors which influence something directly,
-        # but are disabled as their target domain is not available
+        # but their target is not available
         # Format: {source_holder: {affectors}}
-        self.__disabled_direct_affectors = KeyedSet()
+        self.__affector_direct_awaiting = KeyedSet()
 
     def register_affectee(self, target_holder):
         """
@@ -220,7 +218,7 @@ class LinkRegister:
         """
         affectors = set()
         # Add all affectors which directly affect it
-        affectors.update(self.__active_direct_affectors.get(target_holder) or set())
+        affectors.update(self.__affector_direct_active.get(target_holder) or set())
         # Then all affectors which affect domain of passed holder
         domain = target_holder._domain
         affectors.update(self.__affector_domain.get(domain) or set())
@@ -284,35 +282,35 @@ class LinkRegister:
             # For direct modifications, we need to properly pick
             # target holder (it's key) based on domain
             if modifier.domain == Domain.self_:
-                affector_map = self.__active_direct_affectors
+                affector_map = self.__affector_direct_active
                 key = source_holder
             elif modifier.domain == Domain.character:
                 char = self._fit.character
                 if char is not None:
-                    affector_map = self.__active_direct_affectors
+                    affector_map = self.__affector_direct_active
                     key = char
                 else:
-                    affector_map = self.__disabled_direct_affectors
+                    affector_map = self.__affector_direct_awaiting
                     key = source_holder
             elif modifier.domain == Domain.ship:
                 ship = self._fit.ship
                 if ship is not None:
-                    affector_map = self.__active_direct_affectors
+                    affector_map = self.__affector_direct_active
                     key = ship
                 else:
-                    affector_map = self.__disabled_direct_affectors
+                    affector_map = self.__affector_direct_awaiting
                     key = source_holder
             # When other domain is referenced, it means direct reference to module's charge
             # or to charge's module-container
             elif modifier.domain == Domain.other:
                 other_holder = self.__get_other_linked_holder(source_holder)
                 if other_holder is not None:
-                    affector_map = self.__active_direct_affectors
+                    affector_map = self.__affector_direct_active
                     key = other_holder
                 # When no reference available, it means that e.g. charge may be
                 # unavailable for now; use disabled affectors map for these
                 else:
-                    affector_map = self.__disabled_direct_affectors
+                    affector_map = self.__affector_direct_awaiting
                     key = source_holder
             else:
                 raise DirectDomainError(modifier.domain)
@@ -448,7 +446,7 @@ class LinkRegister:
         # Format: {source_holder: [affectors]}
         affectors_to_enable = {}
         # Cycle through all disabled direct affectors
-        for source_holder, affector_set in self.__disabled_direct_affectors.items():
+        for source_holder, affector_set in self.__affector_direct_awaiting.items():
             for affector in affector_set:
                 modifier = affector.modifier
                 # Mark affector as to-be-enabled only when it
@@ -461,8 +459,8 @@ class LinkRegister:
             return
         # Move all of them to direct modification dictionary
         for source_holder, affectors in affectors_to_enable.items():
-            self.__disabled_direct_affectors.rm_data_set(source_holder, affectors)
-            self.__active_direct_affectors.add_data_set(target_holder, affectors)
+            self.__affector_direct_awaiting.rm_data_set(source_holder, affectors)
+            self.__affector_direct_active.add_data_set(target_holder, affectors)
 
     def __disable_direct_spec(self, target_holder):
         """
@@ -474,7 +472,7 @@ class LinkRegister:
         # Format: {source_holder: [affectors]}
         affectors_to_disable = {}
         # Check all affectors, targeting passed holder
-        for affector in self.__active_direct_affectors.get(target_holder) or ():
+        for affector in self.__affector_direct_active.get(target_holder) or ():
             # Mark them as to-be-disabled only if they originate from
             # other holder, else they should be removed with passed holder
             if affector.source_holder is not target_holder:
@@ -484,8 +482,8 @@ class LinkRegister:
             return
         # Move data from map to map
         for source_holder, affectors in affectors_to_disable.items():
-            self.__active_direct_affectors.rm_data_set(target_holder, affectors)
-            self.__disabled_direct_affectors.add_data_set(source_holder, affectors)
+            self.__affector_direct_active.rm_data_set(target_holder, affectors)
+            self.__affector_direct_awaiting.add_data_set(source_holder, affectors)
 
     def __enable_direct_other(self, target_holder):
         """
@@ -502,7 +500,7 @@ class LinkRegister:
             return
         # Get all disabled affectors which should influence our target_holder
         affectors_to_enable = set()
-        for affector in self.__disabled_direct_affectors.get(other_holder) or ():
+        for affector in self.__affector_direct_awaiting.get(other_holder) or ():
             modifier = affector.modifier
             if modifier.domain == Domain.other:
                 affectors_to_enable.add(affector)
@@ -510,8 +508,8 @@ class LinkRegister:
         if not affectors_to_enable:
             return
         # Move all of them to direct modification dictionary
-        self.__active_direct_affectors.add_data_set(target_holder, affectors_to_enable)
-        self.__disabled_direct_affectors.rm_data_set(other_holder, affectors_to_enable)
+        self.__affector_direct_active.add_data_set(target_holder, affectors_to_enable)
+        self.__affector_direct_awaiting.rm_data_set(other_holder, affectors_to_enable)
 
     def __disable_direct_other(self, target_holder):
         """
@@ -526,7 +524,7 @@ class LinkRegister:
             return
         affectors_to_disable = set()
         # Go through all affectors influencing holder being unregistered
-        for affector in self.__active_direct_affectors.get(target_holder) or ():
+        for affector in self.__affector_direct_active.get(target_holder) or ():
             # If affector originates from other_holder, mark it as
             # to-be-disabled
             if affector.source_holder is other_holder:
@@ -535,8 +533,8 @@ class LinkRegister:
         if not affectors_to_disable:
             return
         # If we have, move them from map to map
-        self.__disabled_direct_affectors.add_data_set(other_holder, affectors_to_disable)
-        self.__active_direct_affectors.rm_data_set(target_holder, affectors_to_disable)
+        self.__affector_direct_awaiting.add_data_set(other_holder, affectors_to_disable)
+        self.__affector_direct_active.rm_data_set(target_holder, affectors_to_disable)
 
     def __get_other_linked_holder(self, holder):
         """
