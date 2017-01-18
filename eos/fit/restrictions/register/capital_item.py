@@ -27,12 +27,11 @@ from .abc import RestrictionRegister
 from ..exception import RegisterValidationError
 
 
-# Holders of volume equal to and bigger than this
-# are considered as capital
-CAP_MODULE_VOLUME = 4000
+# Holders of volume bigger than this are considered as capital
+MAX_SUBCAP_VOLUME = 3500
 
 
-CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('holder_volume', 'subcap_volume_upto'))
+CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('holder_volume', 'max_subcap_volume'))
 
 
 class CapitalItemRegister(RestrictionRegister):
@@ -62,7 +61,7 @@ class CapitalItemRegister(RestrictionRegister):
             holder_volume = holder.item.attributes[Attribute.volume]
         except KeyError:
             return
-        if holder_volume < CAP_MODULE_VOLUME:
+        if holder_volume <= MAX_SUBCAP_VOLUME:
             return
         self.__capital_holders.add(holder)
 
@@ -88,7 +87,7 @@ class CapitalItemRegister(RestrictionRegister):
                 holder_volume = holder.item.attributes[Attribute.volume]
                 tainted_holders[holder] = CapitalItemErrorData(
                     holder_volume=holder_volume,
-                    subcap_volume_upto=CAP_MODULE_VOLUME
+                    max_subcap_volume=MAX_SUBCAP_VOLUME
                 )
             raise RegisterValidationError(tainted_holders)
 
