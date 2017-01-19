@@ -29,103 +29,89 @@ from enum import IntEnum, unique
 
 @unique
 class Attribute(IntEnum):
-    """Attribute ID holder"""
-    mass = 4
-    hp = 9
-    power_output = 11
-    low_slots = 12
-    med_slots = 13
-    hi_slots = 14
-    cpu_output = 48
-    power = 30
-    capacity = 38
+    # Resources
     cpu = 50
-    charge_rate = 56
-    damage_multiplier = 64
-    agility = 70
+    cpu_output = 48
+    drone_bandwidth = 1271
+    drone_bandwidth_used = 1272
+    power = 30
+    power_output = 11
+    upgrade_capacity = 1132
+    upgrade_cost = 1153
+    # Slots
+    boosterness = 1087
+    drone_capacity = 283
+    hi_slots = 14
+    implantness = 331
     launcher_slots_left = 101
+    low_slots = 12
+    max_active_drones = 352
+    max_subsystems = 1367
+    med_slots = 13
+    rig_slots = 1137
+    subsystem_slot = 1366
     turret_slots_left = 102
-    kinetic_damage_resonance = 109
-    thermal_damage_resonance = 110
-    explosive_damage_resonance = 111
-    em_damage_resonance = 113
+    # Damage
     em_damage = 114
     explosive_damage = 116
     kinetic_damage = 117
     thermal_damage = 118
-    charge_size = 128
-    volume = 161
-    radius = 162
-    required_skill_1 = 182
-    required_skill_2 = 183
-    required_skill_3 = 184
-    missile_damage_multiplier = 212
-    shield_capacity = 263
-    armor_hp = 265
+    # Resistances
     armor_em_damage_resonance = 267
     armor_explosive_damage_resonance = 268
     armor_kinetic_damage_resonance = 269
     armor_thermal_damage_resonance = 270
+    em_damage_resonance = 113
+    explosive_damage_resonance = 111
+    kinetic_damage_resonance = 109
+    thermal_damage_resonance = 110
     shield_em_damage_resonance = 271
     shield_explosive_damage_resonance = 272
     shield_kinetic_damage_resonance = 273
     shield_thermal_damage_resonance = 274
-    required_skill_1_level = 277
-    required_skill_2_level = 278
-    required_skill_3_level = 279
-    skill_level = 280
-    drone_capacity = 283
-    implantness = 331
-    max_active_drones = 352
+    # Tanking
+    armor_hp = 265
+    hp = 9
+    shield_capacity = 263
+    # Charge-related
     charge_group_1 = 604
     charge_group_2 = 605
     charge_group_3 = 606
     charge_group_4 = 609
     charge_group_5 = 610
-    module_reactivation_delay = 669
-    max_group_active = 763
+    charge_rate = 56
+    charge_size = 128
     crystal_volatility_chance = 783
     crystal_volatility_damage = 784
     crystals_get_damaged = 786
-    max_group_online = 978
-    boosterness = 1087
-    upgrade_capacity = 1132
-    rig_slots = 1137
-    upgrade_cost = 1153
-    drone_bandwidth = 1271
-    drone_bandwidth_used = 1272
+    reload_time = 1795
+    # Skills
+    required_skill_1 = 182
+    required_skill_1_level = 277
+    required_skill_2 = 183
+    required_skill_2_level = 278
+    required_skill_3 = 184
+    required_skill_3_level = 279
     required_skill_4 = 1285
     required_skill_4_level = 1286
-    required_skill_5_level = 1287
-    required_skill_6_level = 1288
     required_skill_5 = 1289
+    required_skill_5_level = 1287
     required_skill_6 = 1290
+    required_skill_6_level = 1288
+    skill_level = 280
+    # Fitting restriction
+    allowed_drone_group_1 = 1782
+    allowed_drone_group_2 = 1783
     can_fit_ship_group_1 = 1298
     can_fit_ship_group_2 = 1299
     can_fit_ship_group_3 = 1300
     can_fit_ship_group_4 = 1301
-    can_fit_ship_type_1 = 1302
-    can_fit_ship_type_2 = 1303
-    can_fit_ship_type_3 = 1304
-    can_fit_ship_type_4 = 1305
-    subsystem_slot = 1366
-    max_subsystems = 1367
-    fits_to_shiptype = 1380
-    max_group_fitted = 1544
-    rig_size = 1547
-    allowed_drone_group_1 = 1782
-    allowed_drone_group_2 = 1783
-    is_capital_size = 1785
-    reload_time = 1795
     can_fit_ship_group_5 = 1872
     can_fit_ship_group_6 = 1879
     can_fit_ship_group_7 = 1880
     can_fit_ship_group_8 = 1881
-    can_fit_ship_type_5 = 1944
     can_fit_ship_group_9 = 2065
-    can_fit_ship_type_6 = 2103
     can_fit_ship_group_10 = 2396
-    can_fit_ship_type_7 = 2463
     can_fit_ship_group_11 = 2476
     can_fit_ship_group_12 = 2477
     can_fit_ship_group_13 = 2478
@@ -136,14 +122,35 @@ class Attribute(IntEnum):
     can_fit_ship_group_18 = 2483
     can_fit_ship_group_19 = 2484
     can_fit_ship_group_20 = 2485
+    can_fit_ship_type_1 = 1302
+    can_fit_ship_type_2 = 1303
+    can_fit_ship_type_3 = 1304
+    can_fit_ship_type_4 = 1305
+    can_fit_ship_type_5 = 1944
+    can_fit_ship_type_6 = 2103
+    can_fit_ship_type_7 = 2463
     can_fit_ship_type_8 = 2486
     can_fit_ship_type_9 = 2487
     can_fit_ship_type_10 = 2488
+    fits_to_shiptype = 1380
+    max_group_active = 763
+    max_group_fitted = 1544
+    max_group_online = 978
+    rig_size = 1547
+    # Misc
+    agility = 70
+    capacity = 38
+    damage_multiplier = 64
+    is_capital_size = 1785
+    mass = 4
+    missile_damage_multiplier = 212
+    module_reactivation_delay = 669
+    radius = 162
+    volume = 161
 
 
 @unique
 class Type(IntEnum):
-    """Item ID holder"""
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
     sentry_drone_interfacing = 23594  # Skill
@@ -151,10 +158,9 @@ class Type(IntEnum):
 
 @unique
 class Group(IntEnum):
-    """Group ID holder"""
     character = 1
+    effect_beacon = 920
     energy_weapon = 53
-    projectile_weapon = 55
     hydrid_weapon = 74
     missile_launcher_cruise = 506
     missile_launcher_rocket = 507
@@ -164,67 +170,56 @@ class Group(IntEnum):
     missile_launcher_rapid_light = 511
     missile_launcher_citadel = 524
     missile_launcher_heavy_assault = 771
-    effect_beacon = 920
     missile_launcher_rapid_heavy = 1245
+    projectile_weapon = 55
     ship_modifier = 1306
 
 
 @unique
 class Category(IntEnum):
-    """Category ID holder"""
-    ship = 6
-    module = 7
     charge = 8
-    skill = 16
     drone = 18
     implant = 20
+    module = 7
+    ship = 6
+    skill = 16
     subsystem = 32
 
 
 @unique
 class Effect(IntEnum):
-    """Effect ID holder"""
-    missile_launching = 9
-    target_attack = 10
-    lo_power = 11
+    bomb_launching = 2971
+    emp_wave = 38
+    fighter_missile = 4729
+    fof_missile_launching = 104
     hi_power = 12
+    launcher_fitted = 40
+    lo_power = 11
     med_power = 13
+    mining_laser = 67
+    missile_launching = 9
     online = 16
     projectile_fired = 34
-    emp_wave = 38
-    launcher_fitted = 40
-    turret_fitted = 42
-    mining_laser = 67
-    use_missiles = 101
-    fof_missile_launching = 104
     rig_slot = 2663
-    bomb_launching = 2971
     subsystem = 3772
-    fighter_missile = 4729
     super_weapon_amarr = 4489
     super_weapon_caldari = 4490
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
+    target_attack = 10
+    turret_fitted = 42
+    use_missiles = 101
 
 
 @unique
 class EffectCategory(IntEnum):
-    """Effect category ID holder"""
-    # Applied when item is just present in fit - implants, skills, offlined modules
     passive = 0
-    # Applied only when module is activated
     active = 1
-    # Applied onto selected target
     target = 2
-    # No effects with this category, so actual impact is unknown
     area = 3
-    # Applied when module at least onlined
     online = 4
-    # Applied only when module is overloaded
     overload = 5
-    # Dungeon effects, several effects exist in this category, but not assigned to any item
     dungeon = 6
-    # System-wide effects, like WH and incursion
     system = 7
 
 
