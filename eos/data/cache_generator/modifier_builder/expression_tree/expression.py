@@ -22,17 +22,13 @@
 from collections import UserDict
 
 
-class AttributeDict(UserDict):
-    """
-    Allows to refer dictionary values via keys
-    as object attributes.
-    """
+class Expression(UserDict):
 
-    def __getattr__(self, attr):
-        try:
-            return self.data[attr]
-        except KeyError as e:
-            raise AttributeError from e
+    def __init__(self, *args, expressions=None):
+        super().__init__(*args)
+        self.expressions = expressions
 
-    def __setattr__(self, attr, value):
-        self.data[attr] = value
+    def arg1(self):
+        pass
+
+    def arg2(self):

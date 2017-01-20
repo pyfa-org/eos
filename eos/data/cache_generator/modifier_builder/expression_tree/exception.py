@@ -22,7 +22,6 @@
 from eos.exception import EosError
 
 
-# Exception classes used by effect to modifier converter
 class Effect2ModifiersError(EosError):
     """
     All exceptions raised by effect-to-modifier converter are
@@ -31,34 +30,9 @@ class Effect2ModifiersError(EosError):
     pass
 
 
-class TreeParsingUnexpectedError(Effect2ModifiersError):
-    """
-    Raised when effect-to-modifier converter encounters some
-    unhandled error.
-    """
-    pass
-
-
-# Exception classes used by expression tree to action converter
-class ETree2ActionError(EosError):
-    """
-    All exceptions raised by expression-to-action converter
-    are either represented by this class or based on it.
-    """
-    pass
-
-
-class ExpressionFetchError(ETree2ActionError):
+class ExpressionFetchError(Effect2ModifiersError):
     """
     Raised when expression-to-action converter is unable to find
     expression requested by any of its components.
-    """
-    pass
-
-
-class ActionValidationError(ETree2ActionError):
-    """
-    Raised when some action generated out of expression tree
-    is invalid.
     """
     pass
