@@ -30,11 +30,18 @@ __all__ = [
     'Attribute',
     'Effect',
     'Type',
-    'unpackage_modifier'
+    'ItemModifier',
+    'LocationModifier',
+    'LocationGroupModifier',
+    'LocationRequiredSkillModifier',
+    'OwnerRequiredSkillModifier'
 ]
 
 
 from .attribute import Attribute
 from .effect import Effect
-from .modifier import unpackage_modifier
+from .modifier import (
+    ItemModifier, LocationModifier, LocationGroupModifier,
+    LocationRequiredSkillModifier, OwnerRequiredSkillModifier
+)
 from .type import Type
