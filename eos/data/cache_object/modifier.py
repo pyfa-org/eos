@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos.const.eos import State, Domain, Operator
 from eos.util.repr import make_repr_str
 
 
@@ -84,3 +85,112 @@ class Modifier:
     def __repr__(self):
         spec = ['id']
         return make_repr_str(self, spec)
+
+
+class BaseModifier:
+    """
+    Modifiers are part of effects; one modifier describes one
+    modification - when it should be applied, on which items,
+    how to apply it, and so on.
+    """
+
+    def __init__(self, id, src_attr, operator, tgt_attr, state, domain):
+        self.id = id
+        self.src_attr = src_attr
+        self.operator = operator
+        self.tgt_attr = tgt_attr
+        self.state = state
+        self.domain = domain
+
+    def _validate(self):
+        return all((
+            isinstance(self.id, int) or self.id is None,
+            isinstance(self.src_attr, int),
+            self.operator in Operator.__members__.values(),
+            isinstance(self.tgt_attr, int),
+            self.state in State.__members__.values(),
+            self.domain in Domain.__members__.values()
+        ))
+
+    def __repr__(self):
+        spec = ['id']
+        return make_repr_str(self, spec)
+
+
+class ItemModifier(BaseModifier):
+    """
+    Affects single item specified in domain.
+    """
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            # TODO: add more checks
+        ))
+
+
+class LocationModifier(BaseModifier):
+    """
+    Affects all items which belong to location
+    specified on domain.
+    """
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            # TODO: add more checks
+        ))
+
+
+class LocationGroupModifier(BaseModifier):
+    """
+    Affects all items which belong to location
+    specified on domain and to specified group.
+    """
+
+    def __init__(self, id, src_attr, operator, tgt_attr, state, domain, group):
+        super().__init__(id, src_attr, operator, tgt_attr, state, domain)
+        self.group = group
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            isinstance(self.group, int),
+            # TODO: add more checks
+        ))
+
+
+class LocationRequiredSkillModifier(BaseModifier):
+    """
+    Affects all items which belong to location specified
+    on domain and have specified skill requirement.
+    """
+
+    def __init__(self, id, src_attr, operator, tgt_attr, state, domain, skill):
+        super().__init__(id, src_attr, operator, tgt_attr, state, skill)
+        self.skill = skill
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            isinstance(self.skill, int),
+            # TODO: add more checks
+        ))
+
+
+class OwnerRequiredSkillModifier(BaseModifier):
+    """
+    Affects all items which are owner-modifiable
+    and have specified skill requirement.
+    """
+
+    def __init__(self, id, src_attr, operator, tgt_attr, state, domain, skill):
+        super().__init__(id, src_attr, operator, tgt_attr, state, skill)
+        self.skill = skill
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            isinstance(self.skill, int),
+            # TODO: add more checks
+        ))
