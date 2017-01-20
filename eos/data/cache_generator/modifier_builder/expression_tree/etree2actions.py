@@ -215,7 +215,7 @@ class ETree2Actions:
     def _get_domain(self, expression):
         # Format: {eve location name: eos domain ID}
         conversion_map = {
-            'Self': Domain.self_,
+            'Self': Domain.self,
             'Char': Domain.character,
             'Ship': Domain.ship,
             'Target': Domain.target,
@@ -239,7 +239,7 @@ class ETree2Actions:
             # Currently, we have only ID representing self type getter, so run
             # additional check if type getter is for self
             arg1 = self._get_exp(expression.get('arg1'))
-            if self._get_domain(arg1) == Domain.self_:
+            if self._get_domain(arg1) == Domain.self:
                 action.tgt_skillrq_self = True
         else:
             action.tgt_skillrq = int(expression.get('expressionTypeID'))
@@ -373,7 +373,7 @@ class ETree2Actions:
             action.tgt_skillrq_self is not False
         ):
             return False
-        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
+        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self)
         if (
             action.domain not in valid_locs or
             isinstance(action.tgt_group, int) is not True
@@ -388,7 +388,7 @@ class ETree2Actions:
             action.tgt_skillrq_self is not False
         ):
             return False
-        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
+        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self)
         if action.domain not in valid_locs:
             return False
         return True
@@ -396,7 +396,7 @@ class ETree2Actions:
     def _validate_loc_srq(self, action):
         if action.tgt_group is not None:
             return False
-        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self_)
+        valid_locs = (Domain.character, Domain.ship, Domain.target, Domain.self)
         if (
             action.domain not in valid_locs or
             self._validate_skill_req(action) is not True

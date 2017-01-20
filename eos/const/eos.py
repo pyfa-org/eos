@@ -46,7 +46,6 @@ class State(IntEnum):
 
 @unique
 class Slot(IntEnum):
-    """Slot types item can take"""
     module_high = 1
     module_med = 2
     module_low = 3
@@ -56,83 +55,38 @@ class Slot(IntEnum):
     launcher = 7
 
 
-# Class used by Modifiers and Item definitions
-@unique
-class Domain(IntEnum):
-    """
-    Domain specification. Some legacy code (like old way
-    to define modifiers, via expression trees) sometimes
-    refer to it using 'location' term.
-
-    Some values are relative, thus item context must be taken
-    into account.
-    """
-    self_ = 1  # Self, i.e. carrier of modification source
-    character = 2
-    ship = 3
-    target = 4
-    other = 5  # Module for charge, charge for module
-    area = 6
-
-
 @unique
 class EffectBuildStatus(IntEnum):
-    """
-    Statuses which indicate effect->modifiers conversion result,
-    part of public API.
-    """
     not_built = 1
-    # Errors occurred during expression trees parsing or validation
     error = 2
-    # Modifiers were generated, but some of elements were dropped as unsupported
-    ok_partial = 3
-    ok_full = 4
+    ok_full = 3
 
 
 @unique
-class Scope(IntEnum):
-    """
-    Describes when modification is applied, used only internally
-    by Modifier class and classes interacting with it
-    """
-    # Fit-local modification
+class ModifierType(IntEnum):
+    item = 1
+    location = 2
+    location_group = 3
+    location_skillrq = 4
+    owner_skillrq = 5
+
+
+@unique
+class ModifierDomain(IntEnum):
+    self = 1  # Self, i.e. carrier of modification source
+    character = 2
+    ship = 3
+    other = 4  # Module for charge, charge for module
+
+
+@unique
+class ModifierScope(IntEnum):
     local = 1
-    # Gang-wide modification
-    gang = 2
-    # Modification which is applied to target only when modifier
-    # carrier is projected# onto it
-    projected = 3
+    projected = 2
 
 
 @unique
-class FilterType(IntEnum):
-    """
-    Filter type ID holder, used only internally
-    by Modifier class and classes interacting with it
-    """
-    # Affects all items in target domain
-    all_ = 1
-    # Affects items in target domain with additional filter by group
-    group = 2
-    # Affects items in target domain with additional filter by skill
-    # requirement
-    skill = 3
-    # Same as skill, but instead of specifying typeID of skill in filter
-    # value always refers typeID of carrier
-    skill_self = 4
-
-
-@unique
-class Operator(IntEnum):
-    """
-    Operator ID holder, used only internally
-    by Modifier class and classes interacting with it
-    """
-    # Following operators are used in modifications
-    # applied over some duration. We can deliberately assign
-    # these some ID, but we need to make sure their IDs are
-    # sorted in the order they're kept here for proper
-    # attribute calculation process
+class ModifierOperator(IntEnum):
     pre_assign = 1
     pre_mul = 2
     pre_div = 3
@@ -146,9 +100,6 @@ class Operator(IntEnum):
 
 @unique
 class Restriction(IntEnum):
-    """
-    Fitting restriction types.
-    """
     cpu = 1
     powergrid = 2
     calibration = 3

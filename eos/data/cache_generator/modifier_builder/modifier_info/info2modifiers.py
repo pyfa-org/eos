@@ -40,7 +40,7 @@ filter_map = {
             'charID': (Scope.local, Domain.character),
             'otherID': (Scope.local, Domain.other),
             'targetID': (Scope.projected, Domain.ship),
-            None: (Scope.local, Domain.self_)
+            None: (Scope.local, Domain.self)
         }
     ),
     'LocationModifier': (

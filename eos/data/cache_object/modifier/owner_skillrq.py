@@ -19,22 +19,30 @@
 # ===============================================================================
 
 
-"""
-Classes in this module are objects stored in cache. Eos' objects like holders
-are built on top of their instances, and often they're reused, thus make sure
-to not store any fit-specific data on them.
-"""
+from eos.const.eos import ModifierType, ModifierDomain
+from .abc import BaseModifier
 
 
-__all__ = [
-    'Attribute',
-    'Effect',
-    'Type',
-    'unpackage_modifier'
-]
+class OwnerRequiredSkillModifier(BaseModifier):
+    """
+    Affects all items which are owner-modifiable
+    and have specified skill requirement.
+    """
 
+    def __init__(self, id, scope, domain, state, src_attr, operator, tgt_attr, skill):
+        super().__init__(id, scope, domain, state, src_attr, operator, tgt_attr)
+        self.skill = skill
 
-from .attribute import Attribute
-from .effect import Effect
-from .modifier import unpackage_modifier
-from .type import Type
+    @property
+    def type(self):
+        return ModifierType.owner_skillrq
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            isinstance(self.skill, int),
+            self.domain in (ModifierDomain.ship, ModifierDomain.target)
+        ))
+
+    def _package(self):
+        return self._package_basic_attrs() + [self.skill]

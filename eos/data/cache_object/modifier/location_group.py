@@ -19,22 +19,33 @@
 # ===============================================================================
 
 
-"""
-Classes in this module are objects stored in cache. Eos' objects like holders
-are built on top of their instances, and often they're reused, thus make sure
-to not store any fit-specific data on them.
-"""
+from eos.const.eos import ModifierType, ModifierDomain
+from .abc import BaseModifier
 
 
-__all__ = [
-    'Attribute',
-    'Effect',
-    'Type',
-    'unpackage_modifier'
-]
+class LocationGroupModifier(BaseModifier):
+    """
+    Affects all items which belong to location
+    specified on domain and to specified group.
+    """
 
+    def __init__(self, id, scope, domain, state, src_attr, operator, tgt_attr, group):
+        super().__init__(id, scope, domain, state, src_attr, operator, tgt_attr)
+        self.group = group
 
-from .attribute import Attribute
-from .effect import Effect
-from .modifier import unpackage_modifier
-from .type import Type
+    @property
+    def type(self):
+        return ModifierType.location_group
+
+    def _validate(self):
+        return all((
+            super()._validate(),
+            isinstance(self.group, int),
+            self.domain in (
+                ModifierDomain.self, ModifierDomain.character,
+                ModifierDomain.ship, ModifierDomain.target
+            )
+        ))
+
+    def _package(self):
+        return self._package_basic_attrs() + [self.group]

@@ -164,7 +164,7 @@ class DogmaRegister:
         try:
             # For direct modification, make set out of single target domain
             if modifier.filter_type is None:
-                if modifier.domain == Domain.self_:
+                if modifier.domain == Domain.self:
                     target = {source_holder}
                 elif modifier.domain == Domain.character:
                     char = self._fit.character
@@ -281,7 +281,7 @@ class DogmaRegister:
         if modifier.filter_type is None:
             # For direct modifications, we need to properly pick
             # target holder (it's key) based on domain
-            if modifier.domain == Domain.self_:
+            if modifier.domain == Domain.self:
                 affector_map = self.__affector_direct_active
                 key = source_holder
             elif modifier.domain == Domain.character:
@@ -393,7 +393,7 @@ class DogmaRegister:
         domain = affector.modifier.domain
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real domain
-        if domain == Domain.self_:
+        if domain == Domain.self:
             if source_holder is self._fit.ship:
                 return Domain.ship
             elif source_holder is self._fit.character:

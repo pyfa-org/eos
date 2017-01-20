@@ -19,22 +19,32 @@
 # ===============================================================================
 
 
-"""
-Classes in this module are objects stored in cache. Eos' objects like holders
-are built on top of their instances, and often they're reused, thus make sure
-to not store any fit-specific data on them.
-"""
-
-
 __all__ = [
-    'Attribute',
-    'Effect',
-    'Type',
-    'unpackage_modifier'
+    'ItemModifier',
+    'LocationModifier',
+    'LocationGroupModifier',
+    'LocationRequiredSkillModifier',
+    'OwnerRequiredSkillModifier'
 ]
 
 
-from .attribute import Attribute
-from .effect import Effect
-from .modifier import unpackage_modifier
-from .type import Type
+from eos.const.eos import ModifierType
+
+from .item import ItemModifier
+from .location import LocationModifier
+from .location_group import LocationGroupModifier
+from .location_skillrq import LocationRequiredSkillModifier
+from .owner_skillrq import OwnerRequiredSkillModifier
+
+
+modifier_map = {
+    ModifierType.item: ItemModifier,
+    ModifierType.location: LocationModifier,
+    ModifierType.group: LocationGroupModifier,
+    ModifierType.location_skillrq: LocationRequiredSkillModifier,
+    ModifierType.owner_skillrq: OwnerRequiredSkillModifier
+}
+
+
+def unpackage_modifier(id, modtype, *args):
+    return modifier_map[modtype](id, *args)

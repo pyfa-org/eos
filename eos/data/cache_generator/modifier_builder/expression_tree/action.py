@@ -87,12 +87,12 @@ class Action:
         """
         # Check types which must be mirrorred
         try:
-            self_action_data = operand_data[self.type]
+            selfaction_data = operand_data[self.type]
         except KeyError:
-            self_action_mirror = None
+            selfaction_mirror = None
         else:
-            self_action_mirror = self_action_data.mirror
-        if self_action_mirror != other.type:
+            selfaction_mirror = selfaction_data.mirror
+        if selfaction_mirror != other.type:
             return False
         # Then, check all other fields of modifier
         if (
