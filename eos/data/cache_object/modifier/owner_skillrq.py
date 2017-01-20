@@ -43,6 +43,3 @@ class OwnerRequiredSkillModifier(BaseModifier):
             isinstance(self.skill, int),
             self.domain in (ModifierDomain.ship, ModifierDomain.target)
         ))
-
-    def _package(self):
-        return self._package_basic_attrs() + [self.skill]

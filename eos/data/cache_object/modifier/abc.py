@@ -61,16 +61,6 @@ class BaseModifier(metaclass=ABCMeta):
             isinstance(self.tgt_attr, int)
         ))
 
-    @abstractmethod
-    def _package(self):
-        ...
-
-    def _package_basic_attrs(self):
-        return [
-            self.id, self.type, self.scope, self.domain, self.state,
-            self.src_attr, self.operator, self.tgt_attr
-        ]
-
     def __repr__(self):
         spec = ['id']
         return make_repr_str(self, spec)

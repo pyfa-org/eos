@@ -40,6 +40,3 @@ class ItemModifier(BaseModifier):
                 ModifierDomain.target, ModifierDomain.other
             )
         ))
-
-    def _package(self):
-        return self._package_basic_attrs()

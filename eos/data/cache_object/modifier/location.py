@@ -41,6 +41,3 @@ class LocationModifier(BaseModifier):
                 ModifierDomain.ship, ModifierDomain.target
             )
         ))
-
-    def _package(self):
-        return self._package_basic_attrs()

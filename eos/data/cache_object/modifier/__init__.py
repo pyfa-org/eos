@@ -28,23 +28,8 @@ __all__ = [
 ]
 
 
-from eos.const.eos import ModifierType
-
 from .item import ItemModifier
 from .location import LocationModifier
 from .location_group import LocationGroupModifier
 from .location_skillrq import LocationRequiredSkillModifier
 from .owner_skillrq import OwnerRequiredSkillModifier
-
-
-mod_map = {
-    ModifierType.item: ItemModifier,
-    ModifierType.location: LocationModifier,
-    ModifierType.group: LocationGroupModifier,
-    ModifierType.location_skillrq: LocationRequiredSkillModifier,
-    ModifierType.owner_skillrq: OwnerRequiredSkillModifier
-}
-
-
-def unpackage_modifier(mod_id, mod_type, *args):
-    return mod_map[mod_type](mod_id, *args)
