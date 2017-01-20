@@ -23,70 +23,6 @@ from eos.const.eos import State, Domain, Operator
 from eos.util.repr import make_repr_str
 
 
-class Modifier:
-    """
-    Modifier objects are Eos-specific abstraction, they replace effects'
-    expressions. Each modifier object contains full description of
-    modification: when it should be applied, on which items, how to
-    apply it, and so on.
-    """
-
-    def __init__(
-        self,
-        modifier_id=None,
-        state=None,
-        scope=None,
-        src_attr=None,
-        operator=None,
-        tgt_attr=None,
-        domain=None,
-        filter_type=None,
-        filter_value=None
-    ):
-        # Identifier of modifier, synthesized at
-        # cache generation time
-        self.id = modifier_id
-
-        # Modifier can be applied only when its carrier holder
-        # is in this or greater state, must be const_eos.State
-        # class' attribute value.
-        self.state = state
-
-        # Describes scope in which modifier is applied, must
-        # be const_eos.Scope class' attribute value.
-        self.scope = scope
-
-        # Which attribute will be taken as source value,
-        # must be integer which refers attribute via ID.
-        self.src_attr = src_attr
-
-        # Which operation should be applied during modification,
-        # must be const_eos.Operator class' attribute value.
-        self.operator = operator
-
-        # Which attribute will be affected by operator on the target,
-        # must be integer which refers attribute via ID.
-        self.tgt_attr = tgt_attr
-
-        # Target domain to change, must be const_eos.Domain
-        # class' attribute value.
-        self.domain = domain
-
-        # Filter type of the modification, must be None or
-        # const_eos.FilterType class' attribute value.
-        self.filter_type = filter_type
-
-        # Filter value of the modification:
-        # For filter_type.all_, filter_type.None or filter_type.skill_self must be None;
-        # For filter_type.group must be some integer, referring group via ID;
-        # For filter_type.skill must be some integer, referring type via ID
-        self.filter_value = filter_value
-
-    def __repr__(self):
-        spec = ['id']
-        return make_repr_str(self, spec)
-
-
 class BaseModifier:
     """
     Modifiers are part of effects; one modifier describes one
@@ -125,7 +61,7 @@ class ItemModifier(BaseModifier):
     def _validate(self):
         return all((
             super()._validate(),
-            # TODO: add more checks
+            self.domain in (Domain.self_, Domain.character, Domain.ship, Domain.target, Domain.other)
         ))
 
 
@@ -138,7 +74,7 @@ class LocationModifier(BaseModifier):
     def _validate(self):
         return all((
             super()._validate(),
-            # TODO: add more checks
+            self.domain in (Domain.self_, Domain.character, Domain.ship, Domain.target)
         ))
 
 
@@ -156,7 +92,7 @@ class LocationGroupModifier(BaseModifier):
         return all((
             super()._validate(),
             isinstance(self.group, int),
-            # TODO: add more checks
+            self.domain in (Domain.self_, Domain.character, Domain.ship, Domain.target)
         ))
 
 
@@ -174,7 +110,7 @@ class LocationRequiredSkillModifier(BaseModifier):
         return all((
             super()._validate(),
             isinstance(self.skill, int),
-            # TODO: add more checks
+            self.domain in (Domain.self_, Domain.character, Domain.ship, Domain.target)
         ))
 
 
@@ -192,5 +128,5 @@ class OwnerRequiredSkillModifier(BaseModifier):
         return all((
             super()._validate(),
             isinstance(self.skill, int),
-            # TODO: add more checks
+            self.domain in (Domain.ship, Domain.target)
         ))

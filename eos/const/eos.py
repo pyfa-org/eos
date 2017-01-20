@@ -65,25 +65,14 @@ class Domain(IntEnum):
     refer to it using 'location' term.
 
     Some values are relative, thus item context must be taken
-    into account. Used only internally by Info class, item
-    classes and calculation engine in general.
+    into account.
     """
-    # Self, i.e. carrier of modification source
-    self_ = 1
+    self_ = 1  # Self, i.e. carrier of modification source
     character = 2
     ship = 3
-    # Currently locked and selected target
     target = 4
-    # If used from charge, refers charge's container,
-    # if used from container, refers its charge
-    other = 5
-    # No detailed data about this one, according to expressions,
-    # it affects everything on grid (the only expression using it
-    # is area-of-effect repair, but it's not assigned to any effects)
+    other = 5  # Module for charge, charge for module
     area = 6
-    # Target stuff in space (e.g. your launched drones and missiles);
-    # this domain is Eos-specific and not taken from EVE
-    space = 7
 
 
 @unique
