@@ -32,8 +32,8 @@ class BaseModifier(metaclass=ABCMeta):
     how to apply it, and so on.
     """
 
-    def __init__(self, id, scope, domain, state, src_attr, operator, tgt_attr):
-        self.id = id
+    def __init__(self, id_, scope, domain, state, src_attr, operator, tgt_attr):
+        self.id = id_
         self.scope = scope
         self.domain = domain
         self.state = state

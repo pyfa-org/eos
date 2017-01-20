@@ -37,7 +37,7 @@ from .location_skillrq import LocationRequiredSkillModifier
 from .owner_skillrq import OwnerRequiredSkillModifier
 
 
-modifier_map = {
+mod_map = {
     ModifierType.item: ItemModifier,
     ModifierType.location: LocationModifier,
     ModifierType.group: LocationGroupModifier,
@@ -46,5 +46,5 @@ modifier_map = {
 }
 
 
-def unpackage_modifier(id, modtype, *args):
-    return modifier_map[modtype](id, *args)
+def unpackage_modifier(mod_id, mod_type, *args):
+    return mod_map[mod_type](mod_id, *args)
