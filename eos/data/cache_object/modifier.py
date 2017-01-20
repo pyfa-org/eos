@@ -167,7 +167,7 @@ class LocationRequiredSkillModifier(BaseModifier):
     """
 
     def __init__(self, id, src_attr, operator, tgt_attr, state, domain, skill):
-        super().__init__(id, src_attr, operator, tgt_attr, state, skill)
+        super().__init__(id, src_attr, operator, tgt_attr, state, domain)
         self.skill = skill
 
     def _validate(self):
@@ -185,7 +185,7 @@ class OwnerRequiredSkillModifier(BaseModifier):
     """
 
     def __init__(self, id, src_attr, operator, tgt_attr, state, domain, skill):
-        super().__init__(id, src_attr, operator, tgt_attr, state, skill)
+        super().__init__(id, src_attr, operator, tgt_attr, state, domain)
         self.skill = skill
 
     def _validate(self):
