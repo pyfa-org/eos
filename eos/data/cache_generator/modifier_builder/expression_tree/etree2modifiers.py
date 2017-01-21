@@ -21,11 +21,12 @@
 
 from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, State, ModifierDomain, ModifierOperator, EosEveTypes
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, EosEveTypes
+from eos.const.eve import Operand
 from eos.data.cache_object.modifier import *
 from eos.util.attribute_dict import AttributeDict
-from .exception import UnknownRootOperandError, UnknownPrimaryOperandError, UnexpectedHandlerError
+from .exception import *
+from ..shared import STATE_CONVERSION_MAP
 
 
 logger = getLogger(__name__)
@@ -40,7 +41,7 @@ class ExpressionTree2Modifiers:
     def __init__(self, expressions):
         self._modifiers = None
         self._effect_category = None
-        self.__expressions = self._prepare_expressions(expressions)
+        self.__expressions = self.__prepare_expressions(expressions)
 
     def convert(self, effect_row):
         """Generate *Modifier objects for passed effect."""
@@ -56,94 +57,51 @@ class ExpressionTree2Modifiers:
         # non-modifier definitions. Handle these somewhat
         # gracefully and mark such effects as skipped
         except UnknownRootOperandError as e:
-            msg = 'failed to parse expression tree of effect {}: {}'.format(effect_row['effectID'], e.args[0])
+            effect_id = effect_row['effectID']
+            msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
             logger.info(msg)
             return (), EffectBuildStatus.skipped
         # Non-root level unknown operands and data inconsistencies
         # are reported as conversion errors
-        except (UnknownPrimaryOperandError, UnexpectedHandlerError) as e:
-            msg = 'failed to parse expression tree of effect {}: {}'.format(effect_row['effectID'], e.args[0])
+        except (UnknownPrimaryOperandError, UnexpectedHandlingError) as e:
+            effect_id = effect_row['effectID']
+            msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
             logger.error(msg)
             return (), EffectBuildStatus.error
+        # Validation failures are reported as partial success or
+        # conversion errors, depending on amount of valid modifiers
         else:
-            # Validation failures also reported as conversion errors
+            valid_modifiers = set()
+            validation_failures = 0
             for modifier in self._modifiers:
-                if modifier._valid is not True:
-                    msg = 'modifier of effect {} failed validation'.format(effect_row['effectID'])
-                    logger.error(msg)
+                if modifier._valid is True:
+                    valid_modifiers.add(modifier)
+                else:
+                    validation_failures += 1
+            if validation_failures == 0:
+                return valid_modifiers, EffectBuildStatus.success_full
+            else:
+                effect_id = effect_row['effectID']
+                plural = 's' if validation_failures > 1 else ''
+                msg = '{} modifier{} of effect {} failed validation'.format(validation_failures, plural, effect_id)
+                logger.error(msg)
+                if len(valid_modifiers) > 0:
+                    return valid_modifiers, EffectBuildStatus.success_partial
+                else:
                     return (), EffectBuildStatus.error
-            return self._modifiers, EffectBuildStatus.success
-
-    def _handle_splice(self, expression):
-        self._parse(expression.arg1)
-        self._parse(expression.arg2)
-
-    def _handle_add_itm_mod(self, expression):
-        self._modifiers.add(ItemModifier(
-            id_=None,
-            domain=self._get_domain(expression.arg1.arg2.arg1),
-            state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
-        ))
-
-    def _handle_add_loc_mod(self, expression):
-        self._modifiers.add(LocationModifier(
-            id_=None,
-            domain=self._get_domain(expression.arg1.arg2.arg1),
-            state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
-        ))
-
-    def _handle_add_loc_grp_mod(self, expression):
-        self._modifiers.add(LocationGroupModifier(
-            id_=None,
-            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
-            state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            group=self.__get_group(expression.arg2)
-        ))
-
-    def _handle_add_loc_srq_mod(self, expression):
-        self._modifiers.add(LocationRequiredSkillModifier(
-            id_=None,
-            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
-            state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            skill=self._get_type(expression.arg2)
-        ))
-
-    def _handle_add_own_srq_mod(self, expression):
-        self._modifiers.add(OwnerRequiredSkillModifier(
-            id_=None,
-            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
-            state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            skill=self._get_type(expression.arg2)
-        ))
-
-    _handler_map = {
-        Operand.splice: _handle_splice,
-        Operand.add_itm_mod: _handle_add_itm_mod,
-        Operand.add_loc_mod: _handle_add_loc_mod,
-        Operand.add_loc_grp_mod: _handle_add_loc_grp_mod,
-        Operand.add_loc_srq_mod: _handle_add_loc_srq_mod,
-        Operand.add_own_srq_mod: _handle_add_own_srq_mod
-    }
 
     def _parse(self, expression, root=False):
         operand = expression.get('operandID')
+        handler_map = {
+            Operand.splice: self._handle_splice,
+            Operand.add_itm_mod: self._handle_itm_mod,
+            Operand.add_loc_mod: self._handle_loc_mod,
+            Operand.add_loc_grp_mod: self._handle_loc_grp_mod,
+            Operand.add_loc_srq_mod: self._handle_loc_srq_mod,
+            Operand.add_own_srq_mod: self._handle_own_srq_mod
+        }
         try:
-            handler = self._handler_map[operand]
+            handler = handler_map[operand]
         except KeyError as e:
             if root is True:
                 msg = 'unknown root operand {}'.format(operand)
@@ -160,20 +118,64 @@ class ExpressionTree2Modifiers:
                 raise
             except Exception as e:
                 msg = 'unexpected error in handler'
-                raise UnexpectedHandlerError(msg) from e
+                raise UnexpectedHandlingError(msg) from e
 
-    def _prepare_expressions(self, expressions):
-        # Convert regular dictionaries into custom
-        # dictionaries for easier attribute access
-        processed = {}
-        for exp_row in expressions:
-            processed[exp_row['expressionID']] = AttributeDict(exp_row)
-        # Replace expression IDs in arg1/arg2 with
-        # actual expressions
-        for exp_row in processed:
-            exp_row.arg1 = processed.get(exp_row['arg1'])
-            exp_row.arg2 = processed.get(exp_row['arg2'])
-        return processed
+    def _handle_splice(self, expression):
+        self._parse(expression.arg1)
+        self._parse(expression.arg2)
+
+    def _handle_itm_mod(self, expression):
+        self._modifiers.add(ItemModifier(
+            id_=None,
+            domain=self._get_domain(expression.arg1.arg2.arg1),
+            state=self._get_state(),
+            src_attr=self._get_attribute(expression.arg2),
+            operator=self._get_operator(expression.arg1.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
+        ))
+
+    def _handle_loc_mod(self, expression):
+        self._modifiers.add(LocationModifier(
+            id_=None,
+            domain=self._get_domain(expression.arg1.arg2.arg1),
+            state=self._get_state(),
+            src_attr=self._get_attribute(expression.arg2),
+            operator=self._get_operator(expression.arg1.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
+        ))
+
+    def _handle_loc_grp_mod(self, expression):
+        self._modifiers.add(LocationGroupModifier(
+            id_=None,
+            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+            state=self._get_state(),
+            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            operator=self._get_operator(expression.arg1.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
+            group=self.__get_group(expression.arg2)
+        ))
+
+    def _handle_loc_srq_mod(self, expression):
+        self._modifiers.add(LocationRequiredSkillModifier(
+            id_=None,
+            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+            state=self._get_state(),
+            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            operator=self._get_operator(expression.arg1.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
+            skill=self._get_type(expression.arg2)
+        ))
+
+    def _handle_own_srq_mod(self, expression):
+        self._modifiers.add(OwnerRequiredSkillModifier(
+            id_=None,
+            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+            state=self._get_state(),
+            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            operator=self._get_operator(expression.arg1.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
+            skill=self._get_type(expression.arg2)
+        ))
 
     def _get_domain(self, expression):
         if expression['operandID'] != Operand.def_loc:
@@ -186,6 +188,9 @@ class ExpressionTree2Modifiers:
             'Other': ModifierDomain.other
         }
         return conversion_map[expression['expressionValue']]
+
+    def _get_state(self):
+        return STATE_CONVERSION_MAP[self._effect_category]
 
     def _get_operator(self, expression):
         if expression['operandID'] != Operand.def_optr:
@@ -228,13 +233,15 @@ class ExpressionTree2Modifiers:
         else:
             return None
 
-    def _get_state(self):
-        conversion_map = {
-            EffectCategory.passive: State.offline,
-            EffectCategory.active: State.active,
-            EffectCategory.target: State.active,
-            EffectCategory.online: State.online,
-            EffectCategory.overload: State.overload,
-            EffectCategory.system: State.offline
-        }
-        return conversion_map[self._effect_category]
+    def __prepare_expressions(self, expressions):
+        # Convert regular dictionaries into custom
+        # dictionaries for easier attribute access
+        processed = {}
+        for exp_row in expressions:
+            processed[exp_row['expressionID']] = AttributeDict(exp_row)
+        # Replace expression IDs in arg1/arg2 with
+        # actual expressions
+        for exp_row in processed:
+            exp_row.arg1 = processed.get(exp_row['arg1'])
+            exp_row.arg2 = processed.get(exp_row['arg2'])
+        return processed

@@ -60,7 +60,8 @@ class EffectBuildStatus(IntEnum):
     not_built = 1
     skipped = 2
     error = 3
-    success = 4
+    success_partial = 4
+    success_full = 5
 
 
 @unique

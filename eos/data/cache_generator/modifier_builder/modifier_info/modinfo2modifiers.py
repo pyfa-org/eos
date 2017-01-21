@@ -1,0 +1,188 @@
+# ===============================================================================
+# Copyright (C) 2017 Anton Vorobyov
+#
+# This file is part of Eos.
+#
+# Eos is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Eos is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Eos. If not, see <http://www.gnu.org/licenses/>.
+# ===============================================================================
+
+
+import yaml
+from logging import getLogger
+
+from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator
+from eos.data.cache_object.modifier import *
+from ..shared import STATE_CONVERSION_MAP
+
+
+logger = getLogger(__name__)
+
+
+class ModifierInfo2Modifiers:
+    """
+    Parse modifierInfos into actual Modifier objects.
+    """
+
+    def convert(self, effect_row):
+        """
+        Parse YAML and handle overall workflow and error handling
+        flow for modifier info-to-modifier conversion process.
+        """
+        # Parse modifierInfo field (which is in YAML format)
+        modifier_infos_yaml = effect_row['modifier_info']
+        try:
+            modifier_infos = yaml.safe_load(modifier_infos_yaml)
+        except KeyboardInterrupt:
+            raise
+        # We cannot recover any data in case of YAML parsing
+        # failure, thus return empty list
+        except Exception:
+            effect_id = effect_row['effect_id']
+            msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
+            logger.error(msg)
+            return (), EffectBuildStatus.error
+        # Go through modifier objects and attempt to convert them one-by-one
+        valid_modifiers = set()
+        build_failures = 0
+        validation_failures = 0
+        # Get handler according to function specified in info
+        for modifier_info in modifier_infos:
+            modifier_type = modifier_info.get('func')
+            handler_map = {
+                'ItemModifier': self._handle_itm_mod,
+                'LocationModifier': self._handle_loc_mod,
+                'LocationGroupModifier': self._handle_loc_grp_mod,
+                'LocationRequiredSkillModifier': self._handle_loc_srq_mod,
+                'OwnerRequiredSkillModifier': self._handle_own_srq_mod
+            }
+            # Compose and verify handler, record if we failed to do so
+            try:
+                handler = handler_map[modifier_type]
+            except KeyError:
+                effect_id = effect_row['effect_id']
+                msg = 'no handler for modifier type {} in effect {}'.format(modifier_type, effect_id)
+                logger.error(msg)
+                build_failures += 1
+            else:
+                effect_category = effect_row['effect_category']
+                try:
+                    modifier = handler(modifier_info, effect_category)
+                except KeyboardInterrupt:
+                    raise
+                except Exception:
+                    build_failures += 1
+                else:
+                    if modifier._valid is True:
+                        valid_modifiers.add(modifier)
+                    else:
+                        validation_failures += 1
+        # Logging
+        if build_failures > 0:
+            effect_id = effect_row['effect_id']
+            plural = 's' if build_failures > 1 else ''
+            logger.error('failed to build {} modifier{} of effect {}'.format(build_failures, plural, effect_id))
+        if validation_failures > 0:
+            effect_id = effect_row['effect_id']
+            plural = 's' if validation_failures > 1 else ''
+            logger.error('{} modifier{} of effect {} failed validation'.format(validation_failures, plural, effect_id))
+        # Report success/partial success/failure depending on results
+        if build_failures == 0 and validation_failures == 0:
+            return valid_modifiers, EffectBuildStatus.success_full
+        else:
+            if len(valid_modifiers) > 0:
+                return valid_modifiers, EffectBuildStatus.success_partial
+            else:
+                return (), EffectBuildStatus.error
+
+    def _handle_itm_mod(self, modifier_info, effect_category):
+        return ItemModifier(
+            id_=None,
+            domain=self._get_domain(modifier_info),
+            state=self._get_state(effect_category),
+            src_attr=modifier_info['modifyingAttributeID'],
+            operator=self._get_operator(modifier_info),
+            tgt_attr=modifier_info['modifiedAttributeID']
+        )
+
+    def _handle_loc_mod(self, modifier_info, effect_category):
+        return LocationModifier(
+            id_=None,
+            domain=self._get_domain(modifier_info),
+            state=self._get_state(effect_category),
+            src_attr=modifier_info['modifyingAttributeID'],
+            operator=self._get_operator(modifier_info),
+            tgt_attr=modifier_info['modifiedAttributeID']
+        )
+
+    def _handle_loc_grp_mod(self, modifier_info, effect_category):
+        return LocationGroupModifier(
+            id_=None,
+            domain=self._get_domain(modifier_info),
+            state=self._get_state(effect_category),
+            src_attr=modifier_info['modifyingAttributeID'],
+            operator=self._get_operator(modifier_info),
+            tgt_attr=modifier_info['modifiedAttributeID'],
+            group=modifier_info['groupID']
+        )
+
+    def _handle_loc_srq_mod(self, modifier_info, effect_category):
+        return LocationRequiredSkillModifier(
+            id_=None,
+            domain=self._get_domain(modifier_info),
+            state=self._get_state(effect_category),
+            src_attr=modifier_info['modifyingAttributeID'],
+            operator=self._get_operator(modifier_info),
+            tgt_attr=modifier_info['modifiedAttributeID'],
+            skill=modifier_info['skillTypeID']
+        )
+
+    def _handle_own_srq_mod(self, modifier_info, effect_category):
+        return OwnerRequiredSkillModifier(
+            id_=None,
+            domain=self._get_domain(modifier_info),
+            state=self._get_state(effect_category),
+            src_attr=modifier_info['modifyingAttributeID'],
+            operator=self._get_operator(modifier_info),
+            tgt_attr=modifier_info['modifiedAttributeID'],
+            skill=modifier_info['skillTypeID']
+        )
+
+    def _get_domain(self, modifier_info):
+        conversion_map = {
+            None: ModifierDomain.self,
+            'itemID': ModifierDomain.self,
+            'charID': ModifierDomain.character,
+            'shipID': ModifierDomain.ship,
+            'targetID': ModifierDomain.target,
+            'otherID': ModifierDomain.other
+        }
+        return conversion_map[modifier_info['domain']]
+
+    def _get_state(self, effect_category):
+        return STATE_CONVERSION_MAP[effect_category]
+
+    def _get_operator(self, modifier_info):
+        # Format: {CCP operator ID: eos operator ID}
+        conversion_map = {
+            -1: ModifierOperator.pre_assign,
+            0: ModifierOperator.pre_mul,
+            1: ModifierOperator.pre_div,
+            2: ModifierOperator.mod_add,
+            3: ModifierOperator.mod_sub,
+            4: ModifierOperator.post_mul,
+            5: ModifierOperator.post_div,
+            6: ModifierOperator.post_percent,
+            7: ModifierOperator.post_assign,
+        }
+        return conversion_map[modifier_info['operator']]

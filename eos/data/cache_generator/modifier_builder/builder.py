@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
-from .expression_tree import Effect2Modifiers
-from .modifier_info import Info2Modifiers
+from .expression_tree import ExpressionTree2Modifiers
+from .modifier_info import ModifierInfo2Modifiers
 
 
 class ModifierBuilder:
@@ -30,8 +30,8 @@ class ModifierBuilder:
     """
 
     def __init__(self, expressions):
-        self._tree = Effect2Modifiers(expressions)
-        self._info = Info2Modifiers()
+        self._tree = ExpressionTree2Modifiers(expressions)
+        self._info = ModifierInfo2Modifiers()
 
     def build(self, effect_row):
         """

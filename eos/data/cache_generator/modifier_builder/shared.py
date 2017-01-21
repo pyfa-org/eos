@@ -19,48 +19,15 @@
 # ===============================================================================
 
 
-__all__ = [
-    'UnknownStateError',
-    'UnknownOperatorError',
-    'UnknownFuncError',
-    'NoFilterValueError',
-    'UnexpectedDomainError',
-    'UnexpectedBuilderError'
-]
+from eos.const.eos import State
+from eos.const.eve import EffectCategory
 
 
-from eos.exception import EosError
-
-
-# Exception classes used by converter which uses modifier
-# info as source for modifier data
-class ModifierInfoCnvError(EosError):
-    """
-    All exceptions raised by modifierInfo-to-modifier
-    converter are based on this class.
-    """
-    pass
-
-
-class UnknownStateError(ModifierInfoCnvError):
-    pass
-
-
-class UnknownOperatorError(ModifierInfoCnvError):
-    pass
-
-
-class UnknownFuncError(ModifierInfoCnvError):
-    pass
-
-
-class NoFilterValueError(ModifierInfoCnvError):
-    pass
-
-
-class UnexpectedDomainError(ModifierInfoCnvError):
-    pass
-
-
-class UnexpectedBuilderError(ModifierInfoCnvError):
-    pass
+STATE_CONVERSION_MAP = {
+    EffectCategory.passive: State.offline,
+    EffectCategory.active: State.active,
+    EffectCategory.target: State.active,
+    EffectCategory.online: State.online,
+    EffectCategory.overload: State.overload,
+    EffectCategory.system: State.offline
+}

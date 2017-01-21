@@ -19,4 +19,4 @@
 # ===============================================================================
 
 
-from .info2modifiers import Info2Modifiers
+from .modinfo2modifiers import ModifierInfo2Modifiers
