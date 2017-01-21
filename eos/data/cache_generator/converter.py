@@ -332,18 +332,18 @@ class Converter:
         values assigned according to modifier's ones.
         """
         # Fields which we need to write into row
-        fields = (
-            'state',
-            'scope',
-            'src_attr',
-            'operator',
-            'tgt_attr',
-            'domain',
-            'filter_type',
-            'filter_value'
-        )
+        # Format: {'get name': 'set name'}
+        fields = {
+            'type': 'modifier_type',
+            'domain': 'domain',
+            'state': 'state',
+            'src_attr': 'src_attr',
+            'operator': 'operator',
+            'tgt_attr': 'tgt_attr',
+            'extra_arg': 'extra_arg',
+        }
         modifier_row = {}
-        for field in fields:
-            modifier_row[field] = getattr(modifier, field)
+        for name_get, name_set in fields.items():
+            modifier_row[name_set] = getattr(modifier, name_get)
         frozen_row = FrozenDict(modifier_row)
         return frozen_row

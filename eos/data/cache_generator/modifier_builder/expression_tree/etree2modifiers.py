@@ -126,7 +126,7 @@ class ExpressionTree2Modifiers:
 
     def _handle_item_modifier(self, expression):
         self._modifiers.add(Modifier(
-            mod_type=ModifierType.item,
+            modifier_type=ModifierType.item,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -136,7 +136,7 @@ class ExpressionTree2Modifiers:
 
     def _handle_location_modifier(self, expression):
         self._modifiers.add(Modifier(
-            mod_type=ModifierType.location,
+            modifier_type=ModifierType.location,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -146,7 +146,7 @@ class ExpressionTree2Modifiers:
 
     def _handle_location_group_modifier(self, expression):
         self._modifiers.add(Modifier(
-            mod_type=ModifierType.location_group,
+            modifier_type=ModifierType.location_group,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg1.arg2.arg2),
@@ -157,7 +157,7 @@ class ExpressionTree2Modifiers:
 
     def _handle_location_skillrq_modifer(self, expression):
         self._modifiers.add(Modifier(
-            mod_type=ModifierType.location_skillrq,
+            modifier_type=ModifierType.location_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg1.arg2.arg2),
@@ -168,7 +168,7 @@ class ExpressionTree2Modifiers:
 
     def _handle_owner_skillrq_modifer(self, expression):
         self._modifiers.add(Modifier(
-            mod_type=ModifierType.owner_skillrq,
+            modifier_type=ModifierType.owner_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg1.arg2.arg2),

@@ -26,12 +26,8 @@ class Attribute:
     """Class-holder for attribute metadata"""
 
     def __init__(
-        self,
-        attribute_id=None,
-        max_attribute=None,
-        default_value=None,
-        high_is_good=None,
-        stackable=None
+        self, attribute_id=None, max_attribute=None, default_value=None,
+        high_is_good=None, stackable=None
     ):
         self.id = attribute_id
 

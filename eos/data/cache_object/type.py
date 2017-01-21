@@ -32,13 +32,8 @@ class Type:
     """
 
     def __init__(
-        self,
-        type_id=None,
-        group=None,
-        category=None,
-        attributes=None,
-        effects=(),
-        default_effect=None
+        self, type_id=None, group=None, category=None, attributes=None,
+        effects=(), default_effect=None
     ):
         self.id = type_id
 

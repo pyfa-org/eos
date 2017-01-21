@@ -63,6 +63,7 @@ class EffectBuildStatus(IntEnum):
     error = 3
     success_partial = 4
     success_full = 5
+    custom = 6
 
 
 @unique

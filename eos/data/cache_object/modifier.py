@@ -31,18 +31,11 @@ class Modifier:
     """
 
     def __init__(
-        self,
-        mod_id=None,
-        mod_type=None,
-        domain=None,
-        state=None,
-        src_attr=None,
-        operator=None,
-        tgt_attr=None,
-        extra_arg=None
+        self, modifier_id=None, modifier_type=None, domain=None, state=None,
+        src_attr=None, operator=None, tgt_attr=None, extra_arg=None
     ):
-        self.id = mod_id
-        self.type = mod_type
+        self.id = modifier_id
+        self.type = modifier_type
         self.domain = domain
         self.state = state
         self.src_attr = src_attr

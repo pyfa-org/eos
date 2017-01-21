@@ -54,7 +54,7 @@ class CacheCustomizer:
             modifier_id = max(self.data['modifiers'], key=lambda row: row['modifier_id'])['modifier_id'] + 1
         else:
             modifier_id = 1
-        for damageAttr in (
+        for damage_attr in (
             Attribute.em_damage,
             Attribute.thermal_damage,
             Attribute.kinetic_damage,
@@ -62,13 +62,13 @@ class CacheCustomizer:
         ):
             modifier_row = {
                 'modifier_id': modifier_id,
+                'modifier_type': ModifierType.owner_skillrq,
+                'domain': ModifierDomain.ship,
                 'state': State.offline,
                 'src_attr': Attribute.missile_damage_multiplier,
-                'operator': Operator.pre_mul,
-                'tgt_attr': damageAttr,
-                'domain': Domain.space,
-                'filter_type': FilterType.skill,
-                'filter_value': Type.missile_launcher_operation
+                'operator': ModifierOperator.pre_mul,
+                'tgt_attr': damage_attr,
+                'extra_arg': Type.missile_launcher_operation
             }
             damage_modifiers.append(modifier_row)
             modifier_id += 1
@@ -89,7 +89,7 @@ class CacheCustomizer:
             'falloff_attribute': None,
             'tracking_speed_attribute': None,
             'fitting_usage_chance_attribute': None,
-            'build_status': EffectBuildStatus.ok_full,
+            'build_status': EffectBuildStatus.custom,
             'modifiers': [modifier['modifier_id'] for modifier in damage_modifiers]
         }
         self.data['effects'].append(effect_row)

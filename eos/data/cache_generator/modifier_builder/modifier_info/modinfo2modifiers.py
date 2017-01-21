@@ -58,7 +58,7 @@ class ModifierInfo2Modifiers:
         validation_failures = 0
         # Get handler according to function specified in info
         for modifier_info in modifier_infos:
-            modifier_type = modifier_info.get('func')
+            modifier_func = modifier_info.get('func')
             handler_map = {
                 'ItemModifier': self._handle_item_modifier,
                 'LocationModifier': self._handle_location_modifier,
@@ -68,10 +68,10 @@ class ModifierInfo2Modifiers:
             }
             # Compose and verify handler, record if we failed to do so
             try:
-                handler = handler_map[modifier_type]
+                handler = handler_map[modifier_func]
             except KeyError:
                 effect_id = effect_row['effect_id']
-                msg = 'no handler for modifier type {} in effect {}'.format(modifier_type, effect_id)
+                msg = 'no handler for modifier function {} in effect {}'.format(modifier_func, effect_id)
                 logger.error(msg)
                 build_failures += 1
             else:
@@ -107,7 +107,7 @@ class ModifierInfo2Modifiers:
 
     def _handle_item_modifier(self, modifier_info, effect_category):
         return Modifier(
-            mod_type=ModifierType.item,
+            modifier_type=ModifierType.item,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
@@ -117,7 +117,7 @@ class ModifierInfo2Modifiers:
 
     def _handle_location_modifier(self, modifier_info, effect_category):
         return Modifier(
-            mod_type=ModifierType.location,
+            modifier_type=ModifierType.location,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
@@ -127,7 +127,7 @@ class ModifierInfo2Modifiers:
 
     def _handle_location_group_modifier(self, modifier_info, effect_category):
         return Modifier(
-            mod_type=ModifierType.location_group,
+            modifier_type=ModifierType.location_group,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
@@ -138,6 +138,7 @@ class ModifierInfo2Modifiers:
 
     def _handle_location_skillrq_modifer(self, modifier_info, effect_category):
         return Modifier(
+            modifier_type=ModifierType.location_skillrq,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
@@ -148,6 +149,7 @@ class ModifierInfo2Modifiers:
 
     def _handle_owner_skillrq_modifer(self, modifier_info, effect_category):
         return Modifier(
+            modifier_type=ModifierType.owner_skillrq,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
