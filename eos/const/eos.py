@@ -76,7 +76,8 @@ class ModifierDomain(IntEnum):
     self = 1  # Self, i.e. carrier of modification source
     character = 2
     ship = 3
-    other = 4  # Module for charge, charge for module
+    target = 4
+    other = 5  # Module for charge, charge for module
 
 
 @unique

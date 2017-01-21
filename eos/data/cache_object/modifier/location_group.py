@@ -29,8 +29,8 @@ class LocationGroupModifier(BaseModifier):
     specified on domain and to specified group.
     """
 
-    def __init__(self, id, scope, domain, state, src_attr, operator, tgt_attr, group):
-        super().__init__(id, scope, domain, state, src_attr, operator, tgt_attr)
+    def __init__(self, id, domain, state, src_attr, operator, tgt_attr, group):
+        super().__init__(id, domain, state, src_attr, operator, tgt_attr)
         self.group = group
 
     @property

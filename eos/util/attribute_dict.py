@@ -36,3 +36,10 @@ class AttributeDict(UserDict):
 
     def __setattr__(self, attr, value):
         self.data[attr] = value
+
+    def __delattr__(self, attr):
+        try:
+            del self.data[attr]
+        except KeyError as e:
+            raise AttributeError from e
+

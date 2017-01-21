@@ -22,17 +22,10 @@
 from eos.exception import EosError
 
 
+# TODO: check if it's still needed
 class Effect2ModifiersError(EosError):
     """
     All exceptions raised by effect-to-modifier converter are
     based on this class.
-    """
-    pass
-
-
-class ExpressionFetchError(Effect2ModifiersError):
-    """
-    Raised when expression-to-action converter is unable to find
-    expression requested by any of its components.
     """
     pass

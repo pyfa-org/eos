@@ -21,7 +21,7 @@
 
 from abc import ABCMeta, abstractmethod
 
-from eos.const.eos import State, ModifierScope, ModifierDomain, ModifierOperator
+from eos.const.eos import State, ModifierDomain, ModifierOperator
 from eos.util.repr import make_repr_str
 
 
@@ -32,9 +32,8 @@ class BaseModifier(metaclass=ABCMeta):
     how to apply it, and so on.
     """
 
-    def __init__(self, id_, scope, domain, state, src_attr, operator, tgt_attr):
+    def __init__(self, id_, domain, state, src_attr, operator, tgt_attr):
         self.id = id_
-        self.scope = scope
         self.domain = domain
         self.state = state
         self.src_attr = src_attr
@@ -53,7 +52,6 @@ class BaseModifier(metaclass=ABCMeta):
     def _validate_basic_attrs(self):
         return all((
             isinstance(self.id, int) or self.id is None,
-            self.scope in ModifierScope.__members__.values(),
             self.domain in ModifierDomain.__members__.values(),
             self.state in State.__members__.values(),
             isinstance(self.src_attr, int),

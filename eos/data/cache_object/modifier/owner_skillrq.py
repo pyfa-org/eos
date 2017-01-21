@@ -29,8 +29,8 @@ class OwnerRequiredSkillModifier(BaseModifier):
     and have specified skill requirement.
     """
 
-    def __init__(self, id, scope, domain, state, src_attr, operator, tgt_attr, skill):
-        super().__init__(id, scope, domain, state, src_attr, operator, tgt_attr)
+    def __init__(self, id, domain, state, src_attr, operator, tgt_attr, skill):
+        super().__init__(id, domain, state, src_attr, operator, tgt_attr)
         self.skill = skill
 
     @property

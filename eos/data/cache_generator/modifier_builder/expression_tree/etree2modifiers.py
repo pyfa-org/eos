@@ -19,8 +19,9 @@
 # ===============================================================================
 
 
+from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, ModifierScope, ModifierOperator
 from eos.const.eve import Operand
-from .exception import ExpressionFetchError
+from eos.util.attribute_dict import AttributeDict
 
 
 
@@ -32,7 +33,7 @@ class Effect2Modifiers:
     """
 
     def __init__(self, expressions):
-        self._expressions = self.__prepare_expressions(expressions)
+        self.__expressions = self.__prepare_expressions(expressions)
 
     def convert(self, effect_row):
         """Generate Modifier objects out of passed data."""
@@ -83,21 +84,33 @@ class Effect2Modifiers:
             handler(expression)
 
     def __prepare_expressions(self, expressions):
+        # Convert regular dictionaries into custom
+        # dictionaries for easier attribute access
         processed = {}
         for exp_row in expressions:
-            processed[exp_row['expressionID']] = exp_row
+            processed[exp_row['expressionID']] = AttributeDict(exp_row)
+        # Replace expression IDs in arg1/arg2 with
+        # actual expressions
+        for exp_row in processed:
+            exp_row.arg1 = processed.get(exp_row.get('arg1'))
+            exp_row.arg2 = processed.get(exp_row.get('arg2'))
         return processed
 
-    def __get_exp(self, expression_id):
-        try:
-            return self._expressions[expression_id]
-        except KeyError as e:
-            msg = 'unable to fetch expression {}'.format(expression_id)
-            raise ExpressionFetchError(msg) from e
+    def __get_domain(self, expression):
+        conversion_map = {
+            'Self': ModifierDomain.self,
+            'Char': ModifierDomain.character,
+            'Ship': ModifierDomain.ship,
+            'Target': ModifierDomain.target,
+            'Other': ModifierDomain.other,
+            'Area': ModifierDomain.area
+        }
+        domain = conversion_map[expression.get('expressionValue')]
+        return domain
 
     def __get_operator(self, expression):
         conversion_map = {
-            'PreAssignment': Operator.pre_assign,
+            'PreAssignment': Mo.pre_assign,
             'PreMul': Operator.pre_mul,
             'PreDiv': Operator.pre_div,
             'ModAdd': Operator.mod_add,
@@ -109,19 +122,6 @@ class Effect2Modifiers:
         }
         operator = conversion_map[expression.get('expressionValue')]
         return operator
-
-    def __get_domain(self, expression):
-        # Format: {eve location name: eos domain ID}
-        conversion_map = {
-            'Self': Domain.self,
-            'Char': Domain.character,
-            'Ship': Domain.ship,
-            'Target': Domain.target,
-            'Other': Domain.other,
-            'Area': Domain.area
-        }
-        domain = conversion_map[expression.get('expressionValue')]
-        return domain
 
     def __get_attribute(self, expression):
         attribute = int(expression.get('expressionAttributeID'))
