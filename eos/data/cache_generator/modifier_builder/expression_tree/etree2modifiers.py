@@ -21,9 +21,9 @@
 
 from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, EosEveTypes
+from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, ModifierOperator, EosEveTypes
 from eos.const.eve import Operand
-from eos.data.cache_object.modifier import *
+from eos.data.cache_object import Modifier
 from eos.util.attribute_dict import AttributeDict
 from .exception import *
 from ..shared import STATE_CONVERSION_MAP
@@ -94,11 +94,11 @@ class ExpressionTree2Modifiers:
         operand = expression.get('operandID')
         handler_map = {
             Operand.splice: self._handle_splice,
-            Operand.add_itm_mod: self._handle_itm_mod,
-            Operand.add_loc_mod: self._handle_loc_mod,
-            Operand.add_loc_grp_mod: self._handle_loc_grp_mod,
-            Operand.add_loc_srq_mod: self._handle_loc_srq_mod,
-            Operand.add_own_srq_mod: self._handle_own_srq_mod
+            Operand.add_itm_mod: self._handle_item_modifier,
+            Operand.add_loc_mod: self._handle_location_modifier,
+            Operand.add_loc_grp_mod: self._handle_location_group_modifier,
+            Operand.add_loc_srq_mod: self._handle_location_skillrq_modifer,
+            Operand.add_own_srq_mod: self._handle_owner_skillrq_modifer
         }
         try:
             handler = handler_map[operand]
@@ -124,9 +124,9 @@ class ExpressionTree2Modifiers:
         self._parse(expression.arg1)
         self._parse(expression.arg2)
 
-    def _handle_itm_mod(self, expression):
-        self._modifiers.add(ItemModifier(
-            id_=None,
+    def _handle_item_modifier(self, expression):
+        self._modifiers.add(Modifier(
+            mod_type=ModifierType.item,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -134,9 +134,9 @@ class ExpressionTree2Modifiers:
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
         ))
 
-    def _handle_loc_mod(self, expression):
-        self._modifiers.add(LocationModifier(
-            id_=None,
+    def _handle_location_modifier(self, expression):
+        self._modifiers.add(Modifier(
+            mod_type=ModifierType.location,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -144,37 +144,37 @@ class ExpressionTree2Modifiers:
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
         ))
 
-    def _handle_loc_grp_mod(self, expression):
-        self._modifiers.add(LocationGroupModifier(
-            id_=None,
+    def _handle_location_group_modifier(self, expression):
+        self._modifiers.add(Modifier(
+            mod_type=ModifierType.location_group,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            group=self.__get_group(expression.arg2)
+            extra_arg=self.__get_group(expression.arg2)
         ))
 
-    def _handle_loc_srq_mod(self, expression):
-        self._modifiers.add(LocationRequiredSkillModifier(
-            id_=None,
+    def _handle_location_skillrq_modifer(self, expression):
+        self._modifiers.add(Modifier(
+            mod_type=ModifierType.location_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            skill=self._get_type(expression.arg2)
+            extra_arg=self._get_type(expression.arg2)
         ))
 
-    def _handle_own_srq_mod(self, expression):
-        self._modifiers.add(OwnerRequiredSkillModifier(
-            id_=None,
+    def _handle_owner_skillrq_modifer(self, expression):
+        self._modifiers.add(Modifier(
+            mod_type=ModifierType.owner_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            skill=self._get_type(expression.arg2)
+            extra_arg=self._get_type(expression.arg2)
         ))
 
     def _get_domain(self, expression):

@@ -21,8 +21,8 @@
 import yaml
 from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator
-from eos.data.cache_object.modifier import *
+from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, ModifierOperator
+from eos.data.cache_object import Modifier
 from ..shared import STATE_CONVERSION_MAP
 
 
@@ -60,11 +60,11 @@ class ModifierInfo2Modifiers:
         for modifier_info in modifier_infos:
             modifier_type = modifier_info.get('func')
             handler_map = {
-                'ItemModifier': self._handle_itm_mod,
-                'LocationModifier': self._handle_loc_mod,
-                'LocationGroupModifier': self._handle_loc_grp_mod,
-                'LocationRequiredSkillModifier': self._handle_loc_srq_mod,
-                'OwnerRequiredSkillModifier': self._handle_own_srq_mod
+                'ItemModifier': self._handle_item_modifier,
+                'LocationModifier': self._handle_location_modifier,
+                'LocationGroupModifier': self._handle_location_group_modifier,
+                'LocationRequiredSkillModifier': self._handle_location_skillrq_modifer,
+                'OwnerRequiredSkillModifier': self._handle_owner_skillrq_modifer
             }
             # Compose and verify handler, record if we failed to do so
             try:
@@ -105,9 +105,9 @@ class ModifierInfo2Modifiers:
             else:
                 return (), EffectBuildStatus.error
 
-    def _handle_itm_mod(self, modifier_info, effect_category):
-        return ItemModifier(
-            id_=None,
+    def _handle_item_modifier(self, modifier_info, effect_category):
+        return Modifier(
+            mod_type=ModifierType.item,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
@@ -115,9 +115,9 @@ class ModifierInfo2Modifiers:
             tgt_attr=modifier_info['modifiedAttributeID']
         )
 
-    def _handle_loc_mod(self, modifier_info, effect_category):
-        return LocationModifier(
-            id_=None,
+    def _handle_location_modifier(self, modifier_info, effect_category):
+        return Modifier(
+            mod_type=ModifierType.location,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
@@ -125,37 +125,35 @@ class ModifierInfo2Modifiers:
             tgt_attr=modifier_info['modifiedAttributeID']
         )
 
-    def _handle_loc_grp_mod(self, modifier_info, effect_category):
-        return LocationGroupModifier(
-            id_=None,
+    def _handle_location_group_modifier(self, modifier_info, effect_category):
+        return Modifier(
+            mod_type=ModifierType.location_group,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
             operator=self._get_operator(modifier_info),
             tgt_attr=modifier_info['modifiedAttributeID'],
-            group=modifier_info['groupID']
+            extra_arg=modifier_info['groupID']
         )
 
-    def _handle_loc_srq_mod(self, modifier_info, effect_category):
-        return LocationRequiredSkillModifier(
-            id_=None,
+    def _handle_location_skillrq_modifer(self, modifier_info, effect_category):
+        return Modifier(
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
             operator=self._get_operator(modifier_info),
             tgt_attr=modifier_info['modifiedAttributeID'],
-            skill=modifier_info['skillTypeID']
+            extra_arg=modifier_info['skillTypeID']
         )
 
-    def _handle_own_srq_mod(self, modifier_info, effect_category):
-        return OwnerRequiredSkillModifier(
-            id_=None,
+    def _handle_owner_skillrq_modifer(self, modifier_info, effect_category):
+        return Modifier(
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
             src_attr=modifier_info['modifyingAttributeID'],
             operator=self._get_operator(modifier_info),
             tgt_attr=modifier_info['modifiedAttributeID'],
-            skill=modifier_info['skillTypeID']
+            extra_arg=modifier_info['skillTypeID']
         )
 
     def _get_domain(self, modifier_info):

@@ -29,19 +29,12 @@ to not store any fit-specific data on them.
 __all__ = [
     'Attribute',
     'Effect',
-    'Type',
-    'ItemModifier',
-    'LocationModifier',
-    'LocationGroupModifier',
-    'LocationRequiredSkillModifier',
-    'OwnerRequiredSkillModifier'
+    'Modifier',
+    'Type'
 ]
 
 
 from .attribute import Attribute
 from .effect import Effect
-from .modifier import (
-    ItemModifier, LocationModifier, LocationGroupModifier,
-    LocationRequiredSkillModifier, OwnerRequiredSkillModifier
-)
+from .modifier import Modifier
 from .type import Type
