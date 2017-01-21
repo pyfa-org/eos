@@ -23,6 +23,7 @@
 This file holds IDs of multiple Eos-specific entities.
 """
 
+
 from enum import IntEnum, unique
 
 
@@ -127,6 +128,7 @@ class Restriction(IntEnum):
     charge_size = 29
     charge_volume = 30
     booster_effect = 31
+
 
 @unique
 class EosEveTypes(IntEnum):

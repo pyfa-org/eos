@@ -42,4 +42,3 @@ class AttributeDict(UserDict):
             del self.data[attr]
         except KeyError as e:
             raise AttributeError from e
-
