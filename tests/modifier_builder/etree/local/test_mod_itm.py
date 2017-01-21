@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, EffectBuildStatus, Scope, Operator
+from eos.const.eos import State, ModifierDomain, EffectBuildStatus, ModifierOperator
 from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
