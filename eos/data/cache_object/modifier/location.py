@@ -33,7 +33,8 @@ class LocationModifier(BaseModifier):
     def type(self):
         return ModifierType.location
 
-    def _validate(self):
+    @property
+    def _valid(self):
         return all((
             super()._validate(),
             self.domain in (

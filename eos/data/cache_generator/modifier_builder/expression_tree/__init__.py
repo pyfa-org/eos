@@ -19,10 +19,4 @@
 # ===============================================================================
 
 
-"""
-This module contains modifier object builder and all facilities
-which help it to work with raw data.
-"""
-
-
-from .effect2modifiers import Effect2Modifiers
+from .etree2modifiers import ExpressionTree2Modifiers

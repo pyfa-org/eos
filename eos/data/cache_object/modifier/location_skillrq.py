@@ -29,15 +29,16 @@ class LocationRequiredSkillModifier(BaseModifier):
     on domain and have specified skill requirement.
     """
 
-    def __init__(self, id, domain, state, src_attr, operator, tgt_attr, skill):
-        super().__init__(id, domain, state, src_attr, operator, tgt_attr)
+    def __init__(self, id_, domain, state, src_attr, operator, tgt_attr, skill):
+        super().__init__(id_, domain, state, src_attr, operator, tgt_attr)
         self.skill = skill
 
     @property
     def type(self):
         return ModifierType.location_skillrq
 
-    def _validate(self):
+    @property
+    def _valid(self):
         return all((
             super()._validate(),
             isinstance(self.skill, int),

@@ -29,15 +29,16 @@ class LocationGroupModifier(BaseModifier):
     specified on domain and to specified group.
     """
 
-    def __init__(self, id, domain, state, src_attr, operator, tgt_attr, group):
-        super().__init__(id, domain, state, src_attr, operator, tgt_attr)
+    def __init__(self, id_, domain, state, src_attr, operator, tgt_attr, group):
+        super().__init__(id_, domain, state, src_attr, operator, tgt_attr)
         self.group = group
 
     @property
     def type(self):
         return ModifierType.location_group
 
-    def _validate(self):
+    @property
+    def _valid(self):
         return all((
             super()._validate(),
             isinstance(self.group, int),

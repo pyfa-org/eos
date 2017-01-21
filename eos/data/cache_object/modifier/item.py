@@ -32,7 +32,8 @@ class ItemModifier(BaseModifier):
     def type(self):
         return ModifierType.item
 
-    def _validate(self):
+    @property
+    def _valid(self):
         return all((
             self._validate_basic_attrs(),
             self.domain in (

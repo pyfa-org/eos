@@ -45,8 +45,9 @@ class BaseModifier(metaclass=ABCMeta):
     def type(self):
         ...
 
+    @property
     @abstractmethod
-    def _validate(self):
+    def _valid(self):
         ...
 
     def _validate_basic_attrs(self):

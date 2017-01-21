@@ -230,5 +230,10 @@ class Operand(IntEnum):
     add_loc_mod = 8
     add_loc_srq_mod = 9
     add_own_srq_mod = 11
+    def_attr = 22
+    def_grp = 26
+    def_loc = 24
+    def_optr = 21
+    def_type = 29
+    get_type = 36
     splice = 17
-    def_int = 27

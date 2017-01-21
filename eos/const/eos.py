@@ -58,8 +58,9 @@ class Slot(IntEnum):
 @unique
 class EffectBuildStatus(IntEnum):
     not_built = 1
-    error = 2
-    ok_full = 3
+    skipped = 2
+    error = 3
+    success = 4
 
 
 @unique
@@ -78,12 +79,6 @@ class ModifierDomain(IntEnum):
     ship = 3
     target = 4
     other = 5  # Module for charge, charge for module
-
-
-@unique
-class ModifierScope(IntEnum):
-    local = 1
-    projected = 2
 
 
 @unique
@@ -131,3 +126,11 @@ class Restriction(IntEnum):
     charge_size = 29
     charge_volume = 30
     booster_effect = 31
+
+@unique
+class EosEveTypes(IntEnum):
+    """
+    Container for Eos-specific type IDs. Any values defined
+    here must not overlap with regular EVE type IDs.
+    """
+    current_self = -1
