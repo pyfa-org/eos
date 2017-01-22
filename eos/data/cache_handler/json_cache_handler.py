@@ -174,14 +174,13 @@ class JsonCacheHandler(BaseCacheHandler):
                 raise ModifierFetchError(modifier_id) from e
             modifier = Modifier(
                 modifier_id=modifier_id,
-                state=modifier_data[0],
-                scope=modifier_data[1],
-                src_attr=modifier_data[2],
-                operator=modifier_data[3],
-                tgt_attr=modifier_data[4],
-                domain=modifier_data[5],
-                filter_type=modifier_data[6],
-                filter_value=modifier_data[7]
+                modifier_type=modifier_data[0],
+                domain=modifier_data[1],
+                state=modifier_data[2],
+                src_attr=modifier_data[3],
+                operator=modifier_data[4],
+                tgt_attr=modifier_data[5],
+                extra_arg=modifier_data[6]
             )
             self.__modifier_obj_cache[modifier_id] = modifier
         return modifier
@@ -260,14 +259,13 @@ class JsonCacheHandler(BaseCacheHandler):
         for modifier_row in data['modifiers']:
             modifier_id = modifier_row['modifier_id']
             slim_modifiers[modifier_id] = (
+                modifier_row['modifier_type'],
+                modifier_row['domain'],
                 modifier_row['state'],
-                modifier_row['scope'],
                 modifier_row['src_attr'],
                 modifier_row['operator'],
                 modifier_row['tgt_attr'],
-                modifier_row['domain'],
-                modifier_row['filter_type'],
-                modifier_row['filter_value']
+                modifier_row['extra_arg']
             )
         slim_data['modifiers'] = slim_modifiers
 
