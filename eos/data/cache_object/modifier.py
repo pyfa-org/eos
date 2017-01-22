@@ -31,8 +31,8 @@ class Modifier:
     """
 
     def __init__(
-        self, modifier_id=None, modifier_type=None, domain=None, state=None,
-        src_attr=None, operator=None, tgt_attr=None, extra_arg=None
+            self, modifier_id=None, modifier_type=None, domain=None, state=None,
+            src_attr=None, operator=None, tgt_attr=None, extra_arg=None
     ):
         self.id = modifier_id
         self.type = modifier_type

@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Scope
+from eos.const.eos import State, ModifierDomain
 from eos.fit.messages import (
     HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
@@ -47,6 +47,9 @@ class CalculationService(BaseSubscriber):
         self._register_dogma = DogmaRegister(fit)
         fit._subscribe(self, self._handler_map.keys())
 
+    # Do not process here just target domain
+    _supported_domains = set(filter(lambda d: d != ModifierDomain.target, ModifierDomain))
+
     def get_affectors(self, holder, attr=None):
         """
         Get affectors which are influencing the holder.
@@ -55,10 +58,9 @@ class CalculationService(BaseSubscriber):
         holder -- holder, for which we're getting affectors
 
         Optional arguments:
-        attr -- target attribute ID filter; only affectors
-        which influence attribute with this ID will be returned.
-        If None, all affectors influencing holder are returned
-        (default None)
+        attr -- target attribute ID filter; only affectors which
+            influence attribute with this ID will be returned. If None,
+            all affectors influencing holder are returned (default None)
 
         Return value:
         Set with Affector objects
@@ -117,17 +119,16 @@ class CalculationService(BaseSubscriber):
             states = set(filter(lambda s: new_state < s <= old_state, State))
             self.__disable_states(holder, states)
 
+
     def _handle_holder_effects_enabling(self, message):
         """
         Enable effects carried by the holder.
         """
         if not self.__enabled:
             return
-        processed_states = set(filter(lambda s: s <= message.holder.state, State))
-        processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
-            message.holder, effect_filter=message.effects, state_filter=processed_states,
-            scope_filter=processed_scopes
+            message.holder, effect_filter=message.effects,
+            state_filter=set(filter(lambda s: s <= message.holder.state, State))
         )
         self.__enable_affectors(affectors)
 
@@ -137,11 +138,9 @@ class CalculationService(BaseSubscriber):
         """
         if not self.__enabled:
             return
-        processed_states = set(filter(lambda s: s <= message.holder.state, State))
-        processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
-            message.holder, effect_filter=message.effects, state_filter=processed_states,
-            scope_filter=processed_scopes
+            message.holder, effect_filter=message.effects,
+            state_filter=set(filter(lambda s: s <= message.holder.state, State))
         )
         self.__disable_affectors(affectors)
 
@@ -154,7 +153,10 @@ class CalculationService(BaseSubscriber):
         for capped_attr in (holder.attributes._cap_map.get(attr) or ()):
             del holder.attributes[capped_attr]
         # Clear attributes which are using this attribute as modification source
-        for affector in self.__generate_affectors(holder, effect_filter=holder._enabled_effects):
+        for affector in self.__generate_affectors(
+                holder, effect_filter=holder._enabled_effects,
+                state_filter=set(filter(lambda s: s <= message.holder.state, State))
+        ):
             modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
             if modifier.src_attr != attr:
@@ -218,13 +220,10 @@ class CalculationService(BaseSubscriber):
         Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
-        during state switch, except for initial state
+            during state switch, except for initial state
         """
-        processed_effects = holder._enabled_effects
-        processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
-            holder, effect_filter=processed_effects,
-            state_filter=states, scope_filter=processed_scopes
+            holder, effect_filter=holder._enabled_effects, state_filter=states
         )
         self.__enable_affectors(affectors)
 
@@ -235,13 +234,10 @@ class CalculationService(BaseSubscriber):
         Required arguments:
         holder -- holder, for which states are switched
         states -- iterable with states, which are passed
-        during state switch, except for final state
+            during state switch, except for final state
         """
-        processed_effects = holder._enabled_effects
-        processed_scopes = (Scope.local,)
         affectors = self.__generate_affectors(
-            holder, effect_filter=processed_effects,
-            state_filter=states, scope_filter=processed_scopes
+            holder, effect_filter=holder._enabled_effects, state_filter=states
         )
         self.__disable_affectors(affectors)
 
@@ -284,7 +280,7 @@ class CalculationService(BaseSubscriber):
                 # And remove target attribute
                 del target_holder.attributes[affector.modifier.tgt_attr]
 
-    def __generate_affectors(self, holder, effect_filter=None, state_filter=None, scope_filter=None):
+    def __generate_affectors(self, holder, effect_filter, state_filter):
         """
         Get all affectors spawned by the holder.
 
@@ -292,27 +288,22 @@ class CalculationService(BaseSubscriber):
         holder -- holder, for which affectors are generated
 
         Optional arguments:
-        effect filter -- filter results to include affectors, which
-        carry modifiers generated from effects with IDs on this list;
-        if None, no filtering occurs (default None)
+        effect filter -- filter results to include affectors, which carry
+            modifiers generated from effects with IDs on this list
         state_filter -- filter results by state required by affector's
-        modifier, which should be in this iterable; if None, no
-        filtering occurs (default None)
-        scope_filter -- filter results by scope defined in affector's
-        modifier, which should be in this iterable; if None, no
-        filtering occurs (default None)
+            modifier, which should be in this iterable
 
         Return value:
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
         for effect in holder.item.effects:
-            if effect_filter is not None and effect.id not in effect_filter:
+            if effect.id not in effect_filter:
                 continue
             for modifier in effect.modifiers:
-                if state_filter is not None and modifier.state not in state_filter:
+                if modifier.state not in state_filter:
                     continue
-                if scope_filter is not None and modifier.scope not in scope_filter:
+                if modifier.domain not in self._supported_domains:
                     continue
                 affector = Affector(holder, modifier)
                 affectors.add(affector)
