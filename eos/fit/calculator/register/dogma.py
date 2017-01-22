@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eos import Domain, FilterType
+from eos.const.eos import ModifierType, ModifierDomain
 from eos.util.keyed_set import KeyedSet
 from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, FilterTypeError
 
@@ -41,39 +41,37 @@ class DogmaRegister:
     """
 
     def __init__(self, fit):
-        # Fit reference, to which this register is attached
         self._fit = fit
 
-        # Keep track of holders belonging to certain domain
+        # Holders belonging to certain domain
         # Format: {domain: {targetHolders}}
         self.__affectee_domain = KeyedSet()
 
-        # Keep track of holders belonging to certain domain and group
+        # Holders belonging to certain domain and group
         # Format: {(domain, group): {targetHolders}}
         self.__affectee_domain_group = KeyedSet()
 
-        # Keep track of holders belonging to certain domain and having certain skill requirement
+        # Holders belonging to certain domain and having certain skill requirement
         # Format: {(domain, skill): {targetHolders}}
-        self.__affectee_domain_skill = KeyedSet()
+        self.__affectee_domain_skillrq = KeyedSet()
 
-        # Keep track of affectors influencing all holders belonging to certain domain
+        # Affectors influencing all holders belonging to certain domain
         # Format: {domain: {affectors}}
         self.__affector_domain = KeyedSet()
 
-        # Keep track of affectors influencing holders belonging to certain domain and group
+        # Affectors influencing holders belonging to certain domain and group
         # Format: {(domain, group): {affectors}}
         self.__affector_domain_group = KeyedSet()
 
-        # Keep track of affectors influencing holders belonging to certain domain and having certain skill requirement
+        # Affectors influencing holders belonging to certain domain and having certain skill requirement
         # Format: {(domain, skill): {affectors}}
-        self.__affector_domain_skill = KeyedSet()
+        self.__affector_domain_skillrq = KeyedSet()
 
-        # Keep track of affectors influencing holders directly
+        # Affectors influencing holders directly
         # Format: {targetHolder: {affectors}}
         self.__affector_direct_active = KeyedSet()
 
-        # Keep track of affectors which influence something directly,
-        # but their target is not available
+        # Affectors which influence something directly, but their target is not available
         # Format: {source_holder: {affectors}}
         self.__affector_direct_awaiting = KeyedSet()
 
@@ -93,9 +91,9 @@ class DogmaRegister:
         enable_direct = self.__get_holder_direct_domain(target_holder)
         if enable_direct is None:
             return
-        if enable_direct == Domain.other:
+        if enable_direct == ModifierDomain.other:
             self.__enable_direct_other(target_holder)
-        elif enable_direct in (Domain.character, Domain.ship):
+        elif enable_direct in (ModifierDomain.character, ModifierDomain.ship):
             self.__enable_direct_spec(target_holder, enable_direct)
 
     def unregister_affectee(self, target_holder):
@@ -113,9 +111,9 @@ class DogmaRegister:
         disable_direct = self.__get_holder_direct_domain(target_holder)
         if disable_direct is None:
             return
-        if disable_direct == Domain.other:
+        if disable_direct == ModifierDomain.other:
             self.__disable_direct_other(target_holder)
-        elif disable_direct in (Domain.character, Domain.ship):
+        elif disable_direct in (ModifierDomain.character, ModifierDomain.ship):
             self.__disable_direct_spec(target_holder)
 
     def register_affector(self, affector):
@@ -164,15 +162,15 @@ class DogmaRegister:
         try:
             # For direct modification, make set out of single target domain
             if modifier.filter_type is None:
-                if modifier.domain == Domain.self:
+                if modifier.domain == ModifierDomain.self:
                     target = {source_holder}
-                elif modifier.domain == Domain.character:
+                elif modifier.domain == ModifierDomain.character:
                     char = self._fit.character
                     target = {char} if char is not None else None
-                elif modifier.domain == Domain.ship:
+                elif modifier.domain == ModifierDomain.ship:
                     ship = self._fit.ship
                     target = {ship} if ship is not None else None
-                elif modifier.domain == Domain.other:
+                elif modifier.domain == ModifierDomain.other:
                     other_holder = self.__get_other_linked_holder(source_holder)
                     target = {other_holder} if other_holder is not None else None
                 else:
@@ -190,12 +188,12 @@ class DogmaRegister:
                 domain = self.__contextize_filter_domain(affector)
                 skill = affector.modifier.filter_value
                 key = (domain, skill)
-                target = self.__affectee_domain_skill.get(key) or set()
+                target = self.__affectee_domain_skillrq.get(key) or set()
             elif modifier.filter_type == FilterType.skill_self:
                 domain = self.__contextize_filter_domain(affector)
                 skill = affector.source_holder.item.id
                 key = (domain, skill)
-                target = self.__affectee_domain_skill.get(key) or set()
+                target = self.__affectee_domain_skillrq.get(key) or set()
             else:
                 raise FilterTypeError(modifier.filter_type)
             # Add our set to affectees
@@ -227,7 +225,7 @@ class DogmaRegister:
         affectors.update(self.__affector_domain_group.get((domain, group)) or set())
         # Same, but for domain & skill requirement of passed holder
         for skill in target_holder.item.required_skills:
-            affectors.update(self.__affector_domain_skill.get((domain, skill)) or set())
+            affectors.update(self.__affector_domain_skillrq.get((domain, skill)) or set())
         return affectors
 
     # General-purpose auxiliary methods
@@ -251,7 +249,7 @@ class DogmaRegister:
             if group is not None:
                 affectee_maps.append(((domain, group), self.__affectee_domain_group))
             for skill in target_holder.item.required_skills:
-                affectee_maps.append(((domain, skill), self.__affectee_domain_skill))
+                affectee_maps.append(((domain, skill), self.__affectee_domain_skillrq))
         return affectee_maps
 
     def __get_affector_map(self, affector):
@@ -281,10 +279,10 @@ class DogmaRegister:
         if modifier.filter_type is None:
             # For direct modifications, we need to properly pick
             # target holder (it's key) based on domain
-            if modifier.domain == Domain.self:
+            if modifier.domain == ModifierDomain.self:
                 affector_map = self.__affector_direct_active
                 key = source_holder
-            elif modifier.domain == Domain.character:
+            elif modifier.domain == ModifierDomain.character:
                 char = self._fit.character
                 if char is not None:
                     affector_map = self.__affector_direct_active
@@ -292,7 +290,7 @@ class DogmaRegister:
                 else:
                     affector_map = self.__affector_direct_awaiting
                     key = source_holder
-            elif modifier.domain == Domain.ship:
+            elif modifier.domain == ModifierDomain.ship:
                 ship = self._fit.ship
                 if ship is not None:
                     affector_map = self.__affector_direct_active
@@ -302,7 +300,7 @@ class DogmaRegister:
                     key = source_holder
             # When other domain is referenced, it means direct reference to module's charge
             # or to charge's module-container
-            elif modifier.domain == Domain.other:
+            elif modifier.domain == ModifierDomain.other:
                 other_holder = self.__get_other_linked_holder(source_holder)
                 if other_holder is not None:
                     affector_map = self.__affector_direct_active
@@ -325,12 +323,12 @@ class DogmaRegister:
             domain = self.__contextize_filter_domain(affector)
             key = (domain, modifier.filter_value)
         elif modifier.filter_type == FilterType.skill:
-            affector_map = self.__affector_domain_skill
+            affector_map = self.__affector_domain_skillrq
             domain = self.__contextize_filter_domain(affector)
             skill = affector.modifier.filter_value
             key = (domain, skill)
         elif modifier.filter_type == FilterType.skill_self:
-            affector_map = self.__affector_domain_skill
+            affector_map = self.__affector_domain_skillrq
             domain = self.__contextize_filter_domain(affector)
             skill = affector.source_holder.item.id
             key = (domain, skill)
@@ -393,15 +391,15 @@ class DogmaRegister:
         domain = affector.modifier.domain
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real domain
-        if domain == Domain.self:
+        if domain == ModifierDomain.self:
             if source_holder is self._fit.ship:
-                return Domain.ship
+                return ModifierDomain.ship
             elif source_holder is self._fit.character:
-                return Domain.character
+                return ModifierDomain.character
             else:
                 raise FilteredSelfReferenceError
         # Just return untouched domain for all other valid cases
-        elif domain in (Domain.character, Domain.ship, Domain.space):
+        elif domain in (ModifierDomain.character, ModifierDomain.ship, ModifierDomain.space):
             return domain
         # Raise error if domain is invalid
         else:
@@ -423,13 +421,13 @@ class DogmaRegister:
         # For ship and character it's easy, we're just picking
         # corresponding domain
         if holder is self._fit.ship:
-            domain = Domain.ship
+            domain = ModifierDomain.ship
         elif holder is self._fit.character:
-            domain = Domain.character
+            domain = ModifierDomain.character
         # For "other" domain, we should've checked for presence
         # of other entity - charge's container or module's charge
         elif self.__get_other_linked_holder(holder) is not None:
-            domain = Domain.other
+            domain = ModifierDomain.other
         else:
             domain = None
         return domain
