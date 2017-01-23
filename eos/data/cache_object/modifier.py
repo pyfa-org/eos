@@ -104,7 +104,7 @@ class Modifier:
     def __validate_owner_skillrq_modifer(self):
         return all((
             self.__validate_basic_attrs(),
-            self.domain in (ModifierDomain.ship, ModifierDomain.target),
+            self.domain == ModifierDomain.character,
             # References skill via ID
             isinstance(self.extra_arg, int)
         ))

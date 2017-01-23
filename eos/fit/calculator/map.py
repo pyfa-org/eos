@@ -23,7 +23,7 @@ from collections import namedtuple
 from logging import getLogger
 from math import exp
 
-from eos.const.eos import Operator
+from eos.const.eos import ModifierOperator
 from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.holder.mixin.holder.exception import NoSourceError
@@ -53,41 +53,41 @@ PENALTY_IMMUNE_CATEGORIES = (
 
 # Tuple with penalizable operators
 PENALIZABLE_OPERATORS = (
-    Operator.pre_mul,
-    Operator.post_mul,
-    Operator.post_percent,
-    Operator.pre_div,
-    Operator.post_div
+    ModifierOperator.pre_mul,
+    ModifierOperator.post_mul,
+    ModifierOperator.post_percent,
+    ModifierOperator.pre_div,
+    ModifierOperator.post_div
 )
 
 # Map which helps to normalize modifiers
 NORMALIZATION_MAP = {
-    Operator.pre_assign: lambda val: val,
-    Operator.pre_mul: lambda val: val,
-    Operator.pre_div: lambda val: 1 / val,
-    Operator.mod_add: lambda val: val,
-    Operator.mod_sub: lambda val: -val,
-    Operator.post_mul: lambda val: val,
-    Operator.post_div: lambda val: 1 / val,
-    Operator.post_percent: lambda val: val / 100 + 1,
-    Operator.post_assign: lambda val: val
+    ModifierOperator.pre_assign: lambda val: val,
+    ModifierOperator.pre_mul: lambda val: val,
+    ModifierOperator.pre_div: lambda val: 1 / val,
+    ModifierOperator.mod_add: lambda val: val,
+    ModifierOperator.mod_sub: lambda val: -val,
+    ModifierOperator.post_mul: lambda val: val,
+    ModifierOperator.post_div: lambda val: 1 / val,
+    ModifierOperator.post_percent: lambda val: val / 100 + 1,
+    ModifierOperator.post_assign: lambda val: val
 }
 
 # List operator types, according to their already normalized values
 ASSIGNMENTS = (
-    Operator.pre_assign,
-    Operator.post_assign
+    ModifierOperator.pre_assign,
+    ModifierOperator.post_assign
 )
 ADDITIONS = (
-    Operator.mod_add,
-    Operator.mod_sub
+    ModifierOperator.mod_add,
+    ModifierOperator.mod_sub
 )
 MULTIPLICATIONS = (
-    Operator.pre_mul,
-    Operator.pre_div,
-    Operator.post_mul,
-    Operator.post_div,
-    Operator.post_percent
+    ModifierOperator.pre_mul,
+    ModifierOperator.pre_div,
+    ModifierOperator.post_mul,
+    ModifierOperator.post_div,
+    ModifierOperator.post_percent
 )
 
 # Following attributes have limited precision - only

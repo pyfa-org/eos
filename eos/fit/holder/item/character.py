@@ -42,8 +42,6 @@ class Character(ImmutableStateMixin):
 
     @property
     def _domain(self):
-        # As character is self-sufficient entity,
-        # it's not assigned to anything
         return None
 
     def __repr__(self):

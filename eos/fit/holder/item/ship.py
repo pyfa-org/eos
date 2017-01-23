@@ -42,9 +42,6 @@ class Ship(ImmutableStateMixin, BufferTankingMixin):
 
     @property
     def _domain(self):
-        # Ship is self-sufficient entity with regard to
-        # domain too (not assigned to anything besides
-        # fit), thus its domain is None
         return None
 
     def __repr__(self):

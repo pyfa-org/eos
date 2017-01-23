@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import Domain, State
+from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
 from eos.fit.holder.mixin.chargeable import ChargeableMixin
 from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
@@ -41,7 +41,7 @@ class Module(MutableStateMixin, ChargeableMixin, DamageDealerMixin, DefaultEffec
 
     @property
     def _domain(self):
-        return Domain.ship
+        return ModifierDomain.ship
 
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'state', 'charge']

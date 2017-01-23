@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import Domain, State
+from eos.const.eos import State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
 
@@ -43,7 +43,7 @@ class Charge(ImmutableStateMixin):
 
     @property
     def _domain(self):
-        return Domain.space
+        return None
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

@@ -21,7 +21,7 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Domain, Restriction
+from eos.const.eos import Restriction, ModifierDomain
 from eos.const.eve import Attribute
 from .abc import RestrictionRegister
 from ..exception import RegisterValidationError
@@ -103,7 +103,7 @@ class ShipTypeGroupRegister(RestrictionRegister):
 
     def register_holder(self, holder):
         # Ignore all holders which do not belong to ship
-        if holder._domain != Domain.ship:
+        if holder._domain != ModifierDomain.ship:
             return
         # Containers for typeIDs and groupIDs of ships, to
         # which holder is allowed to fit

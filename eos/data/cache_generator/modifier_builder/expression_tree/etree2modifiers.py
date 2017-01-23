@@ -57,14 +57,14 @@ class ExpressionTree2Modifiers:
         # non-modifier definitions. Handle these somewhat
         # gracefully and mark such effects as skipped
         except UnknownRootOperandError as e:
-            effect_id = effect_row['effectID']
+            effect_id = effect_row['effect_id']
             msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
             logger.info(msg)
             return (), EffectBuildStatus.skipped
         # Non-root level unknown operands and data inconsistencies
         # are reported as conversion errors
         except (UnknownPrimaryOperandError, UnexpectedHandlingError) as e:
-            effect_id = effect_row['effectID']
+            effect_id = effect_row['effect_id']
             msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
             logger.error(msg)
             return (), EffectBuildStatus.error
@@ -81,7 +81,7 @@ class ExpressionTree2Modifiers:
             if validation_failures == 0:
                 return valid_modifiers, EffectBuildStatus.success_full
             else:
-                effect_id = effect_row['effectID']
+                effect_id = effect_row['effect_id']
                 plural = 's' if validation_failures > 1 else ''
                 msg = '{} modifier{} of effect {} failed validation'.format(validation_failures, plural, effect_id)
                 logger.error(msg)
@@ -241,7 +241,7 @@ class ExpressionTree2Modifiers:
             processed[exp_row['expressionID']] = AttributeDict(exp_row)
         # Replace expression IDs in arg1/arg2 with
         # actual expressions
-        for exp_row in processed:
+        for exp_row in processed.values():
             exp_row.arg1 = processed.get(exp_row['arg1'])
             exp_row.arg2 = processed.get(exp_row['arg2'])
         return processed

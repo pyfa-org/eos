@@ -19,26 +19,23 @@
 # ===============================================================================
 
 
-from collections import UserDict
-
-
-class AttributeDict(UserDict):
+class AttributeDict(dict):
     """
     Allows to refer dictionary values via keys
     as object attributes.
     """
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr, default=None):
         try:
-            return self.data[attr]
+            return self[attr]
         except KeyError as e:
             raise AttributeError from e
 
     def __setattr__(self, attr, value):
-        self.data[attr] = value
+        self[attr] = value
 
     def __delattr__(self, attr):
         try:
-            del self.data[attr]
+            del self[attr]
         except KeyError as e:
             raise AttributeError from e
