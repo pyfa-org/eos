@@ -81,7 +81,7 @@ class DogmaRegister:
 
         # Affectors influencing owner-modifiable holders which have certain skill requirement
         # Format: {skill: set(affectors)}
-        self.__affector_owner_skillrq = KeyedSet
+        self.__affector_owner_skillrq = KeyedSet()
 
     def register_affectee(self, target_holder):
         """
@@ -262,6 +262,9 @@ class DogmaRegister:
                 affectee_maps.append(((domain, group), self.__affectee_domain_group))
             for skill in target_holder.item.required_skills:
                 affectee_maps.append(((domain, skill), self.__affectee_domain_skillrq))
+        if target_holder._owner_modifiable:
+            for skill in target_holder.item.required_skills:
+                affectee_maps.append((skill, self.__affectee_owner_skillrq))
         return affectee_maps
 
     def __get_affector_map(self, affector):
@@ -343,7 +346,7 @@ class DogmaRegister:
                 skill = affector.source_holder.item.id
             key = (domain, skill)
         elif modifier.type == ModifierType.owner_skillrq:
-            affector_map = self.__affector_domain_skillrq
+            affector_map = self.__affector_owner_skillrq
             skill = modifier.extra_arg
             if skill == EosEveTypes.current_self:
                 skill = affector.source_holder.item.id
