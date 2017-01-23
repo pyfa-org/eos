@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import State, Domain
+from eos.const.eos import State, ModifierDomain
 from eos.fit.calculator import CalculationService, MutableAttributeMap
 from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices
 
@@ -146,6 +146,10 @@ class IndependentItem(Holder):
     def _domain(self):
         return None
 
+    @property
+    def _owner_modifiable(self):
+        return False
+
 
 class CharacterItem(Holder):
 
@@ -154,7 +158,11 @@ class CharacterItem(Holder):
 
     @property
     def _domain(self):
-        return Domain.character
+        return ModifierDomain.character
+
+    @property
+    def _owner_modifiable(self):
+        return False
 
 
 class ShipItem(Holder):
@@ -164,17 +172,25 @@ class ShipItem(Holder):
 
     @property
     def _domain(self):
-        return Domain.ship
+        return ModifierDomain.ship
+
+    @property
+    def _owner_modifiable(self):
+        return False
 
 
-class SpaceItem(Holder):
+class OwnModItem(Holder):
 
     def __init__(self, type_):
         Holder.__init__(self, type_)
 
     @property
     def _domain(self):
-        return Domain.space
+        return None
+
+    @property
+    def _owner_modifiable(self):
+        return True
 
 
 class ContainerHolder(IndependentItem):

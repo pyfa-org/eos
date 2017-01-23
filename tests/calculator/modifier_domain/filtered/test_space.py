@@ -23,7 +23,7 @@ from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem, SpaceItem
+from tests.calculator.environment import IndependentItem, CharacterItem, OwnModItem
 
 
 class TestDomainFilterSpace(CalculatorTestCase):
@@ -49,7 +49,7 @@ class TestDomainFilterSpace(CalculatorTestCase):
         self.fit.items.add(self.influence_source)
 
     def test_match(self):
-        influence_target = SpaceItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = OwnModItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)

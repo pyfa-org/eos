@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import State, ModifierType, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -35,38 +35,34 @@ class TestCalculationChain(CalculatorTestCase):
         attr3 = self.ch.attribute(attribute_id=3)
         attr4 = self.ch.attribute(attribute_id=4)
         modifier1 = Modifier()
+        modifier1.type = ModifierType.item
+        modifier1.domain = ModifierDomain.self
         modifier1.state = State.offline
-        modifier1.scope = Scope.local
         modifier1.src_attr = attr1.id
-        modifier1.operator = Operator.post_mul
+        modifier1.operator = ModifierOperator.post_mul
         modifier1.tgt_attr = attr2.id
-        modifier1.domain = Domain.self_
-        modifier1.filter_type = None
-        modifier1.filter_value = None
         effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
         modifier2 = Modifier()
+        modifier2.type = ModifierType.item
+        modifier2.domain = ModifierDomain.ship
         modifier2.state = State.offline
-        modifier2.scope = Scope.local
         modifier2.src_attr = attr2.id
-        modifier2.operator = Operator.post_percent
+        modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = attr3.id
-        modifier2.domain = Domain.ship
-        modifier2.filter_type = None
-        modifier2.filter_value = None
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1, effect2),
-                                attributes={attr1.id: 5, attr2.id: 20}))
+        holder1 = CharacterItem(
+            self.ch.type_(type_id=1, effects=(effect1, effect2),
+            attributes={attr1.id: 5, attr2.id: 20})
+        )
         modifier3 = Modifier()
+        modifier3.type = ModifierType.domain
+        modifier3.domain = ModifierDomain.ship
         modifier3.state = State.offline
-        modifier3.scope = Scope.local
         modifier3.src_attr = attr3.id
-        modifier3.operator = Operator.post_percent
+        modifier3.operator = ModifierOperator.post_percent
         modifier3.tgt_attr = attr4.id
-        modifier3.domain = Domain.ship
-        modifier3.filter_type = FilterType.all_
-        modifier3.filter_value = None
         effect3 = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect3.modifiers = (modifier3,)
         holder2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))

@@ -23,7 +23,7 @@ from eos.const.eos import State, Domain, Scope, FilterType, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem, SpaceItem
+from tests.calculator.environment import IndependentItem, ShipItem, OwnModItem
 
 
 class TestFilterDomainSkillrq(CalculatorTestCase):
@@ -63,7 +63,7 @@ class TestFilterDomainSkillrq(CalculatorTestCase):
     def test_other_domain(self):
         item = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
         item.required_skills = {56: 1}
-        influence_target = SpaceItem(item)
+        influence_target = OwnModItem(item)
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)

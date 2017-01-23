@@ -23,7 +23,7 @@ from eos.const.eos import State, Domain, Scope, Operator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem, SpaceItem
+from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem, OwnModItem
 
 
 class TestDomainDirectSelf(CalculatorTestCase):
@@ -76,7 +76,7 @@ class TestDomainDirectSelf(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_space(self):
-        holder = SpaceItem(self.ch.type_(
+        holder = OwnModItem(self.ch.type_(
             type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.items.add(holder)
         self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
