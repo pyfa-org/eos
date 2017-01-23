@@ -43,9 +43,14 @@ class Module(
             return None
         return delay_ms / 1000
 
+    # Auxiliary methods
     @property
     def _domain(self):
         return ModifierDomain.ship
+
+    @property
+    def _owner_modifiable(self):
+        return False
 
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'state', 'charge']

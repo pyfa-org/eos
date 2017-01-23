@@ -29,3 +29,8 @@ class BaseItem(metaclass=ABCMeta):
     @abstractmethod
     def _domain(self):
         ...
+
+    @property
+    @abstractmethod
+    def _owner_modifiable(self):
+        ...

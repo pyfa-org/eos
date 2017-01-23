@@ -40,9 +40,14 @@ class EffectBeacon(BaseItem, ImmutableStateMixin):
     def __init__(self, type_id, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
+    # Auxiliary methods
     @property
     def _domain(self):
         return None
+
+    @property
+    def _owner_modifiable(self):
+        return False
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

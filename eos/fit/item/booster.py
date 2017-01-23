@@ -51,6 +51,10 @@ class Booster(BaseItem, ImmutableStateMixin, SideEffectMixin):
     def _domain(self):
         return ModifierDomain.character
 
+    @property
+    def _owner_modifiable(self):
+        return False
+
     def __repr__(self):
         spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

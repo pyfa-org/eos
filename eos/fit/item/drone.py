@@ -50,9 +50,14 @@ class Drone(
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)
 
+    # Auxiliary methods
     @property
     def _domain(self):
         return None
+
+    @property
+    def _owner_modifiable(self):
+        return True
 
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'state']
