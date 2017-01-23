@@ -22,11 +22,11 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder.container import HolderList
-from eos.fit.holder.item import ModuleHigh, Charge
+from eos.fit.container import HolderList
+from eos.fit.item import ModuleHigh, Charge
 from eos.fit.messages import HolderAdded, HolderRemoved
-from tests.holder_container.environment import Fit, OtherHolder
-from tests.holder_container.container_testcase import ContainerTestCase
+from tests.container.environment import Fit, OtherHolder
+from tests.container.container_testcase import ContainerTestCase
 
 
 class ChargeableAssertion:

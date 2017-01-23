@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, Slot, State
+from eos.const.eos import ModifierDomain, Slot, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import ModuleHigh, Ship
+from eos.fit.item import ModuleHigh, Ship
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -65,7 +65,7 @@ class TestLauncherSlot(StatTestCase):
     def test_use_single(self):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder)
         self.assertEqual(self.ss.launcher_slots.used, 1)
         self.remove_holder(holder)
@@ -75,7 +75,7 @@ class TestLauncherSlot(StatTestCase):
     def test_use_other_slot(self):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder)
         self.assertEqual(self.ss.launcher_slots.used, 0)
         self.remove_holder(holder)
@@ -85,8 +85,8 @@ class TestLauncherSlot(StatTestCase):
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={})
         item.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launcher_slots.used, 2)
@@ -98,10 +98,10 @@ class TestLauncherSlot(StatTestCase):
     def test_use_mixed(self):
         item1 = self.ch.type_(type_id=1, attributes={})
         item1.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item1, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item1, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         item2 = self.ch.type_(type_id=2, attributes={})
         item2.slots = {Slot.turret}
-        holder2 = Mock(state=State.offline, item=item2, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item2, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launcher_slots.used, 1)
@@ -117,8 +117,8 @@ class TestLauncherSlot(StatTestCase):
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
         item.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launcher_slots.used, 2)
@@ -139,8 +139,8 @@ class TestLauncherSlot(StatTestCase):
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
         item.slots = {Slot.launcher}
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launcher_slots.used, 2)

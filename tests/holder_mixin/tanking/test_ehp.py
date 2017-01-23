@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.fit.holder.mixin.tanking import BufferTankingMixin
+from eos.fit.item.mixin.tanking import BufferTankingMixin
 from tests.eos_testcase import EosTestCase
 
 

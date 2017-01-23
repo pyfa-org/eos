@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, State
+from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Character, Drone, Implant
+from eos.fit.item import Character, Drone, Implant
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -64,7 +64,7 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_use_single(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         self.add_holder(holder)
         self.assertEqual(self.ss.launched_drones.used, 1)
         self.remove_holder(holder)
@@ -73,8 +73,8 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launched_drones.used, 2)
@@ -85,7 +85,7 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_use_other_class(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Implant(1))
+        holder = Mock(state=State.online, item=item, _domain=None, spec_set=Implant(1))
         self.add_holder(holder)
         self.assertEqual(self.ss.launched_drones.used, 0)
         self.remove_holder(holder)
@@ -94,7 +94,7 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_use_state(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         self.add_holder(holder)
         self.assertEqual(self.ss.launched_drones.used, 0)
         self.remove_holder(holder)
@@ -107,8 +107,8 @@ class TestLaunchedDrone(StatTestCase):
         char_holder.attributes = {Attribute.max_active_drones: 6}
         self.set_character(char_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launched_drones.used, 2)
@@ -128,8 +128,8 @@ class TestLaunchedDrone(StatTestCase):
         char_holder.attributes = {Attribute.max_active_drones: 6}
         self.set_character(char_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.launched_drones.used, 2)

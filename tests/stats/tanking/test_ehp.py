@@ -22,7 +22,7 @@
 from unittest.mock import Mock, call
 
 from eos.const.eos import State
-from eos.fit.holder.item import Ship
+from eos.fit.item import Ship
 from tests.stats.stat_testcase import StatTestCase
 
 

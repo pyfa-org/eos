@@ -22,10 +22,10 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder.container import HolderList
+from eos.fit.container import HolderList
 from eos.fit.messages import HolderAdded, HolderRemoved
-from tests.holder_container.environment import Fit, Holder
-from tests.holder_container.container_testcase import ContainerTestCase
+from tests.container.environment import Fit, Holder
+from tests.container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedMisc(ContainerTestCase):

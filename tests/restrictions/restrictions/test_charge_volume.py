@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, Restriction, State
+from eos.const.eos import ModifierDomain, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import ModuleHigh, Charge
+from eos.fit.item import ModuleHigh, Charge
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -35,7 +35,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.capacity: 1})
         container_holder = Mock(state=State.offline, item=container_item,
-                                _domain=Domain.ship, spec_set=ModuleHigh(1))
+                                _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.add_holder(container_holder)
@@ -56,7 +56,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={})
         container_holder = Mock(state=State.offline, item=container_item,
-                                _domain=Domain.ship, spec_set=ModuleHigh(1))
+                                _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.add_holder(container_holder)
@@ -77,7 +77,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.volume: 3})
         container_holder = Mock(state=State.offline, item=container_item,
-                                _domain=Domain.ship, spec_set=ModuleHigh(1))
+                                _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.add_holder(container_holder)
@@ -96,7 +96,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.volume: 2})
         container_holder = Mock(state=State.offline, item=container_item,
-                                _domain=Domain.ship, spec_set=ModuleHigh(1))
+                                _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.add_holder(container_holder)
@@ -115,7 +115,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge_holder = Mock(state=State.offline, item=charge_item, _domain=None, spec_set=Charge(1))
         container_item = self.ch.type_(type_id=2, attributes={Attribute.capacity: 3})
         container_holder = Mock(state=State.offline, item=container_item,
-                                _domain=Domain.ship, spec_set=ModuleHigh(1))
+                                _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
         self.add_holder(container_holder)
@@ -136,7 +136,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge_holder.attributes = {Attribute.volume: 3}
         container_item = self.ch.type_(type_id=2, attributes={Attribute.capacity: 2})
         container_holder = Mock(state=State.offline, item=container_item,
-                                _domain=Domain.ship, spec_set=ModuleHigh(1))
+                                _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         container_holder.attributes = {Attribute.capacity: 1}
         container_holder.charge = charge_holder
         charge_holder.container = container_holder

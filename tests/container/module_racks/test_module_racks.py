@@ -21,8 +21,8 @@
 
 from unittest.mock import Mock
 
-from eos.fit.holder.container import ModuleRacks
-from tests.holder_container.container_testcase import ContainerTestCase
+from eos.fit.container import ModuleRacks
+from tests.container.container_testcase import ContainerTestCase
 
 
 class TestContainerModuleRacks(ContainerTestCase):

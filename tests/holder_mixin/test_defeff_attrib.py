@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
+from eos.fit.item.mixin.misc import DefaultEffectAttribMixin
 from tests.eos_testcase import EosTestCase
 
 

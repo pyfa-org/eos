@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.const.eve import Attribute, Effect
-from eos.fit.holder.item import ModuleHigh, Charge
+from eos.fit.item import ModuleHigh, Charge
 from tests.eos_testcase import EosTestCase
 
 

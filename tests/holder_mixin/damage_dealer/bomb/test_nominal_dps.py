@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
-from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
+from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
 from tests.eos_testcase import EosTestCase
 
 

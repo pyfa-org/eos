@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, State
+from eos.const.eos import ModifierDomain, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import ModuleHigh, Ship
+from eos.fit.item import ModuleHigh, Ship
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -64,8 +64,8 @@ class TestSubsystem(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.subsystems.add(holder1)
         self.fit.subsystems.add(holder2)
         self.assertEqual(self.ss.subsystem_slots.used, 2)
@@ -74,7 +74,7 @@ class TestSubsystem(StatTestCase):
 
     def test_use_other_container(self):
         item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.rigs.add(holder)
         self.assertEqual(self.ss.subsystem_slots.used, 0)
         self.assertEqual(len(self.log), 0)
@@ -86,8 +86,8 @@ class TestSubsystem(StatTestCase):
         ship_holder.attributes = {Attribute.subsystem_slot: 6}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.subsystems.add(holder1)
         self.fit.subsystems.add(holder2)
         self.assertEqual(self.ss.subsystem_slots.used, 2)
@@ -106,8 +106,8 @@ class TestSubsystem(StatTestCase):
         ship_holder.attributes = {Attribute.subsystem_slot: 6}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.subsystems.add(holder1)
         self.fit.subsystems.add(holder2)
         self.assertEqual(self.ss.subsystem_slots.used, 2)

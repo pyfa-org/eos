@@ -21,8 +21,8 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, Restriction, State
-from eos.fit.holder.item import Booster, Implant
+from eos.const.eos import ModifierDomain, Restriction, State
+from eos.fit.item import Booster, Implant
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -32,7 +32,7 @@ class TestBoosterEffect(RestrictionTestCase):
     def test_fail(self):
         # Check if error is raised when there's disabled effect
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Booster(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.character, spec_set=Booster(1))
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
         self.add_holder(holder)
@@ -46,7 +46,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_disabled_side_effect(self):
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Booster(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.character, spec_set=Booster(1))
         holder.side_effects = {55, 66}
         holder._disabled_effects = {55, 66}
         self.add_holder(holder)
@@ -58,7 +58,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_enabled_regular_effect(self):
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec_set=Booster(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.character, spec_set=Booster(1))
         # Enabled regular effects are not listed in any of
         # these containers
         holder.side_effects = {}
@@ -72,7 +72,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_non_booster(self):
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=Domain.character, spec=Implant(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.character, spec=Implant(1))
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
         self.add_holder(holder)

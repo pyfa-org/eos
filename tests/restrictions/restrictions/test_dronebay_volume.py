@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, Restriction, State
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone
+from eos.fit.item import Drone
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -34,7 +34,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When ship provides drone bay volume, but single consumer
         # demands for more, error should be raised
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder)
         self.add_holder(holder)
@@ -53,7 +53,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 5}
         self.fit.drones.add(holder)
         self.add_holder(holder)
@@ -73,11 +73,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 25}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: 20}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -101,7 +101,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified volume values are taken
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 40})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder)
         self.add_holder(holder)
@@ -121,11 +121,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: -10}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -148,11 +148,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: 0}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -174,11 +174,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.volume: 25}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.volume: 20}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -198,7 +198,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder)
         self.add_holder(holder)
@@ -213,7 +213,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_pass_other_container(self):
         # Make sure holders placed to other containers are unaffected
         item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder.attributes = {Attribute.volume: 50}
         self.fit.rigs.add(holder)
         self.add_holder(holder)

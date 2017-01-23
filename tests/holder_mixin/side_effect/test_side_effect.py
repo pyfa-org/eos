@@ -21,7 +21,7 @@
 
 from unittest.mock import Mock
 
-from eos.fit.holder.mixin.side_effect import SideEffectMixin
+from eos.fit.item.mixin.side_effect import SideEffectMixin
 from eos.fit.messages import EffectsEnabled, EffectsDisabled
 from tests.eos_testcase import EosTestCase
 

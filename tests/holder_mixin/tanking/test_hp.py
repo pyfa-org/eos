@@ -22,8 +22,8 @@
 from unittest.mock import Mock
 
 from eos.const.eve import Attribute
-from eos.fit.holder.container import HolderSet
-from eos.fit.holder.item import Ship
+from eos.fit.container import HolderSet
+from eos.fit.item import Ship
 from tests.eos_testcase import EosTestCase
 
 

@@ -22,9 +22,9 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.holder.container import HolderDescriptorOnFit
-from eos.fit.holder.item import Ship
-from eos.fit.holder.mixin.state import MutableStateMixin
+from eos.fit.container import HolderDescriptorOnFit
+from eos.fit.item import Ship
+from eos.fit.item.mixin.state import MutableStateMixin
 from eos.fit.messages import HolderAdded, HolderRemoved
 
 

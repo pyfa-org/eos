@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, Restriction, State
+from eos.const.eos import ModifierDomain, Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Subsystem, ModuleHigh
+from eos.fit.item import Subsystem, ModuleHigh
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -34,8 +34,8 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
         item = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Subsystem(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Subsystem(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.subsystem_index)
@@ -52,8 +52,8 @@ class TestSubsystemIndex(RestrictionTestCase):
     def test_fail_other_holder_class(self):
         # Make sure holders of all classes are affected
         item = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=ModuleHigh(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.subsystem_index)
@@ -70,8 +70,8 @@ class TestSubsystemIndex(RestrictionTestCase):
     def test_fail_original(self):
         # Make sure that original attributes are used
         item = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
-        holder1 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Subsystem(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Subsystem(1))
+        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
         holder1.attributes = {Attribute.subsystem_slot: 119}
         holder2.attributes = {Attribute.subsystem_slot: 121}
         self.add_holder(holder1)
@@ -91,7 +91,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Single holder which takes some slot shouldn't
         # trigger any errors
         item = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
-        holder = Mock(state=State.offline, item=item, _domain=Domain.ship, spec_set=Subsystem(1))
+        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.subsystem_index)
         self.assertIsNone(restriction_error)
@@ -103,8 +103,8 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Holders taking different slots shouldn't trigger any errors
         item1 = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
         item2 = self.ch.type_(type_id=2, attributes={Attribute.subsystem_slot: 121})
-        holder1 = Mock(state=State.offline, item=item1, _domain=Domain.ship, spec_set=Subsystem(1))
-        holder2 = Mock(state=State.offline, item=item2, _domain=Domain.ship, spec_set=Subsystem(1))
+        holder1 = Mock(state=State.offline, item=item1, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
+        holder2 = Mock(state=State.offline, item=item2, _domain=ModifierDomain.ship, spec_set=Subsystem(1))
         self.add_holder(holder1)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.subsystem_index)

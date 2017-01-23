@@ -20,8 +20,8 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.holder.container import HolderSet
-from eos.fit.holder.item import ModuleHigh, Charge
+from eos.fit.container import HolderSet
+from eos.fit.item import ModuleHigh, Charge
 from tests.eos_testcase import EosTestCase
 
 

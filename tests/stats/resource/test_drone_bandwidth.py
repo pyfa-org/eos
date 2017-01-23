@@ -21,9 +21,9 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import Domain, State
+from eos.const.eos import ModifierDomain, State
 from eos.const.eve import Attribute
-from eos.fit.holder.item import Drone, Ship, Implant
+from eos.fit.item import Drone, Ship, Implant
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -60,7 +60,7 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_use_single_no_rounding(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder.attributes = {Attribute.drone_bandwidth_used: 55.5555555555}
         self.add_holder(holder)
         self.assertEqual(self.ss.drone_bandwidth.used, 55.5555555555)
@@ -70,10 +70,10 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_use_multiple(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.drone_bandwidth_used: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.drone_bandwidth.used, 80)
@@ -84,10 +84,10 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_use_negative(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.drone_bandwidth_used: -30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.drone_bandwidth.used, 20)
@@ -103,10 +103,10 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_use_state(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.drone_bandwidth_used: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.drone_bandwidth.used, 50)
@@ -117,10 +117,10 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_use_other_class_domain(self):
         item = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.character, spec_set=Implant(1))
+        holder2 = Mock(state=State.online, item=item, _domain=ModifierDomain.character, spec_set=Implant(1))
         holder2.attributes = {Attribute.drone_bandwidth_used: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.drone_bandwidth.used, 80)
@@ -135,10 +135,10 @@ class TestDroneBandwidth(StatTestCase):
         ship_holder.attributes = {Attribute.drone_bandwidth: 50}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.drone_bandwidth_used: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.drone_bandwidth.used, 80)
@@ -159,10 +159,10 @@ class TestDroneBandwidth(StatTestCase):
         ship_holder.attributes = {Attribute.drone_bandwidth: 50}
         self.set_ship(ship_holder)
         item = self.ch.type_(type_id=2, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder1 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=Domain.space, spec_set=Drone(1))
+        holder2 = Mock(state=State.online, item=item, _domain=None, spec_set=Drone(1))
         holder2.attributes = {Attribute.drone_bandwidth_used: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.drone_bandwidth.used, 80)
