@@ -20,10 +20,10 @@
 
 
 from eos.const.eve import Attribute
-from .abc import StatRegister
+from .base import BaseStatRegister
 
 
-class ResourceUseRegister(StatRegister):
+class ResourceUseRegister(BaseStatRegister):
     """
     Class which implements common functionality for all
     registers, which are used to calculate amount of

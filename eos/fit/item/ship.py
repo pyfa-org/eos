@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .abc import BaseItem
+from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 from .mixin.tanking import BufferTankingMixin
 

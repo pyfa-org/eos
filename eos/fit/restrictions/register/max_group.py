@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction, ModifierDomain
 from eos.const.eve import Attribute
 from eos.util.keyed_set import KeyedSet
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('holder_group', 'max_group', 'group_holders'))
 
 
-class MaxGroupRegister(BaseRegister):
+class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track maximum number of belonging to
@@ -103,7 +103,7 @@ class MaxGroupRegister(BaseRegister):
         return self.__restriction_type
 
 
-class MaxGroupFittedRegister(MaxGroupRegister):
+class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
     If holder has max group fitted restriction, number of fitted
@@ -116,10 +116,10 @@ class MaxGroupFittedRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.max_group_fitted, Restriction.max_group_fitted)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted, Restriction.max_group_fitted)
 
 
-class MaxGroupOnlineRegister(MaxGroupRegister):
+class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
     If holder has max group online restriction, number of online
@@ -132,10 +132,10 @@ class MaxGroupOnlineRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.max_group_online, Restriction.max_group_online)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online, Restriction.max_group_online)
 
 
-class MaxGroupActiveRegister(MaxGroupRegister):
+class MaxGroupActiveRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
     If holder has max group active restriction, number of active
@@ -148,4 +148,4 @@ class MaxGroupActiveRegister(MaxGroupRegister):
     """
 
     def __init__(self):
-        MaxGroupRegister.__init__(self, Attribute.max_group_active, Restriction.max_group_active)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_active, Restriction.max_group_active)

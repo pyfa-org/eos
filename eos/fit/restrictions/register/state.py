@@ -22,14 +22,14 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'))
 
 
-class StateRegister(BaseRegister):
+class StateRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Verify that current state of holder is not bigger than

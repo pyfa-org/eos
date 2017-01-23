@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, ModifierDomain
 from eos.const.eve import Attribute
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
@@ -76,7 +76,7 @@ ShipTypeGroupErrorData = namedtuple(
 AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 
 
-class ShipTypeGroupRegister(BaseRegister):
+class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Holders, which have certain fittable ship types or ship groups

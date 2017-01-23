@@ -27,7 +27,7 @@ from weakref import WeakValueDictionary
 
 from eos.data.cache_object import *
 from eos.util.repr import make_repr_str
-from .abc import BaseCacheHandler
+from .base import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
 
 

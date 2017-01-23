@@ -22,7 +22,7 @@
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
-from .abc import BaseItem
+from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 
 

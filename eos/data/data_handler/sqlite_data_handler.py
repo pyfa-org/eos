@@ -21,7 +21,7 @@
 import sqlite3
 
 from eos.util.repr import make_repr_str
-from .abc import BaseDataHandler
+from .base import BaseDataHandler
 
 
 # SQLite stores bools as 0 or 1, convert them to python bool

@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class StatRegister(metaclass=ABCMeta):
+class BaseStatRegister(metaclass=ABCMeta):
     """Base class for all statistics registers."""
 
     @abstractmethod

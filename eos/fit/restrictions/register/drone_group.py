@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import Drone
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
@@ -37,7 +37,7 @@ RESTRICTION_ATTRS = (
 DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('holder_group', 'allowed_groups'))
 
 
-class DroneGroupRegister(BaseRegister):
+class DroneGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If ship restricts drone group, holders from groups which are not

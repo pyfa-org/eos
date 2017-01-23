@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.util.keyed_set import KeyedSet
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('holder_slot_index',))
 
 
-class SlotIndexRegister(BaseRegister):
+class SlotIndexRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track indices of occupied slots and
@@ -79,7 +79,7 @@ class SlotIndexRegister(BaseRegister):
         return self.__restriction_type
 
 
-class SubsystemIndexRegister(SlotIndexRegister):
+class SubsystemIndexRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple subsystems can't be added into the same subsystem slot.
@@ -89,10 +89,10 @@ class SubsystemIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.subsystem_slot, Restriction.subsystem_index)
+        SlotIndexRestrictionRegister.__init__(self, Attribute.subsystem_slot, Restriction.subsystem_index)
 
 
-class ImplantIndexRegister(SlotIndexRegister):
+class ImplantIndexRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple implants can't be added into the same implant slot.
@@ -102,10 +102,10 @@ class ImplantIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.implantness, Restriction.implant_index)
+        SlotIndexRestrictionRegister.__init__(self, Attribute.implantness, Restriction.implant_index)
 
 
-class BoosterIndexRegister(SlotIndexRegister):
+class BoosterIndexRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple boosters can't be added into the same booster slot.
@@ -115,4 +115,4 @@ class BoosterIndexRegister(SlotIndexRegister):
     """
 
     def __init__(self):
-        SlotIndexRegister.__init__(self, Attribute.boosterness, Restriction.booster_index)
+        SlotIndexRestrictionRegister.__init__(self, Attribute.boosterness, Restriction.booster_index)

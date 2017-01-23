@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
@@ -39,7 +39,7 @@ RESTRICTION_ATTRS = (
 ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('holder_group', 'allowed_groups'))
 
 
-class ChargeGroupRegister(BaseRegister):
+class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If holder can fit charges and specifies group of charges it

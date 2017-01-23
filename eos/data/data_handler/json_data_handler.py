@@ -22,7 +22,7 @@ import json
 import os.path
 
 from eos.util.repr import make_repr_str
-from .abc import BaseDataHandler
+from .base import BaseDataHandler
 
 
 class JsonDataHandler(BaseDataHandler):

@@ -50,7 +50,7 @@ class RestrictionService(BaseSubscriber):
         self.__regs_stateless = (
             CalibrationRegister(fit),
             DroneBayVolumeRegister(fit),
-            HolderClassRegister(),
+            HolderClassRestrictionRegister(),
             HighSlotRegister(fit),
             MediumSlotRegister(fit),
             LowSlotRegister(fit),
@@ -61,16 +61,16 @@ class RestrictionService(BaseSubscriber):
             SubsystemIndexRegister(),
             ImplantIndexRegister(),
             BoosterIndexRegister(),
-            ShipTypeGroupRegister(fit),
-            CapitalItemRegister(fit),
+            ShipTypeGroupRestrictionRegister(fit),
+            CapitalItemRestrictionRegister(fit),
             MaxGroupFittedRegister(),
-            DroneGroupRegister(fit),
-            RigSizeRegister(fit),
-            SkillRequirementRegister(fit),
-            ChargeGroupRegister(),
-            ChargeSizeRegister(),
-            ChargeVolumeRegister(),
-            BoosterEffectRegister()
+            DroneGroupRestrictionRegister(fit),
+            RigSizeRestrictionRegister(fit),
+            SkillRequirementRestrictionRegister(fit),
+            ChargeGroupRestrictionRegister(),
+            ChargeSizeRestrictionRegister(),
+            ChargeVolumeRestrictionRegister(),
+            BoosterEffectRestrictionRegister()
         )
         # Dictionary with 'stateful' registers. When holders
         # is in corresponding state or above, register tracks
@@ -78,7 +78,7 @@ class RestrictionService(BaseSubscriber):
         # Format: {triggering state: {registers}}
         self.__regs_stateful = {
             State.offline: (
-                StateRegister(),
+                StateRestrictionRegister(),
             ),
             State.online: (
                 CpuRegister(fit),

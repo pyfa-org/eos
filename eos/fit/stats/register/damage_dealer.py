@@ -21,10 +21,10 @@
 
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.tuples import DamageTypesTotal
-from .abc import StatRegister
+from .base import BaseStatRegister
 
 
-class DamageDealerRegister(StatRegister):
+class DamageDealerRegister(BaseStatRegister):
     """
     Class which tracks all holders which can potentially
     deal damage, and provides functionality to fetch some

@@ -20,13 +20,13 @@
 
 
 __all__ = [
-    'BoosterEffectRegister',
-    'CapitalItemRegister',
-    'ChargeGroupRegister',
-    'ChargeSizeRegister',
-    'ChargeVolumeRegister',
-    'DroneGroupRegister',
-    'HolderClassRegister',
+    'BoosterEffectRestrictionRegister',
+    'CapitalItemRestrictionRegister',
+    'ChargeGroupRestrictionRegister',
+    'ChargeSizeRestrictionRegister',
+    'ChargeVolumeRestrictionRegister',
+    'DroneGroupRestrictionRegister',
+    'HolderClassRestrictionRegister',
     'MaxGroupFittedRegister',
     'MaxGroupOnlineRegister',
     'MaxGroupActiveRegister',
@@ -35,9 +35,9 @@ __all__ = [
     'CalibrationRegister',
     'DroneBayVolumeRegister',
     'DroneBandwidthRegister',
-    'RigSizeRegister',
-    'ShipTypeGroupRegister',
-    'SkillRequirementRegister',
+    'RigSizeRestrictionRegister',
+    'ShipTypeGroupRestrictionRegister',
+    'SkillRequirementRestrictionRegister',
     'SubsystemIndexRegister',
     'ImplantIndexRegister',
     'BoosterIndexRegister',
@@ -49,24 +49,24 @@ __all__ = [
     'TurretSlotRegister',
     'LauncherSlotRegister',
     'LaunchedDroneRegister',
-    'StateRegister'
+    'StateRestrictionRegister'
 ]
 
 
-from .booster_effect import BoosterEffectRegister
-from .capital_item import CapitalItemRegister
-from .charge_group import ChargeGroupRegister
-from .charge_size import ChargeSizeRegister
-from .charge_volume import ChargeVolumeRegister
-from .drone_group import DroneGroupRegister
-from .holder_class import HolderClassRegister
+from .booster_effect import BoosterEffectRestrictionRegister
+from .capital_item import CapitalItemRestrictionRegister
+from .charge_group import ChargeGroupRestrictionRegister
+from .charge_size import ChargeSizeRestrictionRegister
+from .charge_volume import ChargeVolumeRestrictionRegister
+from .drone_group import DroneGroupRestrictionRegister
+from .holder_class import HolderClassRestrictionRegister
 from .max_group import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .resource import (CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister,
     DroneBandwidthRegister)
-from .rig_size import RigSizeRegister
-from .ship_type_group import ShipTypeGroupRegister
-from .skill_requirement import SkillRequirementRegister
+from .rig_size import RigSizeRestrictionRegister
+from .ship_type_group import ShipTypeGroupRestrictionRegister
+from .skill_requirement import SkillRequirementRestrictionRegister
 from .slot_index import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
 from .slot_amount import (HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister,
     SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister, LaunchedDroneRegister)
-from .state import StateRegister
+from .state import StateRestrictionRegister

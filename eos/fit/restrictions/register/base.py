@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseRegister(metaclass=ABCMeta):
+class BaseRestrictionRegister(metaclass=ABCMeta):
     """Base class for all restriction registers."""
 
     @abstractmethod

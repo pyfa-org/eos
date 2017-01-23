@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'holder_use'))
 
 
-class ResourceRegister(BaseRegister):
+class ResourceRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is
@@ -81,7 +81,7 @@ class ResourceRegister(BaseRegister):
         return self.__restriction_type
 
 
-class CpuRegister(ResourceRegister):
+class CpuRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     CPU usage by holders should not exceed ship CPU output.
@@ -91,10 +91,10 @@ class CpuRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
+        ResourceRestrictionRegister.__init__(self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
 
 
-class PowerGridRegister(ResourceRegister):
+class PowerGridRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Power grid usage by holders should not exceed ship
@@ -105,10 +105,10 @@ class PowerGridRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
+        ResourceRestrictionRegister.__init__(self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
 
 
-class CalibrationRegister(ResourceRegister):
+class CalibrationRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Calibration usage by holders should not exceed ship
@@ -119,10 +119,10 @@ class CalibrationRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
+        ResourceRestrictionRegister.__init__(self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
 
 
-class DroneBayVolumeRegister(ResourceRegister):
+class DroneBayVolumeRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Drone bay volume usage by holders should not exceed ship
@@ -134,14 +134,14 @@ class DroneBayVolumeRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
+        ResourceRestrictionRegister.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
 
     def register_holder(self, holder):
         if holder in self._fit.drones:
-            ResourceRegister.register_holder(self, holder)
+            ResourceRestrictionRegister.register_holder(self, holder)
 
 
-class DroneBandwidthRegister(ResourceRegister):
+class DroneBandwidthRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Drone bandwidth usage by holders should not exceed ship
@@ -152,5 +152,5 @@ class DroneBandwidthRegister(ResourceRegister):
     """
 
     def __init__(self, fit):
-        ResourceRegister.__init__(self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used,
-                                  Restriction.drone_bandwidth)
+        ResourceRestrictionRegister.__init__(self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used,
+                                             Restriction.drone_bandwidth)

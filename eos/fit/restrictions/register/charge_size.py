@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .abc import BaseRegister
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('holder_size', 'allowed_size'))
 
 
-class ChargeSizeRegister(BaseRegister):
+class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If holder can fit charges and specifies size of charges it
