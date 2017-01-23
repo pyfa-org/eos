@@ -95,9 +95,9 @@ class ExpressionTree2Modifiers:
         handler_map = {
             Operand.splice: self._handle_splice,
             Operand.add_itm_mod: self._handle_item_modifier,
-            Operand.add_loc_mod: self._handle_location_modifier,
-            Operand.add_loc_grp_mod: self._handle_location_group_modifier,
-            Operand.add_loc_srq_mod: self._handle_location_skillrq_modifer,
+            Operand.add_dom_mod: self._handle_domain_modifier,
+            Operand.add_dom_grp_mod: self._handle_domain_group_modifier,
+            Operand.add_dom_srq_mod: self._handle_domain_skillrq_modifer,
             Operand.add_own_srq_mod: self._handle_owner_skillrq_modifer
         }
         try:
@@ -134,9 +134,9 @@ class ExpressionTree2Modifiers:
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
         ))
 
-    def _handle_location_modifier(self, expression):
+    def _handle_domain_modifier(self, expression):
         self._modifiers.add(Modifier(
-            modifier_type=ModifierType.location,
+            modifier_type=ModifierType.domain,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -144,9 +144,9 @@ class ExpressionTree2Modifiers:
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
         ))
 
-    def _handle_location_group_modifier(self, expression):
+    def _handle_domain_group_modifier(self, expression):
         self._modifiers.add(Modifier(
-            modifier_type=ModifierType.location_group,
+            modifier_type=ModifierType.domain_group,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -155,9 +155,9 @@ class ExpressionTree2Modifiers:
             extra_arg=self._get_group(expression.arg1.arg2.arg1.arg2)
         ))
 
-    def _handle_location_skillrq_modifer(self, expression):
+    def _handle_domain_skillrq_modifer(self, expression):
         self._modifiers.add(Modifier(
-            modifier_type=ModifierType.location_skillrq,
+            modifier_type=ModifierType.domain_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
             src_attr=self._get_attribute(expression.arg2),
@@ -178,7 +178,7 @@ class ExpressionTree2Modifiers:
         ))
 
     def _get_domain(self, expression):
-        if expression['operandID'] != Operand.def_loc:
+        if expression['operandID'] != Operand.def_dom:
             return None
         conversion_map = {
             'Self': ModifierDomain.self,

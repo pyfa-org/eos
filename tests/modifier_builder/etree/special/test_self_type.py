@@ -28,8 +28,8 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
     """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
     def test_build_success(self):
-        e_tgt_own = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Char')
-        e_self = self.ef.make(2, operandID=Operand.def_loc, expressionValue='Self')
+        e_tgt_own = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Char')
+        e_self = self.ef.make(2, operandID=Operand.def_dom, expressionValue='Self')
         e_self_type = self.ef.make(3, operandID=Operand.get_type, arg1=e_self['expressionID'])
         e_tgt_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=64)
         e_optr = self.ef.make(5, operandID=Operand.def_optr, expressionValue='PostPercent')

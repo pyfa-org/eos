@@ -47,9 +47,9 @@ class Modifier:
     def _valid(self):
         validators = {
             ModifierType.item: self.__validate_item_modifer,
-            ModifierType.location: self.__validate_location_modifer,
-            ModifierType.location_group: self.__validate_location_group_modifer,
-            ModifierType.location_skillrq: self.__validate_location_skillrq_modifer,
+            ModifierType.domain: self.__validate_domain_modifer,
+            ModifierType.domain_group: self.__validate_domain_group_modifer,
+            ModifierType.domain_skillrq: self.__validate_domain_skillrq_modifer,
             ModifierType.owner_skillrq: self.__validate_owner_skillrq_modifer
         }
         try:
@@ -69,7 +69,7 @@ class Modifier:
             self.extra_arg is None
         ))
 
-    def __validate_location_modifer(self):
+    def __validate_domain_modifer(self):
         return all((
             self.__validate_basic_attrs(),
             self.domain in (
@@ -79,7 +79,7 @@ class Modifier:
             self.extra_arg is None
         ))
 
-    def __validate_location_group_modifer(self):
+    def __validate_domain_group_modifer(self):
         return all((
             self.__validate_basic_attrs(),
             self.domain in (
@@ -90,7 +90,7 @@ class Modifier:
             isinstance(self.extra_arg, int)
         ))
 
-    def __validate_location_skillrq_modifer(self):
+    def __validate_domain_skillrq_modifer(self):
         return all((
             self.__validate_basic_attrs(),
             self.domain in (

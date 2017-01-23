@@ -132,7 +132,7 @@ class TestBuilderEtreeActionError(ModBuilderTestCase):
         # and group- filtered expression tree and replaced its
         # actual top-level operands with operand describing
         # direct modification
-        e_tgt_loc = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')
+        e_tgt_loc = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Ship')
         e_tgt_grp = self.ef.make(2, operandID=Operand.def_grp, expressionGroupID=46)
         e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=6)
         e_optr = self.ef.make(4, operandID=Operand.def_optr, expressionValue='PostPercent')

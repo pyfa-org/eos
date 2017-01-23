@@ -51,7 +51,7 @@ class TestBuilderEtreeModifierError(ModBuilderTestCase):
         # To produce unused actions, we're passing just tree
         # which describes action which applies something, and
         # stub instead of action undoing it
-        e_tgt = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')
+        e_tgt = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Ship')
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=327)

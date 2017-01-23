@@ -69,9 +69,9 @@ class EffectBuildStatus(IntEnum):
 @unique
 class ModifierType(IntEnum):
     item = 1
-    location = 2
-    location_group = 3
-    location_skillrq = 4
+    domain = 2
+    domain_group = 3
+    domain_skillrq = 4
     owner_skillrq = 5
 
 

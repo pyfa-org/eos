@@ -29,7 +29,7 @@ class TestBuilderEtreeModLoc(ModBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        e_tgt = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Ship')
+        e_tgt = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Ship')
         e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=1211)
         e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=1503)
@@ -44,7 +44,7 @@ class TestBuilderEtreeModLoc(ModBuilderTestCase):
             arg2=e_tgt_spec['expressionID']
         )
         self.e_add_mod = self.ef.make(
-            7, operandID=Operand.add_loc_mod,
+            7, operandID=Operand.add_dom_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )

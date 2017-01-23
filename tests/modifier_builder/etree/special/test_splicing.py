@@ -28,7 +28,7 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
     """Test parsing of trees describing joins of multiple operations applied onto items"""
 
     def test_build_success(self):
-        e_tgt_loc = self.ef.make(1, operandID=Operand.def_loc, expressionValue='Target')
+        e_tgt_loc = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Target')
         e_tgt_srq = self.ef.make(2, operandID=Operand.def_type, expressionTypeID=3300)
         e_tgt_attr1 = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=54)
         e_tgt_attr2 = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=158)
@@ -73,17 +73,17 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
             arg2=e_tgt_spec3['expressionID']
         )
         e_add_mod1 = self.ef.make(
-            17, operandID=Operand.add_loc_srq_mod,
+            17, operandID=Operand.add_dom_srq_mod,
             arg1=e_optr_tgt1['expressionID'],
             arg2=e_src_attr1['expressionID']
         )
         e_add_mod2 = self.ef.make(
-            18, operandID=Operand.add_loc_srq_mod,
+            18, operandID=Operand.add_dom_srq_mod,
             arg1=e_optr_tgt2['expressionID'],
             arg2=e_src_attr2['expressionID']
         )
         e_add_mod3 = self.ef.make(
-            19, operandID=Operand.add_loc_srq_mod,
+            19, operandID=Operand.add_dom_srq_mod,
             arg1=e_optr_tgt3['expressionID'],
             arg2=e_src_attr3['expressionID']
         )
