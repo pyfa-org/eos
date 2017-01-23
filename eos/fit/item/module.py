@@ -21,12 +21,12 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
-from eos.fit.holder.mixin.chargeable import ChargeableMixin
-from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
-from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
-from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.chargeable import ChargeableMixin
+from .mixin.damage_dealer import DamageDealerMixin
+from .mixin.misc import DefaultEffectAttribMixin
+from .mixin.state import MutableStateMixin
 
 
 class Module(

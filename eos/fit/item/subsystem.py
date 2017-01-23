@@ -19,15 +19,15 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.const.eos import State, ModifierDomain
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.state import ImmutableStateMixin
 
 
-class EffectBeacon(BaseItem, ImmutableStateMixin):
+class Subsystem(BaseItem, ImmutableStateMixin):
     """
-    System-wide anomaly with all its special properties.
+    Tech 3 ship's subsystem.
 
     Required arguments:
     type_id -- type ID of item which should serve as base
@@ -42,7 +42,7 @@ class EffectBeacon(BaseItem, ImmutableStateMixin):
 
     @property
     def _domain(self):
-        return None
+        return ModifierDomain.ship
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

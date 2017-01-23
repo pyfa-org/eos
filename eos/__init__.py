@@ -30,4 +30,4 @@ from .fit.restrictions.exception import ValidationError
 from .fit.tuples import DamageTypes
 from .data.cache_handler import *
 from .data.data_handler import *
-from .fit.holder.item import *
+from .fit.item import *

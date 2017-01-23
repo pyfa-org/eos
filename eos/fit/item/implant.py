@@ -20,14 +20,14 @@
 
 
 from eos.const.eos import State, ModifierDomain
-from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.state import ImmutableStateMixin
 
 
-class Subsystem(BaseItem, ImmutableStateMixin):
+class Implant(BaseItem, ImmutableStateMixin):
     """
-    Tech 3 ship's subsystem.
+    Implant with all its special properties.
 
     Required arguments:
     type_id -- type ID of item which should serve as base
@@ -42,7 +42,7 @@ class Subsystem(BaseItem, ImmutableStateMixin):
 
     @property
     def _domain(self):
-        return ModifierDomain.ship
+        return ModifierDomain.character
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

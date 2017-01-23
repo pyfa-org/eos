@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import Slot
-from eos.fit.holder.item import Drone
+from eos.fit.item import Drone
 from .abc import StatRegister
 
 

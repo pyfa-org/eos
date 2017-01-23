@@ -500,7 +500,7 @@ class DogmaRegister:
         affectors_to_enable = set()
         for affector in self.__affector_direct_awaiting.get(other_holder) or ():
             modifier = affector.modifier
-            if modifier.domain == Domain.other:
+            if modifier.domain == ModifierDomain.other:
                 affectors_to_enable.add(affector)
         # Bail if we have nothing to do
         if not affectors_to_enable:

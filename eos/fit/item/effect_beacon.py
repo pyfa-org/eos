@@ -19,44 +19,31 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierDomain
-from eos.const.eve import Attribute
-from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.const.eos import State
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.state import ImmutableStateMixin
 
 
-class Skill(BaseItem, ImmutableStateMixin):
+class EffectBeacon(BaseItem, ImmutableStateMixin):
     """
-    Skill with all its special properties.
+    System-wide anomaly with all its special properties.
 
     Required arguments:
     type_id -- type ID of item which should serve as base
     for this item.
 
-    Optional arguments:
-    level -- set level of skill at initialization, default is 0
-
     Cooperative methods:
     __init__
     """
 
-    def __init__(self, type_id, level=0, **kwargs):
+    def __init__(self, type_id, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
-        self.level = level
-
-    @property
-    def level(self):
-        return self.attributes.get(Attribute.skill_level)
-
-    @level.setter
-    def level(self, new_lvl):
-        self.attributes._override_set(Attribute.skill_level, int(new_lvl), persist=True)
 
     @property
     def _domain(self):
-        return ModifierDomain.character
+        return None
 
     def __repr__(self):
-        spec = [['type_id', '_type_id'], 'level']
+        spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

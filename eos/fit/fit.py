@@ -24,8 +24,8 @@ from eos.data.source import SourceManager, Source
 from eos.util.pubsub import MessageBroker, BaseSubscriber
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
-from .holder.container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
-from .holder.item import *
+from .container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
+from .item import *
 from .messages import HolderAdded, HolderRemoved, EnableServices, DisableServices, RefreshSource
 from .restrictions import RestrictionService
 from .stats import StatService

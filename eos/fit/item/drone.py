@@ -20,12 +20,12 @@
 
 
 from eos.const.eos import State
-from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
-from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
-from eos.fit.holder.mixin.state import MutableStateMixin
-from eos.fit.holder.mixin.tanking import BufferTankingMixin
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.damage_dealer import DamageDealerMixin
+from .mixin.misc import DefaultEffectAttribMixin
+from .mixin.state import MutableStateMixin
+from .mixin.tanking import BufferTankingMixin
 
 
 class Drone(

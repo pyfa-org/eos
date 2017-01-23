@@ -119,7 +119,6 @@ class CalculationService(BaseSubscriber):
             states = set(filter(lambda s: new_state < s <= old_state, State))
             self.__disable_states(holder, states)
 
-
     def _handle_holder_effects_enabling(self, message):
         """
         Enable effects carried by the holder.

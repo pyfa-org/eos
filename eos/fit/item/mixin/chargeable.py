@@ -20,8 +20,8 @@
 
 
 from eos.const.eve import Attribute, Effect
-from eos.fit.holder.container import HolderDescriptorOnHolder
-from eos.fit.holder.item import Charge
+from eos.fit.container import HolderDescriptorOnHolder
+from eos.fit.item import Charge
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .holder.holder import HolderBase
 

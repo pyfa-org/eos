@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
-from eos.fit.holder.item import *
+from eos.fit.item import *
 from .abc import BaseRegister
 from ..exception import RegisterValidationError
 

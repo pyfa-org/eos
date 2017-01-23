@@ -17,3 +17,21 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ===============================================================================
+
+
+from eos.fit.exception import NoSourceError
+
+
+class NullSourceMeta(type):
+
+    def __getattr__(self, _):
+        raise NoSourceError
+
+
+class NullSourceItem(metaclass=NullSourceMeta):
+    """
+    This class is assigned to any object which should be blocked
+    from use when fit (or other entity) has no source assigned.
+    Any attempts to access its attributes will raise NoSourceError.
+    """
+    pass

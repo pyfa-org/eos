@@ -19,15 +19,15 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.const.eos import State, ModifierDomain
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.state import ImmutableStateMixin
 
 
-class Charge(BaseItem, ImmutableStateMixin):
+class Rig(BaseItem, ImmutableStateMixin):
     """
-    Ammo - crystals, probes, bombs, etc.
+    Rig with all its special properties.
 
     Required arguments:
     type_id -- type ID of item which should serve as base
@@ -38,13 +38,11 @@ class Charge(BaseItem, ImmutableStateMixin):
     """
 
     def __init__(self, type_id, **kwargs):
-        # Holder-container, into which our charge holder is "loaded"
-        self.container = None
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
     def _domain(self):
-        return None
+        return ModifierDomain.ship
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

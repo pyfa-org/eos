@@ -19,16 +19,17 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.fit.holder.mixin.state import ImmutableStateMixin
+from eos.const.eos import State, ModifierDomain
+from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
 from .abc import BaseItem
+from .mixin.side_effect import SideEffectMixin
+from .mixin.state import ImmutableStateMixin
 
 
-class Character(BaseItem, ImmutableStateMixin):
+class Booster(BaseItem, ImmutableStateMixin, SideEffectMixin):
     """
-    Represents a character. Must be holder, as EVE tracks
-    some attributes on it.
+    Booster with all its special properties.
 
     Required arguments:
     type_id -- type ID of item which should serve as base
@@ -42,8 +43,13 @@ class Character(BaseItem, ImmutableStateMixin):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
     @property
+    def slot(self):
+        return self.attributes.get(Attribute.boosterness)
+
+    # Auxiliary methods
+    @property
     def _domain(self):
-        return None
+        return ModifierDomain.character
 
     def __repr__(self):
         spec = [['type_id', '_type_id']]

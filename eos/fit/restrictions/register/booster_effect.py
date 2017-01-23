@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.fit.holder.item import Booster
+from eos.fit.item import Booster
 from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
