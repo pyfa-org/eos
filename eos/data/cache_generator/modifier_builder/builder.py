@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos.const.eos import EffectBuildStatus
 from .expression_tree import ExpressionTree2Modifiers
 from .modifier_info import ModifierInfo2Modifiers
 
@@ -48,6 +49,8 @@ class ModifierBuilder:
             modifiers, build_status = self._info.convert(effect_row)
         # When no modifierInfo specified, use expression trees
         # to make modifiers
-        else:
+        elif effect_row['pre_expression']:
             modifiers, build_status = self._tree.convert(effect_row)
+        else:
+            modifiers, build_status = (), EffectBuildStatus.success_full
         return modifiers, build_status

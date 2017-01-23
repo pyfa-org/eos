@@ -50,8 +50,9 @@ class ExpressionTree2Modifiers:
         self._modifiers = set()
         self._effect_category = effect_row['effect_category']
         # Run conversion
+        root_expression = self.__expressions.get(effect_row['pre_expression'])
         try:
-            self._parse(self.__expressions.get(effect_row['pre_expression']), root=True)
+            self._parse(root_expression, root=True)
         # There're quite many root-level operands we do not
         # handle and do not want to handle. Special effects,
         # non-modifier definitions. Handle these somewhat
