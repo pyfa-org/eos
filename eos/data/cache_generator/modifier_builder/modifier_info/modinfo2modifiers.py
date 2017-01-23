@@ -110,9 +110,9 @@ class ModifierInfo2Modifiers:
             modifier_type=ModifierType.item,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
-            src_attr=modifier_info['modifyingAttributeID'],
+            src_attr=int(modifier_info['modifyingAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=modifier_info['modifiedAttributeID']
+            tgt_attr=int(modifier_info['modifiedAttributeID'])
         )
 
     def _handle_location_modifier(self, modifier_info, effect_category):
@@ -120,9 +120,9 @@ class ModifierInfo2Modifiers:
             modifier_type=ModifierType.location,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
-            src_attr=modifier_info['modifyingAttributeID'],
+            src_attr=int(modifier_info['modifyingAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=modifier_info['modifiedAttributeID']
+            tgt_attr=int(modifier_info['modifiedAttributeID'])
         )
 
     def _handle_location_group_modifier(self, modifier_info, effect_category):
@@ -130,10 +130,10 @@ class ModifierInfo2Modifiers:
             modifier_type=ModifierType.location_group,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
-            src_attr=modifier_info['modifyingAttributeID'],
+            src_attr=int(modifier_info['modifyingAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=modifier_info['modifiedAttributeID'],
-            extra_arg=modifier_info['groupID']
+            tgt_attr=int(modifier_info['modifiedAttributeID']),
+            extra_arg=int(modifier_info['groupID'])
         )
 
     def _handle_location_skillrq_modifer(self, modifier_info, effect_category):
@@ -141,10 +141,10 @@ class ModifierInfo2Modifiers:
             modifier_type=ModifierType.location_skillrq,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
-            src_attr=modifier_info['modifyingAttributeID'],
+            src_attr=int(modifier_info['modifyingAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=modifier_info['modifiedAttributeID'],
-            extra_arg=modifier_info['skillTypeID']
+            tgt_attr=int(modifier_info['modifiedAttributeID']),
+            extra_arg=int(modifier_info['skillTypeID'])
         )
 
     def _handle_owner_skillrq_modifer(self, modifier_info, effect_category):
@@ -152,10 +152,10 @@ class ModifierInfo2Modifiers:
             modifier_type=ModifierType.owner_skillrq,
             domain=self._get_domain(modifier_info),
             state=self._get_state(effect_category),
-            src_attr=modifier_info['modifyingAttributeID'],
+            src_attr=int(modifier_info['modifyingAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=modifier_info['modifiedAttributeID'],
-            extra_arg=modifier_info['skillTypeID']
+            tgt_attr=int(modifier_info['modifiedAttributeID']),
+            extra_arg=int(modifier_info['skillTypeID'])
         )
 
     def _get_domain(self, modifier_info):

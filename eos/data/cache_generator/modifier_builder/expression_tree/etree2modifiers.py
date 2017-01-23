@@ -149,10 +149,10 @@ class ExpressionTree2Modifiers:
             modifier_type=ModifierType.location_group,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            src_attr=self._get_attribute(expression.arg2),
             operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            extra_arg=self.__get_group(expression.arg2)
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            extra_arg=self._get_group(expression.arg1.arg2.arg1.arg2)
         ))
 
     def _handle_location_skillrq_modifer(self, expression):
@@ -160,10 +160,10 @@ class ExpressionTree2Modifiers:
             modifier_type=ModifierType.location_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            src_attr=self._get_attribute(expression.arg2),
             operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            extra_arg=self._get_type(expression.arg2)
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2)
         ))
 
     def _handle_owner_skillrq_modifer(self, expression):
@@ -171,10 +171,10 @@ class ExpressionTree2Modifiers:
             modifier_type=ModifierType.owner_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            src_attr=self._get_attribute(expression.arg2),
             operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg1.arg2),
-            extra_arg=self._get_type(expression.arg2)
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
+            extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2)
         ))
 
     def _get_domain(self, expression):
@@ -213,7 +213,7 @@ class ExpressionTree2Modifiers:
             return None
         return int(expression['expressionAttributeID'])
 
-    def __get_group(self, expression):
+    def _get_group(self, expression):
         if expression['operandID'] != Operand.def_grp:
             return None
         return int(expression['expressionGroupID'])
