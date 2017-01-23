@@ -54,9 +54,9 @@ class FilteredSelfReferenceError(AttributeCalculatorError):
     pass
 
 
-class FilterTypeError(AttributeCalculatorError):
+class ModifierTypeError(AttributeCalculatorError):
     """
-    Raised when Modifier specifies unknown to calculator filter type.
+    Raised when Modifier has unknown to calculator type.
     """
     pass
 

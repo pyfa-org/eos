@@ -21,9 +21,9 @@
 
 from logging import getLogger
 
-from eos.const.eos import ModifierType, ModifierDomain
+from eos.const.eos import ModifierType, ModifierDomain, EosEveTypes
 from eos.util.keyed_set import KeyedSet
-from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, FilterTypeError
+from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, ModifierTypeError
 
 
 logger = getLogger(__name__)
@@ -44,36 +44,44 @@ class DogmaRegister:
         self._fit = fit
 
         # Holders belonging to certain domain
-        # Format: {domain: {targetHolders}}
+        # Format: {domain: set(target holders)}
         self.__affectee_domain = KeyedSet()
 
         # Holders belonging to certain domain and group
-        # Format: {(domain, group): {targetHolders}}
+        # Format: {(domain, group): set(target holders)}
         self.__affectee_domain_group = KeyedSet()
 
         # Holders belonging to certain domain and having certain skill requirement
-        # Format: {(domain, skill): {targetHolders}}
+        # Format: {(domain, skill): set(target holders)}
         self.__affectee_domain_skillrq = KeyedSet()
 
-        # Affectors influencing all holders belonging to certain domain
-        # Format: {domain: {affectors}}
-        self.__affector_domain = KeyedSet()
-
-        # Affectors influencing holders belonging to certain domain and group
-        # Format: {(domain, group): {affectors}}
-        self.__affector_domain_group = KeyedSet()
-
-        # Affectors influencing holders belonging to certain domain and having certain skill requirement
-        # Format: {(domain, skill): {affectors}}
-        self.__affector_domain_skillrq = KeyedSet()
+        # Owner-modifiable holders which have certain skill requirement
+        # Format: {skill: set(target holders)}
+        self.__affectee_owner_skillrq = KeyedSet()
 
         # Affectors influencing holders directly
-        # Format: {targetHolder: {affectors}}
+        # Format: {target holder: set(affectors)}
         self.__affector_direct_active = KeyedSet()
 
         # Affectors which influence something directly, but their target is not available
-        # Format: {source_holder: {affectors}}
+        # Format: {source holder: set(affectors)}
         self.__affector_direct_awaiting = KeyedSet()
+
+        # Affectors influencing all holders belonging to certain domain
+        # Format: {domain: set(affectors)}
+        self.__affector_domain = KeyedSet()
+
+        # Affectors influencing holders belonging to certain domain and group
+        # Format: {(domain, group): set(affectors)}
+        self.__affector_domain_group = KeyedSet()
+
+        # Affectors influencing holders belonging to certain domain and having certain skill requirement
+        # Format: {(domain, skill): set(affectors)}
+        self.__affector_domain_skillrq = KeyedSet()
+
+        # Affectors influencing owner-modifiable holders which have certain skill requirement
+        # Format: {skill: set(affectors)}
+        self.__affector_owner_skillrq = KeyedSet
 
     def register_affectee(self, target_holder):
         """
@@ -161,7 +169,7 @@ class DogmaRegister:
         affectees = set()
         try:
             # For direct modification, make set out of single target domain
-            if modifier.filter_type is None:
+            if modifier.type == ModifierType.item:
                 if modifier.domain == ModifierDomain.self:
                     target = {source_holder}
                 elif modifier.domain == ModifierDomain.character:
@@ -177,25 +185,29 @@ class DogmaRegister:
                     raise DirectDomainError(modifier.domain)
             # For filtered modifications, pick appropriate dictionary and get set
             # with target holders
-            elif modifier.filter_type == FilterType.all_:
+            elif modifier.type == ModifierType.domain:
                 key = self.__contextize_filter_domain(affector)
                 target = self.__affectee_domain.get(key) or set()
-            elif modifier.filter_type == FilterType.group:
+            elif modifier.type == ModifierType.domain_group:
                 domain = self.__contextize_filter_domain(affector)
-                key = (domain, modifier.filter_value)
+                group = modifier.extra_arg
+                key = (domain, group)
                 target = self.__affectee_domain_group.get(key) or set()
-            elif modifier.filter_type == FilterType.skill:
+            elif modifier.type == ModifierType.domain_skillrq:
                 domain = self.__contextize_filter_domain(affector)
-                skill = affector.modifier.filter_value
+                skill = modifier.extra_arg
+                if skill == EosEveTypes.current_self:
+                    skill = affector.source_holder.item.id
                 key = (domain, skill)
                 target = self.__affectee_domain_skillrq.get(key) or set()
-            elif modifier.filter_type == FilterType.skill_self:
-                domain = self.__contextize_filter_domain(affector)
-                skill = affector.source_holder.item.id
-                key = (domain, skill)
-                target = self.__affectee_domain_skillrq.get(key) or set()
+            elif modifier.type == ModifierType.owner_skillrq:
+                skill = modifier.extra_arg
+                if skill == EosEveTypes.current_self:
+                    skill = affector.source_holder.item.id
+                key = skill
+                target = self.__affectee_owner_skillrq.get(key) or set()
             else:
-                raise FilterTypeError(modifier.filter_type)
+                raise ModifierTypeError(modifier.type)
             # Add our set to affectees
             if target is not None:
                 affectees.update(target)
@@ -271,12 +283,12 @@ class DogmaRegister:
         domain is not supported for direct modification
         FilteredDomainError -- raised when affector's modifier target
         domain is not supported for filtered modification
-        FilterTypeError -- raised when affector's modifier filter type is not
+        ModifierTypeError -- raised when affector's modifier filter type is not
         supported
         """
         source_holder, modifier = affector
         # For each filter type, define affector map and key to use
-        if modifier.filter_type is None:
+        if modifier.type == ModifierType.item:
             # For direct modifications, we need to properly pick
             # target holder (it's key) based on domain
             if modifier.domain == ModifierDomain.self:
@@ -314,26 +326,30 @@ class DogmaRegister:
                 raise DirectDomainError(modifier.domain)
         # For filtered modifications, compose key, making sure reference to self
         # is converted into appropriate real domain
-        elif modifier.filter_type == FilterType.all_:
+        elif modifier.type == ModifierType.domain:
             affector_map = self.__affector_domain
             domain = self.__contextize_filter_domain(affector)
             key = domain
-        elif modifier.filter_type == FilterType.group:
+        elif modifier.type == ModifierType.domain_group:
             affector_map = self.__affector_domain_group
             domain = self.__contextize_filter_domain(affector)
-            key = (domain, modifier.filter_value)
-        elif modifier.filter_type == FilterType.skill:
+            group = modifier.extra_arg
+            key = (domain, group)
+        elif modifier.type == ModifierType.domain_skillrq:
             affector_map = self.__affector_domain_skillrq
             domain = self.__contextize_filter_domain(affector)
-            skill = affector.modifier.filter_value
+            skill = modifier.extra_arg
+            if skill == EosEveTypes.current_self:
+                skill = affector.source_holder.item.id
             key = (domain, skill)
-        elif modifier.filter_type == FilterType.skill_self:
+        elif modifier.type == ModifierType.owner_skillrq:
             affector_map = self.__affector_domain_skillrq
-            domain = self.__contextize_filter_domain(affector)
-            skill = affector.source_holder.item.id
-            key = (domain, skill)
+            skill = modifier.extra_arg
+            if skill == EosEveTypes.current_self:
+                skill = affector.source_holder.item.id
+            key = skill
         else:
-            raise FilterTypeError(modifier.filter_type)
+            raise ModifierTypeError(modifier.type)
         return key, affector_map
 
     def __handle_affector_errors(self, error, affector):
@@ -359,7 +375,7 @@ class DogmaRegister:
             msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(
                 affector.source_holder.item.id)
             logger.warning(msg)
-        elif isinstance(error, FilterTypeError):
+        elif isinstance(error, ModifierTypeError):
             msg = 'malformed modifier on item {}: invalid filter type {}'.format(
                 affector.source_holder.item.id, error.args[0])
             logger.warning(msg)
@@ -399,7 +415,7 @@ class DogmaRegister:
             else:
                 raise FilteredSelfReferenceError
         # Just return untouched domain for all other valid cases
-        elif domain in (ModifierDomain.character, ModifierDomain.ship, ModifierDomain.space):
+        elif domain in (ModifierDomain.character, ModifierDomain.ship):
             return domain
         # Raise error if domain is invalid
         else:
