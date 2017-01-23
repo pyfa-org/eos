@@ -128,6 +128,6 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 3)
         self.assertEqual(len(self.log), 0)

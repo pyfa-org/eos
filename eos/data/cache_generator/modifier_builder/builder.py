@@ -52,5 +52,5 @@ class ModifierBuilder:
         elif effect_row['pre_expression']:
             modifiers, build_status = self._tree.convert(effect_row)
         else:
-            modifiers, build_status = (), EffectBuildStatus.success_full
+            modifiers, build_status = (), EffectBuildStatus.success
         return modifiers, build_status

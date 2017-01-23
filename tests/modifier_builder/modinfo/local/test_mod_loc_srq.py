@@ -38,7 +38,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
             'modifier_info': self._make_yaml('shipID')
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
@@ -57,7 +57,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
             'modifier_info': self._make_yaml('charID')
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
@@ -86,7 +86,7 @@ class TestBuilderModinfoModLocSrq(ModBuilderTestCase):
             'modifier_info': self._make_yaml('targetID')
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.projected)

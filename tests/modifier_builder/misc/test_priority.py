@@ -62,7 +62,7 @@ class TestBuilderPriority(ModBuilderTestCase):
             'modifier_info': None
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)
@@ -85,7 +85,7 @@ class TestBuilderPriority(ModBuilderTestCase):
                 '  modifyingAttributeID: 175\n  operator: 2\n'
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.scope, Scope.local)

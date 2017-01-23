@@ -72,15 +72,15 @@ class ExpressionTree2Modifiers:
         # Validation failures are reported as partial success or
         # conversion errors, depending on amount of valid modifiers
         else:
-            valid_modifiers = set()
+            valid_modifiers = []
             validation_failures = 0
             for modifier in self._modifiers:
                 if modifier._valid is True:
-                    valid_modifiers.add(modifier)
+                    valid_modifiers.append(modifier)
                 else:
                     validation_failures += 1
             if validation_failures == 0:
-                return valid_modifiers, EffectBuildStatus.success_full
+                return valid_modifiers, EffectBuildStatus.success
             else:
                 effect_id = effect_row['effect_id']
                 plural = 's' if validation_failures > 1 else ''

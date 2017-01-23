@@ -38,7 +38,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
             'modifier_info': self.yaml
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.offline)
@@ -50,7 +50,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
             'modifier_info': self.yaml
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.active)
@@ -62,7 +62,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
             'modifier_info': self.yaml
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.active)
@@ -74,7 +74,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
             'modifier_info': self.yaml
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.online)
@@ -86,7 +86,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
             'modifier_info': self.yaml
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.overload)
@@ -98,7 +98,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
             'modifier_info': self.yaml
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.offline)

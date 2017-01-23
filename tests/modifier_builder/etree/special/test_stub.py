@@ -36,7 +36,7 @@ class TestBuilderEtreeStubInt0(ModBuilderTestCase):
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
@@ -53,7 +53,7 @@ class TestBuilderEtreeStubInt1(ModBuilderTestCase):
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
@@ -70,7 +70,7 @@ class TestBuilderEtreeStubBoolTrue(ModBuilderTestCase):
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)
 
@@ -87,6 +87,6 @@ class TestBuilderEtreeStubMixed(ModBuilderTestCase):
             'effect_category': EffectCategory.passive
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 0)

@@ -62,7 +62,7 @@ class EffectBuildStatus(IntEnum):
     skipped = 2
     error = 3
     success_partial = 4
-    success_full = 5
+    success = 5
     custom = 6
 
 

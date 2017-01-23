@@ -36,6 +36,6 @@ class TestBuilderModinfoMultiple(ModBuilderTestCase):
                 '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 2)
         self.assertEqual(len(self.log), 0)

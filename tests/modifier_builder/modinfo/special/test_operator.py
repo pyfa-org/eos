@@ -38,7 +38,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(-1)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.pre_assign)
@@ -50,7 +50,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(0)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.pre_mul)
@@ -62,7 +62,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(1)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.pre_div)
@@ -74,7 +74,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(2)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.mod_add)
@@ -86,7 +86,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(3)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.mod_sub)
@@ -98,7 +98,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(4)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.post_mul)
@@ -110,7 +110,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(5)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.post_div)
@@ -122,7 +122,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(6)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.post_percent)
@@ -134,7 +134,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
             'modifier_info': self._make_yaml(7)
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_full)
+        self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, Operator.post_assign)

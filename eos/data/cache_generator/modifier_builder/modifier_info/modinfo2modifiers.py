@@ -53,7 +53,7 @@ class ModifierInfo2Modifiers:
             logger.error(msg)
             return (), EffectBuildStatus.error
         # Go through modifier objects and attempt to convert them one-by-one
-        valid_modifiers = set()
+        valid_modifiers = []
         build_failures = 0
         validation_failures = 0
         # Get handler according to function specified in info
@@ -84,7 +84,7 @@ class ModifierInfo2Modifiers:
                     build_failures += 1
                 else:
                     if modifier._valid is True:
-                        valid_modifiers.add(modifier)
+                        valid_modifiers.append(modifier)
                     else:
                         validation_failures += 1
         # Logging
@@ -98,7 +98,7 @@ class ModifierInfo2Modifiers:
             logger.error('{} modifier{} of effect {} failed validation'.format(validation_failures, plural, effect_id))
         # Report success/partial success/failure depending on results
         if build_failures == 0 and validation_failures == 0:
-            return valid_modifiers, EffectBuildStatus.success_full
+            return valid_modifiers, EffectBuildStatus.success
         else:
             if len(valid_modifiers) > 0:
                 return valid_modifiers, EffectBuildStatus.success_partial
