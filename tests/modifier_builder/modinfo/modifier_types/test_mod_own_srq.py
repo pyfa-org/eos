@@ -19,18 +19,38 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, EffectBuildStatus, Scope, FilterType, Operator
+from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, State, ModifierOperator
 from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestBuilderModinfoItemMod(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by domain and group"""
+class TestBuilderModinfoModOwnSrq(ModBuilderTestCase):
+    """Test parsing of YAML describing modification filtered by owner and skill requirement"""
 
     def _make_yaml(self, domain):
-        yaml = ('- domain: {}\n  func: LocationGroupModifier\n  groupID: 55\n'
-                '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n')
+        yaml = ('- domain: {}\n  func: OwnerRequiredSkillModifier\n  modifiedAttributeID: 22\n'
+                '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n')
         return yaml.format(domain)
+
+    def test_domain_none(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('null')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
+
+    def test_domain_item(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('itemID')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def test_domain_ship(self):
         effect_row = {
@@ -38,18 +58,9 @@ class TestBuilderModinfoItemMod(ModBuilderTestCase):
             'modifier_info': self._make_yaml('shipID')
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.success)
-        self.assertEqual(len(modifiers), 1)
-        modifier = modifiers[0]
-        self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.domain, Domain.ship)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, Operator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
-        self.assertEqual(modifier.filter_type, FilterType.group)
-        self.assertEqual(modifier.filter_value, 55)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def test_domain_char(self):
         effect_row = {
@@ -60,14 +71,13 @@ class TestBuilderModinfoItemMod(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.domain, Domain.character)
+        self.assertEqual(modifier.type, ModifierType.owner_skillrq)
+        self.assertEqual(modifier.domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, Operator.post_percent)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertEqual(modifier.filter_type, FilterType.group)
-        self.assertEqual(modifier.filter_value, 55)
+        self.assertEqual(modifier.extra_arg, 55)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):
@@ -84,25 +94,6 @@ class TestBuilderModinfoItemMod(ModBuilderTestCase):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('targetID')
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.success)
-        self.assertEqual(len(modifiers), 1)
-        modifier = modifiers[0]
-        self.assertEqual(modifier.scope, Scope.projected)
-        self.assertEqual(modifier.domain, Domain.ship)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, Operator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
-        self.assertEqual(modifier.filter_type, FilterType.group)
-        self.assertEqual(modifier.filter_value, 55)
-        self.assertEqual(len(self.log), 0)
-
-    def test_domain_none(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('null')
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)

@@ -24,13 +24,49 @@ from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestBuilderModinfoModItm(ModBuilderTestCase):
-    """Test parsing of YAML describing direct item modification"""
+class TestBuilderModinfoModDomSrq(ModBuilderTestCase):
+    """Test parsing of YAML describing modification filtered by domain and skill requirement"""
 
     def _make_yaml(self, domain):
-        yaml = ('- domain: {}\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n')
+        yaml = ('- domain: {}\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 22\n'
+                '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n')
         return yaml.format(domain)
+
+    def test_domain_none(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('null')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.success)
+        self.assertEqual(len(modifiers), 1)
+        modifier = modifiers[0]
+        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
+        self.assertEqual(modifier.domain, ModifierDomain.self)
+        self.assertEqual(modifier.state, State.offline)
+        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
+        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.extra_arg, 55)
+        self.assertEqual(len(self.log), 0)
+
+    def test_domain_item(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('null')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.success)
+        self.assertEqual(len(modifiers), 1)
+        modifier = modifiers[0]
+        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
+        self.assertEqual(modifier.domain, ModifierDomain.self)
+        self.assertEqual(modifier.state, State.offline)
+        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
+        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.extra_arg, 55)
+        self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):
         effect_row = {
@@ -41,13 +77,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.item)
+        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertEqual(modifier.extra_arg, 55)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_char(self):
@@ -59,13 +95,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.item)
+        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertEqual(modifier.extra_arg, 55)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):
@@ -74,17 +110,9 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
             'modifier_info': self._make_yaml('otherID')
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.success)
-        self.assertEqual(len(modifiers), 1)
-        modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.item)
-        self.assertEqual(modifier.domain, ModifierDomain.other)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
 
     def test_domain_target(self):
         effect_row = {
@@ -95,29 +123,11 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.item)
+        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.target)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
-        self.assertEqual(len(self.log), 0)
-
-    def test_domain_none(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('null')
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.success)
-        self.assertEqual(len(modifiers), 1)
-        modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.item)
-        self.assertEqual(modifier.domain, ModifierDomain.self)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertEqual(modifier.extra_arg, 55)
         self.assertEqual(len(self.log), 0)
