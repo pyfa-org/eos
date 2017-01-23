@@ -26,9 +26,13 @@ from eos.fit.holder.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.util.repr import make_repr_str
+from .abc import BaseItem
 
 
-class Module(MutableStateMixin, ChargeableMixin, DamageDealerMixin, DefaultEffectAttribMixin):
+class Module(
+    BaseItem, MutableStateMixin, ChargeableMixin,
+    DamageDealerMixin, DefaultEffectAttribMixin
+):
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
 

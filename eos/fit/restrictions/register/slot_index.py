@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.util.keyed_set import KeyedSet
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('holder_slot_index',))
 
 
-class SlotIndexRegister(RestrictionRegister):
+class SlotIndexRegister(BaseRegister):
     """
     Class which implements common functionality for all
     registers, which track indices of occupied slots and

@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
 ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'holder_use'))
 
 
-class ResourceRegister(RestrictionRegister):
+class ResourceRegister(BaseRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is

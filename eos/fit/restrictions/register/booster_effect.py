@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.fit.holder.item import Booster
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
 BoosterEffectErrorData = namedtuple('BoosterEffectErrorData', ('illegally_disabled', 'disablable'))
 
 
-class BoosterEffectRegister(RestrictionRegister):
+class BoosterEffectRegister(BaseRegister):
     """
     Implements restriction:
     Booster must have all of its non-side-effects enabled.

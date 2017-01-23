@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.holder.item import *
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
@@ -70,7 +70,7 @@ CLASS_VALIDATORS = {
 }
 
 
-class HolderClassRegister(RestrictionRegister):
+class HolderClassRegister(BaseRegister):
     """
     Implements restriction:
     Check that item is wrapped by corresponding holder class

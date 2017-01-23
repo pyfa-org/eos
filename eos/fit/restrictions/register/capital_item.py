@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, ModifierDomain
 from eos.const.eve import Attribute
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
@@ -34,7 +34,7 @@ MAX_SUBCAP_VOLUME = 3500
 CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('holder_volume', 'max_subcap_volume'))
 
 
-class CapitalItemRegister(RestrictionRegister):
+class CapitalItemRegister(BaseRegister):
     """
     Implements restriction:
     To fit holders with volume bigger than 4000, ship must

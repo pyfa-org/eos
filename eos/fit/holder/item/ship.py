@@ -23,9 +23,10 @@ from eos.const.eos import State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
 from eos.util.repr import make_repr_str
+from .abc import BaseItem
 
 
-class Ship(ImmutableStateMixin, BufferTankingMixin):
+class Ship(BaseItem, ImmutableStateMixin, BufferTankingMixin):
     """
     Ship with all its special properties.
 

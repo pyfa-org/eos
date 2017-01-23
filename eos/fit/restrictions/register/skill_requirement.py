@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.fit.holder.item import Rig
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
@@ -32,7 +32,7 @@ SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'l
 EXCEPTIONS = (Rig,)
 
 
-class SkillRequirementRegister(RestrictionRegister):
+class SkillRequirementRegister(BaseRegister):
     """
     Implements restriction:
     To use holder, all its skill requirements must be met.

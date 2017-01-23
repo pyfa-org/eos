@@ -25,9 +25,13 @@ from eos.fit.holder.mixin.misc import DefaultEffectAttribMixin
 from eos.fit.holder.mixin.state import MutableStateMixin
 from eos.fit.holder.mixin.tanking import BufferTankingMixin
 from eos.util.repr import make_repr_str
+from .abc import BaseItem
 
 
-class Drone(MutableStateMixin, DamageDealerMixin, BufferTankingMixin, DefaultEffectAttribMixin):
+class Drone(
+    BaseItem, MutableStateMixin, DamageDealerMixin,
+    BufferTankingMixin, DefaultEffectAttribMixin
+):
     """
     Single drone.
 

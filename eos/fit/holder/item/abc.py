@@ -19,33 +19,13 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.fit.holder.mixin.state import ImmutableStateMixin
-from eos.util.repr import make_repr_str
-from .abc import BaseItem
+from abc import ABCMeta, abstractmethod
 
 
-class Charge(BaseItem, ImmutableStateMixin):
-    """
-    Ammo - crystals, probes, bombs, etc.
-
-    Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
-
-    Cooperative methods:
-    __init__
-    """
-
-    def __init__(self, type_id, **kwargs):
-        # Holder-container, into which our charge holder is "loaded"
-        self.container = None
-        super().__init__(type_id=type_id, state=State.offline, **kwargs)
+class BaseItem(metaclass=ABCMeta):
+    """Base class for all item types."""
 
     @property
+    @abstractmethod
     def _domain(self):
-        return None
-
-    def __repr__(self):
-        spec = [['type_id', '_type_id']]
-        return make_repr_str(self, spec)
+        ...

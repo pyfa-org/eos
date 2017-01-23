@@ -22,9 +22,10 @@
 from eos.const.eos import State
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
+from .abc import BaseItem
 
 
-class EffectBeacon(ImmutableStateMixin):
+class EffectBeacon(BaseItem, ImmutableStateMixin):
     """
     System-wide anomaly with all its special properties.
 

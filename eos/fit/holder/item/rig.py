@@ -22,9 +22,10 @@
 from eos.const.eos import State, ModifierDomain
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
+from .abc import BaseItem
 
 
-class Rig(ImmutableStateMixin):
+class Rig(BaseItem, ImmutableStateMixin):
     """
     Rig with all its special properties.
 

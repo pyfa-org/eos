@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.fit.holder.item import Drone
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
 SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
 
 
-class SlotAmountRegister(RestrictionRegister):
+class SlotAmountRegister(BaseRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of occupied ship slots

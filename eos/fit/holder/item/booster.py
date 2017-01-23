@@ -24,9 +24,10 @@ from eos.const.eve import Attribute
 from eos.fit.holder.mixin.side_effect import SideEffectMixin
 from eos.fit.holder.mixin.state import ImmutableStateMixin
 from eos.util.repr import make_repr_str
+from .abc import BaseItem
 
 
-class Booster(ImmutableStateMixin, SideEffectMixin):
+class Booster(BaseItem, ImmutableStateMixin, SideEffectMixin):
     """
     Booster with all its special properties.
 

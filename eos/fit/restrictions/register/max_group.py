@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction, ModifierDomain
 from eos.const.eve import Attribute
 from eos.util.keyed_set import KeyedSet
-from .abc import RestrictionRegister
+from .abc import BaseRegister
 from ..exception import RegisterValidationError
 
 
 MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('holder_group', 'max_group', 'group_holders'))
 
 
-class MaxGroupRegister(RestrictionRegister):
+class MaxGroupRegister(BaseRegister):
     """
     Class which implements common functionality for all
     registers, which track maximum number of belonging to
