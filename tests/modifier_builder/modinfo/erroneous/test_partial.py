@@ -45,7 +45,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/2 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
@@ -64,7 +64,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/2 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
@@ -84,7 +84,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/2 modifiers of effect 22'
         self.assertEqual(log_record.msg, expected)
@@ -103,7 +103,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = '1/2 modifiers of effect 1 failed validation'
         self.assertEqual(log_record.msg, expected)
@@ -124,12 +124,12 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 2)
         log_record1 = self.log[0]
-        self.assertEqual(log_record1.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record1.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record1.levelno, logging.ERROR)
         expected = 'failed to build 1/3 modifiers of effect 1'
         self.assertEqual(log_record1.msg, expected)
         log_record2 = self.log[1]
-        self.assertEqual(log_record2.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record2.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record2.levelno, logging.ERROR)
         expected = '1/3 modifiers of effect 1 failed validation'
         self.assertEqual(log_record2.msg, expected)

@@ -71,7 +71,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/1 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
@@ -100,7 +100,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/1 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)

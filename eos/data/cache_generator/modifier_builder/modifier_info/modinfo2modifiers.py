@@ -51,11 +51,10 @@ class ModifierInfo2Modifiers:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
             logger.error(msg)
-            return (), EffectBuildStatus.error
+            return (), EffectBuildStatus.error, 0
         # Go through modifier objects and attempt to convert them one-by-one
-        valid_modifiers = []
+        modifiers = []
         build_failures = 0
-        validation_failures = 0
         # Get handler according to function specified in info
         for modifier_info in modifier_infos:
             try:
@@ -84,29 +83,8 @@ class ModifierInfo2Modifiers:
                 except Exception:
                     build_failures += 1
                 else:
-                    if modifier._valid is True:
-                        valid_modifiers.append(modifier)
-                    else:
-                        validation_failures += 1
-        # Logging
-        if build_failures > 0:
-            effect_id = effect_row['effect_id']
-            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
-            logger.error('failed to build {}/{} modifiers of effect {}'.format(
-                build_failures, total_modifiers, effect_id))
-        if validation_failures > 0:
-            effect_id = effect_row['effect_id']
-            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
-            logger.error('{}/{} modifiers of effect {} failed validation'.format(
-                validation_failures, total_modifiers, effect_id))
-        # Report success/partial success/failure depending on results
-        if build_failures == 0 and validation_failures == 0:
-            return valid_modifiers, EffectBuildStatus.success
-        else:
-            if len(valid_modifiers) > 0:
-                return valid_modifiers, EffectBuildStatus.success_partial
-            else:
-                return (), EffectBuildStatus.error
+                    modifiers.append(modifier)
+        return modifiers, EffectBuildStatus.success, build_failures
 
     def _handle_item_modifier(self, modifier_info, effect_category):
         return Modifier(

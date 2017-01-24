@@ -50,7 +50,7 @@ class ExpressionTree2Modifiers:
         # will be used during conversion
         self._effect_category = effect_row['effect_category']
         self._build_failures = 0
-        self._modifiers = set()
+        self._modifiers = []
         # Run conversion
         root_expression = self.__expressions.get(effect_row['pre_expression'])
         try:
@@ -63,34 +63,8 @@ class ExpressionTree2Modifiers:
             effect_id = effect_row['effect_id']
             msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
             logger.info(msg)
-            return (), EffectBuildStatus.skipped
-        # Validate all the modifiers after building
-        valid_modifiers = []
-        validation_failures = 0
-        for modifier in self._modifiers:
-            if modifier._valid is True:
-                valid_modifiers.append(modifier)
-            else:
-                validation_failures += 1
-        # Logging
-        if self._build_failures > 0:
-            effect_id = effect_row['effect_id']
-            total_modifiers = self._build_failures + validation_failures + len(valid_modifiers)
-            logger.error('failed to build {}/{} modifiers of effect {}'.format(
-                self._build_failures, total_modifiers, effect_id))
-        if validation_failures > 0:
-            effect_id = effect_row['effect_id']
-            total_modifiers = self._build_failures + validation_failures + len(valid_modifiers)
-            logger.error('{}/{} modifiers of effect {} failed validation'.format(
-                validation_failures, total_modifiers, effect_id))
-        # Report success/partial success/failure depending on results
-        if self._build_failures == 0 and validation_failures == 0:
-            return valid_modifiers, EffectBuildStatus.success
-        else:
-            if len(valid_modifiers) > 0:
-                return valid_modifiers, EffectBuildStatus.success_partial
-            else:
-                return (), EffectBuildStatus.error
+            return (), EffectBuildStatus.skipped, 0
+        return self._modifiers, EffectBuildStatus.success, self._build_failures
 
     def _parse(self, expression, root=False):
         operand = expression.get('operandID')
@@ -129,7 +103,7 @@ class ExpressionTree2Modifiers:
         self._parse(expression.arg2)
 
     def _handle_item_modifier(self, expression):
-        self._modifiers.add(Modifier(
+        self._modifiers.append(Modifier(
             modifier_type=ModifierType.item,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
@@ -139,7 +113,7 @@ class ExpressionTree2Modifiers:
         ))
 
     def _handle_domain_modifier(self, expression):
-        self._modifiers.add(Modifier(
+        self._modifiers.append(Modifier(
             modifier_type=ModifierType.domain,
             domain=self._get_domain(expression.arg1.arg2.arg1),
             state=self._get_state(),
@@ -149,7 +123,7 @@ class ExpressionTree2Modifiers:
         ))
 
     def _handle_domain_group_modifier(self, expression):
-        self._modifiers.add(Modifier(
+        self._modifiers.append(Modifier(
             modifier_type=ModifierType.domain_group,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
@@ -160,7 +134,7 @@ class ExpressionTree2Modifiers:
         ))
 
     def _handle_domain_skillrq_modifer(self, expression):
-        self._modifiers.add(Modifier(
+        self._modifiers.append(Modifier(
             modifier_type=ModifierType.domain_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
@@ -171,7 +145,7 @@ class ExpressionTree2Modifiers:
         ))
 
     def _handle_owner_skillrq_modifer(self, expression):
-        self._modifiers.add(Modifier(
+        self._modifiers.append(Modifier(
             modifier_type=ModifierType.owner_skillrq,
             domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             state=self._get_state(),
