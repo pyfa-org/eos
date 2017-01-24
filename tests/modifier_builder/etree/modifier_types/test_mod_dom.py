@@ -20,116 +20,106 @@
 
 
 from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, State, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestBuilderModinfoModDom(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by domain"""
+class TestBuilderEtreeModDom(ModBuilderTestCase):
 
-    def _make_yaml(self, domain):
-        yaml = (
-            '- domain: {}\n  func: LocationModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n'
+    def make_etree(self, domain):
+        e_tgt = self.ef.make(1, operandID=Operand.def_dom, expressionValue=domain)
+        e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=1211)
+        e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=1503)
+        e_tgt_spec = self.ef.make(
+            5, operandID=Operand.itm_attr,
+            arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID']
         )
-        return yaml.format(domain)
-
-    def test_domain_none(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('null')
+        e_optr_tgt = self.ef.make(
+            6, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        e_add_mod = self.ef.make(
+            7, operandID=Operand.add_dom_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        e_rm_mod = self.ef.make(
+            8, operandID=Operand.rm_dom_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        self.effect_row = {
+            'pre_expression': e_add_mod['expressionID'],
+            'post_expression': e_rm_mod['expressionID'],
+            'effect_category': EffectCategory.passive
         }
-        modifiers, status = self.run_builder(effect_row)
+
+    def test_domain_self(self):
+        self.make_etree('Self')
+        modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.type, ModifierType.domain)
         self.assertEqual(modifier.domain, ModifierDomain.self)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.src_attr, 1503)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
-        self.assertEqual(len(self.log), 0)
-
-    def test_domain_item(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('itemID')
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.success)
-        self.assertEqual(len(modifiers), 1)
-        modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.domain)
-        self.assertEqual(modifier.domain, ModifierDomain.self)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.tgt_attr, 1211)
         self.assertIsNone(modifier.extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_char(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('charID')
-        }
-        modifiers, status = self.run_builder(effect_row)
+        self.make_etree('Char')
+        modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.type, ModifierType.domain)
         self.assertEqual(modifier.domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.src_attr, 1503)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.tgt_attr, 1211)
         self.assertIsNone(modifier.extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('shipID')
-        }
-        modifiers, status = self.run_builder(effect_row)
+        self.make_etree('Ship')
+        modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.type, ModifierType.domain)
         self.assertEqual(modifier.domain, ModifierDomain.ship)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.src_attr, 1503)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.tgt_attr, 1211)
         self.assertIsNone(modifier.extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_target(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('targetID')
-        }
-        modifiers, status = self.run_builder(effect_row)
+        self.make_etree('Target')
+        modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.type, ModifierType.domain)
         self.assertEqual(modifier.domain, ModifierDomain.target)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.src_attr, 1503)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.tgt_attr, 1211)
         self.assertIsNone(modifier.extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('otherID')
-        }
-        modifiers, status = self.run_builder(effect_row)
+        self.make_etree('Other')
+        modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)

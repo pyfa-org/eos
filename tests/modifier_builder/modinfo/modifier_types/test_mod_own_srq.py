@@ -54,16 +54,6 @@ class TestBuilderModinfoModOwnSrq(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
 
-    def test_domain_ship(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('shipID')
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.error)
-        self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
-
     def test_domain_char(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
@@ -82,10 +72,10 @@ class TestBuilderModinfoModOwnSrq(ModBuilderTestCase):
         self.assertEqual(modifier.extra_arg, 55)
         self.assertEqual(len(self.log), 0)
 
-    def test_domain_other(self):
+    def test_domain_ship(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('otherID')
+            'modifier_info': self._make_yaml('shipID')
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
@@ -96,6 +86,16 @@ class TestBuilderModinfoModOwnSrq(ModBuilderTestCase):
         effect_row = {
             'effect_category': EffectCategory.passive,
             'modifier_info': self._make_yaml('targetID')
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
+
+    def test_domain_other(self):
+        effect_row = {
+            'effect_category': EffectCategory.passive,
+            'modifier_info': self._make_yaml('otherID')
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)

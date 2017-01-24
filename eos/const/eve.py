@@ -225,18 +225,24 @@ class EffectCategory(IntEnum):
 
 @unique
 class Operand(IntEnum):
-    add_itm_mod = 6
     add_dom_grp_mod = 7
     add_dom_mod = 8
     add_dom_srq_mod = 9
+    add_itm_mod = 6
     add_own_srq_mod = 11
     def_attr = 22
     def_grp = 26
     def_dom = 24
     def_optr = 21
     def_type = 29
+    dom_grp = 48  # Joins domain and group definitions
+    dom_srq = 49  # Joins domain and skill requirement definitions
     get_type = 36
     itm_attr = 12  # Defines target - joins target items and attribute
     optr_tgt = 31  # Joins operator and target definitions
+    rm_dom_grp_mod = 59
+    rm_dom_mod = 60
+    rm_dom_srq_mod = 61
     rm_itm_mod = 58
+    rm_own_srq_mod = 62
     splice = 17  # Joins two modifiers
