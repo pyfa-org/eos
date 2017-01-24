@@ -28,8 +28,10 @@ class TestBuilderModinfoModDomGrp(ModBuilderTestCase):
     """Test parsing of YAML describing modification filtered by domain and group"""
 
     def _make_yaml(self, domain):
-        yaml = ('- domain: {}\n  func: LocationGroupModifier\n  groupID: 55\n'
-                '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n')
+        yaml = (
+            '- domain: {}\n  func: LocationGroupModifier\n  groupID: 55\n'
+            '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n  operator: 6\n'
+        )
         return yaml.format(domain)
 
     def test_domain_none(self):

@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, Operator
+from eos.const.eos import EffectBuildStatus, ModifierOperator
 from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -28,8 +28,10 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
     """Test parsing of YAML describing modifiers with different operators"""
 
     def _make_yaml(self, operator):
-        yaml = ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: {}\n')
+        yaml = (
+            '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
+            '  modifyingAttributeID: 11\n  operator: {}\n'
+        )
         return yaml.format(operator)
 
     def test_preassign(self):
@@ -41,7 +43,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.pre_assign)
+        self.assertEqual(modifier.operator, ModifierOperator.pre_assign)
         self.assertEqual(len(self.log), 0)
 
     def test_premul(self):
@@ -53,7 +55,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.pre_mul)
+        self.assertEqual(modifier.operator, ModifierOperator.pre_mul)
         self.assertEqual(len(self.log), 0)
 
     def test_prediv(self):
@@ -65,7 +67,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.pre_div)
+        self.assertEqual(modifier.operator, ModifierOperator.pre_div)
         self.assertEqual(len(self.log), 0)
 
     def test_modadd(self):
@@ -77,7 +79,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.mod_add)
+        self.assertEqual(modifier.operator, ModifierOperator.mod_add)
         self.assertEqual(len(self.log), 0)
 
     def test_modsub(self):
@@ -89,7 +91,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.mod_sub)
+        self.assertEqual(modifier.operator, ModifierOperator.mod_sub)
         self.assertEqual(len(self.log), 0)
 
     def test_postmul(self):
@@ -101,7 +103,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.post_mul)
+        self.assertEqual(modifier.operator, ModifierOperator.post_mul)
         self.assertEqual(len(self.log), 0)
 
     def test_postdiv(self):
@@ -113,7 +115,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.post_div)
+        self.assertEqual(modifier.operator, ModifierOperator.post_div)
         self.assertEqual(len(self.log), 0)
 
     def test_postperc(self):
@@ -125,7 +127,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.post_percent)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(len(self.log), 0)
 
     def test_postassign(self):
@@ -137,5 +139,5 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.operator, Operator.post_assign)
+        self.assertEqual(modifier.operator, ModifierOperator.post_assign)
         self.assertEqual(len(self.log), 0)

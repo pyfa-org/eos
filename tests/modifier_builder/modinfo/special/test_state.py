@@ -19,6 +19,8 @@
 # ===============================================================================
 
 
+import logging
+
 from eos.const.eos import EffectBuildStatus, State
 from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
@@ -29,8 +31,10 @@ class TestBuilderModinfoState(ModBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        self.yaml = ('- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                     '  modifyingAttributeID: 11\n  operator: 6\n')
+        self.yaml = (
+            '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
+            '  modifyingAttributeID: 11\n  operator: 6\n'
+        )
 
     def test_passive(self):
         effect_row = {
@@ -68,6 +72,20 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(modifier.state, State.active)
         self.assertEqual(len(self.log), 0)
 
+    def test_area(self):
+        effect_row = {
+            'effect_category': EffectCategory.area,
+            'modifier_info': self.yaml
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        log_record = self.log[0]
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
+        expected = 'failed to build 1/1 modifiers of effect 1'
+        self.assertEqual(log_record.msg, expected)
+
     def test_online(self):
         effect_row = {
             'effect_category': EffectCategory.online,
@@ -91,6 +109,20 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         modifier = modifiers[0]
         self.assertEqual(modifier.state, State.overload)
         self.assertEqual(len(self.log), 0)
+
+    def test_dungeon(self):
+        effect_row = {
+            'effect_category': EffectCategory.dungeon,
+            'modifier_info': self.yaml
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.error)
+        self.assertEqual(len(modifiers), 0)
+        log_record = self.log[0]
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
+        expected = 'failed to build 1/1 modifiers of effect 1'
+        self.assertEqual(log_record.msg, expected)
 
     def test_system(self):
         effect_row = {

@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, Domain, EffectBuildStatus, Scope, Operator
+from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, State, ModifierOperator
 from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -38,77 +38,102 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
             'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
-                '  operator: 6\n- domain: charID\n  func: GangItemModifiero\n  modifiedAttributeID: 33\n'
-                '  modifyingAttributeID: 44\n  operator: 7\n'
+                '  operator: 6\n- text\n'
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_partial)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        expected = 'failed to build one of the modifiers of effect 1: unknown filter function GangItemModifiero'
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
+        expected = 'failed to build 1/2 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
 
-    def test_error_filter_value(self):
+    def test_no_func(self):
         effect_row = {
             'effect_id': 1,
             'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
-                '  operator: 6\n- domain: charID\n  func: LocationGroupModifier\n  modifiedAttributeID: 33\n'
+                '  operator: 6\n- domain: charID\n  func: GangItemModifiero\n  modifiedAttributeID: 33\n'
                 '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_partial)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        expected = ('failed to build one of the modifiers of effect 1: unable to find '
-                    'attribute groupID for filter value')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
+        expected = 'failed to build 1/2 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
 
-    def test_error_domain(self):
+    def test_error_unexpected_in_handler(self):
         effect_row = {
-            'effect_id': 58,
+            'effect_id': 22,
             'effect_category': EffectCategory.passive,
-            'modifier_info':
-                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
-                '  operator: 6\n- domain: targetID\n  func: GangItemModifier\n  modifiedAttributeID: 33\n'
-                '  modifyingAttributeID: 44\n  operator: 7\n'
-        }
-        modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_partial)
-        self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        expected = ('failed to build one of the modifiers of effect 58: unexpected domain targetID'
-                    ' for filter function GangItemModifier')
-        self.assertEqual(log_record.msg, expected)
-
-    def test_error_operator(self):
-        effect_row = {
-            'effect_id': 36,
-            'effect_category': EffectCategory.passive,
-            'modifier_info':
+            'modifier_info': (
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
-                '  modifyingAttributeID: 44\n  operator: 99\n'
+                '  modifyingAttributeID: 44\n  operator: ORE\n'
+            )
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_partial)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.info2modifiers')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        expected = 'failed to build one of the modifiers of effect 36: unknown operator 99'
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
+        expected = 'failed to build 1/2 modifiers of effect 22'
         self.assertEqual(log_record.msg, expected)
+
+    def test_validation_failure(self):
+        print('test')
+        effect_row = {
+            'effect_id': 1,
+            'effect_category': EffectCategory.passive,
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: shipID\n  func: OwnerRequiredSkillModifier\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 6\n  skillTypeID: 55\n'
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
+        self.assertEqual(len(modifiers), 1)
+        self.assertEqual(len(self.log), 1)
+        log_record = self.log[0]
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.levelno, logging.ERROR)
+        expected = '1/2 modifiers of effect 1 failed validation'
+        self.assertEqual(log_record.msg, expected)
+
+    def test_building_and_validation_failure(self):
+        effect_row = {
+            'effect_id': 1,
+            'effect_category': EffectCategory.passive,
+            'modifier_info':
+                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n- domain: shipID\n  func: OwnerRequiredSkillModifier\n  modifiedAttributeID: 33\n'
+                '  modifyingAttributeID: 44\n  operator: 6\n  skillTypeID: 55\n- domain: shipID\n'
+                '  func: ItemModifier\n  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n'
+                '  operator: ORE\n'
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
+        self.assertEqual(len(modifiers), 1)
+        self.assertEqual(len(self.log), 2)
+        log_record1 = self.log[0]
+        self.assertEqual(log_record1.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record1.levelno, logging.ERROR)
+        expected = 'failed to build 1/3 modifiers of effect 1'
+        self.assertEqual(log_record1.msg, expected)
+        log_record2 = self.log[1]
+        self.assertEqual(log_record2.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record2.levelno, logging.ERROR)
+        expected = '1/3 modifiers of effect 1 failed validation'
+        self.assertEqual(log_record2.msg, expected)
 
     def test_error_before(self):
         effect_row = {
@@ -120,17 +145,16 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
                 '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_partial)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.domain, Domain.character)
+        self.assertEqual(modifier.type, ModifierType.item)
+        self.assertEqual(modifier.domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 44)
-        self.assertEqual(modifier.operator, Operator.post_assign)
+        self.assertEqual(modifier.operator, ModifierOperator.post_assign)
         self.assertEqual(modifier.tgt_attr, 33)
-        self.assertIsNone(modifier.filter_type)
-        self.assertIsNone(modifier.filter_value)
+        self.assertIsNone(modifier.extra_arg)
         self.assertEqual(len(self.log), 1)
 
     def test_error_after(self):
@@ -143,15 +167,14 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
                 '  modifyingAttributeID: 44\n  operator: 7\n'
         }
         modifiers, status = self.run_builder(effect_row)
-        self.assertEqual(status, EffectBuildStatus.ok_partial)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.scope, Scope.local)
-        self.assertEqual(modifier.domain, Domain.ship)
+        self.assertEqual(modifier.type, ModifierType.item)
+        self.assertEqual(modifier.domain, ModifierDomain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(modifier.operator, Operator.post_percent)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.filter_type)
-        self.assertIsNone(modifier.filter_value)
+        self.assertIsNone(modifier.extra_arg)
         self.assertEqual(len(self.log), 1)

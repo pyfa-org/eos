@@ -58,7 +58,11 @@ class ModifierInfo2Modifiers:
         validation_failures = 0
         # Get handler according to function specified in info
         for modifier_info in modifier_infos:
-            modifier_func = modifier_info.get('func')
+            try:
+                modifier_func = modifier_info['func']
+            except (KeyError, TypeError):
+                build_failures += 1
+                continue
             handler_map = {
                 'ItemModifier': self._handle_item_modifier,
                 'LocationModifier': self._handle_domain_modifier,
@@ -70,9 +74,6 @@ class ModifierInfo2Modifiers:
             try:
                 handler = handler_map[modifier_func]
             except KeyError:
-                effect_id = effect_row['effect_id']
-                msg = 'no handler for modifier function {} in effect {}'.format(modifier_func, effect_id)
-                logger.error(msg)
                 build_failures += 1
             else:
                 effect_category = effect_row['effect_category']
@@ -90,12 +91,14 @@ class ModifierInfo2Modifiers:
         # Logging
         if build_failures > 0:
             effect_id = effect_row['effect_id']
-            plural = 's' if build_failures > 1 else ''
-            logger.error('failed to build {} modifier{} of effect {}'.format(build_failures, plural, effect_id))
+            total_modifiers = len(valid_modifiers) + build_failures + validation_failures
+            logger.error('failed to build {}/{} modifiers of effect {}'.format(
+                build_failures, total_modifiers, effect_id))
         if validation_failures > 0:
             effect_id = effect_row['effect_id']
-            plural = 's' if validation_failures > 1 else ''
-            logger.error('{} modifier{} of effect {} failed validation'.format(validation_failures, plural, effect_id))
+            total_modifiers = len(valid_modifiers) + build_failures + validation_failures
+            logger.error('{}/{} modifiers of effect {} failed validation'.format(
+                validation_failures, total_modifiers, effect_id))
         # Report success/partial success/failure depending on results
         if build_failures == 0 and validation_failures == 0:
             return valid_modifiers, EffectBuildStatus.success
