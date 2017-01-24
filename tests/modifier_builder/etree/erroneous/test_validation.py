@@ -77,8 +77,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         expected = '1/1 modifiers of effect 1 failed validation'
         self.assertEqual(log_record.msg, expected)
 
-    def test_partial_error_first(self):
-        # Define valid modifier
+    def test_partial_invalid_first(self):
         e_tgt = self.ef.make(11, operandID=Operand.def_dom, expressionValue='Ship')
         e_tgt_attr = self.ef.make(12, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(13, operandID=Operand.def_optr, expressionValue='PostPercent')
@@ -103,7 +102,6 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
-        # Splice valid and invalid modifiers and see what happens
         e_add_splice = self.ef.make(
             19, operandID=Operand.splice,
             arg1=self.e_add_mod_invalid['expressionID'],
@@ -129,8 +127,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         expected = '1/2 modifiers of effect 1 failed validation'
         self.assertEqual(log_record.msg, expected)
 
-    def test_partial_error_last(self):
-        # Define valid modifier
+    def test_partial_invalid_last(self):
         e_tgt = self.ef.make(11, operandID=Operand.def_dom, expressionValue='Ship')
         e_tgt_attr = self.ef.make(12, operandID=Operand.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(13, operandID=Operand.def_optr, expressionValue='PostPercent')
@@ -155,7 +152,6 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
-        # Splice valid and invalid modifiers and see what happens
         e_add_splice = self.ef.make(
             19, operandID=Operand.splice,
             arg1=e_add_mod_valid['expressionID'],
@@ -180,3 +176,69 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = '1/2 modifiers of effect 1 failed validation'
         self.assertEqual(log_record.msg, expected)
+
+    def test_building_and_validation_failure(self):
+        e_tgt = self.ef.make(11, operandID=Operand.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(12, operandID=Operand.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(13, operandID=Operand.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(14, operandID=Operand.def_attr, expressionAttributeID=327)
+        e_tgt_spec = self.ef.make(
+            15, operandID=Operand.itm_attr,
+            arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        e_optr_tgt = self.ef.make(
+            16, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        e_add_mod_valid = self.ef.make(
+            17, operandID=Operand.add_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        e_rm_mod_valid = self.ef.make(
+            18, operandID=Operand.rm_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        e_mod_error = self.ef.make(19, operandID=Operand.def_grp)
+        e_add_splice1 = self.ef.make(
+            20, operandID=Operand.splice,
+            arg1=self.e_add_mod_invalid['expressionID'],
+            arg2=e_add_mod_valid['expressionID']
+        )
+        e_rm_splice1 = self.ef.make(
+            21, operandID=Operand.splice,
+            arg1=self.e_rm_mod_invalid['expressionID'],
+            arg2=e_rm_mod_valid['expressionID']
+        )
+        e_add_splice2 = self.ef.make(
+            22, operandID=Operand.splice,
+            arg1=e_mod_error['expressionID'],
+            arg2=e_add_splice1['expressionID']
+        )
+        e_rm_splice2 = self.ef.make(
+            23, operandID=Operand.splice,
+            arg1=e_mod_error['expressionID'],
+            arg2=e_rm_splice1['expressionID']
+        )
+        effect_row = {
+            'pre_expression': e_add_splice2['expressionID'],
+            'post_expression': e_rm_splice2['expressionID'],
+            'effect_category': EffectCategory.passive
+        }
+        modifiers, status = self.run_builder(effect_row)
+        self.assertEqual(status, EffectBuildStatus.success_partial)
+        self.assertEqual(len(modifiers), 1)
+        self.assertEqual(len(self.log), 2)
+        log_record1 = self.log[0]
+        self.assertEqual(log_record1.name, 'eos.data.cache_generator.modifier_builder.expression_tree.etree2modifiers')
+        self.assertEqual(log_record1.levelno, logging.ERROR)
+        expected = 'failed to build 1/3 modifiers of effect 1'
+        self.assertEqual(log_record1.msg, expected)
+        log_record2 = self.log[1]
+        self.assertEqual(log_record2.name, 'eos.data.cache_generator.modifier_builder.expression_tree.etree2modifiers')
+        self.assertEqual(log_record2.levelno, logging.ERROR)
+        expected = '1/3 modifiers of effect 1 failed validation'
+        self.assertEqual(log_record2.msg, expected)
