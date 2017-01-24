@@ -19,17 +19,14 @@
 
 
 import yaml
-from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator
 from eos.data.cache_object import Modifier
-from ..shared import STATE_CONVERSION_MAP
+from .shared import STATE_CONVERSION_MAP
+from ..exception import YamlParsingError
 
 
-logger = getLogger(__name__)
-
-
-class ModifierInfo2Modifiers:
+class ModifierInfoConverter:
     """
     Parse modifierInfos into actual Modifier objects.
     """
@@ -47,11 +44,8 @@ class ModifierInfo2Modifiers:
             raise
         # We cannot recover any data in case of YAML parsing
         # failure, thus return empty list
-        except Exception:
-            effect_id = effect_row['effect_id']
-            msg = 'failed to parse modifier info YAML for effect {}'.format(effect_id)
-            logger.error(msg)
-            return (), EffectBuildStatus.error, 0
+        except Exception as e:
+            raise YamlParsingError('failed to parse YAML') from e
         # Go through modifier objects and attempt to convert them one-by-one
         modifiers = []
         build_failures = 0
@@ -84,7 +78,7 @@ class ModifierInfo2Modifiers:
                     build_failures += 1
                 else:
                     modifiers.append(modifier)
-        return modifiers, EffectBuildStatus.success, build_failures
+        return modifiers, build_failures
 
     def _handle_item_modifier(self, modifier_info, effect_category):
         return Modifier(

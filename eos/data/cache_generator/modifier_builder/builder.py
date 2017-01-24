@@ -22,8 +22,8 @@
 from logging import getLogger
 
 from eos.const.eos import EffectBuildStatus
-from .expression_tree import ExpressionTree2Modifiers
-from .modifier_info import ModifierInfo2Modifiers
+from .converter import ExpressionTreeConverter, ModifierInfoConverter
+from .exception import UnknownEtreeRootOperandError, YamlParsingError
 
 
 logger = getLogger(__name__)
@@ -36,8 +36,8 @@ class ModifierBuilder:
     """
 
     def __init__(self, expressions):
-        self._tree = ExpressionTree2Modifiers(expressions)
-        self._info = ModifierInfo2Modifiers()
+        self._tree = ExpressionTreeConverter(expressions)
+        self._info = ModifierInfoConverter()
 
     def build(self, effect_row):
         """
@@ -51,11 +51,28 @@ class ModifierBuilder:
         Tuple with list of modifiers and effect build status
         """
         if effect_row['modifier_info']:
-            modifiers, build_status, build_failures = self._info.convert(effect_row)
+            try:
+                modifiers, build_failures = self._info.convert(effect_row)
+            except YamlParsingError as e:
+                effect_id = effect_row['effect_id']
+                msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
+                logger.error(msg)
+                return (), EffectBuildStatus.error
         # When no modifierInfo specified, use expression trees
         # to make modifiers
         elif effect_row['pre_expression']:
-            modifiers, build_status, build_failures = self._tree.convert(effect_row)
+            try:
+                modifiers, build_failures = self._tree.convert(effect_row)
+            # There're quite many root-level operands we do not
+            # handle and do not want to handle. Special effects,
+            # non-modifier definitions. Handle these somewhat
+            # gracefully and mark such effects as skipped
+            except UnknownEtreeRootOperandError as e:
+                effect_id = effect_row['effect_id']
+                msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
+                logger.info(msg)
+                return (), EffectBuildStatus.skipped
+        # We tried and didn't find anythingto do, that's a success
         else:
             return (), EffectBuildStatus.success
         # Validate all the modifiers after building
@@ -80,7 +97,7 @@ class ModifierBuilder:
         # Do not modify effect build status if there're no errors, to keep
         # YAML parsing errors and skipped expression tree effect statuses
         if build_failures == 0 and validation_failures == 0:
-            return valid_modifiers, build_status
+            return valid_modifiers, EffectBuildStatus.success
         else:
             if len(valid_modifiers) > 0:
                 return valid_modifiers, EffectBuildStatus.success_partial

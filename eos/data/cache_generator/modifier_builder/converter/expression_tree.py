@@ -19,20 +19,15 @@
 # ===============================================================================
 
 
-from logging import getLogger
-
-from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, ModifierOperator, EosEveTypes
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, EosEveTypes
 from eos.const.eve import Operand
 from eos.data.cache_object import Modifier
 from eos.util.attribute_dict import AttributeDict
-from .exception import *
-from ..shared import STATE_CONVERSION_MAP
+from .shared import STATE_CONVERSION_MAP
+from ..exception import UnknownEtreeRootOperandError
 
 
-logger = getLogger(__name__)
-
-
-class ExpressionTree2Modifiers:
+class ExpressionTreeConverter:
     """
     Class which uses effects' expression trees to generate
     actual modifier objects used by Eos.
@@ -53,18 +48,8 @@ class ExpressionTree2Modifiers:
         self._modifiers = []
         # Run conversion
         root_expression = self.__expressions.get(effect_row['pre_expression'])
-        try:
-            self._parse(root_expression, root=True)
-        # There're quite many root-level operands we do not
-        # handle and do not want to handle. Special effects,
-        # non-modifier definitions. Handle these somewhat
-        # gracefully and mark such effects as skipped
-        except UnknownRootOperandError as e:
-            effect_id = effect_row['effect_id']
-            msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
-            logger.info(msg)
-            return (), EffectBuildStatus.skipped, 0
-        return self._modifiers, EffectBuildStatus.success, self._build_failures
+        self._parse(root_expression, root=True)
+        return self._modifiers, self._build_failures
 
     def _parse(self, expression, root=False):
         operand = expression.get('operandID')
@@ -81,7 +66,7 @@ class ExpressionTree2Modifiers:
         except KeyError as e:
             if root is True:
                 msg = 'unknown root operand {}'.format(operand)
-                raise UnknownRootOperandError(msg) from e
+                raise UnknownEtreeRootOperandError(msg) from e
             # If we are not on root (came here via at least one splice),
             # and if we do not know what to do, consider it as build error
             else:

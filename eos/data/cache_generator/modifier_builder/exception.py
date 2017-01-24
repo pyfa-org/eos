@@ -19,41 +19,25 @@
 # ===============================================================================
 
 
-__all__ = [
-    'UnknownRootOperandError',
-    'UnknownPrimaryOperandError',
-    'UnexpectedHandlingError'
-]
-
-
 from eos.exception import EosError
 
 
-class Etree2ModifiersError(EosError):
+class ModifierBuilderError(EosError):
     """
-    All exceptions raised by expression-to-modifier converter
-    are based on this class.
-    """
-    pass
-
-
-class UnknownRootOperandError(Etree2ModifiersError):
-    """
-    Raised when root operand cannot be handled by converter.
+    All exceptions raised by modifier builder are based on this class.
     """
     pass
 
 
-class UnknownPrimaryOperandError(Etree2ModifiersError):
+class UnknownEtreeRootOperandError(ModifierBuilderError):
     """
-    Raised when non-root operand which is supposed to define
-    modifiers cannot be handled by converter.
+    Raised when expression tree root operand cannot be handled by converter.
     """
     pass
 
 
-class UnexpectedHandlingError(Etree2ModifiersError):
+class YamlParsingError(ModifierBuilderError):
     """
-    Raised when handler fails to compose modifier.
+    Raised when YAML parser fails to parse modifierInfo.
     """
     pass

@@ -40,9 +40,9 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.etree2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.INFO)
-        expected = 'failed to parse effect 1: unknown root operand 27'
+        expected = 'failed to build modifiers for effect 1: unknown root operand 27'
         self.assertEqual(log_record.msg, expected)
 
     def test_other(self):
@@ -57,7 +57,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.etree2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.INFO)
-        expected = 'failed to parse effect 1: unknown root operand 567'
+        expected = 'failed to build modifiers for effect 1: unknown root operand 567'
         self.assertEqual(log_record.msg, expected)

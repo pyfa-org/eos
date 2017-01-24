@@ -19,4 +19,5 @@
 # ===============================================================================
 
 
-from .etree2modifiers import ExpressionTree2Modifiers
+from .expression_tree import ExpressionTreeConverter
+from .modifier_info import ModifierInfoConverter
