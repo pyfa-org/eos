@@ -232,6 +232,7 @@ class Operand(IntEnum):
     add_own_srq_mod = 11
     def_attr = 22
     def_grp = 26
+    def_int = 27
     def_dom = 24
     def_optr = 21
     def_type = 29

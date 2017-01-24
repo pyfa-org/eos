@@ -19,15 +19,14 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, FilterType
+from eos.const.eos import EffectBuildStatus, EosEveTypes
 from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeSelfType(ModBuilderTestCase):
-    """Test parsing of trees describing modification which contains reference to typeID of its carrier"""
 
-    def test_build_success(self):
+    def make_etree(self, add_mod_operant, rm_mod_operand):
         e_tgt_own = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Char')
         e_self = self.ef.make(2, operandID=Operand.def_dom, expressionValue='Self')
         e_self_type = self.ef.make(3, operandID=Operand.get_type, arg1=e_self['expressionID'])
@@ -35,7 +34,7 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         e_optr = self.ef.make(5, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(6, operandID=Operand.def_attr, expressionAttributeID=292)
         e_tgt_itms = self.ef.make(
-            7, operandID=Operand.loc_srq,
+            7, operandID=Operand.dom_srq,
             arg1=e_tgt_own['expressionID'],
             arg2=e_self_type['expressionID']
         )
@@ -50,24 +49,35 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
             arg2=e_tgt_spec['expressionID']
         )
         e_add_mod = self.ef.make(
-            10, operandID=Operand.add_own_srq_mod,
+            10, operandID=add_mod_operant,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_rm_mod = self.ef.make(
-            11, operandID=Operand.rm_own_srq_mod,
+            11, operandID=rm_mod_operand,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
-        effect_row = {
+        self.effect_row = {
             'pre_expression': e_add_mod['expressionID'],
             'post_expression': e_rm_mod['expressionID'],
             'effect_category': EffectCategory.passive
         }
-        modifiers, status = self.run_builder(effect_row)
+
+    def test_mod_domain_skillrq(self):
+        self.make_etree(Operand.add_dom_srq_mod, Operand.rm_dom_srq_mod)
+        modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.filter_type, FilterType.skill_self)
-        self.assertEqual(modifier.filter_value, None)
+        self.assertEqual(modifier.extra_arg, EosEveTypes.current_self)
+        self.assertEqual(len(self.log), 0)
+
+    def test_mod_owner_skillrq(self):
+        self.make_etree(Operand.add_own_srq_mod, Operand.rm_own_srq_mod)
+        modifiers, status = self.run_builder(self.effect_row)
+        self.assertEqual(status, EffectBuildStatus.success)
+        self.assertEqual(len(modifiers), 1)
+        modifier = modifiers[0]
+        self.assertEqual(modifier.extra_arg, EosEveTypes.current_self)
         self.assertEqual(len(self.log), 0)

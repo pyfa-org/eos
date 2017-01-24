@@ -39,16 +39,18 @@ class ExpressionTree2Modifiers:
     """
 
     def __init__(self, expressions):
-        self._modifiers = None
         self._effect_category = None
+        self._build_failures = None
+        self._modifiers = None
         self.__expressions = self.__prepare_expressions(expressions)
 
     def convert(self, effect_row):
         """Generate *Modifier objects for passed effect."""
         # Initialize instance attributes which
         # will be used during conversion
-        self._modifiers = set()
         self._effect_category = effect_row['effect_category']
+        self._build_failures = 0
+        self._modifiers = set()
         # Run conversion
         root_expression = self.__expressions.get(effect_row['pre_expression'])
         try:
@@ -62,34 +64,33 @@ class ExpressionTree2Modifiers:
             msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
             logger.info(msg)
             return (), EffectBuildStatus.skipped
-        # Non-root level unknown operands and data inconsistencies
-        # are reported as conversion errors
-        except (UnknownPrimaryOperandError, UnexpectedHandlingError) as e:
-            effect_id = effect_row['effect_id']
-            msg = 'failed to parse effect {}: {}'.format(effect_id, e.args[0])
-            logger.error(msg)
-            return (), EffectBuildStatus.error
-        # Validation failures are reported as partial success or
-        # conversion errors, depending on amount of valid modifiers
-        else:
-            valid_modifiers = []
-            validation_failures = 0
-            for modifier in self._modifiers:
-                if modifier._valid is True:
-                    valid_modifiers.append(modifier)
-                else:
-                    validation_failures += 1
-            if validation_failures == 0:
-                return valid_modifiers, EffectBuildStatus.success
+        # Validate all the modifiers after building
+        valid_modifiers = []
+        validation_failures = 0
+        for modifier in self._modifiers:
+            if modifier._valid is True:
+                valid_modifiers.append(modifier)
             else:
-                effect_id = effect_row['effect_id']
-                plural = 's' if validation_failures > 1 else ''
-                msg = '{} modifier{} of effect {} failed validation'.format(validation_failures, plural, effect_id)
-                logger.error(msg)
-                if len(valid_modifiers) > 0:
-                    return valid_modifiers, EffectBuildStatus.success_partial
-                else:
-                    return (), EffectBuildStatus.error
+                validation_failures += 1
+        # Logging
+        if self._build_failures > 0:
+            effect_id = effect_row['effect_id']
+            total_modifiers = self._build_failures + validation_failures + len(valid_modifiers)
+            logger.error('failed to build {}/{} modifiers of effect {}'.format(
+                self._build_failures, total_modifiers, effect_id))
+        if validation_failures > 0:
+            effect_id = effect_row['effect_id']
+            total_modifiers = self._build_failures + validation_failures + len(valid_modifiers)
+            logger.error('{}/{} modifiers of effect {} failed validation'.format(
+                validation_failures, total_modifiers, effect_id))
+        # Report success/partial success/failure depending on results
+        if self._build_failures == 0 and validation_failures == 0:
+            return valid_modifiers, EffectBuildStatus.success
+        else:
+            if len(valid_modifiers) > 0:
+                return valid_modifiers, EffectBuildStatus.success_partial
+            else:
+                return (), EffectBuildStatus.error
 
     def _parse(self, expression, root=False):
         operand = expression.get('operandID')
@@ -107,19 +108,21 @@ class ExpressionTree2Modifiers:
             if root is True:
                 msg = 'unknown root operand {}'.format(operand)
                 raise UnknownRootOperandError(msg) from e
+            # If we are not on root (came here via at least one splice),
+            # and if we do not know what to do, consider it as build error
             else:
-                msg = 'unknown non-root primary operand {}'.format(operand)
-                raise UnknownPrimaryOperandError(msg) from e
+                self._build_failures += 1
+                return
         else:
             try:
                 handler(expression)
-            # Propagate exceptions which we want to report to the caller,
-            # and which may be raised in non-root calls
-            except (KeyboardInterrupt, UnknownRootOperandError, UnknownPrimaryOperandError):
+            except KeyboardInterrupt:
                 raise
-            except Exception as e:
-                msg = 'unexpected error in handler'
-                raise UnexpectedHandlingError(msg) from e
+            # If there're any kind of errors in handler, also consider
+            # it as build failure
+            except Exception:
+                self._build_failures += 1
+                return
 
     def _handle_splice(self, expression):
         self._parse(expression.arg1)

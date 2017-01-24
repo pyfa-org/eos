@@ -27,14 +27,14 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 class TestBuilderEtreeModOwnSrq(ModBuilderTestCase):
 
     def make_etree(self, domain):
-        e_tgtOwn = self.ef.make(1, operandID=Operand.def_dom, expressionValue=domain)
+        e_tgt_own = self.ef.make(1, operandID=Operand.def_dom, expressionValue=domain)
         e_tgt_srq = self.ef.make(2, operandID=Operand.def_type, expressionTypeID=3412)
         e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=1372)
         e_optr = self.ef.make(4, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(5, operandID=Operand.def_attr, expressionAttributeID=1156)
         e_tgt_itms = self.ef.make(
             6, operandID=Operand.dom_srq,
-            arg1=e_tgtOwn['expressionID'],
+            arg1=e_tgt_own['expressionID'],
             arg2=e_tgt_srq['expressionID']
         )
         e_tgt_spec = self.ef.make(

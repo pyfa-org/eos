@@ -90,7 +90,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(log_record.msg, expected)
 
     def test_validation_failure(self):
-        print('test')
         effect_row = {
             'effect_id': 1,
             'effect_category': EffectCategory.passive,

@@ -91,12 +91,12 @@ class ModifierInfo2Modifiers:
         # Logging
         if build_failures > 0:
             effect_id = effect_row['effect_id']
-            total_modifiers = len(valid_modifiers) + build_failures + validation_failures
+            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
             logger.error('failed to build {}/{} modifiers of effect {}'.format(
                 build_failures, total_modifiers, effect_id))
         if validation_failures > 0:
             effect_id = effect_row['effect_id']
-            total_modifiers = len(valid_modifiers) + build_failures + validation_failures
+            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
             logger.error('{}/{} modifiers of effect {} failed validation'.format(
                 validation_failures, total_modifiers, effect_id))
         # Report success/partial success/failure depending on results

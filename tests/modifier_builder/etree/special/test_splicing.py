@@ -25,10 +25,9 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeSplicing(ModBuilderTestCase):
-    """Test parsing of trees describing joins of multiple operations applied onto items"""
 
     def test_build_success(self):
-        e_tgt_loc = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Target')
+        e_tgt_dom = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Target')
         e_tgt_srq = self.ef.make(2, operandID=Operand.def_type, expressionTypeID=3300)
         e_tgt_attr1 = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=54)
         e_tgt_attr2 = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=158)
@@ -38,8 +37,8 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
         e_src_attr2 = self.ef.make(8, operandID=Operand.def_attr, expressionAttributeID=349)
         e_src_attr3 = self.ef.make(9, operandID=Operand.def_attr, expressionAttributeID=767)
         e_tgt_itms = self.ef.make(
-            10, operandID=Operand.loc_srq,
-            arg1=e_tgt_loc['expressionID'],
+            10, operandID=Operand.dom_srq,
+            arg1=e_tgt_dom['expressionID'],
             arg2=e_tgt_srq['expressionID']
         )
         e_tgt_spec1 = self.ef.make(
@@ -88,17 +87,17 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
             arg2=e_src_attr3['expressionID']
         )
         e_rm_mod1 = self.ef.make(
-            20, operandID=Operand.rm_loc_srq_mod,
+            20, operandID=Operand.rm_dom_srq_mod,
             arg1=e_optr_tgt1['expressionID'],
             arg2=e_src_attr1['expressionID']
         )
         e_rm_mod2 = self.ef.make(
-            21, operandID=Operand.rm_loc_srq_mod,
+            21, operandID=Operand.rm_dom_srq_mod,
             arg1=e_optr_tgt2['expressionID'],
             arg2=e_src_attr2['expressionID']
         )
         e_rm_mod3 = self.ef.make(
-            22, operandID=Operand.rm_loc_srq_mod,
+            22, operandID=Operand.rm_dom_srq_mod,
             arg1=e_optr_tgt3['expressionID'],
             arg2=e_src_attr3['expressionID']
         )

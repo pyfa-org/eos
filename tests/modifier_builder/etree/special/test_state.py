@@ -22,24 +22,45 @@
 import logging
 
 from eos.const.eos import EffectBuildStatus, State
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestBuilderModinfoState(ModBuilderTestCase):
-    """Test parsing of YAML describing modifiers applied at different states"""
+class TestBuilderEtreeState(ModBuilderTestCase):
 
-    def make_effect(self, effect_category):
+    def make_etree(self, effect_category):
+        e_tgt = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(2, operandID=Operand.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(3, operandID=Operand.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(4, operandID=Operand.def_attr, expressionAttributeID=327)
+        e_tgt_spec = self.ef.make(
+            5, operandID=Operand.itm_attr,
+            arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID']
+        )
+        e_optr_tgt = self.ef.make(
+            6, operandID=Operand.optr_tgt,
+            arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID']
+        )
+        e_add_mod = self.ef.make(
+            7, operandID=Operand.add_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
+        e_rm_mod = self.ef.make(
+            8, operandID=Operand.rm_itm_mod,
+            arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID']
+        )
         self.effect_row = {
-            'effect_category': effect_category,
-            'modifier_info': (
-                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-                '  modifyingAttributeID: 11\n  operator: 6\n'
-            )
+            'pre_expression': e_add_mod['expressionID'],
+            'post_expression': e_rm_mod['expressionID'],
+            'effect_category': effect_category
         }
 
     def test_passive(self):
-        self.make_effect(EffectCategory.passive)
+        self.make_etree(EffectCategory.passive)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -48,7 +69,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_active(self):
-        self.make_effect(EffectCategory.active)
+        self.make_etree(EffectCategory.active)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -57,7 +78,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_target(self):
-        self.make_effect(EffectCategory.target)
+        self.make_etree(EffectCategory.target)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -66,18 +87,18 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_area(self):
-        self.make_effect(EffectCategory.area)
+        self.make_etree(EffectCategory.area)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.etree2modifiers')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/1 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
 
     def test_online(self):
-        self.make_effect(EffectCategory.online)
+        self.make_etree(EffectCategory.online)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -86,7 +107,7 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_overload(self):
-        self.make_effect(EffectCategory.overload)
+        self.make_etree(EffectCategory.overload)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -95,18 +116,18 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_dungeon(self):
-        self.make_effect(EffectCategory.dungeon)
+        self.make_etree(EffectCategory.dungeon)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.modifier_info.modinfo2modifiers')
+        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.expression_tree.etree2modifiers')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'failed to build 1/1 modifiers of effect 1'
         self.assertEqual(log_record.msg, expected)
 
     def test_system(self):
-        self.make_effect(EffectCategory.system)
+        self.make_etree(EffectCategory.system)
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
