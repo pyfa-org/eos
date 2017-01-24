@@ -76,6 +76,27 @@ class ModifierBuilder:
         else:
             return (), EffectBuildStatus.success
         # Validate all the modifiers after building
+        valid_modifiers, validation_failures = self.__get_valid_modifiers(modifiers)
+        # Logging and reporting
+        if build_failures == 0 and validation_failures == 0:
+            return valid_modifiers, EffectBuildStatus.success
+        else:
+            effect_id = effect_row['effect_id']
+            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
+            msg_segments = []
+            if build_failures > 0:
+                msg_segments.append('{} build failure'.format(build_failures))
+            if validation_failures > 0:
+                msg_segments.append('{} validation failure'.format(validation_failures))
+            msg = '{} out of {} modifiers for effect {}'.format(
+                ', '.join(msg_segments), total_modifiers, effect_id)
+            logger.error(msg)
+            if len(valid_modifiers) > 0:
+                return valid_modifiers, EffectBuildStatus.success_partial
+            else:
+                return (), EffectBuildStatus.error
+
+    def __get_valid_modifiers(self, modifiers):
         valid_modifiers = []
         validation_failures = 0
         for modifier in modifiers:
@@ -83,23 +104,4 @@ class ModifierBuilder:
                 valid_modifiers.append(modifier)
             else:
                 validation_failures += 1
-        # Logging
-        if build_failures > 0:
-            effect_id = effect_row['effect_id']
-            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
-            logger.error('failed to build {}/{} modifiers of effect {}'.format(
-                build_failures, total_modifiers, effect_id))
-        if validation_failures > 0:
-            effect_id = effect_row['effect_id']
-            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
-            logger.error('{}/{} modifiers of effect {} failed validation'.format(
-                validation_failures, total_modifiers, effect_id))
-        # Do not modify effect build status if there're no errors, to keep
-        # YAML parsing errors and skipped expression tree effect statuses
-        if build_failures == 0 and validation_failures == 0:
-            return valid_modifiers, EffectBuildStatus.success
-        else:
-            if len(valid_modifiers) > 0:
-                return valid_modifiers, EffectBuildStatus.success_partial
-            else:
-                return (), EffectBuildStatus.error
+        return valid_modifiers, validation_failures

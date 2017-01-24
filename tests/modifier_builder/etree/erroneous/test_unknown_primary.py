@@ -106,7 +106,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'failed to build 1/2 modifiers of effect 1'
+        expected = '1 build failure out of 2 modifiers for effect 1'
         self.assertEqual(log_record.msg, expected)
 
     def test_partial_error_last(self):
@@ -156,5 +156,5 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'failed to build 1/2 modifiers of effect 1'
+        expected = '1 build failure out of 2 modifiers for effect 1'
         self.assertEqual(log_record.msg, expected)

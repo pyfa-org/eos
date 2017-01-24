@@ -70,10 +70,11 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'failed to build 1/1 modifiers of effect 1'
+        expected = '1 build failure out of 1 modifiers for effect 1'
         self.assertEqual(log_record.msg, expected)
 
     def test_online(self):
@@ -99,10 +100,11 @@ class TestBuilderModinfoState(ModBuilderTestCase):
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
+        self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'failed to build 1/1 modifiers of effect 1'
+        expected = '1 build failure out of 1 modifiers for effect 1'
         self.assertEqual(log_record.msg, expected)
 
     def test_system(self):
