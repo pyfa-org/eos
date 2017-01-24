@@ -28,8 +28,8 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     """
-    Test errors occurring during different stages of dealing with modifier info,
-    in this class they do not let to finish conversion on per-modifier basis.
+    Make sure that if one modifier fails to build, it doesn't prevent
+    others from building successfully.
     """
 
     def test_error_func(self):

@@ -236,4 +236,7 @@ class Operand(IntEnum):
     def_optr = 21
     def_type = 29
     get_type = 36
-    splice = 17
+    itm_attr = 12  # Defines target - joins target items and attribute
+    optr_tgt = 31  # Joins operator and target definitions
+    rm_itm_mod = 58
+    splice = 17  # Joins two modifiers
