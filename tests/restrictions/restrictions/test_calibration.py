@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import Rig, Implant
 from tests.restrictions.restriction_testcase import RestrictionTestCase
@@ -34,7 +32,7 @@ class TestCalibration(RestrictionTestCase):
         # When ship provides calibration output, but single consumer
         # demands for more, error should be raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder)
         self.fit.stats.calibration.used = 50
@@ -51,7 +49,7 @@ class TestCalibration(RestrictionTestCase):
     def test_fail_excess_single_other_class_domain(self):
         # Make sure holders of all classes are affected
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder = self.make_item_mock(Implant, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder)
         self.fit.stats.calibration.used = 50
@@ -69,7 +67,7 @@ class TestCalibration(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 5}
         self.add_holder(holder)
         self.fit.stats.calibration.used = 5
@@ -88,10 +86,10 @@ class TestCalibration(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 25}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder2 = self.make_item_mock(Rig, eve_type)
         holder2.attributes = {Attribute.upgrade_cost: 20}
         self.add_holder(holder2)
         self.fit.stats.calibration.used = 45
@@ -114,7 +112,7 @@ class TestCalibration(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified calibration values are taken
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 40})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder)
         self.fit.stats.calibration.used = 100
@@ -133,10 +131,10 @@ class TestCalibration(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder2 = self.make_item_mock(Rig, eve_type)
         holder2.attributes = {Attribute.upgrade_cost: -10}
         self.add_holder(holder2)
         self.fit.stats.calibration.used = 90
@@ -158,10 +156,10 @@ class TestCalibration(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder2 = self.make_item_mock(Rig, eve_type)
         holder2.attributes = {Attribute.upgrade_cost: 0}
         self.add_holder(holder2)
         self.fit.stats.calibration.used = 100
@@ -182,10 +180,10 @@ class TestCalibration(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 25}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder2 = self.make_item_mock(Rig, eve_type)
         holder2.attributes = {Attribute.upgrade_cost: 20}
         self.add_holder(holder2)
         self.fit.stats.calibration.used = 45
@@ -204,7 +202,7 @@ class TestCalibration(RestrictionTestCase):
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder)
         self.fit.stats.calibration.used = 100

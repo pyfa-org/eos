@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.item import Drone, Implant
 from tests.restrictions.restriction_testcase import RestrictionTestCase
@@ -34,7 +32,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When ship provides bandwidth output, but single consumer
         # demands for more, error should be raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder = self.make_item_mock(Drone, eve_type, state=State.online)
         holder.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder)
         self.fit.stats.drone_bandwidth.used = 50
@@ -51,7 +49,7 @@ class TestDroneBandwidth(RestrictionTestCase):
     def test_fail_excess_single_other_class_domain(self):
         # Make sure holders of all classes are affected
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder = self.make_item_mock(Implant, eve_type, state=State.online)
         holder.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder)
         self.fit.stats.drone_bandwidth.used = 50
@@ -69,7 +67,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder = self.make_item_mock(Drone, eve_type, state=State.online)
         holder.attributes = {Attribute.drone_bandwidth_used: 5}
         self.add_holder(holder)
         self.fit.stats.drone_bandwidth.used = 5
@@ -88,10 +86,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 25}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2.attributes = {Attribute.drone_bandwidth_used: 20}
         self.add_holder(holder2)
         self.fit.stats.drone_bandwidth.used = 45
@@ -114,7 +112,7 @@ class TestDroneBandwidth(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified bandwidth values are taken
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 40})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder = self.make_item_mock(Drone, eve_type, state=State.online)
         holder.attributes = {Attribute.drone_bandwidth_used: 100}
         self.add_holder(holder)
         self.fit.stats.drone_bandwidth.used = 100
@@ -133,10 +131,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 100}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2.attributes = {Attribute.drone_bandwidth_used: -10}
         self.add_holder(holder2)
         self.fit.stats.drone_bandwidth.used = 90
@@ -158,10 +156,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 100}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2.attributes = {Attribute.drone_bandwidth_used: 0}
         self.add_holder(holder2)
         self.fit.stats.drone_bandwidth.used = 100
@@ -182,10 +180,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 25}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2.attributes = {Attribute.drone_bandwidth_used: 20}
         self.add_holder(holder2)
         self.fit.stats.drone_bandwidth.used = 45
@@ -204,7 +202,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # shouldn't be tracked by register, and thus, no errors
         # should be raised
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder = self.make_item_mock(Drone, eve_type, state=State.online)
         holder.attributes = {Attribute.drone_bandwidth_used: 100}
         self.add_holder(holder)
         self.fit.stats.drone_bandwidth.used = 100
@@ -218,7 +216,7 @@ class TestDroneBandwidth(RestrictionTestCase):
     def test_pass_state(self):
         # When holder isn't online, it shouldn't consume anything
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=None, spec_set=Drone(1))
+        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder)
         self.fit.stats.drone_bandwidth.used = 50

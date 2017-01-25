@@ -33,6 +33,8 @@ class RestrictionTestCase(EosTestCase):
     Additional functionality provided:
 
     self.rs -- restriction service instance for tests
+    self.make_item_mock -- create eos item mock with specified
+        parameters
     self.set_ship -- set ship to fit which uses restriction service
     self.add_holder -- add holder to restriction service
     self.remove_holder -- remove holder from restriction service
@@ -57,6 +59,18 @@ class RestrictionTestCase(EosTestCase):
         self.fit.drones = set()
         self.rs = RestrictionService(self.fit)
         self.rs._notify(EnableServices(holders=()))
+
+    def make_item_mock(self, item_class, eve_type, state=None, strict_spec=True):
+        item = item_class(eve_type.id)
+        state = state if state is not None else item.state
+        kwargs = {
+            '_eve_type_id': eve_type.id,
+            '_eve_type': eve_type,
+            'state': state,
+            '_domain': item._domain,
+            'spec_set' if strict_spec is True else 'spec': item
+        }
+        return Mock(**kwargs)
 
     def set_ship(self, holder):
         self.fit.ship = holder

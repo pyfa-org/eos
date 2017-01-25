@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction, State
 from eos.fit.item import ModuleHigh
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
@@ -32,7 +30,7 @@ class TestState(RestrictionTestCase):
     def test_state_lower(self):
         eve_type = self.ch.type_(type_id=1)
         eve_type.max_state = State.active
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
@@ -43,7 +41,7 @@ class TestState(RestrictionTestCase):
     def test_state_equal(self):
         eve_type = self.ch.type_(type_id=1)
         eve_type.max_state = State.active
-        holder = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
@@ -54,8 +52,7 @@ class TestState(RestrictionTestCase):
     def test_state_higher(self):
         eve_type = self.ch.type_(type_id=1)
         eve_type.max_state = State.active
-        holder = Mock(
-            state=State.overload, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.overload)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNotNone(restriction_error)

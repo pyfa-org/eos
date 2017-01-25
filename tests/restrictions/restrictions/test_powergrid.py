@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Implant
 from tests.restrictions.restriction_testcase import RestrictionTestCase
@@ -34,7 +32,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When ship provides pg output, but single consumer
         # demands for more, error should be raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.power: 50}
         self.add_holder(holder)
         self.fit.stats.powergrid.used = 50
@@ -51,7 +49,7 @@ class TestPowerGrid(RestrictionTestCase):
     def test_fail_excess_single_other_class_domain(self):
         # Make sure holders of all classes are affected
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder = self.make_item_mock(Implant, eve_type, state=State.online)
         holder.attributes = {Attribute.power: 50}
         self.add_holder(holder)
         self.fit.stats.powergrid.used = 50
@@ -69,7 +67,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.power: 5}
         self.add_holder(holder)
         self.fit.stats.powergrid.used = 5
@@ -88,10 +86,10 @@ class TestPowerGrid(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.power: 25}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder2.attributes = {Attribute.power: 20}
         self.add_holder(holder2)
         self.fit.stats.powergrid.used = 45
@@ -114,7 +112,7 @@ class TestPowerGrid(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified pg values are taken
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 40})
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.power: 100}
         self.add_holder(holder)
         self.fit.stats.powergrid.used = 100
@@ -133,10 +131,10 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # negative usage
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.power: 100}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder2.attributes = {Attribute.power: -10}
         self.add_holder(holder2)
         self.fit.stats.powergrid.used = 90
@@ -158,10 +156,10 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for holder with
         # zero usage
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.power: 100}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder2.attributes = {Attribute.power: 0}
         self.add_holder(holder2)
         self.fit.stats.powergrid.used = 100
@@ -182,10 +180,10 @@ class TestPowerGrid(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.power: 25}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder2.attributes = {Attribute.power: 20}
         self.add_holder(holder2)
         self.fit.stats.powergrid.used = 45
@@ -204,7 +202,7 @@ class TestPowerGrid(RestrictionTestCase):
         # shouldn't be tracked by register, and thus, no errors
         # should be raised
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.power: 100}
         self.add_holder(holder)
         self.fit.stats.powergrid.used = 100
@@ -218,7 +216,7 @@ class TestPowerGrid(RestrictionTestCase):
     def test_pass_state(self):
         # When holder isn't online, it shouldn't consume anything
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.power: 0})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.power: 50}
         self.add_holder(holder)
         self.fit.stats.powergrid.used = 50

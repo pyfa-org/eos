@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, Slot, State
+from eos.const.eos import Restriction, Slot, State
 from eos.fit.item import Implant, ModuleHigh
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
@@ -34,7 +32,7 @@ class TestTurretSlot(RestrictionTestCase):
         # slots exceeds slot amount provided by ship
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.turret}
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = 0
@@ -50,7 +48,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Make sure holders of all classes are affected
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.turret}
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder = self.make_item_mock(Implant, eve_type)
         self.add_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = 0
@@ -67,7 +65,7 @@ class TestTurretSlot(RestrictionTestCase):
         # make sure it's assumed to be 0
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.turret}
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = None
@@ -83,8 +81,8 @@ class TestTurretSlot(RestrictionTestCase):
         # Check that error works for multiple holders
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.fit.stats.turret_slots.used = 2
@@ -105,8 +103,8 @@ class TestTurretSlot(RestrictionTestCase):
     def test_pass_equal(self):
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.fit.stats.turret_slots.used = 2
@@ -123,8 +121,8 @@ class TestTurretSlot(RestrictionTestCase):
     def test_pass_greater(self):
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.fit.stats.turret_slots.used = 2
@@ -141,7 +139,7 @@ class TestTurretSlot(RestrictionTestCase):
     def test_pass_other_slot(self):
         eve_type = self.ch.type_(type_id=1)
         eve_type.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         self.fit.stats.turret_slots.used = 1
         self.fit.stats.turret_slots.total = 0

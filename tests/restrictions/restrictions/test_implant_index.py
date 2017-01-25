@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.item import Implant, ModuleHigh
 from tests.restrictions.restriction_testcase import RestrictionTestCase
@@ -34,8 +32,8 @@ class TestImplantIndex(RestrictionTestCase):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.implantness: 120})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder1 = self.make_item_mock(Implant, eve_type)
+        holder2 = self.make_item_mock(Implant, eve_type)
         self.add_holder(holder1)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.implant_index)
@@ -52,8 +50,8 @@ class TestImplantIndex(RestrictionTestCase):
     def test_fail_other_holder_class(self):
         # Make sure holders of all classes are affected
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.implantness: 120})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.implant_index)
@@ -70,8 +68,8 @@ class TestImplantIndex(RestrictionTestCase):
     def test_fail_attr_eve_type(self):
         # Make sure that EVE type attributes are used
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.implantness: 120})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder1 = self.make_item_mock(Implant, eve_type)
+        holder2 = self.make_item_mock(Implant, eve_type)
         holder1.attributes = {Attribute.implantness: 119}
         holder2.attributes = {Attribute.implantness: 121}
         self.add_holder(holder1)
@@ -91,7 +89,7 @@ class TestImplantIndex(RestrictionTestCase):
         # Single holder which takes some slot shouldn't
         # trigger any errors
         eve_type = self.ch.type_(type_id=1, attributes={Attribute.implantness: 120})
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder = self.make_item_mock(Implant, eve_type)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.implant_index)
         self.assertIsNone(restriction_error)
@@ -103,8 +101,8 @@ class TestImplantIndex(RestrictionTestCase):
         # Holders taking different slots shouldn't trigger any errors
         eve_type1 = self.ch.type_(type_id=1, attributes={Attribute.implantness: 120})
         eve_type2 = self.ch.type_(type_id=2, attributes={Attribute.implantness: 121})
-        holder1 = Mock(state=State.offline, _eve_type=eve_type1, _domain=ModifierDomain.character, spec_set=Implant(1))
-        holder2 = Mock(state=State.offline, _eve_type=eve_type2, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder1 = self.make_item_mock(Implant, eve_type1)
+        holder2 = self.make_item_mock(Implant, eve_type2)
         self.add_holder(holder1)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.implant_index)

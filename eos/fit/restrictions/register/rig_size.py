@@ -60,7 +60,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # Do not apply restriction when fit doesn't
         # have ship
         try:
-            ship_eve_type = ship_holder.eve_type
+            ship_eve_type = ship_holder._eve_type
         except AttributeError:
             return
         # If ship doesn't have restriction attribute,

@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction
 from eos.fit.item import Booster, Implant
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
@@ -32,7 +30,7 @@ class TestBoosterEffect(RestrictionTestCase):
     def test_fail(self):
         # Check if error is raised when there's disabled effect
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Booster(1))
+        holder = self.make_item_mock(Booster, eve_type)
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
         self.add_holder(holder)
@@ -46,7 +44,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_disabled_side_effect(self):
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Booster(1))
+        holder = self.make_item_mock(Booster, eve_type)
         holder.side_effects = {55, 66}
         holder._disabled_effects = {55, 66}
         self.add_holder(holder)
@@ -58,7 +56,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_enabled_regular_effect(self):
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Booster(1))
+        holder = self.make_item_mock(Booster, eve_type)
         # Enabled regular effects are not listed in any of
         # these containers
         holder.side_effects = {}
@@ -72,7 +70,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_non_booster(self):
         eve_type = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec=Implant(1))
+        holder = self.make_item_mock(Implant, eve_type, strict_spec=False)
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
         self.add_holder(holder)
