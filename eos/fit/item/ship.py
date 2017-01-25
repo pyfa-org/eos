@@ -21,12 +21,11 @@
 
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 from .mixin.tanking import BufferTankingMixin
 
 
-class Ship(BaseItem, ImmutableStateMixin, BufferTankingMixin):
+class Ship(ImmutableStateMixin, BufferTankingMixin):
     """
     Ship with all its special properties.
 

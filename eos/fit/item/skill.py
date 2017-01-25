@@ -22,11 +22,10 @@
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 
 
-class Skill(BaseItem, ImmutableStateMixin):
+class Skill(ImmutableStateMixin):
     """
     Skill with all its special properties.
 

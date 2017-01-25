@@ -22,7 +22,6 @@
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.chargeable import ChargeableMixin
 from .mixin.damage_dealer import DamageDealerMixin
 from .mixin.misc import DefaultEffectAttribMixin
@@ -30,7 +29,7 @@ from .mixin.state import MutableStateMixin
 
 
 class Module(
-    BaseItem, MutableStateMixin, ChargeableMixin,
+    MutableStateMixin, ChargeableMixin,
     DamageDealerMixin, DefaultEffectAttribMixin
 ):
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):

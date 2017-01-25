@@ -21,11 +21,10 @@
 
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 
 
-class Character(BaseItem, ImmutableStateMixin):
+class Character(ImmutableStateMixin):
     """
     Represents a character. Must be holder, as EVE tracks
     some attributes on it.

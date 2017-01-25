@@ -21,11 +21,10 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 
 
-class Implant(BaseItem, ImmutableStateMixin):
+class Implant(ImmutableStateMixin):
     """
     Implant with all its special properties.
 

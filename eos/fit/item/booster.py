@@ -22,12 +22,11 @@
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.side_effect import SideEffectMixin
 from .mixin.state import ImmutableStateMixin
 
 
-class Booster(BaseItem, ImmutableStateMixin, SideEffectMixin):
+class Booster(ImmutableStateMixin, SideEffectMixin):
     """
     Booster with all its special properties.
 

@@ -21,11 +21,10 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 
 
-class Stance(BaseItem, ImmutableStateMixin):
+class Stance(ImmutableStateMixin):
     """
     Stance (also known as tactical mode) with all its
     special properties.

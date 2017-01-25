@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 from random import random
 
@@ -31,7 +32,7 @@ from .null_source import NullSourceItem
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'status'))
 
 
-class HolderBase(BaseSubscriber):
+class HolderBase(BaseSubscriber, metaclass=ABCMeta):
     """
     Base holder class inherited by all classes that
     need to keep track of modified attributes.
@@ -77,6 +78,16 @@ class HolderBase(BaseSubscriber):
         self.__refresh_source()
         if new_fit is not None:
             new_fit._subscribe(self, (RefreshSource,))
+
+    @property
+    @abstractmethod
+    def _domain(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _owner_modifiable(self):
+        ...
 
     # Effect methods
     @property

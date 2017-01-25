@@ -21,11 +21,10 @@
 
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .base import BaseItem
 from .mixin.state import ImmutableStateMixin
 
 
-class Charge(BaseItem, ImmutableStateMixin):
+class Charge(ImmutableStateMixin):
     """
     Ammo - crystals, probes, bombs, etc.
 
