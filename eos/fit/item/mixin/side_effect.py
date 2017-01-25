@@ -19,10 +19,10 @@
 # ===============================================================================
 
 
-from .holder.holder import HolderBase
+from .base import BaseItemMixin
 
 
-class SideEffectMixin(HolderBase):
+class SideEffectMixin(BaseItemMixin):
     """
     Mixin intended to be used for holders which can have
     side-effects.

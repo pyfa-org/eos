@@ -35,10 +35,10 @@ class SlotUseRegister(BaseStatRegister):
         self._fit = fit
         self.__slot_users = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         self.__slot_users.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__slot_users.discard(holder)
 
     def __len__(self):
@@ -50,9 +50,9 @@ class TurretUseRegister(SlotUseRegister):
     Assist with calculation of amount of used turret slots.
     """
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if Slot.turret in holder.item.slots:
-            SlotUseRegister.register_holder(self, holder)
+            SlotUseRegister.register_item(self, holder)
 
 
 class LauncherUseRegister(SlotUseRegister):
@@ -60,9 +60,9 @@ class LauncherUseRegister(SlotUseRegister):
     Assist with calculation of amount of used launcher slots.
     """
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if Slot.launcher in holder.item.slots:
-            SlotUseRegister.register_holder(self, holder)
+            SlotUseRegister.register_item(self, holder)
 
 
 class LaunchedDroneRegister(SlotUseRegister):
@@ -70,6 +70,6 @@ class LaunchedDroneRegister(SlotUseRegister):
     Assist with calculation of amount of launched drones.
     """
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if isinstance(holder, Drone):
-            SlotUseRegister.register_holder(self, holder)
+            SlotUseRegister.register_item(self, holder)

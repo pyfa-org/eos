@@ -309,7 +309,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
     # Private methods for message handlers
     def __add_holder(self, holder):
         for register in self.__regs_stateless:
-            register.register_holder(holder)
+            register.register_item(holder)
         states = set(filter(lambda s: s <= holder.state, State))
         self.__enable_states(holder, states)
 
@@ -317,7 +317,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         states = set(filter(lambda s: s <= holder.state, State))
         self.__disable_states(holder, states)
         for register in self.__regs_stateless:
-            register.unregister_holder(holder)
+            register.unregister_item(holder)
 
     def __enable_states(self, holder, states):
         """
@@ -336,7 +336,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             except KeyError:
                 continue
             for register in registers:
-                register.register_holder(holder)
+                register.register_item(holder)
 
     def __disable_states(self, holder, states):
         """
@@ -353,4 +353,4 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             except KeyError:
                 continue
             for register in registers:
-                register.unregister_holder(holder)
+                register.unregister_item(holder)

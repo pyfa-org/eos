@@ -45,14 +45,14 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # Container for holders which have rig size restriction
         self.__restricted_holders = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Register only holders which have attribute,
         # which restricts rig size
         if Attribute.rig_size not in holder.item.attributes:
             return
         self.__restricted_holders.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__restricted_holders.discard(holder)
 
     def validate(self):

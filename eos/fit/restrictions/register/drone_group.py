@@ -58,12 +58,12 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         # Format: {holders}
         self.__restricted_holders = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Ignore everything but drones
         if isinstance(holder, Drone):
             self.__restricted_holders.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__restricted_holders.discard(holder)
 
     def validate(self):

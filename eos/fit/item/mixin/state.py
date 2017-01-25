@@ -20,10 +20,10 @@
 
 
 from eos.fit.messages import HolderStateChanged
-from .holder.holder import HolderBase
+from .base import BaseItemMixin
 
 
-class ImmutableStateMixin(HolderBase):
+class ImmutableStateMixin(BaseItemMixin):
     """
     Mixin intended to be used for holders which define
     state at instantiation time and do not change it later.
@@ -44,7 +44,7 @@ class ImmutableStateMixin(HolderBase):
         return self.__state
 
 
-class MutableStateMixin(HolderBase):
+class MutableStateMixin(BaseItemMixin):
     """
     Mixin intended to be used for holders which can
     switch state at any time.

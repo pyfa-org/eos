@@ -54,7 +54,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         # Format: {container holder: (allowed groups)}
         self.__restricted_containers = {}
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # We're going to track containers, not charges;
         # ignore all holders which can't fit a charge
         if not hasattr(holder, 'charge'):
@@ -70,7 +70,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         if allowed_groups:
             self.__restricted_containers[holder] = tuple(allowed_groups)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         if holder in self.__restricted_containers:
             del self.__restricted_containers[holder]
 

@@ -41,12 +41,12 @@ class StateRestrictionRegister(BaseRestrictionRegister):
     def __init__(self):
         self.__holders = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # We're going to track all holders. Typically we track
         # online+ holders, as all holders can be at least offline
         self.__holders.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__holders.discard(holder)
 
     def validate(self):

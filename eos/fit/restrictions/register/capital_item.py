@@ -51,7 +51,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Container for all tracked holders
         self.__capital_holders = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Ignore holders which do not belong to ship
         if holder._domain != ModifierDomain.ship:
             return
@@ -65,7 +65,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
             return
         self.__capital_holders.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__capital_holders.discard(holder)
 
     def validate(self):

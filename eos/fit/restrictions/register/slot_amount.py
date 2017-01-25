@@ -44,10 +44,10 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister):
         self.__stat_name = stat_name
         self._slot_consumers = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         self._slot_consumers.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self._slot_consumers.discard(holder)
 
     def validate(self):
@@ -87,9 +87,9 @@ class HighSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'high_slots', Restriction.high_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.modules.high:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._fit.modules.high[slots_max:]
@@ -109,9 +109,9 @@ class MediumSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'med_slots', Restriction.medium_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.modules.med:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._fit.modules.med[slots_max:]
@@ -131,9 +131,9 @@ class LowSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'low_slots', Restriction.low_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.modules.low:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._fit.modules.low[slots_max:]
@@ -153,9 +153,9 @@ class RigSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'rig_slots', Restriction.rig_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.rigs:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._slot_consumers
@@ -175,9 +175,9 @@ class SubsystemSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'subsystem_slots', Restriction.subsystem_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.subsystems:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._slot_consumers
@@ -197,9 +197,9 @@ class TurretSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if Slot.turret in holder.item.slots:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._slot_consumers
@@ -219,9 +219,9 @@ class LauncherSlotRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if Slot.launcher in holder.item.slots:
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._slot_consumers
@@ -241,9 +241,9 @@ class LaunchedDroneRegister(SlotAmountRestrictionRegister):
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'launched_drones', Restriction.launched_drone)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if isinstance(holder, Drone):
-            SlotAmountRestrictionRegister.register_holder(self, holder)
+            SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
         return self._slot_consumers

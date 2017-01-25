@@ -45,12 +45,12 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
         self.__usage_attr = usage_attr
         self.__resource_users = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if self.__usage_attr not in holder.item.attributes:
             return
         self.__resource_users.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__resource_users.discard(holder)
 
     def validate(self):
@@ -136,9 +136,9 @@ class DroneBayVolumeRegister(ResourceRestrictionRegister):
     def __init__(self, fit):
         ResourceRestrictionRegister.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.drones:
-            ResourceRestrictionRegister.register_holder(self, holder)
+            ResourceRestrictionRegister.register_item(self, holder)
 
 
 class DroneBandwidthRegister(ResourceRestrictionRegister):

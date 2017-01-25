@@ -19,7 +19,15 @@
 # ===============================================================================
 
 
-from eos.fit.exception import NoSourceError
+from eos.exception import EosError
+
+
+class NoSourceError(EosError):
+    """
+    Raised on attempt to use anything which needs source
+    to be assigned to function.
+    """
+    pass
 
 
 class NullSourceMeta(type):

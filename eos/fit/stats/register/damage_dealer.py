@@ -34,11 +34,11 @@ class DamageDealerRegister(BaseStatRegister):
     def __init__(self):
         self.__dealers = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if isinstance(holder, DamageDealerMixin):
             self.__dealers.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__dealers.discard(holder)
 
     def _collect_damage_stats(self, holder_filter, method_name, *args, **kwargs):

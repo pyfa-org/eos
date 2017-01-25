@@ -23,7 +23,7 @@ from eos.const.eve import Attribute, Effect
 from eos.fit.container import HolderDescriptorOnHolder
 from eos.fit.item import Charge
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
-from .holder.holder import HolderBase
+from .base import BaseItemMixin
 
 
 def _float_to_int(value):
@@ -35,7 +35,7 @@ def _float_to_int(value):
     return int(round(value, 9))
 
 
-class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
+class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
     """
     Mixin intended to use with holders which can have charge loaded
     into them.
@@ -79,22 +79,15 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         ancillary armor repairers). None is returned if container can
         cycle without ammo consumption.
         """
-        # Various types of items consume charges during cycle,
-        # detect them based on presence of charge_rate attribute
-        # in original item (modified attribute value is always
-        # possible to fetch, as it has base value, so it's not
-        # reliable way to detect it)
-        holder_item = self.item
+        # Various eve types consume charges during cycle, detect them
+        # based on presence of charge_rate attribute in original eve type
+        # (modified attribute value is always possible to fetch, as it
+        # has base value, so it's not reliable way to detect it)
+        if Attribute.charge_rate in self._original_attributes:
+            return self.__get_ammo_cycles()
+        # Detect crystal-based eve types using effects
         try:
-            item_attribs = holder_item.attributes
-        except AttributeError:
-            pass
-        else:
-            if Attribute.charge_rate in item_attribs:
-                return self.__get_ammo_cycles()
-        # Detect crystal-based items using effects
-        try:
-            defeff_id = holder_item.default_effect.id
+            defeff_id = self._eve_type.default_effect.id
         except AttributeError:
             defeff_id = None
         if defeff_id in (Effect.target_attack, Effect.mining_laser):
@@ -129,11 +122,10 @@ class ChargeableMixin(HolderBase, CooperativeVolatileMixin):
         """
         Return holder reload time in seconds.
         """
-        # Return hardcoded 1.0 if holder's item has target_attack effect
+        # Return hardcoded 1.0 if holder's eve type has target_attack effect
         # (various lasers), else fetch reload time attribute from holder
-        holder_item = self.item
         try:
-            defeff_id = holder_item.default_effect.id
+            defeff_id = self._eve_type.default_effect.id
         except AttributeError:
             pass
         else:

@@ -24,7 +24,7 @@ from enum import IntEnum, unique
 from eos.const.eve import Attribute, Effect
 from eos.fit.tuples import DamageTypesTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
-from .holder.holder import HolderBase
+from .base import BaseItemMixin
 
 
 @unique
@@ -61,7 +61,7 @@ MISSILE_EFFECT_WEAPON_MAP = {
 }
 
 
-class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
+class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to deal damage (modules, drones).
@@ -269,7 +269,7 @@ class DamageDealerMixin(HolderBase, CooperativeVolatileMixin):
             return None
         # If holder contains some charge type but can't hold enough to actually
         # cycle itself, do not consider such holder as weapon
-        if getattr(self, 'fully_charged_cycles_max', None) == 0:
+        if getattr(self, 'charged_cycles', None) == 0:
             return None
         # For some weapon types, it's enough to use just holder for detection
         weapon_type = SIMPLE_EFFECT_WEAPON_MAP.get(holder_defeff_id)

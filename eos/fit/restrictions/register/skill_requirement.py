@@ -35,36 +35,36 @@ EXCEPTIONS = (Rig,)
 class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    To use holder, all its skill requirements must be met.
+    To use item, all its skill requirements must be met.
 
     Details:
-    Only holders located within fit.skills container are able to
-    satisfy skill requirements.
+    Only items located within fit.skills container are able to
+        satisfy skill requirements.
     Original item attributes are taken to determine skill and
-    skill level requirements.
+        skill level requirements.
     If corresponding skill is found, but its skill level is None,
-    check for holder is failed.
+        check for item is failed.
     """
 
     def __init__(self, fit):
         self._fit = fit
-        # Set with holders which have any skill requirements
-        # Format: {holders}
-        self.__restricted_holders = set()
+        # Set with items which have any skill requirements
+        # Format: {items}
+        self.__restricted_items = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Holders which are not exceptions and which have any
         # skill requirement are tracked
         if holder.item.required_skills and not isinstance(holder, EXCEPTIONS):
-            self.__restricted_holders.add(holder)
+            self.__restricted_items.add(holder)
 
-    def unregister_holder(self, holder):
-        self.__restricted_holders.discard(holder)
+    def unregister_item(self, holder):
+        self.__restricted_items.discard(holder)
 
     def validate(self):
         tainted_holders = {}
         # Go through restricted holders
-        for holder in self.__restricted_holders:
+        for holder in self.__restricted_items:
             # Container for skill requirement errors
             # for current holder
             skill_requirement_errors = []

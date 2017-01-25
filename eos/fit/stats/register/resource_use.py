@@ -35,12 +35,12 @@ class ResourceUseRegister(BaseStatRegister):
         self.__usage_attr = usage_attr
         self.__resource_users = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if self.__usage_attr not in holder.item.attributes:
             return
         self.__resource_users.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__resource_users.discard(holder)
 
     def get_resource_use(self):
@@ -86,9 +86,9 @@ class DroneBayVolumeUseRegister(ResourceUseRegister):
     def __init__(self, fit):
         ResourceUseRegister.__init__(self, fit, Attribute.volume)
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if holder in self._fit.drones:
-            ResourceUseRegister.register_holder(self, holder)
+            ResourceUseRegister.register_item(self, holder)
 
 
 class DroneBandwidthUseRegister(ResourceUseRegister):

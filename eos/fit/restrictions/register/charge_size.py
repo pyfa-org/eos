@@ -48,7 +48,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
     def __init__(self):
         self.__restricted_containers = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Ignore container holders without charge attribute
         if not hasattr(holder, 'charge'):
             return
@@ -57,7 +57,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             return
         self.__restricted_containers.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__restricted_containers.discard(holder)
 
     def validate(self):

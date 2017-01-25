@@ -49,14 +49,14 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         # Format: {slot index: {holders}}
         self.__slotted_holders = KeyedSet()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Skip items which don't have index specifier
         slot_index = holder.item.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return
         self.__slotted_holders.add_data(slot_index, holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         slot_index = holder.item.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return

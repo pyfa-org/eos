@@ -52,7 +52,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         # Format: {holders}
         self.__group_restricted = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Ignore holders which do not belong to ship
         if holder._domain != ModifierDomain.ship:
             return
@@ -70,7 +70,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             return
         self.__group_restricted.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         # Just clear data containers
         group = holder.item.group
         self.__group_all.rm_data(group, holder)

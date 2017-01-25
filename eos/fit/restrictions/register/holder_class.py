@@ -86,11 +86,11 @@ class HolderClassRestrictionRegister(BaseRestrictionRegister):
         # Container for tracked holders
         self.__holders = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Yes, we're tracking all of them
         self.__holders.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__holders.discard(holder)
 
     def validate(self):

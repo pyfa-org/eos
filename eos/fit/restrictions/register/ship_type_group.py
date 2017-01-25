@@ -101,7 +101,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # Format: {holder: allowedData}
         self.__restricted_holders = {}
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         # Ignore all holders which do not belong to ship
         if holder._domain != ModifierDomain.ship:
             return
@@ -126,7 +126,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             groups=tuple(allowed_groups)
         )
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         if holder in self.__restricted_holders:
             del self.__restricted_holders[holder]
 

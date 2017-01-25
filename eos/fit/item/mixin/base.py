@@ -25,28 +25,30 @@ from random import random
 
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.messages import EffectsEnabled, EffectsDisabled, RefreshSource
+from eos.fit.null_source import NullSourceItem
 from eos.util.pubsub import BaseSubscriber
-from .null_source import NullSourceItem
 
 
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'status'))
 
 
-class HolderBase(BaseSubscriber, metaclass=ABCMeta):
+class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     """
-    Base holder class inherited by all classes that
-    need to keep track of modified attributes.
+    Base item class which provides all the data needed for attribute
+    calculation to work properly. Not directly subclassed by items,
+    but by other mixins (which implement concrete functionality over
+    it).
 
     Required arguments:
     type_id -- type ID of item which should serve as base
-    for this holder.
+        for this holder.
 
     Cooperative methods:
     __init__
     """
 
     def __init__(self, type_id, **kwargs):
-        # TypeID of item this holder is supposed to wrap
+        # Eve type ID this holder is supposed to wrap
         self._type_id = type_id
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
@@ -62,8 +64,18 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
         self.__disabled_effects = set()
         # Which type this holder wraps. Use null source item by default,
         # as holder doesn't have fit with source yet
-        self.item = NullSourceItem
+        self._eve_type = NullSourceItem
         super().__init__(**kwargs)
+
+    @property
+    @abstractmethod
+    def _domain(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _owner_modifiable(self):
+        ...
 
     @property
     def _fit(self):
@@ -80,14 +92,8 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
             new_fit._subscribe(self, (RefreshSource,))
 
     @property
-    @abstractmethod
-    def _domain(self):
-        ...
-
-    @property
-    @abstractmethod
-    def _owner_modifiable(self):
-        ...
+    def _original_attributes(self):
+        return self._eve_type.attributes
 
     # Effect methods
     @property
@@ -97,10 +103,10 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
 
         Return data as dictionary:
         {effect ID: (effect=effect object, chance=chance to apply
-        on effect activation, status=effect status)}
+            on effect activation, status=effect status)}
         """
         data = {}
-        for effect in self.item.effects:
+        for effect in self._eve_type.effects:
             # Get chance from modified attributes, if specified
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
@@ -115,7 +121,7 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
 
         Required arguments:
         effect_ids -- iterable with effect IDs, for which we're
-        changing status
+            changing status
         status -- True for enabling, False for disabling
         """
         if status:
@@ -130,8 +136,8 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
 
         Optional arguments:
         effect_filter -- randomize statuses of effects whose IDs
-        are in this iterable. When None, randomize all effects.
-        Default is None.
+            are in this iterable. When None, randomize all\
+            effects. Default is None.
         """
         to_enable = set()
         to_disable = set()
@@ -153,7 +159,7 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
     @property
     def _enabled_effects(self):
         """Return set with IDs of enabled effects"""
-        return set(e.id for e in self.item.effects).difference(self.__disabled_effects)
+        return set(e.id for e in self._eve_type.effects).difference(self.__disabled_effects)
 
     @property
     def _disabled_effects(self):
@@ -164,7 +170,7 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
         Unlike self.__disabled_effects, this property returns
         IDs of actual effects which are not active on this holder.
         """
-        return set(e.id for e in self.item.effects).intersection(self.__disabled_effects)
+        return set(e.id for e in self._eve_type.effects).intersection(self.__disabled_effects)
 
     def __enable_effects(self, effect_ids):
         """
@@ -227,6 +233,6 @@ class HolderBase(BaseSubscriber, metaclass=ABCMeta):
         # to an item - it's needed to raise errors on access to source-
         # dependent stuff
         except AttributeError:
-            self.item = NullSourceItem
+            self._eve_type = NullSourceItem
         else:
-            self.item = type_getter(self._type_id)
+            self._eve_type = type_getter(self._type_id)

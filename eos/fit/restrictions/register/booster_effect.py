@@ -50,11 +50,11 @@ class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
     def __init__(self):
         self.__boosters = set()
 
-    def register_holder(self, holder):
+    def register_item(self, holder):
         if isinstance(holder, Booster):
             self.__boosters.add(holder)
 
-    def unregister_holder(self, holder):
+    def unregister_item(self, holder):
         self.__boosters.discard(holder)
 
     def validate(self):
