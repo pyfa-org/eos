@@ -40,8 +40,8 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
     Details:
     Only items located within fit.skills container are able to
         satisfy skill requirements.
-    Original item attributes are taken to determine skill and
-        skill level requirements.
+    EVE type attributes are taken to determine skill and skill
+        level requirements.
     If corresponding skill is found, but its skill level is None,
         check for item is failed.
     """

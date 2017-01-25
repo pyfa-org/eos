@@ -181,9 +181,8 @@ class Checker:
         using module's effects. Engine relies on assumption that
         each module has at max one such effect. This type of check
         is better to be performed after data cleanup, because slot
-        type effects are still used on many other items (and thus
-        are not needed to be removed), and errors for items which
-        won't be actually used won't be printed.
+        type effects are still used on many EVE types we do not need
+        and want to remove to avoid printing unnecessary log entries.
         """
         table = self.data['dgmtypeeffects']
         rack_effects = (Effect.hi_power, Effect.med_power, Effect.lo_power)
@@ -195,11 +194,11 @@ class Checker:
             # rack effects
             if effect_id not in rack_effects:
                 continue
-            type_id = row['typeID']
-            if type_id in racked_items:
+            eve_type_id = row['typeID']
+            if eve_type_id in racked_items:
                 invalid_rows.add(row)
             else:
-                racked_items.add(type_id)
+                racked_items.add(eve_type_id)
         if invalid_rows:
             msg = '{} rows contain colliding module racks, removing them'.format(
                 len(invalid_rows))

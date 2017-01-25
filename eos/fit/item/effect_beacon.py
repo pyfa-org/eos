@@ -29,8 +29,8 @@ class EffectBeacon(ImmutableStateMixin):
     System-wide anomaly with all its special properties.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
+    type_id -- ID of EVE type which should serve as base
+        for this effect beacon.
 
     Cooperative methods:
     __init__

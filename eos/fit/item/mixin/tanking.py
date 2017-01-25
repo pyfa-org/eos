@@ -34,11 +34,11 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
     @VolatileProperty
     def hp(self):
         """
-        Access point to fetch hp of item. Provides following data:
+        Access point to fetch hp of an item. Provides following data:
 
         .hull, .armor, .shield -- number, or None if data can't
-        .total -- total amount of HP, if data for
-        some layer is not available, defaults hp of this layer to 0
+        .total -- total amount of HP, if data for some layer
+            is not available, defaults hp of this layer to 0
         """
         hull = self.attributes.get(Attribute.hp, None)
         armor = self.attributes.get(Attribute.armor_hp, None)
@@ -51,7 +51,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
     @VolatileProperty
     def resistances(self):
         """
-        Access point to fetch resistances of item. Provides following data:
+        Access point to fetch resistances of an item. Provides following data:
         .hull.em, .hull.thermal, .hull.kinetic, .hull.explosive,
         .armor.em, .armor.thermal, .armor.kinetic, .armor.explosive,
         .shield.em, .shield.thermal, .shield.kinetic, .shield.explosive
@@ -92,17 +92,17 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     def get_ehp(self, damage_profile):
         """
-        Get effective HP of item against passed damage profile.
+        Get effective HP of an item against passed damage profile.
 
         Required arguments:
         damage_profile -- object which has numbers as its following attibutes:
-        em, thermal, kinetic and explosive
+            em, thermal, kinetic and explosive
 
         Object with following attributes is returned:
         .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
         .total -- total effective HP, if data for some layer is not available,
-        defaults effective hp of this layer to 0; if data for all layers is not
-        available, equals None.
+            defaults effective hp of this layer to 0; if data for all layers
+            is not available, equals None.
         """
         if (
             damage_profile.em == 0 and
@@ -150,7 +150,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
     @VolatileProperty
     def worst_case_ehp(self):
         """
-        Get EVE-style effective HP for item.
+        Get EVE-style effective HP for an item.
 
         EVE takes the worst resistance and calculates EHP against it,
         on a per-layer basis.
@@ -158,8 +158,8 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         Object with following attributes is returned:
         .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
         .total -- total effective HP, if data for some layer is not available,
-        defaults effective hp of this layer to 0; if data for all layers is not
-        available, equals None.
+            defaults effective hp of this layer to 0; if data for all layers
+            is not available, equals None.
         """
         hull_ehp = self.__get_layer_worst_case_ehp(self.hp.hull, self.resistances.hull)
         armor_ehp = self.__get_layer_worst_case_ehp(self.hp.armor, self.resistances.armor)

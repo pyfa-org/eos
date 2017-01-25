@@ -38,9 +38,9 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
 
     Details:
     Charge volume and container capacity are taken from
-    attributes of original item.
+        EVE type attributes.
     If not specified, volume and/or capacity are assumed
-    to be 0.
+        to be 0.
     """
 
     def __init__(self):

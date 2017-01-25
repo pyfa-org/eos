@@ -50,7 +50,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         self.__slotted_holders = KeyedSet()
 
     def register_item(self, holder):
-        # Skip items which don't have index specifier
+        # Skip items which don't have index specified
         slot_index = holder._eve_type.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return
@@ -85,7 +85,7 @@ class SubsystemIndexRegister(SlotIndexRestrictionRegister):
     Multiple subsystems can't be added into the same subsystem slot.
 
     Details:
-    Slot to fill is determined by original item attributes.
+    Slot to fill is determined by EVE type attributes.
     """
 
     def __init__(self):
@@ -98,7 +98,7 @@ class ImplantIndexRegister(SlotIndexRestrictionRegister):
     Multiple implants can't be added into the same implant slot.
 
     Details:
-    Slot to fill is determined by original item attributes.
+    Slot to fill is determined by EVE type attributes.
     """
 
     def __init__(self):
@@ -111,7 +111,7 @@ class BoosterIndexRegister(SlotIndexRestrictionRegister):
     Multiple boosters can't be added into the same booster slot.
 
     Details:
-    Slot to fill is determined by original item attributes.
+    Slot to fill is determined by EVE type attributes.
     """
 
     def __init__(self):

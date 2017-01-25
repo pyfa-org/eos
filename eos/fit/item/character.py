@@ -30,8 +30,8 @@ class Character(ImmutableStateMixin):
     some attributes on it.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
+    type_id -- ID of EVE type which should serve as base
+        for this character.
 
     Cooperative methods:
     __init__

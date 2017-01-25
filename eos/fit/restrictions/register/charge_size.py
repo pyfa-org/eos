@@ -38,11 +38,11 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
 
     Details:
     If container specifies size and holder doesn't specify it,
-    charge is not allowed to be loaded.
+        charge is not allowed to be loaded.
     If container does not specify size, charge of any size
-    can be loaded.
-    To determine allowed size and charge size, original item
-    attributes are used.
+        can be loaded.
+    To determine allowed size and charge size, EVE type attributes
+        are used.
     """
 
     def __init__(self):

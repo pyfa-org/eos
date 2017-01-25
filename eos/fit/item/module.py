@@ -61,14 +61,14 @@ class ModuleHigh(Module):
     Ship's module from high slot.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
+    type_id -- ID of EVE type which should serve as base
+        for this module.
 
     Optional arguments:
     state -- initial state this module takes, default is
-    offline
+        offline
     charge -- charge object to load into module, default
-    is None
+        is None
 
     Cooperative methods:
     __init__
@@ -81,14 +81,14 @@ class ModuleMed(Module):
     Ship's module from medium slot.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
+    type_id -- ID of EVE type which should serve as base
+        for this module.
 
     Optional arguments:
     state -- initial state this module takes, default is
-    offline
+        offline
     charge -- charge object to load into module, default
-    is None
+        is None
 
     Cooperative methods:
     __init__
@@ -101,14 +101,14 @@ class ModuleLow(Module):
     Ship's module from low slot.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
+    type_id -- ID of EVE type which should serve as base
+        for this module.
 
     Optional arguments:
     state -- initial state this module takes, default is
-    offline
+        offline
     charge -- charge object to load into module, default
-    is None
+        is None
 
     Cooperative methods:
     __init__

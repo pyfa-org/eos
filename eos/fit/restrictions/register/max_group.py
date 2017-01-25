@@ -57,15 +57,15 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         if holder._domain != ModifierDomain.ship:
             return
         group = holder._eve_type.group
-        # Ignore holders, whose item isn't assigned
+        # Ignore holders, whose EVE type isn't assigned
         # to any group
         if group is None:
             return
         # Having group ID is sufficient condition
         # to enter container of all fitted holders
         self.__group_all.add_data(group, holder)
-        # To enter restriction container, original
-        # item must have restriction attribute
+        # To enter restriction container, EVE type
+        # must have restriction attribute
         if self.__max_group_attr not in holder._eve_type.attributes:
             return
         self.__group_restricted.add(holder)

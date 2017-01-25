@@ -32,10 +32,10 @@ StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'
 class StateRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    Verify that current state of holder is not bigger than
-    max state its item allows (e.g. passive modules cannot be
-    activated, active modules without overload effects cannot
-    be overloaded, and so on).
+    Verify that current state of holder is not bigger than max state
+    its EVE type allows (e.g. passive modules cannot be activated,
+    active modules without overload effects cannot be overloaded,
+    and so on).
     """
 
     def __init__(self):

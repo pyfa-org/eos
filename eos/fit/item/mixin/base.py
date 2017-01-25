@@ -55,13 +55,13 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # Which fit this item is bound to
         self.__fit = None
         # Contains IDs of effects which are prohibited to be run on this holder.
-        # It means that if there's an ID here - it does not mean that holder.item
+        # It means that if there's an ID here - it does not mean that holder._eve_type
         # has such effect, but if holder has it, it will be disabled. We need to keep
         # such IDs for case when holder has effect disabled, then it switches source
         # where it doesn't have effect with this ID anymore, then when it switches
         # back - this effect will be disabled like it has been before source switch
         self.__disabled_effects = set()
-        # Which type this holder wraps. Use null source item by default,
+        # Which EVE type this holder wraps. Use null source item by default,
         # as holder doesn't have fit with source yet
         self._eve_type = NullSourceItem
         super().__init__(**kwargs)
@@ -226,7 +226,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             type_getter = self._fit.source.cache_handler.get_type
         # When we're asked to refresh source, but we have no fit or
         # fit has no valid source assigned, we assign NullSource object
-        # to an item - it's needed to raise errors on access to source-
+        # as EVE type - it's needed to raise errors on access to source-
         # dependent stuff
         except AttributeError:
             self._eve_type = NullSourceItem

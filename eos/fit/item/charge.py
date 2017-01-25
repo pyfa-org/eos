@@ -29,8 +29,8 @@ class Charge(ImmutableStateMixin):
     Ammo - crystals, probes, bombs, etc.
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-    for this item.
+    type_id -- ID of EVE type which should serve as base
+        for this charge.
 
     Cooperative methods:
     __init__

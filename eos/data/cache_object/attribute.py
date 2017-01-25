@@ -36,7 +36,7 @@ class Attribute:
         self.max_attribute = max_attribute
 
         # Default value of this attribute, used when base attribute value
-        # is not available on item during calculation process
+        # is not available on EVE type during calculation process
         self.default_value = default_value
 
         # Boolean describing if it's good when attribute is high or not,

@@ -251,12 +251,11 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
         holder is not a weapon or an inactive weapon, None is returned.
         """
         eve_type = self._eve_type
-        # Guard against malformed or absent items
+        # Guard against malformed or absent EVE types
         try:
             holder_deffeff = eve_type.default_effect
         except AttributeError:
             return None
-        # Guard against malformed or absent default effect
         try:
             holder_defeff_id = holder_deffeff.id
             holder_defeff_state = holder_deffeff._state
@@ -280,7 +279,6 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
         # of weapon
         if holder_defeff_id == Effect.use_missiles:
             charge = getattr(self, 'charge', None)
-            # Guard against malformed or absent item and default effect
             try:
                 charge_defeff_id = charge._eve_type.default_effect.id
             except AttributeError:

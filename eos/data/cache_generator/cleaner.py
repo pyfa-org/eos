@@ -55,7 +55,7 @@ class Cleaner:
         """
         Mark some hardcoded evetypes as strong.
         """
-        # Tuple with categoryIDs of items we want to keep
+        # Tuple with category IDs of EVE types we want to keep
         strong_categories = (
             Category.ship,
             Category.module,
@@ -65,7 +65,7 @@ class Cleaner:
             Category.implant,
             Category.subsystem
         )
-        # Set with groupIDs of items we want to keep
+        # Set with group IDs of EVE types we want to keep
         # It is set because we will need to modify it
         strong_groups = {Group.character, Group.effect_beacon}
         # Go through table data, filling valid groups set according to valid categories
@@ -231,13 +231,13 @@ class Cleaner:
 
         # Helper function to fetch actual attribute values
         # from modinfo dicts
-        def add_item(modinfo, attr_name, items):
+        def add_entity(modinfo, attr_name, entities):
             try:
-                item_id = modinfo[attr_name]
+                entity_id = modinfo[attr_name]
             except KeyError:
                 pass
             else:
-                items.add(item_id)
+                entities.add(entity_id)
 
         # Format:
         # {effect ID: ({types}, {groups}, {attribs})}
@@ -264,10 +264,10 @@ class Cleaner:
             attrs = set()
             # Fill in sets with IDs from each modifier info dict
             for modinfo in modinfos:
-                add_item(modinfo, 'skillTypeID', types)
-                add_item(modinfo, 'groupID', groups)
-                add_item(modinfo, 'modifyingAttributeID', attrs)
-                add_item(modinfo, 'modifiedAttributeID', attrs)
+                add_entity(modinfo, 'skillTypeID', types)
+                add_entity(modinfo, 'groupID', groups)
+                add_entity(modinfo, 'modifyingAttributeID', attrs)
+                add_entity(modinfo, 'modifiedAttributeID', attrs)
             # If all of the sets are empty, do not add anything to
             # primary container
             if len(types) == 0 and len(groups) == 0 and len(attrs) == 0:

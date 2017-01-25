@@ -367,19 +367,19 @@ class DogmaRegister:
         affector -- affector object, which was being processed when error occurred
         """
         if isinstance(error, DirectDomainError):
-            msg = 'malformed modifier on item {}: unsupported target domain {} for direct modification'.format(
+            msg = 'malformed modifier on EVE type {}: unsupported target domain {} for direct modification'.format(
                 affector.source_holder._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredDomainError):
-            msg = 'malformed modifier on item {}: unsupported target domain {} for filtered modification'.format(
+            msg = 'malformed modifier on EVE type {}: unsupported target domain {} for filtered modification'.format(
                 affector.source_holder._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredSelfReferenceError):
-            msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(
+            msg = 'malformed modifier on EVE type {}: invalid reference to self for filtered modification'.format(
                 affector.source_holder._eve_type_id)
             logger.warning(msg)
         elif isinstance(error, ModifierTypeError):
-            msg = 'malformed modifier on item {}: invalid filter type {}'.format(
+            msg = 'malformed modifier on EVE type {}: invalid filter type {}'.format(
                 affector.source_holder._eve_type_id, error.args[0])
             logger.warning(msg)
         else:

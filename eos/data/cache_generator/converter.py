@@ -45,7 +45,7 @@ class Converter:
 
     def _move_attribs(self):
         """
-        Some of item attributes are defined in evetypes table.
+        Some of EVE type attributes are defined in evetypes table.
         We do not need them there, for data consistency it's worth
         to move them to dgmtypeattribs table.
         """

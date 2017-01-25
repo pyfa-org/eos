@@ -137,12 +137,12 @@ class MutableAttributeMap:
             try:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
             except BaseValueError as e:
-                msg = 'unable to find base value for attribute {} on item {}'.format(
+                msg = 'unable to find base value for attribute {} on EVE type {}'.format(
                     e.args[0], self.__holder._type_id)
                 logger.warning(msg)
                 raise KeyError(attr) from e
             except AttributeMetaError as e:
-                msg = 'unable to fetch metadata for attribute {}, requested for item {}'.format(
+                msg = 'unable to fetch metadata for attribute {}, requested for EVE type {}'.format(
                     e.args[0], self.__holder._type_id)
                 logger.error(msg)
                 raise KeyError(attr) from e
@@ -218,9 +218,9 @@ class MutableAttributeMap:
         BaseValueError -- attribute cannot be calculated, as its
         base value is not available
         """
-        # Assign base item attributes first to make sure than in case when
-        # we're calculating attribute for item/fit without source, it fails
-        # with null source error (triggered by accessing item's attribute)
+        # Assign EVE type attributes first to make sure than in case when we're
+        # calculating attribute for item without source, it fails with null
+        # source error (triggered by accessing EVE type attribute)
         base_attrs = self.__holder._eve_type.attributes
         # Attribute object for attribute being calculated
         try:
@@ -231,8 +231,7 @@ class MutableAttributeMap:
         # Base attribute value which we'll use for modification
         try:
             result = base_attrs[attr]
-        # If attribute isn't available on base item,
-        # base off its default value
+        # If attribute isn't available on EVE type, base off its default value
         except KeyError:
             result = attr_meta.default_value
             # If original attribute is not specified and default
@@ -252,7 +251,7 @@ class MutableAttributeMap:
                 source_holder, modifier = affector
                 operator = modifier.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
-                # source item category and operator
+                # source item EVE type category and operator
                 penalize = (
                     attr_meta.stackable is False and
                     source_holder._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
@@ -280,7 +279,7 @@ class MutableAttributeMap:
                 mod_list.append(mod_value)
             # Handle operator type failure
             except OperatorError as e:
-                msg = 'malformed modifier on item {}: unknown operator {}'.format(
+                msg = 'malformed modifier on EVE type {}: unknown operator {}'.format(
                     source_holder._type_id, e.args[0])
                 logger.warning(msg)
                 continue

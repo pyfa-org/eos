@@ -27,8 +27,8 @@ from eos.util.repr import make_repr_str
 
 class Type:
     """
-    Type represents any EVE item. All characters, ships,
-    incursion system-wide effects are actually items.
+    Type represents any EVE type. All characters, ships,
+    incursion system-wide effects are actually EVE types.
     """
 
     def __init__(
@@ -52,20 +52,20 @@ class Type:
         # which this type applies
         self.effects = effects
 
-        # Default effect of item, which defines its several major properties
+        # Default effect of EVE type, which defines its several major properties
         self.default_effect = default_effect
 
     @property
     def modifiers(self):
-        """ Get all modifiers spawned by item effects."""
+        """ Get all modifiers spawned by EVE type effects."""
         modifiers = []
         for effect in self.effects:
             for modifier in effect.modifiers:
                 modifiers.append(modifier)
         return modifiers
 
-    # Define attributes which describe item skill requirement details
-    # Format: {item attribute ID: level attribute ID}
+    # Define attributes which describe EVE type skill requirement details
+    # Format: {skill EVE type attribute ID: skill level attribute ID}
     __skillrq_attrs = {
         Attribute.required_skill_1: Attribute.required_skill_1_level,
         Attribute.required_skill_2: Attribute.required_skill_2_level,
@@ -154,10 +154,10 @@ class Type:
         Return value:
         Set with slot types
         """
-        # Container for slot types item uses
+        # Container for slot types EVE type uses
         slots = set()
         for effect in self.effects:
-            # Convert effect ID to slot type item takes
+            # Convert effect ID to slot type EVE type takes
             try:
                 slot = self.__effect_slot_map[effect.id]
             # Silently skip effect if it's not in map
