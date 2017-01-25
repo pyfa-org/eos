@@ -33,10 +33,10 @@ class TestMaxGroupActive(RestrictionTestCase):
     def test_fail_excess_all(self):
         # Make sure error is raised for all holders exceeding
         # their group restriction
-        item = self.ch.type_(type_id=1, group=6, attributes={Attribute.max_group_active: 1})
-        holder1 = Mock(state=State.active, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, group=6, attributes={Attribute.max_group_active: 1})
+        holder1 = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
-        holder2 = Mock(state=State.active, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
         self.assertIsNotNone(restriction_error1)
@@ -56,11 +56,11 @@ class TestMaxGroupActive(RestrictionTestCase):
     def test_mix_excess_one(self):
         # Make sure error is raised for just holders which excess
         # restriction, even if both are from the same group
-        item1 = self.ch.type_(type_id=1, group=92, attributes={Attribute.max_group_active: 1})
-        holder1 = Mock(state=State.active, item=item1, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type1 = self.ch.type_(type_id=1, group=92, attributes={Attribute.max_group_active: 1})
+        holder1 = Mock(state=State.active, _eve_type=eve_type1, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
-        item2 = self.ch.type_(type_id=2, group=92, attributes={Attribute.max_group_active: 2})
-        holder2 = Mock(state=State.active, item=item2, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type2 = self.ch.type_(type_id=2, group=92, attributes={Attribute.max_group_active: 2})
+        holder2 = Mock(state=State.active, _eve_type=eve_type2, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
         self.assertIsNotNone(restriction_error1)
@@ -74,14 +74,14 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_mix_excess_original(self):
-        # Check that original item attributes are used
-        item1 = self.ch.type_(type_id=1, group=61, attributes={Attribute.max_group_active: 1})
-        holder1 = Mock(state=State.active, item=item1, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+    def test_mix_excess_attr_eve_type(self):
+        # Check that EVE type attributes are used
+        eve_type1 = self.ch.type_(type_id=1, group=61, attributes={Attribute.max_group_active: 1})
+        holder1 = Mock(state=State.active, _eve_type=eve_type1, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         holder1.attributes = {Attribute.max_group_active: 2}
         self.add_holder(holder1)
-        item2 = self.ch.type_(type_id=2, group=61, attributes={Attribute.max_group_active: 2})
-        holder2 = Mock(state=State.active, item=item2, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type2 = self.ch.type_(type_id=2, group=61, attributes={Attribute.max_group_active: 2})
+        holder2 = Mock(state=State.active, _eve_type=eve_type2, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         holder2.attributes = {Attribute.max_group_active: 1}
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
@@ -99,10 +99,10 @@ class TestMaxGroupActive(RestrictionTestCase):
     def test_pass(self):
         # Make sure no errors are raised when number of added
         # items doesn't exceed any restrictions
-        item = self.ch.type_(type_id=1, group=860, attributes={Attribute.max_group_active: 2})
-        holder1 = Mock(state=State.active, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, group=860, attributes={Attribute.max_group_active: 2})
+        holder1 = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
-        holder2 = Mock(state=State.active, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
         self.assertIsNone(restriction_error1)
@@ -115,10 +115,10 @@ class TestMaxGroupActive(RestrictionTestCase):
 
     def test_pass_holder_none_group(self):
         # Check that holders with None group are not affected
-        item = self.ch.type_(type_id=1, group=None, attributes={Attribute.max_group_active: 1})
-        holder1 = Mock(state=State.active, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, group=None, attributes={Attribute.max_group_active: 1})
+        holder1 = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
-        holder2 = Mock(state=State.active, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
         self.assertIsNone(restriction_error1)
@@ -131,10 +131,10 @@ class TestMaxGroupActive(RestrictionTestCase):
 
     def test_pass_state(self):
         # No errors should occur if holders are not active+
-        item = self.ch.type_(type_id=1, group=886, attributes={Attribute.max_group_active: 1})
-        holder1 = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, group=886, attributes={Attribute.max_group_active: 1})
+        holder1 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
         self.assertIsNone(restriction_error1)
@@ -147,10 +147,10 @@ class TestMaxGroupActive(RestrictionTestCase):
 
     def test_pass_holder_non_ship(self):
         # Holders not belonging to ship shouldn't be affected
-        item = self.ch.type_(type_id=1, group=12, attributes={Attribute.max_group_active: 1})
-        holder1 = Mock(state=State.active, item=item, _domain=None, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, group=12, attributes={Attribute.max_group_active: 1})
+        holder1 = Mock(state=State.active, _eve_type=eve_type, _domain=None, spec_set=ModuleHigh(1))
         self.add_holder(holder1)
-        holder2 = Mock(state=State.active, item=item, _domain=None, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.active, _eve_type=eve_type, _domain=None, spec_set=ModuleHigh(1))
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_active)
         self.assertIsNone(restriction_error1)

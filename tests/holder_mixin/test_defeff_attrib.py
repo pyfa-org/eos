@@ -31,45 +31,45 @@ class TestHolderMixinSpecialAttrib(EosTestCase):
         super().setUp()
         self.mixin = DefaultEffectAttribMixin(type_id=None)
         self.mixin.attributes = {}
-        self.mixin.item = Mock()
+        self.mixin._eve_type = Mock()
 
     def test_tracking(self):
-        self.mixin.item.default_effect.tracking_speed_attribute = 102
+        self.mixin._eve_type.default_effect.tracking_speed_attribute = 102
         self.mixin.attributes[102] = 8
         self.assertAlmostEqual(self.mixin.tracking_speed, 8)
 
     def test_optimal(self):
-        self.mixin.item.default_effect.range_attribute = 102
+        self.mixin._eve_type.default_effect.range_attribute = 102
         self.mixin.attributes[102] = 8
         self.assertAlmostEqual(self.mixin.optimal_range, 8)
 
     def test_falloff(self):
-        self.mixin.item.default_effect.falloff_attribute = 102
+        self.mixin._eve_type.default_effect.falloff_attribute = 102
         self.mixin.attributes[102] = 8
         self.assertAlmostEqual(self.mixin.falloff_range, 8)
 
     def test_cycle(self):
-        self.mixin.item.default_effect.duration_attribute = 102
+        self.mixin._eve_type.default_effect.duration_attribute = 102
         self.mixin.attributes[102] = 800
         self.assertAlmostEqual(self.mixin.cycle_time, 0.8)
 
     def test_change(self):
-        self.mixin.item.default_effect.tracking_speed_attribute = 102
+        self.mixin._eve_type.default_effect.tracking_speed_attribute = 102
         self.mixin.attributes[102] = 8
         self.assertAlmostEqual(self.mixin.tracking_speed, 8)
         self.mixin.attributes[102] = 9
         self.assertAlmostEqual(self.mixin.tracking_speed, 9)
 
     def test_nodefault_effect(self):
-        self.mixin.item.default_effect = None
+        self.mixin._eve_type.default_effect = None
         self.mixin.attributes[102] = 800
         self.assertIsNone(self.mixin.cycle_time)
 
     def test_no_description(self):
-        self.mixin.item.default_effect.duration_attribute = None
+        self.mixin._eve_type.default_effect.duration_attribute = None
         self.mixin.attributes[102] = 800
         self.assertIsNone(self.mixin.cycle_time)
 
     def test_no_attr(self):
-        self.mixin.item.default_effect.duration_attribute = 102
+        self.mixin._eve_type.default_effect.duration_attribute = 102
         self.assertIsNone(self.mixin.cycle_time)

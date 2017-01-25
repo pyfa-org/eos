@@ -46,12 +46,12 @@ class TestDomainDirectCharacterSwitch(CalculatorTestCase):
         influence_source = IndependentItem(self.ch.type_(
             type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        item = self.ch.type_(type_id=2, attributes={tgt_attr.id: 100})
-        influence_target1 = IndependentItem(item)
+        eve_type = self.ch.type_(type_id=2, attributes={tgt_attr.id: 100})
+        influence_target1 = IndependentItem(eve_type)
         self.fit.character = influence_target1
         self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
         self.fit.character = None
-        influence_target2 = IndependentItem(item)
+        influence_target2 = IndependentItem(eve_type)
         self.fit.character = influence_target2
         self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
         self.fit.items.remove(influence_source)

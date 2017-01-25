@@ -86,12 +86,12 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     Details:
     Only holders belonging to ship are tracked.
     It's enough to satisfy any of conditions to make holder usable
-    (e.g. ship's group may not satisfy canFitShipGroupX restriction,
-    but its type may be suitable to use holder).
+    (e.g. ship's group may not satisfy canFitShipGroupX
+    restriction, but its type may be suitable to use holder).
     If holder has at least one restriction attribute, it is enabled
     for tracking by this register.
-    For validation, original values of canFitShipTypeX and
-    canFitShipGroupX attributes are taken.
+    For validation, canFitShipTypeX and canFitShipGroupX attribute
+    values of EVE type are taken.
     """
 
     def __init__(self, fit):

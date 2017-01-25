@@ -25,7 +25,6 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModOwnSrq(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by owner and skill requirement"""
 
     def _make_yaml(self, domain):
         yaml = (

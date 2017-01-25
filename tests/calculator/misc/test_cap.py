@@ -61,7 +61,7 @@ class TestCap(CalculatorTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_cap_original(self):
+    def test_cap_attr_eve_type(self):
         # Make sure that holder's own specified attribute
         # value is taken as cap
         holder = IndependentItem(self.ch.type_(
@@ -74,7 +74,7 @@ class TestCap(CalculatorTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_cap_modified(self):
+    def test_cap_attr_modified(self):
         # Make sure that holder's own specified attribute
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
@@ -108,7 +108,7 @@ class TestCap(CalculatorTestCase):
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ))
         self.fit.items.add(holder)
-        # Check attribute vs original cap
+        # Check attribute vs initial cap
         self.assertAlmostEqual(holder.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
         modifier = Modifier()

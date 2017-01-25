@@ -78,8 +78,8 @@ class HolderClassRestrictionRegister(BaseRestrictionRegister):
     by Implant class instance).
 
     Details:
-    To determine class matching to EVE type, attributes only of
-    original EVE type are used.
+    To determine item class matching to EVE type, only EVE type
+    attributes are used.
     """
 
     def __init__(self):

@@ -32,8 +32,8 @@ class TestRackCollision(GeneratorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.item = {'typeID': 1, 'groupID': 1, 'typeName_en-us': ''}
-        self.dh.data['evetypes'].append(self.item)
+        self.eve_type = {'typeID': 1, 'groupID': 1, 'typeName_en-us': ''}
+        self.dh.data['evetypes'].append(self.eve_type)
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
@@ -62,7 +62,7 @@ class TestRackCollision(GeneratorTestCase):
         self.assertEqual(len(data['effects']), 3)
 
     def test_cleaned(self):
-        del self.item['groupID']
+        del self.eve_type['groupID']
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         literal_stats = self.log[0]

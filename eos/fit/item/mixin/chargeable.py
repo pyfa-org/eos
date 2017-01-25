@@ -79,10 +79,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         ancillary armor repairers). None is returned if container can
         cycle without ammo consumption.
         """
-        # Various eve types consume charges during cycle, detect them
-        # based on presence of charge_rate attribute in original eve type
-        # (modified attribute value is always possible to fetch, as it
-        # has base value, so it's not reliable way to detect it)
+        # Various eve types consume charges during cycle, detect them based
+        # on presence of charge_rate attribute in EVE type (modified attribute
+        # value is always possible to fetch, as it has base value, so it's not
+        # reliable way to detect it)
         if Attribute.charge_rate in self._eve_type.attributes:
             return self.__get_ammo_cycles()
         # Detect crystal-based eve types using effects

@@ -58,8 +58,8 @@ class EosTestCase(TestCase):
         which have length) of passed object are clear
 
     When overriding setUp and tearDown methods, make sure
-    to call this class' original methods (before anything
-    else is done for setUp, and after for tearDown).
+    to call this class' methods (before anything else is
+    done for setUp, and after for tearDown).
     """
 
     def setUp(self):

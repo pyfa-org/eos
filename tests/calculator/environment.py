@@ -104,10 +104,10 @@ class Fit:
 
 class Holder:
 
-    def __init__(self, type_):
+    def __init__(self, eve_type):
         self.__fit = None
-        self._type_id = type_.id
-        self.item = type_
+        self._eve_type_id = eve_type.id
+        self._eve_type = eve_type
         self.attributes = MutableAttributeMap(self)
         self._disabled_effects = set()
         self.__state = State.offline
@@ -134,13 +134,10 @@ class Holder:
 
     @property
     def _enabled_effects(self):
-        return set(e.id for e in self.item.effects).difference(self._disabled_effects)
+        return set(e.id for e in self._eve_type.effects).difference(self._disabled_effects)
 
 
 class IndependentItem(Holder):
-
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
 
     @property
     def _domain(self):
@@ -153,9 +150,6 @@ class IndependentItem(Holder):
 
 class CharacterItem(Holder):
 
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
-
     @property
     def _domain(self):
         return ModifierDomain.character
@@ -166,9 +160,6 @@ class CharacterItem(Holder):
 
 
 class ShipItem(Holder):
-
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
 
     @property
     def _domain(self):
@@ -181,9 +172,6 @@ class ShipItem(Holder):
 
 class OwnModItem(Holder):
 
-    def __init__(self, type_):
-        Holder.__init__(self, type_)
-
     @property
     def _domain(self):
         return None
@@ -195,13 +183,13 @@ class OwnModItem(Holder):
 
 class ContainerHolder(IndependentItem):
 
-    def __init__(self, type_):
-        IndependentItem.__init__(self, type_)
+    def __init__(self, eve_type):
+        IndependentItem.__init__(self, eve_type)
         self.charge = None
 
 
 class ChargeHolder(IndependentItem):
 
-    def __init__(self, type_):
-        IndependentItem.__init__(self, type_)
+    def __init__(self, eve_type):
+        IndependentItem.__init__(self, eve_type)
         self.container = None

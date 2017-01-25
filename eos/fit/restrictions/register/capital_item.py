@@ -42,8 +42,8 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
 
     Details:
     Only holders belonging to ship are tracked.
-    For validation, unmodified volume value is taken. If
-    volume attribute is absent, holder is not validated.
+    For validation, EVE type volume value is taken. If
+    volume attribute is absent, holder is not restricted.
     """
 
     def __init__(self, fit):

@@ -31,7 +31,7 @@ class TestHolderMixinSideEffect(EosTestCase):
     def setUp(self):
         super().setUp()
         self.mixin = SideEffectMixin(type_id=None)
-        self.mixin.item = Mock()
+        self.mixin._eve_type = Mock()
 
     def test_data(self):
         # Setup
@@ -45,7 +45,7 @@ class TestHolderMixinSideEffect(EosTestCase):
         effect3.id = 999
         effect3.fitting_usage_chance_attribute = None
         self.mixin.set_side_effect_status(555, False)
-        self.mixin.item.effects = (effect1, effect2, effect3)
+        self.mixin._eve_type.effects = (effect1, effect2, effect3)
         self.mixin.attributes = {2: 0.5, 55: 0.1}
         # Checks
         side_effects = self.mixin.side_effects
@@ -62,9 +62,9 @@ class TestHolderMixinSideEffect(EosTestCase):
         self.assertEqual(side_effect2.status, False)
 
     def test_persistence(self):
-        # Here we check that when holder.item doesn't have effect
-        # which was disabled anymore, everything runs as expected,
-        # and when this effect appears again - it's disabled
+        # Here we check that when holder._eve_type doesn't have effect
+        # which was disabled anymore, everything runs as expected, and
+        # when this effect appears again - it's disabled
         # Setup
         effect1 = Mock()
         effect1.id = 22
@@ -80,14 +80,14 @@ class TestHolderMixinSideEffect(EosTestCase):
         effect3.fitting_usage_chance_attribute = None
         self.mixin.set_side_effect_status(555, False)
         self.mixin.set_side_effect_status(22, False)
-        self.mixin.item.effects = (effect1, effect2, effect3)
+        self.mixin._eve_type.effects = (effect1, effect2, effect3)
         self.mixin.attributes = {2: 0.5, 55: 0.1}
         # Action
-        self.mixin.item.effects = (effect2_repl, effect3)
+        self.mixin._eve_type.effects = (effect2_repl, effect3)
         # Checks
         side_effects = self.mixin.side_effects
         # Action
-        self.mixin.item.effects = (effect1, effect2, effect3)
+        self.mixin._eve_type.effects = (effect1, effect2, effect3)
         # Checks
         side_effects = self.mixin.side_effects
         self.assertEqual(len(side_effects), 2)

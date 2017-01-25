@@ -234,7 +234,7 @@ class MutableAttributeMap:
         # If attribute isn't available on EVE type, base off its default value
         except KeyError:
             result = attr_meta.default_value
-            # If original attribute is not specified and default
+            # If EVE type attribute is not specified and default
             # value isn't available, raise error - without valid
             # base we can't go on
             if result is None:

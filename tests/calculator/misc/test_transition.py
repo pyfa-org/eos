@@ -31,7 +31,7 @@ from tests.environment import CacheHandler
 class TestTransitionFit(CalculatorTestCase):
     """
     Test cases when holder is transferred from fit to fit, when both
-    fits have source assigned (i.e. holder's item doesn't change).
+    fits have source assigned (i.e. holder's EVE type doesn't change).
     """
 
     def test_fit_attr_update(self):
@@ -96,16 +96,15 @@ class TestTransitionFit(CalculatorTestCase):
         effect1.modifiers = (modifier,)
         effect2 = cache_handler1.effect(effect_id=111, category=EffectCategory.passive)
         effect2.modifiers = (modifier,)
-        # Our holders from test environment fo not update undelying
-        # item automatically when source is changed, thus we do it
-        # manually
-        ship_item1 = cache_handler1.type_(type_id=8, effects=(effect1,), attributes={src_attr1.id: 10})
-        ship_item2 = cache_handler2.type_(type_id=8, effects=(effect2,), attributes={src_attr2.id: 20})
-        module_item1 = cache_handler1.type_(type_id=4, attributes={tgt_attr1.id: 50})
-        module_item2 = cache_handler2.type_(type_id=4, attributes={tgt_attr2.id: 75})
+        # Our holders from test environment do not update undelying EVE type
+        # automatically when source is changed, thus we do it manually
+        ship_eve_type1 = cache_handler1.type_(type_id=8, effects=(effect1,), attributes={src_attr1.id: 10})
+        ship_eve_type2 = cache_handler2.type_(type_id=8, effects=(effect2,), attributes={src_attr2.id: 20})
+        module_eve_type1 = cache_handler1.type_(type_id=4, attributes={tgt_attr1.id: 50})
+        module_eve_type2 = cache_handler2.type_(type_id=4, attributes={tgt_attr2.id: 75})
         fit = Fit(cache_handler1)
-        ship = IndependentItem(ship_item1)
-        module = ShipItem(module_item1)
+        ship = IndependentItem(ship_eve_type1)
+        module = ShipItem(module_eve_type1)
         fit.ship = ship
         fit.items.add(module)
         self.assertAlmostEqual(module.attributes.get(tgt_attr1.id), 55)
@@ -116,9 +115,9 @@ class TestTransitionFit(CalculatorTestCase):
         # Refresh holders and replace source
         fit.source.cache_handler = cache_handler2
         ship.attributes.clear()
-        ship.item = ship_item2
+        ship._eve_type = ship_eve_type2
         module.attributes.clear()
-        module.item = module_item2
+        module._eve_type = module_eve_type2
         # When we cleared holders, auxiliary map for capped attrs should be None.
         # Using data in this map, attributes which depend on capping attribute will
         # be cleared. If we don't clear it, there're chances that in new data this

@@ -63,8 +63,8 @@ class DamageDealerRegister(BaseStatRegister):
             if holder_filter is not None and not holder_filter(holder):
                 continue
             # Guards against both aggregated values equal to None and
-            # holder values equal to None. If original value is equal to
-            # None, assigns to variable value from holder stats. If holder
+            # holder values equal to None. If aggregated value is None,
+            # assigns value from holder stats to aggregated. If holder
             # stat is None, just ignores it.
             try:
                 em += stat.em

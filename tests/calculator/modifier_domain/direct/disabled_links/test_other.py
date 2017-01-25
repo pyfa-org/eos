@@ -49,14 +49,14 @@ class TestDomainDirectOtherSwitch(CalculatorTestCase):
         influence_source = ContainerHolder(self.ch.type_(
             type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        item = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
-        influence_target1 = ChargeHolder(item)
+        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        influence_target1 = ChargeHolder(eve_type)
         influence_source.charge = influence_target1
         influence_target1.container = influence_source
         self.fit.items.add(influence_target1)
         self.assertNotAlmostEqual(influence_target1.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target1)
-        influence_target2 = ChargeHolder(item)
+        influence_target2 = ChargeHolder(eve_type)
         influence_target1.container = None
         influence_source.charge = influence_target2
         influence_target2.container = influence_source
@@ -73,14 +73,14 @@ class TestDomainDirectOtherSwitch(CalculatorTestCase):
         influence_source = ChargeHolder(self.ch.type_(
             type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        item = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
-        influence_target1 = ContainerHolder(item)
+        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        influence_target1 = ContainerHolder(eve_type)
         influence_source.container = influence_target1
         influence_target1.charge = influence_source
         self.fit.items.add(influence_target1)
         self.assertNotAlmostEqual(influence_target1.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target1)
-        influence_target2 = ContainerHolder(item)
+        influence_target2 = ContainerHolder(eve_type)
         influence_target1.charge = None
         influence_source.container = influence_target2
         influence_target2.charge = influence_source

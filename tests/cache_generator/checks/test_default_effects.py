@@ -32,8 +32,8 @@ class TestDefaultEffects(GeneratorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.item = {'typeID': 1, 'groupID': 1, 'typeName_en-us': ''}
-        self.dh.data['evetypes'].append(self.item)
+        self.eve_type = {'typeID': 1, 'groupID': 1, 'typeName_en-us': ''}
+        self.dh.data['evetypes'].append(self.eve_type)
         self.eff_link1 = {'typeID': 1, 'effectID': 1}
         self.eff_link2 = {'typeID': 1, 'effectID': 2}
         self.dh.data['dgmtypeeffects'].append(self.eff_link1)
@@ -84,7 +84,7 @@ class TestDefaultEffects(GeneratorTestCase):
         self.assertEqual(data['effects'][1]['falloff_attribute'], 10)
 
     def test_cleanup(self):
-        del self.item['groupID']
+        del self.eve_type['groupID']
         self.eff_link1['isDefault'] = True
         self.eff_link2['isDefault'] = True
         data = self.run_generator()

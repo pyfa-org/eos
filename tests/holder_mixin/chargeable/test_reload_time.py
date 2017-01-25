@@ -31,35 +31,35 @@ class TestHolderMixinChargeReloadTime(EosTestCase):
     def setUp(self):
         super().setUp()
         self.holder = ModuleHigh(type_id=None)
-        self.holder.item = Mock()
+        self.holder._eve_type = Mock()
         self.holder._clear_volatile_attrs = Mock()
         self.holder.attributes = {}
 
     def test_generic(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item.default_effect.id = 1008
+        self.holder._eve_type.default_effect.id = 1008
         self.assertEqual(self.holder.reload_time, 5.0)
 
     def test_generic_no_attribute(self):
-        self.holder.item.default_effect.id = 1008
+        self.holder._eve_type.default_effect.id = 1008
         self.assertIsNone(self.holder.reload_time)
 
-    def test_generic_no_item(self):
+    def test_generic_no_eve_type(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item = None
+        self.holder._eve_type = None
         self.assertEqual(self.holder.reload_time, 5.0)
 
     def test_generic_no_default_effect(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item.default_effect = None
+        self.holder._eve_type.default_effect = None
         self.assertEqual(self.holder.reload_time, 5.0)
 
     def test_combat_combat_laser(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.reload_time, 1.0)
 
     def test_combat_mining_laser(self):
         self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder.item.default_effect.id = Effect.mining_laser
+        self.holder._eve_type.default_effect.id = Effect.mining_laser
         self.assertEqual(self.holder.reload_time, 1.0)

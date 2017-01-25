@@ -44,8 +44,7 @@ class TestNonExistent(CalculatorTestCase):
 
     def test_absent_base_value_error(self):
         # Check case when default value of attribute cannot be
-        # determined. and item itself doesn't define any value
-        # either
+        # determined. and EVE type doesn't define any value either
         attr = self.ch.attribute(attribute_id=89)
         holder = IndependentItem(self.ch.type_(type_id=649))
         self.fit.items.add(holder)
@@ -60,7 +59,7 @@ class TestNonExistent(CalculatorTestCase):
 
     def test_absent_default_value(self):
         # Default value should be used if attribute
-        # value is not available on item
+        # value is not available on EVE type
         attr = self.ch.attribute(attribute_id=1, default_value=5.6)
         holder = IndependentItem(self.ch.type_(type_id=1))
         self.fit.items.add(holder)

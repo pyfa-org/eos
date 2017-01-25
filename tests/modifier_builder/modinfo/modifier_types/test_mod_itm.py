@@ -25,7 +25,6 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModItm(ModBuilderTestCase):
-    """Test parsing of YAML describing direct item modification"""
 
     def _make_yaml(self, domain):
         yaml = (

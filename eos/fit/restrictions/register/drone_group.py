@@ -45,10 +45,10 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
 
     Details:
     Only holders of Drone class are tracked.
-    For validation, original values of allowedDroneGroupX attributes
-    are taken. Validation fails if ship's original attributes have
-    any restriction attribute, and drone group doesn't match to
-    restriction.
+    For validation, allowedDroneGroupX attribute values of EVE type
+    are taken.
+    Validation fails if ship's EVE type has any restriction attribute,
+    and drone group doesn't match to restriction.
     """
 
     def __init__(self, fit):

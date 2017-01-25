@@ -32,9 +32,9 @@ class TestHolderMixinDamageDroneNominalVolley(EosTestCase):
     def setUp(self):
         super().setUp()
         mixin = DamageDealerMixin(type_id=None)
-        mixin.item = Mock()
-        mixin.item.default_effect.id = Effect.target_attack
-        mixin.item.default_effect._state = State.active
+        mixin._eve_type = Mock()
+        mixin._eve_type.default_effect.id = Effect.target_attack
+        mixin._eve_type.default_effect._state = State.active
         mixin.attributes = {}
         mixin.state = State.active
         mixin.cycle_time = 0.5

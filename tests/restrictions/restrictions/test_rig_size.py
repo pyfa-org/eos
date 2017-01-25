@@ -33,11 +33,11 @@ class TestRigSize(RestrictionTestCase):
     def test_fail_mismatch(self):
         # Error should be raised when mismatching rig size
         # is added to ship
-        item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
         self.add_holder(holder)
-        ship_item = self.ch.type_(type_id=2, attributes={Attribute.rig_size: 6})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.rig_size: 6})
+        ship_holder = Mock(state=State.offline, _eve_type=ship_eve_type, _domain=None, spec_set=Ship(1))
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.rig_size)
         self.assertIsNotNone(restriction_error)
@@ -48,14 +48,14 @@ class TestRigSize(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_fail_original(self):
-        # Original value must be taken
-        item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Rig(1))
+    def test_fail_attr_eve_type(self):
+        # EVE type value must be taken
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
         holder.attributes = {Attribute.rig_size: 5}
         self.add_holder(holder)
-        ship_item = self.ch.type_(type_id=2, attributes={Attribute.rig_size: 6})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.rig_size: 6})
+        ship_holder = Mock(state=State.offline, _eve_type=ship_eve_type, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {Attribute.rig_size: 5}
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.rig_size)
@@ -70,8 +70,8 @@ class TestRigSize(RestrictionTestCase):
     def test_pass_no_ship(self):
         # When no ship is assigned, no restriction
         # should be applied to ships
-        item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.rig_size)
         self.assertIsNone(restriction_error)
@@ -82,11 +82,11 @@ class TestRigSize(RestrictionTestCase):
     def test_pass_ship_no_attr(self):
         # If ship doesn't have rig size attribute,
         # no restriction is applied onto rigs
-        item = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=Rig(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.rig_size: 10})
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=Rig(1))
         self.add_holder(holder)
-        ship_item = self.ch.type_(type_id=2)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=2)
+        ship_holder = Mock(state=State.offline, _eve_type=ship_eve_type, _domain=None, spec_set=Ship(1))
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.rig_size)

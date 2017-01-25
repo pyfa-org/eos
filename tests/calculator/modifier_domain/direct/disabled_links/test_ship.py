@@ -46,12 +46,12 @@ class TestDomainDirectShipSwitch(CalculatorTestCase):
         influence_source = IndependentItem(self.ch.type_(
             type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        item = self.ch.type_(type_id=None, attributes={tgt_attr.id: 100})
-        influence_target1 = IndependentItem(item)
+        eve_type = self.ch.type_(type_id=None, attributes={tgt_attr.id: 100})
+        influence_target1 = IndependentItem(eve_type)
         self.fit.ship = influence_target1
         self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
         self.fit.ship = None
-        influence_target2 = IndependentItem(item)
+        influence_target2 = IndependentItem(eve_type)
         self.fit.ship = influence_target2
         self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
         self.fit.items.remove(influence_source)

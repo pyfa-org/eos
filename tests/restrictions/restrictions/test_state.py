@@ -30,9 +30,9 @@ class TestState(RestrictionTestCase):
     """Check functionality of holder state restriction"""
 
     def test_state_lower(self):
-        item = self.ch.type_(type_id=1)
-        item.max_state = State.active
-        holder = Mock(state=State.online, item=item, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        eve_type.max_state = State.active
+        holder = Mock(state=State.online, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
@@ -41,9 +41,9 @@ class TestState(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_state_equal(self):
-        item = self.ch.type_(type_id=1)
-        item.max_state = State.active
-        holder = Mock(state=State.active, item=item, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        eve_type.max_state = State.active
+        holder = Mock(state=State.active, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNone(restriction_error)
@@ -52,9 +52,10 @@ class TestState(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_state_higher(self):
-        item = self.ch.type_(type_id=1)
-        item.max_state = State.active
-        holder = Mock(state=State.overload, item=item, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        eve_type.max_state = State.active
+        holder = Mock(
+            state=State.overload, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=ModuleHigh(1))
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.state)
         self.assertIsNotNone(restriction_error)

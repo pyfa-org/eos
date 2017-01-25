@@ -51,9 +51,9 @@ class TestFilterDomainSkillrqSelf(CalculatorTestCase):
         self.fit.items.add(self.influence_source)
 
     def test_match(self):
-        item = self.ch.type_(type_id=1, attributes={self.tgt_attr.id: 100})
-        item.required_skills = {772: 1}
-        influence_target = ShipItem(item)
+        eve_type = self.ch.type_(type_id=1, attributes={self.tgt_attr.id: 100})
+        eve_type.required_skills = {772: 1}
+        influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)
@@ -63,9 +63,9 @@ class TestFilterDomainSkillrqSelf(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_skill(self):
-        item = self.ch.type_(type_id=1, attributes={self.tgt_attr.id: 100})
-        item.required_skills = {51: 1}
-        influence_target = ShipItem(item)
+        eve_type = self.ch.type_(type_id=1, attributes={self.tgt_attr.id: 100})
+        eve_type.required_skills = {51: 1}
+        influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)

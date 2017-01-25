@@ -25,7 +25,6 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModDomGrp(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by domain and group"""
 
     def _make_yaml(self, domain):
         yaml = (

@@ -37,7 +37,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     be used.
 
     Details:
-    For validation, original value of rig_size attribute is taken.
+    For validation, rig_size attribute value of EVE type is taken.
     """
 
     def __init__(self, fit):

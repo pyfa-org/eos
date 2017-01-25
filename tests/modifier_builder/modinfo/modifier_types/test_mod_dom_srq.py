@@ -25,7 +25,6 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoModDomSrq(ModBuilderTestCase):
-    """Test parsing of YAML describing modification filtered by domain and skill requirement"""
 
     def _make_yaml(self, domain):
         yaml = (
@@ -55,7 +54,7 @@ class TestBuilderModinfoModDomSrq(ModBuilderTestCase):
     def test_domain_item(self):
         effect_row = {
             'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('null')
+            'modifier_info': self._make_yaml('itemID')
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)

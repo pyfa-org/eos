@@ -31,31 +31,31 @@ class TestHolderMixinChargedCycles(EosTestCase):
     def setUp(self):
         super().setUp()
         self.holder = ModuleHigh(type_id=None)
-        self.holder.item = Mock()
-        self.holder.item.attributes = {}
+        self.holder._eve_type = Mock()
+        self.holder._eve_type.attributes = {}
         self.holder.attributes = {}
         self.charge = Charge(type_id=None)
-        self.charge.item = Mock()
-        self.charge.item.attributes = {}
+        self.charge._eve_type = Mock()
+        self.charge._eve_type.attributes = {}
         self.charge.attributes = {}
         self.holder.charge = self.charge
 
     def test_ammo_generic(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.item.attributes[Attribute.charge_rate] = 1.0
+        self.holder._eve_type.attributes[Attribute.charge_rate] = 1.0
         self.holder.attributes[Attribute.charge_rate] = 2.0
         self.assertEqual(self.holder.charged_cycles, 25)
 
     def test_ammo_round_down(self):
         self.holder.attributes[Attribute.capacity] = 22.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.item.attributes[Attribute.charge_rate] = 1.0
+        self.holder._eve_type.attributes[Attribute.charge_rate] = 1.0
         self.holder.attributes[Attribute.charge_rate] = 4.0
         self.assertEqual(self.holder.charged_cycles, 2)
 
     def test_ammo_no_quantity(self):
-        self.holder.item.attributes[Attribute.charge_rate] = 1.0
+        self.holder._eve_type.attributes[Attribute.charge_rate] = 1.0
         self.holder.attributes[Attribute.charge_rate] = 4.0
         self.assertIsNone(self.holder.charged_cycles)
 
@@ -66,7 +66,7 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.charged_cycles, 4400)
 
     def test_laser_mining(self):
@@ -76,7 +76,7 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item.default_effect.id = Effect.mining_laser
+        self.holder._eve_type.default_effect.id = Effect.mining_laser
         self.assertEqual(self.holder.charged_cycles, 4400)
 
     def test_laser_not_damageable(self):
@@ -85,7 +85,7 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.charged_cycles)
 
     def test_laser_no_hp(self):
@@ -94,7 +94,7 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.charged_cycles)
 
     def test_laser_no_chance(self):
@@ -103,7 +103,7 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.charged_cycles)
 
     def test_laser_no_damage(self):
@@ -112,30 +112,30 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.charged_cycles)
 
-    def test_no_item(self):
+    def test_no_eve_type(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.item = None
+        self.holder._eve_type = None
         self.holder.attributes[Attribute.charge_rate] = 2.0
         self.assertIsNone(self.holder.charged_cycles)
 
     def test_no_default_effect(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.item.default_effect = None
+        self.holder._eve_type.default_effect = None
         self.holder.attributes[Attribute.charge_rate] = 2.0
         self.assertIsNone(self.holder.charged_cycles)
 
     def test_cache(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.item.attributes[Attribute.charge_rate] = 1.0
+        self.holder._eve_type.attributes[Attribute.charge_rate] = 1.0
         self.holder.attributes[Attribute.charge_rate] = 2.0
         self.assertEqual(self.holder.charged_cycles, 25)
-        del self.holder.item.attributes[Attribute.charge_rate]
+        del self.holder._eve_type.attributes[Attribute.charge_rate]
         del self.holder.attributes[Attribute.charge_rate]
         self.holder.attributes[Attribute.capacity] = 4.0
         self.charge.attributes[Attribute.volume] = 2.0
@@ -143,17 +143,17 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item._effect_ids = (Effect.target_attack,)
+        self.holder._eve_type._effect_ids = (Effect.target_attack,)
         self.assertEqual(self.holder.charged_cycles, 25)
 
     def test_cache_volatility(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.item.attributes[Attribute.charge_rate] = 1.0
+        self.holder._eve_type.attributes[Attribute.charge_rate] = 1.0
         self.holder.attributes[Attribute.charge_rate] = 2.0
         self.assertEqual(self.holder.charged_cycles, 25)
         self.holder._clear_volatile_attrs()
-        del self.holder.item.attributes[Attribute.charge_rate]
+        del self.holder._eve_type.attributes[Attribute.charge_rate]
         del self.holder.attributes[Attribute.charge_rate]
         self.holder.attributes[Attribute.capacity] = 4.0
         self.charge.attributes[Attribute.volume] = 2.0
@@ -161,5 +161,5 @@ class TestHolderMixinChargedCycles(EosTestCase):
         self.charge.attributes[Attribute.hp] = 2.2
         self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
         self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.holder.item.default_effect.id = Effect.target_attack
+        self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertEqual(self.holder.charged_cycles, 4400)

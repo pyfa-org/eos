@@ -32,8 +32,8 @@ class TestHighSlot(RestrictionTestCase):
     def test_fail_excess_signle(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
-        item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder)
         self.fit.stats.high_slots.used = 1
         self.fit.stats.high_slots.total = 0
@@ -46,8 +46,8 @@ class TestHighSlot(RestrictionTestCase):
 
     def test_fail_excess_signle_other_class_domain(self):
         # Make sure holders of all classes are affected
-        item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.character, spec_set=Implant(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.character, spec_set=Implant(1))
         self.fit.modules.high.append(holder)
         self.fit.stats.high_slots.used = 1
         self.fit.stats.high_slots.total = 0
@@ -61,8 +61,8 @@ class TestHighSlot(RestrictionTestCase):
     def test_fail_excess_signle_undefined_output(self):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
-        item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder)
         self.fit.stats.high_slots.used = 1
         self.fit.stats.high_slots.total = None
@@ -76,9 +76,9 @@ class TestHighSlot(RestrictionTestCase):
     def test_fail_excess_multiple(self):
         # Check that error works for multiple holders, and raised
         # only for those which lie out of bounds
-        item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder1)
         self.fit.modules.high.append(holder2)
         self.fit.stats.high_slots.used = 2
@@ -94,10 +94,10 @@ class TestHighSlot(RestrictionTestCase):
 
     def test_fail_excess_multiple_with_nones(self):
         # Make sure Nones are processed properly
-        item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder3 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder3 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(None)
         self.fit.modules.high.append(holder1)
         self.fit.modules.high.append(None)
@@ -121,9 +121,9 @@ class TestHighSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_equal(self):
-        item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder1)
         self.fit.modules.high.append(holder2)
         self.fit.stats.high_slots.used = 2
@@ -136,9 +136,9 @@ class TestHighSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_greater(self):
-        item = self.ch.type_(type_id=1)
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder1 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.high.append(holder1)
         self.fit.modules.high.append(holder2)
         self.fit.stats.high_slots.used = 2
@@ -151,8 +151,8 @@ class TestHighSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_other_container(self):
-        item = self.ch.type_(type_id=1)
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1)
+        holder = Mock(state=State.offline, _eve_type=eve_type, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
         self.fit.modules.med.append(holder)
         self.fit.stats.high_slots.used = 1
         self.fit.stats.high_slots.total = 0

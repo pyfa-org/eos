@@ -94,10 +94,10 @@ class TestDomainDirectSelf(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other(self):
-        # Here we check that self-reference modifies only carrier-item,
+        # Here we check that self-reference modifies only carrier of effect,
         # and nothing else is affected. We position item as character and
-        # check character item to also check that items 'belonging' to self
-        # are not affected too
+        # check another item which belongs to character domain to ensure
+        # that items 'belonging' to self are not affected too
         influence_source = IndependentItem(self.ch.type_(
             type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.character = influence_source

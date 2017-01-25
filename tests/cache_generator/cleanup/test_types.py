@@ -26,7 +26,7 @@ from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 class TestCleanupTypes(GeneratorTestCase):
     """
-    Check which items should stay in the data.
+    Check which entries should stay in the data.
     """
 
     def test_group_character(self):

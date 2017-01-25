@@ -46,8 +46,8 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
     can fit, other groups cannot be loaded into it.
 
     Details:
-    For validation, original values of allowed charge group
-    attributes are taken.
+    For validation, allowed charge group attribute values of
+    EVE type are taken.
     """
 
     def __init__(self):

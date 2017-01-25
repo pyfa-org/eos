@@ -32,15 +32,15 @@ class TestHolderMixinDamageBombNominalDps(EosTestCase):
     def setUp(self):
         super().setUp()
         mixin = DamageDealerMixin(type_id=None)
-        mixin.item = Mock()
-        mixin.item.default_effect.id = Effect.use_missiles
-        mixin.item.default_effect._state = State.active
+        mixin._eve_type = Mock()
+        mixin._eve_type.default_effect.id = Effect.use_missiles
+        mixin._eve_type.default_effect._state = State.active
         mixin.attributes = {}
         mixin.state = State.active
         mixin.cycle_time = 0.5
         mixin.reactivation_delay = 1.5
         mixin.charge = Mock()
-        mixin.charge.item.default_effect.id = Effect.bomb_launching
+        mixin.charge._eve_type.default_effect.id = Effect.bomb_launching
         mixin.charge.attributes = {}
         mixin.fully_charged_cycles_max = 2
         mixin.reload_time = 10
