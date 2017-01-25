@@ -197,13 +197,13 @@ class DogmaRegister:
                 domain = self.__contextize_filter_domain(affector)
                 skill = modifier.extra_arg
                 if skill == EosEveTypes.current_self:
-                    skill = affector.source_holder.item.id
+                    skill = affector.source_holder._eve_type_id
                 key = (domain, skill)
                 target = self.__affectee_domain_skillrq.get(key) or set()
             elif modifier.type == ModifierType.owner_skillrq:
                 skill = modifier.extra_arg
                 if skill == EosEveTypes.current_self:
-                    skill = affector.source_holder.item.id
+                    skill = affector.source_holder._eve_type_id
                 key = skill
                 target = self.__affectee_owner_skillrq.get(key) or set()
             else:
@@ -233,10 +233,10 @@ class DogmaRegister:
         domain = target_holder._domain
         affectors.update(self.__affector_domain.get(domain) or set())
         # All affectors which affect domain and group of passed holder
-        group = target_holder.item.group
+        group = target_holder._eve_type.group
         affectors.update(self.__affector_domain_group.get((domain, group)) or set())
         # Same, but for domain & skill requirement of passed holder
-        for skill in target_holder.item.required_skills:
+        for skill in target_holder._eve_type.required_skills:
             affectors.update(self.__affector_domain_skillrq.get((domain, skill)) or set())
         return affectors
 
@@ -257,13 +257,13 @@ class DogmaRegister:
         domain = target_holder._domain
         if domain is not None:
             affectee_maps.append((domain, self.__affectee_domain))
-            group = target_holder.item.group
+            group = target_holder._eve_type.group
             if group is not None:
                 affectee_maps.append(((domain, group), self.__affectee_domain_group))
-            for skill in target_holder.item.required_skills:
+            for skill in target_holder._eve_type.required_skills:
                 affectee_maps.append(((domain, skill), self.__affectee_domain_skillrq))
         if target_holder._owner_modifiable:
-            for skill in target_holder.item.required_skills:
+            for skill in target_holder._eve_type.required_skills:
                 affectee_maps.append((skill, self.__affectee_owner_skillrq))
         return affectee_maps
 
@@ -343,13 +343,13 @@ class DogmaRegister:
             domain = self.__contextize_filter_domain(affector)
             skill = modifier.extra_arg
             if skill == EosEveTypes.current_self:
-                skill = affector.source_holder.item.id
+                skill = affector.source_holder._eve_type_id
             key = (domain, skill)
         elif modifier.type == ModifierType.owner_skillrq:
             affector_map = self.__affector_owner_skillrq
             skill = modifier.extra_arg
             if skill == EosEveTypes.current_self:
-                skill = affector.source_holder.item.id
+                skill = affector.source_holder._eve_type_id
             key = skill
         else:
             raise ModifierTypeError(modifier.type)
@@ -368,19 +368,19 @@ class DogmaRegister:
         """
         if isinstance(error, DirectDomainError):
             msg = 'malformed modifier on item {}: unsupported target domain {} for direct modification'.format(
-                affector.source_holder.item.id, error.args[0])
+                affector.source_holder._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredDomainError):
             msg = 'malformed modifier on item {}: unsupported target domain {} for filtered modification'.format(
-                affector.source_holder.item.id, error.args[0])
+                affector.source_holder._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredSelfReferenceError):
             msg = 'malformed modifier on item {}: invalid reference to self for filtered modification'.format(
-                affector.source_holder.item.id)
+                affector.source_holder._eve_type_id)
             logger.warning(msg)
         elif isinstance(error, ModifierTypeError):
             msg = 'malformed modifier on item {}: invalid filter type {}'.format(
-                affector.source_holder.item.id, error.args[0])
+                affector.source_holder._eve_type_id, error.args[0])
             logger.warning(msg)
         else:
             raise error

@@ -56,7 +56,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         # Ignore holders which do not belong to ship
         if holder._domain != ModifierDomain.ship:
             return
-        group = holder.item.group
+        group = holder._eve_type.group
         # Ignore holders, whose item isn't assigned
         # to any group
         if group is None:
@@ -66,13 +66,13 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         self.__group_all.add_data(group, holder)
         # To enter restriction container, original
         # item must have restriction attribute
-        if self.__max_group_attr not in holder.item.attributes:
+        if self.__max_group_attr not in holder._eve_type.attributes:
             return
         self.__group_restricted.add(holder)
 
     def unregister_item(self, holder):
         # Just clear data containers
-        group = holder.item.group
+        group = holder._eve_type.group
         self.__group_all.rm_data(group, holder)
         self.__group_restricted.discard(holder)
 
@@ -83,9 +83,9 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         for holder in self.__group_restricted:
             # Get number of registered holders, assigned to group of current
             # restricted holder, and holder's restriction value
-            group = holder.item.group
+            group = holder._eve_type.group
             group_holders = len(self.__group_all.get(group) or ())
-            max_group_restriction = holder.item.attributes[self.__max_group_attr]
+            max_group_restriction = holder._eve_type.attributes[self.__max_group_attr]
             # If number of registered holders from this group is bigger,
             # then current holder is tainted
             if group_holders > max_group_restriction:

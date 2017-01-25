@@ -26,37 +26,37 @@ class DefaultEffectAttribMixin(BaseItemMixin):
     """
     Provides access to various attributes via aliases, the
     mapping between aliases and actual attributes with their
-    values is provided by default effect of item..
+    values is provided by default effect of item.
     """
 
     @property
     def tracking_speed(self):
-        return self.__get_item_specific_attr('tracking_speed_attribute')
+        return self.__get_eve_type_specific_attr('tracking_speed_attribute')
 
     @property
     def optimal_range(self):
-        return self.__get_item_specific_attr('range_attribute')
+        return self.__get_eve_type_specific_attr('range_attribute')
 
     @property
     def falloff_range(self):
-        return self.__get_item_specific_attr('falloff_attribute')
+        return self.__get_eve_type_specific_attr('falloff_attribute')
 
     @property
     def cycle_time(self):
-        raw_value = self.__get_item_specific_attr('duration_attribute')
+        raw_value = self.__get_eve_type_specific_attr('duration_attribute')
         if raw_value is None:
             value = raw_value
         else:
             value = raw_value / 1000
         return value
 
-    def __get_item_specific_attr(self, attr_name):
+    def __get_eve_type_specific_attr(self, attr_name):
         """
         If attribute ID which we're trying to get is
         located on holder's item, this functions helps
         to fetch it.
         """
-        default_effect = getattr(self.item, 'default_effect', None)
+        default_effect = getattr(self._eve_type, 'default_effect', None)
         if default_effect is None:
             return None
         attr = getattr(default_effect, attr_name, None)

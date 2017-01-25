@@ -296,7 +296,7 @@ class CalculationService(BaseSubscriber):
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        for effect in holder.eve_type.effects:
+        for effect in holder._eve_type.effects:
             if effect.id not in effect_filter:
                 continue
             for modifier in effect.modifiers:

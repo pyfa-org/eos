@@ -53,7 +53,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         if not hasattr(holder, 'charge'):
             return
         # And without size specification
-        if Attribute.charge_size not in holder.item.attributes:
+        if Attribute.charge_size not in holder._eve_type.attributes:
             return
         self.__restricted_containers.add(holder)
 
@@ -68,8 +68,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            container_size = container.item.attributes[Attribute.charge_size]
-            charge_size = charge.item.attributes.get(Attribute.charge_size)
+            container_size = container._eve_type.attributes[Attribute.charge_size]
+            charge_size = charge._eve_type.attributes.get(Attribute.charge_size)
             if container_size != charge_size:
                 tainted_holders[charge] = ChargeSizeErrorData(
                     holder_size=charge_size,

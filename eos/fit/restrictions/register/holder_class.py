@@ -32,40 +32,40 @@ HolderClassErrorData = namedtuple('HolderClassErrorData', ('holder_class', 'expe
 
 
 CLASS_VALIDATORS = {
-    Booster: lambda item: (
-        item.category == Category.implant and
-        Attribute.boosterness in item.attributes
+    Booster: lambda eve_type: (
+        eve_type.category == Category.implant and
+        Attribute.boosterness in eve_type.attributes
     ),
-    Character: lambda item: item.group == Group.character,
-    Charge: lambda item: item.category == Category.charge,
-    Drone: lambda item: item.category == Category.drone,
-    EffectBeacon: lambda item: item.group == Group.effect_beacon,
-    Implant: lambda item: (
-        item.category == Category.implant and
-        Attribute.implantness in item.attributes
+    Character: lambda eve_type: eve_type.group == Group.character,
+    Charge: lambda eve_type: eve_type.category == Category.charge,
+    Drone: lambda eve_type: eve_type.category == Category.drone,
+    EffectBeacon: lambda eve_type: eve_type.group == Group.effect_beacon,
+    Implant: lambda eve_type: (
+        eve_type.category == Category.implant and
+        Attribute.implantness in eve_type.attributes
     ),
-    ModuleHigh: lambda item: (
-        item.category == Category.module and
-        Slot.module_high in item.slots
+    ModuleHigh: lambda eve_type: (
+        eve_type.category == Category.module and
+        Slot.module_high in eve_type.slots
     ),
-    ModuleMed: lambda item: (
-        item.category == Category.module and
-        Slot.module_med in item.slots
+    ModuleMed: lambda eve_type: (
+        eve_type.category == Category.module and
+        Slot.module_med in eve_type.slots
     ),
-    ModuleLow: lambda item: (
-        item.category == Category.module and
-        Slot.module_low in item.slots
+    ModuleLow: lambda eve_type: (
+        eve_type.category == Category.module and
+        Slot.module_low in eve_type.slots
     ),
-    Rig: lambda item: (
-        item.category == Category.module and
-        Slot.rig in item.slots
+    Rig: lambda eve_type: (
+        eve_type.category == Category.module and
+        Slot.rig in eve_type.slots
     ),
-    Ship: lambda item: item.category == Category.ship,
-    Skill: lambda item: item.category == Category.skill,
-    Stance: lambda item: item.group == Group.ship_modifier,
-    Subsystem: lambda item: (
-        item.category == Category.subsystem and
-        Slot.subsystem in item.slots
+    Ship: lambda eve_type: eve_type.category == Category.ship,
+    Skill: lambda eve_type: eve_type.category == Category.skill,
+    Stance: lambda eve_type: eve_type.group == Group.ship_modifier,
+    Subsystem: lambda eve_type: (
+        eve_type.category == Category.subsystem and
+        Slot.subsystem in eve_type.slots
     )
 }
 
@@ -73,13 +73,13 @@ CLASS_VALIDATORS = {
 class HolderClassRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    Check that item is wrapped by corresponding holder class
+    Check that EVE type is wrapped by corresponding holder class
     instance (e.g. that cybernetic subprocessor is represented
     by Implant class instance).
 
     Details:
-    To determine class matching to item, attributes only of
-    original item are used.
+    To determine class matching to EVE type, attributes only of
+    original EVE type are used.
     """
 
     def __init__(self):
@@ -98,13 +98,13 @@ class HolderClassRestrictionRegister(BaseRestrictionRegister):
         for holder in self.__holders:
             # Get validator function for class of passed holder.
             # If it is not found or fails, seek for 'right'
-            # holder types for the item
+            # item class for the EVE type
             try:
                 validator_func = CLASS_VALIDATORS[type(holder)]
             except KeyError:
                 tainted_holders[holder] = self.__get_error_data(holder)
             else:
-                if validator_func(holder.item) is not True:
+                if validator_func(holder._eve_type) is not True:
                     tainted_holders[holder] = self.__get_error_data(holder)
         if tainted_holders:
             raise RegisterValidationError(tainted_holders)
@@ -112,9 +112,9 @@ class HolderClassRestrictionRegister(BaseRestrictionRegister):
     def __get_error_data(self, holder):
         expected_classes = []
         # Cycle through our class validator dictionary and
-        # seek for acceptable classes for this item
+        # seek for acceptable classes for this EVE type
         for holder_class, validator_func in CLASS_VALIDATORS.items():
-            if validator_func(holder.item) is True:
+            if validator_func(holder._eve_type) is True:
                 expected_classes.append(holder_class)
         error_data = HolderClassErrorData(
             holder_class=type(holder),

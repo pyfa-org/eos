@@ -51,7 +51,7 @@ class TurretUseRegister(SlotUseRegister):
     """
 
     def register_item(self, holder):
-        if Slot.turret in holder.item.slots:
+        if Slot.turret in holder._eve_type.slots:
             SlotUseRegister.register_item(self, holder)
 
 
@@ -61,7 +61,7 @@ class LauncherUseRegister(SlotUseRegister):
     """
 
     def register_item(self, holder):
-        if Slot.launcher in holder.item.slots:
+        if Slot.launcher in holder._eve_type.slots:
             SlotUseRegister.register_item(self, holder)
 
 

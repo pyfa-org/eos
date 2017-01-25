@@ -188,7 +188,7 @@ class MutableAttributeMap:
 
     def keys(self):
         try:
-            base_attrs = self.__holder.item.attributes
+            base_attrs = self.__holder._eve_type.attributes
         except NoSourceError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
@@ -221,7 +221,7 @@ class MutableAttributeMap:
         # Assign base item attributes first to make sure than in case when
         # we're calculating attribute for item/fit without source, it fails
         # with null source error (triggered by accessing item's attribute)
-        item_attrs = self.__holder.item.attributes
+        base_attrs = self.__holder._eve_type.attributes
         # Attribute object for attribute being calculated
         try:
             attr_meta = self.__holder._fit.source.cache_handler.get_attribute(attr)
@@ -230,7 +230,7 @@ class MutableAttributeMap:
             raise AttributeMetaError(attr) from e
         # Base attribute value which we'll use for modification
         try:
-            result = item_attrs[attr]
+            result = base_attrs[attr]
         # If attribute isn't available on base item,
         # base off its default value
         except KeyError:
@@ -255,7 +255,7 @@ class MutableAttributeMap:
                 # source item category and operator
                 penalize = (
                     attr_meta.stackable is False and
-                    source_holder.item.category not in PENALTY_IMMUNE_CATEGORIES and
+                    source_holder._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
                     operator in PENALIZABLE_OPERATORS
                 )
                 try:

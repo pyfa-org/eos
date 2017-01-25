@@ -52,8 +52,8 @@ class StateRestrictionRegister(BaseRestrictionRegister):
     def validate(self):
         tainted_holders = {}
         for holder in self.__holders:
-            if holder.state > holder.item.max_state:
-                allowed_states = tuple(filter(lambda s: s <= holder.item.max_state, State))
+            if holder.state > holder._eve_type.max_state:
+                allowed_states = tuple(filter(lambda s: s <= holder._eve_type.max_state, State))
                 tainted_holders[holder] = StateErrorData(
                     current_state=holder.state,
                     allowed_states=allowed_states

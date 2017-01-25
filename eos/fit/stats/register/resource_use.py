@@ -36,7 +36,7 @@ class ResourceUseRegister(BaseStatRegister):
         self.__resource_users = set()
 
     def register_item(self, holder):
-        if self.__usage_attr not in holder.item.attributes:
+        if self.__usage_attr not in holder._eve_type.attributes:
             return
         self.__resource_users.add(holder)
 

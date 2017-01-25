@@ -115,7 +115,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         ):
             # Cycle through IDs of known restriction attributes
             for restriction_attr in restriction_attrs:
-                allowed_container.add(holder.item.attributes.get(restriction_attr))
+                allowed_container.add(holder._eve_type.attributes.get(restriction_attr))
             allowed_container.discard(None)
         # Ignore non-restricted holders
         if not allowed_types and not allowed_groups:
@@ -138,8 +138,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # values anyway
         ship_holder = self._fit.ship
         try:
-            ship_type_id = ship_holder.item.id
-            ship_group = ship_holder.item.group
+            ship_type_id = ship_holder._eve_type_id
+            ship_group = ship_holder._eve_type.group
         except AttributeError:
             ship_type_id = None
             ship_group = None

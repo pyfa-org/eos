@@ -50,7 +50,7 @@ def turret_filter(holder):
     hybrid and energy weapon groups.
     """
     try:
-        group = holder.item.group
+        group = holder._eve_type.group
     except AttributeError:
         return False
     if group in TURRET_GROUPS:
@@ -65,7 +65,7 @@ def missile_filter(holder):
     launcher groups.
     """
     try:
-        group = holder.item.group
+        group = holder._eve_type.group
     except AttributeError:
         return False
     if group in MISSILE_LAUNCHER_GROUPS:
@@ -79,7 +79,7 @@ def drone_filter(holder):
     True for all items belonging to drone category.
     """
     try:
-        category = holder.item.category
+        category = holder._eve_type.category
     except AttributeError:
         return False
     if category == Category.drone:
@@ -95,7 +95,7 @@ def sentry_drone_filter(holder):
     if not drone_filter(holder):
         return False
     try:
-        skillrqs = holder.item.required_skills
+        skillrqs = holder._eve_type.required_skills
     except AttributeError:
         return False
     if Type.sentry_drone_interfacing in skillrqs:

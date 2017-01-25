@@ -58,7 +58,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Ignore holders with no volume attribute and holders with
         # volume which satisfies us regardless of ship type
         try:
-            holder_volume = holder.item.attributes[Attribute.volume]
+            holder_volume = holder._eve_type.attributes[Attribute.volume]
         except KeyError:
             return
         if holder_volume <= MAX_SUBCAP_VOLUME:
@@ -73,18 +73,18 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # special attribute set to 1
         ship_holder = self._fit.ship
         try:
-            ship_item = ship_holder.item
+            ship_eve_type = ship_holder._eve_type
         except AttributeError:
             pass
         else:
-            if ship_item.attributes.get(Attribute.is_capital_size):
+            if ship_eve_type.attributes.get(Attribute.is_capital_size):
                 return
         # If we got here, then we're dealing with non-capital
         # ship, and all registered holders are tainted
         if self.__capital_holders:
             tainted_holders = {}
             for holder in self.__capital_holders:
-                holder_volume = holder.item.attributes[Attribute.volume]
+                holder_volume = holder._eve_type.attributes[Attribute.volume]
                 tainted_holders[holder] = CapitalItemErrorData(
                     holder_volume=holder_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME

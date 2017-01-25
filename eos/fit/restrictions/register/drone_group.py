@@ -70,14 +70,14 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         ship_holder = self._fit.ship
         # No ship - no restriction
         try:
-            ship_item = ship_holder.item
+            ship_eve_type = ship_holder._eve_type
         except AttributeError:
             return
         # Set with allowed groups
         allowed_groups = set()
         # Find out if we have restriction, and which drone groups it allows
         for restriction_attr in RESTRICTION_ATTRS:
-            allowed_groups.add(ship_item.attributes.get(restriction_attr))
+            allowed_groups.add(ship_eve_type.attributes.get(restriction_attr))
         allowed_groups.discard(None)
         # No allowed group attributes - no restriction
         if not allowed_groups:
@@ -89,7 +89,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         allowed_groups = tuple(allowed_groups)
         for holder in self.__restricted_holders:
             # Taint holders, whose group is not allowed
-            holder_group = holder.item.group
+            holder_group = holder._eve_type.group
             if holder_group not in allowed_groups:
                 tainted_holders[holder] = DroneGroupErrorData(
                     holder_group=holder_group,

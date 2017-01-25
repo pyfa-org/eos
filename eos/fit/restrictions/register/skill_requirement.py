@@ -55,7 +55,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
     def register_item(self, holder):
         # Holders which are not exceptions and which have any
         # skill requirement are tracked
-        if holder.item.required_skills and not isinstance(holder, EXCEPTIONS):
+        if holder._eve_type.required_skills and not isinstance(holder, EXCEPTIONS):
             self.__restricted_items.add(holder)
 
     def unregister_item(self, holder):
@@ -69,8 +69,8 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
             # for current holder
             skill_requirement_errors = []
             # Check each skill requirement
-            for required_skill_id in holder.item.required_skills:
-                required_skill_level = holder.item.required_skills[required_skill_id]
+            for required_skill_id in holder._eve_type.required_skills:
+                required_skill_level = holder._eve_type.required_skills[required_skill_id]
                 # Get skill level with None as fallback value for case
                 # when we don't have such skill in fit
                 try:

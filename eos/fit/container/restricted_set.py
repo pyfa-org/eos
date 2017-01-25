@@ -30,12 +30,12 @@ class HolderRestrictedSet(HolderSet):
     Required arguments:
     fit -- fit, to which container is attached
     holder_class -- class of holders this container
-    is allowed to contain
+        is allowed to contain
     """
 
     def __init__(self, fit, holder_class):
         HolderSet.__init__(self, fit, holder_class)
-        self.__type_id_map = {}
+        self.__eve_type_id_map = {}
 
     def add(self, holder):
         """
@@ -48,15 +48,15 @@ class HolderRestrictedSet(HolderSet):
         added to container (e.g. already belongs to some fit
         or holder with this type ID exists in container)
         """
-        type_id = getattr(holder, '_type_id', None)
-        if type_id in self.__type_id_map:
-            msg = 'holder with type ID {} already exists in this set'.format(type_id)
+        eve_type_id = holder._eve_type_id
+        if eve_type_id in self.__eve_type_id_map:
+            msg = 'holder with type ID {} already exists in this set'.format(eve_type_id)
             raise ValueError(msg)
-        self.__type_id_map[type_id] = holder
+        self.__eve_type_id_map[eve_type_id] = holder
         try:
             HolderSet.add(self, holder)
         except (TypeError, ValueError):
-            del self.__type_id_map[type_id]
+            del self.__eve_type_id_map[eve_type_id]
             raise
 
     def remove(self, holder):
@@ -68,18 +68,18 @@ class HolderRestrictedSet(HolderSet):
         from container (e.g. it doesn't belong to it)
         """
         HolderSet.remove(self, holder)
-        del self.__type_id_map[holder._type_id]
+        del self.__eve_type_id_map[holder._eve_type_id]
 
     def clear(self):
         """Remove everything from container."""
         HolderSet.clear(self)
-        self.__type_id_map.clear()
+        self.__eve_type_id_map.clear()
 
-    def __getitem__(self, type_id):
+    def __getitem__(self, eve_type_id):
         """Get holder by type ID"""
-        return self.__type_id_map[type_id]
+        return self.__eve_type_id_map[eve_type_id]
 
-    def __delitem__(self, type_id):
+    def __delitem__(self, eve_type_id):
         """Remove holder by type ID"""
-        holder = self.__type_id_map[type_id]
+        holder = self.__eve_type_id_map[eve_type_id]
         self.remove(holder)

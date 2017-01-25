@@ -198,7 +198,7 @@ class TurretSlotRegister(SlotAmountRestrictionRegister):
         SlotAmountRestrictionRegister.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
 
     def register_item(self, holder):
-        if Slot.turret in holder.item.slots:
+        if Slot.turret in holder._eve_type.slots:
             SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):
@@ -220,7 +220,7 @@ class LauncherSlotRegister(SlotAmountRestrictionRegister):
         SlotAmountRestrictionRegister.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
 
     def register_item(self, holder):
-        if Slot.launcher in holder.item.slots:
+        if Slot.launcher in holder._eve_type.slots:
             SlotAmountRestrictionRegister.register_item(self, holder)
 
     def _get_tainted_holders(self, slots_max):

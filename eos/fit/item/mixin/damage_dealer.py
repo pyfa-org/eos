@@ -250,10 +250,10 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
         deliver damage and attributes used for damage calculation. If
         holder is not a weapon or an inactive weapon, None is returned.
         """
-        holder_item = self.item
+        eve_type = self._eve_type
         # Guard against malformed or absent items
         try:
-            holder_deffeff = holder_item.default_effect
+            holder_deffeff = eve_type.default_effect
         except AttributeError:
             return None
         # Guard against malformed or absent default effect
@@ -282,7 +282,7 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
             charge = getattr(self, 'charge', None)
             # Guard against malformed or absent item and default effect
             try:
-                charge_defeff_id = charge.item.default_effect.id
+                charge_defeff_id = charge._eve_type.default_effect.id
             except AttributeError:
                 charge_defeff_id = None
             try:

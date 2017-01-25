@@ -40,20 +40,19 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     it).
 
     Required arguments:
-    type_id -- type ID of item which should serve as base
-        for this holder.
+    type_id -- ID of EVE type ID which should serve as base for this
+        item
 
     Cooperative methods:
     __init__
     """
 
     def __init__(self, type_id, **kwargs):
-        # Eve type ID this holder is supposed to wrap
-        self._type_id = type_id
+        self._eve_type_id = type_id
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
         self.attributes = MutableAttributeMap(self)
-        # Which fit this holder is bound to
+        # Which fit this item is bound to
         self.__fit = None
         # Contains IDs of effects which are prohibited to be run on this holder.
         # It means that if there's an ID here - it does not mean that holder.item
@@ -66,16 +65,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # as holder doesn't have fit with source yet
         self._eve_type = NullSourceItem
         super().__init__(**kwargs)
-
-    @property
-    @abstractmethod
-    def _domain(self):
-        ...
-
-    @property
-    @abstractmethod
-    def _owner_modifiable(self):
-        ...
 
     @property
     def _fit(self):
@@ -91,9 +80,16 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         if new_fit is not None:
             new_fit._subscribe(self, (RefreshSource,))
 
+    # Properties used by attribute calculator
     @property
-    def _original_attributes(self):
-        return self._eve_type.attributes
+    @abstractmethod
+    def _domain(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _owner_modifiable(self):
+        ...
 
     # Effect methods
     @property
@@ -235,4 +231,4 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         except AttributeError:
             self._eve_type = NullSourceItem
         else:
-            self._eve_type = type_getter(self._type_id)
+            self._eve_type = type_getter(self._eve_type_id)

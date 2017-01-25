@@ -63,7 +63,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         # is able to fit
         allowed_groups = set()
         for restriction_attr in RESTRICTION_ATTRS:
-            allowed_groups.add(holder.item.attributes.get(restriction_attr))
+            allowed_groups.add(holder._eve_type.attributes.get(restriction_attr))
         allowed_groups.discard(None)
         # Only if groups were specified, consider
         # restriction enabled
@@ -82,9 +82,9 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            if charge.item.group not in allowed_groups:
+            if charge._eve_type.group not in allowed_groups:
                 tainted_holders[charge] = ChargeGroupErrorData(
-                    holder_group=charge.item.group,
+                    holder_group=charge._eve_type.group,
                     allowed_groups=allowed_groups
                 )
         if tainted_holders:

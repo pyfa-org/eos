@@ -48,7 +48,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     def register_item(self, holder):
         # Register only holders which have attribute,
         # which restricts rig size
-        if Attribute.rig_size not in holder.item.attributes:
+        if Attribute.rig_size not in holder._eve_type.attributes:
             return
         self.__restricted_holders.add(holder)
 
@@ -60,18 +60,18 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # Do not apply restriction when fit doesn't
         # have ship
         try:
-            ship_item = ship_holder.item
+            ship_eve_type = ship_holder.eve_type
         except AttributeError:
             return
         # If ship doesn't have restriction attribute,
         # allow all rigs - skip validation
         try:
-            allowed_rig_size = ship_item.attributes[Attribute.rig_size]
+            allowed_rig_size = ship_eve_type.attributes[Attribute.rig_size]
         except KeyError:
             return
         tainted_holders = {}
         for holder in self.__restricted_holders:
-            holder_rig_size = holder.item.attributes[Attribute.rig_size]
+            holder_rig_size = holder._eve_type.attributes[Attribute.rig_size]
             # If rig size specification on holder and ship differs,
             # then holder is tainted
             if holder_rig_size != allowed_rig_size:
