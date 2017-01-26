@@ -26,7 +26,7 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, OwnModItem
 
 
-class TestModOwnerSkillrqDomainChar(CalculatorTestCase):
+class TestModOwnerSkillrqDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
@@ -34,7 +34,7 @@ class TestModOwnerSkillrqDomainChar(CalculatorTestCase):
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
         modifier.type = ModifierType.owner_skillrq
-        modifier.domain = ModifierDomain.character
+        modifier.domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
