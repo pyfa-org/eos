@@ -19,42 +19,45 @@
 # ===============================================================================
 
 
+import logging
+
 from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem
+from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem
 
 
-class TestModDomainDomainChar(CalculatorTestCase):
+class TestModDomainGroupDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
-        modifier.type = ModifierType.domain
-        modifier.domain = ModifierDomain.character
+        modifier.type = ModifierType.domain_group
+        modifier.domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
+        modifier.extra_arg = 35
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,),
+            type_id=1061, effects=(effect,),
             attributes={src_attr.id: 20}
         ))
 
-    def test_character(self):
-        influence_target = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+    def test_ship(self):
+        influence_target = ShipItem(self.ch.type(type_id=1, group=35, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
-        self.fit.items.add(self.influence_source)
+        self.fit.ship = self.influence_source
         # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
-        self.fit.items.remove(self.influence_source)
+        self.fit.ship = None
         # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Misc
@@ -62,15 +65,38 @@ class TestModDomainDomainChar(CalculatorTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_other_domain(self):
-        influence_target = IndependentItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+    def test_character(self):
+        influence_target = CharacterItem(self.ch.type(type_id=1, group=35, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
-        self.fit.items.add(self.influence_source)
+        self.fit.character = self.influence_source
+        # Checks
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        # Action
+        self.fit.character = None
         # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Misc
-        self.fit.items.remove(self.influence_source)
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_unpositioned_error(self):
+        # Action
+        # Here we do not position holder in fit, this way attribute
+        # calculator won't know that source is 'owner' of some domain
+        # and will log corresponding error
+        self.fit.items.add(self.influence_source)
+        # Checks
+        self.assertEqual(len(self.log), 2)
+        log_record = self.log[0]
+        self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
+        self.assertEqual(log_record.levelno, logging.WARNING)
+        self.assertEqual(
+            log_record.msg,
+            'malformed modifier on EVE type 1061: invalid reference '
+            'to self for filtered modification'
+        )
+        # Misc
+        self.fit.items.remove(self.influence_source)
         self.assert_calculator_buffers_empty(self.fit)

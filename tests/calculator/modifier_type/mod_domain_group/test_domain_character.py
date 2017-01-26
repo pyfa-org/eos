@@ -23,22 +23,23 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem
+from tests.calculator.environment import IndependentItem, CharacterItem, OwnModItem
 
 
-class TestModDomainDomainChar(CalculatorTestCase):
+class TestModDomainGroupDomainChar(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
-        modifier.type = ModifierType.domain
+        modifier.type = ModifierType.domain_group
         modifier.domain = ModifierDomain.character
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
+        modifier.extra_arg = 35
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type(
@@ -47,7 +48,7 @@ class TestModDomainDomainChar(CalculatorTestCase):
         ))
 
     def test_character(self):
-        influence_target = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = CharacterItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
@@ -63,7 +64,20 @@ class TestModDomainDomainChar(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_domain(self):
-        influence_target = IndependentItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = OwnModItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
+        # Action
+        self.fit.items.add(self.influence_source)
+        # Checks
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        # Misc
+        self.fit.items.remove(self.influence_source)
+        self.fit.items.remove(influence_target)
+        self.assertEqual(len(self.log), 0)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_other_group(self):
+        influence_target = CharacterItem(self.ch.type(type_id=2, group=3, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)

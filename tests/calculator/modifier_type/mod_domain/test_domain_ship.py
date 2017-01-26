@@ -46,7 +46,7 @@ class TestModDomainDomainShip(CalculatorTestCase):
             attributes={src_attr.id: 20}
         ))
 
-    def test_match(self):
+    def test_ship(self):
         influence_target = ShipItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action

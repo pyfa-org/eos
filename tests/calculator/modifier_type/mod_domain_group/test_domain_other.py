@@ -19,58 +19,48 @@
 # ===============================================================================
 
 
+import logging
+
 from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem
+from tests.calculator.environment import IndependentItem
 
 
-class TestModDomainDomainChar(CalculatorTestCase):
+class TestModDomainGroupDomainOther(CalculatorTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.tgt_attr = self.ch.attribute(attribute_id=1)
+    def test_error(self):
+        tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
-        modifier.type = ModifierType.domain
-        modifier.domain = ModifierDomain.character
+        modifier.type = ModifierType.domain_group
+        modifier.domain = ModifierDomain.other
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
-        modifier.tgt_attr = self.tgt_attr.id
+        modifier.tgt_attr = tgt_attr.id
+        modifier.extra_arg = 35
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.influence_source = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,),
+        influence_source = IndependentItem(self.ch.type(
+            type_id=90, effects=(effect,),
             attributes={src_attr.id: 20}
         ))
-
-    def test_character(self):
-        influence_target = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
         # Action
-        self.fit.items.add(self.influence_source)
+        # Charge's container or module's charge can't be 'owner'
+        # of other holders, thus such modification type is unsupported
+        self.fit.items.add(influence_source)
         # Checks
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
-        # Action
-        self.fit.items.remove(self.influence_source)
-        # Checks
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertEqual(len(self.log), 2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg,
+                'malformed modifier on EVE type 90: unsupported target domain '
+                '{} for filtered modification'.format(ModifierDomain.other)
+            )
         # Misc
-        self.fit.items.remove(influence_target)
-        self.assertEqual(len(self.log), 0)
-        self.assert_calculator_buffers_empty(self.fit)
-
-    def test_other_domain(self):
-        influence_target = IndependentItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
-        # Action
-        self.fit.items.add(self.influence_source)
-        # Checks
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        # Misc
-        self.fit.items.remove(self.influence_source)
-        self.fit.items.remove(influence_target)
-        self.assertEqual(len(self.log), 0)
+        self.fit.items.remove(influence_source)
         self.assert_calculator_buffers_empty(self.fit)
