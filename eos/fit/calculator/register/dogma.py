@@ -238,6 +238,7 @@ class DogmaRegister:
         # Same, but for domain & skill requirement of passed holder
         for skill in target_holder._eve_type.required_skills:
             affectors.update(self.__affector_domain_skillrq.get((domain, skill)) or set())
+            affectors.update(self.__affector_owner_skillrq.get(skill) or set())
         return affectors
 
     # General-purpose auxiliary methods

@@ -49,12 +49,15 @@ class TestModTypeUnknown(CalculatorTestCase):
             type_id=31, effects=(self.effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr: 100}
         ))
+        # Action
         self.fit.items.add(holder)
+        # Checks
         self.assertEqual(len(self.log), 2)
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(log_record.msg, 'malformed modifier on EVE type 31: invalid filter type 26500')
+        # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -71,9 +74,12 @@ class TestModTypeUnknown(CalculatorTestCase):
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}
         ))
+        # Action
         self.fit.items.add(holder)
+        # Checks
         # Invalid filter type in modifier should prevent proper processing of other modifiers
         self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 5)
         self.assert_calculator_buffers_empty(self.fit)
