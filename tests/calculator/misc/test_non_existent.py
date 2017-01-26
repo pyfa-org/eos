@@ -38,7 +38,7 @@ class TestNonExistent(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        self.assertEqual(log_record.msg, 'unable to fetch metadata for attribute 105, requested for item 57')
+        self.assertEqual(log_record.msg, 'unable to fetch metadata for attribute 105, requested for EVE type 57')
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -53,7 +53,7 @@ class TestNonExistent(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'unable to find base value for attribute 89 on item 649')
+        self.assertEqual(log_record.msg, 'unable to find base value for attribute 89 on EVE type 649')
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 

@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -35,26 +35,22 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         attr2 = self.ch.attribute(attribute_id=2)
         attr3 = self.ch.attribute(attribute_id=3)
         modifier1 = Modifier()
+        modifier1.type = ModifierType.item
+        modifier1.domain = ModifierDomain.ship
         modifier1.state = State.offline
-        modifier1.scope = Scope.local
         modifier1.src_attr = attr1.id
-        modifier1.operator = Operator.post_mul
+        modifier1.operator = ModifierOperator.post_mul
         modifier1.tgt_attr = attr2.id
-        modifier1.domain = Domain.ship
-        modifier1.filter_type = None
-        modifier1.filter_value = None
         effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
         holder1 = CharacterItem(self.ch.type(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
+        modifier2.type = ModifierType.domain
         modifier2.state = State.offline
-        modifier2.scope = Scope.local
         modifier2.src_attr = attr2.id
-        modifier2.operator = Operator.post_percent
+        modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = attr3.id
-        modifier2.domain = Domain.ship
-        modifier2.filter_type = FilterType.all_
-        modifier2.filter_value = None
+        modifier2.domain = ModifierDomain.ship
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         holder2 = IndependentItem(self.ch.type(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))

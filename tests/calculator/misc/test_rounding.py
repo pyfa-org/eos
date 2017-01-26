@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -50,14 +50,12 @@ class TestRounding(CalculatorTestCase):
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=Attribute.cpu)
         modifier = Modifier()
+        modifier.type = ModifierType.item
+        modifier.domain = ModifierDomain.self
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
-        modifier.operator = Operator.post_percent
+        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = Domain.self_
-        modifier.filter_type = None
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
 

@@ -138,12 +138,12 @@ class MutableAttributeMap:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
             except BaseValueError as e:
                 msg = 'unable to find base value for attribute {} on EVE type {}'.format(
-                    e.args[0], self.__holder._type_id)
+                    e.args[0], self.__holder._eve_type_id)
                 logger.warning(msg)
                 raise KeyError(attr) from e
             except AttributeMetaError as e:
                 msg = 'unable to fetch metadata for attribute {}, requested for EVE type {}'.format(
-                    e.args[0], self.__holder._type_id)
+                    e.args[0], self.__holder._eve_type_id)
                 logger.error(msg)
                 raise KeyError(attr) from e
             except NoSourceError as e:
@@ -280,7 +280,7 @@ class MutableAttributeMap:
             # Handle operator type failure
             except OperatorError as e:
                 msg = 'malformed modifier on EVE type {}: unknown operator {}'.format(
-                    source_holder._type_id, e.args[0])
+                    source_holder._eve_type_id, e.args[0])
                 logger.warning(msg)
                 continue
         # When data gathering is complete, process penalized modifiers

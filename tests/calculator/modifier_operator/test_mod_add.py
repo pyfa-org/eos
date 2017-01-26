@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -34,14 +34,12 @@ class TestOperatorAdd(CalculatorTestCase):
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
-        modifier.operator = Operator.mod_add
+        modifier.operator = ModifierOperator.mod_add
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = Domain.ship
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source1 = IndependentItem(self.ch.type(

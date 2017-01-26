@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.fit.messages import EffectsEnabled, EffectsDisabled
@@ -37,32 +37,26 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr2 = self.ch.attribute(attribute_id=3)
         src_attr3 = self.ch.attribute(attribute_id=4)
         modifier1 = Modifier()
+        modifier1.type = ModifierType.item
+        modifier1.domain = ModifierDomain.self
         modifier1.state = State.offline
-        modifier1.scope = Scope.local
         modifier1.src_attr = src_attr1.id
-        modifier1.operator = Operator.post_mul
+        modifier1.operator = ModifierOperator.post_mul
         modifier1.tgt_attr = self.tgt_attr.id
-        modifier1.domain = Domain.self_
-        modifier1.filter_type = None
-        modifier1.filter_value = None
         modifier2 = Modifier()
+        modifier2.type = ModifierType.item
+        modifier2.domain = ModifierDomain.self
         modifier2.state = State.offline
-        modifier2.scope = Scope.local
         modifier2.src_attr = src_attr2.id
-        modifier2.operator = Operator.post_mul
+        modifier2.operator = ModifierOperator.post_mul
         modifier2.tgt_attr = self.tgt_attr.id
-        modifier2.domain = Domain.self_
-        modifier2.filter_type = None
-        modifier2.filter_value = None
         modifier_active = Modifier()
+        modifier_active.type = ModifierType.item
+        modifier_active.domain = ModifierDomain.self
         modifier_active.state = State.active
-        modifier_active.scope = Scope.local
         modifier_active.src_attr = src_attr3.id
-        modifier_active.operator = Operator.post_mul
+        modifier_active.operator = ModifierOperator.post_mul
         modifier_active.tgt_attr = self.tgt_attr.id
-        modifier_active.domain = Domain.self_
-        modifier_active.filter_type = None
-        modifier_active.filter_value = None
         self.effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect1.modifiers = (modifier1,)
         self.effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)

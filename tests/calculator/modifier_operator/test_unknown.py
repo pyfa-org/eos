@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, Domain, Scope, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -37,14 +37,12 @@ class TestOperatorUnknown(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         invalid_modifier = Modifier()
+        invalid_modifier.type = ModifierType.item
+        invalid_modifier.domain = ModifierDomain.self
         invalid_modifier.state = State.offline
-        invalid_modifier.scope = Scope.local
         invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = 1008
         invalid_modifier.tgt_attr = tgt_attr.id
-        invalid_modifier.domain = Domain.self_
-        invalid_modifier.filter_type = None
-        invalid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier,)
         holder = IndependentItem(self.ch.type(
@@ -55,7 +53,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on item 83: unknown operator 1008')
+        self.assertEqual(log_record.msg, 'malformed modifier on EVE type 83: unknown operator 1008')
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -66,23 +64,19 @@ class TestOperatorUnknown(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         invalid_modifier = Modifier()
+        invalid_modifier.type = ModifierType.item
+        invalid_modifier.domain = ModifierDomain.self
         invalid_modifier.state = State.offline
-        invalid_modifier.scope = Scope.local
         invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = None
         invalid_modifier.tgt_attr = tgt_attr.id
-        invalid_modifier.domain = Domain.self_
-        invalid_modifier.filter_type = None
-        invalid_modifier.filter_value = None
         valid_modifier = Modifier()
+        valid_modifier.type = ModifierType.item
+        valid_modifier.domain = ModifierDomain.self
         valid_modifier.state = State.offline
-        valid_modifier.scope = Scope.local
         valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = Operator.post_mul
+        valid_modifier.operator = ModifierOperator.post_mul
         valid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier.domain = Domain.self_
-        valid_modifier.filter_type = None
-        valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         holder = IndependentItem(self.ch.type(
@@ -93,7 +87,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on item 83: unknown operator None')
+        self.assertEqual(log_record.msg, 'malformed modifier on EVE type 83: unknown operator None')
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -101,23 +95,19 @@ class TestOperatorUnknown(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         invalid_modifier = Modifier()
+        invalid_modifier.type = ModifierType.item
+        invalid_modifier.domain = ModifierDomain.self
         invalid_modifier.state = State.offline
-        invalid_modifier.scope = Scope.local
         invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = 1008
         invalid_modifier.tgt_attr = tgt_attr.id
-        invalid_modifier.domain = Domain.self_
-        invalid_modifier.filter_type = None
-        invalid_modifier.filter_value = None
         valid_modifier = Modifier()
+        valid_modifier.type = ModifierType.item
+        valid_modifier.domain = ModifierDomain.self
         valid_modifier.state = State.offline
-        valid_modifier.scope = Scope.local
         valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = Operator.post_mul
+        valid_modifier.operator = ModifierOperator.post_mul
         valid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier.domain = Domain.self_
-        valid_modifier.filter_type = None
-        valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         holder = IndependentItem(self.ch.type(

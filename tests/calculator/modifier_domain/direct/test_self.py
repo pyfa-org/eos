@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -37,9 +37,9 @@ class TestDomainDirectSelf(CalculatorTestCase):
         modifier.state = State.offline
         modifier.scope = Scope.local
         modifier.src_attr = self.src_attr.id
-        modifier.operator = Operator.post_percent
+        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = Domain.self_
+        modifier.domain = ModifierDomain.self
         modifier.filter_type = None
         modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
@@ -96,7 +96,7 @@ class TestDomainDirectSelf(CalculatorTestCase):
     def test_other(self):
         # Here we check that self-reference modifies only carrier of effect,
         # and nothing else is affected. We position item as character and
-        # check another item which belongs to character domain to ensure
+        # check another item which has character modifier domain to ensure
         # that items 'belonging' to self are not affected too
         influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))

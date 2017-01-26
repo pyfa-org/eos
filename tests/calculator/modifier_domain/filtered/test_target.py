@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -38,9 +38,9 @@ class TestDomainFilterTarget(CalculatorTestCase):
         modifier.state = State.offline
         modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
-        modifier.operator = Operator.post_percent
+        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = Domain.target
+        modifier.domain = ModifierDomain.target
         modifier.filter_type = FilterType.all_
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)

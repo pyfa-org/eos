@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -38,50 +38,40 @@ class TestStateSwitching(CalculatorTestCase):
         src_attr4 = self.ch.attribute(attribute_id=5)
         src_attr5 = self.ch.attribute(attribute_id=6)
         modifier_off = Modifier()
+        modifier_off.type = ModifierType.item
+        modifier_off.domain = ModifierDomain.self
         modifier_off.state = State.offline
-        modifier_off.scope = Scope.local
         modifier_off.src_attr = src_attr1.id
-        modifier_off.operator = Operator.post_mul
+        modifier_off.operator = ModifierOperator.post_mul
         modifier_off.tgt_attr = self.tgt_attr.id
-        modifier_off.domain = Domain.self_
-        modifier_off.filter_type = None
-        modifier_off.filter_value = None
         modifier_on = Modifier()
+        modifier_on.type = ModifierType.item
+        modifier_on.domain = ModifierDomain.self
         modifier_on.state = State.online
-        modifier_on.scope = Scope.local
         modifier_on.src_attr = src_attr2.id
-        modifier_on.operator = Operator.post_mul
+        modifier_on.operator = ModifierOperator.post_mul
         modifier_on.tgt_attr = self.tgt_attr.id
-        modifier_on.domain = Domain.self_
-        modifier_on.filter_type = None
-        modifier_on.filter_value = None
         modifier_act = Modifier()
+        modifier_act.type = ModifierType.item
+        modifier_act.domain = ModifierDomain.self
         modifier_act.state = State.active
-        modifier_act.scope = Scope.local
         modifier_act.src_attr = src_attr3.id
-        modifier_act.operator = Operator.post_mul
+        modifier_act.operator = ModifierOperator.post_mul
         modifier_act.tgt_attr = self.tgt_attr.id
-        modifier_act.domain = Domain.self_
-        modifier_act.filter_type = None
-        modifier_act.filter_value = None
         modifier_over = Modifier()
+        modifier_over.type = ModifierType.item
+        modifier_over.domain = ModifierDomain.self
         modifier_over.state = State.overload
-        modifier_over.scope = Scope.local
         modifier_over.src_attr = src_attr4.id
-        modifier_over.operator = Operator.post_mul
+        modifier_over.operator = ModifierOperator.post_mul
         modifier_over.tgt_attr = self.tgt_attr.id
-        modifier_over.domain = Domain.self_
-        modifier_over.filter_type = None
-        modifier_over.filter_value = None
         modifier_disabled = Modifier()
+        modifier_disabled.type = ModifierType.item
+        modifier_disabled.domain = ModifierDomain.self
         modifier_disabled.state = State.active
-        modifier_disabled.scope = Scope.local
         modifier_disabled.src_attr = src_attr3.id
-        modifier_disabled.operator = Operator.post_mul
+        modifier_disabled.operator = ModifierOperator.post_mul
         modifier_disabled.tgt_attr = self.tgt_attr.id
-        modifier_disabled.domain = Domain.self_
-        modifier_disabled.filter_type = None
-        modifier_disabled.filter_value = None
         # Overload category will make sure that holder can enter all states
         effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
         effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)

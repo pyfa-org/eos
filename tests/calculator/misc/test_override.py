@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
@@ -39,32 +39,26 @@ class TestOverride(CalculatorTestCase):
         self.attr3 = self.ch.attribute(attribute_id=3)
         self.attr4 = self.ch.attribute(attribute_id=4)
         modifier1 = Modifier()
+        modifier1.type = ModifierType.item
+        modifier1.domain = ModifierDomain.self
         modifier1.state = State.online
-        modifier1.scope = Scope.local
         modifier1.src_attr = self.attr1.id
-        modifier1.operator = Operator.post_percent
+        modifier1.operator = ModifierOperator.post_percent
         modifier1.tgt_attr = self.attr2.id
-        modifier1.domain = Domain.self_
-        modifier1.filter_type = None
-        modifier1.filter_value = None
         modifier2 = Modifier()
+        modifier2.type = ModifierType.item
+        modifier2.domain = ModifierDomain.self
         modifier2.state = State.offline
-        modifier2.scope = Scope.local
         modifier2.src_attr = self.attr2.id
-        modifier2.operator = Operator.post_percent
+        modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = self.attr3.id
-        modifier2.domain = Domain.self_
-        modifier2.filter_type = None
-        modifier2.filter_value = None
         modifier3 = Modifier()
+        modifier3.type = ModifierType.item
+        modifier3.domain = ModifierDomain.self
         modifier3.state = State.offline
-        modifier3.scope = Scope.local
         modifier3.src_attr = self.attr3.id
-        modifier3.operator = Operator.post_percent
+        modifier3.operator = ModifierOperator.post_percent
         modifier3.tgt_attr = self.attr4.id
-        modifier3.domain = Domain.self_
-        modifier3.filter_type = None
-        modifier3.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier1, modifier2, modifier3)
         self.holder = IndependentItem(self.ch.type(

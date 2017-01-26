@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import Category, EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -27,21 +27,22 @@ from tests.calculator.environment import IndependentItem, ShipItem
 
 
 class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
-    """Test that items from several categories are immune to stacking penalty"""
+    """
+    Test that items with EVE types from several categories
+    are immune to stacking penalty
+    """
 
     def setUp(self):
         super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1, stackable=0)
         self.src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = self.src_attr.id
-        modifier.operator = Operator.post_percent
+        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = Domain.ship
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 

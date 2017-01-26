@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -37,14 +37,12 @@ class TestCap(CalculatorTestCase):
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification modifier
         modifier = Modifier()
+        modifier.type = ModifierType.item
+        modifier.domain = ModifierDomain.self
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = self.source_attr.id
-        modifier.operator = Operator.post_mul
+        modifier.operator = ModifierOperator.post_mul
         modifier.tgt_attr = self.capped_attr.id
-        modifier.domain = Domain.self_
-        modifier.filter_type = None
-        modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
@@ -79,14 +77,12 @@ class TestCap(CalculatorTestCase):
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
         modifier = Modifier()
+        modifier.type = ModifierType.item
+        modifier.domain = ModifierDomain.self
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = self.source_attr.id
-        modifier.operator = Operator.post_mul
+        modifier.operator = ModifierOperator.post_mul
         modifier.tgt_attr = self.capping_attr.id
-        modifier.domain = Domain.self_
-        modifier.filter_type = None
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         holder = IndependentItem(self.ch.type(
@@ -112,14 +108,12 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(holder.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = self.source_attr.id
-        modifier.operator = Operator.post_mul
+        modifier.operator = ModifierOperator.post_mul
         modifier.tgt_attr = self.capping_attr.id
-        modifier.domain = Domain.ship
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         cap_updater = IndependentItem(self.ch.type(

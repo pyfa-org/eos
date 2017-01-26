@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -39,7 +39,7 @@ class TestDomainFilterUnknown(CalculatorTestCase):
         invalid_modifier.state = State.offline
         invalid_modifier.scope = Scope.local
         invalid_modifier.src_attr = self.src_attr.id
-        invalid_modifier.operator = Operator.post_percent
+        invalid_modifier.operator = ModifierOperator.post_percent
         invalid_modifier.tgt_attr = self.tgt_attr.id
         invalid_modifier.domain = 1972
         invalid_modifier.filter_type = FilterType.all_
@@ -68,9 +68,9 @@ class TestDomainFilterUnknown(CalculatorTestCase):
         valid_modifier.state = State.offline
         valid_modifier.scope = Scope.local
         valid_modifier.src_attr = self.src_attr.id
-        valid_modifier.operator = Operator.post_percent
+        valid_modifier.operator = ModifierOperator.post_percent
         valid_modifier.tgt_attr = self.tgt_attr.id
-        valid_modifier.domain = Domain.ship
+        valid_modifier.domain = ModifierDomain.ship
         valid_modifier.filter_type = FilterType.all_
         valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)

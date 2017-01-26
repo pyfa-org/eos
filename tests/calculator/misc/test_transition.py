@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, Domain, Scope, FilterType, Operator
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from eos.fit.messages import EnableServices, DisableServices
@@ -43,14 +43,12 @@ class TestTransitionFit(CalculatorTestCase):
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
-        modifier.operator = Operator.post_percent
+        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = Domain.ship
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         ship1 = IndependentItem(self.ch.type(type_id=1, effects=(effect,), attributes={src_attr.id: 10}))
@@ -84,14 +82,12 @@ class TestTransitionFit(CalculatorTestCase):
         tgt_attr2 = cache_handler2.attribute(attribute_id=2, max_attribute=333)
         cache_handler2.attribute(attribute_id=333, default_value=500)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = 1
-        modifier.operator = Operator.post_percent
+        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = 2
-        modifier.domain = Domain.ship
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         effect1 = cache_handler1.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier,)
         effect2 = cache_handler1.effect(effect_id=111, category=EffectCategory.passive)
