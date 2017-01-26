@@ -35,28 +35,18 @@ class TestDomainFilterTarget(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.target
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = ModifierDomain.target
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(
             type_id=88, effects=(effect,), attributes={src_attr.id: 20}))
         # This functionality isn't implemented for now
         self.fit.items.add(influence_source)
-        self.assertEqual(len(self.log), 2)
-        for log_record in self.log:
-            self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
-            self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(
-                log_record.msg,
-                'malformed modifier on item 88: unsupported target domain '
-                '{} for filtered modification'.format(Domain.target)
-            )
         self.fit.items.remove(influence_source)
+        self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

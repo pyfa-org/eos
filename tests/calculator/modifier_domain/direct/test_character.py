@@ -34,14 +34,12 @@ class TestDomainDirectCharacter(CalculatorTestCase):
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.item
+        modifier.domain = ModifierDomain.character
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = ModifierDomain.character
-        modifier.filter_type = None
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(

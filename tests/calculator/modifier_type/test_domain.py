@@ -23,38 +23,43 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
+from tests.calculator.environment import IndependentItem, ShipItem, OwnModItem
 
 
-class TestDomainDirectCharacterSwitch(CalculatorTestCase):
-    """Test direct modification of character when it's changed"""
+class TestModTypeDomain(CalculatorTestCase):
 
-    def test_character(self):
-        tgt_attr = self.ch.attribute(attribute_id=1)
+    def setUp(self):
+        super().setUp()
+        self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
-        modifier.tgt_attr = tgt_attr.id
-        modifier.domain = ModifierDomain.character
-        modifier.filter_type = None
-        modifier.filter_value = None
+        modifier.tgt_attr = self.tgt_attr.id
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type(
+        self.influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
-        self.fit.items.add(influence_source)
-        eve_type = self.ch.type(type_id=2, attributes={tgt_attr.id: 100})
-        influence_target1 = IndependentItem(eve_type)
-        self.fit.character = influence_target1
-        self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
-        self.fit.character = None
-        influence_target2 = IndependentItem(eve_type)
-        self.fit.character = influence_target2
-        self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
-        self.fit.items.remove(influence_source)
-        self.fit.character = None
+        self.fit.items.add(self.influence_source)
+
+    def test_match(self):
+        influence_target = ShipItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
+        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.fit.items.remove(self.influence_source)
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.fit.items.remove(influence_target)
+        self.assertEqual(len(self.log), 0)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_other_domain(self):
+        influence_target = OwnModItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.fit.items.remove(influence_target)
+        self.fit.items.remove(self.influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

@@ -28,22 +28,19 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
 
-class TestFilterUnknown(CalculatorTestCase):
-    """Test domain filter"""
+class TestModTypeUnknown(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
         self.tgt_attr = tgt_attr = self.ch.attribute(attribute_id=1)
         self.src_attr = src_attr = self.ch.attribute(attribute_id=2)
         self.invalid_modifier = invalid_modifier = Modifier()
+        invalid_modifier.type = 26500
+        invalid_modifier.domain = ModifierDomain.self
         invalid_modifier.state = State.offline
-        invalid_modifier.scope = Scope.local
         invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = ModifierOperator.post_percent
         invalid_modifier.tgt_attr = tgt_attr.id
-        invalid_modifier.domain = ModifierDomain.self
-        invalid_modifier.filter_type = 26500
-        invalid_modifier.filter_value = None
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
 
     def test_log(self):
@@ -57,20 +54,18 @@ class TestFilterUnknown(CalculatorTestCase):
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
             self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(log_record.msg, 'malformed modifier on item 31: invalid filter type 26500')
+            self.assertEqual(log_record.msg, 'malformed modifier on EVE type 31: invalid filter type 26500')
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_combination(self):
         valid_modifier = Modifier()
+        valid_modifier.type = ModifierType.item
+        valid_modifier.domain = ModifierDomain.self
         valid_modifier.state = State.offline
-        valid_modifier.scope = Scope.local
         valid_modifier.src_attr = self.src_attr.id
         valid_modifier.operator = ModifierOperator.post_percent
         valid_modifier.tgt_attr = self.tgt_attr.id
-        valid_modifier.domain = ModifierDomain.self
-        valid_modifier.filter_type = None
-        valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
         holder = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),

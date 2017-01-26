@@ -26,22 +26,20 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, ShipItem, OwnModItem
 
 
-class TestFilterDomainSkillrq(CalculatorTestCase):
-    """Test domain-skill requirement filter"""
+class TestModTypeDomainSkillrq(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain_skillrq
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = ModifierDomain.ship
-        modifier.filter_type = FilterType.skill
-        modifier.filter_value = 56
+        modifier.extra_arg = 56
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type(

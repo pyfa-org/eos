@@ -31,54 +31,32 @@ from tests.calculator.environment import IndependentItem
 class TestDomainDirectUnknown(CalculatorTestCase):
     """Test reaction to unknown domain specification for direct modification"""
 
-    def setUp(self):
-        super().setUp()
-        self.tgt_attr = self.ch.attribute(attribute_id=1)
-        self.src_attr = self.ch.attribute(attribute_id=2)
-        self.invalid_modifier = invalid_modifier = Modifier()
-        invalid_modifier.state = State.offline
-        invalid_modifier.scope = Scope.local
-        invalid_modifier.src_attr = self.src_attr.id
-        invalid_modifier.operator = ModifierOperator.post_percent
-        invalid_modifier.tgt_attr = self.tgt_attr.id
-        invalid_modifier.domain = 1972
-        invalid_modifier.filter_type = None
-        invalid_modifier.filter_value = None
-        self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
-
-    def test_log(self):
-        self.effect.modifiers = (self.invalid_modifier,)
-        holder = IndependentItem(self.ch.type(
-            type_id=754, effects=(self.effect,), attributes={self.src_attr.id: 20}))
-        self.fit.items.add(holder)
-        self.assertEqual(len(self.log), 2)
-        for log_record in self.log:
-            self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
-            self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(
-                log_record.msg,
-                'malformed modifier on item 754: unsupported target '
-                'domain 1972 for direct modification'
-            )
-        self.fit.items.remove(holder)
-        self.assert_calculator_buffers_empty(self.fit)
-
     def test_combination(self):
+        tgt_attr = self.ch.attribute(attribute_id=1)
+        src_attr = self.ch.attribute(attribute_id=2)
+        invalid_modifier = Modifier()
+        invalid_modifier.type = ModifierType.item
+        invalid_modifier.domain = 1972
+        invalid_modifier.state = State.offline
+        invalid_modifier.src_attr = src_attr.id
+        invalid_modifier.operator = ModifierOperator.post_percent
+        invalid_modifier.tgt_attr = tgt_attr.id
         valid_modifier = Modifier()
-        valid_modifier.state = State.offline
-        valid_modifier.scope = Scope.local
-        valid_modifier.src_attr = self.src_attr.id
-        valid_modifier.operator = ModifierOperator.post_percent
-        valid_modifier.tgt_attr = self.tgt_attr.id
+        valid_modifier.type = ModifierType.item
         valid_modifier.domain = ModifierDomain.self
-        valid_modifier.filter_type = None
-        valid_modifier.filter_value = None
-        self.effect.modifiers = (self.invalid_modifier, valid_modifier)
+        valid_modifier.state = State.offline
+        valid_modifier.src_attr = src_attr.id
+        valid_modifier.operator = ModifierOperator.post_percent
+        valid_modifier.tgt_attr = tgt_attr.id
+        effect = self.ch.effect(
+            effect_id=1, category=EffectCategory.passive,
+            modifiers=(invalid_modifier, valid_modifier)
+        )
         holder = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}))
+            type_id=1, effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         # Invalid domain in modifier should prevent proper processing of other modifiers
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        self.assertNotAlmostEqual(holder.attributes[tgt_attr.id], 100)
         self.fit.items.remove(holder)
-        self.assertEqual(len(self.log), 5)
+        self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

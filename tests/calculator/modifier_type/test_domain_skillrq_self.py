@@ -19,37 +19,37 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State, EosEveTypes
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem, OwnModItem
+from tests.calculator.environment import IndependentItem, ShipItem
 
 
-class TestFilterDomainGroup(CalculatorTestCase):
-    """Test domain-group filter"""
+class TestModTypeDomainSkillrqSelf(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain_skillrq
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = ModifierDomain.ship
-        modifier.filter_type = FilterType.group
-        modifier.filter_value = 35
+        modifier.extra_arg = EosEveTypes.current_self
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
+            type_id=772, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(self.influence_source)
 
     def test_match(self):
-        influence_target = ShipItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
+        eve_type = self.ch.type(type_id=1, attributes={self.tgt_attr.id: 100})
+        eve_type.required_skills = {772: 1}
+        influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)
@@ -58,17 +58,10 @@ class TestFilterDomainGroup(CalculatorTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_other_domain(self):
-        influence_target = OwnModItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        self.fit.items.remove(self.influence_source)
-        self.fit.items.remove(influence_target)
-        self.assertEqual(len(self.log), 0)
-        self.assert_calculator_buffers_empty(self.fit)
-
-    def test_other_group(self):
-        influence_target = ShipItem(self.ch.type(type_id=2, group=3, attributes={self.tgt_attr.id: 100}))
+    def test_other_skill(self):
+        eve_type = self.ch.type(type_id=1, attributes={self.tgt_attr.id: 100})
+        eve_type.required_skills = {51: 1}
+        influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)

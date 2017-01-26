@@ -36,14 +36,12 @@ class TestDomainFilterSelf(CalculatorTestCase):
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.domain
+        modifier.domain = ModifierDomain.self
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.domain = ModifierDomain.self
-        modifier.filter_type = FilterType.all_
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type(
@@ -82,7 +80,7 @@ class TestDomainFilterSelf(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            'malformed modifier on item 1061: invalid reference '
+            'malformed modifier on EVE type 1061: invalid reference '
             'to self for filtered modification'
         )
         self.fit.items.remove(self.influence_source)

@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-import logging
-
 from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
@@ -28,35 +26,32 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
 
-class TestDomainDirectArea(CalculatorTestCase):
-    """Test domain.area for direct modifications"""
+class TestDomainDirectAwaitingShip(CalculatorTestCase):
 
-    def test_error(self):
+    def test_ship(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
+        modifier.type = ModifierType.item
+        modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
-        modifier.scope = Scope.local
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.domain = ModifierDomain.area
-        modifier.filter_type = None
-        modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(
-            type_id=772, effects=(effect,), attributes={src_attr.id: 20}))
-        # This domain just isn't used in EVE and unsupported by Eos by design
+            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        self.assertEqual(len(self.log), 2)
-        for log_record in self.log:
-            self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
-            self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(
-                log_record.msg,
-                'malformed modifier on item 772: unsupported target domain '
-                '{} for direct modification'.format(Domain.area)
-            )
+        eve_type = self.ch.type(type_id=None, attributes={tgt_attr.id: 100})
+        influence_target1 = IndependentItem(eve_type)
+        self.fit.ship = influence_target1
+        self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
+        self.fit.ship = None
+        influence_target2 = IndependentItem(eve_type)
+        self.fit.ship = influence_target2
+        self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
         self.fit.items.remove(influence_source)
+        self.fit.ship = None
+        self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
