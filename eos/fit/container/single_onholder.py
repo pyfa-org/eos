@@ -29,12 +29,12 @@ class HolderDescriptorOnHolder(HolderContainerBase):
 
     Required arguments:
     direct_attr_name -- name of instance attribute which
-    should be used to store data processed by descriptor
+        should be used to store data processed by descriptor
     reverse_attr_name -- name of attribute which will be
-    used to refer from contained holder to container holder,
-    can be None (no reference to container)
+        used to refer from contained holder to container
+        holder, can be None (no reference to container)
     holder_class -- class of holders this container
-    is allowed to contain
+        is allowed to contain
     """
 
     def __init__(self, direct_attr_name, reverse_attr_name, holder_class):

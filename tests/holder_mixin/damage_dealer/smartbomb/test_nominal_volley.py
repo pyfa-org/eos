@@ -40,7 +40,7 @@ class TestHolderMixinDamageSmartbombNominalVolley(HolderMixinTestCase):
         mixin.cycle_time = 0.5
         mixin.reactivation_delay = None
         mixin.charge = None
-        mixin.fully_charged_cycles_max = None
+        mixin.charged_cycles = None
         mixin.reload_time = None
         self.mixin = mixin
 

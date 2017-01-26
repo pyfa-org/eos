@@ -43,11 +43,12 @@ class HolderRestrictedSet(HolderSet):
 
         Possible exceptions:
         TypeError -- raised when holder of unacceptable class
-        is passed
-        ValueError -- raised when holder cannot be
-        added to container (e.g. already belongs to some fit
-        or holder with this type ID exists in container)
+            is passed
+        ValueError -- raised when holder cannot be added to container
+            (e.g. already belongs to some fit or holder with this
+            type ID exists in container)
         """
+        self._check_class(holder)
         eve_type_id = holder._eve_type_id
         if eve_type_id in self.__eve_type_id_map:
             msg = 'holder with type ID {} already exists in this set'.format(eve_type_id)
@@ -65,7 +66,7 @@ class HolderRestrictedSet(HolderSet):
 
         Possible exceptions:
         KeyError -- raised when holder cannot be removed
-        from container (e.g. it doesn't belong to it)
+            from container (e.g. it doesn't belong to it)
         """
         HolderSet.remove(self, holder)
         del self.__eve_type_id_map[holder._eve_type_id]

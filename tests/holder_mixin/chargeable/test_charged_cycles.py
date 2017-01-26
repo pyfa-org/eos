@@ -115,13 +115,6 @@ class TestHolderMixinChargedCycles(HolderMixinTestCase):
         self.holder._eve_type.default_effect.id = Effect.target_attack
         self.assertIsNone(self.holder.charged_cycles)
 
-    def test_no_eve_type(self):
-        self.holder.attributes[Attribute.capacity] = 100.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.holder._eve_type = None
-        self.holder.attributes[Attribute.charge_rate] = 2.0
-        self.assertIsNone(self.holder.charged_cycles)
-
     def test_no_default_effect(self):
         self.holder.attributes[Attribute.capacity] = 100.0
         self.charge.attributes[Attribute.volume] = 2.0

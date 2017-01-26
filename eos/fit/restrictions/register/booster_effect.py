@@ -44,7 +44,7 @@ class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
     Uses set of actually disabled effects during validation,
     rather than set of IDs of effects which are not allowed
     to be active on the booster (see __disabled_effects vs
-    _disabled_effects comments on HolderBase class).
+    _disabled_effects comments on BaseItemMixin class).
     """
 
     def __init__(self):

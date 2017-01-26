@@ -30,7 +30,7 @@ class HolderList(HolderContainerBase):
     Required arguments:
     fit -- fit, to which container is attached
     holder_class -- class of holders this container
-    is allowed to contain
+        is allowed to contain
     """
 
     def __init__(self, fit, holder_class):
@@ -48,10 +48,10 @@ class HolderList(HolderContainerBase):
 
         Possible exceptions:
         TypeError -- raised when holder of unacceptable class
-        is passed
+            is passed
         ValueError -- raised when holder is passed as value and
-        it cannot be added to container (e.g. already belongs to
-        some fit)
+            it cannot be added to container (e.g. already belongs
+            to some fit)
         """
         self._check_class(value, allow_none=True)
         self._allocate(index - 1)
@@ -72,9 +72,9 @@ class HolderList(HolderContainerBase):
 
         Possible exceptions:
         TypeError -- raised when holder of unacceptable class
-        is passed
-        ValueError -- raised when holder cannot be
-        added to container (e.g. already belongs to some fit)
+            is passed
+        ValueError -- raised when holder cannot be added to container
+            (e.g. already belongs to some fit)
         """
         self._check_class(holder)
         self.__list.append(holder)
@@ -92,11 +92,11 @@ class HolderList(HolderContainerBase):
 
         Possible exceptions:
         TypeError -- raised when holder of unacceptable class
-        is passed
+            is passed
         ValueError -- raised when holder cannot be added to
-        container (e.g. already belongs to some fit)
+            container (e.g. already belongs to some fit)
         SlotTakenError -- raised when slot at specified index
-        is already taken by other holder
+            is already taken by other holder
         """
         self._check_class(holder)
         try:
@@ -122,9 +122,9 @@ class HolderList(HolderContainerBase):
 
         Possible exceptions:
         TypeError -- raised when holder of unacceptable class
-        is passed
+            is passed
         ValueError -- raised when holder cannot be added to
-        container (e.g. already belongs to some fit)
+            container (e.g. already belongs to some fit)
         """
         self._check_class(holder)
         try:

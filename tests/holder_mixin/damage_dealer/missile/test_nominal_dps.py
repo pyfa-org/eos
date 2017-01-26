@@ -42,7 +42,7 @@ class TestHolderMixinDamageMissileNominalDps(HolderMixinTestCase):
         mixin.charge = Mock()
         mixin.charge._eve_type.default_effect.id = Effect.missile_launching
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = 20
+        mixin.charged_cycles = 20
         mixin.reload_time = 10
         self.mixin = mixin
 

@@ -34,7 +34,7 @@ class HolderContainerBase:
     Required arguments:
     fit -- fit, to which container is attached
     holder_class -- class of holders this container
-    is allowed to contain
+        is allowed to contain
     """
 
     def __init__(self, holder_class):

@@ -41,7 +41,7 @@ class TestHolderMixinDamageSpecialsNominalVolley(HolderMixinTestCase):
         mixin.reactivation_delay = None
         mixin.charge = Mock()
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = None
+        mixin.charged_cycles = None
         mixin.reload_time = None
         self.mixin = mixin
 
@@ -283,7 +283,7 @@ class TestHolderMixinDamageSpecialsNominalVolley(HolderMixinTestCase):
 
     def test_no_charged_cycles(self):
         mixin = self.mixin
-        mixin.fully_charged_cycles_max = 0
+        mixin.charged_cycles = 0
         mixin.charge.attributes[Attribute.em_damage] = 5.2
         mixin.charge.attributes[Attribute.thermal_damage] = 6.3
         mixin.charge.attributes[Attribute.kinetic_damage] = 7.4

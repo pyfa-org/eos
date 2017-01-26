@@ -41,7 +41,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
         mixin.reactivation_delay = None
         mixin.charge = Mock()
         mixin.charge.attributes = {}
-        mixin.fully_charged_cycles_max = None
+        mixin.charged_cycles = None
         mixin.reload_time = None
         self.mixin = mixin
 
@@ -63,7 +63,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_limited_charges_partial(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.em_damage] = 5.2
         mixin.charge.attributes[Attribute.thermal_damage] = 6.3
@@ -80,7 +80,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_limited_charges_full(self):
         mixin = self.mixin
         mixin.reactivation_delay = 19.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.em_damage] = 5.2
         mixin.charge.attributes[Attribute.thermal_damage] = 6.3
@@ -97,7 +97,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_no_attrib_single_em(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.thermal_damage] = 6.3
         mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
@@ -113,7 +113,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_no_attrib_single_therm(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.em_damage] = 5.2
         mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
@@ -129,7 +129,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_no_attrib_single_kin(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.em_damage] = 5.2
         mixin.charge.attributes[Attribute.thermal_damage] = 6.3
@@ -145,7 +145,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_no_attrib_single_expl(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.em_damage] = 5.2
         mixin.charge.attributes[Attribute.thermal_damage] = 6.3
@@ -161,7 +161,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_no_attrib_all(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.attributes[Attribute.damage_multiplier] = 5.5
         dps = mixin.get_nominal_dps(reload=True)
@@ -174,7 +174,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_single_zero_attrib_em(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.em_damage] = 0
         mixin.attributes[Attribute.damage_multiplier] = 5.5
@@ -188,7 +188,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_single_zero_attrib_therm(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.thermal_damage] = 0
         mixin.attributes[Attribute.damage_multiplier] = 5.5
@@ -202,7 +202,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_single_zero_attrib_kin(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.kinetic_damage] = 0
         mixin.attributes[Attribute.damage_multiplier] = 5.5
@@ -216,7 +216,7 @@ class TestHolderMixinDamageSpecialsNominalDps(HolderMixinTestCase):
     def test_reactivation_single_zero_attrib_expl(self):
         mixin = self.mixin
         mixin.reactivation_delay = 1.5
-        mixin.fully_charged_cycles_max = 10
+        mixin.charged_cycles = 10
         mixin.reload_time = 6.5
         mixin.charge.attributes[Attribute.explosive_damage] = 0
         mixin.attributes[Attribute.damage_multiplier] = 5.5

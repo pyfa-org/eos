@@ -52,7 +52,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_add_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=Holder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=Holder(1))
         # Action
         with self.fit_assertions(fit):
             fit.container.add(holder)
@@ -68,7 +68,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_add_holder_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=OtherHolder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=OtherHolder(1))
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, holder)
@@ -82,7 +82,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
     def test_add_holder_value_failure_has_fit(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=Holder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.overload, spec_set=Holder(1))
         fit_other.container.add(holder)
         # Action
         with self.fit_assertions(fit):
@@ -102,8 +102,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_add_holder_value_failure_existing_type_id(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=Holder(1))
-        holder2 = Mock(_fit=None, _type_id=1, state=State.offline, spec_set=Holder(1))
+        holder1 = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=Holder(1))
+        holder2 = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=Holder(1))
         fit.container.add(holder1)
         # Action
         with self.fit_assertions(fit):
@@ -121,7 +121,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_remove_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
         with self.fit_assertions(fit):
@@ -135,7 +135,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_remove_holder_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.overload, spec_set=Holder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.overload, spec_set=Holder(1))
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(KeyError, fit.container.remove, holder)
@@ -148,7 +148,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_delitem_holder(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
         with self.fit_assertions(fit):
@@ -162,7 +162,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_delitem_holder_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
+        holder = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Holder(1))
         fit.container.add(holder)
         # Action
         with self.fit_assertions(fit):
@@ -177,8 +177,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
 
     def test_clear(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, _type_id=1, state=State.active, spec_set=Holder(1))
-        holder2 = Mock(_fit=None, _type_id=2, state=State.online, spec_set=Holder(1))
+        holder1 = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Holder(1))
+        holder2 = Mock(_fit=None, _eve_type_id=2, state=State.online, spec_set=Holder(1))
         fit.container.add(holder1)
         fit.container.add(holder2)
         # Action

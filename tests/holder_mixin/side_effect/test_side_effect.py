@@ -105,7 +105,7 @@ class TestHolderMixinSideEffect(HolderMixinTestCase):
     def test_disabling_attached(self):
         # Setup
         fit_mock = Mock()
-        self.mixin._HolderBase__fit = fit_mock
+        self.mixin._BaseItemMixin__fit = fit_mock
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(5, False)
@@ -129,14 +129,14 @@ class TestHolderMixinSideEffect(HolderMixinTestCase):
 
     def test_disabling_detached(self):
         # Setup
-        self.mixin._HolderBase__fit = None
+        self.mixin._BaseItemMixin__fit = None
         # Action & verification - we just make sure it doesn't crash
         self.mixin.set_side_effect_status(16, False)
 
     def test_enabling_attached(self):
         # Setup
         fit_mock = Mock()
-        self.mixin._HolderBase__fit = fit_mock
+        self.mixin._BaseItemMixin__fit = fit_mock
         self.mixin.set_side_effect_status(11, False)
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
@@ -161,7 +161,7 @@ class TestHolderMixinSideEffect(HolderMixinTestCase):
 
     def test_enabling_detached(self):
         # Setup
-        self.mixin._HolderBase__fit = None
+        self.mixin._BaseItemMixin__fit = None
         self.mixin.set_side_effect_status(99, False)
         # Action & verification - we just make sure it doesn't crash
         self.mixin.set_side_effect_status(99, True)

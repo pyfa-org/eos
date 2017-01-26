@@ -29,10 +29,10 @@ class HolderDescriptorOnFit(HolderContainerBase):
     as fit attribute for direct access.
 
     Required arguments:
-    attr_name -- name of instance attribute which
-    should be used to store data processed by descriptor
+    attr_name -- name of instance attribute which should
+        be used to store data processed by descriptor
     holder_class -- class of holders this container
-    is allowed to contain
+        is allowed to contain
     """
 
     def __init__(self, attr_name, holder_class):

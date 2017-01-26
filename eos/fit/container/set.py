@@ -30,7 +30,7 @@ class HolderSet(HolderContainerBase):
     Required arguments:
     fit -- fit, to which container is attached
     holder_class -- class of holders this container
-    is allowed to contain
+        is allowed to contain
     """
 
     def __init__(self, fit, holder_class):
@@ -44,9 +44,9 @@ class HolderSet(HolderContainerBase):
 
         Possible exceptions:
         TypeError -- raised when holder of unacceptable class
-        is passed
-        ValueError -- raised when holder cannot be
-        added to container (e.g. already belongs to some fit)
+            is passed
+        ValueError -- raised when holder cannot be added to container
+            (e.g. already belongs to some fit)
         """
         self._check_class(holder)
         self.__set.add(holder)
@@ -62,7 +62,7 @@ class HolderSet(HolderContainerBase):
 
         Possible exceptions:
         KeyError -- raised when holder cannot be removed
-        from container (e.g. it doesn't belong to it)
+            from container (e.g. it doesn't belong to it)
         """
         if holder not in self.__set:
             raise KeyError(holder)

@@ -210,9 +210,7 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
         if reload:
             try:
                 reload_time = self.reload_time
-                # As we're calculating long-run DPS, use normal amount of charges
-                # loadable into container, not overriden done
-                charged_cycles = self.fully_charged_cycles_max
+                charged_cycles = self.charged_cycles
             except AttributeError:
                 pass
             else:
