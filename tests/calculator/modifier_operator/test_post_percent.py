@@ -43,15 +43,25 @@ class TestOperatorPostPercent(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
+            type_id=1, effects=(effect,),
+            attributes={src_attr.id: 20}
+        ))
         self.influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(effect,), attributes={src_attr.id: 50}))
+            type_id=2, effects=(effect,),
+            attributes={src_attr.id: 50}
+        ))
         self.influence_source3 = IndependentItem(self.ch.type(
-            type_id=3, effects=(effect,), attributes={src_attr.id: -90}))
+            type_id=3, effects=(effect,),
+            attributes={src_attr.id: -90}
+        ))
         self.influence_source4 = IndependentItem(self.ch.type(
-            type_id=4, effects=(effect,), attributes={src_attr.id: -25}))
+            type_id=4, effects=(effect,),
+            attributes={src_attr.id: -25}
+        ))
         self.influence_source5 = IndependentItem(self.ch.type(
-            type_id=5, effects=(effect,), attributes={src_attr.id: 400}))
+            type_id=5, effects=(effect,),
+            attributes={src_attr.id: 400}
+        ))
         self.influence_target = ShipItem(self.ch.type(type_id=6, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(self.influence_source1)
         self.fit.items.add(self.influence_source2)
@@ -62,7 +72,9 @@ class TestOperatorPostPercent(CalculatorTestCase):
 
     def test_unpenalized(self):
         self.tgt_attr.stackable = True
+        # Checks
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 67.5)
+        # Misc
         self.fit.items.remove(self.influence_source1)
         self.fit.items.remove(self.influence_source2)
         self.fit.items.remove(self.influence_source3)
@@ -74,7 +86,9 @@ class TestOperatorPostPercent(CalculatorTestCase):
 
     def test_penalized(self):
         self.tgt_attr.stackable = False
-        self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 62.5497832)
+        # Checks
+        self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 62.55, places=3)
+        # Misc
         self.fit.items.remove(self.influence_source1)
         self.fit.items.remove(self.influence_source2)
         self.fit.items.remove(self.influence_source3)

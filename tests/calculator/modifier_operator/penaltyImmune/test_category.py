@@ -48,14 +48,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_ship(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.ship, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.ship,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=Category.ship, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=Category.ship,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -64,14 +71,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_charge(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.charge,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=Category.charge,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -80,14 +94,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_skill(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.skill, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.skill,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=Category.skill, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=Category.skill,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -96,14 +117,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_implant(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.implant, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.implant,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=Category.implant, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=Category.implant,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -112,14 +140,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_subsystem(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.subsystem, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.subsystem,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=Category.subsystem, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=Category.subsystem,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -128,14 +163,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_mixed(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.charge,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=Category.implant, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=Category.implant,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -144,14 +186,21 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_with_not_immune(self):
         influence_source1 = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 50}))
+            type_id=1, effects=(self.effect,), category=Category.charge,
+            attributes={self.src_attr.id: 50}
+        ))
         influence_source2 = IndependentItem(self.ch.type(
-            type_id=2, effects=(self.effect,), category=None, attributes={self.src_attr.id: 100}))
+            type_id=2, effects=(self.effect,), category=None,
+            attributes={self.src_attr.id: 100}
+        ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
         influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        # Action
         self.fit.items.add(influence_target)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
+        # Misc
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)

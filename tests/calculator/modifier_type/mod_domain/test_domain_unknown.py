@@ -19,52 +19,49 @@
 # ===============================================================================
 
 
-import logging
-
 from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
+from tests.calculator.environment import IndependentItem, ShipItem
 
 
-class TestSourceAttrAbsent(CalculatorTestCase):
-    """Test how calculator reacts to source attribute which is absent"""
+class TestModDomainDomainUnknown(CalculatorTestCase):
 
     def test_combination(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
-        abs_attr = self.ch.attribute(attribute_id=2)
-        src_attr = self.ch.attribute(attribute_id=3)
+        src_attr = self.ch.attribute(attribute_id=2)
         invalid_modifier = Modifier()
-        invalid_modifier.type = ModifierType.item
-        invalid_modifier.domain = ModifierDomain.self
+        invalid_modifier.type = ModifierType.domain
+        invalid_modifier.domain = 1972
         invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = abs_attr.id
+        invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = ModifierOperator.post_percent
         invalid_modifier.tgt_attr = tgt_attr.id
         valid_modifier = Modifier()
-        valid_modifier.type = ModifierType.item
-        valid_modifier.domain = ModifierDomain.self
+        valid_modifier.type = ModifierType.domain
+        valid_modifier.domain = ModifierDomain.ship
         valid_modifier.state = State.offline
         valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = ModifierOperator.post_mul
+        valid_modifier.operator = ModifierOperator.post_percent
         valid_modifier.tgt_attr = tgt_attr.id
-        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
-        effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type(
+        effect = self.ch.effect(
+            effect_id=1, category=EffectCategory.passive,
+            modifiers=(invalid_modifier, valid_modifier)
+        )
+        influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,),
-            attributes={src_attr.id: 1.5, tgt_attr.id: 100}
+            attributes={src_attr.id: 20}
         ))
+        influence_target = ShipItem(self.ch.type(type_id=2, attributes={tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(influence_source)
         # Checks
-        # Invalid source value shouldn't screw whole calculation process
-        self.assertAlmostEqual(holder.attributes[tgt_attr.id], 150)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.fit.calculator.map')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on EVE type 1')
+        # Invalid domain in modifier should prevent proper processing of other modifiers
+        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(influence_target)
+        self.fit.items.remove(influence_source)
+        self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

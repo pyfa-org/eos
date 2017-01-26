@@ -47,7 +47,7 @@ class TestModItemDomainSelf(CalculatorTestCase):
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
-        # Actions
+        # Action
         self.fit.items.add(holder)
         # Checks
         self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)

@@ -17,10 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ===============================================================================
-
-
-"""
-Tests from this module check that  direct modification links
-are correctly disabled when their target is removed, and enabled
-again when new target is in place.
-"""

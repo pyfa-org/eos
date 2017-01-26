@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-import logging
-
 from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
@@ -28,15 +26,14 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
 
-class TestDomainFilterOther(CalculatorTestCase):
-    """Test domain.other for filtered modifications"""
+class TestModDomainDomainTarget(CalculatorTestCase):
 
-    def test_error(self):
+    def test_no_effect(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
         modifier.type = ModifierType.domain
-        modifier.domain = ModifierDomain.other
+        modifier.domain = ModifierDomain.target
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
@@ -44,18 +41,13 @@ class TestDomainFilterOther(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(
-            type_id=90, effects=(effect,), attributes={src_attr.id: 20}))
-        # Charge's container or module's charge can't be 'owner'
-        # of other holders, thus such modification type is unsupported
+            type_id=88, effects=(effect,),
+            attributes={src_attr.id: 20}
+        ))
+        # Action
         self.fit.items.add(influence_source)
-        self.assertEqual(len(self.log), 2)
-        for log_record in self.log:
-            self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
-            self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(
-                log_record.msg,
-                'malformed modifier on EVE type 90: unsupported target domain '
-                '{} for filtered modification'.format(ModifierDomain.other)
-            )
+        # No checks - nothing should happen
+        # Misc
         self.fit.items.remove(influence_source)
+        self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

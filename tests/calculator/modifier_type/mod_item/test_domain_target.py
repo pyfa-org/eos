@@ -23,41 +23,30 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem
+from tests.calculator.environment import IndependentItem
 
 
-class TestDomainFilterUnknown(CalculatorTestCase):
-    """Test reaction to unknown domain specification for filtered modification"""
+class TestModItemDomainTarget(CalculatorTestCase):
 
-    def test_combination(self):
+    def test_no_effect(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
-        invalid_modifier = Modifier()
-        invalid_modifier.type = ModifierType.domain
-        invalid_modifier.domain = 1972
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = src_attr.id
-        invalid_modifier.operator = ModifierOperator.post_percent
-        invalid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier = Modifier()
-        valid_modifier.type = ModifierType.domain
-        valid_modifier.domain = ModifierDomain.ship
-        valid_modifier.state = State.offline
-        valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = ModifierOperator.post_percent
-        valid_modifier.tgt_attr = tgt_attr.id
-        effect = self.ch.effect(
-            effect_id=1, category=EffectCategory.passive,
-            modifiers=(invalid_modifier, valid_modifier)
-        )
+        modifier = Modifier()
+        modifier.type = ModifierType.item
+        modifier.domain = ModifierDomain.target
+        modifier.state = State.offline
+        modifier.src_attr = src_attr.id
+        modifier.operator = ModifierOperator.post_percent
+        modifier.tgt_attr = tgt_attr.id
+        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
+        effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
+            type_id=102, effects=(effect,), attributes={src_attr.id: 20}
+        ))
+        # Action
         self.fit.items.add(influence_source)
-        influence_target = ShipItem(self.ch.type(type_id=2, attributes={tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
-        # Invalid domain in modifier should prevent proper processing of other modifiers
-        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
-        self.fit.items.remove(influence_target)
+        # No checks - nothing should happen
+        # Misc
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

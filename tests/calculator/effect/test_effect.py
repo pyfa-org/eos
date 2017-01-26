@@ -88,8 +88,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.fit.items.add(self.holder)
         # Action
         self.holder._disabled_effects.update((self.effect1.id, self.effect2.id, self.effect_active.id))
-        self.fit._calculator._notify(
-            EffectsDisabled(self.holder, (self.effect1.id, self.effect2.id, self.effect_active.id)))
+        self.fit._calculator._notify(EffectsDisabled(
+            self.holder, (self.effect1.id, self.effect2.id, self.effect_active.id)
+        ))
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 100)
         # Misc
@@ -118,8 +119,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.holder._disabled_effects.update((self.effect1.id, self.effect2.id))
         self.fit.items.add(self.holder)
         # Action
-        self.fit._calculator._notify(
-            EffectsEnabled(self.holder, (self.effect1.id, self.effect2.id, self.effect_active.id)))
+        self.fit._calculator._notify(EffectsEnabled(
+            self.holder, (self.effect1.id, self.effect2.id, self.effect_active.id)
+        ))
         self.holder._disabled_effects.difference_update((self.effect1.id, self.effect2.id, self.effect_active.id))
         # Checks
         self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)

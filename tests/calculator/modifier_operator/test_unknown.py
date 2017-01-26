@@ -46,14 +46,19 @@ class TestOperatorUnknown(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier,)
         holder = IndependentItem(self.ch.type(
-            type_id=83, effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
+            type_id=83, effects=(effect,),
+            attributes={src_attr.id: 1.2, tgt_attr.id: 100}
+        ))
+        # Action
         self.fit.items.add(holder)
+        # Checks
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 100)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'malformed modifier on EVE type 83: unknown operator 1008')
+        # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -80,14 +85,19 @@ class TestOperatorUnknown(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         holder = IndependentItem(self.ch.type(
-            type_id=83, effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
+            type_id=83, effects=(effect,),
+            attributes={src_attr.id: 1.2, tgt_attr.id: 100}
+        ))
+        # Action
         self.fit.items.add(holder)
+        # Checks
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 120)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'malformed modifier on EVE type 83: unknown operator None')
+        # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -111,11 +121,16 @@ class TestOperatorUnknown(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         holder = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
+            type_id=1, effects=(effect,),
+            attributes={src_attr.id: 1.5, tgt_attr.id: 100}
+        ))
+        # Action
         self.fit.items.add(holder)
+        # Checks
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 150)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 1)
         self.assert_calculator_buffers_empty(self.fit)

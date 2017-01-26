@@ -54,13 +54,16 @@ class TestTargetAttribute(CalculatorTestCase):
             type_id=1, effects=(effect,),
             attributes={tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20}
         ))
+        # Action
         self.fit.items.add(holder)
+        # Checks
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(holder.attributes[tgt_attr1.id], 60)
         # Second should be modified by modifier2
         self.assertAlmostEqual(holder.attributes[tgt_attr2.id], 96)
         # Third should stay unmodified
         self.assertAlmostEqual(holder.attributes[tgt_attr3.id], 100)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
