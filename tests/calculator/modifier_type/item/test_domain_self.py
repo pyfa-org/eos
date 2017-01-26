@@ -26,8 +26,7 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem, OwnModItem
 
 
-class TestDomainDirectSelf(CalculatorTestCase):
-    """Test domain.self (self-reference) for direct modifications"""
+class TestModItemDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
@@ -45,48 +44,70 @@ class TestDomainDirectSelf(CalculatorTestCase):
 
     def test_independent(self):
         holder = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
+        # Actions
         self.fit.items.add(holder)
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
-        # We do not test attribute value after item removal here, because
-        # removed holder (which is both source and target in this test set)
-        # essentially becomes detached, which is covered by other tests
+        # Checks
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_character(self):
         holder = CharacterItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
+        # Action
         self.fit.items.add(holder)
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        # Checks
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_ship(self):
         holder = ShipItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
+        # Action
         self.fit.items.add(holder)
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        # Checks
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_space(self):
         holder = OwnModItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
+        # Action
         self.fit.items.add(holder)
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        # Checks
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_positioned(self):
         holder = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
+        # Action
         self.fit.character = holder
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        # Checks
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        # Misc
         self.fit.character = None
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -97,12 +118,17 @@ class TestDomainDirectSelf(CalculatorTestCase):
         # check another item which has character modifier domain to ensure
         # that items 'belonging' to self are not affected too
         influence_source = IndependentItem(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
+        holder = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(holder)
+        # Action
         self.fit.character = influence_source
-        influence_target = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        # Checks
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        # Misc
         self.fit.character = None
-        self.fit.items.remove(influence_target)
+        self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

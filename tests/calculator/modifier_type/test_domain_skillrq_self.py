@@ -51,7 +51,7 @@ class TestModTypeDomainSkillrqSelf(CalculatorTestCase):
         eve_type.required_skills = {772: 1}
         influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
-        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         self.fit.items.remove(self.influence_source)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target)

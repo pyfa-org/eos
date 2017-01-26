@@ -55,7 +55,7 @@ class TestSourceAttrAbsent(CalculatorTestCase):
             type_id=1, effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         # Invalid source value shouldn't screw whole calculation process
-        self.assertNotAlmostEqual(holder.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(holder.attributes[tgt_attr.id], 150)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')

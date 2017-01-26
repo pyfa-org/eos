@@ -26,14 +26,14 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
 
-class TestDomainDirectAwaitingShip(CalculatorTestCase):
+class TestModItemDomainTarget(CalculatorTestCase):
 
-    def test_ship(self):
+    def test_no_effect(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
         modifier.type = ModifierType.item
-        modifier.domain = ModifierDomain.ship
+        modifier.domain = ModifierDomain.target
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
@@ -41,17 +41,9 @@ class TestDomainDirectAwaitingShip(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
+            type_id=102, effects=(effect,), attributes={src_attr.id: 20}
+        ))
         self.fit.items.add(influence_source)
-        eve_type = self.ch.type(type_id=None, attributes={tgt_attr.id: 100})
-        influence_target1 = IndependentItem(eve_type)
-        self.fit.ship = influence_target1
-        self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)
-        self.fit.ship = None
-        influence_target2 = IndependentItem(eve_type)
-        self.fit.ship = influence_target2
-        self.assertNotAlmostEqual(influence_target2.attributes[tgt_attr.id], 100)
         self.fit.items.remove(influence_source)
-        self.fit.ship = None
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

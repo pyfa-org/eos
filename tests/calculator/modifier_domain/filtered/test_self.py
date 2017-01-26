@@ -51,7 +51,7 @@ class TestDomainFilterSelf(CalculatorTestCase):
         self.fit.ship = self.influence_source
         influence_target = ShipItem(self.ch.type(type_id=1, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
-        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         self.fit.ship = None
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target)
@@ -62,7 +62,7 @@ class TestDomainFilterSelf(CalculatorTestCase):
         self.fit.character = self.influence_source
         influence_target = CharacterItem(self.ch.type(type_id=1, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
-        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         self.fit.character = None
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target)

@@ -26,7 +26,7 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
 
-class TestDomainDirectUnknown(CalculatorTestCase):
+class TestModItemDomainUnknown(CalculatorTestCase):
     """Test reaction to unknown domain specification for direct modification"""
 
     def test_combination(self):
@@ -51,10 +51,14 @@ class TestDomainDirectUnknown(CalculatorTestCase):
             modifiers=(invalid_modifier, valid_modifier)
         )
         holder = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 100}))
+            type_id=1, effects=(effect,),
+            attributes={src_attr.id: 20, tgt_attr.id: 100}
+        ))
+        # Action
         self.fit.items.add(holder)
-        # Invalid domain in modifier should prevent proper processing of other modifiers
-        self.assertNotAlmostEqual(holder.attributes[tgt_attr.id], 100)
+        # Checks
+        self.assertAlmostEqual(holder.attributes[tgt_attr.id], 120)
+        # Misc
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

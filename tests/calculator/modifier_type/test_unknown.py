@@ -73,7 +73,7 @@ class TestModTypeUnknown(CalculatorTestCase):
         ))
         self.fit.items.add(holder)
         # Invalid filter type in modifier should prevent proper processing of other modifiers
-        self.assertNotAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 5)
         self.assert_calculator_buffers_empty(self.fit)

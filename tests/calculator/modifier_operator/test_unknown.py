@@ -115,7 +115,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.fit.items.add(holder)
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers
-        self.assertNotAlmostEqual(holder.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(holder.attributes[tgt_attr.id], 150)
         self.fit.items.remove(holder)
         self.assertEqual(len(self.log), 1)
         self.assert_calculator_buffers_empty(self.fit)

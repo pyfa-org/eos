@@ -26,8 +26,7 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import ChargeHolder, ContainerHolder, IndependentItem
 
 
-class TestDomainDirectOther(CalculatorTestCase):
-    """Test domain.other for direct modifications"""
+class TestModItemDomainOther(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
@@ -44,35 +43,49 @@ class TestDomainDirectOther(CalculatorTestCase):
         self.effect.modifiers = (modifier,)
 
     def test_other_domain_container(self):
-        influence_source = ContainerHolder(
-            self.ch.type(type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
-        self.fit.items.add(influence_source)
+        influence_source = ContainerHolder(self.ch.type(
+            type_id=1, effects=(self.effect,),
+            attributes={self.src_attr.id: 20}
+        ))
         influence_target = ChargeHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
+        # Action
         influence_source.charge = influence_target
         influence_target.container = influence_source
-        self.fit.items.add(influence_target)
-        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.fit.items.add(influence_source)
+        # Checks
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        # Action
         self.fit.items.remove(influence_source)
         influence_source.charge = None
         influence_target.container = None
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        # Misc
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_domain_charge(self):
-        influence_source = ChargeHolder(
-            self.ch.type(type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
-        self.fit.items.add(influence_source)
+        influence_source = ChargeHolder(self.ch.type(
+            type_id=1, effects=(self.effect,),
+            attributes={self.src_attr.id: 20}
+        ))
         influence_target = ContainerHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
+        # Action
         influence_source.container = influence_target
         influence_target.charge = influence_source
-        self.fit.items.add(influence_target)
-        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.fit.items.add(influence_source)
+        # Checks
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        # Action
         self.fit.items.remove(influence_source)
         influence_source.container = None
         influence_target.charge = None
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        # Misc
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -80,13 +93,18 @@ class TestDomainDirectOther(CalculatorTestCase):
     def test_self(self):
         # Check that source holder isn't modified
         influence_source = ContainerHolder(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
-        self.fit.items.add(influence_source)
+            type_id=1, effects=(self.effect,),
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ))
         influence_target = ChargeHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(influence_target)
+        # Action
         influence_source.charge = influence_target
         influence_target.container = influence_source
-        self.fit.items.add(influence_target)
+        self.fit.items.add(influence_source)
+        # Checks
         self.assertAlmostEqual(influence_source.attributes[self.tgt_attr.id], 100)
+        # Misc
         self.fit.items.remove(influence_target)
         influence_source.charge = None
         influence_target.container = None
@@ -97,11 +115,16 @@ class TestDomainDirectOther(CalculatorTestCase):
     def test_other_holder(self):
         # Here we check some "random" holder, w/o linking holders
         influence_source = ContainerHolder(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
-        self.fit.items.add(influence_source)
+            type_id=1, effects=(self.effect,),
+            attributes={self.src_attr.id: 20}
+        ))
         influence_target = IndependentItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
+        # Action
+        self.fit.items.add(influence_source)
+        # Checks
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        # Misc
         self.fit.items.remove(influence_source)
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)

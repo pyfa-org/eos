@@ -49,7 +49,7 @@ class TestDomainFilterShip(CalculatorTestCase):
     def test_match(self):
         influence_target = ShipItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
-        self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         self.fit.items.remove(self.influence_source)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_target)

@@ -26,7 +26,7 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import ChargeHolder, ContainerHolder
 
 
-class TestDomainDirectAwaitingOther(CalculatorTestCase):
+class TestModItemAwaitingDomainOther(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
@@ -44,48 +44,50 @@ class TestDomainDirectAwaitingOther(CalculatorTestCase):
 
     def test_other_container(self):
         influence_source = ContainerHolder(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.src_attr.id: 20}
+        ))
         self.fit.items.add(influence_source)
-        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
-        influence_target1 = ChargeHolder(eve_type)
-        influence_source.charge = influence_target1
-        influence_target1.container = influence_source
-        self.fit.items.add(influence_target1)
-        self.assertNotAlmostEqual(influence_target1.attributes[self.tgt_attr.id], 100)
-        self.fit.items.remove(influence_target1)
-        influence_target2 = ChargeHolder(eve_type)
-        influence_target1.container = None
-        influence_source.charge = influence_target2
-        influence_target2.container = influence_source
-        self.fit.items.add(influence_target2)
-        self.assertNotAlmostEqual(influence_target2.attributes[self.tgt_attr.id], 100)
-        self.fit.items.remove(influence_target2)
+        influence_target = ChargeHolder(self.ch.type(
+            type_id=2, attributes={self.tgt_attr.id: 100}
+        ))
+        # Action
+        # Here we add influence target after adding source, to make sure
+        # modifiers wait for target to appear, and then are applied onto it
+        influence_source.charge = influence_target
+        influence_target.container = influence_source
+        self.fit.items.add(influence_target)
+        # Checks
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        # Misc
+        self.fit.items.remove(influence_target)
+        influence_target.container = None
         influence_source.charge = None
-        influence_target2.container = None
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_charge(self):
         influence_source = ChargeHolder(self.ch.type(
-            type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
+            type_id=1, effects=(self.effect,),
+            attributes={self.src_attr.id: 20}
+        ))
         self.fit.items.add(influence_source)
-        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
-        influence_target1 = ContainerHolder(eve_type)
-        influence_source.container = influence_target1
-        influence_target1.charge = influence_source
-        self.fit.items.add(influence_target1)
-        self.assertNotAlmostEqual(influence_target1.attributes[self.tgt_attr.id], 100)
-        self.fit.items.remove(influence_target1)
-        influence_target2 = ContainerHolder(eve_type)
-        influence_target1.charge = None
-        influence_source.container = influence_target2
-        influence_target2.charge = influence_source
-        self.fit.items.add(influence_target2)
-        self.assertNotAlmostEqual(influence_target2.attributes[self.tgt_attr.id], 100)
-        self.fit.items.remove(influence_target2)
+        influence_target = ContainerHolder(self.ch.type(
+            type_id=2, attributes={self.tgt_attr.id: 100}
+        ))
+        # Action
+        # Here we add influence target after adding source, to make sure
+        # modifiers wait for target to appear, and then are applied onto it
+        influence_source.container = influence_target
+        influence_target.charge = influence_source
+        self.fit.items.add(influence_target)
+        # Checks
+        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        # Misc
+        self.fit.items.remove(influence_target)
+        influence_target.charge = None
         influence_source.container = None
-        influence_target2.charge = None
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

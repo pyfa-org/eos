@@ -56,7 +56,7 @@ class TestDomainFilterUnknown(CalculatorTestCase):
         influence_target = ShipItem(self.ch.type(type_id=2, attributes={tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Invalid domain in modifier should prevent proper processing of other modifiers
-        self.assertNotAlmostEqual(influence_target.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
         self.fit.items.remove(influence_target)
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)
