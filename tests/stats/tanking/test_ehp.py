@@ -21,7 +21,6 @@
 
 from unittest.mock import Mock, call
 
-from eos.const.eos import State
 from eos.fit.item import Ship
 from tests.stats.stat_testcase import StatTestCase
 
@@ -30,8 +29,8 @@ class TestEhp(StatTestCase):
 
     def test_relay(self):
         # Check that stats service relays ehp stats properly
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.get_ehp.return_value = Mock(hull=20, armor=30, shield=40, total=60)
         self.set_ship(ship_holder)
         damage_profile = Mock()

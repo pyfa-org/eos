@@ -21,7 +21,6 @@
 
 from unittest.mock import Mock
 
-from eos.const.eos import State
 from eos.fit.item import Ship
 from tests.stats.stat_testcase import StatTestCase
 
@@ -30,8 +29,8 @@ class TestResistances(StatTestCase):
 
     def test_relay(self):
         # Check that stats service relays resistance stats properly
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.resistances.hull.em = 5
         ship_holder.resistances.hull.thermal = 6
         ship_holder.resistances.hull.kinetic = 7
@@ -79,8 +78,8 @@ class TestResistances(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         hull = Mock(em=5, thermal=6, kinetic=7, explosive=8)
         armor = Mock(em=15, thermal=16, kinetic=17, explosive=18)
@@ -119,8 +118,8 @@ class TestResistances(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         hull = Mock(em=5, thermal=6, kinetic=7, explosive=8)
         armor = Mock(em=15, thermal=16, kinetic=17, explosive=18)

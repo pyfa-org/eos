@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Slot, State
+from eos.const.eos import Slot, State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Ship
 from tests.stats.stat_testcase import StatTestCase
@@ -31,8 +29,8 @@ class TestTurretSlot(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.turret_slots_left: 2})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.turret_slots_left: 2})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.turret_slots_left: 6}
         self.set_ship(ship_holder)
         self.assertEqual(self.ss.turret_slots.total, 6)
@@ -48,8 +46,8 @@ class TestTurretSlot(StatTestCase):
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         self.assertIsNone(self.ss.turret_slots.total)
@@ -63,9 +61,9 @@ class TestTurretSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        item.slots = {Slot.turret}
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type.slots = {Slot.turret}
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         self.assertEqual(self.ss.turret_slots.used, 1)
         self.remove_holder(holder)
@@ -73,9 +71,9 @@ class TestTurretSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_other_slot(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        item.slots = {Slot.launcher}
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type.slots = {Slot.launcher}
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         self.assertEqual(self.ss.turret_slots.used, 0)
         self.remove_holder(holder)
@@ -83,10 +81,10 @@ class TestTurretSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type.slots = {Slot.turret}
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.turret_slots.used, 2)
@@ -96,12 +94,12 @@ class TestTurretSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_mixed(self):
-        item1 = self.ch.type_(type_id=1, attributes={})
-        item1.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item1, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        item2 = self.ch.type_(type_id=2, attributes={})
-        item2.slots = {Slot.launcher}
-        holder2 = Mock(state=State.offline, item=item2, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type1 = self.ch.type_(type_id=1, attributes={})
+        eve_type1.slots = {Slot.turret}
+        holder1 = self.make_item_mock(ModuleHigh, eve_type1, state=State.offline)
+        eve_type2 = self.ch.type_(type_id=2, attributes={})
+        eve_type2.slots = {Slot.launcher}
+        holder2 = self.make_item_mock(ModuleHigh, eve_type2, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.turret_slots.used, 1)
@@ -111,14 +109,14 @@ class TestTurretSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.turret_slots_left: 6}
         self.set_ship(ship_holder)
-        item = self.ch.type_(type_id=2, attributes={})
-        item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=2, attributes={})
+        eve_type.slots = {Slot.turret}
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.turret_slots.used, 2)
@@ -133,14 +131,14 @@ class TestTurretSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.turret_slots_left: 6}
         self.set_ship(ship_holder)
-        item = self.ch.type_(type_id=2, attributes={})
-        item.slots = {Slot.turret}
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=2, attributes={})
+        eve_type.slots = {Slot.turret}
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         self.add_holder(holder2)
         self.assertEqual(self.ss.turret_slots.used, 2)

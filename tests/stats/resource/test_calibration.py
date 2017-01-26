@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, State
+from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Ship, Implant
 from tests.stats.stat_testcase import StatTestCase
@@ -32,8 +30,8 @@ class TestCalibration(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_capacity: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_capacity: 10})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.upgrade_capacity: 50}
         self.set_ship(ship_holder)
         self.assertEqual(self.ss.calibration.output, 50)
@@ -49,8 +47,8 @@ class TestCalibration(StatTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         self.assertIsNone(self.ss.calibration.output)
@@ -59,8 +57,8 @@ class TestCalibration(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single_no_rounding(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.upgrade_cost: 55.5555555555}
         self.add_holder(holder)
         self.assertEqual(self.ss.calibration.used, 55.5555555555)
@@ -69,11 +67,11 @@ class TestCalibration(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.calibration.used, 80)
@@ -83,11 +81,11 @@ class TestCalibration(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_negative(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2.attributes = {Attribute.upgrade_cost: -30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.calibration.used, 20)
@@ -102,11 +100,11 @@ class TestCalibration(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_other_class_domain(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=ModifierDomain.character, spec_set=Implant(1))
+        holder2 = self.make_item_mock(Implant, eve_type, state=State.offline)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.calibration.used, 80)
@@ -116,15 +114,15 @@ class TestCalibration(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_capacity: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_capacity: 10})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.upgrade_capacity: 50}
         self.set_ship(ship_holder)
-        item = self.ch.type_(type_id=2, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=2, attributes={Attribute.upgrade_cost: 0})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.calibration.used, 80)
@@ -140,15 +138,15 @@ class TestCalibration(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_capacity: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_capacity: 10})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.upgrade_capacity: 50}
         self.set_ship(ship_holder)
-        item = self.ch.type_(type_id=2, attributes={Attribute.upgrade_cost: 0})
-        holder1 = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=2, attributes={Attribute.upgrade_cost: 0})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder1)
-        holder2 = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder2.attributes = {Attribute.upgrade_cost: 30}
         self.add_holder(holder2)
         self.assertEqual(self.ss.calibration.used, 80)

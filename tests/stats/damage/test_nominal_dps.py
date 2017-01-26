@@ -22,7 +22,7 @@
 from unittest.mock import Mock, call
 
 from eos.const.eos import State
-from eos.fit.item import ModuleHigh
+from eos.fit.item import ModuleHigh, Implant
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -39,8 +39,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -55,9 +55,9 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_multiple(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.active, item=item, spec=ModuleHigh(1))
-        holder2 = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder1)
         self.add_holder(holder2)
         holder1_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -76,11 +76,12 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_not_damage_dealer(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item)
-        self.add_holder(holder)
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(Implant, eve_type, state=State.active, strict_spec=False)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
+        holder.get_nominal_dps = Mock()
         holder.get_nominal_dps.return_value = holder_dps
+        self.add_holder(holder)
         stats_dps = self.ss.get_nominal_dps()
         self.assertIsNone(stats_dps.em)
         self.assertIsNone(stats_dps.thermal)
@@ -92,8 +93,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_arguments_custom(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -110,8 +111,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_arguments_default(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -125,8 +126,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_em(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -141,8 +142,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_therm(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=None, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -157,8 +158,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_kin(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=None, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -173,8 +174,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_expl(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=None, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -189,8 +190,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_all(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=None, kinetic=None, explosive=None, total=None)
         holder.get_nominal_dps.return_value = holder_dps
@@ -205,8 +206,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_em(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=0, thermal=None, kinetic=None, explosive=None, total=None)
         holder.get_nominal_dps.return_value = holder_dps
@@ -221,8 +222,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_therm(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=0, kinetic=None, explosive=None, total=None)
         holder.get_nominal_dps.return_value = holder_dps
@@ -237,8 +238,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_kin(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=None, kinetic=0, explosive=None, total=None)
         holder.get_nominal_dps.return_value = holder_dps
@@ -253,8 +254,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_expl(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=None, kinetic=None, explosive=0, total=None)
         holder.get_nominal_dps.return_value = holder_dps
@@ -272,9 +273,9 @@ class TestStatsDamageDps(StatTestCase):
         # As container for damage dealers is not ordered,
         # this test may be unreliable (even if there's issue,
         # it won't fail each run)
-        item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.active, item=item, spec=ModuleHigh(1))
-        holder2 = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder1)
         self.add_holder(holder2)
         holder1_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -293,8 +294,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_filter_success(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -309,8 +310,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_filter_fail(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps.return_value = holder_dps
@@ -325,9 +326,9 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_filter_mixed(self):
-        item = self.ch.type_(type_id=1, attributes={})
-        holder1 = Mock(state=State.active, item=item, spec=ModuleHigh(1))
-        holder2 = Mock(state=State.active, item=item, spec=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={})
+        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
+        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder1)
         self.add_holder(holder2)
         holder1_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)

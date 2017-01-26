@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, State
+from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh
 from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
@@ -35,8 +33,8 @@ class TestMessages(StatTestCase):
         # Check that when holder is added w/o enabling any states,
         # it's added to corresponding registers
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.upgrade_cost: 33}
         # Action
         self.ss._notify(HolderAdded(holder))
@@ -49,8 +47,8 @@ class TestMessages(StatTestCase):
 
     def test_add_stateful(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 35}
         # Action
         self.ss._notify(HolderAdded(holder))
@@ -63,8 +61,8 @@ class TestMessages(StatTestCase):
 
     def test_add_stateful_insufficient(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.cpu: 35}
         # Action
         self.ss._notify(HolderAdded(holder))
@@ -77,8 +75,8 @@ class TestMessages(StatTestCase):
 
     def test_remove_stateless(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.upgrade_cost: 33}
         self.ss._notify(HolderAdded(holder))
         # Action
@@ -91,8 +89,8 @@ class TestMessages(StatTestCase):
 
     def test_remove_stateful(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 35}
         self.ss._notify(HolderAdded(holder))
         # Action
@@ -105,8 +103,8 @@ class TestMessages(StatTestCase):
 
     def test_state_switch_up(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.cpu: 35}
         self.ss._notify(HolderAdded(holder))
         # Action
@@ -121,8 +119,8 @@ class TestMessages(StatTestCase):
 
     def test_state_switch_down(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.offline, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.cpu: 35}
         self.ss._notify(HolderAdded(holder))
         self.ss._notify(HolderStateChanged(holder, State.offline, State.online))
@@ -141,8 +139,8 @@ class TestMessages(StatTestCase):
         # Check that service takes holder which was added
         # while service was disabled into consideration
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 35}
         self.ss._notify(DisableServices(holders=(holder,)))
         # Action
@@ -157,8 +155,8 @@ class TestMessages(StatTestCase):
 
     def test_remove_stateful_disabled(self):
         # Setup
-        item = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
-        holder = Mock(state=State.online, item=item, _domain=ModifierDomain.ship, spec_set=ModuleHigh(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 35}
         self.ss._notify(HolderAdded(holder))
         # Action

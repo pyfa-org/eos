@@ -32,6 +32,8 @@ class StatTestCase(EosTestCase):
     Additional functionality provided:
 
     self.ss -- stats service instance for tests
+    self.make_item_mock -- create eos item mock with specified
+        parameters
     self.set_ship -- set ship to fit which uses stats service
     self.set_character -- set character to fit which uses stats
         service
@@ -54,6 +56,18 @@ class StatTestCase(EosTestCase):
         self.fit.drones = set()
         self.ss = StatService(self.fit)
         self.ss._notify(EnableServices(holders=()))
+
+    def make_item_mock(self, item_class, eve_type, state=None, strict_spec=True):
+        item = item_class(eve_type.id)
+        state = state if state is not None else item.state
+        kwargs = {
+            '_eve_type_id': eve_type.id,
+            '_eve_type': eve_type,
+            'state': state,
+            '_domain': item._domain,
+            'spec_set' if strict_spec is True else 'spec': item
+        }
+        return Mock(**kwargs)
 
     def set_ship(self, holder):
         self.fit.ship = holder

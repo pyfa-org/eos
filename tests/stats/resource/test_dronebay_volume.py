@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import Drone, Ship
@@ -32,8 +30,8 @@ class TestDroneBayVolume(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.drone_capacity: 50}
         self.set_ship(ship_holder)
         self.assertEqual(self.ss.dronebay.output, 50)
@@ -49,8 +47,8 @@ class TestDroneBayVolume(StatTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        ship_item = self.ch.type_(type_id=1)
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1)
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
         self.assertIsNone(self.ss.dronebay.output)
@@ -59,8 +57,8 @@ class TestDroneBayVolume(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single_no_rounding(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 55.5555555555}
         self.fit.drones.add(holder)
         self.add_holder(holder)
@@ -70,12 +68,12 @@ class TestDroneBayVolume(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder2.attributes = {Attribute.volume: 30}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -86,12 +84,12 @@ class TestDroneBayVolume(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_negative(self):
-        item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder2.attributes = {Attribute.volume: -30}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -108,8 +106,8 @@ class TestDroneBayVolume(StatTestCase):
 
     def test_use_other_class(self):
         # Make sure holders placed to other containers are unaffected
-        item = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
-        holder = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 30}
         self.fit.rigs.add(holder)
         self.add_holder(holder)
@@ -119,16 +117,16 @@ class TestDroneBayVolume(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.drone_capacity: 50}
         self.set_ship(ship_holder)
-        item = self.ch.type_(type_id=2, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        eve_type = self.ch.type_(type_id=2, attributes={Attribute.volume: 0})
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder2.attributes = {Attribute.volume: 30}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
@@ -145,16 +143,16 @@ class TestDroneBayVolume(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_item = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
-        ship_holder = Mock(state=State.offline, item=ship_item, _domain=None, spec_set=Ship(1))
+        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_capacity: 10})
+        ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.drone_capacity: 50}
         self.set_ship(ship_holder)
-        item = self.ch.type_(type_id=2, attributes={Attribute.volume: 0})
-        holder1 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        eve_type = self.ch.type_(type_id=2, attributes={Attribute.volume: 0})
+        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder1)
         self.add_holder(holder1)
-        holder2 = Mock(state=State.offline, item=item, _domain=None, spec_set=Drone(1))
+        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder2.attributes = {Attribute.volume: 30}
         self.fit.drones.add(holder2)
         self.add_holder(holder2)
