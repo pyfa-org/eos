@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-import logging
-
 from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier

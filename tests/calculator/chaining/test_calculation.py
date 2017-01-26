@@ -52,10 +52,10 @@ class TestCalculationChain(CalculatorTestCase):
         modifier2.tgt_attr = attr3.id
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder1 = CharacterItem(
-            self.ch.type(type_id=1, effects=(effect1, effect2),
-            attributes={attr1.id: 5, attr2.id: 20})
-        )
+        holder1 = CharacterItem(self.ch.type(
+            type_id=1, effects=(effect1, effect2),
+            attributes={attr1.id: 5, attr2.id: 20}
+        ))
         modifier3 = Modifier()
         modifier3.type = ModifierType.domain
         modifier3.domain = ModifierDomain.ship
