@@ -31,7 +31,7 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_no_ship(self):
         # Check that error is raised on attempt
         # to add capital item to fit w/o ship
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -45,10 +45,10 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_subcap(self):
         # Check that error is raised on attempt to add
         # capital item to fit with subcapital ship
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2)
+        ship_eve_type = self.ch.type(type_id=2)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -63,10 +63,10 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_subcap_capattr_zero(self):
         # Make sure that mere presence of isCapital attr
         # on a ship (with zero value) doesn't make it capital
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.is_capital_size: 0.0})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: 0.0})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -81,10 +81,10 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_subcap_capattr_value_none(self):
         # Check that error is raised when ship has isCapitalShip
         # attribute, but its value is None
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.is_capital_size: None})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: None})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -99,10 +99,10 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_subcap_capattr_eve_type(self):
         # Make sure that EVE type value of is-capital
         # attribute is used for check
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.is_capital_size: 0})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: 0})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.is_capital_size: 1.0}
         self.set_ship(ship_holder)
@@ -117,14 +117,14 @@ class TestCapitalItem(RestrictionTestCase):
 
     def test_fail_subcap_volume_eve_type(self):
         # Make sure EVE type volume value is taken
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         # Set volume below 3500 to check that even when
         # modified attributes are available, raw attributes
         # are taken
         holder.attributes = {Attribute.volume: 100}
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2)
+        ship_eve_type = self.ch.type(type_id=2)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -139,7 +139,7 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_subcap_volume_subcap(self):
         # Make sure no error raised when non-capital
         # item is added to fit
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3500})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3500})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -151,7 +151,7 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_subcap_holder_other_domain(self):
         # Check that non-ship holders are not affected
         # by restriction
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(Ship, ship_eve_type)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -163,10 +163,10 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_subcap_volume_not_specified(self):
         # Check that items with no volume attribute
         # on EVE type are not restricted
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2)
+        ship_eve_type = self.ch.type(type_id=2)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -178,10 +178,10 @@ class TestCapitalItem(RestrictionTestCase):
 
     def test_pass_capital(self):
         # Check that capital holders can be added to capital ship
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.is_capital_size: 1.0})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: 1.0})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)
@@ -194,10 +194,10 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_capital_capattr_value_not_one(self):
         # Check that when non-zero isCapital attr is on a ship,
         # it's considered as capital
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 3501})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.is_capital_size: -0.00001})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: -0.00001})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.capital_item)

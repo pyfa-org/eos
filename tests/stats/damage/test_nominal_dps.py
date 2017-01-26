@@ -39,7 +39,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -55,7 +55,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_multiple(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder1)
@@ -76,7 +76,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_not_damage_dealer(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(Implant, eve_type, state=State.active, strict_spec=False)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
         holder.get_nominal_dps = Mock()
@@ -93,7 +93,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_arguments_custom(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -111,7 +111,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_arguments_default(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -126,7 +126,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_em(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -142,7 +142,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_therm(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=None, kinetic=3.4, explosive=4.5, total=5.6)
@@ -158,7 +158,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_kin(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=None, explosive=4.5, total=5.6)
@@ -174,7 +174,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_expl(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=None, total=5.6)
@@ -190,7 +190,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_none_all(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=None, kinetic=None, explosive=None, total=None)
@@ -206,7 +206,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_em(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=0, thermal=None, kinetic=None, explosive=None, total=None)
@@ -222,7 +222,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_therm(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=0, kinetic=None, explosive=None, total=None)
@@ -238,7 +238,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_kin(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=None, kinetic=0, explosive=None, total=None)
@@ -254,7 +254,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_single_zero_expl(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=None, thermal=None, kinetic=None, explosive=0, total=None)
@@ -273,7 +273,7 @@ class TestStatsDamageDps(StatTestCase):
         # As container for damage dealers is not ordered,
         # this test may be unreliable (even if there's issue,
         # it won't fail each run)
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder1)
@@ -294,7 +294,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_filter_success(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -310,7 +310,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_filter_fail(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
         holder_dps = Mock(em=1.2, thermal=2.3, kinetic=3.4, explosive=4.5, total=5.6)
@@ -326,7 +326,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_filter_mixed(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder1)

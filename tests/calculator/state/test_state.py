@@ -87,7 +87,7 @@ class TestStateSwitching(CalculatorTestCase):
         effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
         effect_disabled = self.ch.effect(effect_id=2, category=EffectCategory.active)
         effect_disabled.modifiers = (modifier_disabled,)
-        self.holder = IndependentItem(self.ch.type_(
+        self.holder = IndependentItem(self.ch.type(
             type_id=1, effects=(effect, effect_disabled),
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,

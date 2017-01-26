@@ -55,7 +55,7 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         # Invalid source value shouldn't screw whole calculation process

@@ -48,7 +48,7 @@ class TestFilterUnknown(CalculatorTestCase):
 
     def test_log(self):
         self.effect.modifiers = (self.invalid_modifier,)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=31, effects=(self.effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr: 100}
         ))
@@ -72,7 +72,7 @@ class TestFilterUnknown(CalculatorTestCase):
         valid_modifier.filter_type = None
         valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}
         ))

@@ -29,7 +29,7 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of character is used
-        char_eve_type = self.ch.type_(type_id=1, attributes={Attribute.max_active_drones: 2})
+        char_eve_type = self.ch.type(type_id=1, attributes={Attribute.max_active_drones: 2})
         char_holder = self.make_item_mock(Character, char_eve_type)
         char_holder.attributes = {Attribute.max_active_drones: 6}
         self.set_character(char_holder)
@@ -46,7 +46,7 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_output_no_attr(self):
         # None for max launched amount when no attribute on ship
-        char_eve_type = self.ch.type_(type_id=1)
+        char_eve_type = self.ch.type(type_id=1)
         char_holder = self.make_item_mock(Character, char_eve_type)
         char_holder.attributes = {}
         self.set_character(char_holder)
@@ -61,7 +61,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(Drone, eve_type, state=State.online)
         self.add_holder(holder)
         self.assertEqual(self.ss.launched_drones.used, 1)
@@ -70,7 +70,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         self.add_holder(holder1)
@@ -82,7 +82,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_other_class(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(Implant, eve_type, state=State.online)
         self.add_holder(holder)
         self.assertEqual(self.ss.launched_drones.used, 0)
@@ -91,7 +91,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_state(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
         self.assertEqual(self.ss.launched_drones.used, 0)
@@ -100,11 +100,11 @@ class TestLaunchedDrone(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        char_eve_type = self.ch.type_(type_id=1)
+        char_eve_type = self.ch.type(type_id=1)
         char_holder = self.make_item_mock(Character, char_eve_type)
         char_holder.attributes = {Attribute.max_active_drones: 6}
         self.set_character(char_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={})
+        eve_type = self.ch.type(type_id=2, attributes={})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         self.add_holder(holder1)
@@ -121,11 +121,11 @@ class TestLaunchedDrone(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        char_eve_type = self.ch.type_(type_id=1)
+        char_eve_type = self.ch.type(type_id=1)
         char_holder = self.make_item_mock(Character, char_eve_type)
         char_holder.attributes = {Attribute.max_active_drones: 6}
         self.set_character(char_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={})
+        eve_type = self.ch.type(type_id=2, attributes={})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
         self.add_holder(holder1)

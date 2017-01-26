@@ -31,7 +31,7 @@ class TestNonExistent(CalculatorTestCase):
     def test_attribute_data_error(self):
         # Check case when attribute value is available, but
         # cache handler doesn't know about such attribute
-        holder = IndependentItem(self.ch.type_(type_id=57, attributes={105: 20}))
+        holder = IndependentItem(self.ch.type(type_id=57, attributes={105: 20}))
         self.fit.items.add(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
@@ -46,7 +46,7 @@ class TestNonExistent(CalculatorTestCase):
         # Check case when default value of attribute cannot be
         # determined. and EVE type doesn't define any value either
         attr = self.ch.attribute(attribute_id=89)
-        holder = IndependentItem(self.ch.type_(type_id=649))
+        holder = IndependentItem(self.ch.type(type_id=649))
         self.fit.items.add(holder)
         self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
@@ -61,7 +61,7 @@ class TestNonExistent(CalculatorTestCase):
         # Default value should be used if attribute
         # value is not available on EVE type
         attr = self.ch.attribute(attribute_id=1, default_value=5.6)
-        holder = IndependentItem(self.ch.type_(type_id=1))
+        holder = IndependentItem(self.ch.type(type_id=1))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
         self.fit.items.remove(holder)

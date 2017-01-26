@@ -47,7 +47,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         invalid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier,)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=83, effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 100)
@@ -85,7 +85,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=83, effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[tgt_attr.id], 120)
@@ -120,7 +120,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         valid_modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}))
         self.fit.items.add(holder)
         # Make sure presence of invalid operator doesn't prevent

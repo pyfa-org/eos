@@ -29,7 +29,7 @@ class TestEhp(StatTestCase):
 
     def test_relay(self):
         # Check that stats service relays ehp stats properly
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.get_ehp.return_value = Mock(hull=20, armor=30, shield=40, total=60)
         self.set_ship(ship_holder)

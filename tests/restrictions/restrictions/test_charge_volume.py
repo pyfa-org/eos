@@ -29,9 +29,9 @@ class TestChargeVolume(RestrictionTestCase):
     """Check functionality of charge volume restriction"""
 
     def test_fail_greater(self):
-        charge_eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
+        charge_eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 2})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.capacity: 1})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.capacity: 1})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -49,9 +49,9 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_no_capacity(self):
-        charge_eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
+        charge_eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 2})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={})
+        container_eve_type = self.ch.type(type_id=2, attributes={})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -69,9 +69,9 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_no_volume(self):
-        charge_eve_type = self.ch.type_(type_id=1, attributes={})
+        charge_eve_type = self.ch.type(type_id=1, attributes={})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.volume: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.volume: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -87,9 +87,9 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_equal(self):
-        charge_eve_type = self.ch.type_(type_id=1, attributes={Attribute.capacity: 2})
+        charge_eve_type = self.ch.type(type_id=1, attributes={Attribute.capacity: 2})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.volume: 2})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.volume: 2})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -105,9 +105,9 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_lesser(self):
-        charge_eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
+        charge_eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 2})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.capacity: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.capacity: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -124,10 +124,10 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_attrs_eve_type(self):
         # Make sure EVE type attributes are used
-        charge_eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 2})
+        charge_eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 2})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
         charge_holder.attributes = {Attribute.volume: 3}
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.capacity: 2})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.capacity: 2})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.attributes = {Attribute.capacity: 1}
         container_holder.charge = charge_holder

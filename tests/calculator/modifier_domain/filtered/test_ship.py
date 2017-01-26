@@ -44,12 +44,12 @@ class TestDomainFilterShip(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.influence_source = IndependentItem(self.ch.type_(
+        self.influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(self.influence_source)
 
     def test_match(self):
-        influence_target = ShipItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)
@@ -59,7 +59,7 @@ class TestDomainFilterShip(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_domain(self):
-        influence_target = CharacterItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(self.influence_source)

@@ -30,7 +30,7 @@ class TestSkillRequirement(RestrictionTestCase):
     def test_fail_single(self):
         # Check that error is raised when skill requirement
         # is not met
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {50: 3}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -43,11 +43,11 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_fail_multiple(self):
         # Check that multiple errors are shown as iterable
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {48: 1, 50: 5}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        skill_eve_type = self.ch.type_(type_id=50)
+        skill_eve_type = self.ch.type(type_id=50)
         skill_holder = self.make_item_mock(Skill, skill_eve_type)
         skill_holder.level = 2
         self.add_holder(skill_holder)
@@ -63,11 +63,11 @@ class TestSkillRequirement(RestrictionTestCase):
     def test_fail_partial(self):
         # Make sure satisfied skill requirements are not shown
         # up in error
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {48: 1, 50: 5}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        skill_eve_type = self.ch.type_(type_id=48)
+        skill_eve_type = self.ch.type(type_id=48)
         skill_holder = self.make_item_mock(Skill, skill_eve_type)
         skill_holder.level = 5
         self.add_holder(skill_holder)
@@ -83,11 +83,11 @@ class TestSkillRequirement(RestrictionTestCase):
     def test_pass_satisfied(self):
         # Check that error isn't raised when all skill requirements
         # are met
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {50: 3}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
-        skill_eve_type = self.ch.type_(type_id=50)
+        skill_eve_type = self.ch.type(type_id=50)
         skill_holder = self.make_item_mock(Skill, skill_eve_type)
         skill_holder.level = 3
         self.add_holder(skill_holder)
@@ -101,7 +101,7 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_pass_exception_rig(self):
         # Check that skillreqs on rigs are not checked
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {50: 3}
         holder = self.make_item_mock(Rig, eve_type)
         self.add_holder(holder)

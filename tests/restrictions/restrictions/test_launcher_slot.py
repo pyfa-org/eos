@@ -30,7 +30,7 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_fail_excess_signle(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.launcher}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -46,7 +46,7 @@ class TestLauncherSlot(RestrictionTestCase):
 
     def test_fail_excess_signle_other_class_domain(self):
         # Make sure holders of all classes are affected
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.launcher}
         holder = self.make_item_mock(Implant, eve_type)
         self.add_holder(holder)
@@ -63,7 +63,7 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_fail_excess_signle_undefined_output(self):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.launcher}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -79,7 +79,7 @@ class TestLauncherSlot(RestrictionTestCase):
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple holders
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.launcher}
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -101,7 +101,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_equal(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.launcher}
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -119,7 +119,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_greater(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.launcher}
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -137,7 +137,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_other_slot(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.slots = {Slot.turret}
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)

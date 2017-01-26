@@ -19,9 +19,7 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import ModifierDomain, Restriction, State
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Rig
 from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
@@ -35,7 +33,7 @@ class TestMessages(RestrictionTestCase):
         # Check that when holder is added w/o enabling any states,
         # it's added to corresponding registers
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 50}
         self.fit.stats.calibration.used = 50
@@ -55,7 +53,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_add_stateful(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50
@@ -75,7 +73,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_add_stateful_insufficient(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50
@@ -92,7 +90,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_remove_stateless(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 50}
         self.fit.stats.calibration.used = 50
@@ -109,7 +107,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_remove_stateful(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50
@@ -126,7 +124,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_state_switch_up(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50
@@ -148,7 +146,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_state_switch_down(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50
@@ -169,7 +167,7 @@ class TestMessages(RestrictionTestCase):
         # Check that service takes holder which was added
         # while service was disabled into consideration
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50
@@ -191,7 +189,7 @@ class TestMessages(RestrictionTestCase):
 
     def test_remove_stateful_disabled(self):
         # Setup
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 50}
         self.fit.stats.cpu.used = 50

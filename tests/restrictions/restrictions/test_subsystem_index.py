@@ -31,7 +31,7 @@ class TestSubsystemIndex(RestrictionTestCase):
     def test_fail(self):
         # Check that if 2 or more holders are put into single slot
         # index, error is raised
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 120})
         holder1 = self.make_item_mock(Subsystem, eve_type)
         holder2 = self.make_item_mock(Subsystem, eve_type)
         self.add_holder(holder1)
@@ -49,7 +49,7 @@ class TestSubsystemIndex(RestrictionTestCase):
 
     def test_fail_other_holder_class(self):
         # Make sure holders of all classes are affected
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 120})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
@@ -67,7 +67,7 @@ class TestSubsystemIndex(RestrictionTestCase):
 
     def test_fail_attr_eve_type(self):
         # Make sure that EVE item attributes are used
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 120})
         holder1 = self.make_item_mock(Subsystem, eve_type)
         holder2 = self.make_item_mock(Subsystem, eve_type)
         holder1.attributes = {Attribute.subsystem_slot: 119}
@@ -88,7 +88,7 @@ class TestSubsystemIndex(RestrictionTestCase):
     def test_pass(self):
         # Single holder which takes some slot shouldn't
         # trigger any errors
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 120})
         holder = self.make_item_mock(Subsystem, eve_type)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.subsystem_index)
@@ -99,8 +99,8 @@ class TestSubsystemIndex(RestrictionTestCase):
 
     def test_pass_different(self):
         # Holders taking different slots shouldn't trigger any errors
-        eve_type1 = self.ch.type_(type_id=1, attributes={Attribute.subsystem_slot: 120})
-        eve_type2 = self.ch.type_(type_id=2, attributes={Attribute.subsystem_slot: 121})
+        eve_type1 = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 120})
+        eve_type2 = self.ch.type(type_id=2, attributes={Attribute.subsystem_slot: 121})
         holder1 = self.make_item_mock(Subsystem, eve_type1)
         holder2 = self.make_item_mock(Subsystem, eve_type2)
         self.add_holder(holder1)

@@ -44,7 +44,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_pre_ass = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect_pre_ass.modifiers = (modifier_pre_ass,)
         value_pre_ass = 5
-        influence_source_pre_ass = IndependentItem(self.ch.type_(
+        influence_source_pre_ass = IndependentItem(self.ch.type(
             type_id=1, effects=(effect_pre_ass,), attributes={src_attr.id: value_pre_ass}))
         self.fit.items.add(influence_source_pre_ass)
         modifier_pre_mul = Modifier()
@@ -59,7 +59,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_pre_mul = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect_pre_mul.modifiers = (modifier_pre_mul,)
         value_pre_mul = 50
-        influence_source_pre_mul = IndependentItem(self.ch.type_(
+        influence_source_pre_mul = IndependentItem(self.ch.type(
             type_id=2, effects=(effect_pre_mul,), attributes={src_attr.id: value_pre_mul}))
         self.fit.items.add(influence_source_pre_mul)
         modifier_pre_div = Modifier()
@@ -74,7 +74,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_pre_div = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect_pre_div.modifiers = (modifier_pre_div,)
         value_pre_div = 0.5
-        influence_source_pre_div = IndependentItem(self.ch.type_(
+        influence_source_pre_div = IndependentItem(self.ch.type(
             type_id=3, effects=(effect_pre_div,), attributes={src_attr.id: value_pre_div}))
         self.fit.items.add(influence_source_pre_div)
         modifier_mod_add = Modifier()
@@ -89,7 +89,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_mod_add = self.ch.effect(effect_id=4, category=EffectCategory.passive)
         effect_mod_add.modifiers = (modifier_mod_add,)
         value_mod_add = 10
-        influence_source_mod_add = IndependentItem(self.ch.type_(
+        influence_source_mod_add = IndependentItem(self.ch.type(
             type_id=4, effects=(effect_mod_add,), attributes={src_attr.id: value_mod_add}))
         self.fit.items.add(influence_source_mod_add)
         modifier_mod_sub = Modifier()
@@ -104,7 +104,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_mod_sub = self.ch.effect(effect_id=5, category=EffectCategory.passive)
         effect_mod_sub.modifiers = (modifier_mod_sub,)
         value_mod_sub = 63
-        influence_source_mod_sub = IndependentItem(self.ch.type_(
+        influence_source_mod_sub = IndependentItem(self.ch.type(
             type_id=5, effects=(effect_mod_sub,), attributes={src_attr.id: value_mod_sub}))
         self.fit.items.add(influence_source_mod_sub)
         modifier_post_mul = Modifier()
@@ -119,7 +119,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_post_mul = self.ch.effect(effect_id=6, category=EffectCategory.passive)
         effect_post_mul.modifiers = (modifier_post_mul,)
         value_post_mul = 1.35
-        influence_source_post_mul = IndependentItem(self.ch.type_(
+        influence_source_post_mul = IndependentItem(self.ch.type(
             type_id=6, effects=(effect_post_mul,), attributes={src_attr.id: value_post_mul}))
         self.fit.items.add(influence_source_post_mul)
         modifier_post_div = Modifier()
@@ -134,7 +134,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_post_div = self.ch.effect(effect_id=7, category=EffectCategory.passive)
         effect_post_div.modifiers = (modifier_post_div,)
         value_post_div = 2.7
-        influence_source_post_div = IndependentItem(self.ch.type_(
+        influence_source_post_div = IndependentItem(self.ch.type(
             type_id=7, effects=(effect_post_div,), attributes={src_attr.id: value_post_div}))
         self.fit.items.add(influence_source_post_div)
         modifier_post_perc = Modifier()
@@ -149,10 +149,10 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_post_perc = self.ch.effect(effect_id=8, category=EffectCategory.passive)
         effect_post_perc.modifiers = (modifier_post_perc,)
         value_post_perc = 15
-        influence_source_post_perc = IndependentItem(self.ch.type_(
+        influence_source_post_perc = IndependentItem(self.ch.type(
             type_id=8, effects=(effect_post_perc,), attributes={src_attr.id: value_post_perc}))
         self.fit.items.add(influence_source_post_perc)
-        influence_target = ShipItem(self.ch.type_(type_id=9, attributes={tgt_attr.id: 100}))
+        influence_target = ShipItem(self.ch.type(type_id=9, attributes={tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Operators shouldn't be penalized and should go in this order
         exp_value = (

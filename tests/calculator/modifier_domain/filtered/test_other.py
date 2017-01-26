@@ -45,7 +45,7 @@ class TestDomainFilterOther(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(
+        influence_source = IndependentItem(self.ch.type(
             type_id=90, effects=(effect,), attributes={src_attr.id: 20}))
         # Charge's container or module's charge can't be 'owner'
         # of other holders, thus such modification type is unsupported

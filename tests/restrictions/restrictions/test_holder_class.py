@@ -29,7 +29,7 @@ class TestHolderClass(RestrictionTestCase):
     """Check functionality of holder class verification"""
 
     def test_booster_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
+        eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
         holder = Booster(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -40,7 +40,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_booster_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008, attributes={Attribute.boosterness: 3})
+        eve_type = self.ch.type(type_id=1, category=1008, attributes={Attribute.boosterness: 3})
         holder = Booster(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -53,7 +53,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_booster_fail_attr(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.implant)
+        eve_type = self.ch.type(type_id=1, category=Category.implant)
         holder = Booster(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -66,7 +66,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_character_pass(self):
-        eve_type = self.ch.type_(type_id=1, group=Group.character)
+        eve_type = self.ch.type(type_id=1, group=Group.character)
         holder = Character(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -77,7 +77,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_character_fail_group(self):
-        eve_type = self.ch.type_(type_id=1, group=1008)
+        eve_type = self.ch.type(type_id=1, group=1008)
         holder = Character(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -90,7 +90,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_charge_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.charge)
+        eve_type = self.ch.type(type_id=1, category=Category.charge)
         holder = Charge(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -101,7 +101,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_charge_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         holder = Charge(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -114,7 +114,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_drone_ass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.drone)
+        eve_type = self.ch.type(type_id=1, category=Category.drone)
         holder = Drone(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -125,7 +125,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_drone_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         holder = Drone(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -138,7 +138,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_effect_beacon_pass(self):
-        eve_type = self.ch.type_(type_id=1, group=Group.effect_beacon)
+        eve_type = self.ch.type(type_id=1, group=Group.effect_beacon)
         holder = EffectBeacon(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -149,7 +149,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_effect_beacon_fail_group(self):
-        eve_type = self.ch.type_(type_id=1, group=1008)
+        eve_type = self.ch.type(type_id=1, group=1008)
         holder = EffectBeacon(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -162,7 +162,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_implant_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.implant, attributes={Attribute.implantness: 3})
+        eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.implantness: 3})
         holder = Implant(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -173,7 +173,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_implant_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008, attributes={Attribute.implantness: 3})
+        eve_type = self.ch.type(type_id=1, category=1008, attributes={Attribute.implantness: 3})
         holder = Implant(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -186,7 +186,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_implant_fail_attr(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.implant)
+        eve_type = self.ch.type(type_id=1, category=Category.implant)
         holder = Implant(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -199,7 +199,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_module_high_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.module_high}
         holder = ModuleHigh(1)
         holder._eve_type = eve_type
@@ -211,7 +211,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_module_high_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.module_high}
         holder = ModuleHigh(1)
         holder._eve_type = eve_type
@@ -224,7 +224,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_module_high_fail_slot(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         holder = ModuleHigh(1)
         holder._eve_type = eve_type
@@ -238,7 +238,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_module_medium_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.module_med}
         holder = ModuleMed(1)
         holder._eve_type = eve_type
@@ -250,7 +250,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_module_med_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.module_med}
         holder = ModuleMed(1)
         holder._eve_type = eve_type
@@ -263,7 +263,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_module_med_fail_slot(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         holder = ModuleMed(1)
         holder._eve_type = eve_type
@@ -277,7 +277,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_module_low_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.module_low}
         holder = ModuleLow(1)
         holder._eve_type = eve_type
@@ -289,7 +289,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_module_low_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.module_low}
         holder = ModuleLow(1)
         holder._eve_type = eve_type
@@ -302,7 +302,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_module_low_fail_slot(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         holder = ModuleLow(1)
         holder._eve_type = eve_type
@@ -316,7 +316,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_rig_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.rig}
         holder = Rig(1)
         holder._eve_type = eve_type
@@ -328,7 +328,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_rig_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.rig}
         holder = Rig(1)
         holder._eve_type = eve_type
@@ -341,7 +341,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_rig_fail_slot(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.module)
+        eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         holder = Rig(1)
         holder._eve_type = eve_type
@@ -355,7 +355,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_ship_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.ship)
+        eve_type = self.ch.type(type_id=1, category=Category.ship)
         holder = Ship(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -366,7 +366,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_ship_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         holder = Ship(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -379,7 +379,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_skill_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.skill)
+        eve_type = self.ch.type(type_id=1, category=Category.skill)
         holder = Skill(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -390,7 +390,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_skill_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         holder = Skill(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -403,7 +403,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_stance_pass(self):
-        eve_type = self.ch.type_(type_id=1, group=Group.ship_modifier)
+        eve_type = self.ch.type(type_id=1, group=Group.ship_modifier)
         holder = Stance(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -414,7 +414,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_stance_fail_group(self):
-        eve_type = self.ch.type_(type_id=1, group=1008)
+        eve_type = self.ch.type(type_id=1, group=1008)
         holder = Stance(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -427,7 +427,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_subsystem_pass(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.subsystem)
+        eve_type = self.ch.type(type_id=1, category=Category.subsystem)
         eve_type.slots = {Slot.subsystem}
         holder = Subsystem(1)
         holder._eve_type = eve_type
@@ -439,7 +439,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_subsystem_fail_category(self):
-        eve_type = self.ch.type_(type_id=1, category=1008)
+        eve_type = self.ch.type(type_id=1, category=1008)
         holder = Subsystem(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -452,7 +452,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_subsystem_fail_slot(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.subsystem)
+        eve_type = self.ch.type(type_id=1, category=Category.subsystem)
         eve_type.slots = {1008}
         holder = Subsystem(1)
         holder._eve_type = eve_type
@@ -466,7 +466,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_single_replacement(self):
-        eve_type = self.ch.type_(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
+        eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
         holder = Implant(1)
         holder._eve_type = eve_type
         self.add_holder(holder)
@@ -480,7 +480,7 @@ class TestHolderClass(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_multiple_replacements(self):
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3, Attribute.implantness: 1})
         holder = Drone(1)
         holder._eve_type = eve_type

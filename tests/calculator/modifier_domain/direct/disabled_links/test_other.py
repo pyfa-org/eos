@@ -46,10 +46,10 @@ class TestDomainDirectOtherSwitch(CalculatorTestCase):
         self.effect.modifiers = (modifier,)
 
     def test_other_container(self):
-        influence_source = ContainerHolder(self.ch.type_(
+        influence_source = ContainerHolder(self.ch.type(
             type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         influence_target1 = ChargeHolder(eve_type)
         influence_source.charge = influence_target1
         influence_target1.container = influence_source
@@ -70,10 +70,10 @@ class TestDomainDirectOtherSwitch(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_charge(self):
-        influence_source = ChargeHolder(self.ch.type_(
+        influence_source = ChargeHolder(self.ch.type(
             type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         influence_target1 = ContainerHolder(eve_type)
         influence_source.container = influence_target1
         influence_target1.charge = influence_source

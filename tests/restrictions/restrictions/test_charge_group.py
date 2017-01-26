@@ -29,9 +29,9 @@ class TestChargeGroup(RestrictionTestCase):
     """Check functionality of charge group restriction"""
 
     def test_fail_group1(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -50,9 +50,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group2(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_2: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_2: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -71,9 +71,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group3(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_3: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_3: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -92,9 +92,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group4(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_4: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_4: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -113,9 +113,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group5(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_5: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_5: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -134,9 +134,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_charge_none(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=None)
+        charge_eve_type = self.ch.type(type_id=1, group=None)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -155,9 +155,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_multiple_same(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(
+        container_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.charge_group_3: 3, Attribute.charge_group_5: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
@@ -177,9 +177,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_multiple_different(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(
+        container_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.charge_group_3: 5, Attribute.charge_group_5: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
@@ -200,9 +200,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_attr_eve_type(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.attributes = {Attribute.charge_group_1: 1008}
         container_holder.charge = charge_holder
@@ -222,9 +222,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_match(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=3)
+        charge_eve_type = self.ch.type(type_id=1, group=3)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={Attribute.charge_group_1: 3})
+        container_eve_type = self.ch.type(type_id=2, attributes={Attribute.charge_group_1: 3})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder
@@ -240,9 +240,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_multiple(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(
+        container_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.charge_group_3: 56, Attribute.charge_group_5: 1008})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
@@ -259,9 +259,9 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_no_attr(self):
-        charge_eve_type = self.ch.type_(type_id=1, group=1008)
+        charge_eve_type = self.ch.type(type_id=1, group=1008)
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
-        container_eve_type = self.ch.type_(type_id=2, attributes={})
+        container_eve_type = self.ch.type(type_id=2, attributes={})
         container_holder = self.make_item_mock(ModuleHigh, container_eve_type, state=State.offline)
         container_holder.charge = charge_holder
         charge_holder.container = container_holder

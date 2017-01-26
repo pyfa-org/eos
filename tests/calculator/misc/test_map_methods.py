@@ -31,7 +31,7 @@ class TestMapMethods(CalculatorTestCase):
         self.attr1 = self.ch.attribute(attribute_id=1)
         self.attr2 = self.ch.attribute(attribute_id=2)
         self.attr3 = self.ch.attribute(attribute_id=3)
-        self.holder = IndependentItem(self.ch.type_(type_id=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
+        self.holder = IndependentItem(self.ch.type(type_id=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
         self.fit.items.add(self.holder)
         self.holder.attributes._MutableAttributeMap__modified_attributes = {self.attr2.id: 20, self.attr3.id: 40}
 

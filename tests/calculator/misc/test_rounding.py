@@ -30,7 +30,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_cpu_down(self):
         attr = self.ch.attribute(attribute_id=Attribute.cpu)
-        holder = IndependentItem(self.ch.type_(type_id=1, attributes={attr.id: 2.3333}))
+        holder = IndependentItem(self.ch.type(type_id=1, attributes={attr.id: 2.3333}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 2.33)
         self.fit.items.remove(holder)
@@ -39,7 +39,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_cpu_up(self):
         attr = self.ch.attribute(attribute_id=Attribute.cpu)
-        holder = IndependentItem(self.ch.type_(type_id=1, attributes={attr.id: 2.6666}))
+        holder = IndependentItem(self.ch.type(type_id=1, attributes={attr.id: 2.6666}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 2.67)
         self.fit.items.remove(holder)
@@ -61,7 +61,7 @@ class TestRounding(CalculatorTestCase):
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
 
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,),
             attributes={src_attr.id: 20, tgt_attr.id: 1.9444}
         ))
@@ -73,7 +73,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_cpu_output(self):
         attr = self.ch.attribute(attribute_id=Attribute.cpu_output)
-        holder = IndependentItem(self.ch.type_(type_id=1, attributes={attr.id: 2.6666}))
+        holder = IndependentItem(self.ch.type(type_id=1, attributes={attr.id: 2.6666}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 2.67)
         self.fit.items.remove(holder)
@@ -82,7 +82,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_power(self):
         attr = self.ch.attribute(attribute_id=Attribute.power)
-        holder = IndependentItem(self.ch.type_(type_id=1, attributes={attr.id: 2.6666}))
+        holder = IndependentItem(self.ch.type(type_id=1, attributes={attr.id: 2.6666}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 2.67)
         self.fit.items.remove(holder)
@@ -91,7 +91,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_power_output(self):
         attr = self.ch.attribute(attribute_id=Attribute.power_output)
-        holder = IndependentItem(self.ch.type_(type_id=1, attributes={attr.id: 2.6666}))
+        holder = IndependentItem(self.ch.type(type_id=1, attributes={attr.id: 2.6666}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 2.67)
         self.fit.items.remove(holder)
@@ -100,7 +100,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_other(self):
         attr = self.ch.attribute(attribute_id=1008)
-        holder = IndependentItem(self.ch.type_(type_id=1, attributes={attr.id: 2.6666}))
+        holder = IndependentItem(self.ch.type(type_id=1, attributes={attr.id: 2.6666}))
         self.fit.items.add(holder)
         self.assertAlmostEqual(holder.attributes[attr.id], 2.6666)
         self.fit.items.remove(holder)

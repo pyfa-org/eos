@@ -29,10 +29,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     """Check functionality of 'can fit to ship type/group' restriction"""
 
     def test_fail_type1(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -47,10 +47,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type2(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_2: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_2: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -65,10 +65,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type3(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_3: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_3: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -83,10 +83,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type4(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_4: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_4: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -101,10 +101,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type5(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_5: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_5: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -119,10 +119,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type6(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_6: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_6: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -137,10 +137,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type7(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_7: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_7: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -155,10 +155,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type8(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_8: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_8: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -173,10 +173,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type9(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_9: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_9: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -191,10 +191,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type10(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_10: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_10: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -209,10 +209,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type_11(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.fits_to_shiptype: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.fits_to_shiptype: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -227,10 +227,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type_multiple_different(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 11})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -246,10 +246,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_type_multiple_same(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -265,10 +265,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group1(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_1: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -283,10 +283,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group2(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_2: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_2: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -301,10 +301,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group3(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_3: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_3: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -319,10 +319,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group4(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_4: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_4: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -337,10 +337,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group5(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_5: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_5: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -355,10 +355,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group6(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_6: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_6: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -373,10 +373,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group7(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_7: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_7: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -391,10 +391,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group8(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_8: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_8: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -409,10 +409,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group9(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_9: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_9: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -427,10 +427,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group10(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_10: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_10: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -445,10 +445,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group11(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_11: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_11: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -463,10 +463,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group12(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_12: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_12: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -481,10 +481,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group13(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_13: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_13: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -499,10 +499,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group14(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_14: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_14: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -517,10 +517,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group15(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_15: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_15: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -535,10 +535,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group16(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_16: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_16: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -553,10 +553,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group17(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_17: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_17: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -571,10 +571,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group18(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_18: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_18: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -589,10 +589,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group19(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_19: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_19: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -607,10 +607,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group20(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_20: 38})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_20: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -625,10 +625,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group_multiple_different(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 83})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -644,10 +644,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_group_multiple_same(self):
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -665,10 +665,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_combined(self):
         # Check that failure is appropriately generated when
         # holder specifies both type and group restrictions
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -685,7 +685,7 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_no_ship(self):
         # Absent ship should trigger this error too
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -700,10 +700,10 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_fail_attr_eve_type(self):
         # Make sure EVE type attribute value is taken
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder.attributes = {Attribute.can_fit_ship_type_1: 772}
         self.add_holder(holder)
@@ -721,10 +721,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_type_match(self):
         # When type of ship matches type-restriction attribute,
         # no error should be raised
-        ship_eve_type = self.ch.type_(type_id=554, group=23)
+        ship_eve_type = self.ch.type(type_id=554, group=23)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 554})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_1: 554})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -737,10 +737,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_group_match(self):
         # When type of ship matches group-restriction attribute,
         # no error should be raised
-        ship_eve_type = self.ch.type_(type_id=554, group=23)
+        ship_eve_type = self.ch.type(type_id=554, group=23)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_group_1: 23})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_group_1: 23})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)
@@ -753,10 +753,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_combined_type_match(self):
         # Check that it's enough to match type condition
         # to be fittable, even if both conditions are specified
-        ship_eve_type = self.ch.type_(type_id=671, group=31)
+        ship_eve_type = self.ch.type(type_id=671, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_type_1: 671, Attribute.can_fit_ship_group_1: 38})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -770,10 +770,10 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_combined_group_atch(self):
         # Check that it's enough to match group condition
         # to be fittable, even if both conditions are specified
-        ship_eve_type = self.ch.type_(type_id=554, group=23)
+        ship_eve_type = self.ch.type(type_id=554, group=23)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(
+        eve_type = self.ch.type(
             type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)
@@ -786,10 +786,10 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_pass_holder_non_ship(self):
         # Holders not belonging to ship shouldn't be affected
-        ship_eve_type = self.ch.type_(type_id=772, group=31)
+        ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Implant, ship_eve_type)
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.can_fit_ship_type_1: 10})
         holder = self.make_item_mock(Ship, eve_type)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.ship_type_group)

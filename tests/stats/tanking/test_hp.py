@@ -29,7 +29,7 @@ class TestHp(StatTestCase):
 
     def test_relay(self):
         # Check that stats service relays hp stats properly
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.hp.hull = 50
         ship_holder.hp.armor = 60
@@ -54,7 +54,7 @@ class TestHp(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         ship_holder.hp = Mock(hull=50, armor=60, shield=70, total=80)
@@ -72,7 +72,7 @@ class TestHp(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         ship_holder.hp = Mock(hull=50, armor=60, shield=70, total=80)

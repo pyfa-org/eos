@@ -48,7 +48,7 @@ class TestDomainFilterUnknown(CalculatorTestCase):
 
     def test_log(self):
         self.effect.modifiers = (self.invalid_modifier,)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=754, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(holder)
         self.assertEqual(len(self.log), 2)
@@ -74,10 +74,10 @@ class TestDomainFilterUnknown(CalculatorTestCase):
         valid_modifier.filter_type = FilterType.all_
         valid_modifier.filter_value = None
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
-        influence_source = IndependentItem(self.ch.type_(
+        influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        influence_target = ShipItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Invalid domain in modifier should prevent proper processing of other modifiers
         self.assertNotAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)

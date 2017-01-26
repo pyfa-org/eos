@@ -43,10 +43,10 @@ class TestDomainDirectCharacterSwitch(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(
+        influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        eve_type = self.ch.type_(type_id=2, attributes={tgt_attr.id: 100})
+        eve_type = self.ch.type(type_id=2, attributes={tgt_attr.id: 100})
         influence_target1 = IndependentItem(eve_type)
         self.fit.character = influence_target1
         self.assertNotAlmostEqual(influence_target1.attributes[tgt_attr.id], 100)

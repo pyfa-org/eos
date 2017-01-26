@@ -28,7 +28,7 @@ class TestState(RestrictionTestCase):
     """Check functionality of holder state restriction"""
 
     def test_state_lower(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         self.add_holder(holder)
@@ -39,7 +39,7 @@ class TestState(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_state_equal(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
         self.add_holder(holder)
@@ -50,7 +50,7 @@ class TestState(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_state_higher(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.overload)
         self.add_holder(holder)

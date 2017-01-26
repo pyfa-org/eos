@@ -44,13 +44,13 @@ class TestOperatorSub(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.influence_source1 = IndependentItem(self.ch.type_(
+        self.influence_source1 = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: -10}))
-        self.influence_source2 = IndependentItem(self.ch.type_(
+        self.influence_source2 = IndependentItem(self.ch.type(
             type_id=2, effects=(effect,), attributes={src_attr.id: 20}))
-        self.influence_source3 = IndependentItem(self.ch.type_(
+        self.influence_source3 = IndependentItem(self.ch.type(
             type_id=3, effects=(effect,), attributes={src_attr.id: -53}))
-        self.influence_target = ShipItem(self.ch.type_(type_id=4, attributes={self.tgt_attr.id: 100}))
+        self.influence_target = ShipItem(self.ch.type(type_id=4, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(self.influence_source1)
         self.fit.items.add(self.influence_source2)
         self.fit.items.add(self.influence_source3)

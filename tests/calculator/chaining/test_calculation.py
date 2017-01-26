@@ -53,7 +53,7 @@ class TestCalculationChain(CalculatorTestCase):
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         holder1 = CharacterItem(
-            self.ch.type_(type_id=1, effects=(effect1, effect2),
+            self.ch.type(type_id=1, effects=(effect1, effect2),
             attributes={attr1.id: 5, attr2.id: 20})
         )
         modifier3 = Modifier()
@@ -65,8 +65,8 @@ class TestCalculationChain(CalculatorTestCase):
         modifier3.tgt_attr = attr4.id
         effect3 = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect3.modifiers = (modifier3,)
-        holder2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))
-        holder3 = ShipItem(self.ch.type_(type_id=3, attributes={attr4.id: 12.5}))
+        holder2 = IndependentItem(self.ch.type(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))
+        holder3 = ShipItem(self.ch.type(type_id=3, attributes={attr4.id: 12.5}))
         self.fit.items.add(holder1)
         self.fit.ship = holder2
         self.fit.items.add(holder3)

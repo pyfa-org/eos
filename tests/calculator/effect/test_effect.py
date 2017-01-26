@@ -69,7 +69,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.effect2.modifiers = (modifier2,)
         self.effect_active = self.ch.effect(effect_id=3, category=EffectCategory.active)
         self.effect_active.modifiers = (modifier_active,)
-        self.holder = IndependentItem(self.ch.type_(
+        self.holder = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect1, self.effect2, self.effect_active),
             attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2}
         ))

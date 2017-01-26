@@ -30,7 +30,7 @@ class TestCpu(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu_output: 10})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu_output: 10})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.cpu_output: 50}
         self.set_ship(ship_holder)
@@ -47,7 +47,7 @@ class TestCpu(StatTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
@@ -57,7 +57,7 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single_rounding_up(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 55.5555555555}
         self.add_holder(holder)
@@ -67,7 +67,7 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single_rounding_down(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder.attributes = {Attribute.cpu: 44.4444444444}
         self.add_holder(holder)
@@ -77,7 +77,7 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.cpu: 50}
         self.add_holder(holder1)
@@ -91,7 +91,7 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_negative(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.cpu: 50}
         self.add_holder(holder1)
@@ -110,7 +110,7 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_state(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.cpu: 50}
         self.add_holder(holder1)
@@ -124,7 +124,7 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_other_class_domain(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.cpu: 50}
         self.add_holder(holder1)
@@ -138,11 +138,11 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu_output: 10})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu_output: 10})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.cpu_output: 50}
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=2, attributes={Attribute.cpu: 0})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.cpu: 50}
         self.add_holder(holder1)
@@ -162,11 +162,11 @@ class TestCpu(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.cpu_output: 10})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu_output: 10})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.cpu_output: 50}
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={Attribute.cpu: 0})
+        eve_type = self.ch.type(type_id=2, attributes={Attribute.cpu: 0})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
         holder1.attributes = {Attribute.cpu: 50}
         self.add_holder(holder1)

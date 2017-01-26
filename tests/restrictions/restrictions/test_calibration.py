@@ -31,7 +31,7 @@ class TestCalibration(RestrictionTestCase):
     def test_fail_excess_single(self):
         # When ship provides calibration output, but single consumer
         # demands for more, error should be raised
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder)
@@ -48,7 +48,7 @@ class TestCalibration(RestrictionTestCase):
 
     def test_fail_excess_single_other_class_domain(self):
         # Make sure holders of all classes are affected
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder = self.make_item_mock(Implant, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 50}
         self.add_holder(holder)
@@ -66,7 +66,7 @@ class TestCalibration(RestrictionTestCase):
     def test_fail_excess_single_undefined_output(self):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 5}
         self.add_holder(holder)
@@ -85,7 +85,7 @@ class TestCalibration(RestrictionTestCase):
         # When multiple consumers require less than calibration output
         # alone, but in sum want more than total output, it should
         # be erroneous situation
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 25}
         self.add_holder(holder1)
@@ -111,7 +111,7 @@ class TestCalibration(RestrictionTestCase):
 
     def test_fail_excess_modified(self):
         # Make sure modified calibration values are taken
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 40})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 40})
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder)
@@ -130,7 +130,7 @@ class TestCalibration(RestrictionTestCase):
         # If some holder has negative usage and calibration error is
         # still raised, check it's not raised for holder with
         # negative usage
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder1)
@@ -155,7 +155,7 @@ class TestCalibration(RestrictionTestCase):
         # If some holder has zero usage and calibration error is
         # still raised, check it's not raised for holder with
         # zero usage
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder1)
@@ -179,7 +179,7 @@ class TestCalibration(RestrictionTestCase):
     def test_pass(self):
         # When total consumption is less than output,
         # no errors should be raised
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.upgrade_cost: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         holder1 = self.make_item_mock(Rig, eve_type)
         holder1.attributes = {Attribute.upgrade_cost: 25}
         self.add_holder(holder1)
@@ -201,7 +201,7 @@ class TestCalibration(RestrictionTestCase):
         # When added holder's EVE type doesn't have attribute,
         # holder shouldn't be tracked by register, and thus, no
         # errors should be raised
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.upgrade_cost: 100}
         self.add_holder(holder)

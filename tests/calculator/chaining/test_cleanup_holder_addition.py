@@ -45,7 +45,7 @@ class TestCleanupChainAddition(CalculatorTestCase):
         modifier1.filter_value = None
         effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
-        holder1 = CharacterItem(self.ch.type_(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
+        holder1 = CharacterItem(self.ch.type(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
         modifier2.state = State.offline
         modifier2.scope = Scope.local
@@ -57,8 +57,8 @@ class TestCleanupChainAddition(CalculatorTestCase):
         modifier2.filter_value = None
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
-        holder3 = ShipItem(self.ch.type_(type_id=3, attributes={attr3.id: 0.5}))
+        holder2 = IndependentItem(self.ch.type(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
+        holder3 = ShipItem(self.ch.type(type_id=3, attributes={attr3.id: 0.5}))
         self.fit.ship = holder2
         self.fit.items.add(holder3)
         self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)

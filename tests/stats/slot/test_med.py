@@ -29,7 +29,7 @@ class TestMedSlot(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.med_slots: 2})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.med_slots: 2})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_holder)
@@ -46,7 +46,7 @@ class TestMedSlot(StatTestCase):
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
@@ -61,7 +61,7 @@ class TestMedSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.fit.modules.med.append(holder1)
@@ -71,7 +71,7 @@ class TestMedSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple_with_none(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.fit.modules.med.append(None)
@@ -83,7 +83,7 @@ class TestMedSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_other_container(self):
-        eve_type = self.ch.type_(type_id=1, attributes={})
+        eve_type = self.ch.type(type_id=1, attributes={})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.fit.modules.low.append(holder)
         self.assertEqual(self.ss.med_slots.used, 0)
@@ -91,11 +91,11 @@ class TestMedSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={})
+        eve_type = self.ch.type(type_id=2, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.fit.modules.med.append(holder1)
@@ -111,11 +111,11 @@ class TestMedSlot(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={})
+        eve_type = self.ch.type(type_id=2, attributes={})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.fit.modules.med.append(holder1)

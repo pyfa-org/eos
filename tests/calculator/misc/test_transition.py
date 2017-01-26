@@ -53,9 +53,9 @@ class TestTransitionFit(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        ship1 = IndependentItem(self.ch.type_(type_id=1, effects=(effect,), attributes={src_attr.id: 10}))
-        ship2 = IndependentItem(self.ch.type_(type_id=2, effects=(effect,), attributes={src_attr.id: 20}))
-        module = ShipItem(self.ch.type_(type_id=3, attributes={tgt_attr.id: 50}))
+        ship1 = IndependentItem(self.ch.type(type_id=1, effects=(effect,), attributes={src_attr.id: 10}))
+        ship2 = IndependentItem(self.ch.type(type_id=2, effects=(effect,), attributes={src_attr.id: 20}))
+        module = ShipItem(self.ch.type(type_id=3, attributes={tgt_attr.id: 50}))
         fit1 = Fit(self.ch)
         fit1.ship = ship1
         fit2 = Fit(self.ch)
@@ -98,10 +98,10 @@ class TestTransitionFit(CalculatorTestCase):
         effect2.modifiers = (modifier,)
         # Our holders from test environment do not update undelying EVE type
         # automatically when source is changed, thus we do it manually
-        ship_eve_type1 = cache_handler1.type_(type_id=8, effects=(effect1,), attributes={src_attr1.id: 10})
-        ship_eve_type2 = cache_handler2.type_(type_id=8, effects=(effect2,), attributes={src_attr2.id: 20})
-        module_eve_type1 = cache_handler1.type_(type_id=4, attributes={tgt_attr1.id: 50})
-        module_eve_type2 = cache_handler2.type_(type_id=4, attributes={tgt_attr2.id: 75})
+        ship_eve_type1 = cache_handler1.type(type_id=8, effects=(effect1,), attributes={src_attr1.id: 10})
+        ship_eve_type2 = cache_handler2.type(type_id=8, effects=(effect2,), attributes={src_attr2.id: 20})
+        module_eve_type1 = cache_handler1.type(type_id=4, attributes={tgt_attr1.id: 50})
+        module_eve_type2 = cache_handler2.type(type_id=4, attributes={tgt_attr2.id: 75})
         fit = Fit(cache_handler1)
         ship = IndependentItem(ship_eve_type1)
         module = ShipItem(module_eve_type1)

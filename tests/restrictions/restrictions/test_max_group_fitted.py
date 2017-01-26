@@ -31,7 +31,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_fail_excess_all(self):
         # Make sure error is raised for all holders exceeding
         # their group restriction
-        eve_type = self.ch.type_(type_id=1, group=6, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(type_id=1, group=6, attributes={Attribute.max_group_fitted: 1})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -54,10 +54,10 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_mix_excess_one(self):
         # Make sure error is raised for just holders which excess
         # restriction, even if both are from the same group
-        eve_type1 = self.ch.type_(type_id=1, group=92, attributes={Attribute.max_group_fitted: 1})
+        eve_type1 = self.ch.type(type_id=1, group=92, attributes={Attribute.max_group_fitted: 1})
         holder1 = self.make_item_mock(ModuleHigh, eve_type1, state=State.offline)
         self.add_holder(holder1)
-        eve_type2 = self.ch.type_(type_id=2, group=92, attributes={Attribute.max_group_fitted: 2})
+        eve_type2 = self.ch.type(type_id=2, group=92, attributes={Attribute.max_group_fitted: 2})
         holder2 = self.make_item_mock(ModuleHigh, eve_type2, state=State.offline)
         self.add_holder(holder2)
         restriction_error1 = self.get_restriction_error(holder1, Restriction.max_group_fitted)
@@ -74,11 +74,11 @@ class TestMaxGroupFitted(RestrictionTestCase):
 
     def test_mix_excess_attr_eve_type(self):
         # Check that EVE type attributes are used
-        eve_type1 = self.ch.type_(type_id=1, group=61, attributes={Attribute.max_group_fitted: 1})
+        eve_type1 = self.ch.type(type_id=1, group=61, attributes={Attribute.max_group_fitted: 1})
         holder1 = self.make_item_mock(ModuleHigh, eve_type1, state=State.offline)
         holder1.attributes = {Attribute.max_group_fitted: 2}
         self.add_holder(holder1)
-        eve_type2 = self.ch.type_(type_id=2, group=61, attributes={Attribute.max_group_fitted: 2})
+        eve_type2 = self.ch.type(type_id=2, group=61, attributes={Attribute.max_group_fitted: 2})
         holder2 = self.make_item_mock(ModuleHigh, eve_type2, state=State.offline)
         holder2.attributes = {Attribute.max_group_fitted: 1}
         self.add_holder(holder2)
@@ -97,7 +97,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_pass(self):
         # Make sure no errors are raised when number of added
         # items doesn't exceed any restrictions
-        eve_type = self.ch.type_(type_id=1, group=860, attributes={Attribute.max_group_fitted: 2})
+        eve_type = self.ch.type(type_id=1, group=860, attributes={Attribute.max_group_fitted: 2})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -113,7 +113,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
 
     def test_pass_holder_none_group(self):
         # Check that holders with None group are not affected
-        eve_type = self.ch.type_(type_id=1, group=None, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(type_id=1, group=None, attributes={Attribute.max_group_fitted: 1})
         holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder1)
         holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -129,7 +129,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
 
     def test_pass_holder_non_ship(self):
         # Holders not belonging to ship shouldn't be affected
-        eve_type = self.ch.type_(type_id=1, group=12, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(type_id=1, group=12, attributes={Attribute.max_group_fitted: 1})
         holder1 = self.make_item_mock(Drone, eve_type)
         self.add_holder(holder1)
         holder2 = self.make_item_mock(Drone, eve_type)

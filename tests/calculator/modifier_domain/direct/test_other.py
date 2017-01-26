@@ -47,9 +47,9 @@ class TestDomainDirectOther(CalculatorTestCase):
 
     def test_other_domain_container(self):
         influence_source = ContainerHolder(
-            self.ch.type_(type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
+            self.ch.type(type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        influence_target = ChargeHolder(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ChargeHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         influence_source.charge = influence_target
         influence_target.container = influence_source
         self.fit.items.add(influence_target)
@@ -64,9 +64,9 @@ class TestDomainDirectOther(CalculatorTestCase):
 
     def test_other_domain_charge(self):
         influence_source = ChargeHolder(
-            self.ch.type_(type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
+            self.ch.type(type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        influence_target = ContainerHolder(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ContainerHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         influence_source.container = influence_target
         influence_target.charge = influence_source
         self.fit.items.add(influence_target)
@@ -81,10 +81,10 @@ class TestDomainDirectOther(CalculatorTestCase):
 
     def test_self(self):
         # Check that source holder isn't modified
-        influence_source = ContainerHolder(self.ch.type_(
+        influence_source = ContainerHolder(self.ch.type(
             type_id=1, effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        influence_target = ChargeHolder(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ChargeHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         influence_source.charge = influence_target
         influence_target.container = influence_source
         self.fit.items.add(influence_target)
@@ -98,10 +98,10 @@ class TestDomainDirectOther(CalculatorTestCase):
 
     def test_other_holder(self):
         # Here we check some "random" holder, w/o linking holders
-        influence_source = ContainerHolder(self.ch.type_(
+        influence_source = ContainerHolder(self.ch.type(
             type_id=1, effects=(self.effect,), attributes={self.src_attr.id: 20}))
         self.fit.items.add(influence_source)
-        influence_target = IndependentItem(self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = IndependentItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         self.fit.items.remove(influence_source)

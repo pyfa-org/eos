@@ -29,7 +29,7 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_fail(self):
         # Check if error is raised when there's disabled effect
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(Booster, eve_type)
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}
@@ -43,7 +43,7 @@ class TestBoosterEffect(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_disabled_side_effect(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(Booster, eve_type)
         holder.side_effects = {55, 66}
         holder._disabled_effects = {55, 66}
@@ -55,7 +55,7 @@ class TestBoosterEffect(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_enabled_regular_effect(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(Booster, eve_type)
         # Enabled regular effects are not listed in any of
         # these containers
@@ -69,7 +69,7 @@ class TestBoosterEffect(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_non_booster(self):
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(Implant, eve_type, strict_spec=False)
         holder.side_effects = {55, 66}
         holder._disabled_effects = {77, 99}

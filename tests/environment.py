@@ -30,12 +30,12 @@ class CacheHandler:
         self.__attribute_data = {}
         self.__effect_data = {}
 
-    def type_(self, **kwargs):
-        type_ = Type(**kwargs)
-        if type_.id in self.__type_data:
-            raise KeyError(type_.id)
-        self.__type_data[type_.id] = type_
-        return type_
+    def type(self, **kwargs):
+        eve_type = Type(**kwargs)
+        if eve_type.id in self.__type_data:
+            raise KeyError(eve_type.id)
+        self.__type_data[eve_type.id] = eve_type
+        return eve_type
 
     def attribute(self, **kwargs):
         attr = Attribute(**kwargs)

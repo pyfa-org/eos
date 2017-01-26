@@ -45,7 +45,7 @@ class TestDomainFilterArea(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(
+        influence_source = IndependentItem(self.ch.type(
             type_id=56, effects=(effect,), attributes={src_attr.id: 20}))
         # This domain just isn't used in EVE and unsupported by Eos by design
         self.fit.items.add(influence_source)

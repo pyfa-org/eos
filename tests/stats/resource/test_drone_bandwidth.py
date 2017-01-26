@@ -30,7 +30,7 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth: 10})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth: 10})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.drone_bandwidth: 50}
         self.set_ship(ship_holder)
@@ -47,7 +47,7 @@ class TestDroneBandwidth(StatTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        ship_eve_type = self.ch.type_(type_id=1)
+        ship_eve_type = self.ch.type(type_id=1)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {}
         self.set_ship(ship_holder)
@@ -57,7 +57,7 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_single_no_rounding(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         holder = self.make_item_mock(Drone, eve_type, state=State.online)
         holder.attributes = {Attribute.drone_bandwidth_used: 55.5555555555}
         self.add_holder(holder)
@@ -67,7 +67,7 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
@@ -81,7 +81,7 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_negative(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
@@ -100,7 +100,7 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_state(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
@@ -114,7 +114,7 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_use_other_class_domain(self):
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
@@ -128,11 +128,11 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth: 10})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth: 10})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.drone_bandwidth: 50}
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=2, attributes={Attribute.drone_bandwidth_used: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)
@@ -152,11 +152,11 @@ class TestDroneBandwidth(StatTestCase):
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
-        ship_eve_type = self.ch.type_(type_id=1, attributes={Attribute.drone_bandwidth: 10})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth: 10})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.drone_bandwidth: 50}
         self.set_ship(ship_holder)
-        eve_type = self.ch.type_(type_id=2, attributes={Attribute.drone_bandwidth_used: 0})
+        eve_type = self.ch.type(type_id=2, attributes={Attribute.drone_bandwidth_used: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
         holder1.attributes = {Attribute.drone_bandwidth_used: 50}
         self.add_holder(holder1)

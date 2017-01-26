@@ -32,10 +32,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # first restriction attribute
-        eve_type = self.ch.type_(type_id=1, group=56)
+        eve_type = self.ch.type(type_id=1, group=56)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -51,10 +51,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # second restriction attribute
-        eve_type = self.ch.type_(type_id=1, group=797)
+        eve_type = self.ch.type(type_id=1, group=797)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_2: 69})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_2: 69})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -70,10 +70,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
         # both restriction attributes
-        eve_type = self.ch.type_(type_id=1, group=803)
+        eve_type = self.ch.type(type_id=1, group=803)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(
+        ship_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.allowed_drone_group_1: 48, Attribute.allowed_drone_group_2: 106})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
@@ -92,10 +92,10 @@ class TestDroneGroup(RestrictionTestCase):
         # EVE type restriction attribute, but matching
         # to modified restriction attribute. Effectively
         # we check that EVE type attribute value is taken
-        eve_type = self.ch.type_(type_id=1, group=37)
+        eve_type = self.ch.type(type_id=1, group=37)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 59})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 59})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         ship_holder.attributes = {Attribute.allowed_drone_group_1: 37}
         self.set_ship(ship_holder)
@@ -111,10 +111,10 @@ class TestDroneGroup(RestrictionTestCase):
     def test_fail_drone_none(self):
         # Check that drone from None group is subject
         # to restriction
-        eve_type = self.ch.type_(type_id=1, group=None)
+        eve_type = self.ch.type(type_id=1, group=None)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 1896})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 1896})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -129,7 +129,7 @@ class TestDroneGroup(RestrictionTestCase):
     def test_pass_no_ship(self):
         # Check that restriction isn't applied
         # when fit doesn't have ship
-        eve_type = self.ch.type_(type_id=1, group=None)
+        eve_type = self.ch.type(type_id=1, group=None)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -142,10 +142,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction isn't applied
         # when fit has ship, but without restriction
         # attribute
-        eve_type = self.ch.type_(type_id=1, group=71)
+        eve_type = self.ch.type(type_id=1, group=71)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2)
+        ship_eve_type = self.ch.type(type_id=2)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -158,10 +158,10 @@ class TestDroneGroup(RestrictionTestCase):
     def test_pass_non_drone(self):
         # Check that restriction is not applied
         # to holders which are not drones
-        eve_type = self.ch.type_(type_id=1, group=56)
+        eve_type = self.ch.type(type_id=1, group=56)
         holder = self.make_item_mock(Implant, eve_type)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -174,10 +174,10 @@ class TestDroneGroup(RestrictionTestCase):
     def test_pass_match1(self):
         # Check that no error raised when drone of group
         # matching to first restriction attribute is added
-        eve_type = self.ch.type_(type_id=1, group=22)
+        eve_type = self.ch.type(type_id=1, group=22)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_1: 22})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 22})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -190,10 +190,10 @@ class TestDroneGroup(RestrictionTestCase):
     def test_pass_match2(self):
         # Check that no error raised when drone of group
         # matching to second restriction attribute is added
-        eve_type = self.ch.type_(type_id=1, group=67)
+        eve_type = self.ch.type(type_id=1, group=67)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(type_id=2, attributes={Attribute.allowed_drone_group_2: 67})
+        ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_2: 67})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)
         restriction_error = self.get_restriction_error(holder, Restriction.drone_group)
@@ -207,10 +207,10 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to any of two restriction attributes
         # is added
-        eve_type = self.ch.type_(type_id=1, group=53)
+        eve_type = self.ch.type(type_id=1, group=53)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)
-        ship_eve_type = self.ch.type_(
+        ship_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.allowed_drone_group_1: 907, Attribute.allowed_drone_group_2: 53})
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)

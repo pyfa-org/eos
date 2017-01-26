@@ -45,7 +45,7 @@ class TestDomainDirectSpace(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(type_id=34, effects=(effect,), attributes={src_attr.id: 20}))
+        influence_source = IndependentItem(self.ch.type(type_id=34, effects=(effect,), attributes={src_attr.id: 20}))
         # Space domain was introduced in Eos as holder to contain in-space
         # items like missiles or drones, but it can't be targeted directly
         self.fit.items.add(influence_source)

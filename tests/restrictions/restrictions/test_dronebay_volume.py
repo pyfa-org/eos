@@ -31,7 +31,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_fail_excess_single(self):
         # When ship provides drone bay volume, but single consumer
         # demands for more, error should be raised
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 50}
         self.fit.drones.add(holder)
@@ -50,7 +50,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_fail_excess_single_undefined_output(self):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 5}
         self.fit.drones.add(holder)
@@ -70,7 +70,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When multiple consumers require less than drone bay volume
         # alone, but in sum want more than total output, it should
         # be erroneous situation
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 25}
         self.fit.drones.add(holder1)
@@ -98,7 +98,7 @@ class TestDroneBayVolume(RestrictionTestCase):
 
     def test_fail_excess_modified(self):
         # Make sure modified volume values are taken
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 40})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 40})
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder)
@@ -118,7 +118,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # If some holder has negative usage and drone bay error is
         # still raised, check it's not raised for holder with
         # negative usage
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder1)
@@ -145,7 +145,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # If some holder has zero usage and drone bay error is
         # still raised, check it's not raised for holder with
         # zero usage
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder1)
@@ -171,7 +171,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_pass(self):
         # When total consumption is less than output,
         # no errors should be raised
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder1.attributes = {Attribute.volume: 25}
         self.fit.drones.add(holder1)
@@ -195,7 +195,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When added holder's EVE type doesn't have attribute, holder
         # shouldn't be tracked by register, and thus, no errors
         # should be raised
-        eve_type = self.ch.type_(type_id=1)
+        eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 100}
         self.fit.drones.add(holder)
@@ -210,7 +210,7 @@ class TestDroneBayVolume(RestrictionTestCase):
 
     def test_pass_other_container(self):
         # Make sure holders placed to other containers are unaffected
-        eve_type = self.ch.type_(type_id=1, attributes={Attribute.volume: 0})
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         holder.attributes = {Attribute.volume: 50}
         self.fit.rigs.add(holder)

@@ -44,12 +44,12 @@ class TestFilterDomainSkillrq(CalculatorTestCase):
         modifier.filter_value = 56
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        self.influence_source = IndependentItem(self.ch.type_(
+        self.influence_source = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,), attributes={src_attr.id: 20}))
         self.fit.items.add(self.influence_source)
 
     def test_match(self):
-        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         eve_type.required_skills = {56: 1}
         influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
@@ -61,7 +61,7 @@ class TestFilterDomainSkillrq(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_domain(self):
-        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         eve_type.required_skills = {56: 1}
         influence_target = OwnModItem(eve_type)
         self.fit.items.add(influence_target)
@@ -72,7 +72,7 @@ class TestFilterDomainSkillrq(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_skill(self):
-        eve_type = self.ch.type_(type_id=2, attributes={self.tgt_attr.id: 100})
+        eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         eve_type.required_skills = {87: 1}
         influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)

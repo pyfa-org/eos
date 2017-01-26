@@ -51,7 +51,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_default(self):
         # Check that cap is applied properly when holder
         # doesn't have base value of capping attribute
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
         ))
@@ -64,7 +64,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_attr_eve_type(self):
         # Make sure that holder's own specified attribute
         # value is taken as cap
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ))
@@ -89,7 +89,7 @@ class TestCap(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        holder = IndependentItem(self.ch.type_(
+        holder = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect, effect),
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}
         ))
@@ -103,7 +103,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_update(self):
         # If cap updates, capped attributes should
         # be updated too
-        holder = ShipItem(self.ch.type_(
+        holder = ShipItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ))
@@ -122,7 +122,7 @@ class TestCap(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        cap_updater = IndependentItem(self.ch.type_(
+        cap_updater = IndependentItem(self.ch.type(
             type_id=2, effects=(effect,),
             attributes={self.source_attr.id: 3.5}
         ))

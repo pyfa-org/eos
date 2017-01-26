@@ -45,7 +45,7 @@ class TestDomainDirectTarget(CalculatorTestCase):
         modifier.filter_value = None
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type_(type_id=102, effects=(effect,), attributes={src_attr.id: 20}))
+        influence_source = IndependentItem(self.ch.type(type_id=102, effects=(effect,), attributes={src_attr.id: 20}))
         # This functionality isn't implemented for now
         self.fit.items.add(influence_source)
         self.assertEqual(len(self.log), 2)
