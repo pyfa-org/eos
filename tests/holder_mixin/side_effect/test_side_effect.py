@@ -23,14 +23,14 @@ from unittest.mock import Mock
 
 from eos.fit.item.mixin.side_effect import SideEffectMixin
 from eos.fit.messages import EffectsEnabled, EffectsDisabled
-from tests.eos_testcase import EosTestCase
+from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
 
 
-class TestHolderMixinSideEffect(EosTestCase):
+class TestHolderMixinSideEffect(HolderMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mixin = SideEffectMixin(type_id=None)
+        self.mixin = self.instantiate_mixin(SideEffectMixin, type_id=None)
         self.mixin._eve_type = Mock()
 
     def test_data(self):

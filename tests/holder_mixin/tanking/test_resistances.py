@@ -21,14 +21,14 @@
 
 from eos.const.eve import Attribute
 from eos.fit.item.mixin.tanking import BufferTankingMixin
-from tests.eos_testcase import EosTestCase
+from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
 
 
-class TestHolderMixinTankingResistances(EosTestCase):
+class TestHolderMixinTankingResistances(HolderMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mixin = BufferTankingMixin(type_id=None)
+        self.mixin = self.instantiate_mixin(BufferTankingMixin, type_id=None)
         self.mixin.attributes = {}
 
     def test_generic(self):

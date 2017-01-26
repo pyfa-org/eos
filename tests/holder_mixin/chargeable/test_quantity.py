@@ -22,10 +22,10 @@
 from eos.const.eve import Attribute
 from eos.fit.container import HolderSet
 from eos.fit.item import ModuleHigh, Charge
-from tests.eos_testcase import EosTestCase
+from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
 
 
-class TestHolderMixinChargeQuantity(EosTestCase):
+class TestHolderMixinChargeQuantity(HolderMixinTestCase):
 
     def setUp(self):
         super().setUp()

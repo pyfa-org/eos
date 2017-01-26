@@ -22,14 +22,14 @@
 from unittest.mock import Mock
 
 from eos.fit.item.mixin.misc import DefaultEffectAttribMixin
-from tests.eos_testcase import EosTestCase
+from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
 
 
-class TestHolderMixinSpecialAttrib(EosTestCase):
+class TestHolderMixinSpecialAttrib(HolderMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mixin = DefaultEffectAttribMixin(type_id=None)
+        self.mixin = self.instantiate_mixin(DefaultEffectAttribMixin, type_id=None)
         self.mixin.attributes = {}
         self.mixin._eve_type = Mock()
 

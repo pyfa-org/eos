@@ -24,14 +24,14 @@ from unittest.mock import Mock
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
-from tests.eos_testcase import EosTestCase
+from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
 
 
-class TestHolderMixinDamageMissileNominalDps(EosTestCase):
+class TestHolderMixinDamageMissileNominalDps(HolderMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        mixin = DamageDealerMixin(type_id=None)
+        mixin = self.instantiate_mixin(DamageDealerMixin, type_id=None)
         mixin._eve_type = Mock()
         mixin._eve_type.default_effect.id = Effect.use_missiles
         mixin._eve_type.default_effect._state = State.active

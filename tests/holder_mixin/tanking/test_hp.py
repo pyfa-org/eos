@@ -24,10 +24,10 @@ from unittest.mock import Mock
 from eos.const.eve import Attribute
 from eos.fit.container import HolderSet
 from eos.fit.item import Ship
-from tests.eos_testcase import EosTestCase
+from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
 
 
-class TestHolderMixinTankingHp(EosTestCase):
+class TestHolderMixinTankingHp(HolderMixinTestCase):
 
     def setUp(self):
         super().setUp()
