@@ -21,7 +21,7 @@
 
 from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.item import Drone
+from eos.fit.item import Drone, Charge
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -34,15 +34,17 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item = self.make_item_mock(Drone, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 50}
-        self.fit.drones.add(item)
         self.add_item(item)
         self.fit.stats.dronebay.used = 50
         self.fit.stats.dronebay.output = 40
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -53,15 +55,17 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item = self.make_item_mock(Drone, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 5}
-        self.fit.drones.add(item)
         self.add_item(item)
         self.fit.stats.dronebay.used = 5
         self.fit.stats.dronebay.output = None
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 0)
         self.assertEqual(restriction_error.total_use, 5)
         self.assertEqual(restriction_error.item_use, 5)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -73,24 +77,27 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 25}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: 20}
-        self.fit.drones.add(item2)
         self.add_item(item2)
         self.fit.stats.dronebay.used = 45
         self.fit.stats.dronebay.output = 40
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 40)
         self.assertEqual(restriction_error1.total_use, 45)
         self.assertEqual(restriction_error1.item_use, 25)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.output, 40)
         self.assertEqual(restriction_error2.total_use, 45)
         self.assertEqual(restriction_error2.item_use, 20)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -101,15 +108,17 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 40})
         item = self.make_item_mock(Drone, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(item)
         self.add_item(item)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 50)
         self.assertEqual(restriction_error.total_use, 100)
         self.assertEqual(restriction_error.item_use, 100)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -121,21 +130,24 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: -10}
-        self.fit.drones.add(item2)
         self.add_item(item2)
         self.fit.stats.dronebay.used = 90
         self.fit.stats.dronebay.output = 50
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 50)
         self.assertEqual(restriction_error1.total_use, 90)
         self.assertEqual(restriction_error1.item_use, 100)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -148,21 +160,24 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: 0}
-        self.fit.drones.add(item2)
         self.add_item(item2)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 50)
         self.assertEqual(restriction_error1.total_use, 100)
         self.assertEqual(restriction_error1.item_use, 100)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -174,18 +189,21 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 25}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: 20}
-        self.fit.drones.add(item2)
         self.add_item(item2)
         self.fit.stats.dronebay.used = 45
         self.fit.stats.dronebay.output = 50
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -198,27 +216,31 @@ class TestDroneBayVolume(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1)
         item = self.make_item_mock(Drone, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(item)
         self.add_item(item)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_pass_other_container(self):
+    def test_pass_other_class(self):
         # Make sure items placed to other containers are unaffected
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item = self.make_item_mock(Charge, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 50}
-        self.fit.rigs.add(item)
         self.add_item(item)
         self.fit.stats.dronebay.used = 50
         self.fit.stats.dronebay.output = 40
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

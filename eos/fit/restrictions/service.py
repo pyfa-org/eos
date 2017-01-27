@@ -41,9 +41,6 @@ class RestrictionService(BaseSubscriber):
 
     def __init__(self, fit):
         self.__enabled = False
-        # Fit reference, to which this restriction service
-        # is attached
-        self._fit = fit
         # Set with 'stateless' items. Items are always
         # tracked by these, regardless of state
         # Format: (registers,)

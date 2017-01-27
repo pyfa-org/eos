@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
@@ -30,7 +31,7 @@ from ..exception import RegisterValidationError
 SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
 
 
-class SlotAmountRestrictionRegister(BaseRestrictionRegister):
+class SlotAmountRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
     """
     Class which implements common functionality for all
     registers, which track amount of occupied ship slots
@@ -67,6 +68,10 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister):
                     slots_max_allowed=slots_max
                 )
             raise RegisterValidationError(tainted_items)
+
+    @abstractmethod
+    def _get_tainted_items(self, slots_max):
+        ...
 
     @property
     def restriction_type(self):

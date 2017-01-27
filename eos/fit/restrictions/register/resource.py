@@ -23,6 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.item import Drone
 from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
@@ -39,7 +40,7 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
 
     def __init__(self, fit, stat_name, usage_attr, restriction_type):
         self.__restriction_type = restriction_type
-        self._fit = fit
+        self.__fit = fit
         # Use this stat name to get numbers from stats service
         self.__stat_name = stat_name
         self.__usage_attr = usage_attr
@@ -55,7 +56,7 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
 
     def validate(self):
         # Use stats module to get resource use and output
-        stats = getattr(self._fit.stats, self.__stat_name)
+        stats = getattr(self.__fit.stats, self.__stat_name)
         total_use = stats.used
         # Can be None, so fall back to 0 in this case
         output = stats.output or 0
@@ -91,7 +92,8 @@ class CpuRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
+        ResourceRestrictionRegister.__init__(
+            self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
 
 
 class PowerGridRegister(ResourceRestrictionRegister):
@@ -105,7 +107,8 @@ class PowerGridRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
+        ResourceRestrictionRegister.__init__(
+            self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
 
 
 class CalibrationRegister(ResourceRestrictionRegister):
@@ -119,7 +122,8 @@ class CalibrationRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
+        ResourceRestrictionRegister.__init__(
+            self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
 
 
 class DroneBayVolumeRegister(ResourceRestrictionRegister):
@@ -134,10 +138,11 @@ class DroneBayVolumeRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
+        ResourceRestrictionRegister.__init__(
+            self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
 
     def register_item(self, item):
-        if item in self._fit.drones:
+        if isinstance(item, Drone):
             ResourceRestrictionRegister.register_item(self, item)
 
 
@@ -152,5 +157,5 @@ class DroneBandwidthRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used,
-                                             Restriction.drone_bandwidth)
+        ResourceRestrictionRegister.__init__(
+            self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used, Restriction.drone_bandwidth)
