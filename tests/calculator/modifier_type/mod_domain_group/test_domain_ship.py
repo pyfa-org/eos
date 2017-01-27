@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem, OwnModItem
+from tests.calculator.environment import IndependentItem, ShipDomainItem, OwnerModifiableItem
 
 
 class TestModDomainGroupDomainShip(CalculatorTestCase):
@@ -48,7 +48,7 @@ class TestModDomainGroupDomainShip(CalculatorTestCase):
         ))
 
     def test_ship(self):
-        influence_target = ShipItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
@@ -64,7 +64,7 @@ class TestModDomainGroupDomainShip(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_domain(self):
-        influence_target = OwnModItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
+        influence_target = OwnerModifiableItem(self.ch.type(type_id=2, group=35, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
@@ -77,7 +77,7 @@ class TestModDomainGroupDomainShip(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_group(self):
-        influence_target = ShipItem(self.ch.type(type_id=2, group=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=2, group=3, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)

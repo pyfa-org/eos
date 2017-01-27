@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem
+from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestCap(CalculatorTestCase):
@@ -99,7 +99,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_update(self):
         # If cap updates, capped attributes should
         # be updated too
-        item = ShipItem(self.ch.type(
+        item = ShipDomainItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ))

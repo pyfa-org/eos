@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem, OwnModItem
+from tests.calculator.environment import IndependentItem, CharDomainItem, ShipDomainItem, OwnerModifiableItem
 
 
 class TestModItemDomainSelf(CalculatorTestCase):
@@ -57,7 +57,7 @@ class TestModItemDomainSelf(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_character(self):
-        item = CharacterItem(self.ch.type(
+        item = CharDomainItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
@@ -71,7 +71,7 @@ class TestModItemDomainSelf(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_ship(self):
-        item = ShipItem(self.ch.type(
+        item = ShipDomainItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
@@ -108,7 +108,7 @@ class TestModItemDomainSelf(CalculatorTestCase):
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
-        item = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        item = CharDomainItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(item)
         # Action
         self.fit.character = influence_source

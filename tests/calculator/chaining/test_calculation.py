@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem
+from tests.calculator.environment import IndependentItem, CharDomainItem, ShipDomainItem
 
 
 class TestCalculationChain(CalculatorTestCase):
@@ -52,7 +52,7 @@ class TestCalculationChain(CalculatorTestCase):
         modifier2.tgt_attr = attr3.id
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        item1 = CharacterItem(self.ch.type(
+        item1 = CharDomainItem(self.ch.type(
             type_id=1, effects=(effect1, effect2),
             attributes={attr1.id: 5, attr2.id: 20}
         ))
@@ -66,7 +66,7 @@ class TestCalculationChain(CalculatorTestCase):
         effect3 = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect3.modifiers = (modifier3,)
         item2 = IndependentItem(self.ch.type(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))
-        item3 = ShipItem(self.ch.type(type_id=3, attributes={attr4.id: 12.5}))
+        item3 = ShipDomainItem(self.ch.type(type_id=3, attributes={attr4.id: 12.5}))
         self.fit.items.add(item1)
         self.fit.ship = item2
         # Action

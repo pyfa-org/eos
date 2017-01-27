@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, OwnModItem
+from tests.calculator.environment import IndependentItem, OwnerModifiableItem
 
 
 class TestModOwnerSkillrqDomainOther(CalculatorTestCase):
@@ -50,7 +50,7 @@ class TestModOwnerSkillrqDomainOther(CalculatorTestCase):
     def test_owner_modifiable(self):
         eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         eve_type.required_skills = {56: 1}
-        influence_target = OwnModItem(eve_type)
+        influence_target = OwnerModifiableItem(eve_type)
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
@@ -83,7 +83,7 @@ class TestModOwnerSkillrqDomainOther(CalculatorTestCase):
     def test_other_skill(self):
         eve_type = self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100})
         eve_type.required_skills = {87: 1}
-        influence_target = OwnModItem(eve_type)
+        influence_target = OwnerModifiableItem(eve_type)
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)

@@ -102,7 +102,7 @@ class Fit:
     _subscribe = Mock()
 
 
-class Item:
+class BaseItem:
 
     def __init__(self, eve_type):
         self.__fit = None
@@ -137,48 +137,28 @@ class Item:
         return set(e.id for e in self._eve_type.effects).difference(self._disabled_effects)
 
 
-class IndependentItem(Item):
+class IndependentItem(BaseItem):
 
-    @property
-    def _domain(self):
-        return None
-
-    @property
-    def _owner_modifiable(self):
-        return False
+    _domain = None
+    _owner_modifiable = False
 
 
-class CharacterItem(Item):
+class CharDomainItem(BaseItem):
 
-    @property
-    def _domain(self):
-        return ModifierDomain.character
-
-    @property
-    def _owner_modifiable(self):
-        return False
+    _domain = ModifierDomain.character
+    _owner_modifiable = False
 
 
-class ShipItem(Item):
+class ShipDomainItem(BaseItem):
 
-    @property
-    def _domain(self):
-        return ModifierDomain.ship
-
-    @property
-    def _owner_modifiable(self):
-        return False
+    _domain = ModifierDomain.ship
+    _owner_modifiable = False
 
 
-class OwnModItem(Item):
+class OwnerModifiableItem(BaseItem):
 
-    @property
-    def _domain(self):
-        return None
-
-    @property
-    def _owner_modifiable(self):
-        return True
+    _domain = None
+    _owner_modifiable = True
 
 
 class ContainerItem(IndependentItem):

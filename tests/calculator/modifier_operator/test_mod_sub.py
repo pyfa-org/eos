@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem
+from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestOperatorSub(CalculatorTestCase):
@@ -54,7 +54,7 @@ class TestOperatorSub(CalculatorTestCase):
             type_id=3, effects=(effect,),
             attributes={src_attr.id: -53}
         ))
-        self.influence_target = ShipItem(self.ch.type(type_id=4, attributes={self.tgt_attr.id: 100}))
+        self.influence_target = ShipDomainItem(self.ch.type(type_id=4, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(self.influence_source1)
         self.fit.items.add(self.influence_source2)
         self.fit.items.add(self.influence_source3)

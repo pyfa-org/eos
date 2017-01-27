@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem
+from tests.calculator.environment import IndependentItem, CharDomainItem
 
 
 class TestModDomainDomainChar(CalculatorTestCase):
@@ -47,7 +47,7 @@ class TestModDomainDomainChar(CalculatorTestCase):
         ))
 
     def test_character(self):
-        influence_target = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = CharDomainItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)

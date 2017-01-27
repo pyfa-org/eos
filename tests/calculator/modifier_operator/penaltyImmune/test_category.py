@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import Category, EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipItem
+from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
@@ -57,7 +57,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks
@@ -80,7 +80,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks
@@ -103,7 +103,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks
@@ -126,7 +126,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks
@@ -149,7 +149,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks
@@ -172,7 +172,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks
@@ -195,7 +195,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         ))
         self.fit.items.add(influence_source1)
         self.fit.items.add(influence_source2)
-        influence_target = ShipItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
+        influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
         # Checks

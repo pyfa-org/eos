@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem
+from tests.calculator.environment import IndependentItem, CharDomainItem, ShipDomainItem
 
 
 class TestCleanupChainAddition(CalculatorTestCase):
@@ -43,7 +43,7 @@ class TestCleanupChainAddition(CalculatorTestCase):
         modifier1.tgt_attr = attr2.id
         effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
-        item1 = CharacterItem(self.ch.type(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
+        item1 = CharDomainItem(self.ch.type(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
         modifier2.type = ModifierType.domain
         modifier2.domain = ModifierDomain.ship
@@ -54,7 +54,7 @@ class TestCleanupChainAddition(CalculatorTestCase):
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         item2 = IndependentItem(self.ch.type(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
-        item3 = ShipItem(self.ch.type(type_id=3, attributes={attr3.id: 0.5}))
+        item3 = ShipDomainItem(self.ch.type(type_id=3, attributes={attr3.id: 0.5}))
         self.fit.ship = item2
         self.fit.items.add(item3)
         self.assertAlmostEqual(item3.attributes[attr3.id], 0.5375)
