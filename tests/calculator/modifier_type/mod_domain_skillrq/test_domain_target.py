@@ -26,32 +26,35 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, ShipItem
 
 
-class TestModDomainDomainTarget(CalculatorTestCase):
+class TestModDomainSkillrqDomainTarget(CalculatorTestCase):
 
     def test_no_effect(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = Modifier()
-        modifier.type = ModifierType.domain
+        modifier.type = ModifierType.domain_skillrq
         modifier.domain = ModifierDomain.target
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
+        modifier.extra_arg = 56
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(
             type_id=88, effects=(effect,),
             attributes={src_attr.id: 20}
         ))
-        influence_target = ShipItem(self.ch.type(type_id=2, attributes={tgt_attr.id: 100}))
+        eve_type = self.ch.type(type_id=2, attributes={tgt_attr.id: 100})
+        eve_type.required_skills = {56: 1}
+        influence_target = ShipItem(eve_type)
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(influence_source)
         # Checks
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 100)
         # Misc
-        self.fit.items.remove(influence_target)
         self.fit.items.remove(influence_source)
+        self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

@@ -54,6 +54,7 @@ class TestModOwnerSkillrqDomainTarget(CalculatorTestCase):
         # Checks
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 100)
         # Misc
+        self.fit.items.remove(influence_source)
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
