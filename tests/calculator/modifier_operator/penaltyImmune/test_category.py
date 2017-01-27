@@ -60,9 +60,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -83,9 +83,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -106,9 +106,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -129,9 +129,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -152,9 +152,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -175,9 +175,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)
@@ -198,9 +198,9 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=3, attributes={self.tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 300)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source1)
         self.fit.items.remove(influence_source2)
         self.fit.items.remove(influence_target)

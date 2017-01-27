@@ -56,9 +56,9 @@ class TestModItemDomainUnknown(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

@@ -40,13 +40,13 @@ class TestMessages(RestrictionTestCase):
         self.fit.stats.calibration.output = 40
         # Action
         self.rs._notify(ItemAdded(item))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.calibration)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -60,13 +60,13 @@ class TestMessages(RestrictionTestCase):
         self.fit.stats.cpu.output = 40
         # Action
         self.rs._notify(ItemAdded(item))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -80,10 +80,10 @@ class TestMessages(RestrictionTestCase):
         self.fit.stats.cpu.output = 40
         # Action
         self.rs._notify(ItemAdded(item))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -98,10 +98,10 @@ class TestMessages(RestrictionTestCase):
         self.rs._notify(ItemAdded(item))
         # Action
         self.rs._notify(ItemRemoved(item))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.calibration)
         self.assertIsNone(restriction_error)
-        # Misc
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -115,10 +115,10 @@ class TestMessages(RestrictionTestCase):
         self.rs._notify(ItemAdded(item))
         # Action
         self.rs._notify(ItemRemoved(item))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Misc
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -133,13 +133,13 @@ class TestMessages(RestrictionTestCase):
         # Action
         self.rs._notify(ItemStateChanged(item, State.offline, State.online))
         item.state = State.online
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -155,10 +155,10 @@ class TestMessages(RestrictionTestCase):
         # Action
         self.rs._notify(ItemStateChanged(item, State.online, State.offline))
         item.state = State.offline
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -176,13 +176,13 @@ class TestMessages(RestrictionTestCase):
         # Action
         self.rs._notify(ItemAdded(item))
         self.rs._notify(EnableServices(items=(item,)))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -197,10 +197,10 @@ class TestMessages(RestrictionTestCase):
         self.rs._notify(ItemAdded(item))
         # Action
         self.rs._notify(DisableServices(items=(item,)))
-        # Checks
+        # Verification
         restriction_error = self.get_restriction_error(item, Restriction.cpu)
         self.assertIsNone(restriction_error)
-        # Misc
+        # Cleanup
         self.rs._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

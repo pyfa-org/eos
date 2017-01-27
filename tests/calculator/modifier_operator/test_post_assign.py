@@ -62,9 +62,9 @@ class TestOperatorPostAssign(CalculatorTestCase):
 
     def test_high_good(self):
         self.tgt_attr.high_is_good = True
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 53)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source1)
         self.fit.items.remove(self.influence_source2)
         self.fit.items.remove(self.influence_source3)
@@ -74,9 +74,9 @@ class TestOperatorPostAssign(CalculatorTestCase):
 
     def test_high_bad(self):
         self.tgt_attr.high_is_good = False
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], -20)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source1)
         self.fit.items.remove(self.influence_source2)
         self.fit.items.remove(self.influence_source3)

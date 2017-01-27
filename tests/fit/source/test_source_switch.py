@@ -39,10 +39,10 @@ class FitSourceSwitch(FitTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.source = None
-        # Checks
+        # Verification
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 0)
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -60,7 +60,7 @@ class FitSourceSwitch(FitTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.source = source
-        # Checks
+        # Verification
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 2)
         message1 = fit.message_store[-2]
@@ -68,7 +68,7 @@ class FitSourceSwitch(FitTestCase):
         message2 = fit.message_store[-1]
         self.assertTrue(isinstance(message2, EnableServices))
         self.assertEqual(message2.items, {item})
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -86,7 +86,7 @@ class FitSourceSwitch(FitTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.source = None
-        # Checks
+        # Verification
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 2)
         message1 = fit.message_store[-2]
@@ -94,7 +94,7 @@ class FitSourceSwitch(FitTestCase):
         self.assertEqual(message1.items, {item})
         message2 = fit.message_store[-1]
         self.assertTrue(isinstance(message2, RefreshSource))
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -114,7 +114,7 @@ class FitSourceSwitch(FitTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.source = source2
-        # Checks
+        # Verification
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 3)
         message1 = fit.message_store[-3]
@@ -125,7 +125,7 @@ class FitSourceSwitch(FitTestCase):
         message3 = fit.message_store[-1]
         self.assertTrue(isinstance(message3, EnableServices))
         self.assertEqual(message3.items, {item})
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -139,10 +139,10 @@ class FitSourceSwitch(FitTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.source = source
-        # Checks
+        # Verification
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 0)
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -161,7 +161,7 @@ class FitSourceSwitch(FitTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.source = 'src_alias'
-        # Checks
+        # Verification
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 2)
         message1 = fit.message_store[-2]
@@ -169,6 +169,6 @@ class FitSourceSwitch(FitTestCase):
         message2 = fit.message_store[-1]
         self.assertTrue(isinstance(message2, EnableServices))
         self.assertEqual(message2.items, {item})
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)

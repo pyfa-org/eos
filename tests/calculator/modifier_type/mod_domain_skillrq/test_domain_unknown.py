@@ -61,10 +61,10 @@ class TestModDomainSkillrqDomainUnknown(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(influence_source)
-        # Checks
+        # Verification
         # Invalid domain in modifier should prevent proper processing of other modifiers
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_target)
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)

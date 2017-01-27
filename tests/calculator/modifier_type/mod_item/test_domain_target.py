@@ -46,7 +46,7 @@ class TestModItemDomainTarget(CalculatorTestCase):
         # Action
         self.fit.items.add(influence_source)
         # No checks - nothing should happen
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

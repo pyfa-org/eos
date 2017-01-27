@@ -21,12 +21,14 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, ModifierDomain
+from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
 from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
+TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 # Containers for attribute IDs which are used to restrict fitting
 TYPE_RESTRICTION_ATTRS = (
     Attribute.can_fit_ship_type_1,
@@ -84,7 +86,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     these types or groups.
 
     Details:
-    Only items belonging to ship are tracked.
+    Only modules are tracked.
     It's enough to satisfy any of conditions to make item usable
     (e.g. ship's group may not satisfy canFitShipGroupX
     restriction, but its type may be suitable to use item).
@@ -102,10 +104,9 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = {}
 
     def register_item(self, item):
-        # Ignore all items which do not belong to ship
-        if item._parent_modifier_domain != ModifierDomain.ship:
+        if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
-        # Containers for typeIDs and groupIDs of ships, to
+        # Containers for type IDs and group IDs of ships, to
         # which item is allowed to fit
         allowed_types = set()
         allowed_groups = set()

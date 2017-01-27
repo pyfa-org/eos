@@ -44,9 +44,9 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.equip, None)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 0)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -56,11 +56,11 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.equip(item)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item)
         self.assertIs(item._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -71,10 +71,10 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.equip, item)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -86,12 +86,12 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.equip, item)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIs(len(fit_other.container), 1)
         self.assertIs(fit_other.container[0], item)
         self.assertIs(item._fit, fit_other)
-        # Misc
+        # Cleanup
         fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -107,11 +107,11 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.equip(item3)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 3)
         self.assertIs(fit.container[2], item3)
         self.assertIs(item3._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         fit.container.remove(item2)
         fit.container.remove(item3)
@@ -131,11 +131,11 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.equip(item4)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 7)
         self.assertIs(fit.container[1], item4)
         self.assertIs(item4._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         fit.container.remove(item2)
         fit.container.remove(item3)

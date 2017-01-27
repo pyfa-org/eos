@@ -72,9 +72,9 @@ class TestOperatorPostPercent(CalculatorTestCase):
 
     def test_unpenalized(self):
         self.tgt_attr.stackable = True
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 67.5)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source1)
         self.fit.items.remove(self.influence_source2)
         self.fit.items.remove(self.influence_source3)
@@ -86,9 +86,9 @@ class TestOperatorPostPercent(CalculatorTestCase):
 
     def test_penalized(self):
         self.tgt_attr.stackable = False
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 62.55, places=3)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source1)
         self.fit.items.remove(self.influence_source2)
         self.fit.items.remove(self.influence_source3)

@@ -71,14 +71,14 @@ class TestCalculationChain(CalculatorTestCase):
         self.fit.ship = item2
         # Action
         self.fit.items.add(item3)
-        # Checks
+        # Verification
         # If everything is processed properly, item1 will multiply attr2 by attr1
         # on self, resulting in 20 * 5 = 100, then apply it as percentage modifier
         # on ship's (item2) attr3, resulting in 150 + 100% = 300, then it is applied
         # to all entities assigned to ship, including item3, to theirs attr4 as
         # percentage modifier again - so final result is 12.5 + 300% = 50
         self.assertAlmostEqual(item3.attributes[attr4.id], 50)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item1)
         self.fit.ship = None
         self.fit.items.remove(item3)

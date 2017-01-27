@@ -89,7 +89,7 @@ class TestModuleCharge(ContainerTestCase):
         module = ModuleHigh(1, state=State.active, charge=None)
         # Action
         module.charge = None
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIsNone(module._fit)
 
@@ -98,7 +98,7 @@ class TestModuleCharge(ContainerTestCase):
         charge = Charge(2)
         # Action
         module.charge = charge
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIsNone(module._fit)
@@ -111,7 +111,7 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge1
         # Action
         module.charge = charge2
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge2)
         self.assertIsNone(charge1.container)
         self.assertIs(charge2.container, module)
@@ -125,7 +125,7 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         # Action
         module.charge = None
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIsNone(charge.container)
         self.assertIsNone(module._fit)
@@ -136,7 +136,7 @@ class TestModuleCharge(ContainerTestCase):
         non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherItem(1))
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIsNone(module._fit)
         self.assertIsNone(non_charge._fit)
@@ -148,7 +148,7 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIsNone(module._fit)
@@ -164,14 +164,14 @@ class TestModuleCharge(ContainerTestCase):
         fit_other.ordered.append(module_other)
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
         self.assertIs(charge_other.container, module_other)
         self.assertIsNone(module._fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
-        # Misc
+        # Cleanup
         fit_other.ordered.remove(module_other)
         self.assert_fit_buffers_empty(fit_other)
 
@@ -186,7 +186,7 @@ class TestModuleCharge(ContainerTestCase):
         module_other.charge = charge_other
         # Action
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIs(module_other.charge, charge_other)
@@ -195,7 +195,7 @@ class TestModuleCharge(ContainerTestCase):
         self.assertIsNone(charge._fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
-        # Misc
+        # Cleanup
         fit_other.ordered.remove(module_other)
         self.assert_fit_buffers_empty(fit_other)
 
@@ -206,10 +206,10 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = None
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module._fit, fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -221,12 +221,12 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = charge
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -240,14 +240,14 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = charge2
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge2)
         self.assertIsNone(charge1.container)
         self.assertIs(charge2.container, module)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge1._fit)
         self.assertIs(charge2._fit, fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -260,12 +260,12 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = None
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIsNone(charge.container)
         self.assertIs(module._fit, fit)
         self.assertIsNone(charge._fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -277,11 +277,11 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module._fit, fit)
         self.assertIsNone(non_charge._fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -295,13 +295,13 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
         self.assertIsNone(non_charge._fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -317,14 +317,14 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
-        # Checks
+        # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
         self.assertIs(charge_other.container, module_other)
         self.assertIs(module._fit, fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         fit_other.ordered.remove(module_other)
         self.assert_fit_buffers_empty(fit)
@@ -344,7 +344,7 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
-        # Checks
+        # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIs(module_other.charge, charge_other)
@@ -353,7 +353,7 @@ class TestModuleCharge(ContainerTestCase):
         self.assertIs(charge._fit, fit)
         self.assertIs(module_other._fit, fit_other)
         self.assertIs(charge_other._fit, fit_other)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         fit_other.ordered.remove(module_other)
         self.assert_fit_buffers_empty(fit)
@@ -367,14 +367,14 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             fit.ordered.append(module)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.ordered), 1)
         self.assertIs(fit.ordered[0], module)
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIs(module._fit, fit)
         self.assertIs(charge._fit, fit)
-        # Misc
+        # Cleanup
         fit.ordered.remove(module)
         self.assert_fit_buffers_empty(fit)
 
@@ -387,11 +387,11 @@ class TestModuleCharge(ContainerTestCase):
         # Action
         with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
             fit.ordered.remove(module)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.ordered), 0)
         self.assertIs(module.charge, charge)
         self.assertIs(charge.container, module)
         self.assertIsNone(module._fit)
         self.assertIsNone(charge._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)

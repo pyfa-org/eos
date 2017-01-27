@@ -155,14 +155,14 @@ class TestOperatorAllIn(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=9, attributes={tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         # Operators shouldn't be penalized and should go in this order
         exp_value = (
             ((value_pre_ass * value_pre_mul / value_pre_div) + value_mod_add - value_mod_sub) *
             value_post_mul / value_post_div * (1 + value_post_perc / 100)
         )
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], exp_value)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source_pre_ass)
         self.fit.items.remove(influence_source_pre_mul)
         self.fit.items.remove(influence_source_pre_div)

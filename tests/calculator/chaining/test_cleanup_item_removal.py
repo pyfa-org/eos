@@ -61,11 +61,11 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         self.assertAlmostEqual(item3.attributes[attr3.id], 0.6875)
         # Action
         self.fit.items.remove(item1)
-        # Checks
+        # Verification
         # When item1 is removed, attr2 of item2 and attr3 of item3
         # must be cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(item3.attributes[attr3.id], 0.5375)
-        # Misc
+        # Cleanup
         self.fit.ship = None
         self.fit.items.remove(item3)
         self.assertEqual(len(self.log), 0)

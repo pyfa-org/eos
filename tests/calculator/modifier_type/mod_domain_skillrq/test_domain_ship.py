@@ -54,13 +54,13 @@ class TestModDomainSkillrqDomainShip(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
         self.fit.items.remove(self.influence_source)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -72,9 +72,9 @@ class TestModDomainSkillrqDomainShip(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source)
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
@@ -87,9 +87,9 @@ class TestModDomainSkillrqDomainShip(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(self.influence_source)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source)
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)

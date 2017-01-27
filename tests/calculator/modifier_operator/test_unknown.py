@@ -51,14 +51,14 @@ class TestOperatorUnknown(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'malformed modifier on eve type 83: unknown operator 1008')
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -90,14 +90,14 @@ class TestOperatorUnknown(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'malformed modifier on eve type 83: unknown operator None')
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -126,11 +126,11 @@ class TestOperatorUnknown(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 1)
         self.assert_calculator_buffers_empty(self.fit)

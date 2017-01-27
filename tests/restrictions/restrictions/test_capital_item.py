@@ -21,7 +21,7 @@
 
 from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.item import ModuleHigh, Ship
+from eos.fit.item import ModuleHigh, Rig, Ship
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -34,27 +34,31 @@ class TestCapitalItem(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_item(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_fail_subcap(self):
-        # Check that error is raised on attempt to add
-        # capital item to fit with subcapital ship
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_item(item)
         ship_eve_type = self.ch.type(type_id=2)
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -69,10 +73,13 @@ class TestCapitalItem(RestrictionTestCase):
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: 0.0})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -87,10 +94,13 @@ class TestCapitalItem(RestrictionTestCase):
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: None})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -106,10 +116,13 @@ class TestCapitalItem(RestrictionTestCase):
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         ship_item.attributes = {Attribute.is_capital_size: 1.0}
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -127,10 +140,13 @@ class TestCapitalItem(RestrictionTestCase):
         ship_eve_type = self.ch.type(type_id=2)
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -142,20 +158,11 @@ class TestCapitalItem(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3500})
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_item(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
-        self.assertEqual(len(self.log), 0)
-        self.assert_restriction_buffers_empty()
-
-    def test_pass_subcap_item_other_domain(self):
-        # Check that non-ship items are not affected
-        # by restriction
-        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
-        item = self.make_item_mock(Ship, ship_eve_type)
-        self.add_item(item)
-        restriction_error = self.get_restriction_error(item, Restriction.capital_item)
-        self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -169,8 +176,11 @@ class TestCapitalItem(RestrictionTestCase):
         ship_eve_type = self.ch.type(type_id=2)
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -184,8 +194,11 @@ class TestCapitalItem(RestrictionTestCase):
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: 1.0})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -200,8 +213,28 @@ class TestCapitalItem(RestrictionTestCase):
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.is_capital_size: -0.00001})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
+        self.remove_item(item)
+        self.set_ship(None)
+        self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
+
+    def test_pass_non_module(self):
+        eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
+        item = self.make_item_mock(Rig, eve_type, state=State.offline)
+        self.add_item(item)
+        ship_eve_type = self.ch.type(type_id=2)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
+        # Action
+        restriction_error = self.get_restriction_error(item, Restriction.capital_item)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)

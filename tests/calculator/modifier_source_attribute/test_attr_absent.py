@@ -57,7 +57,7 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         # Invalid source value shouldn't screw whole calculation process
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
         self.assertEqual(len(self.log), 1)
@@ -65,6 +65,6 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on eve type 1')
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)

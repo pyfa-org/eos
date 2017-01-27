@@ -56,14 +56,14 @@ class TestTargetAttribute(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(item.attributes[tgt_attr1.id], 60)
         # Second should be modified by modifier2
         self.assertAlmostEqual(item.attributes[tgt_attr2.id], 96)
         # Third should stay unmodified
         self.assertAlmostEqual(item.attributes[tgt_attr3.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

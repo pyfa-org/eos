@@ -21,7 +21,7 @@
 
 from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.item import ModuleHigh, Drone
+from eos.fit.item import ModuleHigh, Rig
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
@@ -36,16 +36,21 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.add_item(item1)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_item(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.max_group, 1)
         self.assertEqual(restriction_error1.item_group, 6)
         self.assertEqual(restriction_error1.group_items, 2)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.max_group, 1)
         self.assertEqual(restriction_error2.item_group, 6)
         self.assertEqual(restriction_error2.group_items, 2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -60,13 +65,18 @@ class TestMaxGroupFitted(RestrictionTestCase):
         eve_type2 = self.ch.type(type_id=2, group=92, attributes={Attribute.max_group_fitted: 2})
         item2 = self.make_item_mock(ModuleHigh, eve_type2, state=State.offline)
         self.add_item(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.max_group, 1)
         self.assertEqual(restriction_error1.item_group, 92)
         self.assertEqual(restriction_error1.group_items, 2)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -82,13 +92,18 @@ class TestMaxGroupFitted(RestrictionTestCase):
         item2 = self.make_item_mock(ModuleHigh, eve_type2, state=State.offline)
         item2.attributes = {Attribute.max_group_fitted: 1}
         self.add_item(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.max_group, 1)
         self.assertEqual(restriction_error1.item_group, 61)
         self.assertEqual(restriction_error1.group_items, 2)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -102,10 +117,15 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.add_item(item1)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_item(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -118,26 +138,35 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.add_item(item1)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_item(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_pass_item_non_ship(self):
-        # Items not belonging to ship shouldn't be affected
+    def test_pass_item_non_module(self):
         eve_type = self.ch.type(type_id=1, group=12, attributes={Attribute.max_group_fitted: 1})
-        item1 = self.make_item_mock(Drone, eve_type)
+        item1 = self.make_item_mock(Rig, eve_type)
         self.add_item(item1)
-        item2 = self.make_item_mock(Drone, eve_type)
+        item2 = self.make_item_mock(Rig, eve_type)
         self.add_item(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(item1, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(item2, Restriction.max_group_fitted)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)

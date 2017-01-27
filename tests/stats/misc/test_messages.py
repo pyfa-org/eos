@@ -38,9 +38,9 @@ class TestMessages(StatTestCase):
         item.attributes = {Attribute.upgrade_cost: 33}
         # Action
         self.ss._notify(ItemAdded(item))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.calibration.used, 33)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -52,9 +52,9 @@ class TestMessages(StatTestCase):
         item.attributes = {Attribute.cpu: 35}
         # Action
         self.ss._notify(ItemAdded(item))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 35)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -66,9 +66,9 @@ class TestMessages(StatTestCase):
         item.attributes = {Attribute.cpu: 35}
         # Action
         self.ss._notify(ItemAdded(item))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 0)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -81,9 +81,9 @@ class TestMessages(StatTestCase):
         self.ss._notify(ItemAdded(item))
         # Action
         self.ss._notify(ItemRemoved(item))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.calibration.used, 0)
-        # Misc
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -95,9 +95,9 @@ class TestMessages(StatTestCase):
         self.ss._notify(ItemAdded(item))
         # Action
         self.ss._notify(ItemRemoved(item))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 0)
-        # Misc
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -110,9 +110,9 @@ class TestMessages(StatTestCase):
         # Action
         self.ss._notify(ItemStateChanged(item, State.offline, State.online))
         item.state = State.online
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 35)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -128,9 +128,9 @@ class TestMessages(StatTestCase):
         # Action
         self.ss._notify(ItemStateChanged(item, State.online, State.offline))
         item.state = State.offline
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 0)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -146,9 +146,9 @@ class TestMessages(StatTestCase):
         # Action
         self.ss._notify(ItemAdded(item))
         self.ss._notify(EnableServices(items=(item,)))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 35)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -161,9 +161,9 @@ class TestMessages(StatTestCase):
         self.ss._notify(ItemAdded(item))
         # Action
         self.ss._notify(DisableServices(items=(item,)))
-        # Checks
+        # Verification
         self.assertEqual(self.ss.cpu.used, 0)
-        # Misc
+        # Cleanup
         self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

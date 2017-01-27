@@ -43,9 +43,9 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.ship = None
-        # Checks
+        # Verification
         self.assertIsNone(fit.ship)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item(self):
@@ -55,10 +55,10 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.ship = item
-        # Checks
+        # Verification
         self.assertIs(fit.ship, item)
         self.assertIs(item._fit, fit)
-        # Misc
+        # Cleanup
         fit.ship = None
         self.assertIsNone(fit.ship)
         self.assert_fit_buffers_empty(fit)
@@ -69,10 +69,10 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.__setattr__, 'ship', item)
-        # Checks
+        # Verification
         self.assertIsNone(fit.ship)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item_value_failure(self):
@@ -83,11 +83,11 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.__setattr__, 'ship', item)
-        # Checks
+        # Verification
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, item)
         self.assertIs(item._fit, fit_other)
-        # Misc
+        # Cleanup
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
@@ -100,11 +100,11 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.ship = item2
-        # Checks
+        # Verification
         self.assertIs(fit.ship, item2)
         self.assertIsNone(item1._fit)
         self.assertIs(item2._fit, fit)
-        # Misc
+        # Cleanup
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
@@ -116,11 +116,11 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.__setattr__, 'ship', item2)
-        # Checks
+        # Verification
         self.assertIs(fit.ship, item1)
         self.assertIs(item1._fit, fit)
         self.assertIsNone(item2._fit)
-        # Misc
+        # Cleanup
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
@@ -134,12 +134,12 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.__setattr__, 'ship', item2)
-        # Checks
+        # Verification
         self.assertIs(fit.ship, item1)
         self.assertIs(fit_other.ship, item2)
         self.assertIs(item1._fit, fit)
         self.assertIs(item2._fit, fit_other)
-        # Misc
+        # Cleanup
         fit.ship = None
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
@@ -152,8 +152,8 @@ class TestDirectItemShip(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.ship = None
-        # Checks
+        # Verification
         self.assertIsNone(fit.ship)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)

@@ -53,13 +53,13 @@ class TestModDomainDomainSelf(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.ship = self.influence_source
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
         self.fit.ship = None
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -69,13 +69,13 @@ class TestModDomainDomainSelf(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.character = self.influence_source
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
         self.fit.character = None
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -86,7 +86,7 @@ class TestModDomainDomainSelf(CalculatorTestCase):
         # calculator won't know that source is 'owner' of some domain
         # and will log corresponding error
         self.fit.items.add(self.influence_source)
-        # Checks
+        # Verification
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
@@ -96,6 +96,6 @@ class TestModDomainDomainSelf(CalculatorTestCase):
             'malformed modifier on eve type 1061: invalid reference '
             'to self for filtered modification'
         )
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.influence_source)
         self.assert_calculator_buffers_empty(self.fit)

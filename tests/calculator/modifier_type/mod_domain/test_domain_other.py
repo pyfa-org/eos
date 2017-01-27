@@ -50,7 +50,7 @@ class TestModDomainDomainOther(CalculatorTestCase):
         # Charge's container or module's charge can't be 'owner'
         # of other items, thus such modification type is unsupported
         self.fit.items.add(influence_source)
-        # Checks
+        # Verification
         self.assertEqual(len(self.log), 2)
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
@@ -60,6 +60,6 @@ class TestModDomainDomainOther(CalculatorTestCase):
                 'malformed modifier on eve type 90: unsupported target domain '
                 '{} for filtered modification'.format(ModifierDomain.other)
             )
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source)
         self.assert_calculator_buffers_empty(self.fit)

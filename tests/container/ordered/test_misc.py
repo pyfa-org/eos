@@ -106,11 +106,11 @@ class TestContainerOrderedMisc(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.clear()
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item1._fit)
         self.assertIsNone(item2._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 

@@ -57,9 +57,9 @@ class TestModItemAwaitingDomainOther(CalculatorTestCase):
         influence_source.charge = influence_target
         influence_target.container = influence_source
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_target)
         influence_target.container = None
         influence_source.charge = None
@@ -82,9 +82,9 @@ class TestModItemAwaitingDomainOther(CalculatorTestCase):
         influence_source.container = influence_target
         influence_target.charge = influence_source
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_target)
         influence_target.charge = None
         influence_source.container = None

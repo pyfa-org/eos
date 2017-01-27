@@ -51,9 +51,9 @@ class TestModDomainSkillrqDomainTarget(CalculatorTestCase):
         self.fit.items.add(influence_target)
         # Action
         self.fit.items.add(influence_source)
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source)
         self.fit.items.remove(influence_target)
         self.assertEqual(len(self.log), 0)

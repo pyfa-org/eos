@@ -21,14 +21,16 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, ModifierDomain
+from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
 from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 # Items of volume bigger than this are considered as capital
 MAX_SUBCAP_VOLUME = 3500
+TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
 CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('item_volume', 'max_subcap_volume'))
@@ -41,7 +43,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     have IsCapitalShip attribute set to 1.
 
     Details:
-    Only items belonging to ship are tracked.
+    Only modules are tracked.
     For validation, eve type volume value is taken. If
     volume attribute is absent, item is not restricted.
     """
@@ -52,8 +54,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         self.__capital_items = set()
 
     def register_item(self, item):
-        # Ignore items which do not belong to ship
-        if item._parent_modifier_domain != ModifierDomain.ship:
+        if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
         # Ignore items with no volume attribute and items with
         # volume which satisfies us regardless of ship type

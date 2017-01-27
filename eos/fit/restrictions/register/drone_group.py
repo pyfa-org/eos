@@ -46,9 +46,9 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
     Details:
     Only items of Drone class are tracked.
     For validation, allowedDroneGroupX attribute values of eve type
-    are taken.
+        are taken.
     Validation fails if ship's eve type has any restriction attribute,
-    and drone group doesn't match to restriction.
+        and drone group doesn't match to restriction.
     """
 
     def __init__(self, fit):

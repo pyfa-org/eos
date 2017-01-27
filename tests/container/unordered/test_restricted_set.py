@@ -44,9 +44,9 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, None)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -56,12 +56,12 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.add(item)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(fit.container[1], item)
         self.assertIn(item, fit.container)
         self.assertIs(item._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -72,10 +72,10 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.add, item)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -87,13 +87,13 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.add, item)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertEqual(len(fit_other.container), 1)
         self.assertIs(fit_other.container[1], item)
         self.assertIn(item, fit_other.container)
         self.assertIs(item._fit, fit_other)
-        # Misc
+        # Cleanup
         fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -108,13 +108,13 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.add, item2)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(fit.container[1], item1)
         self.assertIn(item1, fit.container)
         self.assertIs(item1._fit, fit)
         self.assertIsNone(item2._fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -126,10 +126,10 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.remove(item)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -139,10 +139,10 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(KeyError, fit.container.remove, item)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -153,10 +153,10 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             del fit.container[1]
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -167,10 +167,10 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(KeyError, fit.container.__delitem__, 3)
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(item._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -184,10 +184,10 @@ class TestContainerRestrictedSet(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.clear()
-        # Checks
+        # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item1._fit)
         self.assertIsNone(item2._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)

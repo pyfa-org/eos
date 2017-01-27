@@ -38,11 +38,11 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(RefreshSource())
-        # Checks
+        # Verification
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_carrier_inheritable(self):
@@ -53,11 +53,11 @@ class TestVolatileData(FitTestCase):
         item_calls_before = len(item.mock_calls)
         # Action
         fit._publish(RefreshSource())
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -69,11 +69,11 @@ class TestVolatileData(FitTestCase):
         item_calls_before = len(item.mock_calls)
         # Action
         fit._publish(RefreshSource())
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -87,14 +87,14 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(ItemAdded(item_other))
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         fit._publish(ItemRemoved(item_other))
         self.assert_fit_buffers_empty(fit)
@@ -110,14 +110,14 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(ItemRemoved(item_other))
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -130,14 +130,14 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(ItemStateChanged(None, None, None))
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -150,14 +150,14 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(EffectsEnabled(None, None))
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -170,14 +170,14 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(EffectsDisabled(None, None))
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -190,14 +190,14 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(AttrValueChangedOverride(None, None))
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
@@ -210,13 +210,13 @@ class TestVolatileData(FitTestCase):
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(RefreshSource())
-        # Checks
+        # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
         self.assertEqual(item_calls_after - item_calls_before, 1)
         self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
-        # Misc
+        # Cleanup
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)

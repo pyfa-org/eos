@@ -47,7 +47,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.place(3, item2)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 4)
         self.assertIs(fit.container[0], item1)
         self.assertIsNone(fit.container[1])
@@ -55,7 +55,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(fit.container[3], item2)
         self.assertIs(item1._fit, fit)
         self.assertIs(item2._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         fit.container.remove(item2)
         self.assert_fit_buffers_empty(fit)
@@ -68,11 +68,11 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 3, None)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item)
         self.assertIs(item._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -87,7 +87,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             fit.container.place(1, item3)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 4)
         self.assertIs(fit.container[0], item1)
         self.assertIs(fit.container[1], item3)
@@ -96,7 +96,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(item1._fit, fit)
         self.assertIs(item2._fit, fit)
         self.assertIs(item3._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         fit.container.remove(item2)
         fit.container.remove(item3)
@@ -112,7 +112,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 1, None)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 4)
         self.assertIs(fit.container[0], item1)
         self.assertIsNone(fit.container[1])
@@ -120,7 +120,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(fit.container[3], item2)
         self.assertIs(item1._fit, fit)
         self.assertIs(item2._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         fit.container.remove(item2)
         self.assert_fit_buffers_empty(fit)
@@ -134,12 +134,12 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(SlotTakenError, fit.container.place, 0, item2)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
         self.assertIs(item1._fit, fit)
         self.assertIsNone(item2._fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -151,11 +151,11 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 0, None)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item)
         self.assertIs(item._fit, fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -166,10 +166,10 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 2, item)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item._fit)
-        # Misc
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
 
@@ -181,12 +181,12 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.place, 2, item)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIs(len(fit_other.container), 1)
         self.assertIs(fit_other.container[0], item)
         self.assertIs(item._fit, fit_other)
-        # Misc
+        # Cleanup
         fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -201,13 +201,13 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(TypeError, fit.container.place, 0, item2)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 2)
         self.assertIsNone(fit.container[0])
         self.assertIs(fit.container[1], item1)
         self.assertIs(item1._fit, fit)
         self.assertIsNone(item2._fit)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         self.assert_fit_buffers_empty(fit)
         self.assert_object_buffers_empty(fit.container)
@@ -222,7 +222,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Action
         with self.fit_assertions(fit):
             self.assertRaises(ValueError, fit.container.place, 0, item2)
-        # Checks
+        # Verification
         self.assertIs(len(fit.container), 2)
         self.assertIsNone(fit.container[0])
         self.assertIs(fit.container[1], item1)
@@ -230,7 +230,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(fit_other.container[0], item2)
         self.assertIs(item1._fit, fit)
         self.assertIs(item2._fit, fit_other)
-        # Misc
+        # Cleanup
         fit.container.remove(item1)
         fit_other.container.remove(item2)
         self.assert_fit_buffers_empty(fit)

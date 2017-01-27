@@ -75,9 +75,9 @@ class TestEffectToggling(CalculatorTestCase):
         # Action
         self.item._disabled_effects.add(self.effect1.id)
         self.fit._calculator._notify(EffectsDisabled(self.item, (self.effect1.id,)))
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -91,9 +91,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.fit._calculator._notify(EffectsDisabled(
             self.item, (self.effect1.id, self.effect2.id, self.effect_active.id)
         ))
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -106,9 +106,9 @@ class TestEffectToggling(CalculatorTestCase):
         # Action
         self.fit._calculator._notify(EffectsEnabled(self.item, (self.effect1.id,)))
         self.item._disabled_effects.discard(self.effect1.id)
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -123,9 +123,9 @@ class TestEffectToggling(CalculatorTestCase):
             self.item, (self.effect1.id, self.effect2.id, self.effect_active.id)
         ))
         self.item._disabled_effects.difference_update((self.effect1.id, self.effect2.id, self.effect_active.id))
-        # Checks
+        # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
-        # Misc
+        # Cleanup
         self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

@@ -161,10 +161,10 @@ class TestOperatorForcedValue(CalculatorTestCase):
         influence_target = ShipDomainItem(self.ch.type(type_id=10, attributes={tgt_attr.id: 100}))
         # Action
         self.fit.items.add(influence_target)
-        # Checks
+        # Verification
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 68)
-        # Misc
+        # Cleanup
         self.fit.items.remove(influence_source_pre_ass)
         self.fit.items.remove(influence_source_pre_mul)
         self.fit.items.remove(influence_source_pre_div)

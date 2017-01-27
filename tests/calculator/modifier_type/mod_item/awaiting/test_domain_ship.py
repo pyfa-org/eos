@@ -51,9 +51,9 @@ class TestModItemAwaitingDomainShip(CalculatorTestCase):
         # Here we add influence target after adding source, to make sure
         # modifiers wait for target to appear, and then are applied onto it
         self.fit.ship = influence_target
-        # Checks
+        # Verification
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.ship = None
         self.fit.items.remove(influence_source)
         self.assertEqual(len(self.log), 0)

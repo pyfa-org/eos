@@ -47,7 +47,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.mixin.set_side_effect_status(555, False)
         self.mixin._eve_type.effects = (effect1, effect2, effect3)
         self.mixin.attributes = {2: 0.5, 55: 0.1}
-        # Checks
+        # Verification
         side_effects = self.mixin.side_effects
         self.assertEqual(len(side_effects), 2)
         self.assertIn(22, side_effects)
@@ -84,11 +84,11 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.mixin.attributes = {2: 0.5, 55: 0.1}
         # Action
         self.mixin._eve_type.effects = (effect2_repl, effect3)
-        # Checks
+        # Verification
         side_effects = self.mixin.side_effects
         # Action
         self.mixin._eve_type.effects = (effect1, effect2, effect3)
-        # Checks
+        # Verification
         side_effects = self.mixin.side_effects
         self.assertEqual(len(side_effects), 2)
         self.assertIn(22, side_effects)
@@ -109,7 +109,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(5, False)
-        # Checks
+        # Verification
         fit_calls_after = len(fit_mock.mock_calls)
         self.assertEqual(fit_calls_after - fit_calls_before, 1)
         fit_call_name, fit_call_args, fit_call_kwargs = fit_mock.mock_calls[-1]
@@ -123,7 +123,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(5, False)
-        # Checks
+        # Verification
         fit_calls_after = len(fit_mock.mock_calls)
         self.assertEqual(fit_calls_after - fit_calls_before, 0)
 
@@ -141,7 +141,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(11, True)
-        # Checks
+        # Verification
         fit_calls_after = len(fit_mock.mock_calls)
         self.assertEqual(fit_calls_after - fit_calls_before, 1)
         fit_call_name, fit_call_args, fit_call_kwargs = fit_mock.mock_calls[-1]
@@ -155,7 +155,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
         self.mixin.set_side_effect_status(11, True)
-        # Checks
+        # Verification
         fit_calls_after = len(fit_mock.mock_calls)
         self.assertEqual(fit_calls_after - fit_calls_before, 0)
 

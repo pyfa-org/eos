@@ -21,11 +21,15 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, ModifierDomain
+from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
 from eos.util.keyed_set import KeyedSet
 from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
+
+
+TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
 MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('item_group', 'max_group', 'group_items'))
@@ -34,8 +38,8 @@ MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('item_group', 'max_group', 
 class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
-    registers, which track maximum number of belonging to
-    ship items in certain state on per-group basis.
+    registers, which track maximum number of modules in
+    certain state on per-group basis.
     """
 
     def __init__(self, max_group_attr, restriction_type):
@@ -53,8 +57,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         self.__group_restricted = set()
 
     def register_item(self, item):
-        # Ignore items which do not belong to ship
-        if item._parent_modifier_domain != ModifierDomain.ship:
+        if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
         group = item._eve_type.group
         # Ignore items, whose eve type isn't assigned
@@ -111,7 +114,7 @@ class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
     else item with such restriction is tainted.
 
     Details:
-    Only items belonging to ship are tracked.
+    Only modules are tracked.
     For validation, modified value of restriction attribute is taken.
     """
 
@@ -127,7 +130,7 @@ class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
     else item with such restriction is tainted.
 
     Details:
-    Only items belonging to ship are tracked.
+    Only modules are tracked.
     For validation, modified value of restriction attribute is taken.
     """
 
@@ -143,7 +146,7 @@ class MaxGroupActiveRegister(MaxGroupRestrictionRegister):
     else item with such restriction is tainted.
 
     Details:
-    Only items belonging to ship are tracked.
+    Only modules are tracked.
     For validation, modified value of restriction attribute is taken.
     """
 

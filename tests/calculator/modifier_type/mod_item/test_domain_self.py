@@ -49,9 +49,9 @@ class TestModItemDomainSelf(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -63,9 +63,9 @@ class TestModItemDomainSelf(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -77,9 +77,9 @@ class TestModItemDomainSelf(CalculatorTestCase):
         ))
         # Action
         self.fit.items.add(item)
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -91,9 +91,9 @@ class TestModItemDomainSelf(CalculatorTestCase):
         ))
         # Action
         self.fit.character = item
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
-        # Misc
+        # Cleanup
         self.fit.character = None
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
@@ -111,9 +111,9 @@ class TestModItemDomainSelf(CalculatorTestCase):
         self.fit.items.add(item)
         # Action
         self.fit.character = influence_source
-        # Checks
+        # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 100)
-        # Misc
+        # Cleanup
         self.fit.character = None
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
