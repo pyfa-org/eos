@@ -173,8 +173,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_pass_item_non_module(self):
-        # Items not belonging to ship shouldn't be affected
+    def test_pass_item_other_class(self):
         eve_type = self.ch.type(type_id=1, group=12, attributes={Attribute.max_group_active: 1})
         item1 = self.make_item_mock(Rig, eve_type, state=State.active)
         self.add_item(item1)

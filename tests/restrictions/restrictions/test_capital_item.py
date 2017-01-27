@@ -223,7 +223,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_pass_non_module(self):
+    def test_pass_item_other_class(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         item = self.make_item_mock(Rig, eve_type, state=State.offline)
         self.add_item(item)

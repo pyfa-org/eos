@@ -46,11 +46,11 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         self.__enabled = False
         self._fit = fit
         # Initialize registers
-        cpu_reg = CpuUseRegister(fit)
-        powergrid_reg = PowerGridUseRegister(fit)
-        calibration_reg = CalibrationUseRegister(fit)
-        dronebay_reg = DroneBayVolumeUseRegister(fit)
-        drone_bandwidth_reg = DroneBandwidthUseRegister(fit)
+        cpu_reg = CpuUseRegister()
+        powergrid_reg = PowerGridUseRegister()
+        calibration_reg = CalibrationUseRegister()
+        dronebay_reg = DroneBayVolumeUseRegister()
+        drone_bandwidth_reg = DroneBandwidthUseRegister()
         turret_reg = TurretUseRegister(fit)
         launcher_reg = LauncherUseRegister(fit)
         launched_drone_reg = LaunchedDroneRegister(fit)

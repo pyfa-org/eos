@@ -173,7 +173,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_pass_item_non_module(self):
+    def test_pass_item_other_class(self):
         eve_type = self.ch.type(type_id=1, group=12, attributes={Attribute.max_group_online: 1})
         item1 = self.make_item_mock(Rig, eve_type, state=State.online)
         self.add_item(item1)

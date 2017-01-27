@@ -20,6 +20,7 @@
 
 
 from eos.const.eve import Attribute
+from eos.fit.item import Drone
 from .base import BaseStatRegister
 
 
@@ -30,8 +31,7 @@ class ResourceUseRegister(BaseStatRegister):
     resource used.
     """
 
-    def __init__(self, fit, usage_attr):
-        self._fit = fit
+    def __init__(self, usage_attr):
         self.__usage_attr = usage_attr
         self.__resource_users = set()
 
@@ -49,50 +49,44 @@ class ResourceUseRegister(BaseStatRegister):
 
 
 class CpuUseRegister(ResourceUseRegister):
-    """Calculates CPU use of passed fit."""
 
-    def __init__(self, fit):
-        ResourceUseRegister.__init__(self, fit, Attribute.cpu)
+    def __init__(self):
+        ResourceUseRegister.__init__(self, Attribute.cpu)
 
     def get_resource_use(self):
         return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class PowerGridUseRegister(ResourceUseRegister):
-    """Calculates powergrid use of passed fit."""
 
-    def __init__(self, fit):
-        ResourceUseRegister.__init__(self, fit, Attribute.power)
+    def __init__(self):
+        ResourceUseRegister.__init__(self, Attribute.power)
 
     def get_resource_use(self):
         return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class CalibrationUseRegister(ResourceUseRegister):
-    """Calculates calibration use of passed fit."""
 
-    def __init__(self, fit):
-        ResourceUseRegister.__init__(self, fit, Attribute.upgrade_cost)
+    def __init__(self):
+        ResourceUseRegister.__init__(self, Attribute.upgrade_cost)
 
 
 class DroneBayVolumeUseRegister(ResourceUseRegister):
     """
-    Calculates drone bay used on passed fit.
-
     Details:
     Only items of Drone class are tracked.
     """
 
-    def __init__(self, fit):
-        ResourceUseRegister.__init__(self, fit, Attribute.volume)
+    def __init__(self):
+        ResourceUseRegister.__init__(self, Attribute.volume)
 
     def register_item(self, item):
-        if item in self._fit.drones:
+        if isinstance(item, Drone):
             ResourceUseRegister.register_item(self, item)
 
 
 class DroneBandwidthUseRegister(ResourceUseRegister):
-    """Calculates drone bandwidth use of passed fit."""
 
-    def __init__(self, fit):
-        ResourceUseRegister.__init__(self, fit, Attribute.drone_bandwidth_used)
+    def __init__(self):
+        ResourceUseRegister.__init__(self, Attribute.drone_bandwidth_used)

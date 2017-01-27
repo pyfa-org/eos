@@ -301,7 +301,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_pass_item_non_module(self):
+    def test_pass_item_other_class(self):
         ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_item = self.make_item_mock(Rig, ship_eve_type)
         self.set_ship(ship_item)

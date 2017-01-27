@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.item import Drone, Ship
+from eos.fit.item import Charge, Drone, Ship
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -34,14 +34,18 @@ class TestDroneBayVolume(StatTestCase):
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         ship_item.attributes = {Attribute.drone_capacity: 50}
         self.set_ship(ship_item)
+        # Verification
         self.assertEqual(self.ss.dronebay.output, 50)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_output_no_ship(self):
         # None for output when no ship
+        # Verification
         self.assertIsNone(self.ss.dronebay.output)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -51,7 +55,9 @@ class TestDroneBayVolume(StatTestCase):
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         ship_item.attributes = {}
         self.set_ship(ship_item)
+        # Verification
         self.assertIsNone(self.ss.dronebay.output)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -60,9 +66,10 @@ class TestDroneBayVolume(StatTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item = self.make_item_mock(Drone, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 55.5555555555}
-        self.fit.drones.add(item)
         self.add_item(item)
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 55.5555555555)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -71,13 +78,13 @@ class TestDroneBayVolume(StatTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 50}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: 30}
-        self.fit.drones.add(item2)
         self.add_item(item2)
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 80)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
@@ -87,31 +94,34 @@ class TestDroneBayVolume(StatTestCase):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 50}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: -30}
-        self.fit.drones.add(item2)
         self.add_item(item2)
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 20)
+        # Cleanup
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_none(self):
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_other_class(self):
-        # Make sure items placed to other containers are unaffected
+        # Make sure non-drones are unaffected
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item = self.make_item_mock(Charge, eve_type, state=State.offline)
         item.attributes = {Attribute.volume: 30}
-        self.fit.rigs.add(item)
         self.add_item(item)
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 0)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
@@ -124,18 +134,19 @@ class TestDroneBayVolume(StatTestCase):
         eve_type = self.ch.type(type_id=2, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 50}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: 30}
-        self.fit.drones.add(item2)
         self.add_item(item2)
         self.assertEqual(self.ss.dronebay.used, 80)
         self.assertEqual(self.ss.dronebay.output, 50)
+        # Action
         item1.attributes[Attribute.volume] = 10
         ship_item.attributes[Attribute.drone_capacity] = 60
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 80)
         self.assertEqual(self.ss.dronebay.output, 50)
+        # Cleanup
         self.set_ship(None)
         self.remove_item(item1)
         self.remove_item(item2)
@@ -150,19 +161,20 @@ class TestDroneBayVolume(StatTestCase):
         eve_type = self.ch.type(type_id=2, attributes={Attribute.volume: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item1.attributes = {Attribute.volume: 50}
-        self.fit.drones.add(item1)
         self.add_item(item1)
         item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
         item2.attributes = {Attribute.volume: 30}
-        self.fit.drones.add(item2)
         self.add_item(item2)
         self.assertEqual(self.ss.dronebay.used, 80)
         self.assertEqual(self.ss.dronebay.output, 50)
         item1.attributes[Attribute.volume] = 10
         ship_item.attributes[Attribute.drone_capacity] = 60
+        # Action
         self.ss._clear_volatile_attrs()
+        # Verification
         self.assertEqual(self.ss.dronebay.used, 40)
         self.assertEqual(self.ss.dronebay.output, 60)
+        # Cleanup
         self.set_ship(None)
         self.remove_item(item1)
         self.remove_item(item2)
