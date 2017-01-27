@@ -84,19 +84,6 @@ class TestModItemDomainSelf(CalculatorTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_space(self):
-        item = OwnModItem(self.ch.type(
-            type_id=1, effects=(self.effect,),
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
-        ))
-        # Action
-        self.fit.items.add(item)
-        # Checks
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
-        # Misc
-        self.fit.items.remove(item)
-        self.assertEqual(len(self.log), 0)
-        self.assert_calculator_buffers_empty(self.fit)
 
     def test_positioned(self):
         item = IndependentItem(self.ch.type(
