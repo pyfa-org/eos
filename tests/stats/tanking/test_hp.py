@@ -30,12 +30,12 @@ class TestHp(StatTestCase):
     def test_relay(self):
         # Check that stats service relays hp stats properly
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.hp.hull = 50
-        ship_holder.hp.armor = 60
-        ship_holder.hp.shield = 70
-        ship_holder.hp.total = 80
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.hp.hull = 50
+        ship_item.hp.armor = 60
+        ship_item.hp.shield = 70
+        ship_item.hp.total = 80
+        self.set_ship(ship_item)
         self.assertEqual(self.ss.hp.hull, 50)
         self.assertEqual(self.ss.hp.armor, 60)
         self.assertEqual(self.ss.hp.shield, 70)
@@ -55,14 +55,14 @@ class TestHp(StatTestCase):
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        self.set_ship(ship_holder)
-        ship_holder.hp = Mock(hull=50, armor=60, shield=70, total=80)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
+        ship_item.hp = Mock(hull=50, armor=60, shield=70, total=80)
         self.assertEqual(self.ss.hp.hull, 50)
         self.assertEqual(self.ss.hp.armor, 60)
         self.assertEqual(self.ss.hp.shield, 70)
         self.assertEqual(self.ss.hp.total, 80)
-        ship_holder.hp = Mock(hull=150, armor=160, shield=170, total=180)
+        ship_item.hp = Mock(hull=150, armor=160, shield=170, total=180)
         self.assertEqual(self.ss.hp.hull, 50)
         self.assertEqual(self.ss.hp.armor, 60)
         self.assertEqual(self.ss.hp.shield, 70)
@@ -73,14 +73,14 @@ class TestHp(StatTestCase):
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        self.set_ship(ship_holder)
-        ship_holder.hp = Mock(hull=50, armor=60, shield=70, total=80)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
+        ship_item.hp = Mock(hull=50, armor=60, shield=70, total=80)
         self.assertEqual(self.ss.hp.hull, 50)
         self.assertEqual(self.ss.hp.armor, 60)
         self.assertEqual(self.ss.hp.shield, 70)
         self.assertEqual(self.ss.hp.total, 80)
-        ship_holder.hp = Mock(hull=150, armor=160, shield=170, total=180)
+        ship_item.hp = Mock(hull=150, armor=160, shield=170, total=180)
         self.ss._clear_volatile_attrs()
         self.assertEqual(self.ss.hp.hull, 150)
         self.assertEqual(self.ss.hp.armor, 160)

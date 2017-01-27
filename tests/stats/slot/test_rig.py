@@ -30,9 +30,9 @@ class TestRig(StatTestCase):
     def test_output(self):
         # Check that modified attribute of ship is used
         ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.rig_slots: 2})
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {Attribute.rig_slots: 6}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {Attribute.rig_slots: 6}
+        self.set_ship(ship_item)
         self.assertEqual(self.ss.rig_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -47,9 +47,9 @@ class TestRig(StatTestCase):
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {}
+        self.set_ship(ship_item)
         self.assertIsNone(self.ss.rig_slots.total)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -62,36 +62,36 @@ class TestRig(StatTestCase):
 
     def test_use_multiple(self):
         eve_type = self.ch.type(type_id=1, attributes={})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.rigs.add(holder1)
-        self.fit.rigs.add(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
         self.assertEqual(self.ss.rig_slots.used, 2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_other_container(self):
         eve_type = self.ch.type(type_id=1, attributes={})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.subsystems.add(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.subsystems.add(item)
         self.assertEqual(self.ss.rig_slots.used, 0)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {Attribute.rig_slots: 6}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {Attribute.rig_slots: 6}
+        self.set_ship(ship_item)
         eve_type = self.ch.type(type_id=2, attributes={})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.rigs.add(holder1)
-        self.fit.rigs.add(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
         self.assertEqual(self.ss.rig_slots.used, 2)
         self.assertEqual(self.ss.rig_slots.total, 6)
-        ship_holder.attributes[Attribute.rig_slots] = 4
-        self.fit.rigs.remove(holder1)
+        ship_item.attributes[Attribute.rig_slots] = 4
+        self.fit.rigs.remove(item1)
         self.assertEqual(self.ss.rig_slots.used, 2)
         self.assertEqual(self.ss.rig_slots.total, 6)
         self.set_ship(None)
@@ -100,18 +100,18 @@ class TestRig(StatTestCase):
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {Attribute.rig_slots: 6}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {Attribute.rig_slots: 6}
+        self.set_ship(ship_item)
         eve_type = self.ch.type(type_id=2, attributes={})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.rigs.add(holder1)
-        self.fit.rigs.add(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
         self.assertEqual(self.ss.rig_slots.used, 2)
         self.assertEqual(self.ss.rig_slots.total, 6)
-        ship_holder.attributes[Attribute.rig_slots] = 4
-        self.fit.rigs.remove(holder1)
+        ship_item.attributes[Attribute.rig_slots] = 4
+        self.fit.rigs.remove(item1)
         self.ss._clear_volatile_attrs()
         self.assertEqual(self.ss.rig_slots.used, 1)
         self.assertEqual(self.ss.rig_slots.total, 4)

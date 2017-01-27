@@ -23,24 +23,24 @@ from unittest.mock import Mock
 
 from eos.const.eos import State, ModifierDomain
 from eos.fit.calculator import CalculationService, MutableAttributeMap
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices
+from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices
 
 
-class HolderContainer:
+class ItemContainer:
 
     def __init__(self, fit):
         self.__fit = fit
         self.__set = set()
 
-    def add(self, holder):
-        self.__set.add(holder)
-        holder._fit = self.__fit
-        self.__fit._calculator._notify(HolderAdded(holder))
+    def add(self, item):
+        self.__set.add(item)
+        item._fit = self.__fit
+        self.__fit._calculator._notify(ItemAdded(item))
 
-    def remove(self, holder):
-        self.__fit._calculator._notify(HolderRemoved(holder))
-        holder._fit = None
-        self.__set.remove(holder)
+    def remove(self, item):
+        self.__fit._calculator._notify(ItemRemoved(item))
+        item._fit = None
+        self.__set.remove(item)
 
     def __len__(self):
         return len(self.__set)
@@ -57,10 +57,10 @@ class Fit:
     def __init__(self, cache_handler, msgstore_filter=None):
         self.source = Source(cache_handler)
         self._calculator = CalculationService(self)
-        self._calculator._notify(EnableServices(holders=()))
+        self._calculator._notify(EnableServices(items=()))
         self.__ship = None
         self.__character = None
-        self.items = HolderContainer(self)
+        self.items = ItemContainer(self)
         self.__msgstore_filter = msgstore_filter
         self.message_store = []
 
@@ -72,12 +72,12 @@ class Fit:
     def ship(self, new_ship):
         old_ship = self.__ship
         if old_ship is not None:
-            self._calculator._notify(HolderRemoved(old_ship))
+            self._calculator._notify(ItemRemoved(old_ship))
             old_ship._fit = None
         self.__ship = new_ship
         if new_ship is not None:
             new_ship._fit = self
-            self._calculator._notify(HolderAdded(new_ship))
+            self._calculator._notify(ItemAdded(new_ship))
 
     @property
     def character(self):
@@ -87,12 +87,12 @@ class Fit:
     def character(self, new_char):
         old_char = self.__character
         if old_char is not None:
-            self._calculator._notify(HolderRemoved(old_char))
+            self._calculator._notify(ItemRemoved(old_char))
             old_char._fit = None
         self.__character = new_char
         if new_char is not None:
             new_char._fit = self
-            self._calculator._notify(HolderAdded(new_char))
+            self._calculator._notify(ItemAdded(new_char))
 
     def _publish(self, message):
         if self.__msgstore_filter is None or self.__msgstore_filter(message) is True:
@@ -102,7 +102,7 @@ class Fit:
     _subscribe = Mock()
 
 
-class Holder:
+class Item:
 
     def __init__(self, eve_type):
         self.__fit = None
@@ -130,14 +130,14 @@ class Holder:
         old_state = self.__state
         self.__state = new_state
         if self.__fit is not None:
-            self.__fit._calculator._notify(HolderStateChanged(self, old_state, new_state))
+            self.__fit._calculator._notify(ItemStateChanged(self, old_state, new_state))
 
     @property
     def _enabled_effects(self):
         return set(e.id for e in self._eve_type.effects).difference(self._disabled_effects)
 
 
-class IndependentItem(Holder):
+class IndependentItem(Item):
 
     @property
     def _domain(self):
@@ -148,7 +148,7 @@ class IndependentItem(Holder):
         return False
 
 
-class CharacterItem(Holder):
+class CharacterItem(Item):
 
     @property
     def _domain(self):
@@ -159,7 +159,7 @@ class CharacterItem(Holder):
         return False
 
 
-class ShipItem(Holder):
+class ShipItem(Item):
 
     @property
     def _domain(self):
@@ -170,7 +170,7 @@ class ShipItem(Holder):
         return False
 
 
-class OwnModItem(Holder):
+class OwnModItem(Item):
 
     @property
     def _domain(self):
@@ -181,14 +181,14 @@ class OwnModItem(Holder):
         return True
 
 
-class ContainerHolder(IndependentItem):
+class ContainerItem(IndependentItem):
 
     def __init__(self, eve_type):
         IndependentItem.__init__(self, eve_type)
         self.charge = None
 
 
-class ChargeHolder(IndependentItem):
+class ChargeItem(IndependentItem):
 
     def __init__(self, eve_type):
         IndependentItem.__init__(self, eve_type)

@@ -43,70 +43,70 @@ class TestModItemDomainSelf(CalculatorTestCase):
         self.effect.modifiers = (modifier,)
 
     def test_independent(self):
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_character(self):
-        holder = CharacterItem(self.ch.type(
+        item = CharacterItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_ship(self):
-        holder = ShipItem(self.ch.type(
+        item = ShipItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_space(self):
-        holder = OwnModItem(self.ch.type(
+        item = OwnModItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_positioned(self):
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
         # Action
-        self.fit.character = holder
+        self.fit.character = item
         # Checks
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Misc
         self.fit.character = None
         self.assertEqual(len(self.log), 0)
@@ -121,14 +121,14 @@ class TestModItemDomainSelf(CalculatorTestCase):
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
-        holder = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(holder)
+        item = CharacterItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        self.fit.items.add(item)
         # Action
         self.fit.character = influence_source
         # Checks
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 100)
         # Misc
         self.fit.character = None
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

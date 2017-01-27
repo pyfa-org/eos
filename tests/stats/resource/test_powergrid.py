@@ -31,9 +31,9 @@ class TestPowergrid(StatTestCase):
     def test_output(self):
         # Check that modified attribute of ship is used
         ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.power_output: 10})
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {Attribute.power_output: 50}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {Attribute.power_output: 50}
+        self.set_ship(ship_item)
         self.assertEqual(self.ss.powergrid.output, 50)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -48,9 +48,9 @@ class TestPowergrid(StatTestCase):
     def test_output_no_attr(self):
         # None for output when no attribute on ship
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {}
+        self.set_ship(ship_item)
         self.assertIsNone(self.ss.powergrid.output)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
@@ -58,49 +58,49 @@ class TestPowergrid(StatTestCase):
 
     def test_use_single_rounding_up(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.power: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder.attributes = {Attribute.power: 55.5555555555}
-        self.add_holder(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item.attributes = {Attribute.power: 55.5555555555}
+        self.add_item(item)
         self.assertEqual(self.ss.powergrid.used, 55.56)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_single_rounding_down(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.power: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder.attributes = {Attribute.power: 44.4444444444}
-        self.add_holder(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item.attributes = {Attribute.power: 44.4444444444}
+        self.add_item(item)
         self.assertEqual(self.ss.powergrid.used, 44.44)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_multiple(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.power: 0})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder1.attributes = {Attribute.power: 50}
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder2.attributes = {Attribute.power: 30}
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item1.attributes = {Attribute.power: 50}
+        self.add_item(item1)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item2.attributes = {Attribute.power: 30}
+        self.add_item(item2)
         self.assertEqual(self.ss.powergrid.used, 80)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_negative(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.power: 0})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder1.attributes = {Attribute.power: 50}
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder2.attributes = {Attribute.power: -30}
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item1.attributes = {Attribute.power: 50}
+        self.add_item(item1)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item2.attributes = {Attribute.power: -30}
+        self.add_item(item2)
         self.assertEqual(self.ss.powergrid.used, 20)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
@@ -111,77 +111,77 @@ class TestPowergrid(StatTestCase):
 
     def test_use_state(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.power: 0})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder1.attributes = {Attribute.power: 50}
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2.attributes = {Attribute.power: 30}
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item1.attributes = {Attribute.power: 50}
+        self.add_item(item1)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2.attributes = {Attribute.power: 30}
+        self.add_item(item2)
         self.assertEqual(self.ss.powergrid.used, 50)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_use_other_class_domain(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.power: 0})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder1.attributes = {Attribute.power: 50}
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(Implant, eve_type, state=State.online)
-        holder2.attributes = {Attribute.power: 30}
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item1.attributes = {Attribute.power: 50}
+        self.add_item(item1)
+        item2 = self.make_item_mock(Implant, eve_type, state=State.online)
+        item2.attributes = {Attribute.power: 30}
+        self.add_item(item2)
         self.assertEqual(self.ss.powergrid.used, 80)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.power_output: 10})
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {Attribute.power_output: 50}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {Attribute.power_output: 50}
+        self.set_ship(ship_item)
         eve_type = self.ch.type(type_id=2, attributes={Attribute.power: 0})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder1.attributes = {Attribute.power: 50}
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder2.attributes = {Attribute.power: 30}
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item1.attributes = {Attribute.power: 50}
+        self.add_item(item1)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item2.attributes = {Attribute.power: 30}
+        self.add_item(item2)
         self.assertEqual(self.ss.powergrid.used, 80)
         self.assertEqual(self.ss.powergrid.output, 50)
-        holder1.attributes[Attribute.power] = 10
-        ship_holder.attributes[Attribute.power_output] = 60
+        item1.attributes[Attribute.power] = 10
+        ship_item.attributes[Attribute.power_output] = 60
         self.assertEqual(self.ss.powergrid.used, 80)
         self.assertEqual(self.ss.powergrid.output, 50)
         self.set_ship(None)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.power_output: 10})
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.attributes = {Attribute.power_output: 50}
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.attributes = {Attribute.power_output: 50}
+        self.set_ship(ship_item)
         eve_type = self.ch.type(type_id=2, attributes={Attribute.power: 0})
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder1.attributes = {Attribute.power: 50}
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder2.attributes = {Attribute.power: 30}
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item1.attributes = {Attribute.power: 50}
+        self.add_item(item1)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item2.attributes = {Attribute.power: 30}
+        self.add_item(item2)
         self.assertEqual(self.ss.powergrid.used, 80)
         self.assertEqual(self.ss.powergrid.output, 50)
-        holder1.attributes[Attribute.power] = 10
-        ship_holder.attributes[Attribute.power_output] = 60
+        item1.attributes[Attribute.power] = 10
+        ship_item.attributes[Attribute.power_output] = 60
         self.ss._clear_volatile_attrs()
         self.assertEqual(self.ss.powergrid.used, 40)
         self.assertEqual(self.ss.powergrid.output, 60)
         self.set_ship(None)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

@@ -82,7 +82,7 @@ class TestModDomainDomainSelf(CalculatorTestCase):
 
     def test_unpositioned_error(self):
         # Action
-        # Here we do not position holder in fit, this way attribute
+        # Here we do not position item in fit, this way attribute
         # calculator won't know that source is 'owner' of some domain
         # and will log corresponding error
         self.fit.items.add(self.influence_source)

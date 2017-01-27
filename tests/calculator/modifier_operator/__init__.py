@@ -20,7 +20,7 @@
 
 
 """
-Tests in this module check that operators and holder/attribute
+Tests in this module check that operators and item/attribute
 properties associated with value calculation process are applied
-on their target holders properly.
+on their target items properly.
 """

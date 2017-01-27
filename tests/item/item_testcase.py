@@ -22,7 +22,7 @@
 from tests.eos_testcase import EosTestCase
 
 
-class HolderMixinTestCase(EosTestCase):
+class ItemMixinTestCase(EosTestCase):
     """
     Additional functionality provided:
 

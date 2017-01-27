@@ -26,8 +26,8 @@ from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, CharacterItem, ShipItem
 
 
-class TestCleanupChainRemoval(CalculatorTestCase):
-    """Check that removed item damages all attributes which were relying on its attributes"""
+class TestCleanupChainAddition(CalculatorTestCase):
+    """Check that added item damages all attributes which are now relying on its attributes"""
 
     def test_attribute(self):
         # Setup
@@ -43,30 +43,30 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         modifier1.tgt_attr = attr2.id
         effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
-        holder1 = CharacterItem(self.ch.type(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
+        item1 = CharacterItem(self.ch.type(type_id=1, effects=(effect1,), attributes={attr1.id: 5}))
         modifier2 = Modifier()
         modifier2.type = ModifierType.domain
+        modifier2.domain = ModifierDomain.ship
         modifier2.state = State.offline
         modifier2.src_attr = attr2.id
         modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = attr3.id
-        modifier2.domain = ModifierDomain.ship
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder2 = IndependentItem(self.ch.type(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
-        holder3 = ShipItem(self.ch.type(type_id=3, attributes={attr3.id: 0.5}))
-        self.fit.items.add(holder1)
-        self.fit.ship = holder2
-        self.fit.items.add(holder3)
-        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.6875)
+        item2 = IndependentItem(self.ch.type(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
+        item3 = ShipItem(self.ch.type(type_id=3, attributes={attr3.id: 0.5}))
+        self.fit.ship = item2
+        self.fit.items.add(item3)
+        self.assertAlmostEqual(item3.attributes[attr3.id], 0.5375)
         # Action
-        self.fit.items.remove(holder1)
+        self.fit.items.add(item1)
         # Checks
-        # When holder1 is removed, attr2 of holder2 and attr3 of holder3
-        # must be cleaned to allow recalculation of attr3 based on new data
-        self.assertAlmostEqual(holder3.attributes[attr3.id], 0.5375)
+        # Added item must clean all already calculated attributes
+        # which are now affected by it, to allow recalculation
+        self.assertAlmostEqual(item3.attributes[attr3.id], 0.6875)
         # Misc
+        self.fit.items.remove(item1)
         self.fit.ship = None
-        self.fit.items.remove(holder3)
+        self.fit.items.remove(item3)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

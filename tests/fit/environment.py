@@ -26,7 +26,7 @@ from eos.fit import Fit as FitBase
 from eos.util.volatile_cache import InheritableVolatileMixin
 
 
-class Holder:
+class Item:
 
     def __init__(self):
         self._fit = None

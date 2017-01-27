@@ -20,68 +20,68 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.container import HolderSet
+from eos.fit.container import ItemSet
 from eos.fit.item import ModuleHigh, Charge
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinChargeQuantity(HolderMixinTestCase):
+class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.holder = ModuleHigh(type_id=None)
-        self.holder.attributes = {}
+        self.item = ModuleHigh(type_id=None)
+        self.item.attributes = {}
         self.charge = Charge(type_id=None)
         self.charge.attributes = {}
-        self.holder.charge = self.charge
+        self.item.charge = self.charge
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.container = HolderSet(fit, ModuleHigh)
+        fit.container = ItemSet(fit, ModuleHigh)
         return fit
 
     def test_generic(self):
-        self.holder.attributes[Attribute.capacity] = 20.0
+        self.item.attributes[Attribute.capacity] = 20.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.assertEqual(self.holder.charge_quantity, 10)
+        self.assertEqual(self.item.charge_quantity, 10)
 
     def test_float_error(self):
-        self.holder.attributes[Attribute.capacity] = 2.3
+        self.item.attributes[Attribute.capacity] = 2.3
         self.charge.attributes[Attribute.volume] = 0.1
-        self.assertEqual(self.holder.charge_quantity, 23)
+        self.assertEqual(self.item.charge_quantity, 23)
 
     def test_round_down(self):
-        self.holder.attributes[Attribute.capacity] = 19.7
+        self.item.attributes[Attribute.capacity] = 19.7
         self.charge.attributes[Attribute.volume] = 2.0
-        self.assertEqual(self.holder.charge_quantity, 9)
+        self.assertEqual(self.item.charge_quantity, 9)
 
     def test_no_volume(self):
-        self.holder.attributes[Attribute.capacity] = 20.0
-        self.assertIsNone(self.holder.charge_quantity)
+        self.item.attributes[Attribute.capacity] = 20.0
+        self.assertIsNone(self.item.charge_quantity)
 
     def test_no_capacity(self):
         self.charge.attributes[Attribute.volume] = 2.0
-        self.assertIsNone(self.holder.charge_quantity)
+        self.assertIsNone(self.item.charge_quantity)
 
     def test_no_charge(self):
-        self.holder.attributes[Attribute.capacity] = 20.0
+        self.item.attributes[Attribute.capacity] = 20.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.holder.charge = None
-        self.assertIsNone(self.holder.charge_quantity)
+        self.item.charge = None
+        self.assertIsNone(self.item.charge_quantity)
 
     def test_cache(self):
-        self.holder.attributes[Attribute.capacity] = 20.0
+        self.item.attributes[Attribute.capacity] = 20.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.assertEqual(self.holder.charge_quantity, 10)
-        self.holder.attributes[Attribute.capacity] = 200.0
+        self.assertEqual(self.item.charge_quantity, 10)
+        self.item.attributes[Attribute.capacity] = 200.0
         self.charge.attributes[Attribute.volume] = 1.0
-        self.assertEqual(self.holder.charge_quantity, 10)
+        self.assertEqual(self.item.charge_quantity, 10)
 
     def test_volatility(self):
-        self.holder.attributes[Attribute.capacity] = 20.0
+        self.item.attributes[Attribute.capacity] = 20.0
         self.charge.attributes[Attribute.volume] = 2.0
-        self.assertEqual(self.holder.charge_quantity, 10)
-        self.holder._clear_volatile_attrs()
-        self.holder.attributes[Attribute.capacity] = 200.0
+        self.assertEqual(self.item.charge_quantity, 10)
+        self.item._clear_volatile_attrs()
+        self.item.attributes[Attribute.capacity] = 200.0
         self.charge.attributes[Attribute.volume] = 1.0
-        self.assertEqual(self.holder.charge_quantity, 200)
+        self.assertEqual(self.item.charge_quantity, 200)

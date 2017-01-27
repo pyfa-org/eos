@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import ChargeHolder, ContainerHolder
+from tests.calculator.environment import ChargeItem, ContainerItem
 
 
 class TestModItemAwaitingDomainOther(CalculatorTestCase):
@@ -43,12 +43,12 @@ class TestModItemAwaitingDomainOther(CalculatorTestCase):
         self.effect.modifiers = (modifier,)
 
     def test_other_container(self):
-        influence_source = ContainerHolder(self.ch.type(
+        influence_source = ContainerItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20}
         ))
         self.fit.items.add(influence_source)
-        influence_target = ChargeHolder(self.ch.type(
+        influence_target = ChargeItem(self.ch.type(
             type_id=2, attributes={self.tgt_attr.id: 100}
         ))
         # Action
@@ -68,12 +68,12 @@ class TestModItemAwaitingDomainOther(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_charge(self):
-        influence_source = ChargeHolder(self.ch.type(
+        influence_source = ChargeItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20}
         ))
         self.fit.items.add(influence_source)
-        influence_target = ContainerHolder(self.ch.type(
+        influence_target = ContainerItem(self.ch.type(
             type_id=2, attributes={self.tgt_attr.id: 100}
         ))
         # Action

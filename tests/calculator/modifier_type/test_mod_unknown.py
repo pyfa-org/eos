@@ -45,12 +45,12 @@ class TestModTypeUnknown(CalculatorTestCase):
 
     def test_log(self):
         self.effect.modifiers = (self.invalid_modifier,)
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=31, effects=(self.effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr: 100}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
         self.assertEqual(len(self.log), 2)
         for log_record in self.log:
@@ -58,7 +58,7 @@ class TestModTypeUnknown(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(log_record.msg, 'malformed modifier on eve type 31: invalid filter type 26500')
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_combination(self):
@@ -70,16 +70,16 @@ class TestModTypeUnknown(CalculatorTestCase):
         valid_modifier.operator = ModifierOperator.post_percent
         valid_modifier.tgt_attr = self.tgt_attr.id
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
         # Invalid filter type in modifier should prevent proper processing of other modifiers
-        self.assertAlmostEqual(holder.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 5)
         self.assert_calculator_buffers_empty(self.fit)

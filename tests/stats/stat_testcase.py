@@ -23,7 +23,7 @@ from itertools import chain
 from unittest.mock import Mock
 
 from eos.fit.stats import StatService
-from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices
+from eos.fit.messages import ItemAdded, ItemRemoved, EnableServices
 from tests.eos_testcase import EosTestCase
 
 
@@ -37,8 +37,8 @@ class StatTestCase(EosTestCase):
     self.set_ship -- set ship to fit which uses stats service
     self.set_character -- set character to fit which uses stats
         service
-    self.add_holder -- add holder to stats service
-    self.remove_holder -- remove holder from stats service
+    self.add_item -- add item to stats service
+    self.remove_item -- remove item from stats service
     self.assert_stat_buffers_empty -- checks if stats service
         buffers are clear
     """
@@ -55,7 +55,7 @@ class StatTestCase(EosTestCase):
         self.fit.subsystems = set()
         self.fit.drones = set()
         self.ss = StatService(self.fit)
-        self.ss._notify(EnableServices(holders=()))
+        self.ss._notify(EnableServices(items=()))
 
     def make_item_mock(self, item_class, eve_type, state=None, strict_spec=True):
         item = item_class(eve_type.id)
@@ -69,17 +69,17 @@ class StatTestCase(EosTestCase):
         }
         return Mock(**kwargs)
 
-    def set_ship(self, holder):
-        self.fit.ship = holder
+    def set_ship(self, item):
+        self.fit.ship = item
 
-    def set_character(self, holder):
-        self.fit.character = holder
+    def set_character(self, item):
+        self.fit.character = item
 
-    def add_holder(self, holder):
-        self.ss._notify(HolderAdded(holder))
+    def add_item(self, item):
+        self.ss._notify(ItemAdded(item))
 
-    def remove_holder(self, holder):
-        self.ss._notify(HolderRemoved(holder))
+    def remove_item(self, item):
+        self.ss._notify(ItemRemoved(item))
 
     def assert_stat_buffers_empty(self):
         entry_num = 0

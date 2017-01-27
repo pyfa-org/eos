@@ -23,10 +23,10 @@ from unittest.mock import Mock
 
 from eos.fit.item.mixin.side_effect import SideEffectMixin
 from eos.fit.messages import EffectsEnabled, EffectsDisabled
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinSideEffect(HolderMixinTestCase):
+class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
@@ -62,7 +62,7 @@ class TestHolderMixinSideEffect(HolderMixinTestCase):
         self.assertEqual(side_effect2.status, False)
 
     def test_persistence(self):
-        # Here we check that when holder._eve_type doesn't have effect
+        # Here we check that when item._eve_type doesn't have effect
         # which was disabled anymore, everything runs as expected, and
         # when this effect appears again - it's disabled
         # Setup
@@ -118,7 +118,7 @@ class TestHolderMixinSideEffect(HolderMixinTestCase):
         self.assertEqual(len(fit_call_kwargs), 0)
         message = fit_call_args[0]
         self.assertTrue(isinstance(message, EffectsDisabled))
-        self.assertIs(message.holder, self.mixin)
+        self.assertIs(message.item, self.mixin)
         self.assertEqual(message.effects, {5})
         fit_calls_before = len(fit_mock.mock_calls)
         # Action
@@ -150,7 +150,7 @@ class TestHolderMixinSideEffect(HolderMixinTestCase):
         self.assertEqual(len(fit_call_kwargs), 0)
         message = fit_call_args[0]
         self.assertTrue(isinstance(message, EffectsEnabled))
-        self.assertIs(message.holder, self.mixin)
+        self.assertIs(message.item, self.mixin)
         self.assertEqual(message.effects, {11})
         fit_calls_before = len(fit_mock.mock_calls)
         # Action

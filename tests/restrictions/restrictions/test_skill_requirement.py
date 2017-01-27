@@ -32,12 +32,12 @@ class TestSkillRequirement(RestrictionTestCase):
         # is not met
         eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {50: 3}
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.skill_requirement)
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 3),))
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -45,18 +45,18 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that multiple errors are shown as iterable
         eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {48: 1, 50: 5}
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.add_holder(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.add_item(item)
         skill_eve_type = self.ch.type(type_id=50)
-        skill_holder = self.make_item_mock(Skill, skill_eve_type)
-        skill_holder.level = 2
-        self.add_holder(skill_holder)
-        self.fit.skills[50] = skill_holder
-        restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
+        skill_item = self.make_item_mock(Skill, skill_eve_type)
+        skill_item.level = 2
+        self.add_item(skill_item)
+        self.fit.skills[50] = skill_item
+        restriction_error = self.get_restriction_error(item, Restriction.skill_requirement)
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, 2, 5), (48, None, 1)))
-        self.remove_holder(holder)
-        self.remove_holder(skill_holder)
+        self.remove_item(item)
+        self.remove_item(skill_item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -65,18 +65,18 @@ class TestSkillRequirement(RestrictionTestCase):
         # up in error
         eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {48: 1, 50: 5}
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.add_holder(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.add_item(item)
         skill_eve_type = self.ch.type(type_id=48)
-        skill_holder = self.make_item_mock(Skill, skill_eve_type)
-        skill_holder.level = 5
-        self.add_holder(skill_holder)
-        self.fit.skills[48] = skill_holder
-        restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
+        skill_item = self.make_item_mock(Skill, skill_eve_type)
+        skill_item.level = 5
+        self.add_item(skill_item)
+        self.fit.skills[48] = skill_item
+        restriction_error = self.get_restriction_error(item, Restriction.skill_requirement)
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 5),))
-        self.remove_holder(holder)
-        self.remove_holder(skill_holder)
+        self.remove_item(item)
+        self.remove_item(skill_item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -85,17 +85,17 @@ class TestSkillRequirement(RestrictionTestCase):
         # are met
         eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {50: 3}
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.add_holder(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.add_item(item)
         skill_eve_type = self.ch.type(type_id=50)
-        skill_holder = self.make_item_mock(Skill, skill_eve_type)
-        skill_holder.level = 3
-        self.add_holder(skill_holder)
-        self.fit.skills[50] = skill_holder
-        restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
+        skill_item = self.make_item_mock(Skill, skill_eve_type)
+        skill_item.level = 3
+        self.add_item(skill_item)
+        self.fit.skills[50] = skill_item
+        restriction_error = self.get_restriction_error(item, Restriction.skill_requirement)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
-        self.remove_holder(skill_holder)
+        self.remove_item(item)
+        self.remove_item(skill_item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -103,10 +103,10 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that skillreqs on rigs are not checked
         eve_type = self.ch.type(type_id=1)
         eve_type.required_skills = {50: 3}
-        holder = self.make_item_mock(Rig, eve_type)
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.skill_requirement)
+        item = self.make_item_mock(Rig, eve_type)
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.skill_requirement)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

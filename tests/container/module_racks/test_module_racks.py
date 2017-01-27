@@ -29,15 +29,15 @@ class TestContainerModuleRacks(ContainerTestCase):
 
     def setUp(self):
         super().setUp()
-        self.holder1 = Mock(spec_set=())
-        self.holder2 = Mock(spec_set=())
-        self.holder3 = Mock(spec_set=())
-        self.holder4 = Mock(spec_set=())
-        self.holder5 = Mock(spec_set=())
-        self.holder6 = Mock(spec_set=())
-        self.high_rack = [self.holder1, None, None, self.holder2]
-        self.med_rack = [None, self.holder3, None, None, self.holder4]
-        self.low_rack = [self.holder5, None, None, None, self.holder6]
+        self.item1 = Mock(spec_set=())
+        self.item2 = Mock(spec_set=())
+        self.item3 = Mock(spec_set=())
+        self.item4 = Mock(spec_set=())
+        self.item5 = Mock(spec_set=())
+        self.item6 = Mock(spec_set=())
+        self.high_rack = [self.item1, None, None, self.item2]
+        self.med_rack = [None, self.item3, None, None, self.item4]
+        self.low_rack = [self.item5, None, None, None, self.item6]
         self.modules = ModuleRacks(high=self.high_rack, med=self.med_rack, low=self.low_rack)
 
     def test_rack_accessibility(self):
@@ -45,60 +45,60 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertIs(self.modules.med, self.med_rack)
         self.assertIs(self.modules.low, self.low_rack)
 
-    def test_holders_len(self):
-        module_holders = self.modules.holders()
-        self.assertEqual(len(module_holders), 6)
-        self.high_rack.remove(self.holder1)
-        self.assertEqual(len(module_holders), 5)
-        self.med_rack.remove(self.holder3)
-        self.assertEqual(len(module_holders), 4)
-        self.low_rack.append(self.holder1)
-        self.assertEqual(len(module_holders), 5)
+    def test_items_len(self):
+        module_items = self.modules.items()
+        self.assertEqual(len(module_items), 6)
+        self.high_rack.remove(self.item1)
+        self.assertEqual(len(module_items), 5)
+        self.med_rack.remove(self.item3)
+        self.assertEqual(len(module_items), 4)
+        self.low_rack.append(self.item1)
+        self.assertEqual(len(module_items), 5)
 
-    def test_holders_iter(self):
-        module_holders = self.modules.holders()
+    def test_items_iter(self):
+        module_items = self.modules.items()
         expected = [
-            self.holder1, self.holder2, self.holder3,
-            self.holder4, self.holder5, self.holder6
+            self.item1, self.item2, self.item3,
+            self.item4, self.item5, self.item6
         ]
-        self.assertEqual(list(module_holders), expected)
-        self.high_rack.remove(self.holder1)
+        self.assertEqual(list(module_items), expected)
+        self.high_rack.remove(self.item1)
         expected = [
-            self.holder2, self.holder3, self.holder4,
-            self.holder5, self.holder6
+            self.item2, self.item3, self.item4,
+            self.item5, self.item6
         ]
-        self.assertEqual(list(module_holders), expected)
-        self.med_rack.remove(self.holder3)
+        self.assertEqual(list(module_items), expected)
+        self.med_rack.remove(self.item3)
         expected = [
-            self.holder2, self.holder4, self.holder5,
-            self.holder6
+            self.item2, self.item4, self.item5,
+            self.item6
         ]
-        self.assertEqual(list(module_holders), expected)
-        self.low_rack.append(self.holder1)
+        self.assertEqual(list(module_items), expected)
+        self.low_rack.append(self.item1)
         expected = [
-            self.holder2, self.holder4, self.holder5,
-            self.holder6, self.holder1
+            self.item2, self.item4, self.item5,
+            self.item6, self.item1
         ]
-        self.assertEqual(list(module_holders), expected)
+        self.assertEqual(list(module_items), expected)
 
-    def test_holder_contains(self):
-        module_holders = self.modules.holders()
-        self.assertFalse(None in module_holders)
-        self.assertTrue(self.holder1 in module_holders)
-        self.assertTrue(self.holder2 in module_holders)
-        self.high_rack.remove(self.holder1)
-        self.assertFalse(self.holder1 in module_holders)
-        self.assertTrue(self.holder2 in module_holders)
-        self.assertTrue(self.holder3 in module_holders)
-        self.assertTrue(self.holder4 in module_holders)
-        self.med_rack.remove(self.holder3)
-        self.assertFalse(self.holder3 in module_holders)
-        self.assertTrue(self.holder4 in module_holders)
-        self.assertTrue(self.holder5 in module_holders)
-        self.assertTrue(self.holder6 in module_holders)
-        self.assertFalse(self.holder1 in module_holders)
-        self.low_rack.append(self.holder1)
-        self.assertTrue(self.holder5 in module_holders)
-        self.assertTrue(self.holder6 in module_holders)
-        self.assertTrue(self.holder1 in module_holders)
-        self.assertFalse(None in module_holders)
+    def test_item_contains(self):
+        module_items = self.modules.items()
+        self.assertFalse(None in module_items)
+        self.assertTrue(self.item1 in module_items)
+        self.assertTrue(self.item2 in module_items)
+        self.high_rack.remove(self.item1)
+        self.assertFalse(self.item1 in module_items)
+        self.assertTrue(self.item2 in module_items)
+        self.assertTrue(self.item3 in module_items)
+        self.assertTrue(self.item4 in module_items)
+        self.med_rack.remove(self.item3)
+        self.assertFalse(self.item3 in module_items)
+        self.assertTrue(self.item4 in module_items)
+        self.assertTrue(self.item5 in module_items)
+        self.assertTrue(self.item6 in module_items)
+        self.assertFalse(self.item1 in module_items)
+        self.low_rack.append(self.item1)
+        self.assertTrue(self.item5 in module_items)
+        self.assertTrue(self.item6 in module_items)
+        self.assertTrue(self.item1 in module_items)
+        self.assertFalse(None in module_items)

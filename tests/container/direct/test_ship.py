@@ -23,17 +23,17 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.item import Ship
-from eos.fit.messages import HolderAdded, HolderRemoved
-from tests.container.environment import Fit, OtherHolder
+from eos.fit.messages import ItemAdded, ItemRemoved
+from tests.container.environment import Fit, OtherItem
 from tests.container.container_testcase import ContainerTestCase
 
 
-class TestDirectHolderShip(ContainerTestCase):
+class TestDirectItemShip(ContainerTestCase):
 
     def make_fit(self):
         assertions = {
-            HolderAdded: lambda f, m: self.assertIs(f.ship, m.holder),
-            HolderRemoved: lambda f, m: self.assertIs(f.ship, m.holder)
+            ItemAdded: lambda f, m: self.assertIs(f.ship, m.item),
+            ItemRemoved: lambda f, m: self.assertIs(f.ship, m.item)
         }
         fit = Fit(self, message_assertions=assertions)
         return fit
@@ -48,112 +48,112 @@ class TestDirectHolderShip(ContainerTestCase):
         # Misc
         self.assert_fit_buffers_empty(fit)
 
-    def test_none_to_holder(self):
+    def test_none_to_item(self):
         fit = self.make_fit()
         fit.ship = None
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        item = Mock(_fit=None, state=State.active, spec_set=Ship(1))
         # Action
         with self.fit_assertions(fit):
-            fit.ship = holder
+            fit.ship = item
         # Checks
-        self.assertIs(fit.ship, holder)
-        self.assertIs(holder._fit, fit)
+        self.assertIs(fit.ship, item)
+        self.assertIs(item._fit, fit)
         # Misc
         fit.ship = None
         self.assertIsNone(fit.ship)
         self.assert_fit_buffers_empty(fit)
 
-    def test_none_to_holder_type_failure(self):
+    def test_none_to_item_type_failure(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=OtherHolder(1))
+        item = Mock(_fit=None, state=State.active, spec_set=OtherItem(1))
         # Action
         with self.fit_assertions(fit):
-            self.assertRaises(TypeError, fit.__setattr__, 'ship', holder)
+            self.assertRaises(TypeError, fit.__setattr__, 'ship', item)
         # Checks
         self.assertIsNone(fit.ship)
-        self.assertIsNone(holder._fit)
+        self.assertIsNone(item._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)
 
-    def test_none_to_holder_value_failure(self):
+    def test_none_to_item_value_failure(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
-        fit_other.ship = holder
+        item = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit_other.ship = item
         # Action
         with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.__setattr__, 'ship', holder)
+            self.assertRaises(ValueError, fit.__setattr__, 'ship', item)
         # Checks
         self.assertIsNone(fit.ship)
-        self.assertIs(fit_other.ship, holder)
-        self.assertIs(holder._fit, fit_other)
+        self.assertIs(fit_other.ship, item)
+        self.assertIs(item._fit, fit_other)
         # Misc
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
-    def test_holder_to_holder(self):
+    def test_item_to_item(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
-        holder2 = Mock(_fit=None, state=State.active, spec_set=Ship(1))
-        fit.ship = holder1
+        item1 = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
+        item2 = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit.ship = item1
         # Action
         with self.fit_assertions(fit):
-            fit.ship = holder2
+            fit.ship = item2
         # Checks
-        self.assertIs(fit.ship, holder2)
-        self.assertIsNone(holder1._fit)
-        self.assertIs(holder2._fit, fit)
+        self.assertIs(fit.ship, item2)
+        self.assertIsNone(item1._fit)
+        self.assertIs(item2._fit, fit)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
-    def test_holder_to_holder_type_failure(self):
+    def test_item_to_item_type_failure(self):
         fit = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=OtherHolder(1))
-        fit.ship = holder1
+        item1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
+        item2 = Mock(_fit=None, state=State.overload, spec_set=OtherItem(1))
+        fit.ship = item1
         # Action
         with self.fit_assertions(fit):
-            self.assertRaises(TypeError, fit.__setattr__, 'ship', holder2)
+            self.assertRaises(TypeError, fit.__setattr__, 'ship', item2)
         # Checks
-        self.assertIs(fit.ship, holder1)
-        self.assertIs(holder1._fit, fit)
-        self.assertIsNone(holder2._fit)
+        self.assertIs(fit.ship, item1)
+        self.assertIs(item1._fit, fit)
+        self.assertIsNone(item2._fit)
         # Misc
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
-    def test_holder_to_holder_value_failure(self):
+    def test_item_to_item_value_failure(self):
         fit = self.make_fit()
         fit_other = self.make_fit()
-        holder1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
-        holder2 = Mock(_fit=None, state=State.overload, spec_set=Ship(1))
-        fit.ship = holder1
-        fit_other.ship = holder2
+        item1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
+        item2 = Mock(_fit=None, state=State.overload, spec_set=Ship(1))
+        fit.ship = item1
+        fit_other.ship = item2
         # Action
         with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.__setattr__, 'ship', holder2)
+            self.assertRaises(ValueError, fit.__setattr__, 'ship', item2)
         # Checks
-        self.assertIs(fit.ship, holder1)
-        self.assertIs(fit_other.ship, holder2)
-        self.assertIs(holder1._fit, fit)
-        self.assertIs(holder2._fit, fit_other)
+        self.assertIs(fit.ship, item1)
+        self.assertIs(fit_other.ship, item2)
+        self.assertIs(item1._fit, fit)
+        self.assertIs(item2._fit, fit_other)
         # Misc
         fit.ship = None
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
-    def test_holder_to_none(self):
+    def test_item_to_none(self):
         fit = self.make_fit()
-        holder = Mock(_fit=None, state=State.active, spec_set=Ship(1))
-        fit.ship = holder
+        item = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit.ship = item
         # Action
         with self.fit_assertions(fit):
             fit.ship = None
         # Checks
         self.assertIsNone(fit.ship)
-        self.assertIsNone(holder._fit)
+        self.assertIsNone(item._fit)
         # Misc
         self.assert_fit_buffers_empty(fit)

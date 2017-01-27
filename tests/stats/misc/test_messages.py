@@ -22,7 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
+from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from tests.stats.stat_testcase import StatTestCase
 
 
@@ -30,57 +30,57 @@ class TestMessages(StatTestCase):
     """Check how service handles messages"""
 
     def test_add_stateless(self):
-        # Check that when holder is added w/o enabling any states,
+        # Check that when item is added w/o enabling any states,
         # it's added to corresponding registers
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder.attributes = {Attribute.upgrade_cost: 33}
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item.attributes = {Attribute.upgrade_cost: 33}
         # Action
-        self.ss._notify(HolderAdded(holder))
+        self.ss._notify(ItemAdded(item))
         # Checks
         self.assertEqual(self.ss.calibration.used, 33)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_add_stateful(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder.attributes = {Attribute.cpu: 35}
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item.attributes = {Attribute.cpu: 35}
         # Action
-        self.ss._notify(HolderAdded(holder))
+        self.ss._notify(ItemAdded(item))
         # Checks
         self.assertEqual(self.ss.cpu.used, 35)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_add_stateful_insufficient(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder.attributes = {Attribute.cpu: 35}
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item.attributes = {Attribute.cpu: 35}
         # Action
-        self.ss._notify(HolderAdded(holder))
+        self.ss._notify(ItemAdded(item))
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_remove_stateless(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder.attributes = {Attribute.upgrade_cost: 33}
-        self.ss._notify(HolderAdded(holder))
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item.attributes = {Attribute.upgrade_cost: 33}
+        self.ss._notify(ItemAdded(item))
         # Action
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         # Checks
         self.assertEqual(self.ss.calibration.used, 0)
         # Misc
@@ -90,11 +90,11 @@ class TestMessages(StatTestCase):
     def test_remove_stateful(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder.attributes = {Attribute.cpu: 35}
-        self.ss._notify(HolderAdded(holder))
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item.attributes = {Attribute.cpu: 35}
+        self.ss._notify(ItemAdded(item))
         # Action
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Misc
@@ -104,66 +104,66 @@ class TestMessages(StatTestCase):
     def test_state_switch_up(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder.attributes = {Attribute.cpu: 35}
-        self.ss._notify(HolderAdded(holder))
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item.attributes = {Attribute.cpu: 35}
+        self.ss._notify(ItemAdded(item))
         # Action
-        self.ss._notify(HolderStateChanged(holder, State.offline, State.online))
-        holder.state = State.online
+        self.ss._notify(ItemStateChanged(item, State.offline, State.online))
+        item.state = State.online
         # Checks
         self.assertEqual(self.ss.cpu.used, 35)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_state_switch_down(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder.attributes = {Attribute.cpu: 35}
-        self.ss._notify(HolderAdded(holder))
-        self.ss._notify(HolderStateChanged(holder, State.offline, State.online))
-        holder.state = State.online
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item.attributes = {Attribute.cpu: 35}
+        self.ss._notify(ItemAdded(item))
+        self.ss._notify(ItemStateChanged(item, State.offline, State.online))
+        item.state = State.online
         # Action
-        self.ss._notify(HolderStateChanged(holder, State.online, State.offline))
-        holder.state = State.offline
+        self.ss._notify(ItemStateChanged(item, State.online, State.offline))
+        item.state = State.offline
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_add_stateful_disabled(self):
-        # Check that service takes holder which was added
+        # Check that service takes item which was added
         # while service was disabled into consideration
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder.attributes = {Attribute.cpu: 35}
-        self.ss._notify(DisableServices(holders=(holder,)))
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item.attributes = {Attribute.cpu: 35}
+        self.ss._notify(DisableServices(items=(item,)))
         # Action
-        self.ss._notify(HolderAdded(holder))
-        self.ss._notify(EnableServices(holders=(holder,)))
+        self.ss._notify(ItemAdded(item))
+        self.ss._notify(EnableServices(items=(item,)))
         # Checks
         self.assertEqual(self.ss.cpu.used, 35)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
     def test_remove_stateful_disabled(self):
         # Setup
         eve_type = self.ch.type(type_id=1, attributes={Attribute.cpu: 0})
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        holder.attributes = {Attribute.cpu: 35}
-        self.ss._notify(HolderAdded(holder))
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        item.attributes = {Attribute.cpu: 35}
+        self.ss._notify(ItemAdded(item))
         # Action
-        self.ss._notify(DisableServices(holders=(holder,)))
+        self.ss._notify(DisableServices(items=(item,)))
         # Checks
         self.assertEqual(self.ss.cpu.used, 0)
         # Misc
-        self.ss._notify(HolderRemoved(holder))
+        self.ss._notify(ItemRemoved(item))
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()

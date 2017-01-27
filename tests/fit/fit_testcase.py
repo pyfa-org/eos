@@ -28,24 +28,24 @@ class FitTestCase(EosTestCase):
     Additional functionality provided:
 
     self.assert_fit_buffers_empty -- checks if fit has any
-        holders assigned to it
+        items assigned to it
     self.fit_assertions -- returns context manager which
         turns on on-fit per-message type assertions
     """
 
     def assert_fit_buffers_empty(self, fit):
-        holder_num = 0
-        holder_num += self._get_object_buffer_entry_amount(
+        item_num = 0
+        item_num += self._get_object_buffer_entry_amount(
             fit, ignore=('message_store', '_message_assertions', '_MessageBroker__subscribers'))
         # As volatile manager always has one entry added to it
         # (stats service), make sure it's ignored for calculation
         # purposes
         fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(fit.stats)
-        holder_num += self._get_object_buffer_entry_amount(fit._volatile_mgr)
+        item_num += self._get_object_buffer_entry_amount(fit._volatile_mgr)
         fit._volatile_mgr._FitVolatileManager__volatile_objects.add(fit.stats)
-        if holder_num > 0:
-            plu = 'y' if holder_num == 1 else 'ies'
-            msg = '{} entr{} in buffers: buffers must be empty'.format(holder_num, plu)
+        if item_num > 0:
+            plu = 'y' if item_num == 1 else 'ies'
+            msg = '{} entr{} in buffers: buffers must be empty'.format(item_num, plu)
             self.fail(msg=msg)
 
     def fit_assertions(self, fit):

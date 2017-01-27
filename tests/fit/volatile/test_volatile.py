@@ -22,7 +22,7 @@
 from unittest.mock import Mock, call
 
 from eos.fit.messages import (
-    HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
+    ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChangedOverride, RefreshSource
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
@@ -47,176 +47,176 @@ class TestVolatileData(FitTestCase):
 
     def test_carrier_inheritable(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=InheritableVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         # Action
         fit._publish(RefreshSource())
         # Checks
-        holder_calls_after = len(holder.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        item_calls_after = len(item.mock_calls)
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_carrier_cooperative(self):
         # Setup
-        holder = Mock(spec=CooperativeVolatileMixin)
+        item = Mock(spec=CooperativeVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         # Action
         fit._publish(RefreshSource())
         # Checks
-        holder_calls_after = len(holder.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        item_calls_after = len(item.mock_calls)
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
-    def test_message_holder_added(self):
+    def test_message_item_added(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
-        holder_other = Mock()
+        item = Mock(spec=InheritableVolatileMixin)
+        item_other = Mock()
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
-        fit._publish(HolderAdded(holder_other))
+        fit._publish(ItemAdded(item_other))
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
-        fit._publish(HolderRemoved(holder_other))
+        fit._publish(ItemRemoved(item))
+        fit._publish(ItemRemoved(item_other))
         self.assert_fit_buffers_empty(fit)
 
-    def test_message_holder_removed(self):
+    def test_message_item_removed(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
-        holder_other = Mock()
+        item = Mock(spec=InheritableVolatileMixin)
+        item_other = Mock()
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        fit._publish(HolderAdded(holder_other))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        fit._publish(ItemAdded(item_other))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
-        fit._publish(HolderRemoved(holder_other))
+        fit._publish(ItemRemoved(item_other))
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
-    def test_message_holder_state_changed(self):
+    def test_message_item_state_changed(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=InheritableVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
-        fit._publish(HolderStateChanged(None, None, None))
+        fit._publish(ItemStateChanged(None, None, None))
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_message_effects_enabled(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=InheritableVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(EffectsEnabled(None, None))
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_message_effects_disabled(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=InheritableVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(EffectsDisabled(None, None))
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_message_override(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=InheritableVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(AttrValueChangedOverride(None, None))
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_message_refresh_source(self):
         # Setup
-        holder = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=InheritableVolatileMixin)
         fit = Fit()
-        fit._publish(HolderAdded(holder))
-        holder_calls_before = len(holder.mock_calls)
+        fit._publish(ItemAdded(item))
+        item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
         fit._publish(RefreshSource())
         # Checks
-        holder_calls_after = len(holder.mock_calls)
+        item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
-        self.assertEqual(holder_calls_after - holder_calls_before, 1)
-        self.assertEqual(holder.mock_calls[-1], call._clear_volatile_attrs())
+        self.assertEqual(item_calls_after - item_calls_before, 1)
+        self.assertEqual(item.mock_calls[-1], call._clear_volatile_attrs())
         self.assertEqual(ss_calls_after - ss_calls_before, 1)
         self.assertEqual(fit.stats.mock_calls[-1], call._clear_volatile_attrs())
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)

@@ -48,7 +48,7 @@ class TestModDomainDomainOther(CalculatorTestCase):
         ))
         # Action
         # Charge's container or module's charge can't be 'owner'
-        # of other holders, thus such modification type is unsupported
+        # of other items, thus such modification type is unsupported
         self.fit.items.add(influence_source)
         # Checks
         self.assertEqual(len(self.log), 2)

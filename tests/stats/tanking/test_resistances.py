@@ -30,20 +30,20 @@ class TestResistances(StatTestCase):
     def test_relay(self):
         # Check that stats service relays resistance stats properly
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.resistances.hull.em = 5
-        ship_holder.resistances.hull.thermal = 6
-        ship_holder.resistances.hull.kinetic = 7
-        ship_holder.resistances.hull.explosive = 8
-        ship_holder.resistances.armor.em = 15
-        ship_holder.resistances.armor.thermal = 16
-        ship_holder.resistances.armor.kinetic = 17
-        ship_holder.resistances.armor.explosive = 18
-        ship_holder.resistances.shield.em = 25
-        ship_holder.resistances.shield.thermal = 26
-        ship_holder.resistances.shield.kinetic = 27
-        ship_holder.resistances.shield.explosive = 28
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.resistances.hull.em = 5
+        ship_item.resistances.hull.thermal = 6
+        ship_item.resistances.hull.kinetic = 7
+        ship_item.resistances.hull.explosive = 8
+        ship_item.resistances.armor.em = 15
+        ship_item.resistances.armor.thermal = 16
+        ship_item.resistances.armor.kinetic = 17
+        ship_item.resistances.armor.explosive = 18
+        ship_item.resistances.shield.em = 25
+        ship_item.resistances.shield.thermal = 26
+        ship_item.resistances.shield.kinetic = 27
+        ship_item.resistances.shield.explosive = 28
+        self.set_ship(ship_item)
         self.assertEqual(self.ss.resistances.hull.em, 5)
         self.assertEqual(self.ss.resistances.hull.thermal, 6)
         self.assertEqual(self.ss.resistances.hull.kinetic, 7)
@@ -79,12 +79,12 @@ class TestResistances(StatTestCase):
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
         hull = Mock(em=5, thermal=6, kinetic=7, explosive=8)
         armor = Mock(em=15, thermal=16, kinetic=17, explosive=18)
         shield = Mock(em=25, thermal=26, kinetic=27, explosive=28)
-        ship_holder.resistances = Mock(hull=hull, armor=armor, shield=shield)
+        ship_item.resistances = Mock(hull=hull, armor=armor, shield=shield)
         self.assertEqual(self.ss.resistances.hull.em, 5)
         self.assertEqual(self.ss.resistances.hull.thermal, 6)
         self.assertEqual(self.ss.resistances.hull.kinetic, 7)
@@ -100,7 +100,7 @@ class TestResistances(StatTestCase):
         hull = Mock(em=15, thermal=16, kinetic=17, explosive=18)
         armor = Mock(em=25, thermal=26, kinetic=27, explosive=28)
         shield = Mock(em=35, thermal=36, kinetic=37, explosive=38)
-        ship_holder.resistances = Mock(hull=hull, armor=armor, shield=shield)
+        ship_item.resistances = Mock(hull=hull, armor=armor, shield=shield)
         self.assertEqual(self.ss.resistances.hull.em, 5)
         self.assertEqual(self.ss.resistances.hull.thermal, 6)
         self.assertEqual(self.ss.resistances.hull.kinetic, 7)
@@ -119,12 +119,12 @@ class TestResistances(StatTestCase):
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
         hull = Mock(em=5, thermal=6, kinetic=7, explosive=8)
         armor = Mock(em=15, thermal=16, kinetic=17, explosive=18)
         shield = Mock(em=25, thermal=26, kinetic=27, explosive=28)
-        ship_holder.resistances = Mock(hull=hull, armor=armor, shield=shield)
+        ship_item.resistances = Mock(hull=hull, armor=armor, shield=shield)
         self.assertEqual(self.ss.resistances.hull.em, 5)
         self.assertEqual(self.ss.resistances.hull.thermal, 6)
         self.assertEqual(self.ss.resistances.hull.kinetic, 7)
@@ -140,7 +140,7 @@ class TestResistances(StatTestCase):
         hull = Mock(em=15, thermal=16, kinetic=17, explosive=18)
         armor = Mock(em=25, thermal=26, kinetic=27, explosive=28)
         shield = Mock(em=35, thermal=36, kinetic=37, explosive=38)
-        ship_holder.resistances = Mock(hull=hull, armor=armor, shield=shield)
+        ship_item.resistances = Mock(hull=hull, armor=armor, shield=shield)
         self.ss._clear_volatile_attrs()
         self.assertEqual(self.ss.resistances.hull.em, 15)
         self.assertEqual(self.ss.resistances.hull.thermal, 16)

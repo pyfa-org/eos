@@ -22,10 +22,10 @@
 from unittest.mock import Mock
 
 from eos.fit.item.mixin.tanking import BufferTankingMixin
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinTankingEhp(HolderMixinTestCase):
+class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()

@@ -31,19 +31,19 @@ class TestMapMethods(CalculatorTestCase):
         self.attr1 = self.ch.attribute(attribute_id=1)
         self.attr2 = self.ch.attribute(attribute_id=2)
         self.attr3 = self.ch.attribute(attribute_id=3)
-        self.holder = IndependentItem(self.ch.type(type_id=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
-        self.fit.items.add(self.holder)
-        self.holder.attributes._MutableAttributeMap__modified_attributes = {self.attr2.id: 20, self.attr3.id: 40}
+        self.item = IndependentItem(self.ch.type(type_id=1, attributes={self.attr1.id: 5, self.attr2.id: 10}))
+        self.fit.items.add(self.item)
+        self.item.attributes._MutableAttributeMap__modified_attributes = {self.attr2.id: 20, self.attr3.id: 40}
 
     def test_get(self):
         # Make sure map's get method replicates functionality
         # of dictionary get method
-        self.assertEqual(self.holder.attributes.get(self.attr1.id), 5)
-        self.assertEqual(self.holder.attributes.get(self.attr2.id), 20)
-        self.assertEqual(self.holder.attributes.get(self.attr3.id), 40)
-        self.assertIsNone(self.holder.attributes.get(1008))
-        self.assertEqual(self.holder.attributes.get(1008, 60), 60)
-        self.fit.items.remove(self.holder)
+        self.assertEqual(self.item.attributes.get(self.attr1.id), 5)
+        self.assertEqual(self.item.attributes.get(self.attr2.id), 20)
+        self.assertEqual(self.item.attributes.get(self.attr3.id), 40)
+        self.assertIsNone(self.item.attributes.get(1008))
+        self.assertEqual(self.item.attributes.get(1008, 60), 60)
+        self.fit.items.remove(self.item)
         # Attempt to fetch non-existent attribute generates
         # error, which is not related to this test
         self.assertEqual(len(self.log), 2)
@@ -52,28 +52,28 @@ class TestMapMethods(CalculatorTestCase):
     def test_len(self):
         # Length should return length, counting unique
         # IDs from both attribute containers
-        self.assertEqual(len(self.holder.attributes), 3)
-        self.fit.items.remove(self.holder)
+        self.assertEqual(len(self.item.attributes), 3)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_contains(self):
-        # Make sure map reacts positively to holders contained
+        # Make sure map reacts positively to items contained
         # in any attribute container, and negatively for attributes
         # which were not found
-        self.assertTrue(self.attr1.id in self.holder.attributes)
-        self.assertTrue(self.attr2.id in self.holder.attributes)
-        self.assertTrue(self.attr3.id in self.holder.attributes)
-        self.assertFalse(1008 in self.holder.attributes)
-        self.fit.items.remove(self.holder)
+        self.assertTrue(self.attr1.id in self.item.attributes)
+        self.assertTrue(self.attr2.id in self.item.attributes)
+        self.assertTrue(self.attr3.id in self.item.attributes)
+        self.assertFalse(1008 in self.item.attributes)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_keys(self):
         # When we request map keys, they should include all unique
         # attribute IDs w/o duplication
-        self.assertCountEqual(self.holder.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr3.id))
-        self.fit.items.remove(self.holder)
+        self.assertCountEqual(self.item.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr3.id))
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
@@ -81,7 +81,7 @@ class TestMapMethods(CalculatorTestCase):
         # Iter should return the same keys as keys(). CountEqual
         # takes any iterable - we just check its contents here,
         # w/o checking format of returned data
-        self.assertCountEqual(self.holder.attributes, (self.attr1.id, self.attr2.id, self.attr3.id))
-        self.fit.items.remove(self.holder)
+        self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr3.id))
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

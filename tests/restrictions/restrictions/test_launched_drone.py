@@ -31,15 +31,15 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by character
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.online)
+        self.add_item(item)
         self.fit.stats.launched_drones.used = 1
         self.fit.stats.launched_drones.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.launched_drone)
+        restriction_error = self.get_restriction_error(item, Restriction.launched_drone)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -47,94 +47,94 @@ class TestLaunchedDrone(RestrictionTestCase):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.online)
+        self.add_item(item)
         self.fit.stats.launched_drones.used = 1
         self.fit.stats.launched_drones.total = None
-        restriction_error = self.get_restriction_error(holder, Restriction.launched_drone)
+        restriction_error = self.get_restriction_error(item, Restriction.launched_drone)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_fail_excess_multiple(self):
-        # Check that error works for multiple holders
+        # Check that error works for multiple items
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_holder(holder1)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.online)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.online)
+        self.add_item(item1)
+        self.add_item(item2)
         self.fit.stats.launched_drones.used = 2
         self.fit.stats.launched_drones.total = 1
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.launched_drone)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.launched_drone)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.slots_max_allowed, 1)
         self.assertEqual(restriction_error1.slots_used, 2)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.launched_drone)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.launched_drone)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_equal(self):
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_holder(holder1)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.online)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.online)
+        self.add_item(item1)
+        self.add_item(item2)
         self.fit.stats.launched_drones.used = 2
         self.fit.stats.launched_drones.total = 2
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.launched_drone)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.launched_drone)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.launched_drone)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.launched_drone)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_greater(self):
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.online)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_holder(holder1)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.online)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.online)
+        self.add_item(item1)
+        self.add_item(item2)
         self.fit.stats.launched_drones.used = 2
         self.fit.stats.launched_drones.total = 5
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.launched_drone)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.launched_drone)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.launched_drone)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.launched_drone)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_other_class(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        self.add_holder(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        self.add_item(item)
         self.fit.stats.launched_drones.used = 1
         self.fit.stats.launched_drones.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.launched_drone)
+        restriction_error = self.get_restriction_error(item, Restriction.launched_drone)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_state(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.add_item(item)
         self.fit.stats.launched_drones.used = 1
         self.fit.stats.launched_drones.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.launched_drone)
+        restriction_error = self.get_restriction_error(item, Restriction.launched_drone)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

@@ -22,8 +22,8 @@
 from unittest.mock import Mock, patch
 
 from eos.data.source import Source
-from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices, DisableServices, RefreshSource
-from tests.fit.environment import Fit, Holder
+from eos.fit.messages import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
+from tests.fit.environment import Fit, Item
 from tests.fit.fit_testcase import FitTestCase
 
 
@@ -32,9 +32,9 @@ class FitSourceSwitch(FitTestCase):
 
     def test_none_to_none(self, source_mgr):
         source_mgr.default = None
-        holder = Holder()
+        item = Item()
         fit = Fit(source=None)
-        fit._publish(HolderAdded(holder))
+        fit._publish(ItemAdded(item))
         messages_before = len(fit.message_store)
         # Action
         with self.fit_assertions(fit):
@@ -43,19 +43,19 @@ class FitSourceSwitch(FitTestCase):
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 0)
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_source(self, source_mgr):
         source_mgr.default = None
         source = Mock(spec_set=Source)
-        holder = Holder()
+        item = Item()
         assertions = {
             RefreshSource: lambda f: self.assertIs(f.source, source),
             EnableServices: lambda f: self.assertIs(f.source, source)
         }
         fit = Fit(source=None, message_assertions=assertions)
-        fit._publish(HolderAdded(holder))
+        fit._publish(ItemAdded(item))
         messages_before = len(fit.message_store)
         # Action
         with self.fit_assertions(fit):
@@ -67,21 +67,21 @@ class FitSourceSwitch(FitTestCase):
         self.assertTrue(isinstance(message1, RefreshSource))
         message2 = fit.message_store[-1]
         self.assertTrue(isinstance(message2, EnableServices))
-        self.assertEqual(message2.holders, {holder})
+        self.assertEqual(message2.items, {item})
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_source_to_none(self, source_mgr):
         source_mgr.default = None
         source = Mock(spec_set=Source)
-        holder = Holder()
+        item = Item()
         assertions = {
             DisableServices: lambda f: self.assertIs(f.source, source),
             RefreshSource: lambda f: self.assertIsNone(f.source)
         }
         fit = Fit(source=source, message_assertions=assertions)
-        fit._publish(HolderAdded(holder))
+        fit._publish(ItemAdded(item))
         messages_before = len(fit.message_store)
         # Action
         with self.fit_assertions(fit):
@@ -91,25 +91,25 @@ class FitSourceSwitch(FitTestCase):
         self.assertEqual(messages_after - messages_before, 2)
         message1 = fit.message_store[-2]
         self.assertTrue(isinstance(message1, DisableServices))
-        self.assertEqual(message1.holders, {holder})
+        self.assertEqual(message1.items, {item})
         message2 = fit.message_store[-1]
         self.assertTrue(isinstance(message2, RefreshSource))
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_source_to_source(self, source_mgr):
         source_mgr.default = None
         source1 = Mock(spec_set=Source)
         source2 = Mock(spec_set=Source)
-        holder = Holder()
+        item = Item()
         assertions = {
             DisableServices: lambda f: self.assertIs(f.source, source1),
             RefreshSource: lambda f: self.assertIs(f.source, source2),
             EnableServices: lambda f: self.assertIs(f.source, source2)
         }
         fit = Fit(source=source1, message_assertions=assertions)
-        fit._publish(HolderAdded(holder))
+        fit._publish(ItemAdded(item))
         messages_before = len(fit.message_store)
         # Action
         with self.fit_assertions(fit):
@@ -119,22 +119,22 @@ class FitSourceSwitch(FitTestCase):
         self.assertEqual(messages_after - messages_before, 3)
         message1 = fit.message_store[-3]
         self.assertTrue(isinstance(message1, DisableServices))
-        self.assertEqual(message1.holders, {holder})
+        self.assertEqual(message1.items, {item})
         message2 = fit.message_store[-2]
         self.assertTrue(isinstance(message2, RefreshSource))
         message3 = fit.message_store[-1]
         self.assertTrue(isinstance(message3, EnableServices))
-        self.assertEqual(message3.holders, {holder})
+        self.assertEqual(message3.items, {item})
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_source_to_source_same(self, source_mgr):
         source_mgr.default = None
         source = Mock(spec_set=Source)
-        holder = Holder()
+        item = Item()
         fit = Fit(source=source)
-        fit._publish(HolderAdded(holder))
+        fit._publish(ItemAdded(item))
         messages_before = len(fit.message_store)
         # Action
         with self.fit_assertions(fit):
@@ -143,20 +143,20 @@ class FitSourceSwitch(FitTestCase):
         messages_after = len(fit.message_store)
         self.assertEqual(messages_after - messages_before, 0)
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_literal_source(self, source_mgr):
         source = Mock(spec_set=Source)
         source_mgr.get.side_effect = lambda alias: source if alias == 'src_alias' else None
         source_mgr.default = None
-        holder = Holder()
+        item = Item()
         assertions = {
             RefreshSource: lambda f: self.assertIs(f.source, source),
             EnableServices: lambda f: self.assertIs(f.source, source)
         }
         fit = Fit(source=None, message_assertions=assertions)
-        fit._publish(HolderAdded(holder))
+        fit._publish(ItemAdded(item))
         messages_before = len(fit.message_store)
         # Action
         with self.fit_assertions(fit):
@@ -168,7 +168,7 @@ class FitSourceSwitch(FitTestCase):
         self.assertTrue(isinstance(message1, RefreshSource))
         message2 = fit.message_store[-1]
         self.assertTrue(isinstance(message2, EnableServices))
-        self.assertEqual(message2.holders, {holder})
+        self.assertEqual(message2.items, {item})
         # Misc
-        fit._publish(HolderRemoved(holder))
+        fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)

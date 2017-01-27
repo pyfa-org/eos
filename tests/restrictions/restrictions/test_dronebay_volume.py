@@ -32,18 +32,18 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When ship provides drone bay volume, but single consumer
         # demands for more, error should be raised
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder.attributes = {Attribute.volume: 50}
-        self.fit.drones.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item.attributes = {Attribute.volume: 50}
+        self.fit.drones.add(item)
+        self.add_item(item)
         self.fit.stats.dronebay.used = 50
         self.fit.stats.dronebay.output = 40
-        restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
+        restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
-        self.assertEqual(restriction_error.holder_use, 50)
-        self.remove_holder(holder)
+        self.assertEqual(restriction_error.item_use, 50)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -51,18 +51,18 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder.attributes = {Attribute.volume: 5}
-        self.fit.drones.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item.attributes = {Attribute.volume: 5}
+        self.fit.drones.add(item)
+        self.add_item(item)
         self.fit.stats.dronebay.used = 5
         self.fit.stats.dronebay.output = None
-        restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
+        restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 0)
         self.assertEqual(restriction_error.total_use, 5)
-        self.assertEqual(restriction_error.holder_use, 5)
-        self.remove_holder(holder)
+        self.assertEqual(restriction_error.item_use, 5)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -71,100 +71,100 @@ class TestDroneBayVolume(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder1.attributes = {Attribute.volume: 25}
-        self.fit.drones.add(holder1)
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder2.attributes = {Attribute.volume: 20}
-        self.fit.drones.add(holder2)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item1.attributes = {Attribute.volume: 25}
+        self.fit.drones.add(item1)
+        self.add_item(item1)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item2.attributes = {Attribute.volume: 20}
+        self.fit.drones.add(item2)
+        self.add_item(item2)
         self.fit.stats.dronebay.used = 45
         self.fit.stats.dronebay.output = 40
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 40)
         self.assertEqual(restriction_error1.total_use, 45)
-        self.assertEqual(restriction_error1.holder_use, 25)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
+        self.assertEqual(restriction_error1.item_use, 25)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.output, 40)
         self.assertEqual(restriction_error2.total_use, 45)
-        self.assertEqual(restriction_error2.holder_use, 20)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.assertEqual(restriction_error2.item_use, 20)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_fail_excess_modified(self):
         # Make sure modified volume values are taken
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 40})
-        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(item)
+        self.add_item(item)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
-        restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
+        restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 50)
         self.assertEqual(restriction_error.total_use, 100)
-        self.assertEqual(restriction_error.holder_use, 100)
-        self.remove_holder(holder)
+        self.assertEqual(restriction_error.item_use, 100)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_mix_usage_negative(self):
-        # If some holder has negative usage and drone bay error is
-        # still raised, check it's not raised for holder with
+        # If some item has negative usage and drone bay error is
+        # still raised, check it's not raised for item with
         # negative usage
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder1.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(holder1)
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder2.attributes = {Attribute.volume: -10}
-        self.fit.drones.add(holder2)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item1.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(item1)
+        self.add_item(item1)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item2.attributes = {Attribute.volume: -10}
+        self.fit.drones.add(item2)
+        self.add_item(item2)
         self.fit.stats.dronebay.used = 90
         self.fit.stats.dronebay.output = 50
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 50)
         self.assertEqual(restriction_error1.total_use, 90)
-        self.assertEqual(restriction_error1.holder_use, 100)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
+        self.assertEqual(restriction_error1.item_use, 100)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_mix_usage_zero(self):
-        # If some holder has zero usage and drone bay error is
-        # still raised, check it's not raised for holder with
+        # If some item has zero usage and drone bay error is
+        # still raised, check it's not raised for item with
         # zero usage
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder1.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(holder1)
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder2.attributes = {Attribute.volume: 0}
-        self.fit.drones.add(holder2)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item1.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(item1)
+        self.add_item(item1)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item2.attributes = {Attribute.volume: 0}
+        self.fit.drones.add(item2)
+        self.add_item(item2)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 50)
         self.assertEqual(restriction_error1.total_use, 100)
-        self.assertEqual(restriction_error1.holder_use, 100)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
+        self.assertEqual(restriction_error1.item_use, 100)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -172,53 +172,53 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder1 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder1.attributes = {Attribute.volume: 25}
-        self.fit.drones.add(holder1)
-        self.add_holder(holder1)
-        holder2 = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder2.attributes = {Attribute.volume: 20}
-        self.fit.drones.add(holder2)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item1.attributes = {Attribute.volume: 25}
+        self.fit.drones.add(item1)
+        self.add_item(item1)
+        item2 = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item2.attributes = {Attribute.volume: 20}
+        self.fit.drones.add(item2)
+        self.add_item(item2)
         self.fit.stats.dronebay.used = 45
         self.fit.stats.dronebay.output = 50
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.dronebay_volume)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.dronebay_volume)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_no_attr_eve_type(self):
-        # When added holder's eve type doesn't have attribute, holder
+        # When added item's eve type doesn't have attribute, item
         # shouldn't be tracked by register, and thus, no errors
         # should be raised
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder.attributes = {Attribute.volume: 100}
-        self.fit.drones.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item.attributes = {Attribute.volume: 100}
+        self.fit.drones.add(item)
+        self.add_item(item)
         self.fit.stats.dronebay.used = 100
         self.fit.stats.dronebay.output = 50
-        restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
+        restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_other_container(self):
-        # Make sure holders placed to other containers are unaffected
+        # Make sure items placed to other containers are unaffected
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 0})
-        holder = self.make_item_mock(Drone, eve_type, state=State.offline)
-        holder.attributes = {Attribute.volume: 50}
-        self.fit.rigs.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        item.attributes = {Attribute.volume: 50}
+        self.fit.rigs.add(item)
+        self.add_item(item)
         self.fit.stats.dronebay.used = 50
         self.fit.stats.dronebay.output = 40
-        restriction_error = self.get_restriction_error(holder, Restriction.dronebay_volume)
+        restriction_error = self.get_restriction_error(item, Restriction.dronebay_volume)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

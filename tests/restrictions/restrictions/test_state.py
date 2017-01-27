@@ -25,39 +25,39 @@ from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
 class TestState(RestrictionTestCase):
-    """Check functionality of holder state restriction"""
+    """Check functionality of item state restriction"""
 
     def test_state_lower(self):
         eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.state)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_state_equal(self):
         eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.state)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_state_higher(self):
         eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.overload)
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.state)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.overload)
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.current_state, State.overload)
         self.assertCountEqual(restriction_error.allowed_states, (State.offline, State.online, State.active))
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

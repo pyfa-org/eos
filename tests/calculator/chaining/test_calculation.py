@@ -52,7 +52,7 @@ class TestCalculationChain(CalculatorTestCase):
         modifier2.tgt_attr = attr3.id
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        holder1 = CharacterItem(self.ch.type(
+        item1 = CharacterItem(self.ch.type(
             type_id=1, effects=(effect1, effect2),
             attributes={attr1.id: 5, attr2.id: 20}
         ))
@@ -65,22 +65,22 @@ class TestCalculationChain(CalculatorTestCase):
         modifier3.tgt_attr = attr4.id
         effect3 = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect3.modifiers = (modifier3,)
-        holder2 = IndependentItem(self.ch.type(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))
-        holder3 = ShipItem(self.ch.type(type_id=3, attributes={attr4.id: 12.5}))
-        self.fit.items.add(holder1)
-        self.fit.ship = holder2
+        item2 = IndependentItem(self.ch.type(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))
+        item3 = ShipItem(self.ch.type(type_id=3, attributes={attr4.id: 12.5}))
+        self.fit.items.add(item1)
+        self.fit.ship = item2
         # Action
-        self.fit.items.add(holder3)
+        self.fit.items.add(item3)
         # Checks
-        # If everything is processed properly, holder1 will multiply attr2 by attr1
+        # If everything is processed properly, item1 will multiply attr2 by attr1
         # on self, resulting in 20 * 5 = 100, then apply it as percentage modifier
-        # on ship's (holder2) attr3, resulting in 150 + 100% = 300, then it is applied
-        # to all entities assigned to ship, including holder3, to theirs attr4 as
+        # on ship's (item2) attr3, resulting in 150 + 100% = 300, then it is applied
+        # to all entities assigned to ship, including item3, to theirs attr4 as
         # percentage modifier again - so final result is 12.5 + 300% = 50
-        self.assertAlmostEqual(holder3.attributes[attr4.id], 50)
+        self.assertAlmostEqual(item3.attributes[attr4.id], 50)
         # Misc
-        self.fit.items.remove(holder1)
+        self.fit.items.remove(item1)
         self.fit.ship = None
-        self.fit.items.remove(holder3)
+        self.fit.items.remove(item3)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

@@ -22,35 +22,35 @@
 from unittest.mock import Mock
 
 from eos.const.eve import Attribute
-from eos.fit.container import HolderSet
+from eos.fit.container import ItemSet
 from eos.fit.item import Ship
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinTankingHp(HolderMixinTestCase):
+class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.holder = Ship(type_id=None)
-        self.holder._clear_volatile_attrs = Mock()
-        self.holder.attributes = {}
+        self.item = Ship(type_id=None)
+        self.item._clear_volatile_attrs = Mock()
+        self.item.attributes = {}
 
     def make_fit(self, *args, **kwargs):
         fit = super().make_fit(*args, **kwargs)
-        fit.container = HolderSet(fit, Ship)
+        fit.container = ItemSet(fit, Ship)
         return fit
 
     def test_generic(self):
-        self.holder.attributes[Attribute.hp] = 8
-        self.holder.attributes[Attribute.armor_hp] = 10
-        self.holder.attributes[Attribute.shield_capacity] = 12
-        self.assertAlmostEqual(self.holder.hp.hull, 8)
-        self.assertAlmostEqual(self.holder.hp.armor, 10)
-        self.assertAlmostEqual(self.holder.hp.shield, 12)
-        self.assertAlmostEqual(self.holder.hp.total, 30)
+        self.item.attributes[Attribute.hp] = 8
+        self.item.attributes[Attribute.armor_hp] = 10
+        self.item.attributes[Attribute.shield_capacity] = 12
+        self.assertAlmostEqual(self.item.hp.hull, 8)
+        self.assertAlmostEqual(self.item.hp.armor, 10)
+        self.assertAlmostEqual(self.item.hp.shield, 12)
+        self.assertAlmostEqual(self.item.hp.total, 30)
 
     def test_unspecified(self):
-        self.assertIsNone(self.holder.hp.hull)
-        self.assertIsNone(self.holder.hp.armor)
-        self.assertIsNone(self.holder.hp.shield)
-        self.assertIsNone(self.holder.hp.total)
+        self.assertIsNone(self.item.hp.hull)
+        self.assertIsNone(self.item.hp.armor)
+        self.assertIsNone(self.item.hp.shield)
+        self.assertIsNone(self.item.hp.total)

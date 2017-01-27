@@ -31,32 +31,32 @@ class TestRigSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Rig, eve_type)
-        self.fit.rigs.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Rig, eve_type)
+        self.fit.rigs.add(item)
+        self.add_item(item)
         self.fit.stats.rig_slots.used = 1
         self.fit.stats.rig_slots.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.rig_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.rig_slot)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_fail_excess_signle_other_class_domain(self):
-        # Make sure holders of all classes are affected
+        # Make sure items of all classes are affected
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Implant, eve_type)
-        self.fit.rigs.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Implant, eve_type)
+        self.fit.rigs.add(item)
+        self.add_item(item)
         self.fit.stats.rig_slots.used = 1
         self.fit.stats.rig_slots.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.rig_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.rig_slot)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -64,90 +64,90 @@ class TestRigSlot(RestrictionTestCase):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Rig, eve_type)
-        self.fit.rigs.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Rig, eve_type)
+        self.fit.rigs.add(item)
+        self.add_item(item)
         self.fit.stats.rig_slots.used = 1
         self.fit.stats.rig_slots.total = None
-        restriction_error = self.get_restriction_error(holder, Restriction.rig_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.rig_slot)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_fail_excess_multiple(self):
-        # Check that error works for multiple holders
+        # Check that error works for multiple items
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(Rig, eve_type)
-        holder2 = self.make_item_mock(Rig, eve_type)
-        self.fit.rigs.add(holder1)
-        self.fit.rigs.add(holder2)
-        self.add_holder(holder1)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Rig, eve_type)
+        item2 = self.make_item_mock(Rig, eve_type)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
+        self.add_item(item1)
+        self.add_item(item2)
         self.fit.stats.rig_slots.used = 2
         self.fit.stats.rig_slots.total = 1
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.rig_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.rig_slot)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.slots_max_allowed, 1)
         self.assertEqual(restriction_error1.slots_used, 2)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.rig_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.rig_slot)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_equal(self):
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(Rig, eve_type)
-        holder2 = self.make_item_mock(Rig, eve_type)
-        self.fit.rigs.add(holder1)
-        self.fit.rigs.add(holder2)
-        self.add_holder(holder1)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Rig, eve_type)
+        item2 = self.make_item_mock(Rig, eve_type)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
+        self.add_item(item1)
+        self.add_item(item2)
         self.fit.stats.rig_slots.used = 2
         self.fit.stats.rig_slots.total = 2
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.rig_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.rig_slot)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.rig_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.rig_slot)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_greater(self):
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(Rig, eve_type)
-        holder2 = self.make_item_mock(Rig, eve_type)
-        self.fit.rigs.add(holder1)
-        self.fit.rigs.add(holder2)
-        self.add_holder(holder1)
-        self.add_holder(holder2)
+        item1 = self.make_item_mock(Rig, eve_type)
+        item2 = self.make_item_mock(Rig, eve_type)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
+        self.add_item(item1)
+        self.add_item(item2)
         self.fit.stats.rig_slots.used = 2
         self.fit.stats.rig_slots.total = 5
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.rig_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.rig_slot)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.rig_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.rig_slot)
         self.assertIsNone(restriction_error2)
-        self.remove_holder(holder1)
-        self.remove_holder(holder2)
+        self.remove_item(item1)
+        self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_other_container(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Rig, eve_type)
-        self.fit.subsystems.add(holder)
-        self.add_holder(holder)
+        item = self.make_item_mock(Rig, eve_type)
+        self.fit.subsystems.add(item)
+        self.add_item(item)
         self.fit.stats.rig_slots.used = 1
         self.fit.stats.rig_slots.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.rig_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.rig_slot)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

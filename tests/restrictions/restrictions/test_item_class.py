@@ -25,472 +25,472 @@ from eos.fit.item import *
 from tests.restrictions.restriction_testcase import RestrictionTestCase
 
 
-class TestHolderClass(RestrictionTestCase):
-    """Check functionality of holder class verification"""
+class TestItemClass(RestrictionTestCase):
+    """Check functionality of item class verification"""
 
     def test_booster_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
-        holder = Booster(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Booster(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_booster_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008, attributes={Attribute.boosterness: 3})
-        holder = Booster(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Booster(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Booster)
+        self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_booster_fail_attr(self):
         eve_type = self.ch.type(type_id=1, category=Category.implant)
-        holder = Booster(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Booster(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Booster)
+        self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_character_pass(self):
         eve_type = self.ch.type(type_id=1, group=Group.character)
-        holder = Character(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Character(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_character_fail_group(self):
         eve_type = self.ch.type(type_id=1, group=1008)
-        holder = Character(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Character(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Character)
+        self.assertEqual(restriction_error.item_class, Character)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_charge_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.charge)
-        holder = Charge(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Charge(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_charge_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
-        holder = Charge(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Charge(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Charge)
+        self.assertEqual(restriction_error.item_class, Charge)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_drone_ass(self):
         eve_type = self.ch.type(type_id=1, category=Category.drone)
-        holder = Drone(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Drone(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_drone_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
-        holder = Drone(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Drone(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Drone)
+        self.assertEqual(restriction_error.item_class, Drone)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_effect_beacon_pass(self):
         eve_type = self.ch.type(type_id=1, group=Group.effect_beacon)
-        holder = EffectBeacon(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = EffectBeacon(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_effect_beacon_fail_group(self):
         eve_type = self.ch.type(type_id=1, group=1008)
-        holder = EffectBeacon(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = EffectBeacon(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, EffectBeacon)
+        self.assertEqual(restriction_error.item_class, EffectBeacon)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_implant_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.implantness: 3})
-        holder = Implant(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Implant(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_implant_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008, attributes={Attribute.implantness: 3})
-        holder = Implant(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Implant(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Implant)
+        self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_implant_fail_attr(self):
         eve_type = self.ch.type(type_id=1, category=Category.implant)
-        holder = Implant(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Implant(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Implant)
+        self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_module_high_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.module_high}
-        holder = ModuleHigh(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleHigh(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_module_high_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.module_high}
-        holder = ModuleHigh(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleHigh(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, ModuleHigh)
+        self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
 
     def test_module_high_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
-        holder = ModuleHigh(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleHigh(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, ModuleHigh)
+        self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_module_medium_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.module_med}
-        holder = ModuleMed(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleMed(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_module_med_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.module_med}
-        holder = ModuleMed(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleMed(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, ModuleMed)
+        self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
 
     def test_module_med_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
-        holder = ModuleMed(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleMed(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, ModuleMed)
+        self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_module_low_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.module_low}
-        holder = ModuleLow(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleLow(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_module_low_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.module_low}
-        holder = ModuleLow(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleLow(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, ModuleLow)
+        self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
 
     def test_module_low_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
-        holder = ModuleLow(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = ModuleLow(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, ModuleLow)
+        self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_rig_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {Slot.rig}
-        holder = Rig(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Rig(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_rig_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
         eve_type.slots = {Slot.rig}
-        holder = Rig(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Rig(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Rig)
+        self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
 
     def test_rig_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
-        holder = Rig(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Rig(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Rig)
+        self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_ship_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.ship)
-        holder = Ship(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Ship(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_ship_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
-        holder = Ship(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Ship(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Ship)
+        self.assertEqual(restriction_error.item_class, Ship)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_skill_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.skill)
-        holder = Skill(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Skill(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_skill_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
-        holder = Skill(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Skill(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Skill)
+        self.assertEqual(restriction_error.item_class, Skill)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_stance_pass(self):
         eve_type = self.ch.type(type_id=1, group=Group.ship_modifier)
-        holder = Stance(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Stance(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_stance_fail_group(self):
         eve_type = self.ch.type(type_id=1, group=1008)
-        holder = Stance(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Stance(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Stance)
+        self.assertEqual(restriction_error.item_class, Stance)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_subsystem_pass(self):
         eve_type = self.ch.type(type_id=1, category=Category.subsystem)
         eve_type.slots = {Slot.subsystem}
-        holder = Subsystem(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Subsystem(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_subsystem_fail_category(self):
         eve_type = self.ch.type(type_id=1, category=1008)
-        holder = Subsystem(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Subsystem(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Subsystem)
+        self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_subsystem_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.subsystem)
         eve_type.slots = {1008}
-        holder = Subsystem(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Subsystem(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Subsystem)
+        self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_single_replacement(self):
         eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
-        holder = Implant(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Implant(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Implant)
+        self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 1)
         self.assertIn(Booster, restriction_error.expected_classes)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_multiple_replacements(self):
         eve_type = self.ch.type(
             type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3, Attribute.implantness: 1})
-        holder = Drone(1)
-        holder._eve_type = eve_type
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.holder_class)
+        item = Drone(1)
+        item._eve_type = eve_type
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.item_class)
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.holder_class, Drone)
+        self.assertEqual(restriction_error.item_class, Drone)
         self.assertEqual(len(restriction_error.expected_classes), 2)
         self.assertIn(Booster, restriction_error.expected_classes)
         self.assertIn(Implant, restriction_error.expected_classes)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

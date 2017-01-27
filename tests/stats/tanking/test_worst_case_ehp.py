@@ -30,12 +30,12 @@ class TestWorstCaseEhp(StatTestCase):
     def test_relay(self):
         # Check that stats service relays wcehp stats properly
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        ship_holder.worst_case_ehp.hull = 50
-        ship_holder.worst_case_ehp.armor = 60
-        ship_holder.worst_case_ehp.shield = 70
-        ship_holder.worst_case_ehp.total = 80
-        self.set_ship(ship_holder)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        ship_item.worst_case_ehp.hull = 50
+        ship_item.worst_case_ehp.armor = 60
+        ship_item.worst_case_ehp.shield = 70
+        ship_item.worst_case_ehp.total = 80
+        self.set_ship(ship_item)
         self.assertEqual(self.ss.worst_case_ehp.hull, 50)
         self.assertEqual(self.ss.worst_case_ehp.armor, 60)
         self.assertEqual(self.ss.worst_case_ehp.shield, 70)
@@ -55,14 +55,14 @@ class TestWorstCaseEhp(StatTestCase):
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        self.set_ship(ship_holder)
-        ship_holder.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
+        ship_item.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
         self.assertEqual(self.ss.worst_case_ehp.hull, 50)
         self.assertEqual(self.ss.worst_case_ehp.armor, 60)
         self.assertEqual(self.ss.worst_case_ehp.shield, 70)
         self.assertEqual(self.ss.worst_case_ehp.total, 80)
-        ship_holder.worst_case_ehp = Mock(hull=150, armor=160, shield=170, total=180)
+        ship_item.worst_case_ehp = Mock(hull=150, armor=160, shield=170, total=180)
         self.assertEqual(self.ss.worst_case_ehp.hull, 50)
         self.assertEqual(self.ss.worst_case_ehp.armor, 60)
         self.assertEqual(self.ss.worst_case_ehp.shield, 70)
@@ -73,14 +73,14 @@ class TestWorstCaseEhp(StatTestCase):
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1)
-        ship_holder = self.make_item_mock(Ship, ship_eve_type)
-        self.set_ship(ship_holder)
-        ship_holder.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
+        ship_item = self.make_item_mock(Ship, ship_eve_type)
+        self.set_ship(ship_item)
+        ship_item.worst_case_ehp = Mock(hull=50, armor=60, shield=70, total=80)
         self.assertEqual(self.ss.worst_case_ehp.hull, 50)
         self.assertEqual(self.ss.worst_case_ehp.armor, 60)
         self.assertEqual(self.ss.worst_case_ehp.shield, 70)
         self.assertEqual(self.ss.worst_case_ehp.total, 80)
-        ship_holder.worst_case_ehp = Mock(hull=150, armor=160, shield=170, total=180)
+        ship_item.worst_case_ehp = Mock(hull=150, armor=160, shield=170, total=180)
         self.ss._clear_volatile_attrs()
         self.assertEqual(self.ss.worst_case_ehp.hull, 150)
         self.assertEqual(self.ss.worst_case_ehp.armor, 160)

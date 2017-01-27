@@ -51,20 +51,20 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         valid_modifier.tgt_attr = tgt_attr.id
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,),
             attributes={src_attr.id: 1.5, tgt_attr.id: 100}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
         # Invalid source value shouldn't screw whole calculation process
-        self.assertAlmostEqual(holder.attributes[tgt_attr.id], 150)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on eve type 1')
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)

@@ -31,39 +31,39 @@ class TestNonExistent(CalculatorTestCase):
     def test_attribute_data_error(self):
         # Check case when attribute value is available, but
         # cache handler doesn't know about such attribute
-        holder = IndependentItem(self.ch.type(type_id=57, attributes={105: 20}))
-        self.fit.items.add(holder)
-        self.assertRaises(KeyError, holder.attributes.__getitem__, 105)
+        item = IndependentItem(self.ch.type(type_id=57, attributes={105: 20}))
+        self.fit.items.add(item)
+        self.assertRaises(KeyError, item.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(log_record.msg, 'unable to fetch metadata for attribute 105, requested for eve type 57')
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_absent_base_value_error(self):
         # Check case when default value of attribute cannot be
         # determined. and eve type doesn't define any value either
         attr = self.ch.attribute(attribute_id=89)
-        holder = IndependentItem(self.ch.type(type_id=649))
-        self.fit.items.add(holder)
-        self.assertRaises(KeyError, holder.attributes.__getitem__, attr.id)
+        item = IndependentItem(self.ch.type(type_id=649))
+        self.fit.items.add(item)
+        self.assertRaises(KeyError, item.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unable to find base value for attribute 89 on eve type 649')
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_absent_default_value(self):
         # Default value should be used if attribute
         # value is not available on eve type
         attr = self.ch.attribute(attribute_id=1, default_value=5.6)
-        holder = IndependentItem(self.ch.type(type_id=1))
-        self.fit.items.add(holder)
-        self.assertAlmostEqual(holder.attributes[attr.id], 5.6)
-        self.fit.items.remove(holder)
+        item = IndependentItem(self.ch.type(type_id=1))
+        self.fit.items.add(item)
+        self.assertAlmostEqual(item.attributes[attr.id], 5.6)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

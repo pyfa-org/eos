@@ -24,10 +24,10 @@ from unittest.mock import Mock
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinDamageTurretNominalVolley(HolderMixinTestCase):
+class TestItemMixinDamageTurretNominalVolley(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
@@ -98,7 +98,7 @@ class TestHolderMixinDamageTurretNominalVolley(HolderMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
 
-    def test_onholder_damage_stats(self):
+    def test_onitem_damage_stats(self):
         mixin = self.mixin
         mixin.charge = None
         mixin.attributes[Attribute.em_damage] = 5.2

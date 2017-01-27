@@ -22,13 +22,13 @@
 from unittest.mock import Mock
 
 from eos.const.eos import State
-from eos.fit.container import HolderDescriptorOnFit
+from eos.fit.container import ItemDescriptorOnFit
 from eos.fit.item import Ship
 from eos.fit.item.mixin.state import MutableStateMixin
-from eos.fit.messages import HolderAdded, HolderRemoved
+from eos.fit.messages import ItemAdded, ItemRemoved
 
 
-class Holder(MutableStateMixin):
+class Item(MutableStateMixin):
 
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)
@@ -37,7 +37,7 @@ class Holder(MutableStateMixin):
     _owner_modifiable = None
 
 
-class OtherHolder(MutableStateMixin):
+class OtherItem(MutableStateMixin):
 
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)
@@ -52,23 +52,23 @@ class Fit:
         self.test = test
         self._message_assertions = message_assertions
         self.assertions_enabled = False
-        self.test_holders = set()
+        self.test_items = set()
         self._subscribe = Mock()
         self._unsubscribe = Mock()
 
-    ship = HolderDescriptorOnFit('_ship', Ship)
+    ship = ItemDescriptorOnFit('_ship', Ship)
 
-    def handle_add_holder(self, message):
-        self.test.assertNotIn(message.holder, self.test_holders)
-        self.test_holders.add(message.holder)
+    def handle_add_item(self, message):
+        self.test.assertNotIn(message.item, self.test_items)
+        self.test_items.add(message.item)
 
-    def handle_remove_holder(self, message):
-        self.test.assertIn(message.holder, self.test_holders)
-        self.test_holders.remove(message.holder)
+    def handle_remove_item(self, message):
+        self.test.assertIn(message.item, self.test_items)
+        self.test_items.remove(message.item)
 
     handler_map = {
-        HolderAdded: handle_add_holder,
-        HolderRemoved: handle_remove_holder
+        ItemAdded: handle_add_item,
+        ItemRemoved: handle_remove_item
     }
 
     def _publish(self, message):

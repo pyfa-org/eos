@@ -22,10 +22,10 @@
 from unittest.mock import Mock
 
 from eos.fit.item.mixin.misc import DefaultEffectAttribMixin
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinSpecialAttrib(HolderMixinTestCase):
+class TestItemMixinSpecialAttrib(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()

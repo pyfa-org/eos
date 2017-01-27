@@ -50,20 +50,20 @@ class TestTargetAttribute(CalculatorTestCase):
         modifier2.tgt_attr = tgt_attr2.id
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier1, modifier2)
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,),
             attributes={tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
         # First attribute should be modified by modifier1
-        self.assertAlmostEqual(holder.attributes[tgt_attr1.id], 60)
+        self.assertAlmostEqual(item.attributes[tgt_attr1.id], 60)
         # Second should be modified by modifier2
-        self.assertAlmostEqual(holder.attributes[tgt_attr2.id], 96)
+        self.assertAlmostEqual(item.attributes[tgt_attr2.id], 96)
         # Third should stay unmodified
-        self.assertAlmostEqual(holder.attributes[tgt_attr3.id], 100)
+        self.assertAlmostEqual(item.attributes[tgt_attr3.id], 100)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

@@ -23,43 +23,43 @@ from unittest.mock import Mock
 
 from eos.const.eve import Attribute, Effect
 from eos.fit.item import ModuleHigh
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinChargeReloadTime(HolderMixinTestCase):
+class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.holder = ModuleHigh(type_id=None)
-        self.holder._eve_type = Mock()
-        self.holder._clear_volatile_attrs = Mock()
-        self.holder.attributes = {}
+        self.item = ModuleHigh(type_id=None)
+        self.item._eve_type = Mock()
+        self.item._clear_volatile_attrs = Mock()
+        self.item.attributes = {}
 
     def test_generic(self):
-        self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder._eve_type.default_effect.id = 1008
-        self.assertEqual(self.holder.reload_time, 5.0)
+        self.item.attributes[Attribute.reload_time] = 5000.0
+        self.item._eve_type.default_effect.id = 1008
+        self.assertEqual(self.item.reload_time, 5.0)
 
     def test_generic_no_attribute(self):
-        self.holder._eve_type.default_effect.id = 1008
-        self.assertIsNone(self.holder.reload_time)
+        self.item._eve_type.default_effect.id = 1008
+        self.assertIsNone(self.item.reload_time)
 
     def test_generic_no_eve_type(self):
-        self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder._eve_type = None
-        self.assertEqual(self.holder.reload_time, 5.0)
+        self.item.attributes[Attribute.reload_time] = 5000.0
+        self.item._eve_type = None
+        self.assertEqual(self.item.reload_time, 5.0)
 
     def test_generic_no_default_effect(self):
-        self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder._eve_type.default_effect = None
-        self.assertEqual(self.holder.reload_time, 5.0)
+        self.item.attributes[Attribute.reload_time] = 5000.0
+        self.item._eve_type.default_effect = None
+        self.assertEqual(self.item.reload_time, 5.0)
 
     def test_combat_combat_laser(self):
-        self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder._eve_type.default_effect.id = Effect.target_attack
-        self.assertEqual(self.holder.reload_time, 1.0)
+        self.item.attributes[Attribute.reload_time] = 5000.0
+        self.item._eve_type.default_effect.id = Effect.target_attack
+        self.assertEqual(self.item.reload_time, 1.0)
 
     def test_combat_mining_laser(self):
-        self.holder.attributes[Attribute.reload_time] = 5000.0
-        self.holder._eve_type.default_effect.id = Effect.mining_laser
-        self.assertEqual(self.holder.reload_time, 1.0)
+        self.item.attributes[Attribute.reload_time] = 5000.0
+        self.item._eve_type.default_effect.id = Effect.mining_laser
+        self.assertEqual(self.item.reload_time, 1.0)

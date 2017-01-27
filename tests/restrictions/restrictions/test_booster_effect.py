@@ -30,52 +30,52 @@ class TestBoosterEffect(RestrictionTestCase):
     def test_fail(self):
         # Check if error is raised when there's disabled effect
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Booster, eve_type)
-        holder.side_effects = {55, 66}
-        holder._disabled_effects = {77, 99}
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
+        item = self.make_item_mock(Booster, eve_type)
+        item.side_effects = {55, 66}
+        item._disabled_effects = {77, 99}
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.illegally_disabled, {77, 99})
         self.assertEqual(restriction_error.disablable, {55, 66})
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_disabled_side_effect(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Booster, eve_type)
-        holder.side_effects = {55, 66}
-        holder._disabled_effects = {55, 66}
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
+        item = self.make_item_mock(Booster, eve_type)
+        item.side_effects = {55, 66}
+        item._disabled_effects = {55, 66}
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_enabled_regular_effect(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Booster, eve_type)
+        item = self.make_item_mock(Booster, eve_type)
         # Enabled regular effects are not listed in any of
         # these containers
-        holder.side_effects = {}
-        holder._disabled_effects = set()
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
+        item.side_effects = {}
+        item._disabled_effects = set()
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_non_booster(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Implant, eve_type, strict_spec=False)
-        holder.side_effects = {55, 66}
-        holder._disabled_effects = {77, 99}
-        self.add_holder(holder)
-        restriction_error = self.get_restriction_error(holder, Restriction.booster_effect)
+        item = self.make_item_mock(Implant, eve_type, strict_spec=False)
+        item.side_effects = {55, 66}
+        item._disabled_effects = {77, 99}
+        self.add_item(item)
+        restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
         self.assertIsNone(restriction_error)
-        self.remove_holder(holder)
+        self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

@@ -50,15 +50,15 @@ class TestModItemDomainUnknown(CalculatorTestCase):
             effect_id=1, category=EffectCategory.passive,
             modifiers=(invalid_modifier, valid_modifier)
         )
-        holder = IndependentItem(self.ch.type(
+        item = IndependentItem(self.ch.type(
             type_id=1, effects=(effect,),
             attributes={src_attr.id: 20, tgt_attr.id: 100}
         ))
         # Action
-        self.fit.items.add(holder)
+        self.fit.items.add(item)
         # Checks
-        self.assertAlmostEqual(holder.attributes[tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         # Misc
-        self.fit.items.remove(holder)
+        self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)

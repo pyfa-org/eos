@@ -23,7 +23,7 @@ from itertools import chain
 from unittest.mock import Mock
 
 from eos.const.eos import Restriction
-from eos.fit.messages import HolderAdded, HolderRemoved, EnableServices
+from eos.fit.messages import ItemAdded, ItemRemoved, EnableServices
 from eos.fit.restrictions import RestrictionService, ValidationError
 from tests.eos_testcase import EosTestCase
 
@@ -36,10 +36,10 @@ class RestrictionTestCase(EosTestCase):
     self.make_item_mock -- create eos item mock with specified
         parameters
     self.set_ship -- set ship to fit which uses restriction service
-    self.add_holder -- add holder to restriction service
-    self.remove_holder -- remove holder from restriction service
+    self.add_item -- add item to restriction service
+    self.remove_item -- remove item from restriction service
     self.get_restriction_error -- get restriction error for passed
-        holder of passed restriction type. If no error occurred,
+        item of passed restriction type. If no error occurred,
         return None
     self.assert_restriction_buffers_empty -- checks if restriction
         service buffers are clear
@@ -58,7 +58,7 @@ class RestrictionTestCase(EosTestCase):
         self.fit.subsystems = set()
         self.fit.drones = set()
         self.rs = RestrictionService(self.fit)
-        self.rs._notify(EnableServices(holders=()))
+        self.rs._notify(EnableServices(items=()))
 
     def make_item_mock(self, item_class, eve_type, state=None, strict_spec=True):
         item = item_class(eve_type.id)
@@ -72,27 +72,27 @@ class RestrictionTestCase(EosTestCase):
         }
         return Mock(**kwargs)
 
-    def set_ship(self, holder):
-        self.fit.ship = holder
+    def set_ship(self, item):
+        self.fit.ship = item
 
-    def add_holder(self, holder):
-        self.rs._notify(HolderAdded(holder))
+    def add_item(self, item):
+        self.rs._notify(ItemAdded(item))
 
-    def remove_holder(self, holder):
-        self.rs._notify(HolderRemoved(holder))
+    def remove_item(self, item):
+        self.rs._notify(ItemRemoved(item))
 
-    def get_restriction_error(self, holder, restriction):
+    def get_restriction_error(self, item, restriction):
         skip_checks = set(Restriction).difference((restriction,))
         try:
             self.rs.validate(skip_checks)
         except ValidationError as e:
             error_data = e.args[0]
-            if holder not in error_data:
+            if item not in error_data:
                 return None
-            holder_error = error_data[holder]
-            if restriction not in holder_error:
+            item_error = error_data[item]
+            if restriction not in item_error:
                 return None
-            return holder_error[restriction]
+            return item_error[restriction]
         else:
             return None
 

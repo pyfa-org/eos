@@ -31,11 +31,11 @@ class TestMediumSlot(RestrictionTestCase):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.modules.med.append(item)
         self.fit.stats.med_slots.used = 1
         self.fit.stats.med_slots.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.medium_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.medium_slot)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
@@ -43,13 +43,13 @@ class TestMediumSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_excess_signle_other_class_domain(self):
-        # Make sure holders of all classes are affected
+        # Make sure items of all classes are affected
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(Implant, eve_type)
-        self.fit.modules.med.append(holder)
+        item = self.make_item_mock(Implant, eve_type)
+        self.fit.modules.med.append(item)
         self.fit.stats.med_slots.used = 1
         self.fit.stats.med_slots.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.medium_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.medium_slot)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
@@ -60,11 +60,11 @@ class TestMediumSlot(RestrictionTestCase):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.modules.med.append(item)
         self.fit.stats.med_slots.used = 1
         self.fit.stats.med_slots.total = None
-        restriction_error = self.get_restriction_error(holder, Restriction.medium_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.medium_slot)
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
@@ -72,18 +72,18 @@ class TestMediumSlot(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_excess_multiple(self):
-        # Check that error works for multiple holders, and raised
+        # Check that error works for multiple items, and raised
         # only for those which lie out of bounds
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(holder1)
-        self.fit.modules.med.append(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(item2)
         self.fit.stats.med_slots.used = 2
         self.fit.stats.med_slots.total = 1
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.medium_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.medium_slot)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.medium_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.medium_slot)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
@@ -93,25 +93,25 @@ class TestMediumSlot(RestrictionTestCase):
     def test_fail_excess_multiple_with_nones(self):
         # Make sure Nones are processed properly
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder3 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item3 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.fit.modules.med.append(None)
-        self.fit.modules.med.append(holder1)
+        self.fit.modules.med.append(item1)
         self.fit.modules.med.append(None)
         self.fit.modules.med.append(None)
-        self.fit.modules.med.append(holder2)
+        self.fit.modules.med.append(item2)
         self.fit.modules.med.append(None)
-        self.fit.modules.med.append(holder3)
+        self.fit.modules.med.append(item3)
         self.fit.stats.med_slots.used = 7
         self.fit.stats.med_slots.total = 3
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.medium_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.medium_slot)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.medium_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.medium_slot)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 3)
         self.assertEqual(restriction_error2.slots_used, 7)
-        restriction_error3 = self.get_restriction_error(holder2, Restriction.medium_slot)
+        restriction_error3 = self.get_restriction_error(item2, Restriction.medium_slot)
         self.assertIsNotNone(restriction_error3)
         self.assertEqual(restriction_error3.slots_max_allowed, 3)
         self.assertEqual(restriction_error3.slots_used, 7)
@@ -120,41 +120,41 @@ class TestMediumSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(holder1)
-        self.fit.modules.med.append(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(item2)
         self.fit.stats.med_slots.used = 2
         self.fit.stats.med_slots.total = 2
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.medium_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.medium_slot)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.medium_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.medium_slot)
         self.assertIsNone(restriction_error2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_greater(self):
         eve_type = self.ch.type(type_id=1)
-        holder1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        holder2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(holder1)
-        self.fit.modules.med.append(holder2)
+        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(item2)
         self.fit.stats.med_slots.used = 2
         self.fit.stats.med_slots.total = 5
-        restriction_error1 = self.get_restriction_error(holder1, Restriction.medium_slot)
+        restriction_error1 = self.get_restriction_error(item1, Restriction.medium_slot)
         self.assertIsNone(restriction_error1)
-        restriction_error2 = self.get_restriction_error(holder2, Restriction.medium_slot)
+        restriction_error2 = self.get_restriction_error(item2, Restriction.medium_slot)
         self.assertIsNone(restriction_error2)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
     def test_pass_other_container(self):
         eve_type = self.ch.type(type_id=1)
-        holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.low.append(holder)
+        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
+        self.fit.modules.low.append(item)
         self.fit.stats.med_slots.used = 1
         self.fit.stats.med_slots.total = 0
-        restriction_error = self.get_restriction_error(holder, Restriction.medium_slot)
+        restriction_error = self.get_restriction_error(item, Restriction.medium_slot)
         self.assertIsNone(restriction_error)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

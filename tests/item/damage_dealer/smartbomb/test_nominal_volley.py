@@ -24,10 +24,10 @@ from unittest.mock import Mock
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
-from tests.holder_mixin.mixin_testcase import HolderMixinTestCase
+from tests.item.item_testcase import ItemMixinTestCase
 
 
-class TestHolderMixinDamageSmartbombNominalVolley(HolderMixinTestCase):
+class TestItemMixinDamageSmartbombNominalVolley(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()

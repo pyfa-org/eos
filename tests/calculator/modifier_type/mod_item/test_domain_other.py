@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import ChargeHolder, ContainerHolder, IndependentItem
+from tests.calculator.environment import ChargeItem, ContainerItem, IndependentItem
 
 
 class TestModItemDomainOther(CalculatorTestCase):
@@ -43,11 +43,11 @@ class TestModItemDomainOther(CalculatorTestCase):
         self.effect.modifiers = (modifier,)
 
     def test_other_domain_container(self):
-        influence_source = ContainerHolder(self.ch.type(
+        influence_source = ContainerItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20}
         ))
-        influence_target = ChargeHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ChargeItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         influence_source.charge = influence_target
@@ -67,11 +67,11 @@ class TestModItemDomainOther(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_other_domain_charge(self):
-        influence_source = ChargeHolder(self.ch.type(
+        influence_source = ChargeItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20}
         ))
-        influence_target = ContainerHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ContainerItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         influence_source.container = influence_target
@@ -91,12 +91,12 @@ class TestModItemDomainOther(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_self(self):
-        # Check that source holder isn't modified
-        influence_source = ContainerHolder(self.ch.type(
+        # Check that source item isn't modified
+        influence_source = ContainerItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ))
-        influence_target = ChargeHolder(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
+        influence_target = ChargeItem(self.ch.type(type_id=2, attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(influence_target)
         # Action
         influence_source.charge = influence_target
@@ -112,9 +112,9 @@ class TestModItemDomainOther(CalculatorTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_other_holder(self):
-        # Here we check some "random" holder, w/o linking holders
-        influence_source = ContainerHolder(self.ch.type(
+    def test_other_item(self):
+        # Here we check some "random" item, w/o linking items
+        influence_source = ContainerItem(self.ch.type(
             type_id=1, effects=(self.effect,),
             attributes={self.src_attr.id: 20}
         ))

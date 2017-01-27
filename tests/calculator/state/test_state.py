@@ -27,7 +27,7 @@ from tests.calculator.environment import IndependentItem
 
 
 class TestStateSwitching(CalculatorTestCase):
-    """Test holder state switching and modifier states"""
+    """Test item state switching and modifier states"""
 
     def setUp(self):
         super().setUp()
@@ -72,116 +72,116 @@ class TestStateSwitching(CalculatorTestCase):
         modifier_disabled.src_attr = src_attr3.id
         modifier_disabled.operator = ModifierOperator.post_mul
         modifier_disabled.tgt_attr = self.tgt_attr.id
-        # Overload category will make sure that holder can enter all states
+        # Overload category will make sure that item can enter all states
         effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
         effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
         effect_disabled = self.ch.effect(effect_id=2, category=EffectCategory.active)
         effect_disabled.modifiers = (modifier_disabled,)
-        self.holder = IndependentItem(self.ch.type(
+        self.item = IndependentItem(self.ch.type(
             type_id=1, effects=(effect, effect_disabled),
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
             }
         ))
-        self.holder._disabled_effects.add(effect_disabled.id)
+        self.item._disabled_effects.add(effect_disabled.id)
 
     def test_fit_offline(self):
         # Setup
-        self.holder.state = State.offline
+        self.item.state = State.offline
         # Action
-        self.fit.items.add(self.holder)
+        self.fit.items.add(self.item)
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_fit_online(self):
         # Setup
-        self.holder.state = State.online
+        self.item.state = State.online
         # Action
-        self.fit.items.add(self.holder)
+        self.fit.items.add(self.item)
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_fit_active(self):
         # Setup
-        self.holder.state = State.active
+        self.item.state = State.active
         # Action
-        self.fit.items.add(self.holder)
+        self.fit.items.add(self.item)
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_fit_overloaded(self):
         # Setup
-        self.holder.state = State.overload
+        self.item.state = State.overload
         # Action
-        self.fit.items.add(self.holder)
+        self.fit.items.add(self.item)
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_switch_up_single(self):
         # Setup
-        self.holder.state = State.offline
-        self.fit.items.add(self.holder)
+        self.item.state = State.offline
+        self.fit.items.add(self.item)
         # Action
-        self.holder.state = State.online
+        self.item.state = State.online
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 143)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_switch_up_multiple(self):
         # Setup
-        self.holder.state = State.online
-        self.fit.items.add(self.holder)
+        self.item.state = State.online
+        self.fit.items.add(self.item)
         # Action
-        self.holder.state = State.overload
+        self.item.state = State.overload
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 364.65)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_switch_down_single(self):
         # Setup
-        self.holder.state = State.overload
-        self.fit.items.add(self.holder)
+        self.item.state = State.overload
+        self.fit.items.add(self.item)
         # Action
-        self.holder.state = State.active
+        self.item.state = State.active
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 214.5)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_switch_down_multiple(self):
         # Setup
-        self.holder.state = State.active
-        self.fit.items.add(self.holder)
+        self.item.state = State.active
+        self.fit.items.add(self.item)
         # Action
-        self.holder.state = State.offline
+        self.item.state = State.offline
         # Checks
-        self.assertAlmostEqual(self.holder.attributes[self.tgt_attr.id], 110)
+        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Misc
-        self.fit.items.remove(self.holder)
+        self.fit.items.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
