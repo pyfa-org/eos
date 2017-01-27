@@ -55,7 +55,7 @@ class Cleaner:
         """
         Mark some hardcoded evetypes as strong.
         """
-        # Tuple with category IDs of EVE types we want to keep
+        # Tuple with category IDs of eve types we want to keep
         strong_categories = (
             Category.ship,
             Category.module,
@@ -65,7 +65,7 @@ class Cleaner:
             Category.implant,
             Category.subsystem
         )
-        # Set with group IDs of EVE types we want to keep
+        # Set with group IDs of eve types we want to keep
         # It is set because we will need to modify it
         strong_groups = {Group.character, Group.effect_beacon}
         # Go through table data, filling valid groups set according to valid categories

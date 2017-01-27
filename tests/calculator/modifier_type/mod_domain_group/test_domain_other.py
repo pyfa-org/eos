@@ -58,7 +58,7 @@ class TestModDomainGroupDomainOther(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,
-                'malformed modifier on EVE type 90: unsupported target domain '
+                'malformed modifier on eve type 90: unsupported target domain '
                 '{} for filtered modification'.format(ModifierDomain.other)
             )
         # Misc

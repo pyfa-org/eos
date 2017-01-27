@@ -79,34 +79,34 @@ AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    Holders, which have certain fittable ship types or ship groups
+    Items, which have certain fittable ship types or ship groups
     specified, can be fitted only to ships belonging to one of
     these types or groups.
 
     Details:
-    Only holders belonging to ship are tracked.
-    It's enough to satisfy any of conditions to make holder usable
+    Only items belonging to ship are tracked.
+    It's enough to satisfy any of conditions to make item usable
     (e.g. ship's group may not satisfy canFitShipGroupX
-    restriction, but its type may be suitable to use holder).
-    If holder has at least one restriction attribute, it is enabled
+    restriction, but its type may be suitable to use item).
+    If item has at least one restriction attribute, it is enabled
     for tracking by this register.
     For validation, canFitShipTypeX and canFitShipGroupX attribute
-    values of EVE type are taken.
+    values of eve type are taken.
     """
 
     def __init__(self, fit):
         self._fit = fit
-        # Container for holders which possess
+        # Container for items which possess
         # ship type/group restriction
-        # Format: {holder: allowedData}
-        self.__restricted_holders = {}
+        # Format: {item: allowed data}
+        self.__restricted_items = {}
 
-    def register_item(self, holder):
-        # Ignore all holders which do not belong to ship
-        if holder._domain != ModifierDomain.ship:
+    def register_item(self, item):
+        # Ignore all items which do not belong to ship
+        if item._domain != ModifierDomain.ship:
             return
         # Containers for typeIDs and groupIDs of ships, to
-        # which holder is allowed to fit
+        # which item is allowed to fit
         allowed_types = set()
         allowed_groups = set()
         for allowed_container, restriction_attrs in (
@@ -115,51 +115,51 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         ):
             # Cycle through IDs of known restriction attributes
             for restriction_attr in restriction_attrs:
-                allowed_container.add(holder._eve_type.attributes.get(restriction_attr))
+                allowed_container.add(item._eve_type.attributes.get(restriction_attr))
             allowed_container.discard(None)
-        # Ignore non-restricted holders
+        # Ignore non-restricted items
         if not allowed_types and not allowed_groups:
             return
-        # Finally, register holders which made it into here
-        self.__restricted_holders[holder] = AllowedData(
+        # Finally, register items which made it into here
+        self.__restricted_items[item] = AllowedData(
             types=tuple(allowed_types),
             groups=tuple(allowed_groups)
         )
 
-    def unregister_item(self, holder):
-        if holder in self.__restricted_holders:
-            del self.__restricted_holders[holder]
+    def unregister_item(self, item):
+        if item in self.__restricted_items:
+            del self.__restricted_items[item]
 
     def validate(self):
         # Get type ID and group ID of ship, if no ship
         # available, assume they're None; it's safe to set
         # them to None because our primary data container
-        # with restricted holders can't contain None in its
+        # with restricted items can't contain None in its
         # values anyway
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            ship_type_id = ship_holder._eve_type_id
-            ship_group = ship_holder._eve_type.group
+            ship_type_id = ship_item._eve_type_id
+            ship_group = ship_item._eve_type.group
         except AttributeError:
             ship_type_id = None
             ship_group = None
-        # Container for tainted holders
-        tainted_holders = {}
-        # Go through all known restricted holders
-        for holder in self.__restricted_holders:
-            allowed_data = self.__restricted_holders[holder]
+        # Container for tainted items
+        tainted_items = {}
+        # Go through all known restricted items
+        for item in self.__restricted_items:
+            allowed_data = self.__restricted_items[item]
             # If ship's type isn't in allowed types and ship's
-            # group isn't in allowed groups, holder is tainted
+            # group isn't in allowed groups, item is tainted
             if ship_type_id not in allowed_data.types and ship_group not in allowed_data.groups:
-                tainted_holders[holder] = ShipTypeGroupErrorData(
+                tainted_items[item] = ShipTypeGroupErrorData(
                     ship_type=ship_type_id,
                     ship_group=ship_group,
                     allowed_types=allowed_data.types,
                     allowed_groups=allowed_data.groups
                 )
-        # Raise error if there're any tainted holders
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        # Raise error if there're any tainted items
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

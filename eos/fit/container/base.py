@@ -19,80 +19,80 @@
 # ===============================================================================
 
 
-from .exception import HolderAlreadyAssignedError, HolderFitMismatchError
-from eos.fit.messages import HolderAdded, HolderRemoved
+from .exception import ItemAlreadyAssignedError, ItemFitMismatchError
+from eos.fit.messages import ItemAdded, ItemRemoved
 
 
-class HolderContainerBase:
+class ItemContainerBase:
     """
     Base class for any containers which are intended
-    to ease management of holders. Hides fit-specific
+    to ease management of items. Hides fit-specific
     logic under its hood, letting real containers (which
     should inherit it) implement just container type-
     specific logic.
 
     Required arguments:
     fit -- fit, to which container is attached
-    holder_class -- class of holders this container
+    item_class -- class of items this container
         is allowed to contain
     """
 
-    def __init__(self, holder_class):
-        self.__holder_class = holder_class
+    def __init__(self, item_class):
+        self.__item_class = item_class
 
-    def _handle_holder_addition(self, fit, holder):
+    def _handle_item_addition(self, fit, item):
         """
-        Do all the generic work to add holder to container.
-        Must be called after holder has been assigned to
+        Do all the generic work to add item to container.
+        Must be called after item has been assigned to
         specific container.
         """
-        # Make sure we're not adding holder which already
+        # Make sure we're not adding item which already
         # belongs to other fit
-        if holder._fit is not None:
-            raise HolderAlreadyAssignedError(holder)
-        # Finalize linking holders before handling sub-holders
+        if item._fit is not None:
+            raise ItemAlreadyAssignedError(item)
+        # Finalize linking items before handling sub-items
         # and firing an event. This way we ensure that all
-        # services  which may rely on fit/holder links will
+        # services  which may rely on fit/item links will
         # work properly
-        holder._fit = fit
+        item._fit = fit
         # Do not check if charge has proper fit link, because
         # consistency is kept by charge descriptor. We should
         # never get an exception here
-        charge = getattr(holder, 'charge', None)
+        charge = getattr(item, 'charge', None)
         if charge is not None:
-            self._handle_holder_addition(fit, charge)
-        fit._publish(HolderAdded(holder))
+            self._handle_item_addition(fit, charge)
+        fit._publish(ItemAdded(item))
 
-    def _handle_holder_removal(self, fit, holder):
+    def _handle_item_removal(self, fit, item):
         """
-        Do all the generic work to remove holder to container.
-        Must be called before holder has been removed from
+        Do all the generic work to remove item to container.
+        Must be called before item has been removed from
         specific container.
         """
         # If everything is alright, this should never
         # be raised regardless of user actions
-        if holder._fit is not fit:
-            raise HolderFitMismatchError(holder)
+        if item._fit is not fit:
+            raise ItemFitMismatchError(item)
         # Fire removal event before unlinking, same reason
         # as in addition handling method
-        fit._publish(HolderRemoved(holder))
-        charge = getattr(holder, 'charge', None)
+        fit._publish(ItemRemoved(item))
+        charge = getattr(item, 'charge', None)
         if charge is not None:
-            self._handle_holder_removal(fit, charge)
-        holder._fit = None
+            self._handle_item_removal(fit, charge)
+        item._fit = None
 
-    def _check_class(self, holder, allow_none=False):
+    def _check_class(self, item, allow_none=False):
         """
-        Check if class of passed holder corresponds
+        Check if class of passed item corresponds
         to our expectations.
         """
-        if isinstance(holder, self.__holder_class):
+        if isinstance(item, self.__item_class):
             return
-        if holder is None and allow_none is True:
+        if item is None and allow_none is True:
             return
         msg = 'only {} {} accepted, not {}'.format(
-            self.__holder_class,
+            self.__item_class,
             'or None are' if allow_none is True else 'is',
-            type(holder)
+            type(item)
         )
         raise TypeError(msg)

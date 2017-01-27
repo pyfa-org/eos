@@ -31,7 +31,7 @@ from tests.environment import CacheHandler
 class TestTransitionFit(CalculatorTestCase):
     """
     Test cases when holder is transferred from fit to fit, when both
-    fits have source assigned (i.e. holder's EVE type doesn't change).
+    fits have source assigned (i.e. holder's eve type doesn't change).
     """
 
     def test_fit_attr_update(self):
@@ -92,7 +92,7 @@ class TestTransitionFit(CalculatorTestCase):
         effect1.modifiers = (modifier,)
         effect2 = cache_handler1.effect(effect_id=111, category=EffectCategory.passive)
         effect2.modifiers = (modifier,)
-        # Our holders from test environment do not update undelying EVE type
+        # Our holders from test environment do not update undelying eve type
         # automatically when source is changed, thus we do it manually
         ship_eve_type1 = cache_handler1.type(type_id=8, effects=(effect1,), attributes={src_attr1.id: 10})
         ship_eve_type2 = cache_handler2.type(type_id=8, effects=(effect2,), attributes={src_attr2.id: 20})

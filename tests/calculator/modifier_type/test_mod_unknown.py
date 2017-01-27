@@ -56,7 +56,7 @@ class TestModTypeUnknown(CalculatorTestCase):
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
             self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(log_record.msg, 'malformed modifier on EVE type 31: invalid filter type 26500')
+            self.assertEqual(log_record.msg, 'malformed modifier on eve type 31: invalid filter type 26500')
         # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)

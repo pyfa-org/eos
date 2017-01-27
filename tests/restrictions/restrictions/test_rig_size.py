@@ -47,7 +47,7 @@ class TestRigSize(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_attr_eve_type(self):
-        # EVE type value must be taken
+        # Eve type value must be taken
         eve_type = self.ch.type(type_id=1, attributes={Attribute.rig_size: 10})
         holder = self.make_item_mock(Rig, eve_type)
         holder.attributes = {Attribute.rig_size: 5}

@@ -94,7 +94,7 @@ class TestModDomainGroupDomainSelf(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            'malformed modifier on EVE type 1061: invalid reference '
+            'malformed modifier on eve type 1061: invalid reference '
             'to self for filtered modification'
         )
         # Misc

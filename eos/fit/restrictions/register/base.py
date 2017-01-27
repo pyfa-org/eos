@@ -26,32 +26,32 @@ class BaseRestrictionRegister(metaclass=ABCMeta):
     """Base class for all restriction registers."""
 
     @abstractmethod
-    def register_item(self, holder):
+    def register_item(self, item):
         """
-        Perform registration jobs upon holder. Only immutable
-        holder properties should be used during process.
+        Perform registration jobs upon item. Only immutable
+        item properties should be used during process.
 
         Posiitional arguments:
-        holder -- holder to register
+        item -- item to register
         """
         ...
 
     @abstractmethod
-    def unregister_item(self, holder):
+    def unregister_item(self, item):
         """
-        Perform unregistration jobs upon holder. Only immutable
-        holder properties should be used during process.
+        Perform unregistration jobs upon item. Only immutable
+        item properties should be used during process.
 
         Posiitional arguments:
-        holder -- holder to unregister
+        item -- item to unregister
         """
         ...
 
     @abstractmethod
     def validate(self):
         """
-        Check all registered holders for validity. Both mutable
-        and immutable holder properties can be used during process.
+        Check all registered items for validity. Both mutable
+        and immutable item properties can be used during process.
         """
         ...
 

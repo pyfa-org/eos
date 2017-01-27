@@ -150,9 +150,9 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
     @VolatileProperty
     def worst_case_ehp(self):
         """
-        Get EVE-style effective HP for an item.
+        Get eve-style effective HP for an item.
 
-        EVE takes the worst resistance and calculates EHP against it,
+        Eve takes the worst resistance and calculates EHP against it,
         on a per-layer basis.
 
         Object with following attributes is returned:

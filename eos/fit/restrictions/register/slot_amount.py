@@ -44,11 +44,11 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister):
         self.__stat_name = stat_name
         self._slot_consumers = set()
 
-    def register_item(self, holder):
-        self._slot_consumers.add(holder)
+    def register_item(self, item):
+        self._slot_consumers.add(item)
 
-    def unregister_item(self, holder):
-        self._slot_consumers.discard(holder)
+    def unregister_item(self, item):
+        self._slot_consumers.discard(item)
 
     def validate(self):
         # Use stats module to get max and used amount of slots
@@ -56,17 +56,17 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister):
         slots_used = stats.used
         # Can be None, so fall back to 0 in this case
         slots_max = stats.total or 0
-        # If number of holders which take this slot is bigger
+        # If number of items which take this slot is bigger
         # than number of available slots, then at least some
-        # holders in container are tainted
+        # items in container are tainted
         if slots_used > slots_max:
-            tainted_holders = {}
-            for holder in self._get_tainted_holders(slots_max):
-                tainted_holders[holder] = SlotAmountErrorData(
+            tainted_items = {}
+            for item in self._get_tainted_items(slots_max):
+                tainted_items[item] = SlotAmountErrorData(
                     slots_used=slots_used,
                     slots_max_allowed=slots_max
                 )
-            raise RegisterValidationError(tainted_holders)
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):
@@ -76,154 +76,154 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister):
 class HighSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of high-slot holders should not exceed number of
+    Number of high-slot items should not exceed number of
     high slots ship provides.
 
     Details:
-    Only holders placed to fit.modules.high are tracked.
+    Only items placed to fit.modules.high are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'high_slots', Restriction.high_slot)
 
-    def register_item(self, holder):
-        if holder in self._fit.modules.high:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.modules.high:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._fit.modules.high[slots_max:]
 
 
 class MediumSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of medium-slot holders should not exceed number of
+    Number of medium-slot items should not exceed number of
     medium slots ship provides.
 
     Details:
-    Only holders placed to fit.modules.med are tracked.
+    Only items placed to fit.modules.med are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'med_slots', Restriction.medium_slot)
 
-    def register_item(self, holder):
-        if holder in self._fit.modules.med:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.modules.med:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._fit.modules.med[slots_max:]
 
 
 class LowSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of low-slot holders should not exceed number of
+    Number of low-slot items should not exceed number of
     low slots ship provides.
 
     Details:
-    Only holders placed to fit.modules.low are tracked.
+    Only items placed to fit.modules.low are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'low_slots', Restriction.low_slot)
 
-    def register_item(self, holder):
-        if holder in self._fit.modules.low:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.modules.low:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._fit.modules.low[slots_max:]
 
 
 class RigSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of rig-slot holders should not exceed number of
+    Number of rig-slot items should not exceed number of
     rig slots ship provides.
 
     Details:
-    Only holders placed to fit.rigs are tracked.
+    Only items placed to fit.rigs are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'rig_slots', Restriction.rig_slot)
 
-    def register_item(self, holder):
-        if holder in self._fit.rigs:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.rigs:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._slot_consumers
 
 
 class SubsystemSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of subsystem-slot holders should not exceed number of
+    Number of subsystem-slot items should not exceed number of
     subsystem slots ship provides.
 
     Details:
-    Only holders placed to fit.subsystems are tracked.
+    Only items placed to fit.subsystems are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'subsystem_slots', Restriction.subsystem_slot)
 
-    def register_item(self, holder):
-        if holder in self._fit.subsystems:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.subsystems:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._slot_consumers
 
 
 class TurretSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of turret-slot holders should not exceed number of
+    Number of turret-slot items should not exceed number of
     turret slots ship provides.
 
     Details:
-    Only holders which take turret slot are tracked.
+    Only items which take turret slot are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
 
-    def register_item(self, holder):
-        if Slot.turret in holder._eve_type.slots:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if Slot.turret in item._eve_type.slots:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._slot_consumers
 
 
 class LauncherSlotRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
-    Number of launcher-slot holders should not exceed number of
+    Number of launcher-slot items should not exceed number of
     launcher slots ship provides.
 
     Details:
-    Only holders which take launcher slot are tracked.
+    Only items which take launcher slot are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
 
-    def register_item(self, holder):
-        if Slot.launcher in holder._eve_type.slots:
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if Slot.launcher in item._eve_type.slots:
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._slot_consumers
 
 
@@ -234,16 +234,16 @@ class LaunchedDroneRegister(SlotAmountRestrictionRegister):
     drones you're allowed to launch.
 
     Details:
-    Only holders of Drone class are tracked.
+    Only items of Drone class are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         SlotAmountRestrictionRegister.__init__(self, fit, 'launched_drones', Restriction.launched_drone)
 
-    def register_item(self, holder):
-        if isinstance(holder, Drone):
-            SlotAmountRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if isinstance(item, Drone):
+            SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_holders(self, slots_max):
+    def _get_tainted_items(self, slots_max):
         return self._slot_consumers

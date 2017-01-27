@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 
-# Each affector must have 2 components - carrier holder (source data
-# for changes and unique identifier) and modifier (which describes whom and
-# how to modify), this tuple represents it
-Affector = namedtuple('Affector', ('source_holder', 'modifier'))
+# Each affector must have 2 components - carrier item (source data for changes
+# and unique identifier) and modifier (which describes whom and how to modify),
+# this tuple represents it
+Affector = namedtuple('Affector', ('source_item', 'modifier'))

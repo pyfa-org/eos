@@ -26,7 +26,7 @@ class DefaultEffectAttribMixin(BaseItemMixin):
     """
     Provides access to various attributes via aliases, the
     mapping between aliases and actual attributes with their
-    values is provided by default effect of an EVE type.
+    values is provided by default effect of an eve type.
     """
 
     @property
@@ -53,7 +53,7 @@ class DefaultEffectAttribMixin(BaseItemMixin):
     def __get_eve_type_specific_attr(self, attr_name):
         """
         If attribute ID which we're trying to get is located on
-        item EVE type, this functions helps to fetch it.
+        item eve type, this functions helps to fetch it.
         """
         default_effect = getattr(self._eve_type, 'default_effect', None)
         if default_effect is None:

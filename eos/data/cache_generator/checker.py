@@ -181,7 +181,7 @@ class Checker:
         using module's effects. Engine relies on assumption that
         each module has at max one such effect. This type of check
         is better to be performed after data cleanup, because slot
-        type effects are still used on many EVE types we do not need
+        type effects are still used on many item types we do not need
         and want to remove to avoid printing unnecessary log entries.
         """
         table = self.data['dgmtypeeffects']

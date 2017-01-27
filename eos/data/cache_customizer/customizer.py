@@ -101,7 +101,7 @@ class CacheCustomizer:
     def _fix_online_effect_category(self):
         """
         For some weird reason, 'online' effect has 'active' effect
-        category, which lets all EVE types with it to be in active
+        category, which lets all eve types with it to be in active
         state. CCP probably does some hardcoding to avoid it, we'll
         get rid of it on cache building time.
         """

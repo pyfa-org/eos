@@ -35,7 +35,7 @@ class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
     Implements restriction:
     Booster must have all of its non-side-effects enabled.
 
-    If booster holder has some side-effect disabled, it may become
+    If booster item has some side-effect disabled, it may become
     disabled regular effect when fit source is switched. Regular
     effects are hidden from booster side-effect API. Such effects
     are raised as an issue by this register.
@@ -50,15 +50,15 @@ class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
     def __init__(self):
         self.__boosters = set()
 
-    def register_item(self, holder):
-        if isinstance(holder, Booster):
-            self.__boosters.add(holder)
+    def register_item(self, item):
+        if isinstance(item, Booster):
+            self.__boosters.add(item)
 
-    def unregister_item(self, holder):
-        self.__boosters.discard(holder)
+    def unregister_item(self, item):
+        self.__boosters.discard(item)
 
     def validate(self):
-        tainted_holders = {}
+        tainted_items = {}
         for booster in self.__boosters:
             # Check if any disabled effects cannot be found in
             # side-effect list
@@ -66,12 +66,12 @@ class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
             illegal = booster._disabled_effects.difference(disablable)
             if len(illegal) == 0:
                 continue
-            tainted_holders[booster] = BoosterEffectErrorData(
+            tainted_items[booster] = BoosterEffectErrorData(
                 illegally_disabled=illegal,
                 disablable=disablable
             )
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

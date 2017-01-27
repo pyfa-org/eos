@@ -97,7 +97,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_subcap_capattr_eve_type(self):
-        # Make sure that EVE type value of is-capital
+        # Make sure that eve type value of is-capital
         # attribute is used for check
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
@@ -116,7 +116,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_subcap_volume_eve_type(self):
-        # Make sure EVE type volume value is taken
+        # Make sure eve type volume value is taken
         eve_type = self.ch.type(type_id=1, attributes={Attribute.volume: 3501})
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         # Set volume below 3500 to check that even when
@@ -162,7 +162,7 @@ class TestCapitalItem(RestrictionTestCase):
 
     def test_pass_subcap_volume_not_specified(self):
         # Check that items with no volume attribute
-        # on EVE type are not restricted
+        # on eve type are not restricted
         eve_type = self.ch.type(type_id=1)
         holder = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         self.add_holder(holder)

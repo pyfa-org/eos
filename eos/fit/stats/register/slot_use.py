@@ -35,11 +35,11 @@ class SlotUseRegister(BaseStatRegister):
         self._fit = fit
         self.__slot_users = set()
 
-    def register_item(self, holder):
-        self.__slot_users.add(holder)
+    def register_item(self, item):
+        self.__slot_users.add(item)
 
-    def unregister_item(self, holder):
-        self.__slot_users.discard(holder)
+    def unregister_item(self, item):
+        self.__slot_users.discard(item)
 
     def __len__(self):
         return len(self.__slot_users)
@@ -50,9 +50,9 @@ class TurretUseRegister(SlotUseRegister):
     Assist with calculation of amount of used turret slots.
     """
 
-    def register_item(self, holder):
-        if Slot.turret in holder._eve_type.slots:
-            SlotUseRegister.register_item(self, holder)
+    def register_item(self, item):
+        if Slot.turret in item._eve_type.slots:
+            SlotUseRegister.register_item(self, item)
 
 
 class LauncherUseRegister(SlotUseRegister):
@@ -60,9 +60,9 @@ class LauncherUseRegister(SlotUseRegister):
     Assist with calculation of amount of used launcher slots.
     """
 
-    def register_item(self, holder):
-        if Slot.launcher in holder._eve_type.slots:
-            SlotUseRegister.register_item(self, holder)
+    def register_item(self, item):
+        if Slot.launcher in item._eve_type.slots:
+            SlotUseRegister.register_item(self, item)
 
 
 class LaunchedDroneRegister(SlotUseRegister):
@@ -70,6 +70,6 @@ class LaunchedDroneRegister(SlotUseRegister):
     Assist with calculation of amount of launched drones.
     """
 
-    def register_item(self, holder):
-        if isinstance(holder, Drone):
-            SlotUseRegister.register_item(self, holder)
+    def register_item(self, item):
+        if isinstance(item, Drone):
+            SlotUseRegister.register_item(self, item)

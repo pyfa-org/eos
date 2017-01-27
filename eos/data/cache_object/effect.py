@@ -50,24 +50,24 @@ class Effect:
         # Whether the effect is helpful (e.g. remote repairers)
         self.is_assistance = bool(is_assistance) if is_assistance is not None else None
 
-        # If effect is default effect of active holder, attribute
-        # with this ID on holder defines cycle time
+        # If effect is default effect of eve type, attribute with this ID
+        # on item defines cycle time
         self.duration_attribute = duration_attribute
 
-        # If effect is default effect of active holder, attribute
-        # with this ID on holder defines ship's cap drained per cycle
+        # If effect is default effect of eve type, attribute with this ID
+        # on item defines ship's cap drained per cycle
         self.discharge_attribute = discharge_attribute
 
         # If effect needs to know its optimal range, attribute value on
-        # holder referenced by this ID will contain it
+        # item referenced by this ID will contain it
         self.range_attribute = range_attribute
 
         # If effect needs to know its falloff range, attribute value on
-        # holder referenced by this ID will contain it
+        # item referenced by this ID will contain it
         self.falloff_attribute = falloff_attribute
 
         # If effect needs to know its tracking speed, attribute value on
-        # holder referenced by this ID will contain it
+        # item referenced by this ID will contain it
         self.tracking_speed_attribute = tracking_speed_attribute
 
         # Refers attribute, which determines chance of effect
@@ -93,7 +93,7 @@ class Effect:
     @CachedProperty
     def _state(self):
         """
-        Return state of effect - if holder takes this state or
+        Return state of effect - if eve type takes this state or
         higher, effect activates.
         """
         return self.__effect_state_map[self.category]

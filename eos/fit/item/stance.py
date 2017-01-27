@@ -30,7 +30,7 @@ class Stance(ImmutableStateMixin):
     special properties.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this stance.
 
     Cooperative methods:

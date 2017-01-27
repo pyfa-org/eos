@@ -20,7 +20,7 @@
 
 
 """
-Classes in this module are objects stored in cache. Eos' objects like holders
+Classes in this module are objects stored in cache. Eos' cached objects like items
 are built on top of their instances, and often they're reused, thus make sure
 to not store any fit-specific data on them.
 """

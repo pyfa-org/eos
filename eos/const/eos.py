@@ -123,7 +123,7 @@ class Restriction(IntEnum):
     max_group_online = 22
     max_group_active = 23
     skill_requirement = 24
-    holder_class = 26
+    item_class = 26
     state = 27
     charge_group = 28
     charge_size = 29
@@ -135,6 +135,6 @@ class Restriction(IntEnum):
 class EosEveTypes(IntEnum):
     """
     Container for Eos-specific type IDs. Any values defined
-    here must not overlap with regular EVE type IDs.
+    here must not overlap with regular eve type IDs.
     """
     current_self = -1

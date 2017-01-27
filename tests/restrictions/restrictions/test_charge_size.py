@@ -107,7 +107,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_attrs_eve_type(self):
-        # Make sure EVE type attributes are used
+        # Make sure eve type attributes are used
         charge_eve_type = self.ch.type(type_id=1, attributes={Attribute.charge_size: 2})
         charge_holder = self.make_item_mock(Charge, charge_eve_type)
         charge_holder.attributes = {Attribute.charge_size: 1}

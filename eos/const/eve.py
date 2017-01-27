@@ -20,7 +20,7 @@
 
 
 """
-This file holds IDs of multiple EVE's entities.
+This file holds IDs of multiple eve's entities.
 """
 
 

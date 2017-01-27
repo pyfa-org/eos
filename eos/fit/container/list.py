@@ -19,37 +19,37 @@
 # ===============================================================================
 
 
-from .base import HolderContainerBase
-from .exception import HolderAlreadyAssignedError, SlotTakenError
+from .base import ItemContainerBase
+from .exception import ItemAlreadyAssignedError, SlotTakenError
 
 
-class HolderList(HolderContainerBase):
+class ItemList(ItemContainerBase):
     """
-    Ordered container for holders.
+    Ordered container for items.
 
     Required arguments:
     fit -- fit, to which container is attached
-    holder_class -- class of holders this container
+    item_class -- class of items this container
         is allowed to contain
     """
 
-    def __init__(self, fit, holder_class):
-        HolderContainerBase.__init__(self, holder_class)
+    def __init__(self, fit, item_class):
+        ItemContainerBase.__init__(self, item_class)
         self.__fit = fit
         self.__list = []
 
     def insert(self, index, value):
         """
         Insert value to given position; if position is
-        out of range of container and value is holder,
+        out of range of container and value is item,
         fill container with Nones up to position and
-        put holder there. Also value can be None to
-        insert empty slots between holders.
+        put item there. Also value can be None to
+        insert empty slots between items.
 
         Possible exceptions:
-        TypeError -- raised when holder of unacceptable class
+        TypeError -- raised when item of unacceptable class
             is passed
-        ValueError -- raised when holder is passed as value and
+        ValueError -- raised when item is passed as value and
             it cannot be added to container (e.g. already belongs
             to some fit)
         """
@@ -60,147 +60,147 @@ class HolderList(HolderContainerBase):
             self._cleanup()
         else:
             try:
-                self._handle_holder_addition(self.__fit, value)
-            except HolderAlreadyAssignedError as e:
+                self._handle_item_addition(self.__fit, value)
+            except ItemAlreadyAssignedError as e:
                 del self.__list[index]
                 self._cleanup()
                 raise ValueError(*e.args) from e
 
-    def append(self, holder):
+    def append(self, item):
         """
-        Append holder to the end of container.
+        Append item to the end of container.
 
         Possible exceptions:
-        TypeError -- raised when holder of unacceptable class
+        TypeError -- raised when item of unacceptable class
             is passed
-        ValueError -- raised when holder cannot be added to container
+        ValueError -- raised when item cannot be added to container
             (e.g. already belongs to some fit)
         """
-        self._check_class(holder)
-        self.__list.append(holder)
+        self._check_class(item)
+        self.__list.append(item)
         try:
-            self._handle_holder_addition(self.__fit, holder)
-        except HolderAlreadyAssignedError as e:
+            self._handle_item_addition(self.__fit, item)
+        except ItemAlreadyAssignedError as e:
             del self.__list[-1]
             raise ValueError(*e.args) from e
 
-    def place(self, index, holder):
+    def place(self, index, item):
         """
-        Put holder to given position; if position is out of
+        Put item to given position; if position is out of
         range of container, fill it with Nones up to position
-        and put holder there.
+        and put item there.
 
         Possible exceptions:
-        TypeError -- raised when holder of unacceptable class
+        TypeError -- raised when item of unacceptable class
             is passed
-        ValueError -- raised when holder cannot be added to
+        ValueError -- raised when item cannot be added to
             container (e.g. already belongs to some fit)
         SlotTakenError -- raised when slot at specified index
-            is already taken by other holder
+            is already taken by other item
         """
-        self._check_class(holder)
+        self._check_class(item)
         try:
-            old_holder = self.__list[index]
+            old_item = self.__list[index]
         except IndexError:
             self._allocate(index)
         else:
-            if old_holder is not None:
+            if old_item is not None:
                 raise SlotTakenError(index)
-        self.__list[index] = holder
+        self.__list[index] = item
         try:
-            self._handle_holder_addition(self.__fit, holder)
-        except HolderAlreadyAssignedError as e:
+            self._handle_item_addition(self.__fit, item)
+        except ItemAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
 
-    def equip(self, holder):
+    def equip(self, item):
         """
-        Put holder to first free slot in container; if
-        container doesn't have free slots, append holder
+        Put item to first free slot in container; if
+        container doesn't have free slots, append item
         to the end of container.
 
         Possible exceptions:
-        TypeError -- raised when holder of unacceptable class
+        TypeError -- raised when item of unacceptable class
             is passed
-        ValueError -- raised when holder cannot be added to
+        ValueError -- raised when item cannot be added to
             container (e.g. already belongs to some fit)
         """
-        self._check_class(holder)
+        self._check_class(item)
         try:
             index = self.__list.index(None)
         except ValueError:
             index = len(self.__list)
-            self.__list.append(holder)
+            self.__list.append(item)
         else:
-            self.__list[index] = holder
+            self.__list[index] = item
         try:
-            self._handle_holder_addition(self.__fit, holder)
-        except HolderAlreadyAssignedError as e:
+            self._handle_item_addition(self.__fit, item)
+        except ItemAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
 
     def remove(self, value):
         """
-        Remove holder or None from container. Also clean container's
-        tail if it's filled with Nones. Value can be holder, None or
+        Remove item or None from container. Also clean container's
+        tail if it's filled with Nones. Value can be item, None or
         integer index.
 
         Possible exceptions:
-        ValueError -- if passed holder cannot be found in container
+        ValueError -- if passed item cannot be found in container
         IndexError -- if passed index is out of range of list
         """
         if isinstance(value, int):
             index = value
-            holder = self.__list[index]
+            item = self.__list[index]
         else:
-            holder = value
-            index = self.__list.index(holder)
-        if holder is not None:
-            self._handle_holder_removal(self.__fit, holder)
+            item = value
+            index = self.__list.index(item)
+        if item is not None:
+            self._handle_item_removal(self.__fit, item)
         del self.__list[index]
         self._cleanup()
 
     def free(self, value):
         """
-        Free holder's slot (replace it with None). Also clean
+        Free item's slot (replace it with None). Also clean
         container's tail if it's filled with Nones. Value can be
-        holder or integer index.
+        item or integer index.
 
         Possible exceptions:
-        ValueError -- if passed holder cannot be found in container
+        ValueError -- if passed item cannot be found in container
         IndexError -- if passed index is out of range of list
         """
         if isinstance(value, int):
             index = value
-            holder = self.__list[index]
+            item = self.__list[index]
         else:
-            holder = value
-            index = self.__list.index(holder)
-        if holder is None:
+            item = value
+            index = self.__list.index(item)
+        if item is None:
             return
-        self._handle_holder_removal(self.__fit, holder)
+        self._handle_item_removal(self.__fit, item)
         self.__list[index] = None
         self._cleanup()
 
-    def holders(self):
-        """Return view over container with just holders."""
-        return ListHolderView(self.__list)
+    def items(self):
+        """Return view over container with just items."""
+        return ListItemView(self.__list)
 
     def clear(self):
         """Remove everything from container."""
-        for holder in self.__list:
-            if holder is not None:
-                self._handle_holder_removal(self.__fit, holder)
+        for item in self.__list:
+            if item is not None:
+                self._handle_item_removal(self.__fit, item)
         self.__list.clear()
 
     def __getitem__(self, index):
-        """Get holder by index or holders by slice object."""
+        """Get item by index or items by slice object."""
         return self.__list.__getitem__(index)
 
     def index(self, value):
-        """Get index by holder/None."""
+        """Get index by item/None."""
         return self.__list.index(value)
 
     def __iter__(self):
@@ -235,7 +235,7 @@ class HolderList(HolderContainerBase):
         return repr(self.__list)
 
 
-class ListHolderView:
+class ListItemView:
     """
     Simple class to implement view-like
     functionality over passed list.

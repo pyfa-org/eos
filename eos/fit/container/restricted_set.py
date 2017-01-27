@@ -19,68 +19,68 @@
 # ===============================================================================
 
 
-from .set import HolderSet
+from .set import ItemSet
 
 
-class HolderRestrictedSet(HolderSet):
+class ItemRestrictedSet(ItemSet):
     """
-    Unordered container for holders, which can't
-    contain 2 holders with the same type ID.
+    Unordered container for items, which can't
+    contain 2 items with the same type ID.
 
     Required arguments:
     fit -- fit, to which container is attached
-    holder_class -- class of holders this container
+    item_class -- class of items this container
         is allowed to contain
     """
 
-    def __init__(self, fit, holder_class):
-        HolderSet.__init__(self, fit, holder_class)
+    def __init__(self, fit, item_class):
+        ItemSet.__init__(self, fit, item_class)
         self.__eve_type_id_map = {}
 
-    def add(self, holder):
+    def add(self, item):
         """
-        Add holder to container.
+        Add item to container.
 
         Possible exceptions:
-        TypeError -- raised when holder of unacceptable class
+        TypeError -- raised when item of unacceptable class
             is passed
-        ValueError -- raised when holder cannot be added to container
-            (e.g. already belongs to some fit or holder with this
+        ValueError -- raised when item cannot be added to container
+            (e.g. already belongs to some fit or item with this
             type ID exists in container)
         """
-        self._check_class(holder)
-        eve_type_id = holder._eve_type_id
+        self._check_class(item)
+        eve_type_id = item._eve_type_id
         if eve_type_id in self.__eve_type_id_map:
-            msg = 'holder with type ID {} already exists in this set'.format(eve_type_id)
+            msg = 'item with type ID {} already exists in this set'.format(eve_type_id)
             raise ValueError(msg)
-        self.__eve_type_id_map[eve_type_id] = holder
+        self.__eve_type_id_map[eve_type_id] = item
         try:
-            HolderSet.add(self, holder)
+            ItemSet.add(self, item)
         except (TypeError, ValueError):
             del self.__eve_type_id_map[eve_type_id]
             raise
 
-    def remove(self, holder):
+    def remove(self, item):
         """
-        Remove holder from container.
+        Remove item from container.
 
         Possible exceptions:
-        KeyError -- raised when holder cannot be removed
+        KeyError -- raised when item cannot be removed
             from container (e.g. it doesn't belong to it)
         """
-        HolderSet.remove(self, holder)
-        del self.__eve_type_id_map[holder._eve_type_id]
+        ItemSet.remove(self, item)
+        del self.__eve_type_id_map[item._eve_type_id]
 
     def clear(self):
         """Remove everything from container."""
-        HolderSet.clear(self)
+        ItemSet.clear(self)
         self.__eve_type_id_map.clear()
 
     def __getitem__(self, eve_type_id):
-        """Get holder by type ID"""
+        """Get item by type ID"""
         return self.__eve_type_id_map[eve_type_id]
 
     def __delitem__(self, eve_type_id):
-        """Remove holder by type ID"""
-        holder = self.__eve_type_id_map[eve_type_id]
-        self.remove(holder)
+        """Remove item by type ID"""
+        item = self.__eve_type_id_map[eve_type_id]
+        self.remove(item)

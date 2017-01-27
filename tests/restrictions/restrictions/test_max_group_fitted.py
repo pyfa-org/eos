@@ -73,7 +73,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_mix_excess_attr_eve_type(self):
-        # Check that EVE type attributes are used
+        # Check that eve type attributes are used
         eve_type1 = self.ch.type(type_id=1, group=61, attributes={Attribute.max_group_fitted: 1})
         holder1 = self.make_item_mock(ModuleHigh, eve_type1, state=State.offline)
         holder1.attributes = {Attribute.max_group_fitted: 2}

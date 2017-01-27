@@ -699,7 +699,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_attr_eve_type(self):
-        # Make sure EVE type attribute value is taken
+        # Make sure eve type attribute value is taken
         ship_eve_type = self.ch.type(type_id=772, group=31)
         ship_holder = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_holder)

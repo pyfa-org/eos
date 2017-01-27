@@ -20,9 +20,9 @@
 
 
 from .exception import SlotTakenError
-from .list import HolderList
+from .list import ItemList
 from .modules import ModuleRacks
-from .restricted_set import HolderRestrictedSet
-from .set import HolderSet
-from .single_onfit import HolderDescriptorOnFit
-from .single_onholder import HolderDescriptorOnHolder
+from .restricted_set import ItemRestrictedSet
+from .set import ItemSet
+from .single_onfit import ItemDescriptorOnFit
+from .single_onitem import ItemDescriptorOnItem

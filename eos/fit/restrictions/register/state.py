@@ -32,34 +32,34 @@ StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'
 class StateRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    Verify that current state of holder is not bigger than max state
-    its EVE type allows (e.g. passive modules cannot be activated,
+    Verify that current state of item is not bigger than max state
+    its eve type allows (e.g. passive modules cannot be activated,
     active modules without overload effects cannot be overloaded,
     and so on).
     """
 
     def __init__(self):
-        self.__holders = set()
+        self.__items = set()
 
-    def register_item(self, holder):
-        # We're going to track all holders. Typically we track
-        # online+ holders, as all holders can be at least offline
-        self.__holders.add(holder)
+    def register_item(self, item):
+        # We're going to track all items. Typically we track
+        # online+ items, as all items can be at least offline
+        self.__items.add(item)
 
-    def unregister_item(self, holder):
-        self.__holders.discard(holder)
+    def unregister_item(self, item):
+        self.__items.discard(item)
 
     def validate(self):
-        tainted_holders = {}
-        for holder in self.__holders:
-            if holder.state > holder._eve_type.max_state:
-                allowed_states = tuple(filter(lambda s: s <= holder._eve_type.max_state, State))
-                tainted_holders[holder] = StateErrorData(
-                    current_state=holder.state,
+        tainted_items = {}
+        for item in self.__items:
+            if item.state > item._eve_type.max_state:
+                allowed_states = tuple(filter(lambda s: s <= item._eve_type.max_state, State))
+                tainted_items[item] = StateErrorData(
+                    current_state=item.state,
                     allowed_states=allowed_states
                 )
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

@@ -29,7 +29,7 @@ class Charge(ImmutableStateMixin):
     Ammo - crystals, probes, bombs, etc.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this charge.
 
     Cooperative methods:
@@ -37,7 +37,7 @@ class Charge(ImmutableStateMixin):
     """
 
     def __init__(self, type_id, **kwargs):
-        # Holder-container, into which our charge holder is "loaded"
+        # Item-container, into which our charge item is "loaded"
         self.container = None
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 

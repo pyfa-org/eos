@@ -22,7 +22,7 @@
 from itertools import chain
 
 from eos.const.eos import State
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
+from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from eos.util.pubsub import BaseSubscriber
 from .exception import RegisterValidationError, ValidationError
 from .register import *
@@ -44,13 +44,13 @@ class RestrictionService(BaseSubscriber):
         # Fit reference, to which this restriction service
         # is attached
         self._fit = fit
-        # Set with 'stateless' holders. Holders are always
+        # Set with 'stateless' items. Items are always
         # tracked by these, regardless of state
         # Format: (registers,)
         self.__regs_stateless = (
             CalibrationRegister(fit),
             DroneBayVolumeRegister(fit),
-            HolderClassRestrictionRegister(),
+            ItemClassRestrictionRegister(),
             HighSlotRegister(fit),
             MediumSlotRegister(fit),
             LowSlotRegister(fit),
@@ -72,9 +72,9 @@ class RestrictionService(BaseSubscriber):
             ChargeVolumeRestrictionRegister(),
             BoosterEffectRestrictionRegister()
         )
-        # Dictionary with 'stateful' registers. When holders
+        # Dictionary with 'stateful' registers. When items
         # is in corresponding state or above, register tracks
-        # such holder and may raise restriction violations
+        # such item and may raise restriction violations
         # Format: {triggering state: {registers}}
         self.__regs_stateful = {
             State.offline: (
@@ -107,8 +107,8 @@ class RestrictionService(BaseSubscriber):
         data in its arguments.
         """
         # Container for validation error data
-        # Format: {holder: {error type: error data}}
-        invalid_holders = {}
+        # Format: {item: {error type: error data}}
+        invalid_items = {}
         # Go through all known registers
         for register in chain(self.__regs_stateless, *self.__regs_stateful.values()):
             # Skip check if we're told to do so, based
@@ -121,62 +121,62 @@ class RestrictionService(BaseSubscriber):
             try:
                 register.validate()
             except RegisterValidationError as e:
-                # All erroneous holders should be in 1st argument
+                # All erroneous items should be in 1st argument
                 # of raised exception
                 exception_data = e.args[0]
-                for holder in exception_data:
-                    holder_error = exception_data[holder]
-                    # Fill container for invalid holders
-                    holder_errors = invalid_holders.setdefault(holder, {})
-                    holder_errors[restriction_type] = holder_error
+                for item in exception_data:
+                    item_error = exception_data[item]
+                    # Fill container for invalid items
+                    item_errors = invalid_items.setdefault(item, {})
+                    item_errors[restriction_type] = item_error
         # Raise validation error only if we got any
         # failures
-        if invalid_holders:
-            raise ValidationError(invalid_holders)
+        if invalid_items:
+            raise ValidationError(invalid_items)
 
     # Message handling
-    def _handle_holder_addition(self, message):
+    def _handle_item_addition(self, message):
         if not self.__enabled:
             return
-        self.__add_holder(message.holder)
+        self.__add_item(message.item)
 
-    def _handle_holder_removal(self, message):
+    def _handle_item_removal(self, message):
         if not self.__enabled:
             return
-        self.__remove_holder(message.holder)
+        self.__remove_item(message.item)
 
-    def _handle_holder_state_change(self, message):
+    def _handle_item_state_change(self, message):
         if not self.__enabled:
             return
-        holder, old_state, new_state = message
+        item, old_state, new_state = message
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
-            self.__enable_states(holder, states)
+            self.__enable_states(item, states)
         elif new_state < old_state:
             states = set(filter(lambda s: new_state < s <= old_state, State))
-            self.__disable_states(holder, states)
+            self.__disable_states(item, states)
 
     def _handle_enable_services(self, message):
         """
-        Enable service and register passed holders.
+        Enable service and register passed items.
         """
         self.__enabled = True
-        for holder in message.holders:
-            self.__add_holder(holder)
+        for item in message.items:
+            self.__add_item(item)
 
     def _handle_disable_services(self, message):
         """
-        Unregister passed holders from this service and
+        Unregister passed items from this service and
         disable it.
         """
-        for holder in message.holders:
-            self.__remove_holder(holder)
+        for item in message.items:
+            self.__remove_item(item)
         self.__enabled = False
 
     _handler_map = {
-        HolderAdded: _handle_holder_addition,
-        HolderRemoved: _handle_holder_removal,
-        HolderStateChanged: _handle_holder_state_change,
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        ItemStateChanged: _handle_item_state_change,
         EnableServices: _handle_enable_services,
         DisableServices: _handle_disable_services
     }
@@ -189,24 +189,24 @@ class RestrictionService(BaseSubscriber):
         handler(self, message)
 
     # Private methods for message handlers
-    def __add_holder(self, holder):
+    def __add_item(self, item):
         for register in self.__regs_stateless:
-            register.register_item(holder)
-        states = set(filter(lambda s: s <= holder.state, State))
-        self.__enable_states(holder, states)
+            register.register_item(item)
+        states = set(filter(lambda s: s <= item.state, State))
+        self.__enable_states(item, states)
 
-    def __remove_holder(self, holder):
-        states = set(filter(lambda s: s <= holder.state, State))
-        self.__disable_states(holder, states)
+    def __remove_item(self, item):
+        states = set(filter(lambda s: s <= item.state, State))
+        self.__disable_states(item, states)
         for register in self.__regs_stateless:
-            register.unregister_item(holder)
+            register.unregister_item(item)
 
-    def __enable_states(self, holder, states):
+    def __enable_states(self, item, states):
         """
         Handle state switch upwards.
 
         Required arguments:
-        holder -- holder, for which states are switched
+        item -- item, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for initial state
         """
@@ -218,14 +218,14 @@ class RestrictionService(BaseSubscriber):
             except KeyError:
                 continue
             for register in registers:
-                register.register_item(holder)
+                register.register_item(item)
 
-    def __disable_states(self, holder, states):
+    def __disable_states(self, item, states):
         """
         Handle state switch downwards.
 
         Required arguments:
-        holder -- holder, for which states are switched
+        item -- item, for which states are switched
         states -- iterable with states, which are passed
         during state switch, except for final state
         """
@@ -235,4 +235,4 @@ class RestrictionService(BaseSubscriber):
             except KeyError:
                 continue
             for register in registers:
-                register.unregister_item(holder)
+                register.unregister_item(item)

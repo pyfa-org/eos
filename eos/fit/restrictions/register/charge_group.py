@@ -36,59 +36,59 @@ RESTRICTION_ATTRS = (
 )
 
 
-ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('holder_group', 'allowed_groups'))
+ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('item_group', 'allowed_groups'))
 
 
 class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    If holder can fit charges and specifies group of charges it
+    If item can fit charges and specifies group of charges it
     can fit, other groups cannot be loaded into it.
 
     Details:
     For validation, allowed charge group attribute values of
-    EVE type are taken.
+    eve type are taken.
     """
 
     def __init__(self):
-        # Format: {container holder: (allowed groups)}
+        # Format: {container item: (allowed groups)}
         self.__restricted_containers = {}
 
-    def register_item(self, holder):
+    def register_item(self, item):
         # We're going to track containers, not charges;
-        # ignore all holders which can't fit a charge
-        if not hasattr(holder, 'charge'):
+        # ignore all items which can't fit a charge
+        if not hasattr(item, 'charge'):
             return
         # Compose set of charge groups this container
         # is able to fit
         allowed_groups = set()
         for restriction_attr in RESTRICTION_ATTRS:
-            allowed_groups.add(holder._eve_type.attributes.get(restriction_attr))
+            allowed_groups.add(item._eve_type.attributes.get(restriction_attr))
         allowed_groups.discard(None)
         # Only if groups were specified, consider
         # restriction enabled
         if allowed_groups:
-            self.__restricted_containers[holder] = tuple(allowed_groups)
+            self.__restricted_containers[item] = tuple(allowed_groups)
 
-    def unregister_item(self, holder):
-        if holder in self.__restricted_containers:
-            del self.__restricted_containers[holder]
+    def unregister_item(self, item):
+        if item in self.__restricted_containers:
+            del self.__restricted_containers[item]
 
     def validate(self):
-        tainted_holders = {}
-        # If holder has charge and its group is not allowed,
-        # taint charge (not container) holder
+        tainted_items = {}
+        # If item has charge and its group is not allowed,
+        # taint charge (not container) item
         for container, allowed_groups in self.__restricted_containers.items():
             charge = container.charge
             if charge is None:
                 continue
             if charge._eve_type.group not in allowed_groups:
-                tainted_holders[charge] = ChargeGroupErrorData(
-                    holder_group=charge._eve_type.group,
+                tainted_items[charge] = ChargeGroupErrorData(
+                    item_group=charge._eve_type.group,
                     allowed_groups=allowed_groups
                 )
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

@@ -64,7 +64,7 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on EVE type 1')
+        self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on eve type 1')
         # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)

@@ -48,8 +48,8 @@ class FilteredDomainError(AttributeCalculatorError):
 
 class FilteredSelfReferenceError(AttributeCalculatorError):
     """
-    Raised when Modifier references itself as holder container, but
-    actually it can't have any holders assigned to it.
+    Raised when Modifier references itself as item container, but
+    actually it can't have any items assigned to it.
     """
     pass
 

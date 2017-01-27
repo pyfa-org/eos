@@ -27,7 +27,7 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-RigSizeErrorData = namedtuple('RigSizeErrorData', ('holder_size', 'allowed_size'))
+RigSizeErrorData = namedtuple('RigSizeErrorData', ('item_size', 'allowed_size'))
 
 
 class RigSizeRestrictionRegister(BaseRestrictionRegister):
@@ -37,30 +37,30 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     be used.
 
     Details:
-    For validation, rig_size attribute value of EVE type is taken.
+    For validation, rig_size attribute value of eve type is taken.
     """
 
     def __init__(self, fit):
         self._fit = fit
-        # Container for holders which have rig size restriction
-        self.__restricted_holders = set()
+        # Container for items which have rig size restriction
+        self.__restricted_items = set()
 
-    def register_item(self, holder):
-        # Register only holders which have attribute,
+    def register_item(self, item):
+        # Register only items which have attribute,
         # which restricts rig size
-        if Attribute.rig_size not in holder._eve_type.attributes:
+        if Attribute.rig_size not in item._eve_type.attributes:
             return
-        self.__restricted_holders.add(holder)
+        self.__restricted_items.add(item)
 
-    def unregister_item(self, holder):
-        self.__restricted_holders.discard(holder)
+    def unregister_item(self, item):
+        self.__restricted_items.discard(item)
 
     def validate(self):
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         # Do not apply restriction when fit doesn't
         # have ship
         try:
-            ship_eve_type = ship_holder._eve_type
+            ship_eve_type = ship_item._eve_type
         except AttributeError:
             return
         # If ship doesn't have restriction attribute,
@@ -69,18 +69,18 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
             allowed_rig_size = ship_eve_type.attributes[Attribute.rig_size]
         except KeyError:
             return
-        tainted_holders = {}
-        for holder in self.__restricted_holders:
-            holder_rig_size = holder._eve_type.attributes[Attribute.rig_size]
-            # If rig size specification on holder and ship differs,
-            # then holder is tainted
-            if holder_rig_size != allowed_rig_size:
-                tainted_holders[holder] = RigSizeErrorData(
-                    holder_size=holder_rig_size,
+        tainted_items = {}
+        for item in self.__restricted_items:
+            item_rig_size = item._eve_type.attributes[Attribute.rig_size]
+            # If rig size specification on item and ship differs,
+            # then item is tainted
+            if item_rig_size != allowed_rig_size:
+                tainted_items[item] = RigSizeErrorData(
+                    item_size=item_rig_size,
                     allowed_size=allowed_rig_size
                 )
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

@@ -26,23 +26,23 @@ class BaseStatRegister(metaclass=ABCMeta):
     """Base class for all statistics registers."""
 
     @abstractmethod
-    def register_item(self, holder):
+    def register_item(self, item):
         """
-        Perform registration jobs upon holder. Only immutable
-        holder properties should be used during process.
+        Perform registration jobs upon item. Only immutable
+        item properties should be used during process.
 
         Posiitional arguments:
-        holder -- holder to register
+        item -- item to register
         """
         ...
 
     @abstractmethod
-    def unregister_item(self, holder):
+    def unregister_item(self, item):
         """
-        Perform unregistration jobs upon holder. Only immutable
-        holder properties should be used during process.
+        Perform unregistration jobs upon item. Only immutable
+        item properties should be used during process.
 
         Posiitional arguments:
-        holder -- holder to unregister
+        item -- item to unregister
         """
         ...

@@ -22,33 +22,33 @@
 from eos.exception import EosError
 
 
-class HolderContainerError(EosError):
+class ItemContainerError(EosError):
     """
-    Custom exceptions thrown by holder containers are based
+    Custom exceptions thrown by item containers are based
     on this class.
     """
     pass
 
 
-class HolderAlreadyAssignedError(HolderContainerError):
+class ItemAlreadyAssignedError(ItemContainerError):
     """
-    Raised on attempt to add holder, when
+    Raised on attempt to add item, when
     it's already assigned to fit.
     """
     pass
 
 
-class HolderFitMismatchError(HolderContainerError):
+class ItemFitMismatchError(ItemContainerError):
     """
-    Raised during removal of holder, when holder's fit reference
-    does not reference fit holder being removed from.
+    Raised during removal of item, when item's fit reference
+    does not reference fit item being removed from.
     """
     pass
 
 
-class SlotTakenError(HolderContainerError):
+class SlotTakenError(ItemContainerError):
     """
-    When attempt to overwrite another holder in ordered container
+    When attempt to overwrite another item in ordered container
     is detected, this exception is raised.
     """
     pass

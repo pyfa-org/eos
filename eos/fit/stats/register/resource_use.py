@@ -35,16 +35,16 @@ class ResourceUseRegister(BaseStatRegister):
         self.__usage_attr = usage_attr
         self.__resource_users = set()
 
-    def register_item(self, holder):
-        if self.__usage_attr not in holder._eve_type.attributes:
+    def register_item(self, item):
+        if self.__usage_attr not in item._eve_type.attributes:
             return
-        self.__resource_users.add(holder)
+        self.__resource_users.add(item)
 
-    def unregister_item(self, holder):
-        self.__resource_users.discard(holder)
+    def unregister_item(self, item):
+        self.__resource_users.discard(item)
 
     def get_resource_use(self):
-        # Calculate resource consumption of all holders on ship
+        # Calculate resource consumption of all items on ship
         return sum(h.attributes[self.__usage_attr] for h in self.__resource_users)
 
 
@@ -80,15 +80,15 @@ class DroneBayVolumeUseRegister(ResourceUseRegister):
     Calculates drone bay used on passed fit.
 
     Details:
-    Only holders of Drone class are tracked.
+    Only items of Drone class are tracked.
     """
 
     def __init__(self, fit):
         ResourceUseRegister.__init__(self, fit, Attribute.volume)
 
-    def register_item(self, holder):
-        if holder in self._fit.drones:
-            ResourceUseRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.drones:
+            ResourceUseRegister.register_item(self, item)
 
 
 class DroneBandwidthUseRegister(ResourceUseRegister):

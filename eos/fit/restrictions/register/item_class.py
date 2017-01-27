@@ -28,7 +28,7 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-HolderClassErrorData = namedtuple('HolderClassErrorData', ('holder_class', 'expected_classes'))
+ItemClassErrorData = namedtuple('ItemClassErrorData', ('item_class', 'expected_classes'))
 
 
 CLASS_VALIDATORS = {
@@ -70,58 +70,58 @@ CLASS_VALIDATORS = {
 }
 
 
-class HolderClassRestrictionRegister(BaseRestrictionRegister):
+class ItemClassRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    Check that EVE type is wrapped by corresponding holder class
+    Check that eve type is wrapped by corresponding item class
     instance (e.g. that cybernetic subprocessor is represented
     by Implant class instance).
 
     Details:
-    To determine item class matching to EVE type, only EVE type
+    To determine item class matching to eve type, only eve type
     attributes are used.
     """
 
     def __init__(self):
-        # Container for tracked holders
-        self.__holders = set()
+        # Container for tracked items
+        self.__items = set()
 
-    def register_item(self, holder):
+    def register_item(self, item):
         # Yes, we're tracking all of them
-        self.__holders.add(holder)
+        self.__items.add(item)
 
-    def unregister_item(self, holder):
-        self.__holders.discard(holder)
+    def unregister_item(self, item):
+        self.__items.discard(item)
 
     def validate(self):
-        tainted_holders = {}
-        for holder in self.__holders:
-            # Get validator function for class of passed holder.
+        tainted_items = {}
+        for item in self.__items:
+            # Get validator function for class of passed item.
             # If it is not found or fails, seek for 'right'
-            # item class for the EVE type
+            # item class for the eve type
             try:
-                validator_func = CLASS_VALIDATORS[type(holder)]
+                validator_func = CLASS_VALIDATORS[type(item)]
             except KeyError:
-                tainted_holders[holder] = self.__get_error_data(holder)
+                tainted_items[item] = self.__get_error_data(item)
             else:
-                if validator_func(holder._eve_type) is not True:
-                    tainted_holders[holder] = self.__get_error_data(holder)
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+                if validator_func(item._eve_type) is not True:
+                    tainted_items[item] = self.__get_error_data(item)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
-    def __get_error_data(self, holder):
+    def __get_error_data(self, item):
         expected_classes = []
         # Cycle through our class validator dictionary and
-        # seek for acceptable classes for this EVE type
-        for holder_class, validator_func in CLASS_VALIDATORS.items():
-            if validator_func(holder._eve_type) is True:
-                expected_classes.append(holder_class)
-        error_data = HolderClassErrorData(
-            holder_class=type(holder),
+        # seek for acceptable classes for this eve type
+        for item_class, validator_func in CLASS_VALIDATORS.items():
+            if validator_func(item._eve_type) is True:
+                expected_classes.append(item_class)
+        error_data = ItemClassErrorData(
+            item_class=type(item),
             expected_classes=set(expected_classes)
         )
         return error_data
 
     @property
     def restriction_type(self):
-        return Restriction.holder_class
+        return Restriction.item_class

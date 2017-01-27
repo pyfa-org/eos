@@ -57,7 +57,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on EVE type 83: unknown operator 1008')
+        self.assertEqual(log_record.msg, 'malformed modifier on eve type 83: unknown operator 1008')
         # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)
@@ -96,7 +96,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on EVE type 83: unknown operator None')
+        self.assertEqual(log_record.msg, 'malformed modifier on eve type 83: unknown operator None')
         # Misc
         self.fit.items.remove(holder)
         self.assert_calculator_buffers_empty(self.fit)

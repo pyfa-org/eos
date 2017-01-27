@@ -21,7 +21,7 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.fit.messages import (
-    HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
+    ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
 )
 from eos.util.pubsub import BaseSubscriber
@@ -31,9 +31,9 @@ from .register import DogmaRegister
 
 class CalculationService(BaseSubscriber):
     """
-    Serve as intermediate layer between fit and holder link register.
+    Serve as intermediate layer between fit and item link register.
     Implements methods which make it easier for fit to add, modify and
-    remove holders (by implementing higher-level logic which deals with
+    remove items (by implementing higher-level logic which deals with
     state, scope and attribute filters), and exposes two main register
     getters for external use.
 
@@ -50,26 +50,26 @@ class CalculationService(BaseSubscriber):
     # Do not process here just target domain
     _supported_domains = set(filter(lambda d: d != ModifierDomain.target, ModifierDomain))
 
-    def get_affectors(self, holder, attr=None):
+    def get_affectors(self, item, attr=None):
         """
-        Get affectors which are influencing the holder.
+        Get affectors which are influencing the item.
 
         Required arguments:
-        holder -- holder, for which we're getting affectors
+        item -- item, for which we're getting affectors
 
         Optional arguments:
         attr -- target attribute ID filter; only affectors which
             influence attribute with this ID will be returned. If None,
-            all affectors influencing holder are returned (default None)
+            all affectors influencing item are returned (default None)
 
         Return value:
         Set with Affector objects
         """
         if attr is None:
-            affectors = self._register_dogma.get_affectors(holder)
+            affectors = self._register_dogma.get_affectors(item)
         else:
             affectors = set()
-            for affector in self._register_dogma.get_affectors(holder):
+            for affector in self._register_dogma.get_affectors(item):
                 if affector.modifier.tgt_attr == attr:
                     affectors.add(affector)
         return affectors
@@ -82,114 +82,114 @@ class CalculationService(BaseSubscriber):
         affector -- affector, for which we're getting affectees
 
         Return value:
-        Set with holders
+        Set with items
         """
         return self._register_dogma.get_affectees(affector)
 
     # Message handling
-    def _handle_holder_addition(self, message):
+    def _handle_item_addition(self, message):
         """
-        Put the holder under influence of registered affectors
+        Put the item under influence of registered affectors
         and enable its affectors according to its state.
         """
         if not self.__enabled:
             return
-        self.__add_holder(message.holder)
+        self.__add_item(message.item)
 
-    def _handle_holder_removal(self, message):
+    def _handle_item_removal(self, message):
         """
-        Disable holder affectors and remove it from influence
+        Disable item affectors and remove it from influence
         of of registered affectors.
         """
         if not self.__enabled:
             return
-        self.__remove_holder(message.holder)
+        self.__remove_item(message.item)
 
-    def _handle_holder_state_change(self, message):
+    def _handle_item_state_change(self, message):
         """
         Enable/disable affectors based on state change direction.
         """
         if not self.__enabled:
             return
-        holder, old_state, new_state = message
+        item, old_state, new_state = message
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
-            self.__enable_states(holder, states)
+            self.__enable_states(item, states)
         elif new_state < old_state:
             states = set(filter(lambda s: new_state < s <= old_state, State))
-            self.__disable_states(holder, states)
+            self.__disable_states(item, states)
 
-    def _handle_holder_effects_enabling(self, message):
+    def _handle_item_effects_enabling(self, message):
         """
-        Enable effects carried by the holder.
+        Enable effects carried by the item.
         """
         if not self.__enabled:
             return
         affectors = self.__generate_affectors(
-            message.holder, effect_filter=message.effects,
-            state_filter=set(filter(lambda s: s <= message.holder.state, State))
+            message.item, effect_filter=message.effects,
+            state_filter=set(filter(lambda s: s <= message.item.state, State))
         )
         self.__enable_affectors(affectors)
 
-    def _handle_holder_effects_disabling(self, message):
+    def _handle_item_effects_disabling(self, message):
         """
-        Disable effects carried by the holder.
+        Disable effects carried by the item.
         """
         if not self.__enabled:
             return
         affectors = self.__generate_affectors(
-            message.holder, effect_filter=message.effects,
-            state_filter=set(filter(lambda s: s <= message.holder.state, State))
+            message.item, effect_filter=message.effects,
+            state_filter=set(filter(lambda s: s <= message.item.state, State))
         )
         self.__disable_affectors(affectors)
 
-    def _clear_holder_attribute_dependents(self, message):
+    def _clear_item_attribute_dependents(self, message):
         """
-        Clear calculated attributes relying on the attribute of a holder.
+        Clear calculated attributes relying on the attribute of a item.
         """
-        holder, attr = message
+        item, attr = message
         # Clear attributes capped by this attribute
-        for capped_attr in (holder.attributes._cap_map.get(attr) or ()):
-            del holder.attributes[capped_attr]
+        for capped_attr in (item.attributes._cap_map.get(attr) or ()):
+            del item.attributes[capped_attr]
         # Clear attributes which are using this attribute as modification source
         for affector in self.__generate_affectors(
-                holder, effect_filter=holder._enabled_effects,
-                state_filter=set(filter(lambda s: s <= message.holder.state, State))
+                item, effect_filter=item._enabled_effects,
+                state_filter=set(filter(lambda s: s <= message.item.state, State))
         ):
             modifier = affector.modifier
             # Skip affectors which do not use attribute being damaged as source
             if modifier.src_attr != attr:
                 continue
-            # Go through all holders targeted by modifier
-            for target_holder in self.get_affectees(affector):
+            # Go through all items targeted by modifier
+            for target_item in self.get_affectees(affector):
                 # And remove target attribute
-                del target_holder.attributes[modifier.tgt_attr]
+                del target_item.attributes[modifier.tgt_attr]
 
     def _handle_enable_services(self, message):
         """
-        Enable service and register passed holders.
+        Enable service and register passed items.
         """
         self.__enabled = True
-        for holder in message.holders:
-            self.__add_holder(holder)
+        for item in message.items:
+            self.__add_item(item)
 
     def _handle_disable_services(self, message):
         """
-        Unregister passed holders from this service and
+        Unregister passed items from this service and
         disable it.
         """
-        for holder in message.holders:
-            self.__remove_holder(holder)
+        for item in message.items:
+            self.__remove_item(item)
         self.__enabled = False
 
     _handler_map = {
-        HolderAdded: _handle_holder_addition,
-        HolderRemoved: _handle_holder_removal,
-        HolderStateChanged: _handle_holder_state_change,
-        EffectsEnabled: _handle_holder_effects_enabling,
-        EffectsDisabled: _handle_holder_effects_disabling,
-        AttrValueChanged: _clear_holder_attribute_dependents,
-        AttrValueChangedOverride: _clear_holder_attribute_dependents,
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        ItemStateChanged: _handle_item_state_change,
+        EffectsEnabled: _handle_item_effects_enabling,
+        EffectsDisabled: _handle_item_effects_disabling,
+        AttrValueChanged: _clear_item_attribute_dependents,
+        AttrValueChangedOverride: _clear_item_attribute_dependents,
         EnableServices: _handle_enable_services,
         DisableServices: _handle_disable_services
     }
@@ -202,47 +202,47 @@ class CalculationService(BaseSubscriber):
         handler(self, message)
 
     # Private methods for message handlers
-    def __add_holder(self, holder):
-        self._register_dogma.register_affectee(holder)
-        states = set(filter(lambda s: s <= holder.state, State))
-        self.__enable_states(holder, states)
+    def __add_item(self, item):
+        self._register_dogma.register_affectee(item)
+        states = set(filter(lambda s: s <= item.state, State))
+        self.__enable_states(item, states)
 
-    def __remove_holder(self, holder):
-        states = set(filter(lambda s: s <= holder.state, State))
-        self.__disable_states(holder, states)
-        self._register_dogma.unregister_affectee(holder)
+    def __remove_item(self, item):
+        states = set(filter(lambda s: s <= item.state, State))
+        self.__disable_states(item, states)
+        self._register_dogma.unregister_affectee(item)
 
-    def __enable_states(self, holder, states):
+    def __enable_states(self, item, states):
         """
         Handle state switch upwards.
 
         Required arguments:
-        holder -- holder, for which states are switched
+        item -- item, for which states are switched
         states -- iterable with states, which are passed
             during state switch, except for initial state
         """
         affectors = self.__generate_affectors(
-            holder, effect_filter=holder._enabled_effects, state_filter=states
+            item, effect_filter=item._enabled_effects, state_filter=states
         )
         self.__enable_affectors(affectors)
 
-    def __disable_states(self, holder, states):
+    def __disable_states(self, item, states):
         """
         Handle state switch downwards.
 
         Required arguments:
-        holder -- holder, for which states are switched
+        item -- item, for which states are switched
         states -- iterable with states, which are passed
             during state switch, except for final state
         """
         affectors = self.__generate_affectors(
-            holder, effect_filter=holder._enabled_effects, state_filter=states
+            item, effect_filter=item._enabled_effects, state_filter=states
         )
         self.__disable_affectors(affectors)
 
     def __enable_affectors(self, affectors):
         """
-        Enable effect of affectors on their target holders.
+        Enable effect of affectors on their target items.
 
         Required arguments:
         affectors -- iterable with affectors to enable
@@ -254,7 +254,7 @@ class CalculationService(BaseSubscriber):
 
     def __disable_affectors(self, affectors):
         """
-        Remove effect of affectors from their target holders.
+        Remove effect of affectors from their target items.
 
         Required arguments:
         affectors -- iterable with affectors to disable
@@ -274,17 +274,17 @@ class CalculationService(BaseSubscriber):
         affectors -- iterable with affectors in question
         """
         for affector in affectors:
-            # Go through all holders targeted by modifier
-            for target_holder in self.get_affectees(affector):
+            # Go through all items targeted by modifier
+            for target_item in self.get_affectees(affector):
                 # And remove target attribute
-                del target_holder.attributes[affector.modifier.tgt_attr]
+                del target_item.attributes[affector.modifier.tgt_attr]
 
-    def __generate_affectors(self, holder, effect_filter, state_filter):
+    def __generate_affectors(self, item, effect_filter, state_filter):
         """
-        Get all affectors spawned by the holder.
+        Get all affectors spawned by the item.
 
         Required arguments:
-        holder -- holder, for which affectors are generated
+        item -- item, for which affectors are generated
 
         Optional arguments:
         effect filter -- filter results to include affectors, which carry
@@ -296,7 +296,7 @@ class CalculationService(BaseSubscriber):
         Set with Affector objects, satisfying passed filters
         """
         affectors = set()
-        for effect in holder._eve_type.effects:
+        for effect in item._eve_type.effects:
             if effect.id not in effect_filter:
                 continue
             for modifier in effect.modifiers:
@@ -304,6 +304,6 @@ class CalculationService(BaseSubscriber):
                     continue
                 if modifier.domain not in self._supported_domains:
                     continue
-                affector = Affector(holder, modifier)
+                affector = Affector(item, modifier)
                 affectors.add(affector)
         return affectors

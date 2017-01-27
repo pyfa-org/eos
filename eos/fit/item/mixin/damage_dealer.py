@@ -67,56 +67,56 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
     to deal damage (modules, drones).
     """
 
-    def __get_base_dmg_holder(self):
+    def __get_base_dmg_item(self):
         """
-        Return holder damage attribs as 4-tuple.
+        Return item damage attribs as 4-tuple.
         """
-        return self.__get_holder_damage(self)
+        return self.__get_item_damage(self)
 
     def __get_base_dmg_charge(self):
         """
-        Return holder's charge damage attribs as 4-tuple.
+        Return item's charge damage attribs as 4-tuple.
         """
         charge = getattr(self, 'charge', None)
         if charge is None:
             return None, None, None, None
-        return self.__get_holder_damage(charge)
+        return self.__get_item_damage(charge)
 
     def __get_base_dmg_hybrid(self):
         """
         If charge is loaded, return damage attribs, if not -
-         holder attribs.
+         item attribs.
         """
         charge = getattr(self, 'charge', None)
         if charge is not None:
-            return self.__get_holder_damage(charge)
+            return self.__get_item_damage(charge)
         else:
-            return self.__get_holder_damage(self)
+            return self.__get_item_damage(self)
 
-    def __get_holder_damage(self, holder):
+    def __get_item_damage(self, item):
         """
-        Get damage per type as tuple for passed holder.
+        Get damage per type as tuple for passed item.
         """
-        em = holder.attributes.get(Attribute.em_damage)
-        therm = holder.attributes.get(Attribute.thermal_damage)
-        kin = holder.attributes.get(Attribute.kinetic_damage)
-        expl = holder.attributes.get(Attribute.explosive_damage)
+        em = item.attributes.get(Attribute.em_damage)
+        therm = item.attributes.get(Attribute.thermal_damage)
+        kin = item.attributes.get(Attribute.kinetic_damage)
+        expl = item.attributes.get(Attribute.explosive_damage)
         return em, therm, kin, expl
 
     @VolatileProperty
     def _base_volley(self):
         """
-        Return base volley for current holder - nominal volley, not modified by
+        Return base volley for current item - nominal volley, not modified by
         any resistances.
         """
         # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
         base_dmg_fetchers = {
             WeaponType.turret: (self.__get_base_dmg_hybrid, True),
             WeaponType.guided_missile: (self.__get_base_dmg_charge, False),
-            WeaponType.instant_missile: (self.__get_base_dmg_holder, True),
+            WeaponType.instant_missile: (self.__get_base_dmg_item, True),
             WeaponType.bomb: (self.__get_base_dmg_charge, False),
-            WeaponType.direct: (self.__get_base_dmg_holder, False),
-            WeaponType.untargeted_aoe: (self.__get_base_dmg_holder, False)
+            WeaponType.direct: (self.__get_base_dmg_item, False),
+            WeaponType.untargeted_aoe: (self.__get_base_dmg_item, False)
         }
         try:
             base_fetcher, multiply = base_dmg_fetchers[self._weapon_type]
@@ -154,7 +154,7 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     def get_nominal_volley(self, target_resistances=None):
         """
-        Get nominal volley for holder, calculated against passed
+        Get nominal volley for item, calculated against passed
         target resistances.
 
         Optional arguments:
@@ -163,7 +163,7 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
         If none, raw volley damage is calculated. By default None.
 
         Return value:
-        Object with volley damage of current holder, accessible via following attributes:
+        Object with volley damage of current item, accessible via following attributes:
         em, thermal, kinetic, explosive, total
         """
         volley = self._base_volley
@@ -202,7 +202,7 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
                 volley.kinetic is None and volley.explosive is None):
             return volley
         cycle_time = self.cycle_time
-        # Holders may have no reactivation attribute, return None or actual value;
+        # Items may have no reactivation attribute, return None or actual value;
         # make sure we use 0 as fallback in all cases
         reactivation_time = getattr(self, 'reactivation_delay', 0) or 0
         # Time which module should spend on each cycle, regardless of any conditions
@@ -244,38 +244,38 @@ class DamageDealerMixin(BaseItemMixin, CooperativeVolatileMixin):
     @VolatileProperty
     def _weapon_type(self):
         """
-        Get weapon type of holder. Weapon type defines mechanics used to
+        Get weapon type of item. Weapon type defines mechanics used to
         deliver damage and attributes used for damage calculation. If
-        holder is not a weapon or an inactive weapon, None is returned.
+        item is not a weapon or an inactive weapon, None is returned.
         """
         eve_type = self._eve_type
-        # Guard against malformed or absent EVE types
+        # Guard against malformed or absent eve types
         try:
-            holder_deffeff = eve_type.default_effect
+            item_deffeff = eve_type.default_effect
         except AttributeError:
             return None
         try:
-            holder_defeff_id = holder_deffeff.id
-            holder_defeff_state = holder_deffeff._state
+            item_defeff_id = item_deffeff.id
+            item_defeff_state = item_deffeff._state
         except AttributeError:
             return None
-        # Weapon properties are defined by holder default effect;
-        # thus, if holder isn't in state to have this effect 'active',
+        # Weapon properties are defined by item default effect;
+        # thus, if item isn't in state to have this effect 'active',
         # it can't be considered as weapon
-        if self.state < holder_defeff_state:
+        if self.state < item_defeff_state:
             return None
-        # If holder contains some charge type but can't hold enough to actually
-        # cycle itself, do not consider such holder as weapon
+        # If item contains some charge type but can't hold enough to actually
+        # cycle itself, do not consider such item as weapon
         if getattr(self, 'charged_cycles', None) == 0:
             return None
-        # For some weapon types, it's enough to use just holder for detection
-        weapon_type = SIMPLE_EFFECT_WEAPON_MAP.get(holder_defeff_id)
+        # For some weapon types, it's enough to use just item for detection
+        weapon_type = SIMPLE_EFFECT_WEAPON_MAP.get(item_defeff_id)
         if weapon_type is not None:
             return weapon_type
         # For missiles and bombs, we need to use charge as well, as it
         # defines property of 'projectile' which massively influence type
         # of weapon
-        if holder_defeff_id == Effect.use_missiles:
+        if item_defeff_id == Effect.use_missiles:
             charge = getattr(self, 'charge', None)
             try:
                 charge_defeff_id = charge._eve_type.default_effect.id

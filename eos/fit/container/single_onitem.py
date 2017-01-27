@@ -19,26 +19,26 @@
 # ===============================================================================
 
 
-from .base import HolderContainerBase
+from .base import ItemContainerBase
 
 
-class HolderDescriptorOnHolder(HolderContainerBase):
+class ItemDescriptorOnItem(ItemContainerBase):
     """
-    Container for single holder, intended to be used
-    as holder attribute for direct access.
+    Container for single item, intended to be used
+    as item attribute for direct access.
 
     Required arguments:
     direct_attr_name -- name of instance attribute which
         should be used to store data processed by descriptor
     reverse_attr_name -- name of attribute which will be
-        used to refer from contained holder to container
-        holder, can be None (no reference to container)
-    holder_class -- class of holders this container
+        used to refer from contained item to container
+        item, can be None (no reference to container)
+    item_class -- class of items this container
         is allowed to contain
     """
 
-    def __init__(self, direct_attr_name, reverse_attr_name, holder_class):
-        HolderContainerBase.__init__(self, holder_class)
+    def __init__(self, direct_attr_name, reverse_attr_name, item_class):
+        ItemContainerBase.__init__(self, item_class)
         self.__direct_attr_name = direct_attr_name
         self.__reverse_attr_name = reverse_attr_name
 
@@ -47,27 +47,27 @@ class HolderDescriptorOnHolder(HolderContainerBase):
             return self
         return getattr(instance, self.__direct_attr_name, None)
 
-    def __set__(self, instance, new_holder):
-        self._check_class(new_holder, allow_none=True)
-        # Check if passed holder is attached to other fit already
-        # or not. We can't rely on fit._add_holder to do it,
+    def __set__(self, instance, new_item):
+        self._check_class(new_item, allow_none=True)
+        # Check if passed item is attached to other fit already
+        # or not. We can't rely on fit._add_item to do it,
         # because charge can be assigned when container is detached
-        # from fit, which breaks consistency - both holders
+        # from fit, which breaks consistency - both items
         # need to be assigned to the same fit
-        if new_holder is not None and new_holder._fit is not None:
-            raise ValueError(new_holder)
+        if new_item is not None and new_item._fit is not None:
+            raise ValueError(new_item)
         fit = instance._fit
         direct_attr_name = self.__direct_attr_name
         reverse_attr_name = self.__reverse_attr_name
-        old_holder = getattr(instance, direct_attr_name, None)
-        if old_holder is not None:
+        old_item = getattr(instance, direct_attr_name, None)
+        if old_item is not None:
             if fit is not None:
-                self._handle_holder_removal(fit, old_holder)
+                self._handle_item_removal(fit, old_item)
             if reverse_attr_name is not None:
-                setattr(old_holder, reverse_attr_name, None)
-        setattr(instance, direct_attr_name, new_holder)
-        if new_holder is not None:
+                setattr(old_item, reverse_attr_name, None)
+        setattr(instance, direct_attr_name, new_item)
+        if new_item is not None:
             if reverse_attr_name is not None:
-                setattr(new_holder, reverse_attr_name, instance)
+                setattr(new_item, reverse_attr_name, instance)
             if fit is not None:
-                self._handle_holder_addition(fit, new_holder)
+                self._handle_item_addition(fit, new_item)

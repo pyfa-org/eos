@@ -24,14 +24,14 @@ from .base import BaseItemMixin
 
 class SideEffectMixin(BaseItemMixin):
     """
-    Mixin intended to be used for holders which can have
+    Mixin intended to be used for items which can have
     side-effects.
     """
 
     @property
     def side_effects(self):
         """
-        Get map with data about holder side-effects.
+        Get map with data about item side-effects.
 
         Return data as dictionary:
         {side-effect ID: (effect=effect object for this side-effect,

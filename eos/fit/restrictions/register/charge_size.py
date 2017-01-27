@@ -27,43 +27,43 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('holder_size', 'allowed_size'))
+ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('item_size', 'allowed_size'))
 
 
 class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    If holder can fit charges and specifies size of charges it
+    If item can fit charges and specifies size of charges it
     can fit, other sizes cannot be loaded into it.
 
     Details:
-    If container specifies size and holder doesn't specify it,
+    If container specifies size and item doesn't specify it,
         charge is not allowed to be loaded.
     If container does not specify size, charge of any size
         can be loaded.
-    To determine allowed size and charge size, EVE type attributes
+    To determine allowed size and charge size, eve type attributes
         are used.
     """
 
     def __init__(self):
         self.__restricted_containers = set()
 
-    def register_item(self, holder):
-        # Ignore container holders without charge attribute
-        if not hasattr(holder, 'charge'):
+    def register_item(self, item):
+        # Ignore container items without charge attribute
+        if not hasattr(item, 'charge'):
             return
         # And without size specification
-        if Attribute.charge_size not in holder._eve_type.attributes:
+        if Attribute.charge_size not in item._eve_type.attributes:
             return
-        self.__restricted_containers.add(holder)
+        self.__restricted_containers.add(item)
 
-    def unregister_item(self, holder):
-        self.__restricted_containers.discard(holder)
+    def unregister_item(self, item):
+        self.__restricted_containers.discard(item)
 
     def validate(self):
-        tainted_holders = {}
+        tainted_items = {}
         # Go through containers with charges, and if their
-        # sizes mismatch - taint charge holders
+        # sizes mismatch - taint charge items
         for container in self.__restricted_containers:
             charge = container.charge
             if charge is None:
@@ -71,12 +71,12 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             container_size = container._eve_type.attributes[Attribute.charge_size]
             charge_size = charge._eve_type.attributes.get(Attribute.charge_size)
             if container_size != charge_size:
-                tainted_holders[charge] = ChargeSizeErrorData(
-                    holder_size=charge_size,
+                tainted_items[charge] = ChargeSizeErrorData(
+                    item_size=charge_size,
                     allowed_size=container_size
                 )
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

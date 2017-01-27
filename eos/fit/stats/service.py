@@ -23,7 +23,7 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.messages import HolderAdded, HolderRemoved, HolderStateChanged, EnableServices, DisableServices
+from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from eos.fit.tuples import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.pubsub import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, VolatileProperty
@@ -55,7 +55,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         launcher_reg = LauncherUseRegister(fit)
         launched_drone_reg = LaunchedDroneRegister(fit)
         self._dd_reg = DamageDealerRegister()
-        # List of registers which do not rely on holder state
+        # List of registers which do not rely on item state
         # Format: (register,)
         self.__regs_stateless = (
             calibration_reg,
@@ -64,7 +64,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             launcher_reg
         )
         # Dictionary which keeps stat registers which
-        # use holder state as some input/condition
+        # use item state as some input/condition
         # Format: {triggering state: {registers}}
         self.__regs_stateful = {
             State.offline: (
@@ -115,9 +115,9 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         total attributes. If fit has no ship or some data cannot be fetched,
         corresponding attribs will be set to None.
         """
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            hp_data = ship_holder.hp
+            hp_data = ship_item.hp
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
         else:
@@ -141,9 +141,9 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         If fit has no ship or some data cannot be fetched, corresponding attribs
         will be set to None.
         """
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            return ship_holder.resistances
+            return ship_item.resistances
         except AttributeError:
             empty = DamageTypes(em=None, thermal=None, kinetic=None, explosive=None)
             return TankingLayers(hull=empty, armor=empty, shield=empty)
@@ -156,9 +156,9 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         If fit has no ship or some data cannot be fetched, corresponding attribs
         will be set to None.
         """
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            return ship_holder.get_ehp(damage_profile)
+            return ship_item.get_ehp(damage_profile)
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
 
@@ -169,20 +169,20 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         If fit has no ship or some data cannot be fetched, corresponding attribs
         will be set to None.
         """
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            return ship_holder.worst_case_ehp
+            return ship_item.worst_case_ehp
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
 
-    def get_nominal_volley(self, holder_filter=None, target_resistances=None):
+    def get_nominal_volley(self, item_filter=None, target_resistances=None):
         """
         Get nominal volley of whole fit.
 
         Optional arguments:
-        holder_filter -- when iterating over fit holder, this function is called.
-        If evaluated as True, this holder is taken into consideration, else not.
-        If argument is None, all holders 'pass filter'. By default None.
+        item_filter -- when iterating over fit item, this function is called.
+        If evaluated as True, this item is taken into consideration, else not.
+        If argument is None, all items 'pass filter'. By default None.
         target_resistances -- resistance profile to calculate effective volley.
         Profile should contain em, thermal, kinetic and explosive attributes as
         numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
@@ -191,20 +191,20 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         Object with em, thermal, kinetic, explosive and total attributes.
         """
         volley = self._dd_reg._collect_damage_stats(
-            holder_filter,
+            item_filter,
             'get_nominal_volley',
             target_resistances=target_resistances
         )
         return volley
 
-    def get_nominal_dps(self, holder_filter=None, target_resistances=None, reload=False):
+    def get_nominal_dps(self, item_filter=None, target_resistances=None, reload=False):
         """
         Get nominal dps of whole fit.
 
         Optional arguments:
-        holder_filter -- when iterating over fit holder, this function is called.
-        If evaluated as True, this holder is taken into consideration, else not.
-        If argument is None, all holders 'pass filter'. By default None.
+        item_filter -- when iterating over fit item, this function is called.
+        If evaluated as True, this item is taken into consideration, else not.
+        If argument is None, all items 'pass filter'. By default None.
         target_resistances -- resistance profile to calculate effective dps.
         Profile should contain em, thermal, kinetic and explosive attributes as
         numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
@@ -215,7 +215,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         Object with em, thermal, kinetic, explosive and total attributes.
         """
         dps = self._dd_reg._collect_damage_stats(
-            holder_filter,
+            item_filter,
             'get_nominal_dps',
             target_resistances=target_resistances,
             reload=reload
@@ -224,9 +224,9 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
 
     @VolatileProperty
     def agility_factor(self):
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            ship_attribs = ship_holder.attributes
+            ship_attribs = ship_item.attributes
         except AttributeError:
             return None
         try:
@@ -253,47 +253,47 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         InheritableVolatileMixin._clear_volatile_attrs(self)
 
     # Message handling
-    def _handle_holder_addition(self, message):
+    def _handle_item_addition(self, message):
         if not self.__enabled:
             return
-        self.__add_holder(message.holder)
+        self.__add_item(message.item)
 
-    def _handle_holder_removal(self, message):
+    def _handle_item_removal(self, message):
         if not self.__enabled:
             return
-        self.__remove_holder(message.holder)
+        self.__remove_item(message.item)
 
-    def _handle_holder_state_change(self, message):
+    def _handle_item_state_change(self, message):
         if not self.__enabled:
             return
-        holder, old_state, new_state = message
+        item, old_state, new_state = message
         if new_state > old_state:
             states = set(filter(lambda s: old_state < s <= new_state, State))
-            self.__enable_states(holder, states)
+            self.__enable_states(item, states)
         elif new_state < old_state:
             states = set(filter(lambda s: new_state < s <= old_state, State))
-            self.__disable_states(holder, states)
+            self.__disable_states(item, states)
 
     def _handle_enable_services(self, message):
         """
-        Enable service and register passed holders.
+        Enable service and register passed items.
         """
         self.__enabled = True
-        for holder in message.holders:
-            self.__add_holder(holder)
+        for item in message.items:
+            self.__add_item(item)
 
     def _handle_disable_services(self, message):
         """
-        Unregister passed holders from this service and
+        Unregister passed items from this service and
         disable it.
         """
-        for holder in message.holders:
-            self.__remove_holder(holder)
+        for item in message.items:
+            self.__remove_item(item)
 
     _handler_map = {
-        HolderAdded: _handle_holder_addition,
-        HolderRemoved: _handle_holder_removal,
-        HolderStateChanged: _handle_holder_state_change,
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        ItemStateChanged: _handle_item_state_change,
         EnableServices: _handle_enable_services,
         DisableServices: _handle_disable_services
     }
@@ -307,26 +307,26 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         handler(self, message)
 
     # Private methods for message handlers
-    def __add_holder(self, holder):
+    def __add_item(self, item):
         for register in self.__regs_stateless:
-            register.register_item(holder)
-        states = set(filter(lambda s: s <= holder.state, State))
-        self.__enable_states(holder, states)
+            register.register_item(item)
+        states = set(filter(lambda s: s <= item.state, State))
+        self.__enable_states(item, states)
 
-    def __remove_holder(self, holder):
-        states = set(filter(lambda s: s <= holder.state, State))
-        self.__disable_states(holder, states)
+    def __remove_item(self, item):
+        states = set(filter(lambda s: s <= item.state, State))
+        self.__disable_states(item, states)
         for register in self.__regs_stateless:
-            register.unregister_item(holder)
+            register.unregister_item(item)
 
-    def __enable_states(self, holder, states):
+    def __enable_states(self, item, states):
         """
         Handle state switch upwards.
 
         Required arguments:
-        holder -- holder, for which states are switched
+        item -- item, for which states are switched
         states -- iterable with states, which are passed
-        during state switch, except for initial state
+            during state switch, except for initial state
         """
         for state in states:
             # Not all states have corresponding registers,
@@ -336,16 +336,16 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             except KeyError:
                 continue
             for register in registers:
-                register.register_item(holder)
+                register.register_item(item)
 
-    def __disable_states(self, holder, states):
+    def __disable_states(self, item, states):
         """
         Handle state switch downwards.
 
         Required arguments:
-        holder -- holder, for which states are switched
+        item -- item, for which states are switched
         states -- iterable with states, which are passed
-        during state switch, except for final state
+            during state switch, except for final state
         """
         for state in states:
             try:
@@ -353,4 +353,4 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             except KeyError:
                 continue
             for register in registers:
-                register.unregister_item(holder)
+                register.unregister_item(item)

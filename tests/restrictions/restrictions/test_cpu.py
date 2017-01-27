@@ -198,7 +198,7 @@ class TestCpu(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_pass_no_attr_eve_type(self):
-        # When added holder's EVE type doesn't have attribute, holder
+        # When added holder's eve type doesn't have attribute, holder
         # shouldn't be tracked by register, and thus, no errors
         # should be raised
         eve_type = self.ch.type(type_id=1)

@@ -30,7 +30,7 @@ class Ship(ImmutableStateMixin, BufferTankingMixin):
     Ship with all its special properties.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this ship.
 
     Cooperative methods:

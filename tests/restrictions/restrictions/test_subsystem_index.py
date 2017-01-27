@@ -66,7 +66,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_attr_eve_type(self):
-        # Make sure that EVE item attributes are used
+        # Make sure that eve item attributes are used
         eve_type = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 120})
         holder1 = self.make_item_mock(Subsystem, eve_type)
         holder2 = self.make_item_mock(Subsystem, eve_type)

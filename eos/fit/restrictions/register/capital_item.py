@@ -27,69 +27,69 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-# Holders of volume bigger than this are considered as capital
+# Items of volume bigger than this are considered as capital
 MAX_SUBCAP_VOLUME = 3500
 
 
-CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('holder_volume', 'max_subcap_volume'))
+CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('item_volume', 'max_subcap_volume'))
 
 
 class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    To fit holders with volume bigger than 4000, ship must
+    To fit items with volume bigger than 4000, ship must
     have IsCapitalShip attribute set to 1.
 
     Details:
-    Only holders belonging to ship are tracked.
-    For validation, EVE type volume value is taken. If
-    volume attribute is absent, holder is not restricted.
+    Only items belonging to ship are tracked.
+    For validation, eve type volume value is taken. If
+    volume attribute is absent, item is not restricted.
     """
 
     def __init__(self, fit):
         self._fit = fit
-        # Container for all tracked holders
-        self.__capital_holders = set()
+        # Container for all tracked items
+        self.__capital_items = set()
 
-    def register_item(self, holder):
-        # Ignore holders which do not belong to ship
-        if holder._domain != ModifierDomain.ship:
+    def register_item(self, item):
+        # Ignore items which do not belong to ship
+        if item._domain != ModifierDomain.ship:
             return
-        # Ignore holders with no volume attribute and holders with
+        # Ignore items with no volume attribute and items with
         # volume which satisfies us regardless of ship type
         try:
-            holder_volume = holder._eve_type.attributes[Attribute.volume]
+            item_volume = item._eve_type.attributes[Attribute.volume]
         except KeyError:
             return
-        if holder_volume <= MAX_SUBCAP_VOLUME:
+        if item_volume <= MAX_SUBCAP_VOLUME:
             return
-        self.__capital_holders.add(holder)
+        self.__capital_items.add(item)
 
-    def unregister_item(self, holder):
-        self.__capital_holders.discard(holder)
+    def unregister_item(self, item):
+        self.__capital_items.discard(item)
 
     def validate(self):
         # Skip validation only if ship has special
         # special attribute set to 1
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            ship_eve_type = ship_holder._eve_type
+            ship_eve_type = ship_item._eve_type
         except AttributeError:
             pass
         else:
             if ship_eve_type.attributes.get(Attribute.is_capital_size):
                 return
         # If we got here, then we're dealing with non-capital
-        # ship, and all registered holders are tainted
-        if self.__capital_holders:
-            tainted_holders = {}
-            for holder in self.__capital_holders:
-                holder_volume = holder._eve_type.attributes[Attribute.volume]
-                tainted_holders[holder] = CapitalItemErrorData(
-                    holder_volume=holder_volume,
+        # ship, and all registered items are tainted
+        if self.__capital_items:
+            tainted_items = {}
+            for item in self.__capital_items:
+                item_volume = item._eve_type.attributes[Attribute.volume]
+                tainted_items[item] = CapitalItemErrorData(
+                    item_volume=item_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME
                 )
-            raise RegisterValidationError(tainted_holders)
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

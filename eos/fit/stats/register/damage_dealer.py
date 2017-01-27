@@ -26,7 +26,7 @@ from .base import BaseStatRegister
 
 class DamageDealerRegister(BaseStatRegister):
     """
-    Class which tracks all holders which can potentially
+    Class which tracks all items which can potentially
     deal damage, and provides functionality to fetch some
     useful data.
     """
@@ -34,37 +34,37 @@ class DamageDealerRegister(BaseStatRegister):
     def __init__(self):
         self.__dealers = set()
 
-    def register_item(self, holder):
-        if isinstance(holder, DamageDealerMixin):
-            self.__dealers.add(holder)
+    def register_item(self, item):
+        if isinstance(item, DamageDealerMixin):
+            self.__dealers.add(item)
 
-    def unregister_item(self, holder):
-        self.__dealers.discard(holder)
+    def unregister_item(self, item):
+        self.__dealers.discard(item)
 
-    def _collect_damage_stats(self, holder_filter, method_name, *args, **kwargs):
+    def _collect_damage_stats(self, item_filter, method_name, *args, **kwargs):
         """
-        Fetch stats from all registered holders.
+        Fetch stats from all registered items.
 
         Required arguments:
-        holder_filter -- function which is evaluated for each holder;
-        if true, holder's stats are taken into consideration. Can be None.
+        item_filter -- function which is evaluated for each item;
+        if true, item's stats are taken into consideration. Can be None.
         method_name, *args, **kwargs -- method name, which will be called
-        for each holder to request its damage stats. Args and kwargs are
+        for each item to request its damage stats. Args and kwargs are
         arguments which are passed to this method.
 
         Return value:
         Object with em, thermal, kinetic, explosive and total attributes
-        which contain total stats for all holders which satisfy passed
+        which contain total stats for all items which satisfy passed
         conditions.
         """
         em, therm, kin, expl = None, None, None, None
-        for holder in self.__dealers:
-            stat = getattr(holder, method_name)(*args, **kwargs)
-            if holder_filter is not None and not holder_filter(holder):
+        for item in self.__dealers:
+            stat = getattr(item, method_name)(*args, **kwargs)
+            if item_filter is not None and not item_filter(item):
                 continue
             # Guards against both aggregated values equal to None and
-            # holder values equal to None. If aggregated value is None,
-            # assigns value from holder stats to aggregated. If holder
+            # item values equal to None. If aggregated value is None,
+            # assigns value from item stats to aggregated. If item
             # stat is None, just ignores it.
             try:
                 em += stat.em

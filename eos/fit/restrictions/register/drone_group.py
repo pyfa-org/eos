@@ -34,43 +34,43 @@ RESTRICTION_ATTRS = (
 )
 
 
-DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('holder_group', 'allowed_groups'))
+DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('item_group', 'allowed_groups'))
 
 
 class DroneGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    If ship restricts drone group, holders from groups which are not
+    If ship restricts drone group, items from groups which are not
     allowed cannot be put into drone bay.
 
     Details:
-    Only holders of Drone class are tracked.
-    For validation, allowedDroneGroupX attribute values of EVE type
+    Only items of Drone class are tracked.
+    For validation, allowedDroneGroupX attribute values of eve type
     are taken.
-    Validation fails if ship's EVE type has any restriction attribute,
+    Validation fails if ship's eve type has any restriction attribute,
     and drone group doesn't match to restriction.
     """
 
     def __init__(self, fit):
         self._fit = fit
-        # Container for holders which can be subject
+        # Container for items which can be subject
         # for restriction
-        # Format: {holders}
-        self.__restricted_holders = set()
+        # Format: {items}
+        self.__restricted_items = set()
 
-    def register_item(self, holder):
+    def register_item(self, item):
         # Ignore everything but drones
-        if isinstance(holder, Drone):
-            self.__restricted_holders.add(holder)
+        if isinstance(item, Drone):
+            self.__restricted_items.add(item)
 
-    def unregister_item(self, holder):
-        self.__restricted_holders.discard(holder)
+    def unregister_item(self, item):
+        self.__restricted_items.discard(item)
 
     def validate(self):
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         # No ship - no restriction
         try:
-            ship_eve_type = ship_holder._eve_type
+            ship_eve_type = ship_item._eve_type
         except AttributeError:
             return
         # Set with allowed groups
@@ -82,21 +82,21 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         # No allowed group attributes - no restriction
         if not allowed_groups:
             return
-        tainted_holders = {}
+        tainted_items = {}
         # Convert set to tuple, this way we can use it
         # multiple times in error data, making sure that
         # it can't be modified by validation caller
         allowed_groups = tuple(allowed_groups)
-        for holder in self.__restricted_holders:
-            # Taint holders, whose group is not allowed
-            holder_group = holder._eve_type.group
-            if holder_group not in allowed_groups:
-                tainted_holders[holder] = DroneGroupErrorData(
-                    holder_group=holder_group,
+        for item in self.__restricted_items:
+            # Taint items, whose group is not allowed
+            item_group = item._eve_type.group
+            if item_group not in allowed_groups:
+                tainted_items[item] = DroneGroupErrorData(
+                    item_group=item_group,
                     allowed_groups=allowed_groups
                 )
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):

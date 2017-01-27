@@ -61,7 +61,7 @@ class ModuleHigh(Module):
     Ship's module from high slot.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this module.
 
     Optional arguments:
@@ -81,7 +81,7 @@ class ModuleMed(Module):
     Ship's module from medium slot.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this module.
 
     Optional arguments:
@@ -101,7 +101,7 @@ class ModuleLow(Module):
     Ship's module from low slot.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this module.
 
     Optional arguments:

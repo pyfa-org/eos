@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import Attribute, Effect
-from eos.fit.container import HolderDescriptorOnHolder
+from eos.fit.container import ItemDescriptorOnItem
 from eos.fit.item import Charge
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .base import BaseItemMixin
@@ -37,11 +37,11 @@ def _float_to_int(value):
 
 class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
     """
-    Mixin intended to use with holders which can have charge loaded
+    Mixin intended to use with items which can have charge loaded
     into them.
 
     Required arguments:
-    charge -- charge to be loaded into holder
+    charge -- charge to be loaded into item
 
     Cooperative methods:
     __init__
@@ -51,14 +51,14 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         super().__init__(**kwargs)
         self.charge = charge
 
-    charge = HolderDescriptorOnHolder('_charge', 'container', Charge)
+    charge = ItemDescriptorOnItem('_charge', 'container', Charge)
 
     @VolatileProperty
     def charge_quantity(self):
         """
         Return max quantity of loadable charges as integer, based
         on the container capacity and charge volume. If any of these
-        is not defined, or no charge is found in holder, None is returned.
+        is not defined, or no charge is found in item, None is returned.
         """
         if self.charge is None:
             return None
@@ -80,7 +80,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         cycle without ammo consumption.
         """
         # Various eve types consume charges during cycle, detect them based
-        # on presence of charge_rate attribute in EVE type (modified attribute
+        # on presence of charge_rate attribute in eve type (modified attribute
         # value is always possible to fetch, as it has base value, so it's not
         # reliable way to detect it)
         if Attribute.charge_rate in self._eve_type.attributes:
@@ -120,10 +120,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
     @VolatileProperty
     def reload_time(self):
         """
-        Return holder reload time in seconds.
+        Return item reload time in seconds.
         """
-        # Return hardcoded 1.0 if holder's eve type has target_attack effect
-        # (various lasers), else fetch reload time attribute from holder
+        # Return hardcoded 1.0 if item's eve type has target_attack effect
+        # (various lasers), else fetch reload time attribute from item
         try:
             defeff_id = self._eve_type.default_effect.id
         except AttributeError:

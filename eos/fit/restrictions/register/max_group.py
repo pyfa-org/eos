@@ -28,75 +28,75 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('holder_group', 'max_group', 'group_holders'))
+MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('item_group', 'max_group', 'group_items'))
 
 
 class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track maximum number of belonging to
-    ship holders in certain state on per-group basis.
+    ship items in certain state on per-group basis.
     """
 
     def __init__(self, max_group_attr, restriction_type):
         # Attribute ID whose value contains group restriction
-        # of holder
+        # of item
         self.__max_group_attr = max_group_attr
         self.__restriction_type = restriction_type
-        # Container for all tracked holders, keyed
+        # Container for all tracked items, keyed
         # by their group ID
-        # Format: {group ID: {holders}}
+        # Format: {group ID: {items}}
         self.__group_all = KeyedSet()
-        # Container for holders, which have max group
+        # Container for items, which have max group
         # restriction to become operational
-        # Format: {holders}
+        # Format: {items}
         self.__group_restricted = set()
 
-    def register_item(self, holder):
-        # Ignore holders which do not belong to ship
-        if holder._domain != ModifierDomain.ship:
+    def register_item(self, item):
+        # Ignore items which do not belong to ship
+        if item._domain != ModifierDomain.ship:
             return
-        group = holder._eve_type.group
-        # Ignore holders, whose EVE type isn't assigned
+        group = item._eve_type.group
+        # Ignore items, whose eve type isn't assigned
         # to any group
         if group is None:
             return
         # Having group ID is sufficient condition
-        # to enter container of all fitted holders
-        self.__group_all.add_data(group, holder)
-        # To enter restriction container, EVE type
+        # to enter container of all fitted items
+        self.__group_all.add_data(group, item)
+        # To enter restriction container, eve type
         # must have restriction attribute
-        if self.__max_group_attr not in holder._eve_type.attributes:
+        if self.__max_group_attr not in item._eve_type.attributes:
             return
-        self.__group_restricted.add(holder)
+        self.__group_restricted.add(item)
 
-    def unregister_item(self, holder):
+    def unregister_item(self, item):
         # Just clear data containers
-        group = holder._eve_type.group
-        self.__group_all.rm_data(group, holder)
-        self.__group_restricted.discard(holder)
+        group = item._eve_type.group
+        self.__group_all.rm_data(group, item)
+        self.__group_restricted.discard(item)
 
     def validate(self):
-        # Container for tainted holders
-        tainted_holders = {}
-        # Go through all restricted holders
-        for holder in self.__group_restricted:
-            # Get number of registered holders, assigned to group of current
-            # restricted holder, and holder's restriction value
-            group = holder._eve_type.group
-            group_holders = len(self.__group_all.get(group) or ())
-            max_group_restriction = holder._eve_type.attributes[self.__max_group_attr]
-            # If number of registered holders from this group is bigger,
-            # then current holder is tainted
-            if group_holders > max_group_restriction:
-                tainted_holders[holder] = MaxGroupErrorData(
-                    holder_group=group,
+        # Container for tainted items
+        tainted_items = {}
+        # Go through all restricted items
+        for item in self.__group_restricted:
+            # Get number of registered items, assigned to group of current
+            # restricted item, and item's restriction value
+            group = item._eve_type.group
+            group_items = len(self.__group_all.get(group) or ())
+            max_group_restriction = item._eve_type.attributes[self.__max_group_attr]
+            # If number of registered items from this group is bigger,
+            # then current item is tainted
+            if group_items > max_group_restriction:
+                tainted_items[item] = MaxGroupErrorData(
+                    item_group=group,
                     max_group=max_group_restriction,
-                    group_holders=group_holders
+                    group_items=group_items
                 )
-        # Raise error if we detected any tainted holders
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+        # Raise error if we detected any tainted items
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):
@@ -106,12 +106,12 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
 class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
-    If holder has max group fitted restriction, number of fitted
-    holders of this group should not exceed restriction value,
-    else holder with such restriction is tainted.
+    If item has max group fitted restriction, number of fitted
+    items of this group should not exceed restriction value,
+    else item with such restriction is tainted.
 
     Details:
-    Only holders belonging to ship are tracked.
+    Only items belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
     """
 
@@ -122,12 +122,12 @@ class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
 class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
-    If holder has max group online restriction, number of online
-    holders of this group should not exceed restriction value,
-    else holder with such restriction is tainted.
+    If item has max group online restriction, number of online
+    items of this group should not exceed restriction value,
+    else item with such restriction is tainted.
 
     Details:
-    Only holders belonging to ship are tracked.
+    Only items belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
     """
 
@@ -138,12 +138,12 @@ class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
 class MaxGroupActiveRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
-    If holder has max group active restriction, number of active
-    holders of this group should not exceed restriction value,
-    else holder with such restriction is tainted.
+    If item has max group active restriction, number of active
+    items of this group should not exceed restriction value,
+    else item with such restriction is tainted.
 
     Details:
-    Only holders belonging to ship are tracked.
+    Only items belonging to ship are tracked.
     For validation, modified value of restriction attribute is taken.
     """
 

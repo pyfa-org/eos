@@ -44,13 +44,13 @@ MISSILE_LAUNCHER_GROUPS = (
 )
 
 
-def turret_filter(holder):
+def turret_filter(item):
     """
     True for all items belonging to projectile,
     hybrid and energy weapon groups.
     """
     try:
-        group = holder._eve_type.group
+        group = item._eve_type.group
     except AttributeError:
         return False
     if group in TURRET_GROUPS:
@@ -59,13 +59,13 @@ def turret_filter(holder):
         return False
 
 
-def missile_filter(holder):
+def missile_filter(item):
     """
     True for all items which belong to various missile
     launcher groups.
     """
     try:
-        group = holder._eve_type.group
+        group = item._eve_type.group
     except AttributeError:
         return False
     if group in MISSILE_LAUNCHER_GROUPS:
@@ -74,12 +74,12 @@ def missile_filter(holder):
         return False
 
 
-def drone_filter(holder):
+def drone_filter(item):
     """
     True for all items belonging to drone category.
     """
     try:
-        category = holder._eve_type.category
+        category = item._eve_type.category
     except AttributeError:
         return False
     if category == Category.drone:
@@ -88,14 +88,14 @@ def drone_filter(holder):
         return False
 
 
-def sentry_drone_filter(holder):
+def sentry_drone_filter(item):
     """
     True for all drones which require sentry interfacing skill.
     """
-    if not drone_filter(holder):
+    if not drone_filter(item):
         return False
     try:
-        skillrqs = holder._eve_type.required_skills
+        skillrqs = item._eve_type.required_skills
     except AttributeError:
         return False
     if Type.sentry_drone_interfacing in skillrqs:

@@ -23,7 +23,7 @@ from eos.util.repr import make_repr_str
 
 
 class Attribute:
-    """Class-holder for attribute metadata"""
+    """Class which holds attribute metadata"""
 
     def __init__(
             self, attribute_id=None, max_attribute=None, default_value=None,
@@ -36,7 +36,7 @@ class Attribute:
         self.max_attribute = max_attribute
 
         # Default value of this attribute, used when base attribute value
-        # is not available on EVE type during calculation process
+        # is not available on eve type during calculation process
         self.default_value = default_value
 
         # Boolean describing if it's good when attribute is high or not,

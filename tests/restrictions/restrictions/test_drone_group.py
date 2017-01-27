@@ -89,9 +89,9 @@ class TestDroneGroup(RestrictionTestCase):
     def test_fail_mismatch_attr_eve_type(self):
         # Check that error is returned on attempt
         # to add drone from group mismatching to
-        # EVE type restriction attribute, but matching
+        # eve type restriction attribute, but matching
         # to modified restriction attribute. Effectively
-        # we check that EVE type attribute value is taken
+        # we check that eve type attribute value is taken
         eve_type = self.ch.type(type_id=1, group=37)
         holder = self.make_item_mock(Drone, eve_type, state=State.offline)
         self.add_holder(holder)

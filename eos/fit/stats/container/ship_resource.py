@@ -43,13 +43,13 @@ class ShipResource(InheritableVolatileMixin):
         # Get ship's resource output, setting it to None
         # if fitting doesn't have ship assigned,
         # or ship doesn't have resource output attribute
-        ship_holder = self._fit.ship
+        ship_item = self._fit.ship
         try:
-            ship_holder_attribs = ship_holder.attributes
+            ship_item_attribs = ship_item.attributes
         except AttributeError:
             return None
         else:
             try:
-                return ship_holder_attribs[self.__output_attr]
+                return ship_item_attribs[self.__output_attr]
             except KeyError:
                 return None

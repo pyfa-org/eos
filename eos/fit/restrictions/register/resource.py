@@ -27,14 +27,14 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'holder_use'))
+ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'item_use'))
 
 
 class ResourceRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is
-    used by various fit holders.
+    used by various fit items.
     """
 
     def __init__(self, fit, stat_name, usage_attr, restriction_type):
@@ -45,13 +45,13 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
         self.__usage_attr = usage_attr
         self.__resource_users = set()
 
-    def register_item(self, holder):
-        if self.__usage_attr not in holder._eve_type.attributes:
+    def register_item(self, item):
+        if self.__usage_attr not in item._eve_type.attributes:
             return
-        self.__resource_users.add(holder)
+        self.__resource_users.add(item)
 
-    def unregister_item(self, holder):
-        self.__resource_users.discard(holder)
+    def unregister_item(self, item):
+        self.__resource_users.discard(item)
 
     def validate(self):
         # Use stats module to get resource use and output
@@ -62,19 +62,19 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
         # If we're not out of resource, do nothing
         if total_use <= output:
             return
-        tainted_holders = {}
-        for holder in self.__resource_users:
-            resource_use = holder.attributes[self.__usage_attr]
-            # Ignore holders which do not actually
+        tainted_items = {}
+        for item in self.__resource_users:
+            resource_use = item.attributes[self.__usage_attr]
+            # Ignore items which do not actually
             # consume resource
             if resource_use <= 0:
                 continue
-            tainted_holders[holder] = ResourceErrorData(
+            tainted_items[item] = ResourceErrorData(
                 total_use=total_use,
                 output=output,
-                holder_use=resource_use
+                item_use=resource_use
             )
-        raise RegisterValidationError(tainted_holders)
+        raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):
@@ -84,7 +84,7 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
 class CpuRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
-    CPU usage by holders should not exceed ship CPU output.
+    CPU usage by items should not exceed ship CPU output.
 
     Details:
     For validation, stats module data is used.
@@ -97,7 +97,7 @@ class CpuRegister(ResourceRestrictionRegister):
 class PowerGridRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
-    Power grid usage by holders should not exceed ship
+    Power grid usage by items should not exceed ship
     power grid output.
 
     Details:
@@ -111,7 +111,7 @@ class PowerGridRegister(ResourceRestrictionRegister):
 class CalibrationRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
-    Calibration usage by holders should not exceed ship
+    Calibration usage by items should not exceed ship
     calibration output.
 
     Details:
@@ -125,26 +125,26 @@ class CalibrationRegister(ResourceRestrictionRegister):
 class DroneBayVolumeRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
-    Drone bay volume usage by holders should not exceed ship
+    Drone bay volume usage by items should not exceed ship
     drone bay volume.
 
     Details:
-    Only holders placed to fit.drones are tracked.
+    Only items placed to fit.drones are tracked.
     For validation, stats module data is used.
     """
 
     def __init__(self, fit):
         ResourceRestrictionRegister.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
 
-    def register_item(self, holder):
-        if holder in self._fit.drones:
-            ResourceRestrictionRegister.register_item(self, holder)
+    def register_item(self, item):
+        if item in self._fit.drones:
+            ResourceRestrictionRegister.register_item(self, item)
 
 
 class DroneBandwidthRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
-    Drone bandwidth usage by holders should not exceed ship
+    Drone bandwidth usage by items should not exceed ship
     drone bandwidth output.
 
     Details:

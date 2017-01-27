@@ -27,7 +27,7 @@ from eos.util.repr import make_repr_str
 class ModuleRacks:
     """
     Higher-level container for all module racks
-    (which are containers for holders).
+    (which are containers for items).
     """
 
     def __init__(self, high, med, low):
@@ -35,17 +35,17 @@ class ModuleRacks:
         self.med = med
         self.low = low
 
-    def holders(self):
-        """Return view over all module holders."""
-        return ModuleHolderView(self)
+    def items(self):
+        """Return view over all module items."""
+        return ModuleItemView(self)
 
     def __repr__(self):
         spec = ['high', 'med', 'low']
         return make_repr_str(self, spec)
 
 
-class ModuleHolderView:
-    """View over all module holders within all racks."""
+class ModuleItemView:
+    """View over all module items within all racks."""
 
     def __init__(self, racks):
         self.__racks = racks

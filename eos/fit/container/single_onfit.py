@@ -19,24 +19,24 @@
 # ===============================================================================
 
 
-from .base import HolderContainerBase
-from .exception import HolderAlreadyAssignedError
+from .base import ItemContainerBase
+from .exception import ItemAlreadyAssignedError
 
 
-class HolderDescriptorOnFit(HolderContainerBase):
+class ItemDescriptorOnFit(ItemContainerBase):
     """
-    Container for single holder, intended to be used
+    Container for single item, intended to be used
     as fit attribute for direct access.
 
     Required arguments:
     attr_name -- name of instance attribute which should
         be used to store data processed by descriptor
-    holder_class -- class of holders this container
+    item_class -- class of items this container
         is allowed to contain
     """
 
-    def __init__(self, attr_name, holder_class):
-        HolderContainerBase.__init__(self, holder_class)
+    def __init__(self, attr_name, item_class):
+        ItemContainerBase.__init__(self, item_class)
         self.__attr_name = attr_name
 
     def __get__(self, instance, owner):
@@ -44,18 +44,18 @@ class HolderDescriptorOnFit(HolderContainerBase):
             return self
         return getattr(instance, self.__attr_name, None)
 
-    def __set__(self, instance, new_holder):
-        self._check_class(new_holder, allow_none=True)
+    def __set__(self, instance, new_item):
+        self._check_class(new_item, allow_none=True)
         attr_name = self.__attr_name
-        old_holder = getattr(instance, attr_name, None)
-        if old_holder is not None:
-            self._handle_holder_removal(instance, old_holder)
-        setattr(instance, attr_name, new_holder)
-        if new_holder is not None:
+        old_item = getattr(instance, attr_name, None)
+        if old_item is not None:
+            self._handle_item_removal(instance, old_item)
+        setattr(instance, attr_name, new_item)
+        if new_item is not None:
             try:
-                self._handle_holder_addition(instance, new_holder)
-            except HolderAlreadyAssignedError as e:
-                setattr(instance, attr_name, old_holder)
-                if old_holder is not None:
-                    self._handle_holder_addition(instance, old_holder)
+                self._handle_item_addition(instance, new_item)
+            except ItemAlreadyAssignedError as e:
+                setattr(instance, attr_name, old_item)
+                if old_item is not None:
+                    self._handle_item_addition(instance, old_item)
                 raise ValueError(*e.args) from e

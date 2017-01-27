@@ -19,13 +19,13 @@
 # ===============================================================================
 
 
-from eos.fit.messages import HolderStateChanged
+from eos.fit.messages import ItemStateChanged
 from .base import BaseItemMixin
 
 
 class ImmutableStateMixin(BaseItemMixin):
     """
-    Mixin intended to be used for holders which define
+    Mixin intended to be used for items which define
     state at instantiation time and do not change it later.
 
     Required arguments:
@@ -46,7 +46,7 @@ class ImmutableStateMixin(BaseItemMixin):
 
 class MutableStateMixin(BaseItemMixin):
     """
-    Mixin intended to be used for holders which can
+    Mixin intended to be used for items which can
     switch state at any time.
 
     Required arguments:
@@ -69,9 +69,9 @@ class MutableStateMixin(BaseItemMixin):
         old_state = self.__state
         if new_state == old_state:
             return
-        # When holder is assigned to some fit, ask fit to perform
-        # fit-specific state switch of our holder
+        # When item is assigned to some fit, ask fit to perform
+        # fit-specific state switch of our item
         fit = self._fit
         if fit is not None:
-            fit._publish(HolderStateChanged(self, old_state, new_state))
+            fit._publish(ItemStateChanged(self, old_state, new_state))
         self.__state = new_state

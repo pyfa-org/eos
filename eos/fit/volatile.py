@@ -20,7 +20,7 @@
 
 
 from .messages import (
-    HolderAdded, HolderRemoved, HolderStateChanged, EffectsEnabled, EffectsDisabled,
+    ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChangedOverride, RefreshSource
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
@@ -48,21 +48,21 @@ class FitVolatileManager:
             self.__add_volatile_object(volatile)
 
     # Message handling
-    def _handle_holder_addition(self, message):
-        self.__add_volatile_object(message.holder)
+    def _handle_item_addition(self, message):
+        self.__add_volatile_object(message.item)
         self.__clear_volatile_attrs()
 
-    def _handle_holder_removal(self, message):
+    def _handle_item_removal(self, message):
         self.__clear_volatile_attrs()
-        self.__remove_volatile_object(message.holder)
+        self.__remove_volatile_object(message.item)
 
     def _handle_other_changes(self, _):
         self.__clear_volatile_attrs()
 
     _handler_map = {
-        HolderAdded: _handle_holder_addition,
-        HolderRemoved: _handle_holder_removal,
-        HolderStateChanged: _handle_other_changes,
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        ItemStateChanged: _handle_other_changes,
         EffectsEnabled: _handle_other_changes,
         EffectsDisabled: _handle_other_changes,
         AttrValueChangedOverride: _handle_other_changes,

@@ -105,12 +105,12 @@ class MutableAttributeMap:
     Calculate, store and provide access to modified attribute values.
 
     Required arguments:
-    holder -- holder, to which this map is assigned
+    item -- item, to which this map is assigned
     """
 
-    def __init__(self, holder):
-        # Reference to holder for internal needs
-        self.__holder = holder
+    def __init__(self, item):
+        # Reference to item for internal needs
+        self.__item = item
         # Actual container of calculated attributes
         # Format: {attribute ID: value}
         self.__modified_attributes = {}
@@ -137,19 +137,19 @@ class MutableAttributeMap:
             try:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
             except BaseValueError as e:
-                msg = 'unable to find base value for attribute {} on EVE type {}'.format(
-                    e.args[0], self.__holder._eve_type_id)
+                msg = 'unable to find base value for attribute {} on eve type {}'.format(
+                    e.args[0], self.__item._eve_type_id)
                 logger.warning(msg)
                 raise KeyError(attr) from e
             except AttributeMetaError as e:
-                msg = 'unable to fetch metadata for attribute {}, requested for EVE type {}'.format(
-                    e.args[0], self.__holder._eve_type_id)
+                msg = 'unable to fetch metadata for attribute {}, requested for eve type {}'.format(
+                    e.args[0], self.__item._eve_type_id)
                 logger.error(msg)
                 raise KeyError(attr) from e
             except NoSourceError as e:
                 raise KeyError(attr) from e
             else:
-                self.__holder._fit._publish(AttrValueChanged(holder=self.__holder, attr=attr))
+                self.__item._fit._publish(AttrValueChanged(item=self.__item, attr=attr))
         return val
 
     def __len__(self):
@@ -178,7 +178,7 @@ class MutableAttributeMap:
         # And make sure services are aware of changed value if it
         # actually was changed
         else:
-            self.__holder._fit._publish(AttrValueChanged(holder=self.__holder, attr=attr))
+            self.__item._fit._publish(AttrValueChanged(item=self.__item, attr=attr))
 
     def get(self, attr, default=None):
         try:
@@ -188,7 +188,7 @@ class MutableAttributeMap:
 
     def keys(self):
         try:
-            base_attrs = self.__holder._eve_type.attributes
+            base_attrs = self.__item._eve_type.attributes
         except NoSourceError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
@@ -218,23 +218,23 @@ class MutableAttributeMap:
         BaseValueError -- attribute cannot be calculated, as its
         base value is not available
         """
-        # Assign EVE type attributes first to make sure than in case when we're
+        # Assign eve type attributes first to make sure than in case when we're
         # calculating attribute for item without source, it fails with null
-        # source error (triggered by accessing EVE type attribute)
-        base_attrs = self.__holder._eve_type.attributes
+        # source error (triggered by accessing eve type attribute)
+        base_attrs = self.__item._eve_type.attributes
         # Attribute object for attribute being calculated
         try:
-            attr_meta = self.__holder._fit.source.cache_handler.get_attribute(attr)
+            attr_meta = self.__item._fit.source.cache_handler.get_attribute(attr)
         # Raise error if we can't get metadata for requested attribute
         except (AttributeError, AttributeFetchError) as e:
             raise AttributeMetaError(attr) from e
         # Base attribute value which we'll use for modification
         try:
             result = base_attrs[attr]
-        # If attribute isn't available on EVE type, base off its default value
+        # If attribute isn't available on eve type, base off its default value
         except KeyError:
             result = attr_meta.default_value
-            # If EVE type attribute is not specified and default
+            # If eve type attribute is not specified and default
             # value isn't available, raise error - without valid
             # base we can't go on
             if result is None:
@@ -245,20 +245,20 @@ class MutableAttributeMap:
         # Container for penalized modifiers
         # Format: {operator: [values]}
         penalized_mods = {}
-        # Now, go through all affectors affecting our holder
-        for affector in self.__holder._fit._calculator.get_affectors(self.__holder, attr=attr):
+        # Now, go through all affectors affecting our item
+        for affector in self.__item._fit._calculator.get_affectors(self.__item, attr=attr):
             try:
-                source_holder, modifier = affector
+                source_item, modifier = affector
                 operator = modifier.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
-                # source item EVE type category and operator
+                # source item eve type category and operator
                 penalize = (
                     attr_meta.stackable is False and
-                    source_holder._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
+                    source_item._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
                     operator in PENALIZABLE_OPERATORS
                 )
                 try:
-                    mod_value = source_holder.attributes[modifier.src_attr]
+                    mod_value = source_item.attributes[modifier.src_attr]
                 # Silently skip current affector: error should already
                 # be logged by map before it raised KeyError
                 except KeyError:
@@ -279,8 +279,8 @@ class MutableAttributeMap:
                 mod_list.append(mod_value)
             # Handle operator type failure
             except OperatorError as e:
-                msg = 'malformed modifier on EVE type {}: unknown operator {}'.format(
-                    source_holder._eve_type_id, e.args[0])
+                msg = 'malformed modifier on eve type {}: unknown operator {}'.format(
+                    source_item._eve_type_id, e.args[0])
                 logger.warning(msg)
                 continue
         # When data gathering is complete, process penalized modifiers
@@ -381,9 +381,9 @@ class MutableAttributeMap:
         self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
         # If value of attribute is changing after operation, force refresh
         # of attributes which rely on it
-        fit = self.__holder._fit
+        fit = self.__item._fit
         if fit is not None and value != old_composite:
-            fit._publish(AttrValueChangedOverride(holder=self.__holder, attr=attr))
+            fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
 
     def _override_del(self, attr):
         overrides = self.__overridden_attributes
@@ -400,9 +400,9 @@ class MutableAttributeMap:
             del self.__modified_attributes[attr]
         except KeyError:
             pass
-        fit = self.__holder._fit
+        fit = self.__item._fit
         if fit is not None:
-            fit._publish(AttrValueChangedOverride(holder=self.__holder, attr=attr))
+            fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
 
     # Cap-related methods
     @property

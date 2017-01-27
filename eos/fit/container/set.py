@@ -19,67 +19,67 @@
 # ===============================================================================
 
 
-from .base import HolderContainerBase
-from .exception import HolderAlreadyAssignedError
+from .base import ItemContainerBase
+from .exception import ItemAlreadyAssignedError
 
 
-class HolderSet(HolderContainerBase):
+class ItemSet(ItemContainerBase):
     """
-    Unordered container for holders.
+    Unordered container for items.
 
     Required arguments:
     fit -- fit, to which container is attached
-    holder_class -- class of holders this container
+    item_class -- class of items this container
         is allowed to contain
     """
 
-    def __init__(self, fit, holder_class):
-        HolderContainerBase.__init__(self, holder_class)
+    def __init__(self, fit, item_class):
+        ItemContainerBase.__init__(self, item_class)
         self.__fit = fit
         self.__set = set()
 
-    def add(self, holder):
+    def add(self, item):
         """
-        Add holder to container.
+        Add item to container.
 
         Possible exceptions:
-        TypeError -- raised when holder of unacceptable class
+        TypeError -- raised when item of unacceptable class
             is passed
-        ValueError -- raised when holder cannot be added to container
+        ValueError -- raised when item cannot be added to container
             (e.g. already belongs to some fit)
         """
-        self._check_class(holder)
-        self.__set.add(holder)
+        self._check_class(item)
+        self.__set.add(item)
         try:
-            self._handle_holder_addition(self.__fit, holder)
-        except HolderAlreadyAssignedError as e:
-            self.__set.remove(holder)
+            self._handle_item_addition(self.__fit, item)
+        except ItemAlreadyAssignedError as e:
+            self.__set.remove(item)
             raise ValueError from e
 
-    def remove(self, holder):
+    def remove(self, item):
         """
-        Remove holder from container.
+        Remove item from container.
 
         Possible exceptions:
-        KeyError -- raised when holder cannot be removed
+        KeyError -- raised when item cannot be removed
             from container (e.g. it doesn't belong to it)
         """
-        if holder not in self.__set:
-            raise KeyError(holder)
-        self._handle_holder_removal(self.__fit, holder)
-        self.__set.remove(holder)
+        if item not in self.__set:
+            raise KeyError(item)
+        self._handle_item_removal(self.__fit, item)
+        self.__set.remove(item)
 
     def clear(self):
         """Remove everything from container."""
-        for holder in self.__set:
-            self._handle_holder_removal(self.__fit, holder)
+        for item in self.__set:
+            self._handle_item_removal(self.__fit, item)
         self.__set.clear()
 
     def __iter__(self):
         return self.__set.__iter__()
 
-    def __contains__(self, holder):
-        return self.__set.__contains__(holder)
+    def __contains__(self, item):
+        return self.__set.__contains__(item)
 
     def __len__(self):
         return self.__set.__len__()

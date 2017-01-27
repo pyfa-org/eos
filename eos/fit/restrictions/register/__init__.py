@@ -26,7 +26,7 @@ __all__ = [
     'ChargeSizeRestrictionRegister',
     'ChargeVolumeRestrictionRegister',
     'DroneGroupRestrictionRegister',
-    'HolderClassRestrictionRegister',
+    'ItemClassRestrictionRegister',
     'MaxGroupFittedRegister',
     'MaxGroupOnlineRegister',
     'MaxGroupActiveRegister',
@@ -59,7 +59,7 @@ from .charge_group import ChargeGroupRestrictionRegister
 from .charge_size import ChargeSizeRestrictionRegister
 from .charge_volume import ChargeVolumeRestrictionRegister
 from .drone_group import DroneGroupRestrictionRegister
-from .holder_class import HolderClassRestrictionRegister
+from .item_class import ItemClassRestrictionRegister
 from .max_group import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .resource import (CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister,
     DroneBandwidthRegister)

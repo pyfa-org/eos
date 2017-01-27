@@ -26,11 +26,11 @@ from .mixin.state import ImmutableStateMixin
 
 class Character(ImmutableStateMixin):
     """
-    Represents a character. Must be holder, as EVE tracks
+    Represents a character. Must be item, as eve tracks
     some attributes on it.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this character.
 
     Cooperative methods:

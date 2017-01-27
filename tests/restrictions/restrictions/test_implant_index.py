@@ -66,7 +66,7 @@ class TestImplantIndex(RestrictionTestCase):
         self.assert_restriction_buffers_empty()
 
     def test_fail_attr_eve_type(self):
-        # Make sure that EVE type attributes are used
+        # Make sure that eve type attributes are used
         eve_type = self.ch.type(type_id=1, attributes={Attribute.implantness: 120})
         holder1 = self.make_item_mock(Implant, eve_type)
         holder2 = self.make_item_mock(Implant, eve_type)

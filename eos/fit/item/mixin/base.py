@@ -40,7 +40,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     it).
 
     Required arguments:
-    type_id -- ID of EVE type ID which should serve as base for this
+    type_id -- ID of eve type ID which should serve as base for this
         item
 
     Cooperative methods:
@@ -54,15 +54,15 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         self.attributes = MutableAttributeMap(self)
         # Which fit this item is bound to
         self.__fit = None
-        # Contains IDs of effects which are prohibited to be run on this holder.
-        # It means that if there's an ID here - it does not mean that holder._eve_type
-        # has such effect, but if holder has it, it will be disabled. We need to keep
-        # such IDs for case when holder has effect disabled, then it switches source
+        # Contains IDs of effects which are prohibited to be run on this item.
+        # It means that if there's an ID here - it does not mean that item._eve_type
+        # has such effect, but if item has it, it will be disabled. We need to keep
+        # such IDs for case when item has effect disabled, then it switches source
         # where it doesn't have effect with this ID anymore, then when it switches
         # back - this effect will be disabled like it has been before source switch
         self.__disabled_effects = set()
-        # Which EVE type this holder wraps. Use null source item by default,
-        # as holder doesn't have fit with source yet
+        # Which eve type this item wraps. Use null source item by default,
+        # as item doesn't have fit with source yet
         self._eve_type = NullSourceItem
         super().__init__(**kwargs)
 
@@ -95,7 +95,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     @property
     def _effect_data(self):
         """
-        Return map with effects and their holder-specific data.
+        Return map with effects and their item-specific data.
 
         Return data as dictionary:
         {effect ID: (effect=effect object, chance=chance to apply
@@ -113,7 +113,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     def _set_effects_status(self, effect_ids, status):
         """
-        Enable or disable effects for this holder.
+        Enable or disable effects for this item.
 
         Required arguments:
         effect_ids -- iterable with effect IDs, for which we're
@@ -127,7 +127,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     def _randomize_effects_status(self, effect_filter=None):
         """
-        Randomize status of effects on this holder, take value of
+        Randomize status of effects on this item, take value of
         chance attribute into consideration when necessary.
 
         Optional arguments:
@@ -160,11 +160,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     @property
     def _disabled_effects(self):
         """
-        Return set with IDs of effects which exist on this holder
+        Return set with IDs of effects which exist on this item
         and are disabled.
 
         Unlike self.__disabled_effects, this property returns
-        IDs of actual effects which are not active on this holder.
+        IDs of actual effects which are not active on this item.
         """
         return set(e.id for e in self._eve_type.effects).intersection(self.__disabled_effects)
 
@@ -216,8 +216,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     # Private methods for message handlers
     def __refresh_source(self):
         """
-        Each time holder's context is changed (the source it relies on,
-        which may change when holder switches fit or its fit switches
+        Each time item's context is changed (the source it relies on,
+        which may change when item switches fit or its fit switches
         source), this method should be called; it will refresh data
         which is source-dependent.
         """
@@ -226,7 +226,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             type_getter = self._fit.source.cache_handler.get_type
         # When we're asked to refresh source, but we have no fit or
         # fit has no valid source assigned, we assign NullSource object
-        # as EVE type - it's needed to raise errors on access to source-
+        # as eve type - it's needed to raise errors on access to source-
         # dependent stuff
         except AttributeError:
             self._eve_type = NullSourceItem

@@ -44,14 +44,14 @@ class EntitySlots(InheritableVolatileMixin):
         # Get amount of provided slots, setting it to None
         # if fitting doesn't have ship assigned,
         # or ship doesn't have slot attribute
-        ship_holder = getattr(self._fit, self.__slot_carrier)
+        ship_item = getattr(self._fit, self.__slot_carrier)
         try:
-            ship_holder_attribs = ship_holder.attributes
+            ship_item_attribs = ship_item.attributes
         except AttributeError:
             return None
         else:
             try:
-                return int(ship_holder_attribs[self.__slot_attr])
+                return int(ship_item_attribs[self.__slot_attr])
             except KeyError:
                 return None
 

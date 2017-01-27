@@ -28,7 +28,7 @@ from tests.calculator.environment import IndependentItem, ShipItem
 
 class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     """
-    Test that items with EVE types from several categories
+    Test that items with eve types from several categories
     are immune to stacking penalty
     """
 

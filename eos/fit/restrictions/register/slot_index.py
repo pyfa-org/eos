@@ -28,51 +28,51 @@ from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
-SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('holder_slot_index',))
+SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('item_slot_index',))
 
 
 class SlotIndexRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track indices of occupied slots and
-    disallow multiple holders reside within slot with the
+    disallow multiple items reside within slot with the
     same index.
     """
 
     def __init__(self, slot_index_attr, restriction_type):
-        # This attribute's value on holder
+        # This attribute's value on item
         # represents their index of slot
         self.__slot_index_attr = slot_index_attr
         self.__restriction_type = restriction_type
-        # All holders which possess index of slot
+        # All items which possess index of slot
         # are stored in this container
-        # Format: {slot index: {holders}}
-        self.__slotted_holders = KeyedSet()
+        # Format: {slot index: {items}}
+        self.__slotted_items = KeyedSet()
 
-    def register_item(self, holder):
+    def register_item(self, item):
         # Skip items which don't have index specified
-        slot_index = holder._eve_type.attributes.get(self.__slot_index_attr)
+        slot_index = item._eve_type.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return
-        self.__slotted_holders.add_data(slot_index, holder)
+        self.__slotted_items.add_data(slot_index, item)
 
-    def unregister_item(self, holder):
-        slot_index = holder._eve_type.attributes.get(self.__slot_index_attr)
+    def unregister_item(self, item):
+        slot_index = item._eve_type.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return
-        self.__slotted_holders.rm_data(slot_index, holder)
+        self.__slotted_items.rm_data(slot_index, item)
 
     def validate(self):
-        tainted_holders = {}
-        for slot_index in self.__slotted_holders:
-            slot_index_holders = self.__slotted_holders[slot_index]
+        tainted_items = {}
+        for slot_index in self.__slotted_items:
+            slot_index_items = self.__slotted_items[slot_index]
             # If more than one item occupies the same slot, all
-            # holders in this slot are tainted
-            if len(slot_index_holders) > 1:
-                for holder in slot_index_holders:
-                    tainted_holders[holder] = SlotIndexErrorData(holder_slot_index=slot_index)
-        if tainted_holders:
-            raise RegisterValidationError(tainted_holders)
+            # items in this slot are tainted
+            if len(slot_index_items) > 1:
+                for item in slot_index_items:
+                    tainted_items[item] = SlotIndexErrorData(item_slot_index=slot_index)
+        if tainted_items:
+            raise RegisterValidationError(tainted_items)
 
     @property
     def restriction_type(self):
@@ -85,7 +85,7 @@ class SubsystemIndexRegister(SlotIndexRestrictionRegister):
     Multiple subsystems can't be added into the same subsystem slot.
 
     Details:
-    Slot to fill is determined by EVE type attributes.
+    Slot to fill is determined by eve type attributes.
     """
 
     def __init__(self):
@@ -98,7 +98,7 @@ class ImplantIndexRegister(SlotIndexRestrictionRegister):
     Multiple implants can't be added into the same implant slot.
 
     Details:
-    Slot to fill is determined by EVE type attributes.
+    Slot to fill is determined by eve type attributes.
     """
 
     def __init__(self):
@@ -111,7 +111,7 @@ class BoosterIndexRegister(SlotIndexRestrictionRegister):
     Multiple boosters can't be added into the same booster slot.
 
     Details:
-    Slot to fill is determined by EVE type attributes.
+    Slot to fill is determined by eve type attributes.
     """
 
     def __init__(self):

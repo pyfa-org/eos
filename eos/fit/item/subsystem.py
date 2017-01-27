@@ -29,7 +29,7 @@ class Subsystem(ImmutableStateMixin):
     Tech 3 ship's subsystem.
 
     Required arguments:
-    type_id -- ID of EVE type which should serve as base
+    type_id -- ID of eve type which should serve as base
         for this subsystem.
 
     Cooperative methods:

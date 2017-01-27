@@ -24,9 +24,9 @@ from eos.data.source import SourceManager, Source
 from eos.util.pubsub import MessageBroker, BaseSubscriber
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
-from .container import HolderDescriptorOnFit, HolderList, HolderRestrictedSet, HolderSet, ModuleRacks
+from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
 from .item import *
-from .messages import HolderAdded, HolderRemoved, EnableServices, DisableServices, RefreshSource
+from .messages import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
 from .restrictions import RestrictionService
 from .stats import StatService
 from .volatile import FitVolatileManager
@@ -43,22 +43,22 @@ class Fit(MessageBroker, BaseSubscriber):
     def __init__(self, source=None):
         MessageBroker.__init__(self)
         self.__source = None
-        # Keep list of all holders which belong to this fit
-        self.__holders = set()
+        # Keep list of all items which belong to this fit
+        self.__items = set()
         self._subscribe(self, self._handler_map.keys())
-        # Character-related holder containers
-        self.skills = HolderRestrictedSet(self, Skill)
-        self.implants = HolderSet(self, Implant)
-        self.boosters = HolderSet(self, Booster)
+        # Character-related item containers
+        self.skills = ItemRestrictedSet(self, Skill)
+        self.implants = ItemSet(self, Implant)
+        self.boosters = ItemSet(self, Booster)
         # Ship-related containers
-        self.subsystems = HolderSet(self, Subsystem)
+        self.subsystems = ItemSet(self, Subsystem)
         self.modules = ModuleRacks(
-            high=HolderList(self, ModuleHigh),
-            med=HolderList(self, ModuleMed),
-            low=HolderList(self, ModuleLow)
+            high=ItemList(self, ModuleHigh),
+            med=ItemList(self, ModuleMed),
+            low=ItemList(self, ModuleLow)
         )
-        self.rigs = HolderSet(self, Rig)
-        self.drones = HolderSet(self, Drone)
+        self.rigs = ItemSet(self, Rig)
+        self.drones = ItemSet(self, Drone)
         # Initialize services. Some of services rely on fit structure
         # (module racks, implant set), thus they have to be initialized
         # after it
@@ -73,14 +73,14 @@ class Fit(MessageBroker, BaseSubscriber):
             source = SourceManager.default
         self.source = source
         # As character object shouldn't change in any sane cases, initialize it
-        # here. It has to be assigned after fit starts to track list of holders
+        # here. It has to be assigned after fit starts to track list of items
         # to make sure it's part of it
         self.character = Character(Type.character_static)
 
-    ship = HolderDescriptorOnFit('_ship', Ship)
-    stance = HolderDescriptorOnFit('_stance', Stance)
-    character = HolderDescriptorOnFit('_character', Character)
-    effect_beacon = HolderDescriptorOnFit('_effect_beacon', EffectBeacon)
+    ship = ItemDescriptorOnFit('_ship', Ship)
+    stance = ItemDescriptorOnFit('_stance', Stance)
+    character = ItemDescriptorOnFit('_character', Character)
+    effect_beacon = ItemDescriptorOnFit('_effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
         """
@@ -110,24 +110,24 @@ class Fit(MessageBroker, BaseSubscriber):
             return
         # Disable everything dependent on old source prior to switch
         if old_source is not None:
-            self._publish(DisableServices(self.__holders))
-        # Assign new source and feed new data to all holders
+            self._publish(DisableServices(self.__items))
+        # Assign new source and feed new data to all items
         self.__source = new_source
         self._publish(RefreshSource())
         # Enable source-dependent services
         if new_source is not None:
-            self._publish(EnableServices(self.__holders))
+            self._publish(EnableServices(self.__items))
 
     # Message handling
-    def _handle_holder_addition(self, message):
-        self.__holders.add(message.holder)
+    def _handle_item_addition(self, message):
+        self.__items.add(message.item)
 
-    def _handle_holder_removal(self, message):
-        self.__holders.discard(message.holder)
+    def _handle_item_removal(self, message):
+        self.__items.discard(message.item)
 
     _handler_map = {
-        HolderAdded: _handle_holder_addition,
-        HolderRemoved: _handle_holder_removal
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal
     }
 
     def _notify(self, message):
