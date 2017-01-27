@@ -99,7 +99,7 @@ class TestCalibration(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_other_class_domain(self):
+    def test_use_other_class(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.upgrade_cost: 0})
         item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         item1.attributes = {Attribute.upgrade_cost: 50}

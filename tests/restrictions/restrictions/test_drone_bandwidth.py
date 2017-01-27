@@ -46,7 +46,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
-    def test_fail_excess_single_other_class_domain(self):
+    def test_fail_excess_single_other_class(self):
         # Make sure items of all classes are affected
         eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         item = self.make_item_mock(Implant, eve_type, state=State.online)

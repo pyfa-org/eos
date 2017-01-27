@@ -113,7 +113,7 @@ class TestDroneBandwidth(StatTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_stat_buffers_empty()
 
-    def test_use_other_class_domain(self):
+    def test_use_other_class(self):
         eve_type = self.ch.type(type_id=1, attributes={Attribute.drone_bandwidth_used: 0})
         item1 = self.make_item_mock(Drone, eve_type, state=State.online)
         item1.attributes = {Attribute.drone_bandwidth_used: 50}
