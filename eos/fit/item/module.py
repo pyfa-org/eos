@@ -42,15 +42,11 @@ class Module(
             return None
         return delay_ms / 1000
 
+    # Attribute calculation-related properties
+    _parent_modifier_domain = ModifierDomain.ship
+    _owner_modifiable = False
+
     # Auxiliary methods
-    @property
-    def _domain(self):
-        return ModifierDomain.ship
-
-    @property
-    def _owner_modifiable(self):
-        return False
-
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'state', 'charge']
         return make_repr_str(self, spec)

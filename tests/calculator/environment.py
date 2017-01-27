@@ -139,25 +139,25 @@ class BaseItem:
 
 class IndependentItem(BaseItem):
 
-    _domain = None
+    _parent_modifier_domain = None
     _owner_modifiable = False
 
 
 class CharDomainItem(BaseItem):
 
-    _domain = ModifierDomain.character
+    _parent_modifier_domain = ModifierDomain.character
     _owner_modifiable = False
 
 
 class ShipDomainItem(BaseItem):
 
-    _domain = ModifierDomain.ship
+    _parent_modifier_domain = ModifierDomain.ship
     _owner_modifiable = False
 
 
 class OwnerModifiableItem(BaseItem):
 
-    _domain = None
+    _parent_modifier_domain = None
     _owner_modifiable = True
 
 

@@ -64,7 +64,7 @@ class StatTestCase(EosTestCase):
             '_eve_type_id': eve_type.id,
             '_eve_type': eve_type,
             'state': state,
-            '_domain': item._domain,
+            '_parent_modifier_domain': item._parent_modifier_domain,
             'spec_set' if strict_spec is True else 'spec': item
         }
         return Mock(**kwargs)

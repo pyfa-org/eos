@@ -83,7 +83,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     # Properties used by attribute calculator
     @property
     @abstractmethod
-    def _domain(self):
+    def _parent_modifier_domain(self):
         ...
 
     @property

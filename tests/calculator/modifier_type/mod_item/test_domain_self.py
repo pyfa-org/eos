@@ -23,7 +23,7 @@ from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import Modifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharDomainItem, ShipDomainItem, OwnerModifiableItem
+from tests.calculator.environment import IndependentItem, CharDomainItem, ShipDomainItem
 
 
 class TestModItemDomainSelf(CalculatorTestCase):
@@ -83,7 +83,6 @@ class TestModItemDomainSelf(CalculatorTestCase):
         self.fit.items.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_calculator_buffers_empty(self.fit)
-
 
     def test_positioned(self):
         item = IndependentItem(self.ch.type(

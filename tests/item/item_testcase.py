@@ -35,7 +35,7 @@ class ItemMixinTestCase(EosTestCase):
 
         class TestMixin(mixin_class):
 
-            _domain = None
+            _parent_modifier_domain = None
             _owner_modifiable = None
 
         return TestMixin(*args, **kwargs)

@@ -33,7 +33,7 @@ class Item(MutableStateMixin):
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)
 
-    _domain = None
+    _parent_modifier_domain = None
     _owner_modifiable = None
 
 
@@ -42,7 +42,7 @@ class OtherItem(MutableStateMixin):
     def __init__(self, type_id, state=State.offline, **kwargs):
         super().__init__(type_id=type_id, state=state, **kwargs)
 
-    _domain = None
+    _parent_modifier_domain = None
     _owner_modifiable = None
 
 

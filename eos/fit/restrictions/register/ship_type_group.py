@@ -103,7 +103,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
 
     def register_item(self, item):
         # Ignore all items which do not belong to ship
-        if item._domain != ModifierDomain.ship:
+        if item._parent_modifier_domain != ModifierDomain.ship:
             return
         # Containers for typeIDs and groupIDs of ships, to
         # which item is allowed to fit

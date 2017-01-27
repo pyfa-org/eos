@@ -230,7 +230,7 @@ class DogmaRegister:
         # Add all affectors which directly affect it
         affectors.update(self.__affector_direct_active.get(target_item) or set())
         # Then all affectors which affect domain of passed item
-        domain = target_item._domain
+        domain = target_item._parent_modifier_domain
         affectors.update(self.__affector_domain.get(domain) or set())
         # All affectors which affect domain and group of passed item
         group = target_item._eve_type.group
@@ -256,7 +256,7 @@ class DogmaRegister:
         """
         # Container which temporarily holds (key, map) tuples
         affectee_maps = []
-        domain = target_item._domain
+        domain = target_item._parent_modifier_domain
         if domain is not None:
             affectee_maps.append((domain, self.__affectee_domain))
             group = target_item._eve_type.group

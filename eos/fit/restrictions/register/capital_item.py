@@ -53,7 +53,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
 
     def register_item(self, item):
         # Ignore items which do not belong to ship
-        if item._domain != ModifierDomain.ship:
+        if item._parent_modifier_domain != ModifierDomain.ship:
             return
         # Ignore items with no volume attribute and items with
         # volume which satisfies us regardless of ship type

@@ -54,7 +54,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
 
     def register_item(self, item):
         # Ignore items which do not belong to ship
-        if item._domain != ModifierDomain.ship:
+        if item._parent_modifier_domain != ModifierDomain.ship:
             return
         group = item._eve_type.group
         # Ignore items, whose eve type isn't assigned

@@ -41,15 +41,11 @@ class Charge(ImmutableStateMixin):
         self.container = None
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
+    # Attribute calculation-related properties
+    _parent_modifier_domain = None
+    _owner_modifiable = True
+
     # Auxiliary methods
-    @property
-    def _domain(self):
-        return None
-
-    @property
-    def _owner_modifiable(self):
-        return True
-
     def __repr__(self):
         spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

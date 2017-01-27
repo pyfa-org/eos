@@ -39,15 +39,11 @@ class Implant(ImmutableStateMixin):
     def __init__(self, type_id, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
 
+    # Attribute calculation-related properties
+    _parent_modifier_domain = ModifierDomain.character
+    _owner_modifiable = False
+
     # Auxiliary methods
-    @property
-    def _domain(self):
-        return ModifierDomain.character
-
-    @property
-    def _owner_modifiable(self):
-        return False
-
     def __repr__(self):
         spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

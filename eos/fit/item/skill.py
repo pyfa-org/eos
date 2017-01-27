@@ -52,15 +52,11 @@ class Skill(ImmutableStateMixin):
     def level(self, new_lvl):
         self.attributes._override_set(Attribute.skill_level, int(new_lvl), persist=True)
 
+    # Attribute calculation-related properties
+    _parent_modifier_domain = ModifierDomain.character
+    _owner_modifiable = False
+
     # Auxiliary methods
-    @property
-    def _domain(self):
-        return ModifierDomain.character
-
-    @property
-    def _owner_modifiable(self):
-        return False
-
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'level']
         return make_repr_str(self, spec)
