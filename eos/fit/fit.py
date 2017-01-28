@@ -27,7 +27,7 @@ from .calculator import CalculationService
 from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
 from .item import *
 from .messages import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
-from .restrictions import RestrictionService
+from .restriction import RestrictionService
 from .stats import StatService
 from .volatile import FitVolatileManager
 
