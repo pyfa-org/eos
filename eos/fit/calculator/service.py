@@ -43,7 +43,6 @@ class CalculationService(BaseSubscriber):
 
     def __init__(self, fit):
         self.__enabled = False
-        self._fit = fit
         self._register_dogma = DogmaRegister(fit)
         fit._subscribe(self, self._handler_map.keys())
 
