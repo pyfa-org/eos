@@ -246,10 +246,8 @@ class MutableAttributeMap:
         # Format: {operator: [values]}
         penalized_mods = {}
         # Now, go through all affectors affecting our item
-        for affector in self.__item._fit._calculator.get_affectors(self.__item, attr=attr):
+        for operator, mod_value, source_item in self.__item._fit._calculator.get_modifications(self.__item, attr):
             try:
-                source_item, modifier = affector
-                operator = modifier.operator
                 # Decide if it should be stacking penalized or not, based on stackable property,
                 # source item eve type category and operator
                 penalize = (
@@ -257,12 +255,6 @@ class MutableAttributeMap:
                     source_item._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
                     operator in PENALIZABLE_OPERATORS
                 )
-                try:
-                    mod_value = source_item.attributes[modifier.src_attr]
-                # Silently skip current affector: error should already
-                # be logged by map before it raised KeyError
-                except KeyError:
-                    continue
                 # Normalize operations to just three types:
                 # assignments, additions, multiplications
                 try:

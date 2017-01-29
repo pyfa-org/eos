@@ -49,29 +49,29 @@ class CalculationService(BaseSubscriber):
     # Do not process here just target domain
     _supported_domains = set(filter(lambda d: d != ModifierDomain.target, ModifierDomain))
 
-    def get_affectors(self, item, attr=None):
+    def get_modifications(self, target_item, target_attr):
         """
-        Get affectors which are influencing the item.
+        Get modifications of attr on item.
 
         Required arguments:
-        item -- item, for which we're getting affectors
-
-        Optional arguments:
-        attr -- target attribute ID filter; only affectors which
-            influence attribute with this ID will be returned. If None,
-            all affectors influencing item are returned (default None)
+        target_item -- item, for which we're getting modifications
+        target_attr -- target attribute ID, only modifications which
+            influence attribute with this ID will be returned.
 
         Return value:
-        Set with Affector objects
+        set((operator, modification value, source item))
         """
-        if attr is None:
-            affectors = self._register_dogma.get_affectors(item)
-        else:
-            affectors = set()
-            for affector in self._register_dogma.get_affectors(item):
-                if affector.modifier.tgt_attr == attr:
-                    affectors.add(affector)
-        return affectors
+        modifications = set()
+        for source_item, modifier in self._register_dogma.get_affectors(target_item):
+            if modifier.tgt_attr == target_attr:
+                try:
+                    modification_value = source_item.attributes[modifier.src_attr]
+                # Silently skip current affector: error should already
+                # be logged by map before it raised KeyError
+                except KeyError:
+                    continue
+                modifications.add((modifier.operator, modification_value, source_item))
+        return modifications
 
     def get_affectees(self, affector):
         """
