@@ -143,9 +143,15 @@ class Attribute(IntEnum):
     damage_multiplier = 64
     is_capital_size = 1785
     mass = 4
+    mass_addition = 796
+    max_velocity = 37
     missile_damage_multiplier = 212
     module_reactivation_delay = 669
     radius = 162
+    signature_radius = 552
+    signature_radius_bonus = 554
+    speed_boost_factor = 567
+    speed_factor = 20
     volume = 161
 
 
@@ -198,6 +204,7 @@ class Effect(IntEnum):
     med_power = 13
     mining_laser = 67
     missile_launching = 9
+    module_bonus_microwarpdrive = 6730
     online = 16
     projectile_fired = 34
     rig_slot = 2663

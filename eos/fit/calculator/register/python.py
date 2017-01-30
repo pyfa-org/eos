@@ -19,5 +19,5 @@
 # ===============================================================================
 
 
-from .dogma import DogmaRegister
-from .python import PythonRegister
+class PythonRegister:
+    pass

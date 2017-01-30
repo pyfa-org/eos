@@ -19,5 +19,7 @@
 # ===============================================================================
 
 
-from .dogma import DogmaRegister
-from .python import PythonRegister
+from collections import namedtuple
+
+
+CustomEffect = namedtuple('CustomEffect', ('effect_id', 'dogma_modifiers', 'python_modifiers'))
