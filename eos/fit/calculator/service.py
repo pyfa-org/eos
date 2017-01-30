@@ -151,18 +151,11 @@ class CalculationService(BaseSubscriber):
         for capped_attr in (item.attributes._cap_map.get(attr) or ()):
             del item.attributes[capped_attr]
         # Clear attributes which are using this attribute as modification source
-        for affector in self.__generate_affectors(
-                item, effect_filter=item._enabled_effects,
-                state_filter=set(filter(lambda s: s <= message.item.state, State))
-        ):
-            modifier = affector.modifier
-            # Skip affectors which do not use attribute being damaged as source
-            if modifier.src_attr != attr:
-                continue
-            # Go through all items targeted by modifier
-            for target_item in self.get_affectees(affector):
-                # And remove target attribute
-                del target_item.attributes[modifier.tgt_attr]
+        affectors = self.__generate_affectors(
+            item, effect_filter=item._enabled_effects,
+            state_filter=set(filter(lambda s: s <= message.item.state, State))
+        )
+        self.__clear_affectors_dependents(affectors, src_attr=attr)
 
     def _handle_enable_services(self, message):
         """
@@ -264,15 +257,19 @@ class CalculationService(BaseSubscriber):
         for affector in affectors:
             self._register_dogma.unregister_affector(affector)
 
-    def __clear_affectors_dependents(self, affectors):
+    def __clear_affectors_dependents(self, affectors, src_attr=None):
         """
         Clear calculated attributes which are relying on
         passed affectors.
 
         Required arguments:
         affectors -- iterable with affectors in question
+        src_attr -- clear dependents which rely on this attribute only
         """
         for affector in affectors:
+            modifier = affector.modifier
+            if src_attr is not None and modifier.src_attr != src_attr:
+                continue
             # Go through all items targeted by modifier
             for target_item in self.get_affectees(affector):
                 # And remove target attribute

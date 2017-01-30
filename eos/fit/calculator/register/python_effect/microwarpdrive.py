@@ -79,4 +79,3 @@ MicroWarpDriveEffect = CustomEffect(
     dogma_modifiers=(mass_modifier, signature_modifier),
     python_modifiers=(ShipSpeedModifier,)
 )
-
