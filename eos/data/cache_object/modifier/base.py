@@ -42,7 +42,73 @@ class BaseModifier(metaclass=ABCMeta):
     def _get_modification(self, carrier_item, fit):
         ...
 
+    # Validation-related methods
     def _validate_base(self):
+        validators = {
+            ModifierTargetFilter.item: self.__validate_item_modifer,
+            ModifierTargetFilter.domain: self.__validate_domain_modifer,
+            ModifierTargetFilter.domain_group: self.__validate_domain_group_modifer,
+            ModifierTargetFilter.domain_skillrq: self.__validate_domain_skillrq_modifer,
+            ModifierTargetFilter.owner_skillrq: self.__validate_owner_skillrq_modifer
+        }
+        try:
+            validator = validators[self.tgt_filter]
+        except KeyError:
+            return False
+        else:
+            return validator()
+
+    def __validate_item_modifer(self):
+        return all((
+            self.__validate_common(),
+            self.tgt_domain in (
+                ModifierDomain.self, ModifierDomain.character, ModifierDomain.ship,
+                ModifierDomain.target, ModifierDomain.other
+            ),
+            self.tgt_filter_extra_arg is None
+        ))
+
+    def __validate_domain_modifer(self):
+        return all((
+            self.__validate_common(),
+            self.tgt_domain in (
+                ModifierDomain.self, ModifierDomain.character,
+                ModifierDomain.ship, ModifierDomain.target
+            ),
+            self.tgt_filter_extra_arg is None
+        ))
+
+    def __validate_domain_group_modifer(self):
+        return all((
+            self.__validate_common(),
+            self.tgt_domain in (
+                ModifierDomain.self, ModifierDomain.character,
+                ModifierDomain.ship, ModifierDomain.target
+            ),
+            # References group via ID
+            isinstance(self.tgt_filter_extra_arg, int)
+        ))
+
+    def __validate_domain_skillrq_modifer(self):
+        return all((
+            self.__validate_common(),
+            self.tgt_domain in (
+                ModifierDomain.self, ModifierDomain.character,
+                ModifierDomain.ship, ModifierDomain.target
+            ),
+            # References skill via ID
+            isinstance(self.tgt_filter_extra_arg, int)
+        ))
+
+    def __validate_owner_skillrq_modifer(self):
+        return all((
+            self.__validate_common(),
+            self.tgt_domain == ModifierDomain.character,
+            # References skill via ID
+            isinstance(self.tgt_filter_extra_arg, int)
+        ))
+
+    def __validate_common(self):
         return all((
             self.state in State.__members__.values(),
             self.tgt_filter in ModifierTargetFilter.__members__.values(),

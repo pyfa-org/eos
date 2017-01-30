@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierOperator
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
 
@@ -52,71 +52,6 @@ class DogmaModifier(BaseModifier):
     # Validation-related methods
     @property
     def _valid(self):
-        validators = {
-            ModifierTargetFilter.item: self.__validate_item_modifer,
-            ModifierTargetFilter.domain: self.__validate_domain_modifer,
-            ModifierTargetFilter.domain_group: self.__validate_domain_group_modifer,
-            ModifierTargetFilter.domain_skillrq: self.__validate_domain_skillrq_modifer,
-            ModifierTargetFilter.owner_skillrq: self.__validate_owner_skillrq_modifer
-        }
-        try:
-            validator = validators[self.tgt_filter]
-        except KeyError:
-            return False
-        else:
-            return validator()
-
-    def __validate_item_modifer(self):
-        return all((
-            self.__validate_common(),
-            self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character, ModifierDomain.ship,
-                ModifierDomain.target, ModifierDomain.other
-            ),
-            self.tgt_filter_extra_arg is None
-        ))
-
-    def __validate_domain_modifer(self):
-        return all((
-            self.__validate_common(),
-            self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target
-            ),
-            self.tgt_filter_extra_arg is None
-        ))
-
-    def __validate_domain_group_modifer(self):
-        return all((
-            self.__validate_common(),
-            self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target
-            ),
-            # References group via ID
-            isinstance(self.tgt_filter_extra_arg, int)
-        ))
-
-    def __validate_domain_skillrq_modifer(self):
-        return all((
-            self.__validate_common(),
-            self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target
-            ),
-            # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, int)
-        ))
-
-    def __validate_owner_skillrq_modifer(self):
-        return all((
-            self.__validate_common(),
-            self.tgt_domain == ModifierDomain.character,
-            # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, int)
-        ))
-
-    def __validate_common(self):
         return all((
             self._validate_base(),
             self.operator in ModifierOperator.__members__.values(),
