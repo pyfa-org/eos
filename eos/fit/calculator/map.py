@@ -114,15 +114,10 @@ class MutableAttributeMap:
         # Actual container of calculated attributes
         # Format: {attribute ID: value}
         self.__modified_attributes = {}
-        # Container for overriden attributes. Initialized
-        # to None to not waste memory, will be changed to dict
-        # when needed.
-        # Format: {attribute ID: (value, persistent)}
+        # Override and cap maps are initialized as None
+        # to save memory, as they are not needed most of
+        # the time
         self.__overridden_attributes = None
-        # This variable stores map of attributes which cap
-        # something, and attributes capped by them. Initialized
-        # to None due to the same reasons as override.
-        # Format {capping attribute ID: {capped attribute IDs}}
         self.__cap_map = None
 
     def __getitem__(self, attr):
@@ -356,6 +351,8 @@ class MutableAttributeMap:
     # Override-related methods
     @property
     def _overrides(self):
+        # Container for overriden attributes
+        # Format: {attribute ID: (value, persistent)}
         return self.__overridden_attributes or {}
 
     def _override_set(self, attr, value, persist=False):
@@ -399,6 +396,9 @@ class MutableAttributeMap:
     # Cap-related methods
     @property
     def _cap_map(self):
+        # Returns map of attributes which cap something, and attributes
+        # capped by them
+        # Format {capping attribute ID: {capped attribute IDs}}
         return self.__cap_map or {}
 
     def _cap_set(self, capping_attr, capped_attr):
