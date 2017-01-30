@@ -20,8 +20,8 @@
 
 import yaml
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator
-from eos.data.cache_object import Modifier
+from eos.const.eos import TargetFilter, ModifierDomain, ModifierOperator
+from eos.data.cache_object import DogmaModifier
 from .shared import STATE_CONVERSION_MAP
 from ..exception import YamlParsingError
 
@@ -81,57 +81,60 @@ class ModifierInfoConverter:
         return modifiers, build_failures
 
     def _handle_item_modifier(self, modifier_info, effect_category):
-        return Modifier(
-            modifier_type=ModifierType.item,
-            domain=self._get_domain(modifier_info),
+        return DogmaModifier(
             state=self._get_state(effect_category),
-            src_attr=int(modifier_info['modifyingAttributeID']),
+            tgt_filter=TargetFilter.item,
+            tgt_domain=self._get_domain(modifier_info),
+            tgt_attr=int(modifier_info['modifiedAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=int(modifier_info['modifiedAttributeID'])
+            src_attr=int(modifier_info['modifyingAttributeID'])
         )
 
     def _handle_domain_modifier(self, modifier_info, effect_category):
-        return Modifier(
-            modifier_type=ModifierType.domain,
-            domain=self._get_domain(modifier_info),
+        return DogmaModifier(
             state=self._get_state(effect_category),
-            src_attr=int(modifier_info['modifyingAttributeID']),
+            tgt_filter=TargetFilter.domain,
+            tgt_domain=self._get_domain(modifier_info),
+            tgt_attr=int(modifier_info['modifiedAttributeID']),
             operator=self._get_operator(modifier_info),
-            tgt_attr=int(modifier_info['modifiedAttributeID'])
+            src_attr=int(modifier_info['modifyingAttributeID'])
         )
 
     def _handle_domain_group_modifier(self, modifier_info, effect_category):
-        return Modifier(
-            modifier_type=ModifierType.domain_group,
-            domain=self._get_domain(modifier_info),
+        return DogmaModifier(
             state=self._get_state(effect_category),
-            src_attr=int(modifier_info['modifyingAttributeID']),
-            operator=self._get_operator(modifier_info),
+            tgt_filter=TargetFilter.domain_group,
+            tgt_domain=self._get_domain(modifier_info),
+            tgt_filter_extra_arg=int(modifier_info['groupID']),
             tgt_attr=int(modifier_info['modifiedAttributeID']),
-            extra_arg=int(modifier_info['groupID'])
+            operator=self._get_operator(modifier_info),
+            src_attr=int(modifier_info['modifyingAttributeID'])
         )
 
     def _handle_domain_skillrq_modifer(self, modifier_info, effect_category):
-        return Modifier(
-            modifier_type=ModifierType.domain_skillrq,
-            domain=self._get_domain(modifier_info),
+        return DogmaModifier(
             state=self._get_state(effect_category),
-            src_attr=int(modifier_info['modifyingAttributeID']),
-            operator=self._get_operator(modifier_info),
+            tgt_filter=TargetFilter.domain_skillrq,
+            tgt_domain=self._get_domain(modifier_info),
+            tgt_filter_extra_arg=int(modifier_info['skillTypeID']),
             tgt_attr=int(modifier_info['modifiedAttributeID']),
-            extra_arg=int(modifier_info['skillTypeID'])
+            operator=self._get_operator(modifier_info),
+            src_attr=int(modifier_info['modifyingAttributeID'])
         )
 
     def _handle_owner_skillrq_modifer(self, modifier_info, effect_category):
-        return Modifier(
-            modifier_type=ModifierType.owner_skillrq,
-            domain=self._get_domain(modifier_info),
+        return DogmaModifier(
             state=self._get_state(effect_category),
-            src_attr=int(modifier_info['modifyingAttributeID']),
-            operator=self._get_operator(modifier_info),
+            tgt_filter=TargetFilter.owner_skillrq,
+            tgt_domain=self._get_domain(modifier_info),
+            tgt_filter_extra_arg=int(modifier_info['skillTypeID']),
             tgt_attr=int(modifier_info['modifiedAttributeID']),
-            extra_arg=int(modifier_info['skillTypeID'])
+            operator=self._get_operator(modifier_info),
+            src_attr=int(modifier_info['modifyingAttributeID'])
         )
+
+    def _get_state(self, effect_category):
+        return STATE_CONVERSION_MAP[effect_category]
 
     def _get_domain(self, modifier_info):
         conversion_map = {
@@ -143,9 +146,6 @@ class ModifierInfoConverter:
             'otherID': ModifierDomain.other
         }
         return conversion_map[modifier_info['domain']]
-
-    def _get_state(self, effect_category):
-        return STATE_CONVERSION_MAP[effect_category]
 
     def _get_operator(self, modifier_info):
         # Format: {CCP operator ID: eos operator ID}

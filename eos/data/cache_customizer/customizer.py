@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, ModifierType, State, ModifierDomain, ModifierOperator
+from eos.const.eos import EffectBuildStatus, TargetFilter, State, ModifierDomain, ModifierOperator
 from eos.const.eve import Type, Group, Attribute, Effect, EffectCategory
 
 
@@ -62,13 +62,13 @@ class CacheCustomizer:
         ):
             modifier_row = {
                 'modifier_id': modifier_id,
-                'modifier_type': ModifierType.owner_skillrq,
-                'domain': ModifierDomain.ship,
                 'state': State.offline,
-                'src_attr': Attribute.missile_damage_multiplier,
-                'operator': ModifierOperator.pre_mul,
+                'tgt_filter': TargetFilter.owner_skillrq,
+                'tgt_domain': ModifierDomain.ship,
+                'tgt_filter_extra_arg': Type.missile_launcher_operation,
                 'tgt_attr': damage_attr,
-                'extra_arg': Type.missile_launcher_operation
+                'operator': ModifierOperator.pre_mul,
+                'src_attr': Attribute.missile_damage_multiplier
             }
             damage_modifiers.append(modifier_row)
             modifier_id += 1

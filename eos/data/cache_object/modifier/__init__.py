@@ -19,22 +19,4 @@
 # ===============================================================================
 
 
-"""
-Classes in this module are objects stored in cache. Eos' cached objects like items
-are built on top of their instances, and often they're reused, thus make sure
-to not store any fit-specific data on them.
-"""
-
-
-__all__ = [
-    'Attribute',
-    'DogmaModifier',
-    'Effect',
-    'Type'
-]
-
-
-from .attribute import Attribute
-from .effect import Effect
-from .modifier import DogmaModifier
-from .type import Type
+from .dogma import DogmaModifier

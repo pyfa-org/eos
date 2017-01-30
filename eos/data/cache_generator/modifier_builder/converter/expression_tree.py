@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, EosEveTypes
+from eos.const.eos import TargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
 from eos.const.eve import Operand
-from eos.data.cache_object import Modifier
+from eos.data.cache_object import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
 from .shared import STATE_CONVERSION_MAP
 from ..exception import UnknownEtreeRootOperandError
@@ -88,57 +88,60 @@ class ExpressionTreeConverter:
         self._parse(expression.arg2)
 
     def _handle_item_modifier(self, expression):
-        self._modifiers.append(Modifier(
-            modifier_type=ModifierType.item,
-            domain=self._get_domain(expression.arg1.arg2.arg1),
+        self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
+            tgt_filter=TargetFilter.item,
+            tgt_domain=self._get_domain(expression.arg1.arg2.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
+            src_attr=self._get_attribute(expression.arg2)
         ))
 
     def _handle_domain_modifier(self, expression):
-        self._modifiers.append(Modifier(
-            modifier_type=ModifierType.domain,
-            domain=self._get_domain(expression.arg1.arg2.arg1),
+        self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
+            tgt_filter=TargetFilter.domain,
+            tgt_domain=self._get_domain(expression.arg1.arg2.arg1),
+            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
-            tgt_attr=self._get_attribute(expression.arg1.arg2.arg2)
+            src_attr=self._get_attribute(expression.arg2)
         ))
 
     def _handle_domain_group_modifier(self, expression):
-        self._modifiers.append(Modifier(
-            modifier_type=ModifierType.domain_group,
-            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+        self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
+            tgt_filter=TargetFilter.domain_group,
+            tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+            tgt_filter_extra_arg=self._get_group(expression.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
-            extra_arg=self._get_group(expression.arg1.arg2.arg1.arg2)
+            operator=self._get_operator(expression.arg1.arg1),
+            src_attr=self._get_attribute(expression.arg2)
         ))
 
     def _handle_domain_skillrq_modifer(self, expression):
-        self._modifiers.append(Modifier(
-            modifier_type=ModifierType.domain_skillrq,
-            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+        self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
+            tgt_filter=TargetFilter.domain_skillrq,
+            tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+            tgt_filter_extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
-            extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2)
+            operator=self._get_operator(expression.arg1.arg1),
+            src_attr=self._get_attribute(expression.arg2)
         ))
 
     def _handle_owner_skillrq_modifer(self, expression):
-        self._modifiers.append(Modifier(
-            modifier_type=ModifierType.owner_skillrq,
-            domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+        self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            src_attr=self._get_attribute(expression.arg2),
-            operator=self._get_operator(expression.arg1.arg1),
+            tgt_filter=TargetFilter.owner_skillrq,
+            tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
+            tgt_filter_extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
-            extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2)
+            operator=self._get_operator(expression.arg1.arg1),
+            src_attr=self._get_attribute(expression.arg2)
         ))
+
+    def _get_state(self):
+        return STATE_CONVERSION_MAP[self._effect_category]
 
     def _get_domain(self, expression):
         if expression['operandID'] != Operand.def_dom:
@@ -151,9 +154,6 @@ class ExpressionTreeConverter:
             'Other': ModifierDomain.other
         }
         return conversion_map[expression['expressionValue']]
-
-    def _get_state(self):
-        return STATE_CONVERSION_MAP[self._effect_category]
 
     def _get_operator(self, expression):
         if expression['operandID'] != Operand.def_optr:
@@ -176,11 +176,6 @@ class ExpressionTreeConverter:
             return None
         return int(expression['expressionAttributeID'])
 
-    def _get_group(self, expression):
-        if expression['operandID'] != Operand.def_grp:
-            return None
-        return int(expression['expressionGroupID'])
-
     def _get_type(self, expression):
         operand = expression['operandID']
         if operand == Operand.def_type:
@@ -195,6 +190,11 @@ class ExpressionTreeConverter:
             return conversion_map[domain]
         else:
             return None
+
+    def _get_group(self, expression):
+        if expression['operandID'] != Operand.def_grp:
+            return None
+        return int(expression['expressionGroupID'])
 
     def __prepare_expressions(self, expressions):
         # Convert regular dictionaries into custom

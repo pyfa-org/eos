@@ -298,7 +298,7 @@ class CalculationService(BaseSubscriber):
             for modifier in effect.modifiers:
                 if modifier.state not in state_filter:
                     continue
-                if modifier.domain not in self._supported_domains:
+                if modifier.tgt_domain not in self._supported_domains:
                     continue
                 affector = Affector(item, modifier)
                 affectors.add(affector)

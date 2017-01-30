@@ -21,9 +21,9 @@
 
 from logging import getLogger
 
-from eos.const.eos import ModifierType, ModifierDomain, EosEveTypes
+from eos.const.eos import TargetFilter, ModifierDomain, EosEveTypes
 from eos.util.keyed_set import KeyedSet
-from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, ModifierTypeError
+from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, TargetFilterError
 
 
 logger = getLogger(__name__)
@@ -169,45 +169,45 @@ class DogmaRegister:
         affectees = set()
         try:
             # For direct modification, make set out of single target domain
-            if modifier.type == ModifierType.item:
-                if modifier.domain == ModifierDomain.self:
+            if modifier.tgt_filter == TargetFilter.item:
+                if modifier.tgt_domain == ModifierDomain.self:
                     target = {source_item}
-                elif modifier.domain == ModifierDomain.character:
+                elif modifier.tgt_domain == ModifierDomain.character:
                     char = self._fit.character
                     target = {char} if char is not None else None
-                elif modifier.domain == ModifierDomain.ship:
+                elif modifier.tgt_domain == ModifierDomain.ship:
                     ship = self._fit.ship
                     target = {ship} if ship is not None else None
-                elif modifier.domain == ModifierDomain.other:
+                elif modifier.tgt_domain == ModifierDomain.other:
                     other_item = self.__get_other_linked_item(source_item)
                     target = {other_item} if other_item is not None else None
                 else:
-                    raise DirectDomainError(modifier.domain)
+                    raise DirectDomainError(modifier.tgt_domain)
             # For filtered modifications, pick appropriate dictionary and get set
             # with target items
-            elif modifier.type == ModifierType.domain:
+            elif modifier.tgt_filter == TargetFilter.domain:
                 key = self.__contextize_filter_domain(affector)
                 target = self.__affectee_domain.get(key) or set()
-            elif modifier.type == ModifierType.domain_group:
+            elif modifier.tgt_filter == TargetFilter.domain_group:
                 domain = self.__contextize_filter_domain(affector)
-                group = modifier.extra_arg
+                group = modifier.tgt_filter_extra_arg
                 key = (domain, group)
                 target = self.__affectee_domain_group.get(key) or set()
-            elif modifier.type == ModifierType.domain_skillrq:
+            elif modifier.tgt_filter == TargetFilter.domain_skillrq:
                 domain = self.__contextize_filter_domain(affector)
-                skill = modifier.extra_arg
+                skill = modifier.tgt_filter_extra_arg
                 if skill == EosEveTypes.current_self:
                     skill = affector.source_item._eve_type_id
                 key = (domain, skill)
                 target = self.__affectee_domain_skillrq.get(key) or set()
-            elif modifier.type == ModifierType.owner_skillrq:
-                skill = modifier.extra_arg
+            elif modifier.tgt_filter == TargetFilter.owner_skillrq:
+                skill = modifier.tgt_filter_extra_arg
                 if skill == EosEveTypes.current_self:
                     skill = affector.source_item._eve_type_id
                 key = skill
                 target = self.__affectee_owner_skillrq.get(key) or set()
             else:
-                raise ModifierTypeError(modifier.type)
+                raise TargetFilterError(modifier.tgt_filter)
             # Add our set to affectees
             if target is not None:
                 affectees.update(target)
@@ -288,18 +288,18 @@ class DogmaRegister:
         domain is not supported for direct modification
         FilteredDomainError -- raised when affector's modifier target
         domain is not supported for filtered modification
-        ModifierTypeError -- raised when affector's modifier filter type is not
+        TargetFilterError -- raised when affector's modifier filter type is not
         supported
         """
         source_item, modifier = affector
         # For each filter type, define affector map and key to use
-        if modifier.type == ModifierType.item:
+        if modifier.tgt_filter == TargetFilter.item:
             # For direct modifications, we need to properly pick
             # target item (it's key) based on domain
-            if modifier.domain == ModifierDomain.self:
+            if modifier.tgt_domain == ModifierDomain.self:
                 affector_map = self.__affector_direct_active
                 key = source_item
-            elif modifier.domain == ModifierDomain.character:
+            elif modifier.tgt_domain == ModifierDomain.character:
                 char = self._fit.character
                 if char is not None:
                     affector_map = self.__affector_direct_active
@@ -307,7 +307,7 @@ class DogmaRegister:
                 else:
                     affector_map = self.__affector_direct_awaiting
                     key = source_item
-            elif modifier.domain == ModifierDomain.ship:
+            elif modifier.tgt_domain == ModifierDomain.ship:
                 ship = self._fit.ship
                 if ship is not None:
                     affector_map = self.__affector_direct_active
@@ -317,7 +317,7 @@ class DogmaRegister:
                     key = source_item
             # When other domain is referenced, it means direct reference to module's charge
             # or to charge's module-container
-            elif modifier.domain == ModifierDomain.other:
+            elif modifier.tgt_domain == ModifierDomain.other:
                 other_item = self.__get_other_linked_item(source_item)
                 if other_item is not None:
                     affector_map = self.__affector_direct_active
@@ -328,33 +328,33 @@ class DogmaRegister:
                     affector_map = self.__affector_direct_awaiting
                     key = source_item
             else:
-                raise DirectDomainError(modifier.domain)
+                raise DirectDomainError(modifier.tgt_domain)
         # For filtered modifications, compose key, making sure reference to self
         # is converted into appropriate real domain
-        elif modifier.type == ModifierType.domain:
+        elif modifier.tgt_filter == TargetFilter.domain:
             affector_map = self.__affector_domain
             domain = self.__contextize_filter_domain(affector)
             key = domain
-        elif modifier.type == ModifierType.domain_group:
+        elif modifier.tgt_filter == TargetFilter.domain_group:
             affector_map = self.__affector_domain_group
             domain = self.__contextize_filter_domain(affector)
-            group = modifier.extra_arg
+            group = modifier.tgt_filter_extra_arg
             key = (domain, group)
-        elif modifier.type == ModifierType.domain_skillrq:
+        elif modifier.tgt_filter == TargetFilter.domain_skillrq:
             affector_map = self.__affector_domain_skillrq
             domain = self.__contextize_filter_domain(affector)
-            skill = modifier.extra_arg
+            skill = modifier.tgt_filter_extra_arg
             if skill == EosEveTypes.current_self:
                 skill = affector.source_item._eve_type_id
             key = (domain, skill)
-        elif modifier.type == ModifierType.owner_skillrq:
+        elif modifier.tgt_filter == TargetFilter.owner_skillrq:
             affector_map = self.__affector_owner_skillrq
-            skill = modifier.extra_arg
+            skill = modifier.tgt_filter_extra_arg
             if skill == EosEveTypes.current_self:
                 skill = affector.source_item._eve_type_id
             key = skill
         else:
-            raise ModifierTypeError(modifier.type)
+            raise TargetFilterError(modifier.tgt_filter)
         return key, affector_map
 
     def __handle_affector_errors(self, error, affector):
@@ -380,7 +380,7 @@ class DogmaRegister:
             msg = 'malformed modifier on eve type {}: invalid reference to self for filtered modification'.format(
                 affector.source_item._eve_type_id)
             logger.warning(msg)
-        elif isinstance(error, ModifierTypeError):
+        elif isinstance(error, TargetFilterError):
             msg = 'malformed modifier on eve type {}: invalid filter type {}'.format(
                 affector.source_item._eve_type_id, error.args[0])
             logger.warning(msg)
@@ -409,7 +409,7 @@ class DogmaRegister:
         target domain is not supported for filtered modification
         """
         source_item = affector.source_item
-        domain = affector.modifier.domain
+        domain = affector.modifier.tgt_domain
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real domain
         if domain == ModifierDomain.self:
@@ -470,7 +470,7 @@ class DogmaRegister:
                 modifier = affector.modifier
                 # Mark affector as to-be-enabled only when it
                 # targets passed target domain
-                if modifier.domain == domain:
+                if modifier.tgt_domain == domain:
                     source_affectors = affectors_to_enable.setdefault(source_item, [])
                     source_affectors.append(affector)
         # Bail if we have nothing to do
@@ -521,7 +521,7 @@ class DogmaRegister:
         affectors_to_enable = set()
         for affector in self.__affector_direct_awaiting.get(other_item) or ():
             modifier = affector.modifier
-            if modifier.domain == ModifierDomain.other:
+            if modifier.tgt_domain == ModifierDomain.other:
                 affectors_to_enable.add(affector)
         # Bail if we have nothing to do
         if not affectors_to_enable:

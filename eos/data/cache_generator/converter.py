@@ -333,17 +333,12 @@ class Converter:
         """
         # Fields which we need to write into row
         # Format: {'get name': 'set name'}
-        fields = {
-            'type': 'modifier_type',
-            'domain': 'domain',
-            'state': 'state',
-            'src_attr': 'src_attr',
-            'operator': 'operator',
-            'tgt_attr': 'tgt_attr',
-            'extra_arg': 'extra_arg',
-        }
+        fields = (
+            'state', 'tgt_filter', 'tgt_domain', 'tgt_filter_extra_arg',
+            'tgt_attr', 'operator', 'src_attr'
+        )
         modifier_row = {}
-        for name_get, name_set in fields.items():
-            modifier_row[name_set] = getattr(modifier, name_get)
+        for field in fields:
+            modifier_row[field] = getattr(modifier, field)
         frozen_row = FrozenDict(modifier_row)
         return frozen_row
