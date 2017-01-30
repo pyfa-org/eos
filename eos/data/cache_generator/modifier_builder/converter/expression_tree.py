@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import TargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
 from eos.const.eve import Operand
 from eos.data.cache_object import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
@@ -90,7 +90,7 @@ class ExpressionTreeConverter:
     def _handle_item_modifier(self, expression):
         self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            tgt_filter=TargetFilter.item,
+            tgt_filter=ModifierTargetFilter.item,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
@@ -100,7 +100,7 @@ class ExpressionTreeConverter:
     def _handle_domain_modifier(self, expression):
         self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            tgt_filter=TargetFilter.domain,
+            tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
             operator=self._get_operator(expression.arg1.arg1),
@@ -110,7 +110,7 @@ class ExpressionTreeConverter:
     def _handle_domain_group_modifier(self, expression):
         self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            tgt_filter=TargetFilter.domain_group,
+            tgt_filter=ModifierTargetFilter.domain_group,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             tgt_filter_extra_arg=self._get_group(expression.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
@@ -121,7 +121,7 @@ class ExpressionTreeConverter:
     def _handle_domain_skillrq_modifer(self, expression):
         self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            tgt_filter=TargetFilter.domain_skillrq,
+            tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             tgt_filter_extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
@@ -132,7 +132,7 @@ class ExpressionTreeConverter:
     def _handle_owner_skillrq_modifer(self, expression):
         self._modifiers.append(DogmaModifier(
             state=self._get_state(),
-            tgt_filter=TargetFilter.owner_skillrq,
+            tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             tgt_filter_extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),

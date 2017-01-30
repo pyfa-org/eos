@@ -21,7 +21,7 @@
 
 from abc import ABCMeta, abstractmethod
 
-from eos.const.eos import State, TargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain
 
 
 class BaseModifier(metaclass=ABCMeta):
@@ -45,7 +45,7 @@ class BaseModifier(metaclass=ABCMeta):
     def _validate_base(self):
         return all((
             self.state in State.__members__.values(),
-            self.tgt_filter in TargetFilter.__members__.values(),
+            self.tgt_filter in ModifierTargetFilter.__members__.values(),
             self.tgt_domain in ModifierDomain.__members__.values(),
             isinstance(self.tgt_attr, int)
         ))

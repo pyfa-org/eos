@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, ShipDomainItem
 
@@ -32,8 +32,8 @@ class TestOperatorAllIn(CalculatorTestCase):
     def test_all_in(self):
         tgt_attr = self.ch.attribute(attribute_id=1, stackable=0)
         src_attr = self.ch.attribute(attribute_id=2)
-        modifier_pre_ass = Modifier()
-        modifier_pre_ass.type = ModifierType.domain
+        modifier_pre_ass = DogmaModifier()
+        modifier_pre_ass.type = ModifierTargetFilter.domain
         modifier_pre_ass.domain = ModifierDomain.ship
         modifier_pre_ass.state = State.offline
         modifier_pre_ass.src_attr = src_attr.id
@@ -47,8 +47,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_pre_ass}
         ))
         self.fit.items.add(influence_source_pre_ass)
-        modifier_pre_mul = Modifier()
-        modifier_pre_mul.type = ModifierType.domain
+        modifier_pre_mul = DogmaModifier()
+        modifier_pre_mul.type = ModifierTargetFilter.domain
         modifier_pre_mul.domain = ModifierDomain.ship
         modifier_pre_mul.state = State.offline
         modifier_pre_mul.src_attr = src_attr.id
@@ -62,8 +62,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_pre_mul}
         ))
         self.fit.items.add(influence_source_pre_mul)
-        modifier_pre_div = Modifier()
-        modifier_pre_div.type = ModifierType.domain
+        modifier_pre_div = DogmaModifier()
+        modifier_pre_div.type = ModifierTargetFilter.domain
         modifier_pre_div.domain = ModifierDomain.ship
         modifier_pre_div.state = State.offline
         modifier_pre_div.src_attr = src_attr.id
@@ -77,8 +77,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_pre_div}
         ))
         self.fit.items.add(influence_source_pre_div)
-        modifier_mod_add = Modifier()
-        modifier_mod_add.type = ModifierType.domain
+        modifier_mod_add = DogmaModifier()
+        modifier_mod_add.type = ModifierTargetFilter.domain
         modifier_mod_add.domain = ModifierDomain.ship
         modifier_mod_add.state = State.offline
         modifier_mod_add.src_attr = src_attr.id
@@ -92,8 +92,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_mod_add}
         ))
         self.fit.items.add(influence_source_mod_add)
-        modifier_mod_sub = Modifier()
-        modifier_mod_sub.type = ModifierType.domain
+        modifier_mod_sub = DogmaModifier()
+        modifier_mod_sub.type = ModifierTargetFilter.domain
         modifier_mod_sub.domain = ModifierDomain.ship
         modifier_mod_sub.state = State.offline
         modifier_mod_sub.src_attr = src_attr.id
@@ -107,8 +107,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_mod_sub}
         ))
         self.fit.items.add(influence_source_mod_sub)
-        modifier_post_mul = Modifier()
-        modifier_post_mul.type = ModifierType.domain
+        modifier_post_mul = DogmaModifier()
+        modifier_post_mul.type = ModifierTargetFilter.domain
         modifier_post_mul.domain = ModifierDomain.ship
         modifier_post_mul.state = State.offline
         modifier_post_mul.src_attr = src_attr.id
@@ -122,8 +122,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_post_mul}
         ))
         self.fit.items.add(influence_source_post_mul)
-        modifier_post_div = Modifier()
-        modifier_post_div.type = ModifierType.domain
+        modifier_post_div = DogmaModifier()
+        modifier_post_div.type = ModifierTargetFilter.domain
         modifier_post_div.domain = ModifierDomain.ship
         modifier_post_div.state = State.offline
         modifier_post_div.src_attr = src_attr.id
@@ -137,8 +137,8 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_post_div}
         ))
         self.fit.items.add(influence_source_post_div)
-        modifier_post_perc = Modifier()
-        modifier_post_perc.type = ModifierType.domain
+        modifier_post_perc = DogmaModifier()
+        modifier_post_perc.type = ModifierTargetFilter.domain
         modifier_post_perc.domain = ModifierDomain.ship
         modifier_post_perc.state = State.offline
         modifier_post_perc.src_attr = src_attr.id

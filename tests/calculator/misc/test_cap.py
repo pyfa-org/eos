@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, ShipDomainItem
 
@@ -36,8 +36,8 @@ class TestCap(CalculatorTestCase):
         self.source_attr = self.ch.attribute(attribute_id=3)
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification modifier
-        modifier = Modifier()
-        modifier.type = ModifierType.item
+        modifier = DogmaModifier()
+        modifier.type = ModifierTargetFilter.item
         modifier.domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = self.source_attr.id
@@ -76,8 +76,8 @@ class TestCap(CalculatorTestCase):
         # Make sure that item's own specified attribute
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
-        modifier = Modifier()
-        modifier.type = ModifierType.item
+        modifier = DogmaModifier()
+        modifier.type = ModifierTargetFilter.item
         modifier.domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = self.source_attr.id
@@ -107,8 +107,8 @@ class TestCap(CalculatorTestCase):
         # Check attribute vs initial cap
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
-        modifier = Modifier()
-        modifier.type = ModifierType.domain
+        modifier = DogmaModifier()
+        modifier.type = ModifierTargetFilter.domain
         modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
         modifier.src_attr = self.source_attr.id

@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
@@ -34,15 +34,15 @@ class TestTargetAttribute(CalculatorTestCase):
         tgt_attr2 = self.ch.attribute(attribute_id=2)
         tgt_attr3 = self.ch.attribute(attribute_id=3)
         src_attr = self.ch.attribute(attribute_id=4)
-        modifier1 = Modifier()
-        modifier1.type = ModifierType.item
+        modifier1 = DogmaModifier()
+        modifier1.type = ModifierTargetFilter.item
         modifier1.domain = ModifierDomain.self
         modifier1.state = State.offline
         modifier1.src_attr = src_attr.id
         modifier1.operator = ModifierOperator.post_percent
         modifier1.tgt_attr = tgt_attr1.id
-        modifier2 = Modifier()
-        modifier2.type = ModifierType.item
+        modifier2 = DogmaModifier()
+        modifier2.type = ModifierTargetFilter.item
         modifier2.domain = ModifierDomain.self
         modifier2.state = State.offline
         modifier2.src_attr = src_attr.id

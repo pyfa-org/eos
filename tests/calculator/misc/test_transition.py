@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from eos.fit.messages import EnableServices, DisableServices
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import Fit, IndependentItem, ShipDomainItem
@@ -42,8 +42,8 @@ class TestTransitionFit(CalculatorTestCase):
         # be able to get refreshed value of attribute
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=2)
-        modifier = Modifier()
-        modifier.type = ModifierType.domain
+        modifier = DogmaModifier()
+        modifier.type = ModifierTargetFilter.domain
         modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
@@ -81,8 +81,8 @@ class TestTransitionFit(CalculatorTestCase):
         src_attr2 = cache_handler2.attribute(attribute_id=1)
         tgt_attr2 = cache_handler2.attribute(attribute_id=2, max_attribute=333)
         cache_handler2.attribute(attribute_id=333, default_value=500)
-        modifier = Modifier()
-        modifier.type = ModifierType.domain
+        modifier = DogmaModifier()
+        modifier.type = ModifierTargetFilter.domain
         modifier.domain = ModifierDomain.ship
         modifier.state = State.offline
         modifier.src_attr = 1

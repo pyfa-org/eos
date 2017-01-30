@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import Fit, IndependentItem
@@ -38,22 +38,22 @@ class TestOverride(CalculatorTestCase):
         self.attr2 = self.ch.attribute(attribute_id=2)
         self.attr3 = self.ch.attribute(attribute_id=3)
         self.attr4 = self.ch.attribute(attribute_id=4)
-        modifier1 = Modifier()
-        modifier1.type = ModifierType.item
+        modifier1 = DogmaModifier()
+        modifier1.type = ModifierTargetFilter.item
         modifier1.domain = ModifierDomain.self
         modifier1.state = State.online
         modifier1.src_attr = self.attr1.id
         modifier1.operator = ModifierOperator.post_percent
         modifier1.tgt_attr = self.attr2.id
-        modifier2 = Modifier()
-        modifier2.type = ModifierType.item
+        modifier2 = DogmaModifier()
+        modifier2.type = ModifierTargetFilter.item
         modifier2.domain = ModifierDomain.self
         modifier2.state = State.offline
         modifier2.src_attr = self.attr2.id
         modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = self.attr3.id
-        modifier3 = Modifier()
-        modifier3.type = ModifierType.item
+        modifier3 = DogmaModifier()
+        modifier3.type = ModifierTargetFilter.item
         modifier3.domain = ModifierDomain.self
         modifier3.state = State.offline
         modifier3.src_attr = self.attr3.id

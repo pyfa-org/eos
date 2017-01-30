@@ -67,7 +67,7 @@ class EffectBuildStatus(IntEnum):
 
 
 @unique
-class TargetFilter(IntEnum):
+class ModifierTargetFilter(IntEnum):
     item = 1
     domain = 2  # Domain children only, excluding parent item
     domain_group = 3  # Domain children only, excluding parent item

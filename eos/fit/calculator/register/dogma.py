@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eos import TargetFilter, ModifierDomain, EosEveTypes
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosEveTypes
 from eos.util.keyed_set import KeyedSet
 from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, TargetFilterError
 
@@ -169,7 +169,7 @@ class DogmaRegister:
         affectees = set()
         try:
             # For direct modification, make set out of single target domain
-            if modifier.tgt_filter == TargetFilter.item:
+            if modifier.tgt_filter == ModifierTargetFilter.item:
                 if modifier.tgt_domain == ModifierDomain.self:
                     target = {source_item}
                 elif modifier.tgt_domain == ModifierDomain.character:
@@ -185,22 +185,22 @@ class DogmaRegister:
                     raise DirectDomainError(modifier.tgt_domain)
             # For filtered modifications, pick appropriate dictionary and get set
             # with target items
-            elif modifier.tgt_filter == TargetFilter.domain:
+            elif modifier.tgt_filter == ModifierTargetFilter.domain:
                 key = self.__contextize_filter_domain(affector)
                 target = self.__affectee_domain.get(key) or set()
-            elif modifier.tgt_filter == TargetFilter.domain_group:
+            elif modifier.tgt_filter == ModifierTargetFilter.domain_group:
                 domain = self.__contextize_filter_domain(affector)
                 group = modifier.tgt_filter_extra_arg
                 key = (domain, group)
                 target = self.__affectee_domain_group.get(key) or set()
-            elif modifier.tgt_filter == TargetFilter.domain_skillrq:
+            elif modifier.tgt_filter == ModifierTargetFilter.domain_skillrq:
                 domain = self.__contextize_filter_domain(affector)
                 skill = modifier.tgt_filter_extra_arg
                 if skill == EosEveTypes.current_self:
                     skill = affector.source_item._eve_type_id
                 key = (domain, skill)
                 target = self.__affectee_domain_skillrq.get(key) or set()
-            elif modifier.tgt_filter == TargetFilter.owner_skillrq:
+            elif modifier.tgt_filter == ModifierTargetFilter.owner_skillrq:
                 skill = modifier.tgt_filter_extra_arg
                 if skill == EosEveTypes.current_self:
                     skill = affector.source_item._eve_type_id
@@ -293,7 +293,7 @@ class DogmaRegister:
         """
         source_item, modifier = affector
         # For each filter type, define affector map and key to use
-        if modifier.tgt_filter == TargetFilter.item:
+        if modifier.tgt_filter == ModifierTargetFilter.item:
             # For direct modifications, we need to properly pick
             # target item (it's key) based on domain
             if modifier.tgt_domain == ModifierDomain.self:
@@ -331,23 +331,23 @@ class DogmaRegister:
                 raise DirectDomainError(modifier.tgt_domain)
         # For filtered modifications, compose key, making sure reference to self
         # is converted into appropriate real domain
-        elif modifier.tgt_filter == TargetFilter.domain:
+        elif modifier.tgt_filter == ModifierTargetFilter.domain:
             affector_map = self.__affector_domain
             domain = self.__contextize_filter_domain(affector)
             key = domain
-        elif modifier.tgt_filter == TargetFilter.domain_group:
+        elif modifier.tgt_filter == ModifierTargetFilter.domain_group:
             affector_map = self.__affector_domain_group
             domain = self.__contextize_filter_domain(affector)
             group = modifier.tgt_filter_extra_arg
             key = (domain, group)
-        elif modifier.tgt_filter == TargetFilter.domain_skillrq:
+        elif modifier.tgt_filter == ModifierTargetFilter.domain_skillrq:
             affector_map = self.__affector_domain_skillrq
             domain = self.__contextize_filter_domain(affector)
             skill = modifier.tgt_filter_extra_arg
             if skill == EosEveTypes.current_self:
                 skill = affector.source_item._eve_type_id
             key = (domain, skill)
-        elif modifier.tgt_filter == TargetFilter.owner_skillrq:
+        elif modifier.tgt_filter == ModifierTargetFilter.owner_skillrq:
             affector_map = self.__affector_owner_skillrq
             skill = modifier.tgt_filter_extra_arg
             if skill == EosEveTypes.current_self:

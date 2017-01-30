@@ -43,6 +43,7 @@ class CalculationService(BaseSubscriber):
 
     def __init__(self, fit):
         self.__enabled = False
+        self.__fit = fit
         self._register_dogma = DogmaRegister(fit)
         fit._subscribe(self, self._handler_map.keys())
 
@@ -64,13 +65,8 @@ class CalculationService(BaseSubscriber):
         modifications = set()
         for source_item, modifier in self._register_dogma.get_affectors(target_item):
             if modifier.tgt_attr == target_attr:
-                try:
-                    modification_value = source_item.attributes[modifier.src_attr]
-                # Silently skip current affector: error should already
-                # be logged by map before it raised KeyError
-                except KeyError:
-                    continue
-                modifications.add((modifier.operator, modification_value, source_item))
+                mod_oper, mod_value = modifier._get_modification(source_item, self.__fit)
+                modifications.add((mod_oper, mod_value, source_item))
         return modifications
 
     def get_affectees(self, affector):

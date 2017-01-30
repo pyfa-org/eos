@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import TargetFilter, ModifierDomain, State, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, State, ModifierOperator
 from eos.const.eve import Attribute, Effect
 from eos.data.cache_object import Modifier
 from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
@@ -27,7 +27,7 @@ from .custom_effect import CustomEffect
 
 
 mass_modifier = Modifier(
-    tgt_filter=TargetFilter.item,
+    tgt_filter=ModifierTargetFilter.item,
     tgt_domain=ModifierDomain.ship,
     state=State.active,
     src_attr=Attribute.mass_addition,
@@ -36,7 +36,7 @@ mass_modifier = Modifier(
 )
 
 signature_modifier = Modifier(
-    tgt_filter=TargetFilter.item,
+    tgt_filter=ModifierTargetFilter.item,
     tgt_domain=ModifierDomain.ship,
     state=State.active,
     src_attr=Attribute.signature_radius_bonus,

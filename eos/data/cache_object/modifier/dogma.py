@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import TargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
 
@@ -53,11 +53,11 @@ class DogmaModifier(BaseModifier):
     @property
     def _valid(self):
         validators = {
-            TargetFilter.item: self.__validate_item_modifer,
-            TargetFilter.domain: self.__validate_domain_modifer,
-            TargetFilter.domain_group: self.__validate_domain_group_modifer,
-            TargetFilter.domain_skillrq: self.__validate_domain_skillrq_modifer,
-            TargetFilter.owner_skillrq: self.__validate_owner_skillrq_modifer
+            ModifierTargetFilter.item: self.__validate_item_modifer,
+            ModifierTargetFilter.domain: self.__validate_domain_modifer,
+            ModifierTargetFilter.domain_group: self.__validate_domain_group_modifer,
+            ModifierTargetFilter.domain_skillrq: self.__validate_domain_skillrq_modifer,
+            ModifierTargetFilter.owner_skillrq: self.__validate_owner_skillrq_modifer
         }
         try:
             validator = validators[self.tgt_filter]

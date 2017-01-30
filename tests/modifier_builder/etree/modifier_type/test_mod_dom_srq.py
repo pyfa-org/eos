@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierType, ModifierDomain, State, ModifierOperator
+from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, State, ModifierOperator
 from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -69,7 +69,7 @@ class TestBuilderEtreeModDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
+        self.assertEqual(modifier.type, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.self)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 491)
@@ -84,7 +84,7 @@ class TestBuilderEtreeModDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
+        self.assertEqual(modifier.type, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 491)
@@ -99,7 +99,7 @@ class TestBuilderEtreeModDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
+        self.assertEqual(modifier.type, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 491)
@@ -114,7 +114,7 @@ class TestBuilderEtreeModDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierType.domain_skillrq)
+        self.assertEqual(modifier.type, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.domain, ModifierDomain.target)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 491)

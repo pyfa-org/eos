@@ -21,9 +21,9 @@
 
 import logging
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
@@ -34,7 +34,7 @@ class TestModTypeUnknown(CalculatorTestCase):
         super().setUp()
         self.tgt_attr = tgt_attr = self.ch.attribute(attribute_id=1)
         self.src_attr = src_attr = self.ch.attribute(attribute_id=2)
-        self.invalid_modifier = invalid_modifier = Modifier()
+        self.invalid_modifier = invalid_modifier = DogmaModifier()
         invalid_modifier.type = 26500
         invalid_modifier.domain = ModifierDomain.self
         invalid_modifier.state = State.offline
@@ -62,8 +62,8 @@ class TestModTypeUnknown(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_combination(self):
-        valid_modifier = Modifier()
-        valid_modifier.type = ModifierType.item
+        valid_modifier = DogmaModifier()
+        valid_modifier.type = ModifierTargetFilter.item
         valid_modifier.domain = ModifierDomain.self
         valid_modifier.state = State.offline
         valid_modifier.src_attr = self.src_attr.id

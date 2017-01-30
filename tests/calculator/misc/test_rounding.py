@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierType, ModifierDomain, ModifierOperator, State
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
 from eos.const.eve import Attribute, EffectCategory
-from eos.data.cache_object.modifier import Modifier
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
@@ -49,8 +49,8 @@ class TestRounding(CalculatorTestCase):
     def test_cpu_modified(self):
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=Attribute.cpu)
-        modifier = Modifier()
-        modifier.type = ModifierType.item
+        modifier = DogmaModifier()
+        modifier.type = ModifierTargetFilter.item
         modifier.domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
