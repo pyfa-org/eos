@@ -38,7 +38,6 @@ class CacheCustomizer:
     def run_builtin(self, data):
         self.data = data
         self._add_character_missile_damage_multiplier()
-        self._fix_online_effect_category()
 
     def _add_character_missile_damage_multiplier(self):
         """
@@ -97,24 +96,3 @@ class CacheCustomizer:
         for type_row in self.data['types']:
             if type_row['group'] == Group.character:
                 type_row['effects'].append(effect_id)
-
-    def _fix_online_effect_category(self):
-        """
-        For some weird reason, 'online' effect has 'active' effect
-        category, which lets all eve types with it to be in active
-        state. CCP probably does some hardcoding to avoid it, we'll
-        get rid of it on cache building time.
-        """
-        online_effect = None
-        for effect_row in self.data['effects']:
-            if effect_row['effect_id'] == Effect.online:
-                online_effect = effect_row
-                break
-        if online_effect is None:
-            msg = 'unable to find online effect'
-            logger.warning(msg)
-        elif online_effect['effect_category'] == EffectCategory.online:
-            msg = 'online effect category does not need to be adjusted'
-            logger.warning(msg)
-        else:
-            online_effect['effect_category'] = EffectCategory.online

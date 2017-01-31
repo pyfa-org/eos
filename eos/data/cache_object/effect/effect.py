@@ -23,6 +23,7 @@ from eos.const.eos import State
 from eos.const.eve import EffectCategory
 from eos.util.cached_property import CachedProperty
 from eos.util.repr import make_repr_str
+from .custom import customize_effect
 
 
 class Effect:
@@ -79,6 +80,8 @@ class Effect:
 
         # Stores Modifiers which are assigned to given effect
         self.modifiers = modifiers
+
+        customize_effect(self)
 
     # Format: {effect category ID: state ID}
     __effect_state_map = {
