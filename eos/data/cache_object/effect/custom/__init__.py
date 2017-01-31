@@ -24,12 +24,11 @@ from .online import fix_online_category
 
 
 # Format: {effect ID: customization method}
-_customization_map = {
+_effect_custom_map = {
     Effect.online: fix_online_category
 }
 
 
 def customize_effect(effect):
-    if effect.id not in _customization_map:
-        return
-    _customization_map[effect.id](effect)
+    if effect.id in _effect_custom_map:
+        _effect_custom_map[effect.id](effect)

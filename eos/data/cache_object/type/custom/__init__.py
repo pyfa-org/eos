@@ -19,4 +19,16 @@
 # ===============================================================================
 
 
-from .customizer import CacheCustomizer
+from eos.const.eve import Group
+from .character_missile_damage import add_character_missile_damage_multiplier
+
+
+# Format: {group ID: customization method}
+_group_custom_map = {
+    Group.character: add_character_missile_damage_multiplier
+}
+
+
+def customize_type(eve_type):
+    if eve_type.group in _group_custom_map:
+        _group_custom_map[eve_type.group](eve_type)

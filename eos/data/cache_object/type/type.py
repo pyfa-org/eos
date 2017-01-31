@@ -23,6 +23,7 @@ from eos.const.eos import Slot, State
 from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.util.cached_property import CachedProperty
 from eos.util.repr import make_repr_str
+from .custom import customize_type
 
 
 class Type:
@@ -54,6 +55,8 @@ class Type:
 
         # Default effect of eve type, which defines its several major properties
         self.default_effect = default_effect
+
+        customize_type(self)
 
     @property
     def modifiers(self):
