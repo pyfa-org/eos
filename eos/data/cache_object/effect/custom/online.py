@@ -39,4 +39,3 @@ def fix_online_category(effect):
         logger.info(msg)
     else:
         effect.category = EffectCategory.online
-

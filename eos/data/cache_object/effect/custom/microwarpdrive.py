@@ -19,13 +19,21 @@
 # ===============================================================================
 
 
+from logging import getLogger
+
 from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
 from eos.data.cache_object import DogmaModifier
 from eos.data.cache_object.modifier.custom import PropulsionModuleVelocityBoostModifier
 
 
+logger = getLogger(__name__)
+
+
 def add_mwd_modifiers(effect):
+    if len(effect.modifiers) > 0:
+        msg = 'microwarpdrive effect has modifiers, overwriting them'
+        logger.info(msg)
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
@@ -43,5 +51,5 @@ def add_mwd_modifiers(effect):
         tgt_attr=Attribute.signature_radius
     )
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
-    effect.modifiers = (*effect.modifiers, mass_modifier, signature_modifier, velocity_modifier)
+    effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom
