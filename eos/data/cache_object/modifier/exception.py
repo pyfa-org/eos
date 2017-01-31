@@ -19,5 +19,11 @@
 # ===============================================================================
 
 
-from .dogma import DogmaModifier
-from .exception import ModificationCalculationError
+from eos.exception import EosError
+
+
+class ModificationCalculationError(EosError):
+    """
+    Raised when modifier is unable to calculate modification value.
+    """
+    pass

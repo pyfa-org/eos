@@ -22,6 +22,7 @@
 from eos.const.eos import ModifierOperator
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
+from .exception import ModificationCalculationError
 
 
 class DogmaModifier(BaseModifier):
@@ -46,8 +47,12 @@ class DogmaModifier(BaseModifier):
         self.src_attr = src_attr
 
     def _get_modification(self, carrier_item, _):
-        mod_value = carrier_item.attributes[self.src_attr]
-        return self.operator, mod_value
+        try:
+            mod_value = carrier_item.attributes[self.src_attr]
+        except KeyError as e:
+            raise ModificationCalculationError from e
+        else:
+            return self.operator, mod_value
 
     # Validation-related methods
     @property

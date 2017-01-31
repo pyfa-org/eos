@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import State, ModifierDomain
+from eos.data.cache_object.modifier import ModificationCalculationError
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
@@ -65,7 +66,11 @@ class CalculationService(BaseSubscriber):
         modifications = set()
         for source_item, modifier in self._register_dogma.get_affectors(target_item):
             if modifier.tgt_attr == target_attr:
-                mod_oper, mod_value = modifier._get_modification(source_item, self.__fit)
+                try:
+                    mod_oper, mod_value = modifier._get_modification(source_item, self.__fit)
+                # Do nothing here - errors should be logged in modification getter
+                except ModificationCalculationError:
+                    continue
                 modifications.add((mod_oper, mod_value, source_item))
         return modifications
 
