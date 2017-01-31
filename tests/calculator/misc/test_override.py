@@ -40,21 +40,21 @@ class TestOverride(CalculatorTestCase):
         self.attr4 = self.ch.attribute(attribute_id=4)
         modifier1 = DogmaModifier()
         modifier1.type = ModifierTargetFilter.item
-        modifier1.domain = ModifierDomain.self
+        modifier1.tgt_domain = ModifierDomain.self
         modifier1.state = State.online
         modifier1.src_attr = self.attr1.id
         modifier1.operator = ModifierOperator.post_percent
         modifier1.tgt_attr = self.attr2.id
         modifier2 = DogmaModifier()
         modifier2.type = ModifierTargetFilter.item
-        modifier2.domain = ModifierDomain.self
+        modifier2.tgt_domain = ModifierDomain.self
         modifier2.state = State.offline
         modifier2.src_attr = self.attr2.id
         modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = self.attr3.id
         modifier3 = DogmaModifier()
         modifier3.type = ModifierTargetFilter.item
-        modifier3.domain = ModifierDomain.self
+        modifier3.tgt_domain = ModifierDomain.self
         modifier3.state = State.offline
         modifier3.src_attr = self.attr3.id
         modifier3.operator = ModifierOperator.post_percent

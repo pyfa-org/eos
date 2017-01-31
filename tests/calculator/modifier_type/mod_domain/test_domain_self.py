@@ -35,8 +35,8 @@ class TestModDomainDomainSelf(CalculatorTestCase):
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.domain
-        modifier.domain = ModifierDomain.self
+        modifier.tgt_filter = ModifierTargetFilter.domain
+        modifier.tgt_domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent

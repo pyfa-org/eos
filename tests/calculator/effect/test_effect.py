@@ -38,21 +38,21 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr3 = self.ch.attribute(attribute_id=4)
         modifier1 = DogmaModifier()
         modifier1.type = ModifierTargetFilter.item
-        modifier1.domain = ModifierDomain.self
+        modifier1.tgt_domain = ModifierDomain.self
         modifier1.state = State.offline
         modifier1.src_attr = src_attr1.id
         modifier1.operator = ModifierOperator.post_mul
         modifier1.tgt_attr = self.tgt_attr.id
         modifier2 = DogmaModifier()
         modifier2.type = ModifierTargetFilter.item
-        modifier2.domain = ModifierDomain.self
+        modifier2.tgt_domain = ModifierDomain.self
         modifier2.state = State.offline
         modifier2.src_attr = src_attr2.id
         modifier2.operator = ModifierOperator.post_mul
         modifier2.tgt_attr = self.tgt_attr.id
         modifier_active = DogmaModifier()
         modifier_active.type = ModifierTargetFilter.item
-        modifier_active.domain = ModifierDomain.self
+        modifier_active.tgt_domain = ModifierDomain.self
         modifier_active.state = State.active
         modifier_active.src_attr = src_attr3.id
         modifier_active.operator = ModifierOperator.post_mul

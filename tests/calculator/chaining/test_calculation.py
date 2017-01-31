@@ -36,7 +36,7 @@ class TestCalculationChain(CalculatorTestCase):
         attr4 = self.ch.attribute(attribute_id=4)
         modifier1 = DogmaModifier()
         modifier1.type = ModifierTargetFilter.item
-        modifier1.domain = ModifierDomain.self
+        modifier1.tgt_domain = ModifierDomain.self
         modifier1.state = State.offline
         modifier1.src_attr = attr1.id
         modifier1.operator = ModifierOperator.post_mul
@@ -45,7 +45,7 @@ class TestCalculationChain(CalculatorTestCase):
         effect1.modifiers = (modifier1,)
         modifier2 = DogmaModifier()
         modifier2.type = ModifierTargetFilter.item
-        modifier2.domain = ModifierDomain.ship
+        modifier2.tgt_domain = ModifierDomain.ship
         modifier2.state = State.offline
         modifier2.src_attr = attr2.id
         modifier2.operator = ModifierOperator.post_percent
@@ -58,7 +58,7 @@ class TestCalculationChain(CalculatorTestCase):
         ))
         modifier3 = DogmaModifier()
         modifier3.type = ModifierTargetFilter.domain
-        modifier3.domain = ModifierDomain.ship
+        modifier3.tgt_domain = ModifierDomain.ship
         modifier3.state = State.offline
         modifier3.src_attr = attr3.id
         modifier3.operator = ModifierOperator.post_percent

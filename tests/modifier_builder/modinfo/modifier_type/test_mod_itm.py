@@ -42,13 +42,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierTargetFilter.item)
-        self.assertEqual(modifier.domain, ModifierDomain.self)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertIsNone(modifier.tgt_filter_extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_item(self):
@@ -60,13 +60,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierTargetFilter.item)
-        self.assertEqual(modifier.domain, ModifierDomain.self)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertIsNone(modifier.tgt_filter_extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_char(self):
@@ -78,13 +78,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierTargetFilter.item)
-        self.assertEqual(modifier.domain, ModifierDomain.character)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertIsNone(modifier.tgt_filter_extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):
@@ -96,13 +96,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierTargetFilter.item)
-        self.assertEqual(modifier.domain, ModifierDomain.ship)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertIsNone(modifier.tgt_filter_extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_target(self):
@@ -114,13 +114,13 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierTargetFilter.item)
-        self.assertEqual(modifier.domain, ModifierDomain.target)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertIsNone(modifier.tgt_filter_extra_arg)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):
@@ -132,11 +132,11 @@ class TestBuilderModinfoModItm(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.type, ModifierTargetFilter.item)
-        self.assertEqual(modifier.domain, ModifierDomain.other)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.other)
         self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.src_attr, 11)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.tgt_attr, 22)
-        self.assertIsNone(modifier.extra_arg)
+        self.assertIsNone(modifier.tgt_filter_extra_arg)
         self.assertEqual(len(self.log), 0)

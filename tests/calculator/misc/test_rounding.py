@@ -50,8 +50,8 @@ class TestRounding(CalculatorTestCase):
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=Attribute.cpu)
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.item
-        modifier.domain = ModifierDomain.self
+        modifier.tgt_filter = ModifierTargetFilter.item
+        modifier.tgt_domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent

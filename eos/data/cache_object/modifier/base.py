@@ -44,23 +44,38 @@ class BaseModifier(metaclass=ABCMeta):
 
     # Validation-related methods
     def _validate_base(self):
-        validators = {
-            ModifierTargetFilter.item: self.__validate_item_modifer,
-            ModifierTargetFilter.domain: self.__validate_domain_modifer,
-            ModifierTargetFilter.domain_group: self.__validate_domain_group_modifer,
-            ModifierTargetFilter.domain_skillrq: self.__validate_domain_skillrq_modifer,
-            ModifierTargetFilter.owner_skillrq: self.__validate_owner_skillrq_modifer
+        return all((
+            self.state in State.__members__.values(),
+            self.__validate_tgt_spec()
+        ))
+
+    def __validate_tgt_spec(self):
+        tgt_validators = {
+            ModifierTargetFilter.item: self.__validate_tgt_item,
+            ModifierTargetFilter.domain: self.__validate_tgt_domain,
+            ModifierTargetFilter.domain_group: self.__validate_tgt_domain_group,
+            ModifierTargetFilter.domain_skillrq: self.__validate_tgt_domain_skillrq,
+            ModifierTargetFilter.owner_skillrq: self.__validate_tgt_owner_skillrq
         }
         try:
-            validator = validators[self.tgt_filter]
+            tgt_validator = tgt_validators[self.tgt_filter]
         except KeyError:
             return False
         else:
-            return validator()
+            return all((
+                self.__validate_tgt_common(),
+                tgt_validator()
+            ))
 
-    def __validate_item_modifer(self):
+    def __validate_tgt_common(self):
         return all((
-            self.__validate_common(),
+            self.tgt_filter in ModifierTargetFilter.__members__.values(),
+            self.tgt_domain in ModifierDomain.__members__.values(),
+            isinstance(self.tgt_attr, int)
+        ))
+
+    def __validate_tgt_item(self):
+        return all((
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character, ModifierDomain.ship,
                 ModifierDomain.target, ModifierDomain.other
@@ -68,9 +83,8 @@ class BaseModifier(metaclass=ABCMeta):
             self.tgt_filter_extra_arg is None
         ))
 
-    def __validate_domain_modifer(self):
+    def __validate_tgt_domain(self):
         return all((
-            self.__validate_common(),
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target
@@ -78,9 +92,8 @@ class BaseModifier(metaclass=ABCMeta):
             self.tgt_filter_extra_arg is None
         ))
 
-    def __validate_domain_group_modifer(self):
+    def __validate_tgt_domain_group(self):
         return all((
-            self.__validate_common(),
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target
@@ -89,9 +102,8 @@ class BaseModifier(metaclass=ABCMeta):
             isinstance(self.tgt_filter_extra_arg, int)
         ))
 
-    def __validate_domain_skillrq_modifer(self):
+    def __validate_tgt_domain_skillrq(self):
         return all((
-            self.__validate_common(),
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target
@@ -100,18 +112,9 @@ class BaseModifier(metaclass=ABCMeta):
             isinstance(self.tgt_filter_extra_arg, int)
         ))
 
-    def __validate_owner_skillrq_modifer(self):
+    def __validate_tgt_owner_skillrq(self):
         return all((
-            self.__validate_common(),
             self.tgt_domain == ModifierDomain.character,
             # References skill via ID
             isinstance(self.tgt_filter_extra_arg, int)
-        ))
-
-    def __validate_common(self):
-        return all((
-            self.state in State.__members__.values(),
-            self.tgt_filter in ModifierTargetFilter.__members__.values(),
-            self.tgt_domain in ModifierDomain.__members__.values(),
-            isinstance(self.tgt_attr, int)
         ))

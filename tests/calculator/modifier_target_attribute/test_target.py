@@ -36,14 +36,14 @@ class TestTargetAttribute(CalculatorTestCase):
         src_attr = self.ch.attribute(attribute_id=4)
         modifier1 = DogmaModifier()
         modifier1.type = ModifierTargetFilter.item
-        modifier1.domain = ModifierDomain.self
+        modifier1.tgt_domain = ModifierDomain.self
         modifier1.state = State.offline
         modifier1.src_attr = src_attr.id
         modifier1.operator = ModifierOperator.post_percent
         modifier1.tgt_attr = tgt_attr1.id
         modifier2 = DogmaModifier()
         modifier2.type = ModifierTargetFilter.item
-        modifier2.domain = ModifierDomain.self
+        modifier2.tgt_domain = ModifierDomain.self
         modifier2.state = State.offline
         modifier2.src_attr = src_attr.id
         modifier2.operator = ModifierOperator.post_percent

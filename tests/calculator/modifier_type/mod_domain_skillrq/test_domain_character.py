@@ -33,13 +33,13 @@ class TestModDomainSkillrqDomainCharacter(CalculatorTestCase):
         self.tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.domain_skillrq
-        modifier.domain = ModifierDomain.character
+        modifier.tgt_filter = ModifierTargetFilter.domain_skillrq
+        modifier.tgt_domain = ModifierDomain.character
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = self.tgt_attr.id
-        modifier.extra_arg = 56
+        modifier.tgt_filter_extra_arg = 56
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         self.influence_source = IndependentItem(self.ch.type(

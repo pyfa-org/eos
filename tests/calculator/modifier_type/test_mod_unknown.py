@@ -35,8 +35,8 @@ class TestModTypeUnknown(CalculatorTestCase):
         self.tgt_attr = tgt_attr = self.ch.attribute(attribute_id=1)
         self.src_attr = src_attr = self.ch.attribute(attribute_id=2)
         self.invalid_modifier = invalid_modifier = DogmaModifier()
-        invalid_modifier.type = 26500
-        invalid_modifier.domain = ModifierDomain.self
+        invalid_modifier.tgt_filter = 26500
+        invalid_modifier.tgt_domain = ModifierDomain.self
         invalid_modifier.state = State.offline
         invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = ModifierOperator.post_percent
@@ -63,8 +63,8 @@ class TestModTypeUnknown(CalculatorTestCase):
 
     def test_combination(self):
         valid_modifier = DogmaModifier()
-        valid_modifier.type = ModifierTargetFilter.item
-        valid_modifier.domain = ModifierDomain.self
+        valid_modifier.tgt_filter = ModifierTargetFilter.item
+        valid_modifier.tgt_domain = ModifierDomain.self
         valid_modifier.state = State.offline
         valid_modifier.src_attr = self.src_attr.id
         valid_modifier.operator = ModifierOperator.post_percent

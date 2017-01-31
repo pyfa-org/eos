@@ -37,8 +37,8 @@ class TestCap(CalculatorTestCase):
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification modifier
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.item
-        modifier.domain = ModifierDomain.self
+        modifier.tgt_filter = ModifierTargetFilter.item
+        modifier.tgt_domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = self.source_attr.id
         modifier.operator = ModifierOperator.post_mul
@@ -77,8 +77,8 @@ class TestCap(CalculatorTestCase):
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.item
-        modifier.domain = ModifierDomain.self
+        modifier.tgt_filter = ModifierTargetFilter.item
+        modifier.tgt_domain = ModifierDomain.self
         modifier.state = State.offline
         modifier.src_attr = self.source_attr.id
         modifier.operator = ModifierOperator.post_mul
@@ -108,8 +108,8 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.domain
-        modifier.domain = ModifierDomain.ship
+        modifier.tgt_filter = ModifierTargetFilter.domain
+        modifier.tgt_domain = ModifierDomain.ship
         modifier.state = State.offline
         modifier.src_attr = self.source_attr.id
         modifier.operator = ModifierOperator.post_mul

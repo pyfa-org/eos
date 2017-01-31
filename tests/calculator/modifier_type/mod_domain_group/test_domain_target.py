@@ -32,13 +32,13 @@ class TestModDomainGroupDomainTarget(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         modifier = DogmaModifier()
-        modifier.type = ModifierTargetFilter.domain_group
-        modifier.domain = ModifierDomain.target
+        modifier.tgt_filter = ModifierTargetFilter.domain_group
+        modifier.tgt_domain = ModifierDomain.target
         modifier.state = State.offline
         modifier.src_attr = src_attr.id
         modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
-        modifier.extra_arg = 33
+        modifier.tgt_filter_extra_arg = 33
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(

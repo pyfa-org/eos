@@ -33,15 +33,15 @@ class TestModItemDomainUnknown(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
         invalid_modifier = DogmaModifier()
-        invalid_modifier.type = ModifierTargetFilter.item
-        invalid_modifier.domain = 1972
+        invalid_modifier.tgt_filter = ModifierTargetFilter.item
+        invalid_modifier.tgt_domain = 1972
         invalid_modifier.state = State.offline
         invalid_modifier.src_attr = src_attr.id
         invalid_modifier.operator = ModifierOperator.post_percent
         invalid_modifier.tgt_attr = tgt_attr.id
         valid_modifier = DogmaModifier()
-        valid_modifier.type = ModifierTargetFilter.item
-        valid_modifier.domain = ModifierDomain.self
+        valid_modifier.tgt_filter = ModifierTargetFilter.item
+        valid_modifier.tgt_domain = ModifierDomain.self
         valid_modifier.state = State.offline
         valid_modifier.src_attr = src_attr.id
         valid_modifier.operator = ModifierOperator.post_percent

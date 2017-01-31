@@ -36,7 +36,7 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         attr3 = self.ch.attribute(attribute_id=3)
         modifier1 = DogmaModifier()
         modifier1.type = ModifierTargetFilter.item
-        modifier1.domain = ModifierDomain.ship
+        modifier1.tgt_domain = ModifierDomain.ship
         modifier1.state = State.offline
         modifier1.src_attr = attr1.id
         modifier1.operator = ModifierOperator.post_mul
@@ -50,7 +50,7 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         modifier2.src_attr = attr2.id
         modifier2.operator = ModifierOperator.post_percent
         modifier2.tgt_attr = attr3.id
-        modifier2.domain = ModifierDomain.ship
+        modifier2.tgt_domain = ModifierDomain.ship
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         item2 = IndependentItem(self.ch.type(type_id=2, effects=(effect2,), attributes={attr2.id: 7.5}))
