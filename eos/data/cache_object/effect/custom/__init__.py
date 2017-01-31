@@ -20,14 +20,16 @@
 
 
 from eos.const.eve import Effect
-from .online import fix_online_category
+from .afterburner import add_ab_modifiers
 from .microwarpdrive import add_mwd_modifiers
+from .online import fix_online_category
 
 
 # Format: {effect ID: customization method}
 _effect_custom_map = {
-    Effect.online: fix_online_category,
-    Effect.module_bonus_microwarpdrive: add_mwd_modifiers
+    Effect.module_bonus_afterburner: add_ab_modifiers,
+    Effect.module_bonus_microwarpdrive: add_mwd_modifiers,
+    Effect.online: fix_online_category
 }
 
 

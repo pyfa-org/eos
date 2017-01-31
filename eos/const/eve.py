@@ -204,6 +204,7 @@ class Effect(IntEnum):
     med_power = 13
     mining_laser = 67
     missile_launching = 9
+    module_bonus_afterburner = 6731
     module_bonus_microwarpdrive = 6730
     online = 16
     projectile_fired = 34
