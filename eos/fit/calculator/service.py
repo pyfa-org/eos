@@ -269,9 +269,7 @@ class CalculationService(BaseSubscriber):
         """
         for affector in affectors:
             modifier = affector.modifier
-            if not isinstance(modifier, DogmaModifier):
-                continue
-            if src_attr is not None and modifier.src_attr != src_attr:
+            if src_attr is not None and (not isinstance(modifier, DogmaModifier) or modifier.src_attr != src_attr):
                 continue
             # Go through all items targeted by modifier
             for target_item in self.get_affectees(affector):
