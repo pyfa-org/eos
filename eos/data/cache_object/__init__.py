@@ -28,10 +28,13 @@ to not store any fit-specific data on them.
 
 __all__ = [
     'Attribute',
+    'DogmaModifier',
     'Effect',
     'Type'
 ]
 
+
+from eos.fit.calculator.modifier import DogmaModifier
 from .attribute import Attribute
 from .effect import Effect
 from .type import Type
