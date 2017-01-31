@@ -19,19 +19,21 @@
 # ===============================================================================
 
 
-def make_repr_str(instance, spec):
+def make_repr_str(instance, spec=None):
     """
     Return single string which includes object class name and
     attribute names/values from spec.
 
     Required arguments:
     instance -- instance for which line will be built
-    spec -- specification of what to print in (field spec), ...) format,
-    where field spec is (representative name, attribute name) tuple
-    if those two differ, or simply string if they match.
+
+    Optional arguments:
+    spec -- specification of what to print in ((field spec), ...) format,
+    where field spec is (print name, attribute name) tuple if those two
+    differ, or simply string if they match.
     """
     arg_list = []
-    for field in spec:
+    for field in spec or ():
         if isinstance(field, str):
             repr_name, attr_name = field, field
         else:

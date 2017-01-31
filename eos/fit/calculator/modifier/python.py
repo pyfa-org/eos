@@ -19,51 +19,45 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierOperator
+from abc import ABCMeta, abstractmethod
+
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
-from .exception import ModificationCalculationError
 
 
-class DogmaModifier(BaseModifier):
+class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
     """
-    Dogma modifiers are the most typical modifier type. They always
-    take attribute value which describes modification strength from
-    item which carries modifier - it makes them less flexible, but
-    they can be processed efficiently.
+    Python modifiers offer more capabilities than dogma modifiers,
+    but it comes at performance cost.
     """
 
     def __init__(
-            self, modifier_id=None, state=None, tgt_filter=None, tgt_domain=None,
-            tgt_filter_extra_arg=None, tgt_attr=None, operator=None, src_attr=None
+            self, state=None, tgt_filter=None, tgt_domain=None,
+            tgt_filter_extra_arg=None, tgt_attr=None
     ):
         BaseModifier.__init__(
             self, state=state, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
             tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr
         )
-        self.id = modifier_id
-        # Class-specific attributes
-        self.operator = operator
-        self.src_attr = src_attr
 
-    def get_modification(self, carrier_item, _):
-        try:
-            mod_value = carrier_item.attributes[self.src_attr]
-        except KeyError as e:
-            raise ModificationCalculationError from e
-        else:
-            return self.operator, mod_value
-
-    # Validation-related methods
     @property
-    def _valid(self):
-        return all((
-            self._validate_base(),
-            self.operator in ModifierOperator.__members__.values(),
-            isinstance(self.src_attr, int)
-        ))
+    @abstractmethod
+    def trigger_message_types(self):
+        """
+        Return iterable with message types this modifier wants
+        to receive.
+        """
+        ...
+
+    @abstractmethod
+    def is_triggered(self, message, carrier_item, fit):
+        """
+        Take message and additional context arguments to determine
+        if changing them affects attribute targeted by modifier.
+        Result is boolean value.
+        """
+        ...
 
     # Auxiliary methods
     def __repr__(self):
-        spec = ['id']
-        return make_repr_str(self, spec)
+        return make_repr_str(self)

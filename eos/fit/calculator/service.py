@@ -67,7 +67,7 @@ class CalculationService(BaseSubscriber):
         for source_item, modifier in self.__register.get_affectors(target_item):
             if modifier.tgt_attr == target_attr:
                 try:
-                    mod_oper, mod_value = modifier._get_modification(source_item, self.__fit)
+                    mod_oper, mod_value = modifier.get_modification(source_item, self.__fit)
                 # Do nothing here - errors should be logged in modification getter
                 except ModificationCalculationError:
                     continue
