@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -35,21 +35,21 @@ class TestCalculationChain(CalculatorTestCase):
         attr3 = self.ch.attribute(attribute_id=3)
         attr4 = self.ch.attribute(attribute_id=4)
         modifier1 = DogmaModifier()
-        modifier1.type = ModifierTargetFilter.item
-        modifier1.tgt_domain = ModifierDomain.self
         modifier1.state = State.offline
-        modifier1.src_attr = attr1.id
-        modifier1.operator = ModifierOperator.post_mul
+        modifier1.tgt_filter = ModifierTargetFilter.item
+        modifier1.tgt_domain = ModifierDomain.self
         modifier1.tgt_attr = attr2.id
+        modifier1.operator = ModifierOperator.post_mul
+        modifier1.src_attr = attr1.id
         effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier1,)
         modifier2 = DogmaModifier()
-        modifier2.type = ModifierTargetFilter.item
-        modifier2.tgt_domain = ModifierDomain.ship
         modifier2.state = State.offline
-        modifier2.src_attr = attr2.id
-        modifier2.operator = ModifierOperator.post_percent
+        modifier2.tgt_filter = ModifierTargetFilter.item
+        modifier2.tgt_domain = ModifierDomain.ship
         modifier2.tgt_attr = attr3.id
+        modifier2.operator = ModifierOperator.post_percent
+        modifier2.src_attr = attr2.id
         effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
         item1 = CharDomainItem(self.ch.type(
@@ -57,12 +57,12 @@ class TestCalculationChain(CalculatorTestCase):
             attributes={attr1.id: 5, attr2.id: 20}
         ))
         modifier3 = DogmaModifier()
-        modifier3.type = ModifierTargetFilter.domain
-        modifier3.tgt_domain = ModifierDomain.ship
         modifier3.state = State.offline
-        modifier3.src_attr = attr3.id
-        modifier3.operator = ModifierOperator.post_percent
+        modifier3.tgt_filter = ModifierTargetFilter.domain
+        modifier3.tgt_domain = ModifierDomain.ship
         modifier3.tgt_attr = attr4.id
+        modifier3.operator = ModifierOperator.post_percent
+        modifier3.src_attr = attr3.id
         effect3 = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect3.modifiers = (modifier3,)
         item2 = IndependentItem(self.ch.type(type_id=2, effects=(effect3,), attributes={attr3.id: 150}))

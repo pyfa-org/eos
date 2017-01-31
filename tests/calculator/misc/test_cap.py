@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -37,12 +37,12 @@ class TestCap(CalculatorTestCase):
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification modifier
         modifier = DogmaModifier()
+        modifier.state = State.offline
         modifier.tgt_filter = ModifierTargetFilter.item
         modifier.tgt_domain = ModifierDomain.self
-        modifier.state = State.offline
-        modifier.src_attr = self.source_attr.id
-        modifier.operator = ModifierOperator.post_mul
         modifier.tgt_attr = self.capped_attr.id
+        modifier.operator = ModifierOperator.post_mul
+        modifier.src_attr = self.source_attr.id
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
@@ -77,12 +77,12 @@ class TestCap(CalculatorTestCase):
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
         modifier = DogmaModifier()
+        modifier.state = State.offline
         modifier.tgt_filter = ModifierTargetFilter.item
         modifier.tgt_domain = ModifierDomain.self
-        modifier.state = State.offline
-        modifier.src_attr = self.source_attr.id
-        modifier.operator = ModifierOperator.post_mul
         modifier.tgt_attr = self.capping_attr.id
+        modifier.operator = ModifierOperator.post_mul
+        modifier.src_attr = self.source_attr.id
         effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         item = IndependentItem(self.ch.type(
@@ -108,12 +108,12 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
         modifier = DogmaModifier()
+        modifier.state = State.offline
         modifier.tgt_filter = ModifierTargetFilter.domain
         modifier.tgt_domain = ModifierDomain.ship
-        modifier.state = State.offline
-        modifier.src_attr = self.source_attr.id
-        modifier.operator = ModifierOperator.post_mul
         modifier.tgt_attr = self.capping_attr.id
+        modifier.operator = ModifierOperator.post_mul
+        modifier.src_attr = self.source_attr.id
         effect = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         cap_updater = IndependentItem(self.ch.type(

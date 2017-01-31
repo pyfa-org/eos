@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -50,12 +50,12 @@ class TestRounding(CalculatorTestCase):
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=Attribute.cpu)
         modifier = DogmaModifier()
+        modifier.state = State.offline
         modifier.tgt_filter = ModifierTargetFilter.item
         modifier.tgt_domain = ModifierDomain.self
-        modifier.state = State.offline
-        modifier.src_attr = src_attr.id
-        modifier.operator = ModifierOperator.post_percent
         modifier.tgt_attr = tgt_attr.id
+        modifier.operator = ModifierOperator.post_percent
+        modifier.src_attr = src_attr.id
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
 

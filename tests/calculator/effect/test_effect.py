@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from eos.fit.messages import EffectsEnabled, EffectsDisabled
@@ -37,26 +37,26 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr2 = self.ch.attribute(attribute_id=3)
         src_attr3 = self.ch.attribute(attribute_id=4)
         modifier1 = DogmaModifier()
-        modifier1.type = ModifierTargetFilter.item
-        modifier1.tgt_domain = ModifierDomain.self
         modifier1.state = State.offline
-        modifier1.src_attr = src_attr1.id
-        modifier1.operator = ModifierOperator.post_mul
+        modifier1.tgt_filter = ModifierTargetFilter.item
+        modifier1.tgt_domain = ModifierDomain.self
         modifier1.tgt_attr = self.tgt_attr.id
+        modifier1.operator = ModifierOperator.post_mul
+        modifier1.src_attr = src_attr1.id
         modifier2 = DogmaModifier()
-        modifier2.type = ModifierTargetFilter.item
-        modifier2.tgt_domain = ModifierDomain.self
         modifier2.state = State.offline
-        modifier2.src_attr = src_attr2.id
-        modifier2.operator = ModifierOperator.post_mul
+        modifier2.tgt_filter = ModifierTargetFilter.item
+        modifier2.tgt_domain = ModifierDomain.self
         modifier2.tgt_attr = self.tgt_attr.id
+        modifier2.operator = ModifierOperator.post_mul
+        modifier2.src_attr = src_attr2.id
         modifier_active = DogmaModifier()
-        modifier_active.type = ModifierTargetFilter.item
-        modifier_active.tgt_domain = ModifierDomain.self
         modifier_active.state = State.active
-        modifier_active.src_attr = src_attr3.id
-        modifier_active.operator = ModifierOperator.post_mul
+        modifier_active.tgt_filter = ModifierTargetFilter.item
+        modifier_active.tgt_domain = ModifierDomain.self
         modifier_active.tgt_attr = self.tgt_attr.id
+        modifier_active.operator = ModifierOperator.post_mul
+        modifier_active.src_attr = src_attr3.id
         self.effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect1.modifiers = (modifier1,)
         self.effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)

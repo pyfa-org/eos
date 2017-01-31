@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -38,40 +38,40 @@ class TestStateSwitching(CalculatorTestCase):
         src_attr4 = self.ch.attribute(attribute_id=5)
         src_attr5 = self.ch.attribute(attribute_id=6)
         modifier_off = DogmaModifier()
-        modifier_off.type = ModifierTargetFilter.item
-        modifier_off.tgt_domain = ModifierDomain.self
         modifier_off.state = State.offline
-        modifier_off.src_attr = src_attr1.id
-        modifier_off.operator = ModifierOperator.post_mul
+        modifier_off.tgt_filter = ModifierTargetFilter.item
+        modifier_off.tgt_domain = ModifierDomain.self
         modifier_off.tgt_attr = self.tgt_attr.id
+        modifier_off.operator = ModifierOperator.post_mul
+        modifier_off.src_attr = src_attr1.id
         modifier_on = DogmaModifier()
-        modifier_on.type = ModifierTargetFilter.item
-        modifier_on.tgt_domain = ModifierDomain.self
         modifier_on.state = State.online
-        modifier_on.src_attr = src_attr2.id
-        modifier_on.operator = ModifierOperator.post_mul
+        modifier_on.tgt_filter = ModifierTargetFilter.item
+        modifier_on.tgt_domain = ModifierDomain.self
         modifier_on.tgt_attr = self.tgt_attr.id
+        modifier_on.operator = ModifierOperator.post_mul
+        modifier_on.src_attr = src_attr2.id
         modifier_act = DogmaModifier()
-        modifier_act.type = ModifierTargetFilter.item
-        modifier_act.tgt_domain = ModifierDomain.self
         modifier_act.state = State.active
-        modifier_act.src_attr = src_attr3.id
-        modifier_act.operator = ModifierOperator.post_mul
+        modifier_act.tgt_filter = ModifierTargetFilter.item
+        modifier_act.tgt_domain = ModifierDomain.self
         modifier_act.tgt_attr = self.tgt_attr.id
+        modifier_act.operator = ModifierOperator.post_mul
+        modifier_act.src_attr = src_attr3.id
         modifier_over = DogmaModifier()
-        modifier_over.type = ModifierTargetFilter.item
-        modifier_over.tgt_domain = ModifierDomain.self
         modifier_over.state = State.overload
-        modifier_over.src_attr = src_attr4.id
-        modifier_over.operator = ModifierOperator.post_mul
+        modifier_over.tgt_filter = ModifierTargetFilter.item
+        modifier_over.tgt_domain = ModifierDomain.self
         modifier_over.tgt_attr = self.tgt_attr.id
+        modifier_over.operator = ModifierOperator.post_mul
+        modifier_over.src_attr = src_attr4.id
         modifier_disabled = DogmaModifier()
-        modifier_disabled.type = ModifierTargetFilter.item
-        modifier_disabled.tgt_domain = ModifierDomain.self
         modifier_disabled.state = State.active
-        modifier_disabled.src_attr = src_attr3.id
-        modifier_disabled.operator = ModifierOperator.post_mul
+        modifier_disabled.tgt_filter = ModifierTargetFilter.item
+        modifier_disabled.tgt_domain = ModifierDomain.self
         modifier_disabled.tgt_attr = self.tgt_attr.id
+        modifier_disabled.operator = ModifierOperator.post_mul
+        modifier_disabled.src_attr = src_attr3.id
         # Overload category will make sure that item can enter all states
         effect = self.ch.effect(effect_id=1, category=EffectCategory.overload)
         effect.modifiers = (modifier_off, modifier_on, modifier_act, modifier_over)
