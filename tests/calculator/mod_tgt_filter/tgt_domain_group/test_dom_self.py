@@ -90,7 +90,7 @@ class TestTgtDomainGroupDomainSelf(CalculatorTestCase):
         # Verification
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.fit.calculator.register.dogma')
+        self.assertEqual(log_record.name, 'eos.fit.calculator.register')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,

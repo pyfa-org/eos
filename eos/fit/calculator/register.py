@@ -23,18 +23,17 @@ from logging import getLogger
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosEveTypes
 from eos.util.keyed_set import KeyedSet
-from ..exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, TargetFilterError
+from .exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, TargetFilterError
 
 
 logger = getLogger(__name__)
 
 
-class DogmaRegister:
+class AffectionRegister:
     """
     Keep track of connections between Affector objects and affectee
-    items, only for connections defined as regular modifiers. Having
-    this data is hard requirement for efficient partial attribute
-    recalculation.
+    items. Having this data is hard requirement for efficient partial
+    attribute recalculation.
 
     Required arguments:
     fit -- fit, to which this register is bound to

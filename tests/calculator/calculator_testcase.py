@@ -37,5 +37,5 @@ class CalculatorTestCase(EosTestCase):
         self.fit = Fit(self.ch)
 
     def assert_calculator_buffers_empty(self, fit):
-        register = fit._calculator._register_dogma
+        register = fit._calculator._CalculationService__register
         super().assert_object_buffers_empty(register)
