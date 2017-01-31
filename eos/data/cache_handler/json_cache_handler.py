@@ -26,6 +26,7 @@ from logging import getLogger
 from weakref import WeakValueDictionary
 
 from eos.data.cache_object import *
+from eos.fit.calculator.modifier import DogmaModifier
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError

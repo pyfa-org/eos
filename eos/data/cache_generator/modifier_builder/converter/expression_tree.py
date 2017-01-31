@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
 from eos.const.eve import Operand
-from eos.data.cache_object import DogmaModifier
+from eos.fit.calculator.modifier import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
 from .shared import STATE_CONVERSION_MAP
 from ..exception import UnknownEtreeRootOperandError

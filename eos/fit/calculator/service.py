@@ -20,13 +20,13 @@
 
 
 from eos.const.eos import State, ModifierDomain
-from eos.data.cache_object.modifier import ModificationCalculationError
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
 )
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
+from .modifier import ModificationCalculationError
 from .register import AffectionRegister
 
 

@@ -20,7 +20,7 @@
 
 
 from eos.data.cache_generator import CacheGenerator
-from eos.data.cache_object import DogmaModifier
+from eos.fit.calculator.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
 from .environment import DataHandler
 

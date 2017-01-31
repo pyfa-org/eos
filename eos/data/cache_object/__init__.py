@@ -28,13 +28,10 @@ to not store any fit-specific data on them.
 
 __all__ = [
     'Attribute',
-    'DogmaModifier',
     'Effect',
     'Type'
 ]
 
-
 from .attribute import Attribute
 from .effect import Effect
-from .modifier import DogmaModifier
 from .type import Type

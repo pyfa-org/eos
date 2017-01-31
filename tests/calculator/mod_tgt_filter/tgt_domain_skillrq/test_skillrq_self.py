@@ -21,7 +21,7 @@
 
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import DogmaModifier
+from eos.fit.calculator.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem, ShipDomainItem
 

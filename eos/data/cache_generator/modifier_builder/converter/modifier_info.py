@@ -21,7 +21,7 @@
 import yaml
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.data.cache_object import DogmaModifier
+from eos.fit.calculator.modifier import DogmaModifier
 from .shared import STATE_CONVERSION_MAP
 from ..exception import YamlParsingError
 
