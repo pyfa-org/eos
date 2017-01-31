@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State, ModifierDomain
-from eos.data.cache_object.modifier import ModificationCalculationError
+from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
@@ -269,6 +269,8 @@ class CalculationService(BaseSubscriber):
         """
         for affector in affectors:
             modifier = affector.modifier
+            if not isinstance(modifier, DogmaModifier):
+                continue
             if src_attr is not None and modifier.src_attr != src_attr:
                 continue
             # Go through all items targeted by modifier
