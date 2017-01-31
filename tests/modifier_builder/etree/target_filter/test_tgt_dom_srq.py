@@ -19,23 +19,23 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, State, ModifierOperator
+from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestBuilderEtreeModDomGrp(ModBuilderTestCase):
+class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
 
     def make_etree(self, domain):
         e_tgt_dom = self.ef.make(1, operandID=Operand.def_dom, expressionValue=domain)
-        e_tgt_grp = self.ef.make(2, operandID=Operand.def_grp, expressionGroupID=46)
-        e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=6)
+        e_tgt_srq = self.ef.make(2, operandID=Operand.def_type, expressionTypeID=3307)
+        e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=54)
         e_optr = self.ef.make(4, operandID=Operand.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(5, operandID=Operand.def_attr, expressionAttributeID=1576)
+        e_src_attr = self.ef.make(5, operandID=Operand.def_attr, expressionAttributeID=491)
         e_tgt_itms = self.ef.make(
-            6, operandID=Operand.dom_grp,
+            6, operandID=Operand.dom_srq,
             arg1=e_tgt_dom['expressionID'],
-            arg2=e_tgt_grp['expressionID']
+            arg2=e_tgt_srq['expressionID']
         )
         e_tgt_spec = self.ef.make(
             7, operandID=Operand.itm_attr,
@@ -48,12 +48,12 @@ class TestBuilderEtreeModDomGrp(ModBuilderTestCase):
             arg2=e_tgt_spec['expressionID']
         )
         e_add_mod = self.ef.make(
-            9, operandID=Operand.add_dom_grp_mod,
+            9, operandID=Operand.add_dom_srq_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_rm_mod = self.ef.make(
-            10, operandID=Operand.rm_dom_grp_mod,
+            10, operandID=Operand.rm_dom_srq_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
@@ -69,13 +69,13 @@ class TestBuilderEtreeModDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
-        self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 1576)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
+        self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
+        self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 6)
-        self.assertEqual(modifier.tgt_filter_extra_arg, 46)
+        self.assertEqual(modifier.src_attr, 491)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_char(self):
@@ -84,13 +84,13 @@ class TestBuilderEtreeModDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
-        self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 1576)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
+        self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
+        self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 6)
-        self.assertEqual(modifier.tgt_filter_extra_arg, 46)
+        self.assertEqual(modifier.src_attr, 491)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):
@@ -99,13 +99,13 @@ class TestBuilderEtreeModDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
-        self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 1576)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
+        self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
+        self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 6)
-        self.assertEqual(modifier.tgt_filter_extra_arg, 46)
+        self.assertEqual(modifier.src_attr, 491)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_target(self):
@@ -114,13 +114,13 @@ class TestBuilderEtreeModDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
-        self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
         self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 1576)
+        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
+        self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
+        self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 6)
-        self.assertEqual(modifier.tgt_filter_extra_arg, 46)
+        self.assertEqual(modifier.src_attr, 491)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):

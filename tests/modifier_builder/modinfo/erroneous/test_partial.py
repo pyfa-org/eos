@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, State, ModifierOperator
+from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 

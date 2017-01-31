@@ -19,12 +19,12 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, State, ModifierOperator
+from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
-class TestBuilderEtreeModOwnSrq(ModBuilderTestCase):
+class TestBuilderEtreeTgtOwnSrq(ModBuilderTestCase):
 
     def make_etree(self, domain):
         e_tgt_own = self.ef.make(1, operandID=Operand.def_dom, expressionValue=domain)
@@ -76,13 +76,13 @@ class TestBuilderEtreeModOwnSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
+        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.owner_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 1156)
-        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 1372)
         self.assertEqual(modifier.tgt_filter_extra_arg, 3412)
+        self.assertEqual(modifier.tgt_attr, 1372)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
+        self.assertEqual(modifier.src_attr, 1156)
         self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):

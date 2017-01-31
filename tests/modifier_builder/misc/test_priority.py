@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, State, ModifierOperator
+from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory, Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -65,13 +65,13 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
+        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 327)
-        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.tgt_attr, 9)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
+        self.assertEqual(modifier.tgt_attr, 9)
+        self.assertEqual(modifier.operator, ModifierOperator.post_percent)
+        self.assertEqual(modifier.src_attr, 327)
         self.assertEqual(len(self.log), 0)
 
     def test_modinfo(self):
@@ -87,11 +87,11 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
+        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
-        self.assertEqual(modifier.state, State.offline)
-        self.assertEqual(modifier.src_attr, 175)
-        self.assertEqual(modifier.operator, ModifierOperator.mod_add)
-        self.assertEqual(modifier.tgt_attr, 164)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
+        self.assertEqual(modifier.tgt_attr, 164)
+        self.assertEqual(modifier.operator, ModifierOperator.mod_add)
+        self.assertEqual(modifier.src_attr, 175)
         self.assertEqual(len(self.log), 0)
