@@ -52,9 +52,9 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def _trigger_on_attr_change(self, message, carrier_item, fit):
         if (
-            (message.source_item is fit.ship and message.attr == Attribute.mass) or
-            (message.source_item is carrier_item and message.attr == Attribute.speed_factor) or
-            (message.source_item is carrier_item and message.attr == Attribute.speed_boost_factor)
+            (message.item is fit.ship and message.attr == Attribute.mass) or
+            (message.item is carrier_item and message.attr == Attribute.speed_factor) or
+            (message.item is carrier_item and message.attr == Attribute.speed_boost_factor)
         ):
             return True
         return False

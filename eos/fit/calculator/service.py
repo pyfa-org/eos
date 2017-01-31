@@ -20,11 +20,13 @@
 
 
 from eos.const.eos import State, ModifierDomain
-from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
+from eos.data.cache_object.modifier import ModificationCalculationError
+from eos.data.cache_object.modifier.python import BasePythonModifier
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
 )
+from eos.util.keyed_set import KeyedSet
 from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
 from .register import AffectionRegister
@@ -46,6 +48,9 @@ class CalculationService(BaseSubscriber):
         self.__enabled = False
         self.__fit = fit
         self.__register = AffectionRegister(fit)
+        # Container with affectors which are supposed to receive messages
+        # Format: {message type: set(affectors)}
+        self.__affector_subs = KeyedSet()
         fit._subscribe(self, self._handler_map.keys())
 
     # Do not process here just target domain
@@ -189,10 +194,20 @@ class CalculationService(BaseSubscriber):
 
     def _notify(self, message):
         try:
+            recipient_affectors = self.__affector_subs[type(message)]
+        except KeyError:
+            pass
+        else:
+            for affector in recipient_affectors:
+                if affector.modifier.is_triggered(message, affector.source_item, self.__fit) is True:
+                    for target_item in self.get_affectees(affector):
+                        del target_item.attributes[affector.modifier.tgt_attr]
+        try:
             handler = self._handler_map[type(message)]
         except KeyError:
-            return
-        handler(self, message)
+            pass
+        else:
+            handler(self, message)
 
     # Private methods for message handlers
     def __add_item(self, item):
@@ -243,6 +258,7 @@ class CalculationService(BaseSubscriber):
         # Clear attributes only after registration jobs
         for affector in affectors:
             self.__register.register_affector(affector)
+            self.__subscribe_affector(affector)
         self.__clear_affectors_dependents(affectors)
 
     def __disable_affectors(self, affectors):
@@ -256,6 +272,7 @@ class CalculationService(BaseSubscriber):
         # we won't clean them up properly
         self.__clear_affectors_dependents(affectors)
         for affector in affectors:
+            self.__unsubscribe_affector(affector)
             self.__register.unregister_affector(affector)
 
     def __clear_affectors_dependents(self, affectors, src_attr=None):
@@ -269,7 +286,7 @@ class CalculationService(BaseSubscriber):
         """
         for affector in affectors:
             modifier = affector.modifier
-            if src_attr is not None and (not isinstance(modifier, DogmaModifier) or modifier.src_attr != src_attr):
+            if src_attr is not None and (isinstance(modifier, BasePythonModifier) or modifier.src_attr != src_attr):
                 continue
             # Go through all items targeted by modifier
             for target_item in self.get_affectees(affector):
@@ -304,3 +321,23 @@ class CalculationService(BaseSubscriber):
                 affector = Affector(item, modifier)
                 affectors.add(affector)
         return affectors
+
+    def __subscribe_affector(self, affector):
+        if not isinstance(affector.modifier, BasePythonModifier):
+            return
+        to_subscribe = set()
+        for msg_type in affector.modifier.trigger_message_types:
+            if msg_type not in self._handler_map and msg_type not in self.__affector_subs:
+                to_subscribe.add(msg_type)
+            self.__affector_subs.add_data(msg_type, affector)
+        self.__fit._subscribe(self, to_subscribe)
+
+    def __unsubscribe_affector(self, affector):
+        if not isinstance(affector.modifier, BasePythonModifier):
+            return
+        to_ubsubscribe = set()
+        for msg_type in affector.modifier.trigger_message_types:
+            self.__affector_subs.rm_data(msg_type, affector)
+            if msg_type not in self._handler_map and msg_type not in self.__affector_subs:
+                to_ubsubscribe.add(msg_type)
+        self.__fit._unsubscribe(self, to_ubsubscribe)
