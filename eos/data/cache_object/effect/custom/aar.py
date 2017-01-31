@@ -19,11 +19,18 @@
 # ===============================================================================
 
 
-__all__ = [
-    'AncillaryRepAmountModifier',
-    'PropulsionModuleVelocityBoostModifier'
-]
+from logging import getLogger
+
+from eos.const.eos import EffectBuildStatus
+from eos.data.cache_object.modifier.custom import AncillaryRepAmountModifier
 
 
-from .ancillary_rep_amount import AncillaryRepAmountModifier
-from .propulsion_module_velocity_boost import PropulsionModuleVelocityBoostModifier
+logger = getLogger(__name__)
+
+
+def add_aar_modifier(effect):
+    if len(effect.modifiers) > 0:
+        msg = 'ancillary armor repair effect has modifiers, overwriting them'
+        logger.info(msg)
+    effect.modifiers = (AncillaryRepAmountModifier(),)
+    effect.build_status = EffectBuildStatus.custom

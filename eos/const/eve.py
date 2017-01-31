@@ -73,6 +73,8 @@ class Attribute(IntEnum):
     armor_hp = 265
     hp = 9
     shield_capacity = 263
+    # Repairing
+    armor_damage_amount = 84
     # Charge-related
     charge_group_1 = 604
     charge_group_2 = 605
@@ -159,6 +161,7 @@ class Attribute(IntEnum):
 class Type(IntEnum):
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
+    nanite_repair_paste = 28668
     sentry_drone_interfacing = 23594  # Skill
 
 
@@ -198,6 +201,7 @@ class Effect(IntEnum):
     emp_wave = 38
     fighter_missile = 4729
     fof_missile_launching = 104
+    fueled_armor_repair = 5275
     hi_power = 12
     launcher_fitted = 40
     lo_power = 11
