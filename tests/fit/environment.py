@@ -22,7 +22,7 @@
 from contextlib import ExitStack
 from unittest.mock import patch
 
-from eos.fit.fit import Fit as FitBase
+from eos.fit import Fit as FitBase
 from eos.util.volatile_cache import InheritableVolatileMixin
 
 

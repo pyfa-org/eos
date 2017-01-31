@@ -25,7 +25,7 @@ __version__ = '0.0.0.dev9'
 from .const.eos import State, Restriction
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
-from .fit.fit import Fit
+from .fit import Fit
 from .fit.restriction.exception import ValidationError
 from .fit.tuples import DamageTypes
 from .data.cache_handler import *

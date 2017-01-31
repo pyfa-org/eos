@@ -34,7 +34,7 @@ __all__ = [
 ]
 
 
-from eos.fit.calculator.modifier import DogmaModifier
 from .attribute import Attribute
 from .effect import Effect
+from .modifier import DogmaModifier
 from .type import Type
