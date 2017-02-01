@@ -49,6 +49,8 @@ class DogmaModifier(BaseModifier):
     def get_modification(self, carrier_item, _):
         try:
             mod_value = carrier_item.attributes[self.src_attr]
+        # In case attribute value cannot be fetched, just raise error,
+        # all error logging is handled in attribute container
         except KeyError as e:
             raise ModificationCalculationError from e
         else:

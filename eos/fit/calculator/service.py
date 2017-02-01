@@ -69,6 +69,7 @@ class CalculationService(BaseSubscriber):
                 try:
                     mod_oper, mod_value = modifier.get_modification(carrier_item, self.__fit)
                 # Do nothing here - errors should be logged in modification getter
+                # or even earlier
                 except ModificationCalculationError:
                     continue
                 modifications.add((mod_oper, mod_value, carrier_item))

@@ -19,11 +19,16 @@
 # ===============================================================================
 
 
+from logging import getLogger
+
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
 from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
 from ..python import BasePythonModifier
 from ..exception import ModificationCalculationError
+
+
+logger = getLogger(__name__)
 
 
 class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
@@ -36,8 +41,13 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         )
 
     def get_modification(self, carrier_item, fit):
-        ship_attributes = fit.ship.attributes
-        carrier_attributes = carrier_item.attributes
+        # If attributes of any necessary items are not available, do not calculate anything
+        try:
+            ship_attributes = fit.ship.attributes
+            carrier_attributes = carrier_item.attributes
+        except AttributeError as e:
+            raise ModificationCalculationError from e
+        # Same for necessary attribute values
         try:
             mass = ship_attributes[Attribute.mass]
             speed_boost = carrier_attributes[Attribute.speed_factor]
@@ -46,7 +56,10 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         try:
             ship_speed_percentage = speed_boost * thrust / mass
+        # Log warning for zero ship mass, as it's abnormal situation
         except ZeroDivisionError as e:
+            msg = 'cannot calculate propulsion speed boost due to zero ship mass'
+            logger.warning(msg)
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage
 
