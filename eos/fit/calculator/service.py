@@ -51,9 +51,6 @@ class CalculationService(BaseSubscriber):
         self.__subscribed_affectors = KeyedSet()
         fit._subscribe(self, self._handler_map.keys())
 
-    # Do not process here just target domain
-    _supported_domains = set(filter(lambda d: d != ModifierDomain.target, ModifierDomain))
-
     def get_modifications(self, target_item, target_attr):
         """
         Get modifications of target attr on target item.
@@ -89,14 +86,14 @@ class CalculationService(BaseSubscriber):
         self.__affections.register_affectee(item)
         self.__enable_affectors(self.__generate_affectors(
             item, effect_filter=item._enabled_effects,
-            state_filter=tuple(filter(lambda s: s <= item.state, State))
+            state_filter=set(filter(lambda s: s <= item.state, State))
         ))
 
     def __remove_item(self, item):
         """Make service to forget about fit item"""
         self.__disable_affectors(self.__generate_affectors(
             item, effect_filter=item._enabled_effects,
-            state_filter=tuple(filter(lambda s: s <= item.state, State))
+            state_filter=set(filter(lambda s: s <= item.state, State))
         ))
         self.__affections.unregister_affectee(item)
 
@@ -109,12 +106,12 @@ class CalculationService(BaseSubscriber):
         if new_state > old_state:
             self.__enable_affectors(self.__generate_affectors(
                 item, effect_filter=item._enabled_effects,
-                state_filter=tuple(filter(lambda s: old_state < s <= new_state, State))
+                state_filter=set(filter(lambda s: old_state < s <= new_state, State))
             ))
         elif new_state < old_state:
             self.__disable_affectors(self.__generate_affectors(
                 item, effect_filter=item._enabled_effects,
-                state_filter=tuple(filter(lambda s: new_state < s <= old_state, State))
+                state_filter=set(filter(lambda s: new_state < s <= old_state, State))
             ))
 
     def _handle_item_effects_enabling(self, message):
@@ -155,7 +152,7 @@ class CalculationService(BaseSubscriber):
         # as modification source
         for affector in self.__generate_affectors(
             item, effect_filter=item._enabled_effects,
-            state_filter=tuple(filter(lambda s: s <= item.state, State))
+            state_filter=set(filter(lambda s: s <= item.state, State))
         ):
             modifier = affector.modifier
             # Only dogma modifiers have source attribute specified,
@@ -228,6 +225,9 @@ class CalculationService(BaseSubscriber):
         # Relay all messages to python modifiers, as in case of python
         # modifiers any message may result in deleting dependent attrs
         self._revise_python_attrib_dependents(message)
+
+    # Do not process here just target domain
+    _supported_domains = set(filter(lambda d: d != ModifierDomain.target, ModifierDomain))
 
     # Affector generation and manipulation
     def __generate_affectors(self, item, effect_filter, state_filter):
