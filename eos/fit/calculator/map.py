@@ -29,7 +29,7 @@ from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.null_source import NoSourceError
 from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
 from eos.util.keyed_set import KeyedSet
-from .exception import BaseValueError, AttributeMetaError, OperatorError
+from .exception import BaseValueError, AttributeMetaError
 
 
 OverrideData = namedtuple('OverrideData', ('value', 'persistent'))

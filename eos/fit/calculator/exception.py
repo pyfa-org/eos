@@ -76,11 +76,3 @@ class AttributeMetaError(AttributeCalculatorError):
     attribute database.
     """
     pass
-
-
-class OperatorError(AttributeCalculatorError):
-    """
-    Raised during calculation process, if attribute affector is
-    using operator which is not supported by calculate method.
-    """
-    pass
