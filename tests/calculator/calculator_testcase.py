@@ -37,5 +37,9 @@ class CalculatorTestCase(EosTestCase):
         self.fit = Fit(self.ch)
 
     def assert_calculator_buffers_empty(self, fit):
-        register = fit._calculator._CalculationService__register
-        super().assert_object_buffers_empty(register)
+        entry_num = self._get_object_buffer_entry_amount(fit._calculator._CalculationService__affections)
+        entry_num += len(fit._calculator._CalculationService__subscribed_affectors)
+        if entry_num > 0:
+            plu = 'y' if entry_num == 1 else 'ies'
+            msg = '{} entr{} in buffers: buffers must be empty'.format(entry_num, plu)
+            self.fail(msg=msg)
