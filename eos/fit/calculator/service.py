@@ -251,23 +251,18 @@ class CalculationService(BaseSubscriber):
     def __enable_affectors(self, affectors):
         """Enable effect of affectors on their target items"""
         for affector in affectors:
-            self.__affections.register_affector(affector)
             self.__subscribe_affector(affector)
-            # Clear attributes only after registration jobs, we want
-            # to make sure items affected by enabled affectors get
-            # refreshed values
+            self.__affections.register_affector(affector)
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr]
 
     def __disable_affectors(self, affectors):
         """Remove effect of affectors from their target items"""
         for affector in affectors:
-            # Clear attributes before unregistering, otherwise
-            # we won't clean them up properly
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr]
-            self.__unsubscribe_affector(affector)
             self.__affections.unregister_affector(affector)
+            self.__unsubscribe_affector(affector)
 
     # Python affector subscription/unsubscription
     def __subscribe_affector(self, affector):
