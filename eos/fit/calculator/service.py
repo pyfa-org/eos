@@ -199,7 +199,7 @@ class CalculationService(BaseSubscriber):
             pass
         else:
             for affector in recipient_affectors:
-                if affector.modifier.is_triggered(message, affector.source_item, self.__fit) is True:
+                if affector.modifier.revise_modification(message, affector.source_item, self.__fit) is True:
                     for target_item in self.get_affectees(affector):
                         del target_item.attributes[affector.modifier.tgt_attr]
         try:
@@ -326,7 +326,7 @@ class CalculationService(BaseSubscriber):
         if not isinstance(affector.modifier, BasePythonModifier):
             return
         to_subscribe = set()
-        for msg_type in affector.modifier.trigger_message_types:
+        for msg_type in affector.modifier.revise_message_types:
             if msg_type not in self._handler_map and msg_type not in self.__affector_subs:
                 to_subscribe.add(msg_type)
             self.__affector_subs.add_data(msg_type, affector)
@@ -336,7 +336,7 @@ class CalculationService(BaseSubscriber):
         if not isinstance(affector.modifier, BasePythonModifier):
             return
         to_ubsubscribe = set()
-        for msg_type in affector.modifier.trigger_message_types:
+        for msg_type in affector.modifier.revise_message_types:
             self.__affector_subs.rm_data(msg_type, affector)
             if msg_type not in self._handler_map and msg_type not in self.__affector_subs:
                 to_ubsubscribe.add(msg_type)

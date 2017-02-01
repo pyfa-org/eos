@@ -35,6 +35,10 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         )
 
     def get_modification(self, carrier_item, fit):
+        """
+        If carrier item has charge and it's paste, provide
+        modification multiplier 3, otherwise multiplier 1.
+        """
         charge = getattr(carrier_item, 'charge', None)
         if charge is not None and charge._eve_type_id == Type.nanite_repair_paste:
             multiplier = 3
@@ -42,23 +46,27 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             multiplier = 1
         return ModifierOperator.pre_mul, multiplier
 
-    def _trigger_on_item_add_remove(self, message, carrier_item, _):
+    def _revise_on_item_add_remove(self, message, carrier_item, _):
+        """
+        If added/removed item is charge of effect carrier and charge
+        is paste, then modification value changes.
+        """
         if (
-            getattr(message.item, 'container', None) is carrier_item and
+            getattr(carrier_item, 'charge', None) is message.item and
             message.item._eve_type_id == Type.nanite_repair_paste
         ):
             return True
         return False
 
-    _trigger_map = {
-        ItemAdded: _trigger_on_item_add_remove,
-        ItemRemoved: _trigger_on_item_add_remove
+    _revision_map = {
+        ItemAdded: _revise_on_item_add_remove,
+        ItemRemoved: _revise_on_item_add_remove
     }
 
     @property
-    def trigger_message_types(self):
-        return set(self._trigger_map.keys())
+    def revise_message_types(self):
+        return set(self._revision_map.keys())
 
-    def is_triggered(self, message, carrier_item, fit):
-        trigger_func = self._trigger_map[type(message)]
-        return trigger_func(self, message, carrier_item, fit)
+    def revise_modification(self, message, carrier_item, fit):
+        revision_func = self._revision_map[type(message)]
+        return revision_func(self, message, carrier_item, fit)

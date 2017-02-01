@@ -50,7 +50,11 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage
 
-    def _trigger_on_attr_change(self, message, carrier_item, fit):
+    def _revise_on_attr_change(self, message, carrier_item, fit):
+        """
+        If any of the attribute values this modifier relies on is changed,
+        then modification value can be changed as well.
+        """
         if (
             (message.item is fit.ship and message.attr == Attribute.mass) or
             (message.item is carrier_item and message.attr == Attribute.speed_factor) or
@@ -59,15 +63,15 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             return True
         return False
 
-    _trigger_map = {
-        AttrValueChanged: _trigger_on_attr_change,
-        AttrValueChangedOverride: _trigger_on_attr_change
+    _revision_map = {
+        AttrValueChanged: _revise_on_attr_change,
+        AttrValueChangedOverride: _revise_on_attr_change
     }
 
     @property
-    def trigger_message_types(self):
-        return set(self._trigger_map.keys())
+    def revise_message_types(self):
+        return set(self._revision_map.keys())
 
-    def is_triggered(self, message, carrier_item, fit):
-        trigger_func = self._trigger_map[type(message)]
-        return trigger_func(self, message, carrier_item, fit)
+    def revise_modification(self, message, carrier_item, fit):
+        revision_func = self._revision_map[type(message)]
+        return revision_func(self, message, carrier_item, fit)

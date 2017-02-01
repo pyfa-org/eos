@@ -42,19 +42,20 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def trigger_message_types(self):
+    def revise_message_types(self):
         """
-        Return iterable with message types this modifier wants
-        to receive.
+        Iterable with message types which potentially may change
+        modification provided by this modifier.
         """
         ...
 
     @abstractmethod
-    def is_triggered(self, message, carrier_item, fit):
+    def revise_modification(self, message, carrier_item, fit):
         """
-        Take message and additional context arguments to determine
-        if changing them affects attribute targeted by modifier.
-        Result is boolean value.
+        Rely on provided event and context for it, decide if modification
+        provided by modifier can change or it cannot. If it can, calculated
+        value of target attribute on all items targeted by modifier will be
+        removed to force recalculation.
         """
         ...
 
