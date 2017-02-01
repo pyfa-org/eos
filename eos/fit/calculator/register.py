@@ -63,7 +63,7 @@ class AffectionRegister:
         self.__affector_direct_active = KeyedSet()
 
         # Affectors which influence something directly, but their target is not available
-        # Format: {source item: set(affectors)}
+        # Format: {carrier item: set(affectors)}
         self.__affector_direct_awaiting = KeyedSet()
 
         # Affectors influencing all items belonging to certain domain
@@ -164,13 +164,13 @@ class AffectionRegister:
         Return value:
         Set with items, being influenced by affector
         """
-        source_item, modifier = affector
+        modifier, carrier_item = affector
         affectees = set()
         try:
             # For direct modification, make set out of single target domain
             if modifier.tgt_filter == ModifierTargetFilter.item:
                 if modifier.tgt_domain == ModifierDomain.self:
-                    target = {source_item}
+                    target = {carrier_item}
                 elif modifier.tgt_domain == ModifierDomain.character:
                     char = self._fit.character
                     target = {char} if char is not None else None
@@ -178,7 +178,7 @@ class AffectionRegister:
                     ship = self._fit.ship
                     target = {ship} if ship is not None else None
                 elif modifier.tgt_domain == ModifierDomain.other:
-                    other_item = self.__get_other_linked_item(source_item)
+                    other_item = self.__get_other_linked_item(carrier_item)
                     target = {other_item} if other_item is not None else None
                 else:
                     raise DirectDomainError(modifier.tgt_domain)
@@ -196,13 +196,13 @@ class AffectionRegister:
                 domain = self.__contextize_filter_domain(affector)
                 skill = modifier.tgt_filter_extra_arg
                 if skill == EosEveTypes.current_self:
-                    skill = affector.source_item._eve_type_id
+                    skill = carrier_item._eve_type_id
                 key = (domain, skill)
                 target = self.__affectee_domain_skillrq.get(key) or set()
             elif modifier.tgt_filter == ModifierTargetFilter.owner_skillrq:
                 skill = modifier.tgt_filter_extra_arg
                 if skill == EosEveTypes.current_self:
-                    skill = affector.source_item._eve_type_id
+                    skill = carrier_item._eve_type_id
                 key = skill
                 target = self.__affectee_owner_skillrq.get(key) or set()
             else:
@@ -290,14 +290,14 @@ class AffectionRegister:
         TargetFilterError -- raised when affector's modifier filter type is not
         supported
         """
-        source_item, modifier = affector
+        modifier, carrier_item = affector
         # For each filter type, define affector map and key to use
         if modifier.tgt_filter == ModifierTargetFilter.item:
             # For direct modifications, we need to properly pick
             # target item (it's key) based on domain
             if modifier.tgt_domain == ModifierDomain.self:
                 affector_map = self.__affector_direct_active
-                key = source_item
+                key = carrier_item
             elif modifier.tgt_domain == ModifierDomain.character:
                 char = self._fit.character
                 if char is not None:
@@ -305,7 +305,7 @@ class AffectionRegister:
                     key = char
                 else:
                     affector_map = self.__affector_direct_awaiting
-                    key = source_item
+                    key = carrier_item
             elif modifier.tgt_domain == ModifierDomain.ship:
                 ship = self._fit.ship
                 if ship is not None:
@@ -313,11 +313,11 @@ class AffectionRegister:
                     key = ship
                 else:
                     affector_map = self.__affector_direct_awaiting
-                    key = source_item
+                    key = carrier_item
             # When other domain is referenced, it means direct reference to module's charge
             # or to charge's module-container
             elif modifier.tgt_domain == ModifierDomain.other:
-                other_item = self.__get_other_linked_item(source_item)
+                other_item = self.__get_other_linked_item(carrier_item)
                 if other_item is not None:
                     affector_map = self.__affector_direct_active
                     key = other_item
@@ -325,7 +325,7 @@ class AffectionRegister:
                 # unavailable for now; use disabled affectors map for these
                 else:
                     affector_map = self.__affector_direct_awaiting
-                    key = source_item
+                    key = carrier_item
             else:
                 raise DirectDomainError(modifier.tgt_domain)
         # For filtered modifications, compose key, making sure reference to self
@@ -344,13 +344,13 @@ class AffectionRegister:
             domain = self.__contextize_filter_domain(affector)
             skill = modifier.tgt_filter_extra_arg
             if skill == EosEveTypes.current_self:
-                skill = affector.source_item._eve_type_id
+                skill = carrier_item._eve_type_id
             key = (domain, skill)
         elif modifier.tgt_filter == ModifierTargetFilter.owner_skillrq:
             affector_map = self.__affector_owner_skillrq
             skill = modifier.tgt_filter_extra_arg
             if skill == EosEveTypes.current_self:
-                skill = affector.source_item._eve_type_id
+                skill = carrier_item._eve_type_id
             key = skill
         else:
             raise TargetFilterError(modifier.tgt_filter)
@@ -369,19 +369,19 @@ class AffectionRegister:
         """
         if isinstance(error, DirectDomainError):
             msg = 'malformed modifier on eve type {}: unsupported target domain {} for direct modification'.format(
-                affector.source_item._eve_type_id, error.args[0])
+                affector.carrier_item._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredDomainError):
             msg = 'malformed modifier on eve type {}: unsupported target domain {} for filtered modification'.format(
-                affector.source_item._eve_type_id, error.args[0])
+                affector.carrier_item._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredSelfReferenceError):
             msg = 'malformed modifier on eve type {}: invalid reference to self for filtered modification'.format(
-                affector.source_item._eve_type_id)
+                affector.carrier_item._eve_type_id)
             logger.warning(msg)
         elif isinstance(error, TargetFilterError):
             msg = 'malformed modifier on eve type {}: invalid filter type {}'.format(
-                affector.source_item._eve_type_id, error.args[0])
+                affector.carrier_item._eve_type_id, error.args[0])
             logger.warning(msg)
         else:
             raise error
@@ -407,14 +407,14 @@ class AffectionRegister:
         FilteredDomainError -- raised when affector's modifier
         target domain is not supported for filtered modification
         """
-        source_item = affector.source_item
+        carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain
         # Reference to self is sparingly used in ship effects, so we must convert
         # it to real domain
         if domain == ModifierDomain.self:
-            if source_item is self._fit.ship:
+            if carrier_item is self._fit.ship:
                 return ModifierDomain.ship
-            elif source_item is self._fit.character:
+            elif carrier_item is self._fit.character:
                 return ModifierDomain.character
             else:
                 raise FilteredSelfReferenceError
@@ -461,23 +461,23 @@ class AffectionRegister:
         target_item -- item which is being registered
         domain -- domain, to which item is being registered
         """
-        # Format: {source_item: [affectors]}
+        # Format: {carrier item: [affectors]}
         affectors_to_enable = {}
         # Cycle through all disabled direct affectors
-        for source_item, affector_set in self.__affector_direct_awaiting.items():
+        for carrier_item, affector_set in self.__affector_direct_awaiting.items():
             for affector in affector_set:
                 modifier = affector.modifier
                 # Mark affector as to-be-enabled only when it
                 # targets passed target domain
                 if modifier.tgt_domain == domain:
-                    source_affectors = affectors_to_enable.setdefault(source_item, [])
-                    source_affectors.append(affector)
+                    affectors = affectors_to_enable.setdefault(carrier_item, [])
+                    affectors.append(affector)
         # Bail if we have nothing to do
         if not affectors_to_enable:
             return
         # Move all of them to direct modification dictionary
-        for source_item, affectors in affectors_to_enable.items():
-            self.__affector_direct_awaiting.rm_data_set(source_item, affectors)
+        for carrier_item, affectors in affectors_to_enable.items():
+            self.__affector_direct_awaiting.rm_data_set(carrier_item, affectors)
             self.__affector_direct_active.add_data_set(target_item, affectors)
 
     def __disable_direct_spec(self, target_item):
@@ -487,21 +487,21 @@ class AffectionRegister:
         Required arguments:
         target_item -- item which is being unregistered
         """
-        # Format: {source_item: [affectors]}
+        # Format: {carrier item: [affectors]}
         affectors_to_disable = {}
         # Check all affectors, targeting passed item
         for affector in self.__affector_direct_active.get(target_item) or ():
             # Mark them as to-be-disabled only if they originate from
             # other item, else they should be removed with passed item
-            if affector.source_item is not target_item:
-                source_affectors = affectors_to_disable.setdefault(affector.source_item, [])
-                source_affectors.append(affector)
+            if affector.carrier_item is not target_item:
+                affectors = affectors_to_disable.setdefault(affector.carrier_item, [])
+                affectors.append(affector)
         if not affectors_to_disable:
             return
         # Move data from map to map
-        for source_item, affectors in affectors_to_disable.items():
+        for carrier_item, affectors in affectors_to_disable.items():
             self.__affector_direct_active.rm_data_set(target_item, affectors)
-            self.__affector_direct_awaiting.add_data_set(source_item, affectors)
+            self.__affector_direct_awaiting.add_data_set(carrier_item, affectors)
 
     def __enable_direct_other(self, target_item):
         """
@@ -545,7 +545,7 @@ class AffectionRegister:
         for affector in self.__affector_direct_active.get(target_item) or ():
             # If affector originates from other_item, mark it as
             # to-be-disabled
-            if affector.source_item is other_item:
+            if affector.carrier_item is other_item:
                 affectors_to_disable.add(affector)
         # Do nothing if we have no such affectors
         if not affectors_to_disable:

@@ -61,17 +61,17 @@ class CalculationService(BaseSubscriber):
             influence attribute with this ID will be returned.
 
         Return value:
-        set((operator, modification value, source item))
+        set((operator, modification value, carrier item))
         """
         modifications = set()
-        for source_item, modifier in self.__affections.get_affectors(target_item):
+        for modifier, carrier_item in self.__affections.get_affectors(target_item):
             if modifier.tgt_attr == target_attr:
                 try:
-                    mod_oper, mod_value = modifier.get_modification(source_item, self.__fit)
+                    mod_oper, mod_value = modifier.get_modification(carrier_item, self.__fit)
                 # Do nothing here - errors should be logged in modification getter
                 except ModificationCalculationError:
                     continue
-                modifications.add((mod_oper, mod_value, source_item))
+                modifications.add((mod_oper, mod_value, carrier_item))
         return modifications
 
     # Handle item addition/removal
@@ -169,7 +169,7 @@ class CalculationService(BaseSubscriber):
         # Otherwise, ask affector if target value should
         # change, and remove it if it should
         for affector in self.__subscribed_affectors[msg_type]:
-            if affector.modifier.revise_modification(message, affector.source_item, self.__fit) is not True:
+            if affector.modifier.revise_modification(message, affector.carrier_item, self.__fit) is not True:
                 continue
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr]
@@ -244,7 +244,7 @@ class CalculationService(BaseSubscriber):
                     continue
                 if modifier.tgt_domain not in self._supported_domains:
                     continue
-                affector = Affector(item, modifier)
+                affector = Affector(modifier, item)
                 affectors.add(affector)
         return affectors
 

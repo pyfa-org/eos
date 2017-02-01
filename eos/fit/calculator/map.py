@@ -60,7 +60,7 @@ PENALIZABLE_OPERATORS = (
     ModifierOperator.post_div
 )
 
-# Map which helps to normalize modifiers
+# Map which helps to normalize modifications
 NORMALIZATION_MAP = {
     ModifierOperator.pre_assign: lambda val: val,
     ModifierOperator.pre_mul: lambda val: val,
@@ -234,43 +234,39 @@ class MutableAttributeMap:
             # base we can't go on
             if result is None:
                 raise BaseValueError(attr)
-        # Container for non-penalized modifiers
+        # Container for non-penalized modifications
         # Format: {operator: [values]}
         normal_mods = {}
-        # Container for penalized modifiers
+        # Container for penalized modifications
         # Format: {operator: [values]}
         penalized_mods = {}
         # Now, go through all affectors affecting our item
-        for operator, mod_value, source_item in self.__item._fit._calculator.get_modifications(self.__item, attr):
+        for operator, mod_value, carrier_item in self.__item._fit._calculator.get_modifications(self.__item, attr):
+            # Decide if it should be stacking penalized or not, based on stackable property,
+            # carrier item eve type category and operator
+            penalize = (
+                attr_meta.stackable is False and
+                carrier_item._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
+                operator in PENALIZABLE_OPERATORS
+            )
+            # Normalize operations to just three types:
+            # assignments, additions, multiplications
             try:
-                # Decide if it should be stacking penalized or not, based on stackable property,
-                # source item eve type category and operator
-                penalize = (
-                    attr_meta.stackable is False and
-                    source_item._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
-                    operator in PENALIZABLE_OPERATORS
-                )
-                # Normalize operations to just three types:
-                # assignments, additions, multiplications
-                try:
-                    normalization_func = NORMALIZATION_MAP[operator]
-                # Raise error on any unknown operator types
-                except KeyError as e:
-                    raise OperatorError(operator) from e
-                mod_value = normalization_func(mod_value)
-                # Add value to appropriate dictionary
-                if penalize is True:
-                    mod_list = penalized_mods.setdefault(operator, [])
-                else:
-                    mod_list = normal_mods.setdefault(operator, [])
-                mod_list.append(mod_value)
-            # Handle operator type failure
-            except OperatorError as e:
+                normalization_func = NORMALIZATION_MAP[operator]
+            # Log error on any unknown operator types
+            except KeyError:
                 msg = 'malformed modifier on eve type {}: unknown operator {}'.format(
-                    source_item._eve_type_id, e.args[0])
+                    carrier_item._eve_type_id, operator)
                 logger.warning(msg)
                 continue
-        # When data gathering is complete, process penalized modifiers
+            mod_value = normalization_func(mod_value)
+            # Add value to appropriate dictionary
+            if penalize is True:
+                mod_list = penalized_mods.setdefault(operator, [])
+            else:
+                mod_list = normal_mods.setdefault(operator, [])
+            mod_list.append(mod_value)
+        # When data gathering is complete, process penalized modifications
         # They are penalized on per-operator basis
         for operator, mod_list in penalized_mods.items():
             penalized_value = self.__penalize_values(mod_list)
@@ -279,7 +275,7 @@ class MutableAttributeMap:
         # Calculate result of normal dictionary, according to operator order
         for operator in sorted(normal_mods):
             mod_list = normal_mods[operator]
-            # Pick best modifier for assignments, based on high_is_good value
+            # Pick best modification for assignments, based on high_is_good value
             if operator in ASSIGNMENTS:
                 result = max(mod_list) if attr_meta.high_is_good is True else min(mod_list)
             elif operator in ADDITIONS:
@@ -319,7 +315,7 @@ class MutableAttributeMap:
         Return value:
         Final aggregated factor of passed mod_list
         """
-        # Gather positive modifiers into one chain, negative
+        # Gather positive modifications into one chain, negative
         # into another
         chain_positive = []
         chain_negative = []
@@ -331,7 +327,7 @@ class MutableAttributeMap:
                 chain_positive.append(mod_val)
             else:
                 chain_negative.append(mod_val)
-        # Strongest modifiers always go first
+        # Strongest modifications always go first
         chain_positive.sort(reverse=True)
         chain_negative.sort()
         # Base final multiplier on 1
@@ -339,12 +335,12 @@ class MutableAttributeMap:
         for chain in (chain_positive, chain_negative):
             # Same for intermediate per-chain result
             chain_result = 1
-            for position, modifier in enumerate(chain):
-                # Ignore 12th modifier and further as non-significant
+            for position, modification in enumerate(chain):
+                # Ignore 12th modification and further as non-significant
                 if position > 10:
                     break
-                # Apply stacking penalty based on modifier position
-                chain_result *= 1 + modifier * PENALTY_BASE ** (position ** 2)
+                # Apply stacking penalty based on modification position
+                chain_result *= 1 + modification * PENALTY_BASE ** (position ** 2)
             list_result *= chain_result
         return list_result
 
