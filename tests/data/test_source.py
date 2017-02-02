@@ -85,7 +85,7 @@ def test_add_fingerprint_mismatch(mock_data_handler, mock_cache_handler, caplog)
     mock_data_handler.get_version = Mock(return_value='dh_version')
     SourceManager.add('test', mock_data_handler, mock_cache_handler)
 
-    log_msg = 'fingerprint mismatch: cache "cache_fingerprint", data "dh_version_0.0.0.dev9", updating cache'
+    log_msg = 'fingerprint mismatch: cache "cache_fingerprint", data "dh_version_0.0.0.dev10", updating cache'
 
     assert log_msg in caplog.text()
 
