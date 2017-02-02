@@ -19,11 +19,10 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
 from eos.const.eos import State, ModifierDomain
 from eos.fit.calculator import CalculationService, MutableAttributeMap
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices
+from eos.util.pubsub import MessageBroker
 
 
 class ItemContainer:
@@ -52,17 +51,19 @@ class Source:
         self.cache_handler = cache_handler
 
 
-class Fit:
+class Fit(MessageBroker):
 
     def __init__(self, cache_handler, msgstore_filter=None):
+        MessageBroker.__init__(self)
         self.source = Source(cache_handler)
+        self.__msgstore_filter = msgstore_filter
+        self.message_store = []
         self._calculator = CalculationService(self)
         self._calculator._notify(EnableServices(items=()))
+        # Containers
         self.__ship = None
         self.__character = None
         self.items = ItemContainer(self)
-        self.__msgstore_filter = msgstore_filter
-        self.message_store = []
 
     @property
     def ship(self):
@@ -97,9 +98,7 @@ class Fit:
     def _publish(self, message):
         if self.__msgstore_filter is None or self.__msgstore_filter(message) is True:
             self.message_store.append(message)
-        self._calculator._notify(message)
-
-    _subscribe = Mock()
+        MessageBroker._publish(self, message)
 
 
 class BaseItem:

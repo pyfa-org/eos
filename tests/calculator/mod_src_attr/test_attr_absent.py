@@ -29,9 +29,9 @@ from tests.calculator.environment import IndependentItem
 
 
 class TestSourceAttrAbsent(CalculatorTestCase):
-    """Test how calculator reacts to source attribute which is absent"""
 
     def test_combination(self):
+        # Check how calculator reacts to source attribute which is absent
         tgt_attr = self.ch.attribute(attribute_id=1)
         abs_attr = self.ch.attribute(attribute_id=2)
         src_attr = self.ch.attribute(attribute_id=3)

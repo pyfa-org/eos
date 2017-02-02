@@ -17,10 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ===============================================================================
-
-
-"""
-Tests in this module check that operators and item/attribute
-properties associated with value calculation process are applied
-on their target items properly.
-"""
