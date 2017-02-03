@@ -93,8 +93,7 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            'malformed modifier on eve type 1061: invalid reference '
-            'to self for filtered modification'
+            'malformed modifier on eve type 1061: unsupported target domain 1'
         )
         # Cleanup
         self.fit.items.remove(self.influence_source)

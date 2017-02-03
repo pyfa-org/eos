@@ -31,22 +31,15 @@ class AttributeCalculatorError(EosError):
 class UnexpectedDomainError(AttributeCalculatorError):
     """
     Raised when domain in Modifier object being processed cannot
-    have this domain.
-    """
-    pass
-
-
-class FilteredSelfReferenceError(AttributeCalculatorError):
-    """
-    Raised when Modifier references itself as item container, but
-    actually it can't have any items assigned to it.
+    have this domain (which domains are supported depends on
+    target filter).
     """
     pass
 
 
 class TargetFilterError(AttributeCalculatorError):
     """
-    Raised when Modifier has unknown to calculator type.
+    Raised when Modifier has unknown target filter type.
     """
     pass
 

@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosEveTypes
 from eos.util.keyed_set import KeyedSet
-from .exception import UnexpectedDomainError, FilteredSelfReferenceError, TargetFilterError
+from .exception import UnexpectedDomainError, TargetFilterError
 
 
 logger = getLogger(__name__)
@@ -379,7 +379,7 @@ class AffectionRegister:
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 
-    # Methods which select proper affector map and key to it
+    # Helpers for affector registering/unregistering - select affector map and key to it
     def _affector_map_getter_item_self(self, affector):
         return affector.carrier_item, self.__affector_direct_active
 
@@ -451,23 +451,14 @@ class AffectionRegister:
 
     def _get_affector_map(self, affector):
         """
-        Helper for affector register/unregister methods.
-
-        Required arguments:
-        affector -- affector, for which affector map are requested
-
-        Return value:
-        (key, affector_map) tuple, where key should be used to access
-        data set (appropriate to passed affector) in affector_map
+        Return place where passed affector should be stored in
+        (key, affector map) form.
 
         Possible exceptions:
-        FilteredSelfReferenceError -- raised if affector's modifier specifies
-        filtered modification and target domain refers self, but affector's
-        item isn't in position to be target for filtered modifications
         UnexpectedDomainError -- raised when affector's modifier target
-        domain is not supported
+            domain is not supported
         TargetFilterError -- raised when affector's modifier filter type is not
-        supported
+            supported
         """
         try:
             getter = self._affector_map_getters[affector.modifier.tgt_filter]
@@ -491,11 +482,8 @@ class AffectionRegister:
         Real contextized domain
 
         Possible exceptions:
-        FilteredSelfReferenceError -- raised if affector's modifier
-        refers self, but affector's item isn't in position to be
-        target for filtered modifications
         UnexpectedDomainError -- raised when affector's modifier
-        target domain is not supported
+            target domain is not supported
         """
         carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain
@@ -507,7 +495,7 @@ class AffectionRegister:
             elif carrier_item is self._fit.character:
                 return ModifierDomain.character
             else:
-                raise FilteredSelfReferenceError
+                raise UnexpectedDomainError(domain)
         # Just return untouched domain for all other valid cases
         elif domain in (ModifierDomain.character, ModifierDomain.ship):
             return domain
@@ -542,10 +530,6 @@ class AffectionRegister:
         if isinstance(error, UnexpectedDomainError):
             msg = 'malformed modifier on eve type {}: unsupported target domain {}'.format(
                 affector.carrier_item._eve_type_id, error.args[0])
-            logger.warning(msg)
-        elif isinstance(error, FilteredSelfReferenceError):
-            msg = 'malformed modifier on eve type {}: invalid reference to self for filtered modification'.format(
-                affector.carrier_item._eve_type_id)
             logger.warning(msg)
         elif isinstance(error, TargetFilterError):
             msg = 'malformed modifier on eve type {}: invalid target filter {}'.format(
