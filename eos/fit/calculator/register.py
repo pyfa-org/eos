@@ -338,19 +338,6 @@ class AffectionRegister:
         self.__affector_direct_awaiting.add_data_set(other_item, affectors_to_disable)
         self.__affector_direct_active.rm_data_set(target_item, affectors_to_disable)
 
-    def __get_other_linked_item(self, item):
-        """
-        Attempt to get item linked via 'other' link,
-        like charge's module or module's charge, return
-        None if nothing is found.
-        """
-        if hasattr(item, 'charge'):
-            return item.charge
-        elif hasattr(item, 'container'):
-            return item.container
-        else:
-            return None
-
     # Affector processing
     def get_affectors(self, target_item):
         """Get all affectors, which influence passed item"""
@@ -372,28 +359,97 @@ class AffectionRegister:
 
     def register_affector(self, affector):
         """
-        Make register aware of affector which now can affect
-        other items.
+        Make register aware of the affector, thus making it
+        possible for the affector to modify other items.
         """
         try:
-            key, affector_map = self.__get_affector_map(affector)
-            # Actually add data to map
+            key, affector_map = self._get_affector_map(affector)
             affector_map.add_data(key, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 
     def unregister_affector(self, affector):
         """
-        Remove affector from register - make it impossible for
-        affector to modify any other items.
+        Remove the affector from register, thus making it
+        impossible for the affector to modify any other items.
         """
         try:
-            key, affector_map = self.__get_affector_map(affector)
+            key, affector_map = self._get_affector_map(affector)
             affector_map.rm_data(key, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 
-    def __get_affector_map(self, affector):
+    # Methods which select proper affector map and key to it
+    def _affector_map_getter_item_self(self, affector):
+        return affector.carrier_item, self.__affector_direct_active
+
+    def _affector_map_getter_item_character(self, affector):
+        character = self._fit.character
+        if character is not None:
+            return character, self.__affector_direct_active
+        else:
+            return affector.carrier_item, self.__affector_direct_awaiting
+
+    def _affector_map_getter_item_ship(self, affector):
+        ship = self._fit.ship
+        if ship is not None:
+            return ship, self.__affector_direct_active
+        else:
+            return affector.carrier_item, self.__affector_direct_awaiting
+
+    def _affector_map_getter_item_other(self, affector):
+        other_item = self.__get_other_linked_item(affector.carrier_item)
+        if other_item is not None:
+            return other_item, self.__affector_direct_active
+        else:
+            return affector.carrier_item, self.__affector_direct_awaiting
+
+    _affector_map_getters_item = {
+        ModifierDomain.self: _affector_map_getter_item_self,
+        ModifierDomain.character: _affector_map_getter_item_character,
+        ModifierDomain.ship: _affector_map_getter_item_ship,
+        ModifierDomain.other: _affector_map_getter_item_other
+    }
+
+    def _affector_map_getter_item(self, affector):
+        try:
+            getter = self._affector_map_getters_item[affector.modifier.tgt_domain]
+        except KeyError as e:
+            raise DirectDomainError(affector.modifier.tgt_domain) from e
+        else:
+            return getter(self, affector)
+
+    def _affector_map_getter_domain(self, affector):
+        domain = self.__contextize_filter_domain(affector)
+        return domain, self.__affector_domain
+
+    def _affector_map_getter_domain_group(self, affector):
+        domain = self.__contextize_filter_domain(affector)
+        group = affector.modifier.tgt_filter_extra_arg
+        return (domain, group), self.__affector_domain_group
+
+    def _affector_map_getter_domain_skillrq(self, affector):
+        domain = self.__contextize_filter_domain(affector)
+        skill = affector.modifier.tgt_filter_extra_arg
+        if skill == EosEveTypes.current_self:
+            skill = affector.carrier_item._eve_type_id
+        return (domain, skill), self.__affector_domain_skillrq
+
+    def _affector_map_getter_owner_skillrq(self, affector):
+        skill = affector.modifier.tgt_filter_extra_arg
+        if skill == EosEveTypes.current_self:
+            skill = affector.carrier_item._eve_type_id
+        return skill, self.__affector_owner_skillrq
+
+    _affector_map_getters = {
+        ModifierTargetFilter.item: _affector_map_getter_item,
+        ModifierTargetFilter.domain: _affector_map_getter_domain,
+        ModifierTargetFilter.domain_group: _affector_map_getter_domain_group,
+        ModifierTargetFilter.domain_skillrq: _affector_map_getter_domain_skillrq,
+        ModifierTargetFilter.owner_skillrq: _affector_map_getter_owner_skillrq
+    }
+
+    def _get_affector_map(self, affector):
         """
         Helper for affector register/unregister methods.
 
@@ -415,73 +471,14 @@ class AffectionRegister:
         TargetFilterError -- raised when affector's modifier filter type is not
         supported
         """
-        modifier, carrier_item = affector
-        # For each filter type, define affector map and key to use
-        if modifier.tgt_filter == ModifierTargetFilter.item:
-            # For direct modifications, we need to properly pick
-            # target item (it's key) based on domain
-            if modifier.tgt_domain == ModifierDomain.self:
-                affector_map = self.__affector_direct_active
-                key = carrier_item
-            elif modifier.tgt_domain == ModifierDomain.character:
-                char = self._fit.character
-                if char is not None:
-                    affector_map = self.__affector_direct_active
-                    key = char
-                else:
-                    affector_map = self.__affector_direct_awaiting
-                    key = carrier_item
-            elif modifier.tgt_domain == ModifierDomain.ship:
-                ship = self._fit.ship
-                if ship is not None:
-                    affector_map = self.__affector_direct_active
-                    key = ship
-                else:
-                    affector_map = self.__affector_direct_awaiting
-                    key = carrier_item
-            # When other domain is referenced, it means direct reference to module's charge
-            # or to charge's module-container
-            elif modifier.tgt_domain == ModifierDomain.other:
-                other_item = self.__get_other_linked_item(carrier_item)
-                if other_item is not None:
-                    affector_map = self.__affector_direct_active
-                    key = other_item
-                # When no reference available, it means that e.g. charge may be
-                # unavailable for now; use disabled affectors map for these
-                else:
-                    affector_map = self.__affector_direct_awaiting
-                    key = carrier_item
-            else:
-                raise DirectDomainError(modifier.tgt_domain)
-        # For filtered modifications, compose key, making sure reference to self
-        # is converted into appropriate real domain
-        elif modifier.tgt_filter == ModifierTargetFilter.domain:
-            affector_map = self.__affector_domain
-            domain = self.__contextize_filter_domain(affector)
-            key = domain
-        elif modifier.tgt_filter == ModifierTargetFilter.domain_group:
-            affector_map = self.__affector_domain_group
-            domain = self.__contextize_filter_domain(affector)
-            group = modifier.tgt_filter_extra_arg
-            key = (domain, group)
-        elif modifier.tgt_filter == ModifierTargetFilter.domain_skillrq:
-            affector_map = self.__affector_domain_skillrq
-            domain = self.__contextize_filter_domain(affector)
-            skill = modifier.tgt_filter_extra_arg
-            if skill == EosEveTypes.current_self:
-                skill = carrier_item._eve_type_id
-            key = (domain, skill)
-        elif modifier.tgt_filter == ModifierTargetFilter.owner_skillrq:
-            affector_map = self.__affector_owner_skillrq
-            skill = modifier.tgt_filter_extra_arg
-            if skill == EosEveTypes.current_self:
-                skill = carrier_item._eve_type_id
-            key = skill
+        try:
+            getter = self._affector_map_getters[affector.modifier.tgt_filter]
+        except KeyError as e:
+            raise TargetFilterError(affector.modifier.tgt_filter) from e
         else:
-            raise TargetFilterError(modifier.tgt_filter)
-        return key, affector_map
+            return getter(self, affector)
 
-    # Auxiliary methods
+    # Shared helpers
     def __contextize_filter_domain(self, affector):
         """
         Convert domain self-reference to real domain, like
@@ -520,6 +517,19 @@ class AffectionRegister:
         else:
             raise FilteredDomainError(domain)
 
+    def __get_other_linked_item(self, item):
+        """
+        Attempt to get item linked via 'other' link,
+        like charge's module or module's charge, return
+        None if nothing is found.
+        """
+        if hasattr(item, 'charge'):
+            return item.charge
+        elif hasattr(item, 'container'):
+            return item.container
+        else:
+            return None
+
     def __handle_affector_errors(self, error, affector):
         """
         Multiple register methods which get data based on passed affector
@@ -544,7 +554,7 @@ class AffectionRegister:
                 affector.carrier_item._eve_type_id)
             logger.warning(msg)
         elif isinstance(error, TargetFilterError):
-            msg = 'malformed modifier on eve type {}: invalid filter type {}'.format(
+            msg = 'malformed modifier on eve type {}: invalid target filter {}'.format(
                 affector.carrier_item._eve_type_id, error.args[0])
             logger.warning(msg)
         else:

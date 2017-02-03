@@ -56,7 +56,7 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register')
             self.assertEqual(log_record.levelno, logging.WARNING)
-            self.assertEqual(log_record.msg, 'malformed modifier on eve type 31: invalid filter type 26500')
+            self.assertEqual(log_record.msg, 'malformed modifier on eve type 31: invalid target filter 26500')
         # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
