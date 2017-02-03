@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosEveTypes
 from eos.util.keyed_set import KeyedSet
-from .exception import DirectDomainError, FilteredDomainError, FilteredSelfReferenceError, TargetFilterError
+from .exception import UnexpectedDomainError, FilteredSelfReferenceError, TargetFilterError
 
 
 logger = getLogger(__name__)
@@ -110,7 +110,7 @@ class AffectionRegister:
                     other_item = self.__get_other_linked_item(carrier_item)
                     target = {other_item} if other_item is not None else None
                 else:
-                    raise DirectDomainError(modifier.tgt_domain)
+                    raise UnexpectedDomainError(modifier.tgt_domain)
             # For filtered modifications, pick appropriate dictionary and get set
             # with target items
             elif modifier.tgt_filter == ModifierTargetFilter.domain:
@@ -415,7 +415,7 @@ class AffectionRegister:
         try:
             getter = self._affector_map_getters_item[affector.modifier.tgt_domain]
         except KeyError as e:
-            raise DirectDomainError(affector.modifier.tgt_domain) from e
+            raise UnexpectedDomainError(affector.modifier.tgt_domain) from e
         else:
             return getter(self, affector)
 
@@ -464,10 +464,8 @@ class AffectionRegister:
         FilteredSelfReferenceError -- raised if affector's modifier specifies
         filtered modification and target domain refers self, but affector's
         item isn't in position to be target for filtered modifications
-        DirectDomainError -- raised when affector's modifier target
-        domain is not supported for direct modification
-        FilteredDomainError -- raised when affector's modifier target
-        domain is not supported for filtered modification
+        UnexpectedDomainError -- raised when affector's modifier target
+        domain is not supported
         TargetFilterError -- raised when affector's modifier filter type is not
         supported
         """
@@ -496,8 +494,8 @@ class AffectionRegister:
         FilteredSelfReferenceError -- raised if affector's modifier
         refers self, but affector's item isn't in position to be
         target for filtered modifications
-        FilteredDomainError -- raised when affector's modifier
-        target domain is not supported for filtered modification
+        UnexpectedDomainError -- raised when affector's modifier
+        target domain is not supported
         """
         carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain
@@ -515,7 +513,7 @@ class AffectionRegister:
             return domain
         # Raise error if domain is invalid
         else:
-            raise FilteredDomainError(domain)
+            raise UnexpectedDomainError(domain)
 
     def __get_other_linked_item(self, item):
         """
@@ -541,12 +539,8 @@ class AffectionRegister:
         error -- Exception instance which was caught and needs to be handled
         affector -- affector object, which was being processed when error occurred
         """
-        if isinstance(error, DirectDomainError):
-            msg = 'malformed modifier on eve type {}: unsupported target domain {} for direct modification'.format(
-                affector.carrier_item._eve_type_id, error.args[0])
-            logger.warning(msg)
-        elif isinstance(error, FilteredDomainError):
-            msg = 'malformed modifier on eve type {}: unsupported target domain {} for filtered modification'.format(
+        if isinstance(error, UnexpectedDomainError):
+            msg = 'malformed modifier on eve type {}: unsupported target domain {}'.format(
                 affector.carrier_item._eve_type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, FilteredSelfReferenceError):

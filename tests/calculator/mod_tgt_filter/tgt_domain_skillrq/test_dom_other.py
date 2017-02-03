@@ -58,8 +58,7 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,
-                'malformed modifier on eve type 90: unsupported target domain '
-                '{} for filtered modification'.format(ModifierDomain.other)
+                'malformed modifier on eve type 90: unsupported target domain {}'.format(ModifierDomain.other)
             )
         # Cleanup
         self.fit.items.remove(influence_source)

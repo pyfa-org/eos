@@ -27,21 +27,11 @@ class AttributeCalculatorError(EosError):
     pass
 
 
-# Exception classes used by link register
-class DirectDomainError(AttributeCalculatorError):
+# Exception classes used by affection register
+class UnexpectedDomainError(AttributeCalculatorError):
     """
-    Raised when domain in Modifier object being processed cannot be
-    handled by register (set of unsupported domains is different
-    for direct and filtered modifications).
-    """
-    pass
-
-
-class FilteredDomainError(AttributeCalculatorError):
-    """
-    Raised when domain in Modifier object being processed cannot be
-    handled by register (set of unsupported domains is different
-    for direct and filtered modifications).
+    Raised when domain in Modifier object being processed cannot
+    have this domain.
     """
     pass
 
