@@ -32,14 +32,14 @@ class UnexpectedDomainError(AttributeCalculatorError):
     """
     Raised when domain in Modifier object being processed cannot
     have this domain (which domains are supported depends on
-    target filter).
+    modifier target filter and its context).
     """
     pass
 
 
-class TargetFilterError(AttributeCalculatorError):
+class UnknownTargetFilterError(AttributeCalculatorError):
     """
-    Raised when Modifier has unknown target filter type.
+    Raised when modifier has unknown target filter type.
     """
     pass
 
