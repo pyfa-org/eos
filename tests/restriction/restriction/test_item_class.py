@@ -32,10 +32,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
         item = Booster(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -43,12 +45,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008, attributes={Attribute.boosterness: 3})
         item = Booster(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -56,12 +60,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.implant)
         item = Booster(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -69,10 +75,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, group=Group.character)
         item = Character(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -80,12 +88,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, group=1008)
         item = Character(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Character)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -93,10 +103,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.charge)
         item = Charge(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -104,12 +116,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008)
         item = Charge(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Charge)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -117,10 +131,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.drone)
         item = Drone(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -128,12 +144,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008)
         item = Drone(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Drone)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -141,10 +159,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, group=Group.effect_beacon)
         item = EffectBeacon(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -152,12 +172,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, group=1008)
         item = EffectBeacon(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, EffectBeacon)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -165,10 +187,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.implantness: 3})
         item = Implant(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -176,12 +200,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008, attributes={Attribute.implantness: 3})
         item = Implant(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -189,12 +215,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.implant)
         item = Implant(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -203,10 +231,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.module_high}
         item = ModuleHigh(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -215,12 +245,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.module_high}
         item = ModuleHigh(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
 
     def test_module_high_fail_slot(self):
@@ -228,12 +260,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {1008}
         item = ModuleHigh(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -242,10 +276,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.module_med}
         item = ModuleMed(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -254,25 +290,30 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.module_med}
         item = ModuleMed(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
 
     def test_module_med_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         item = ModuleMed(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -281,10 +322,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.module_low}
         item = ModuleLow(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -293,25 +336,30 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.module_low}
         item = ModuleLow(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
 
     def test_module_low_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         item = ModuleLow(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -320,10 +368,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.rig}
         item = Rig(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -332,25 +382,30 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.rig}
         item = Rig(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
+        self.assert_restriction_buffers_empty()
 
     def test_rig_fail_slot(self):
         eve_type = self.ch.type(type_id=1, category=Category.module)
         eve_type.slots = {1008}
         item = Rig(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -358,10 +413,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.ship)
         item = Ship(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -369,12 +426,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008)
         item = Ship(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Ship)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -382,10 +441,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.skill)
         item = Skill(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -393,12 +454,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008)
         item = Skill(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Skill)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -406,10 +469,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, group=Group.ship_modifier)
         item = Stance(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -417,12 +482,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, group=1008)
         item = Stance(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Stance)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -431,10 +498,12 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {Slot.subsystem}
         item = Subsystem(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -442,12 +511,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=1008)
         item = Subsystem(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -456,12 +527,14 @@ class TestItemClass(RestrictionTestCase):
         eve_type.slots = {1008}
         item = Subsystem(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -469,13 +542,15 @@ class TestItemClass(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3})
         item = Implant(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 1)
         self.assertIn(Booster, restriction_error.expected_classes)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -484,13 +559,15 @@ class TestItemClass(RestrictionTestCase):
             type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3, Attribute.implantness: 1})
         item = Drone(1)
         item._eve_type = eve_type
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.item_class)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Drone)
         self.assertEqual(len(restriction_error.expected_classes), 2)
         self.assertIn(Booster, restriction_error.expected_classes)
         self.assertIn(Implant, restriction_error.expected_classes)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

@@ -33,16 +33,18 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # first restriction attribute
         eve_type = self.ch.type(type_id=1, group=56)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_groups, (4,))
-        self.assertEqual(restriction_error.item_group, 56)
-        self.remove_item(item)
+        self.assertEqual(restriction_error.drone_group, 56)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -52,16 +54,18 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # second restriction attribute
         eve_type = self.ch.type(type_id=1, group=797)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_2: 69})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_groups, (69,))
-        self.assertEqual(restriction_error.item_group, 797)
-        self.remove_item(item)
+        self.assertEqual(restriction_error.drone_group, 797)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -71,17 +75,19 @@ class TestDroneGroup(RestrictionTestCase):
         # to add drone from group mismatching to
         # both restriction attributes
         eve_type = self.ch.type(type_id=1, group=803)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.allowed_drone_group_1: 48, Attribute.allowed_drone_group_2: 106})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_groups, (48, 106))
-        self.assertEqual(restriction_error.item_group, 803)
-        self.remove_item(item)
+        self.assertEqual(restriction_error.drone_group, 803)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -93,17 +99,19 @@ class TestDroneGroup(RestrictionTestCase):
         # to modified restriction attribute. Effectively
         # we check that eve type attribute value is taken
         eve_type = self.ch.type(type_id=1, group=37)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 59})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         ship_item.attributes = {Attribute.allowed_drone_group_1: 37}
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_groups, (59,))
-        self.assertEqual(restriction_error.item_group, 37)
-        self.remove_item(item)
+        self.assertEqual(restriction_error.drone_group, 37)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -112,16 +120,18 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that drone from None group is subject
         # to restriction
         eve_type = self.ch.type(type_id=1, group=None)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 1896})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_groups, (1896,))
-        self.assertEqual(restriction_error.item_group, None)
-        self.remove_item(item)
+        self.assertEqual(restriction_error.drone_group, None)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -130,11 +140,13 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction isn't applied
         # when fit doesn't have ship
         eve_type = self.ch.type(type_id=1, group=None)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -143,14 +155,16 @@ class TestDroneGroup(RestrictionTestCase):
         # when fit has ship, but without restriction
         # attribute
         eve_type = self.ch.type(type_id=1, group=71)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2)
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -159,14 +173,16 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that restriction is not applied
         # to items which are not drones
         eve_type = self.ch.type(type_id=1, group=56)
-        item = self.make_item_mock(Implant, eve_type)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Implant, eve_type)
+        self.fit.implants.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 4})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -175,14 +191,16 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to first restriction attribute is added
         eve_type = self.ch.type(type_id=1, group=22)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_1: 22})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -191,14 +209,16 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group
         # matching to second restriction attribute is added
         eve_type = self.ch.type(type_id=1, group=67)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(type_id=2, attributes={Attribute.allowed_drone_group_2: 67})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -208,15 +228,17 @@ class TestDroneGroup(RestrictionTestCase):
         # matching to any of two restriction attributes
         # is added
         eve_type = self.ch.type(type_id=1, group=53)
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
+        drone_item = self.make_item_mock(Drone, eve_type, state=State.offline)
+        self.fit.drones.add(drone_item)
         ship_eve_type = self.ch.type(
             type_id=2, attributes={Attribute.allowed_drone_group_1: 907, Attribute.allowed_drone_group_2: 53})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         self.set_ship(ship_item)
-        restriction_error = self.get_restriction_error(item, Restriction.drone_group)
+        # Action
+        restriction_error = self.get_restriction_error(drone_item, Restriction.drone_group)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

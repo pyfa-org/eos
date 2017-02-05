@@ -37,13 +37,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -58,13 +63,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -79,13 +89,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -100,13 +115,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -121,13 +141,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -142,13 +167,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, None)
+        self.assertEqual(restriction_error2.charge_group, None)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -164,13 +194,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -186,14 +221,19 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 2)
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertIn(5, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -209,13 +249,18 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
         self.assertIn(3, restriction_error2.allowed_groups)
-        self.assertEqual(restriction_error2.item_group, 1008)
+        self.assertEqual(restriction_error2.charge_group, 1008)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -230,10 +275,15 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -249,10 +299,15 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)
@@ -267,10 +322,15 @@ class TestChargeGroup(RestrictionTestCase):
         charge_item.container = container_item
         self.add_item(container_item)
         self.add_item(charge_item)
+        # Action
         restriction_error1 = self.get_restriction_error(container_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(charge_item, Restriction.charge_group)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.remove_item(container_item)
         self.remove_item(charge_item)
         self.assertEqual(len(self.log), 0)

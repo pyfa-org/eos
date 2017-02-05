@@ -49,7 +49,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     """
 
     def __init__(self, fit):
-        self._fit = fit
+        self.__fit = fit
         # Container for all tracked items
         self.__capital_items = set()
 
@@ -72,7 +72,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     def validate(self):
         # Skip validation only if ship has special
         # special attribute set to 1
-        ship_item = self._fit.ship
+        ship_item = self.__fit.ship
         try:
             ship_eve_type = ship_item._eve_type
         except AttributeError:

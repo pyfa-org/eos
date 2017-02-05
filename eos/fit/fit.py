@@ -44,7 +44,7 @@ class Fit(MessageBroker, BaseSubscriber):
         MessageBroker.__init__(self)
         self.__source = None
         # Keep list of all items which belong to this fit
-        self.__items = set()
+        self._items = set()
         self._subscribe(self, self._handler_map.keys())
         # Character-related item containers
         self.skills = ItemRestrictedSet(self, Skill)
@@ -110,20 +110,20 @@ class Fit(MessageBroker, BaseSubscriber):
             return
         # Disable everything dependent on old source prior to switch
         if old_source is not None:
-            self._publish(DisableServices(self.__items))
+            self._publish(DisableServices(self._items))
         # Assign new source and feed new data to all items
         self.__source = new_source
         self._publish(RefreshSource())
         # Enable source-dependent services
         if new_source is not None:
-            self._publish(EnableServices(self.__items))
+            self._publish(EnableServices(self._items))
 
     # Message handling
     def _handle_item_addition(self, message):
-        self.__items.add(message.item)
+        self._items.add(message.item)
 
     def _handle_item_removal(self, message):
-        self.__items.discard(message.item)
+        self._items.discard(message.item)
 
     _handler_map = {
         ItemAdded: _handle_item_addition,

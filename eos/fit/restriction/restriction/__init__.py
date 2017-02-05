@@ -20,46 +20,46 @@
 
 
 __all__ = [
-    'BoosterEffectRestrictionRegister',
+    'BoosterEffectRestriction',
+    'BoosterIndexRegister',
+    'CalibrationRegister',
     'CapitalItemRestrictionRegister',
+    'CpuRegister',
     'ChargeGroupRestrictionRegister',
     'ChargeSizeRestrictionRegister',
     'ChargeVolumeRestrictionRegister',
-    'DroneGroupRestrictionRegister',
-    'ItemClassRestrictionRegister',
+    'DroneBandwidthRegister',
+    'DroneBayVolumeRegister',
+    'DroneGroupRestriction',
+    'HighSlotRestriction',
+    'ImplantIndexRegister',
+    'ItemClassRestriction',
+    'LaunchedDroneRestrictionRegister',
+    'LauncherSlotRestrictionRegister',
+    'LowSlotRestriction',
+    'MaxGroupActiveRegister',
     'MaxGroupFittedRegister',
     'MaxGroupOnlineRegister',
-    'MaxGroupActiveRegister',
-    'CpuRegister',
+    'MediumSlotRestriction',
     'PowerGridRegister',
-    'CalibrationRegister',
-    'DroneBayVolumeRegister',
-    'DroneBandwidthRegister',
     'RigSizeRestrictionRegister',
+    'RigSlotRestriction',
     'ShipTypeGroupRestrictionRegister',
     'SkillRequirementRestrictionRegister',
+    'StateRestriction',
     'SubsystemIndexRegister',
-    'ImplantIndexRegister',
-    'BoosterIndexRegister',
-    'HighSlotRegister',
-    'MediumSlotRegister',
-    'LowSlotRegister',
-    'RigSlotRegister',
-    'SubsystemSlotRegister',
-    'TurretSlotRegister',
-    'LauncherSlotRegister',
-    'LaunchedDroneRegister',
-    'StateRestrictionRegister'
+    'SubsystemSlotRestriction',
+    'TurretSlotRestrictionRegister'
 ]
 
 
-from .booster_effect import BoosterEffectRestrictionRegister
+from .booster_effect import BoosterEffectRestriction
 from .capital_item import CapitalItemRestrictionRegister
 from .charge_group import ChargeGroupRestrictionRegister
 from .charge_size import ChargeSizeRestrictionRegister
 from .charge_volume import ChargeVolumeRestrictionRegister
-from .drone_group import DroneGroupRestrictionRegister
-from .item_class import ItemClassRestrictionRegister
+from .drone_group import DroneGroupRestriction
+from .item_class import ItemClassRestriction
 from .max_group import MaxGroupFittedRegister, MaxGroupOnlineRegister, MaxGroupActiveRegister
 from .resource import (CpuRegister, PowerGridRegister, CalibrationRegister, DroneBayVolumeRegister,
     DroneBandwidthRegister)
@@ -67,6 +67,9 @@ from .rig_size import RigSizeRestrictionRegister
 from .ship_type_group import ShipTypeGroupRestrictionRegister
 from .skill_requirement import SkillRequirementRestrictionRegister
 from .slot_index import SubsystemIndexRegister, ImplantIndexRegister, BoosterIndexRegister
-from .slot_amount import (HighSlotRegister, MediumSlotRegister, LowSlotRegister, RigSlotRegister,
-    SubsystemSlotRegister, TurretSlotRegister, LauncherSlotRegister, LaunchedDroneRegister)
-from .state import StateRestrictionRegister
+from .slot_amount import (
+    HighSlotRestriction, MediumSlotRestriction, LowSlotRestriction, RigSlotRestriction,
+    SubsystemSlotRestriction, TurretSlotRestrictionRegister, LauncherSlotRestrictionRegister,
+    LaunchedDroneRestrictionRegister
+)
+from .state import StateRestriction

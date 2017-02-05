@@ -36,7 +36,7 @@ RESTRICTION_ATTRS = (
 )
 
 
-ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('item_group', 'allowed_groups'))
+ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
 
 
 class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
@@ -63,8 +63,12 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         # is able to fit
         allowed_groups = set()
         for restriction_attr in RESTRICTION_ATTRS:
-            allowed_groups.add(item._eve_type.attributes.get(restriction_attr))
-        allowed_groups.discard(None)
+            try:
+                restriction_value = item._eve_type.attributes[restriction_attr]
+            except KeyError:
+                continue
+            else:
+                allowed_groups.add(restriction_value)
         # Only if groups were specified, consider
         # restriction enabled
         if allowed_groups:
@@ -84,7 +88,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
                 continue
             if charge._eve_type.group not in allowed_groups:
                 tainted_items[charge] = ChargeGroupErrorData(
-                    item_group=charge._eve_type.group,
+                    charge_group=charge._eve_type.group,
                     allowed_groups=allowed_groups
                 )
         if tainted_items:

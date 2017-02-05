@@ -33,11 +33,14 @@ class TestBoosterEffect(RestrictionTestCase):
         item = self.make_item_mock(Booster, eve_type)
         item.side_effects = {55, 66}
         item._disabled_effects = {77, 99}
-        self.add_item(item)
+        self.fit.boosters.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.illegally_disabled, {77, 99})
         self.assertEqual(restriction_error.disablable, {55, 66})
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -47,9 +50,12 @@ class TestBoosterEffect(RestrictionTestCase):
         item = self.make_item_mock(Booster, eve_type)
         item.side_effects = {55, 66}
         item._disabled_effects = {55, 66}
-        self.add_item(item)
+        self.fit.boosters.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -61,9 +67,12 @@ class TestBoosterEffect(RestrictionTestCase):
         # these containers
         item.side_effects = {}
         item._disabled_effects = set()
-        self.add_item(item)
+        self.fit.boosters.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
@@ -73,9 +82,12 @@ class TestBoosterEffect(RestrictionTestCase):
         item = self.make_item_mock(Implant, eve_type, strict_spec=False)
         item.side_effects = {55, 66}
         item._disabled_effects = {77, 99}
-        self.add_item(item)
+        self.fit.implants.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.booster_effect)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()

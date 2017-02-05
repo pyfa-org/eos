@@ -44,6 +44,8 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         level requirements.
     If corresponding skill is found, but its skill level is None,
         check for item is failed.
+    Rigs are ignored, they can be used regardless of skill
+        requirements.
     """
 
     def __init__(self, fit):

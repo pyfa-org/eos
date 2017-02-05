@@ -25,7 +25,7 @@ from eos.const.eos import State
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from eos.util.pubsub import BaseSubscriber
 from .exception import RegisterValidationError, ValidationError
-from .register import *
+from .restriction import *
 
 
 class RestrictionService(BaseSubscriber):
@@ -41,48 +41,50 @@ class RestrictionService(BaseSubscriber):
 
     def __init__(self, fit):
         self.__enabled = False
-        # Set with 'stateless' items. Items are always
-        # tracked by these, regardless of state
+        # Set of restrictions which do not need
+        # item registration
+        self.__rests = (
+            BoosterEffectRestriction(fit),
+            DroneGroupRestriction(fit),
+            HighSlotRestriction(fit),
+            ItemClassRestriction(fit),
+            LowSlotRestriction(fit),
+            MediumSlotRestriction(fit),
+            RigSlotRestriction(fit),
+            StateRestriction(fit),
+            SubsystemSlotRestriction(fit)
+        )
+        # Set with 'stateless' restriction registers. Items
+        # are always tracked by these, regardless of state
         # Format: (registers,)
-        self.__regs_stateless = (
-            CalibrationRegister(fit),
-            DroneBayVolumeRegister(fit),
-            ItemClassRestrictionRegister(),
-            HighSlotRegister(fit),
-            MediumSlotRegister(fit),
-            LowSlotRegister(fit),
-            RigSlotRegister(fit),
-            SubsystemSlotRegister(fit),
-            TurretSlotRegister(fit),
-            LauncherSlotRegister(fit),
-            SubsystemIndexRegister(),
-            ImplantIndexRegister(),
+        self.__rest_regs_stateless = (
             BoosterIndexRegister(),
-            ShipTypeGroupRestrictionRegister(fit),
+            CalibrationRegister(fit),
             CapitalItemRestrictionRegister(fit),
-            MaxGroupFittedRegister(),
-            DroneGroupRestrictionRegister(fit),
-            RigSizeRestrictionRegister(fit),
-            SkillRequirementRestrictionRegister(fit),
             ChargeGroupRestrictionRegister(),
             ChargeSizeRestrictionRegister(),
             ChargeVolumeRestrictionRegister(),
-            BoosterEffectRestrictionRegister()
+            DroneBayVolumeRegister(fit),
+            ImplantIndexRegister(),
+            LauncherSlotRestrictionRegister(fit),
+            MaxGroupFittedRegister(),
+            RigSizeRestrictionRegister(fit),
+            ShipTypeGroupRestrictionRegister(fit),
+            SkillRequirementRestrictionRegister(fit),
+            SubsystemIndexRegister(),
+            TurretSlotRestrictionRegister(fit)
         )
-        # Dictionary with 'stateful' registers. When items
-        # is in corresponding state or above, register tracks
+        # Dictionary with 'stateful' restriction registers. When
+        # item is in corresponding state or above, register tracks
         # such item and may raise restriction violations
         # Format: {triggering state: {registers}}
-        self.__regs_stateful = {
-            State.offline: (
-                StateRestrictionRegister(),
-            ),
+        self.__rest_regs_stateful = {
             State.online: (
                 CpuRegister(fit),
-                PowerGridRegister(fit),
                 DroneBandwidthRegister(fit),
+                LaunchedDroneRestrictionRegister(fit),
                 MaxGroupOnlineRegister(),
-                LaunchedDroneRegister(fit)
+                PowerGridRegister(fit)
             ),
             State.active: (
                 MaxGroupActiveRegister(),
@@ -103,11 +105,16 @@ class RestrictionService(BaseSubscriber):
         validation, this exception is thrown, with all failure
         data in its arguments.
         """
+        if self.__enabled is not True:
+            return
         # Container for validation error data
         # Format: {item: {error type: error data}}
         invalid_items = {}
         # Go through all known registers
-        for register in chain(self.__regs_stateless, *self.__regs_stateful.values()):
+        for register in chain(
+            self.__rests, self.__rest_regs_stateless,
+            *self.__rest_regs_stateful.values()
+        ):
             # Skip check if we're told to do so, based
             # on exception class assigned to register
             restriction_type = register.restriction_type
@@ -187,7 +194,7 @@ class RestrictionService(BaseSubscriber):
 
     # Private methods for message handlers
     def __add_item(self, item):
-        for register in self.__regs_stateless:
+        for register in self.__rest_regs_stateless:
             register.register_item(item)
         states = set(filter(lambda s: s <= item.state, State))
         self.__enable_states(item, states)
@@ -195,7 +202,7 @@ class RestrictionService(BaseSubscriber):
     def __remove_item(self, item):
         states = set(filter(lambda s: s <= item.state, State))
         self.__disable_states(item, states)
-        for register in self.__regs_stateless:
+        for register in self.__rest_regs_stateless:
             register.unregister_item(item)
 
     def __enable_states(self, item, states):
@@ -211,7 +218,7 @@ class RestrictionService(BaseSubscriber):
             # Not all states have corresponding registers,
             # just skip those which don't
             try:
-                registers = self.__regs_stateful[state]
+                registers = self.__rest_regs_stateful[state]
             except KeyError:
                 continue
             for register in registers:
@@ -228,7 +235,7 @@ class RestrictionService(BaseSubscriber):
         """
         for state in states:
             try:
-                registers = self.__regs_stateful[state]
+                registers = self.__rest_regs_stateful[state]
             except KeyError:
                 continue
             for register in registers:

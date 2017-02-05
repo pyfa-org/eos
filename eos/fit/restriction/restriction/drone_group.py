@@ -23,8 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from eos.fit.item import Drone
-from .base import BaseRestrictionRegister
+from .base import BaseRestriction
 from ..exception import RegisterValidationError
 
 
@@ -34,17 +33,17 @@ RESTRICTION_ATTRS = (
 )
 
 
-DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('item_group', 'allowed_groups'))
+DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('drone_group', 'allowed_groups'))
 
 
-class DroneGroupRestrictionRegister(BaseRestrictionRegister):
+class DroneGroupRestriction(BaseRestriction):
     """
     Implements restriction:
     If ship restricts drone group, items from groups which are not
     allowed cannot be put into drone bay.
 
     Details:
-    Only items of Drone class are tracked.
+    Only drones are tracked.
     For validation, allowedDroneGroupX attribute values of eve type
         are taken.
     Validation fails if ship's eve type has any restriction attribute,
@@ -52,33 +51,25 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
     """
 
     def __init__(self, fit):
-        self._fit = fit
-        # Container for items which can be subject
-        # for restriction
-        # Format: {items}
-        self.__restricted_items = set()
-
-    def register_item(self, item):
-        # Ignore everything but drones
-        if isinstance(item, Drone):
-            self.__restricted_items.add(item)
-
-    def unregister_item(self, item):
-        self.__restricted_items.discard(item)
+        self.__fit = fit
 
     def validate(self):
-        ship_item = self._fit.ship
+        ship_item = self.__fit.ship
         # No ship - no restriction
         try:
             ship_eve_type = ship_item._eve_type
         except AttributeError:
             return
         # Set with allowed groups
-        allowed_groups = set()
+        allowed_groups = []
         # Find out if we have restriction, and which drone groups it allows
         for restriction_attr in RESTRICTION_ATTRS:
-            allowed_groups.add(ship_eve_type.attributes.get(restriction_attr))
-        allowed_groups.discard(None)
+            try:
+                restriction_value = ship_eve_type.attributes[restriction_attr]
+            except KeyError:
+                continue
+            else:
+                allowed_groups.append(restriction_value)
         # No allowed group attributes - no restriction
         if not allowed_groups:
             return
@@ -87,12 +78,12 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         # multiple times in error data, making sure that
         # it can't be modified by validation caller
         allowed_groups = tuple(allowed_groups)
-        for item in self.__restricted_items:
+        for drone in self.__fit.drones:
             # Taint items, whose group is not allowed
-            item_group = item._eve_type.group
-            if item_group not in allowed_groups:
-                tainted_items[item] = DroneGroupErrorData(
-                    item_group=item_group,
+            drone_group = drone._eve_type.group
+            if drone_group not in allowed_groups:
+                tainted_items[drone] = DroneGroupErrorData(
+                    drone_group=drone_group,
                     allowed_groups=allowed_groups
                 )
         if tainted_items:

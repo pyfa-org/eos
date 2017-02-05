@@ -22,15 +22,14 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.fit.item import Booster
-from .base import BaseRestrictionRegister
+from .base import BaseRestriction
 from ..exception import RegisterValidationError
 
 
 BoosterEffectErrorData = namedtuple('BoosterEffectErrorData', ('illegally_disabled', 'disablable'))
 
 
-class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
+class BoosterEffectRestriction(BaseRestriction):
     """
     Implements restriction:
     Booster must have all of its non-side-effects enabled.
@@ -47,19 +46,12 @@ class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
     _disabled_effects comments on BaseItemMixin class).
     """
 
-    def __init__(self):
-        self.__boosters = set()
-
-    def register_item(self, item):
-        if isinstance(item, Booster):
-            self.__boosters.add(item)
-
-    def unregister_item(self, item):
-        self.__boosters.discard(item)
+    def __init__(self, fit):
+        self.__fit = fit
 
     def validate(self):
         tainted_items = {}
-        for booster in self.__boosters:
+        for booster in self.__fit.boosters:
             # Check if any disabled effects cannot be found in
             # side-effect list
             disablable = set(booster.side_effects)

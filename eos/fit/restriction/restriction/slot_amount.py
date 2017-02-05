@@ -24,14 +24,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.fit.item import Drone
-from .base import BaseRestrictionRegister
+from .base import BaseRestriction, BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
 
 
-class SlotAmountRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
+class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
     """
     Class which implements common functionality for all
     registers, which track amount of occupied ship slots
@@ -43,13 +43,6 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
         self._fit = fit
         # Use this stat name to get numbers from stats service
         self.__stat_name = stat_name
-        self._slot_consumers = set()
-
-    def register_item(self, item):
-        self._slot_consumers.add(item)
-
-    def unregister_item(self, item):
-        self._slot_consumers.discard(item)
 
     def validate(self):
         # Use stats module to get max and used amount of slots
@@ -78,7 +71,23 @@ class SlotAmountRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
         return self.__restrictionType
 
 
-class HighSlotRegister(SlotAmountRestrictionRegister):
+class SlotAmountRestrictionRegister(SlotAmountRestriction, BaseRestrictionRegister):
+
+    def __init__(self, fit, stat_name, restriction_type):
+        SlotAmountRestriction.__init__(self, fit, stat_name, restriction_type)
+        self._slot_consumers = set()
+
+    def register_item(self, item):
+        self._slot_consumers.add(item)
+
+    def unregister_item(self, item):
+        self._slot_consumers.discard(item)
+
+    def _get_tainted_items(self, _):
+        return self._slot_consumers
+
+
+class HighSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of high-slot items should not exceed number of
@@ -90,17 +99,13 @@ class HighSlotRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'high_slots', Restriction.high_slot)
-
-    def register_item(self, item):
-        if item in self._fit.modules.high:
-            SlotAmountRestrictionRegister.register_item(self, item)
+        SlotAmountRestriction.__init__(self, fit, 'high_slots', Restriction.high_slot)
 
     def _get_tainted_items(self, slots_max):
         return self._fit.modules.high[slots_max:]
 
 
-class MediumSlotRegister(SlotAmountRestrictionRegister):
+class MediumSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of medium-slot items should not exceed number of
@@ -112,17 +117,13 @@ class MediumSlotRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'med_slots', Restriction.medium_slot)
-
-    def register_item(self, item):
-        if item in self._fit.modules.med:
-            SlotAmountRestrictionRegister.register_item(self, item)
+        SlotAmountRestriction.__init__(self, fit, 'med_slots', Restriction.medium_slot)
 
     def _get_tainted_items(self, slots_max):
         return self._fit.modules.med[slots_max:]
 
 
-class LowSlotRegister(SlotAmountRestrictionRegister):
+class LowSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of low-slot items should not exceed number of
@@ -134,17 +135,13 @@ class LowSlotRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'low_slots', Restriction.low_slot)
-
-    def register_item(self, item):
-        if item in self._fit.modules.low:
-            SlotAmountRestrictionRegister.register_item(self, item)
+        SlotAmountRestriction.__init__(self, fit, 'low_slots', Restriction.low_slot)
 
     def _get_tainted_items(self, slots_max):
         return self._fit.modules.low[slots_max:]
 
 
-class RigSlotRegister(SlotAmountRestrictionRegister):
+class RigSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of rig-slot items should not exceed number of
@@ -156,17 +153,13 @@ class RigSlotRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'rig_slots', Restriction.rig_slot)
+        SlotAmountRestriction.__init__(self, fit, 'rig_slots', Restriction.rig_slot)
 
-    def register_item(self, item):
-        if item in self._fit.rigs:
-            SlotAmountRestrictionRegister.register_item(self, item)
-
-    def _get_tainted_items(self, slots_max):
-        return self._slot_consumers
+    def _get_tainted_items(self, _):
+        return self._fit.rigs
 
 
-class SubsystemSlotRegister(SlotAmountRestrictionRegister):
+class SubsystemSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of subsystem-slot items should not exceed number of
@@ -178,17 +171,13 @@ class SubsystemSlotRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'subsystem_slots', Restriction.subsystem_slot)
+        SlotAmountRestriction.__init__(self, fit, 'subsystem_slots', Restriction.subsystem_slot)
 
-    def register_item(self, item):
-        if item in self._fit.subsystems:
-            SlotAmountRestrictionRegister.register_item(self, item)
-
-    def _get_tainted_items(self, slots_max):
-        return self._slot_consumers
+    def _get_tainted_items(self, _):
+        return self._fit.subsystems
 
 
-class TurretSlotRegister(SlotAmountRestrictionRegister):
+class TurretSlotRestrictionRegister(SlotAmountRestrictionRegister, BaseRestrictionRegister):
     """
     Implements restriction:
     Number of turret-slot items should not exceed number of
@@ -206,11 +195,8 @@ class TurretSlotRegister(SlotAmountRestrictionRegister):
         if Slot.turret in item._eve_type.slots:
             SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_items(self, slots_max):
-        return self._slot_consumers
 
-
-class LauncherSlotRegister(SlotAmountRestrictionRegister):
+class LauncherSlotRestrictionRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
     Number of launcher-slot items should not exceed number of
@@ -228,11 +214,8 @@ class LauncherSlotRegister(SlotAmountRestrictionRegister):
         if Slot.launcher in item._eve_type.slots:
             SlotAmountRestrictionRegister.register_item(self, item)
 
-    def _get_tainted_items(self, slots_max):
-        return self._slot_consumers
 
-
-class LaunchedDroneRegister(SlotAmountRestrictionRegister):
+class LaunchedDroneRestrictionRegister(SlotAmountRestrictionRegister):
     """
     Implements restriction:
     Number of launched drones should not exceed number of
@@ -249,6 +232,3 @@ class LaunchedDroneRegister(SlotAmountRestrictionRegister):
     def register_item(self, item):
         if isinstance(item, Drone):
             SlotAmountRestrictionRegister.register_item(self, item)
-
-    def _get_tainted_items(self, slots_max):
-        return self._slot_consumers

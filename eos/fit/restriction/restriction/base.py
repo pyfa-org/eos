@@ -22,8 +22,28 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseRestrictionRegister(metaclass=ABCMeta):
-    """Base class for all restriction registers."""
+class BaseRestriction(metaclass=ABCMeta):
+    """Base class for all restrictions"""
+
+    @abstractmethod
+    def validate(self):
+        """
+        Check all registered items for validity. Both mutable
+        and immutable item properties can be used during process.
+        """
+        ...
+
+    @property
+    @abstractmethod
+    def restriction_type(self):
+        """
+        Get restriction type this register is dealing with.
+        """
+        ...
+
+
+class BaseRestrictionRegister(BaseRestriction, metaclass=ABCMeta):
+    """Base class for all restrictions which register items"""
 
     @abstractmethod
     def register_item(self, item):
@@ -44,21 +64,5 @@ class BaseRestrictionRegister(metaclass=ABCMeta):
 
         Posiitional arguments:
         item -- item to unregister
-        """
-        ...
-
-    @abstractmethod
-    def validate(self):
-        """
-        Check all registered items for validity. Both mutable
-        and immutable item properties can be used during process.
-        """
-        ...
-
-    @property
-    @abstractmethod
-    def restriction_type(self):
-        """
-        Get restriction type this register is dealing with.
         """
         ...

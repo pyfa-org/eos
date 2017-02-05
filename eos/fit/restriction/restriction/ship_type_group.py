@@ -116,8 +116,12 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         ):
             # Cycle through IDs of known restriction attributes
             for restriction_attr in restriction_attrs:
-                allowed_container.add(item._eve_type.attributes.get(restriction_attr))
-            allowed_container.discard(None)
+                try:
+                    restriction_value = item._eve_type.attributes[restriction_attr]
+                except KeyError:
+                    continue
+                else:
+                    allowed_container.add(restriction_value)
         # Ignore non-restricted items
         if not allowed_types and not allowed_groups:
             return

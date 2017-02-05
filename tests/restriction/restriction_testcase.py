@@ -57,6 +57,8 @@ class RestrictionTestCase(EosTestCase):
         self.fit.rigs = set()
         self.fit.subsystems = set()
         self.fit.drones = set()
+        self.fit.boosters = set()
+        self.fit._items = set()
         self.rs = RestrictionService(self.fit)
         self.rs._notify(EnableServices(items=()))
 
@@ -100,8 +102,8 @@ class RestrictionTestCase(EosTestCase):
         entry_num = 0
         # Get all registers used by service and cycle through them
         for register in chain(
-                self.rs._RestrictionService__regs_stateless,
-                *self.rs._RestrictionService__regs_stateful.values()
+                self.rs._RestrictionService__rest_regs_stateless,
+                *self.rs._RestrictionService__rest_regs_stateful.values()
         ):
             entry_num += self._get_object_buffer_entry_amount(register)
         # Raise error if we found any data in any register

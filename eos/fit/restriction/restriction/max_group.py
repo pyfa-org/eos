@@ -87,7 +87,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             # Get number of registered items, assigned to group of current
             # restricted item, and item's restriction value
             group = item._eve_type.group
-            group_items = len(self.__group_all.get(group) or ())
+            group_items = len(self.__group_all.get(group, ()))
             max_group_restriction = item._eve_type.attributes[self.__max_group_attr]
             # If number of registered items from this group is bigger,
             # then current item is tainted

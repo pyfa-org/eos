@@ -141,7 +141,7 @@ class CalculationService(BaseSubscriber):
         """
         item, attr = message
         # Remove values of target attributes capped by changing attribute
-        for capped_attr in (item.attributes._cap_map.get(attr) or ()):
+        for capped_attr in (item.attributes._cap_map.get(attr, ())):
             del item.attributes[capped_attr]
         # Remove values of target attributes which are using changing attribute
         # as modification source

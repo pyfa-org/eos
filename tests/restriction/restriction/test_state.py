@@ -31,10 +31,12 @@ class TestState(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.online)
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.state)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -42,10 +44,12 @@ class TestState(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.active)
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.state)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
 
@@ -53,11 +57,13 @@ class TestState(RestrictionTestCase):
         eve_type = self.ch.type(type_id=1)
         eve_type.max_state = State.active
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.overload)
-        self.add_item(item)
+        self.fit._items.add(item)
+        # Action
         restriction_error = self.get_restriction_error(item, Restriction.state)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.current_state, State.overload)
         self.assertCountEqual(restriction_error.allowed_states, (State.offline, State.online, State.active))
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_restriction_buffers_empty()
