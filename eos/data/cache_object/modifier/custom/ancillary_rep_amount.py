@@ -52,7 +52,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
                 raise ModificationCalculationError from e
         else:
             multiplier = 1
-        return ModifierOperator.pre_mul, multiplier
+        return ModifierOperator.post_mul_immune, multiplier
 
     def _revise_on_item_add_remove(self, message, carrier_item, _):
         """

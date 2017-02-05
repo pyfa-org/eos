@@ -92,9 +92,10 @@ class ModifierOperator(IntEnum):
     mod_add = 4
     mod_sub = 5
     post_mul = 6
-    post_div = 7
-    post_percent = 8
-    post_assign = 9
+    post_mul_immune = 7  # Immune to penalization
+    post_div = 8
+    post_percent = 9
+    post_assign = 10
 
 
 @unique

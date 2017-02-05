@@ -68,6 +68,7 @@ NORMALIZATION_MAP = {
     ModifierOperator.mod_add: lambda val: val,
     ModifierOperator.mod_sub: lambda val: -val,
     ModifierOperator.post_mul: lambda val: val,
+    ModifierOperator.post_mul_immune: lambda val: val,
     ModifierOperator.post_div: lambda val: 1 / val,
     ModifierOperator.post_percent: lambda val: val / 100 + 1,
     ModifierOperator.post_assign: lambda val: val
@@ -86,6 +87,7 @@ MULTIPLICATIONS = (
     ModifierOperator.pre_mul,
     ModifierOperator.pre_div,
     ModifierOperator.post_mul,
+    ModifierOperator.post_mul_immune,
     ModifierOperator.post_div,
     ModifierOperator.post_percent
 )
