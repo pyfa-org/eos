@@ -20,6 +20,7 @@
 
 
 from abc import ABCMeta, abstractmethod
+from numbers import Integral
 
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain
 
@@ -76,7 +77,7 @@ class BaseModifier(metaclass=ABCMeta):
         return all((
             self.tgt_filter in ModifierTargetFilter.__members__.values(),
             self.tgt_domain in ModifierDomain.__members__.values(),
-            isinstance(self.tgt_attr, int)
+            isinstance(self.tgt_attr, Integral)
         ))
 
     def __validate_tgt_filter_item(self):
@@ -104,7 +105,7 @@ class BaseModifier(metaclass=ABCMeta):
                 ModifierDomain.ship, ModifierDomain.target
             ),
             # References group via ID
-            isinstance(self.tgt_filter_extra_arg, int)
+            isinstance(self.tgt_filter_extra_arg, Integral)
         ))
 
     def __validate_tgt_filter_domain_skillrq(self):
@@ -114,12 +115,12 @@ class BaseModifier(metaclass=ABCMeta):
                 ModifierDomain.ship, ModifierDomain.target
             ),
             # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, int)
+            isinstance(self.tgt_filter_extra_arg, Integral)
         ))
 
     def __validate_tgt_filter_owner_skillrq(self):
         return all((
             self.tgt_domain == ModifierDomain.character,
             # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, int)
+            isinstance(self.tgt_filter_extra_arg, Integral)
         ))

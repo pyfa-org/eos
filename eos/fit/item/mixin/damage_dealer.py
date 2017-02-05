@@ -123,7 +123,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             base_fetcher, multiply = base_dmg_fetchers[self._weapon_type]
         # Return tuple with Nones if we're not dealing with known type weapon
         except KeyError:
-            return DamageTypesTotal(em=None, thermal=None, kinetic=None, explosive=None, total=None)
+            return DamageTypesTotal(em=None, thermal=None, kinetic=None, explosive=None)
         em, therm, kin, expl = base_fetcher()
         if multiply:
             try:
@@ -148,10 +148,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
                     expl *= multiplier
                 except TypeError:
                     pass
-        total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
-        if total == 0 and em is None and therm is None and kin is None and expl is None:
-            total = None
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
 
     def get_nominal_volley(self, target_resistances=None):
         """
@@ -190,10 +187,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
                 expl = volley.explosive * expl_resonance
             except TypeError:
                 expl = None
-            total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
-            if total == 0 and em is None and therm is None and kin is None and expl is None:
-                total = None
-            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
         return volley
 
     def get_nominal_dps(self, target_resistances=None, reload=False):
@@ -237,10 +231,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             expl = volley.explosive / full_cycle_time
         except TypeError:
             expl = None
-        total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
-        if total == 0 and em is None and therm is None and kin is None and expl is None:
-            total = None
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
 
     @VolatileProperty
     def _weapon_type(self):

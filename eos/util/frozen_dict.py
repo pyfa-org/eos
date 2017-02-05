@@ -34,11 +34,11 @@ class FrozenDict(dict):
         dict.__init__(new, *args)
         return new
 
-    def _blocked_attribute(self, *args, **kwargs):
+    def __blocked_attribute(self, *args, **kwargs):
         raise TypeError('frozendict cannot be modified')
 
     # Prohibit use of methods which modify dictionary
-    __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = _blocked_attribute
+    __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = __blocked_attribute
 
     @CachedProperty
     def _hash(self):

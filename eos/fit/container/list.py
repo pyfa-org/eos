@@ -19,6 +19,8 @@
 # ===============================================================================
 
 
+from numbers import Integral
+
 from .base import ItemContainerBase
 from .exception import ItemAlreadyAssignedError, SlotTakenError
 
@@ -151,7 +153,7 @@ class ItemList(ItemContainerBase):
         ValueError -- if passed item cannot be found in container
         IndexError -- if passed index is out of range of list
         """
-        if isinstance(value, int):
+        if isinstance(value, Integral):
             index = value
             item = self.__list[index]
         else:
@@ -172,7 +174,7 @@ class ItemList(ItemContainerBase):
         ValueError -- if passed item cannot be found in container
         IndexError -- if passed index is out of range of list
         """
-        if isinstance(value, int):
+        if isinstance(value, Integral):
             index = value
             item = self.__list[index]
         else:

@@ -99,9 +99,9 @@ Stats of fit can be fetched using 'stats' access point. For example, few regular
 
 And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
 
-    >>> fit.stats.get_ehp(DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)).total
+    >>> fit.stats.get_ehp(DamageProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
     95329.19886256836
-    >>> fit.stats.get_ehp(DamageTypes(em=1, thermal=0, kinetic=0, explosive=0)).shield
+    >>> fit.stats.get_ehp(DamageProfile(em=1, thermal=0, kinetic=0, explosive=0)).shield
     50013.690833719105
 
 DPS can be fetched with various parameters, for example, should it take reload into consideration or not:
@@ -116,9 +116,9 @@ Specific damage type is accessible too (in this case, hail deals some kinetic da
     >>> fit.stats.get_nominal_dps(reload=False).kinetic
     136.64914857525073
 
-Get effective DPS against passed damage profile:
+Get effective DPS against passed resistance profile:
 
-    >>> fit.stats.get_nominal_dps(target_resistances=DamageTypes(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
+    >>> fit.stats.get_nominal_dps(target_resistances=ResistanceProfile(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
     1072.8636430538475
 
 Get dps using built-in filters:

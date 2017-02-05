@@ -86,7 +86,4 @@ class DamageDealerRegister(BaseStatRegister):
             except TypeError:
                 if expl is None:
                     expl = stat.explosive
-        total = (em or 0) + (therm or 0) + (kin or 0) + (expl or 0)
-        if total == 0 and em is None and therm is None and kin is None and expl is None:
-            total = None
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl, total=total)
+        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)

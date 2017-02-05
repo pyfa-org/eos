@@ -20,6 +20,7 @@
 
 
 from logging import getLogger
+from numbers import Integral, Real
 
 from eos.const.eve import Effect
 from eos.util.frozen_dict import FrozenDict
@@ -112,7 +113,7 @@ class Checker:
                 invalid_rows.add(datarow)
                 return
             # If primary key is not an integer
-            if not isinstance(key_value, int):
+            if not isinstance(key_value, Integral):
                 invalid_rows.add(datarow)
                 return
             row_key.append(key_value)
@@ -132,7 +133,7 @@ class Checker:
         invalid_rows = set()
         table = self.data['dgmtypeattribs']
         for row in table:
-            if not isinstance(row.get('value'), (int, float)):
+            if not isinstance(row.get('value'), Real):
                 invalid_rows.add(row)
         if invalid_rows:
             msg = '{} attribute rows have non-numeric value, removing them'.format(
