@@ -174,8 +174,7 @@ class AffectionRegister:
         affectees to efficiently update attributes when set of items
         influencing them changes.
         """
-        # Add item to all maps, except for maps which store info about
-        # direct item modifiers
+        # Add item to all affectee maps
         for key, affectee_map in self.__get_affectee_maps(target_item):
             affectee_map.add_data(key, target_item)
         # Special handling for disablable direct item affectors. Affector
@@ -195,11 +194,10 @@ class AffectionRegister:
         """
         Remove passed target item from register's affectee maps,
         """
-        # Same as in register method, remove item from all
-        # maps but those which store direct item modifiers
+        # Remove item from all affectee maps
         for key, affectee_map in self.__get_affectee_maps(target_item):
             affectee_map.rm_data(key, target_item)
-        # Special handling for direct item affectors
+        # Special handling for disablable direct item affectors
         if self.__get_other_linked_item(target_item) is not None:
             self.__disable_direct_other(target_item)
         elif target_item is self._fit.ship or target_item is self._fit.character:
