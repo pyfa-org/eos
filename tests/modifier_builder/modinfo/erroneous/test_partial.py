@@ -47,7 +47,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure out of 2 modifiers for effect 1'
+        expected = 'effect 1, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
 
     def test_no_func(self):
@@ -66,7 +66,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure out of 2 modifiers for effect 1'
+        expected = 'effect 1, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
 
     def test_error_unexpected_in_handler(self):
@@ -86,7 +86,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure out of 2 modifiers for effect 22'
+        expected = 'effect 22, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
 
     def test_validation_failure(self):
@@ -105,7 +105,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 validation failure out of 2 modifiers for effect 1'
+        expected = 'effect 1, building 2 modifiers: 1 validation failures'
         self.assertEqual(log_record.msg, expected)
 
     def test_building_and_validation_failure(self):
@@ -126,7 +126,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure, 1 validation failure out of 3 modifiers for effect 1'
+        expected = 'effect 1, building 3 modifiers: 1 build errors, 1 validation failures'
         self.assertEqual(log_record.msg, expected)
 
     def test_error_before(self):

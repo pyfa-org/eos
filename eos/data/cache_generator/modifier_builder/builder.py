@@ -85,11 +85,11 @@ class ModifierBuilder:
             total_modifiers = build_failures + validation_failures + len(valid_modifiers)
             msg_segments = []
             if build_failures > 0:
-                msg_segments.append('{} build failure'.format(build_failures))
+                msg_segments.append('{} build errors'.format(build_failures))
             if validation_failures > 0:
-                msg_segments.append('{} validation failure'.format(validation_failures))
-            msg = '{} out of {} modifiers for effect {}'.format(
-                ', '.join(msg_segments), total_modifiers, effect_id)
+                msg_segments.append('{} validation failures'.format(validation_failures))
+            msg = 'effect {}, building {} modifiers: {}'.format(
+                effect_id, total_modifiers, ', '.join(msg_segments))
             logger.error(msg)
             if len(valid_modifiers) > 0:
                 return valid_modifiers, EffectBuildStatus.success_partial

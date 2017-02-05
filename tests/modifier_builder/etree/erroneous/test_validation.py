@@ -74,7 +74,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 validation failure out of 1 modifiers for effect 1'
+        expected = 'effect 1, building 1 modifiers: 1 validation failures'
         self.assertEqual(log_record.msg, expected)
 
     def test_partial_invalid_first(self):
@@ -124,7 +124,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 validation failure out of 2 modifiers for effect 1'
+        expected = 'effect 1, building 2 modifiers: 1 validation failures'
         self.assertEqual(log_record.msg, expected)
 
     def test_partial_invalid_last(self):
@@ -174,7 +174,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 validation failure out of 2 modifiers for effect 1'
+        expected = 'effect 1, building 2 modifiers: 1 validation failures'
         self.assertEqual(log_record.msg, expected)
 
     def test_building_and_validation_failure(self):
@@ -235,5 +235,5 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure, 1 validation failure out of 3 modifiers for effect 1'
+        expected = 'effect 1, building 3 modifiers: 1 build errors, 1 validation failures'
         self.assertEqual(log_record.msg, expected)

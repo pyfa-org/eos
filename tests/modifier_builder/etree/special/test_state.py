@@ -95,7 +95,7 @@ class TestBuilderEtreeState(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure out of 1 modifiers for effect 1'
+        expected = 'effect 1, building 1 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
 
     def test_online(self):
@@ -125,7 +125,7 @@ class TestBuilderEtreeState(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = '1 build failure out of 1 modifiers for effect 1'
+        expected = 'effect 1, building 1 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
 
     def test_system(self):
