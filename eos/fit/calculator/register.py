@@ -177,18 +177,12 @@ class AffectionRegister:
         # Add item to all affectee maps
         for key, affectee_map in self.__get_affectee_maps(target_item):
             affectee_map.add_data(key, target_item)
-        # Special handling for disablable direct item affectors. Affector
-        # is disablable only when it directly affects single target item,
-        # and only when this target item is not affector's modifier carrier.
-        # All affectors which their target carrier are always enabled,
-        # because such affectors are enabled when their carrier is already
-        # in fit and is eligible for modification
-        if self.__get_other_linked_item(target_item) is not None:
-            self.__enable_direct_other(target_item)
-        elif target_item is self._fit.ship:
-            self.__enable_disablable_affectors_absolute(target_item, ModifierDomain.ship)
-        elif target_item is self._fit.character:
-            self.__enable_disablable_affectors_absolute(target_item, ModifierDomain.character)
+        # Special handling for awaitable direct item affectors. Affector
+        # is awaitable only when it directly affects single target item,
+        # and only when this target item is not affector's carrier item.
+        # All affectors which target their own carrier are always enabled,
+        # because when they're turned on - their target is always available
+        self.__find_and_enable_awaitable_affectors(target_item)
 
     def unregister_affectee(self, target_item):
         """
@@ -197,11 +191,8 @@ class AffectionRegister:
         # Remove item from all affectee maps
         for key, affectee_map in self.__get_affectee_maps(target_item):
             affectee_map.rm_data(key, target_item)
-        # Special handling for disablable direct item affectors
-        if self.__get_other_linked_item(target_item) is not None:
-            self.__disable_direct_other(target_item)
-        elif target_item is self._fit.ship or target_item is self._fit.character:
-            self.__disable_disablable_affectors_absolute(target_item)
+        # Special handling for awaitable direct item affectors
+        self.__disable_awaitable_affectors(target_item)
 
     def __get_affectee_maps(self, target_item):
         """
@@ -226,87 +217,63 @@ class AffectionRegister:
                 affectee_maps.append((skill, self.__affectee_owner_skillrq))
         return affectee_maps
 
-    def __enable_disablable_affectors_absolute(self, target_item, domain):
-        """
-        Enable awaiting affectors which should influence passed item. Only for
-        items which can be referenced via domain from anywhere on this fit.
-        """
-        affectors_to_enable = set()
-        for affector in chain(*self.__affector_item_awaiting.values()):
-            if affector.modifier.tgt_domain == domain:
-                affectors_to_enable.add(affector)
-        # Enable awaiting affectors
+    def __find_and_enable_awaitable_affectors(self, target_item):
+        """Enable affectors which wait for passed item"""
+        # Search for affectors
+        other_item = self.__get_other_linked_item(target_item)
+        if other_item is not None:
+            affectors_to_enable = self.__find_affectors_for_tgt_other(
+                chain(*self.__affector_item_awaiting.values()), other_item)
+        elif target_item is self._fit.ship:
+            affectors_to_enable = self.__find_affectors_for_tgt_domain(
+                chain(*self.__affector_item_awaiting.values()), ModifierDomain.ship)
+        elif target_item is self._fit.character:
+            affectors_to_enable = self.__find_affectors_for_tgt_domain(
+                chain(*self.__affector_item_awaiting.values()), ModifierDomain.character)
+        else:
+            return
+        # Enable them - move from awaiting map to enabled map
+        self.__affector_item_active.add_data_set(target_item, affectors_to_enable)
         for affector in affectors_to_enable:
             self.__affector_item_awaiting.rm_data(affector.carrier_item, affector)
-            self.__affector_item_active.add_data(target_item, affector)
 
-    def __disable_disablable_affectors_absolute(self, target_item):
-        """
-        Disable disablable affectors which influence passed item. Only for
-        items which can be referenced via domain from anywhere on this fit.
-        """
+    def __disable_awaitable_affectors(self, target_item):
+        """Disable awaitable affectors which influence passed item"""
         affectors_to_disable = set()
         for affector in self.__affector_item_active.get(target_item, ()):
-            # Mark them as to-be-disabled only if they are disablable,
+            # Mark them as to-be-disabled only if they are awaitable,
             # We consider all affectors which target this item and which
-            # are not originating from it as disablable
+            # are not originating from it as awaitable
             if affector.carrier_item is not target_item:
                 affectors_to_disable.add(affector)
         # Move active affectors to awaiting list
+        self.__affector_item_active.rm_data_set(target_item, affectors_to_disable)
         for affector in affectors_to_disable:
-            self.__affector_item_active.rm_data(target_item, affector)
             self.__affector_item_awaiting.add_data(affector.carrier_item, affector)
 
-    def __enable_direct_other(self, target_item):
+    def __find_affectors_for_tgt_domain(self, affectors, tgt_domain):
         """
-        Enable temporarily disabled affectors, directly targeting passed item,
-        originating from item in "other" domain.
+        Take list of awaiting affectors and return only
+        those which target specific domain
+        """
+        results = set()
+        for affector in affectors:
+            if affector.modifier.tgt_domain == tgt_domain:
+                results.add(affector)
+        return results
 
-        Required arguments:
-        target_item -- item which is being registered
+    def __find_affectors_for_tgt_other(self, affectors, other_item):
         """
-        other_item = self.__get_other_linked_item(target_item)
-        # If passed item doesn't have other domain (charge's module
-        # or module's charge), do nothing
-        if other_item is None:
-            return
-        # Get all disabled affectors which should influence our target_item
-        affectors_to_enable = set()
-        for affector in self.__affector_item_awaiting.get(other_item, ()):
-            modifier = affector.modifier
-            if modifier.tgt_domain == ModifierDomain.other:
-                affectors_to_enable.add(affector)
-        # Bail if we have nothing to do
-        if not affectors_to_enable:
-            return
-        # Move all of them to direct modification dictionary
-        self.__affector_item_active.add_data_set(target_item, affectors_to_enable)
-        self.__affector_item_awaiting.rm_data_set(other_item, affectors_to_enable)
-
-    def __disable_direct_other(self, target_item):
+        Take list of awaiting affectors and item which is "other"
+        to the target item, and find out which affectors originate
+        from "other" item and aim for target item (via "other"
+        domain)
         """
-        Disable affectors, directly targeting passed item, originating from
-        item in "other" domain.
-
-        Required arguments:
-        target_item -- item which is being unregistered
-        """
-        other_item = self.__get_other_linked_item(target_item)
-        if other_item is None:
-            return
-        affectors_to_disable = set()
-        # Go through all affectors influencing item being unregistered
-        for affector in self.__affector_item_active.get(target_item, ()):
-            # If affector originates from other_item, mark it as
-            # to-be-disabled
-            if affector.carrier_item is other_item:
-                affectors_to_disable.add(affector)
-        # Do nothing if we have no such affectors
-        if not affectors_to_disable:
-            return
-        # If we have, move them from map to map
-        self.__affector_item_awaiting.add_data_set(other_item, affectors_to_disable)
-        self.__affector_item_active.rm_data_set(target_item, affectors_to_disable)
+        results = set()
+        for affector in affectors:
+            if affector.modifier.tgt_domain == ModifierDomain.other and affector.carrier_item is other_item:
+                results.add(affector)
+        return results
 
     # Affector processing
     def get_affectors(self, target_item):
@@ -443,9 +410,10 @@ class AffectionRegister:
     # Shared helpers
     def __contextize_tgt_filter_domain(self, affector):
         """
-        For modifiers which have domain as an argument to
-        target filter, convert domain.self to absolute domain
-        (such as char or ship).
+        Cnvert domain.self to absolute domain (such as char or ship).
+        This method should be used for modifiers which have domain
+        as one of the arguments for their target filter, except for
+        direct item modifications, these are handled separately.
 
         Possible exceptions:
         UnexpectedDomainError -- raised when affector's modifier
@@ -460,7 +428,10 @@ class AffectionRegister:
                 return ModifierDomain.character
             else:
                 raise UnexpectedDomainError(domain)
-        # Just return untouched domain for all other valid cases
+        # Just return untouched domain for all other valid cases. Valid cases
+        # include 'globally' visible (within the fit scope) domains only.
+        # I.e. if item on fit refers this target domain, it should always
+        # refer the same target item regardless of source item.
         elif domain in (ModifierDomain.character, ModifierDomain.ship):
             return domain
         # Raise error if domain is invalid
@@ -469,9 +440,8 @@ class AffectionRegister:
 
     def __get_other_linked_item(self, item):
         """
-        Attempt to get item linked via 'other' link,
-        like charge's module or module's charge, return
-        None if nothing is found.
+        Attempt to get item linked via 'other' link, like charge's
+        module or module's charge, return None if nothing is found.
         """
         if hasattr(item, 'charge'):
             return item.charge
