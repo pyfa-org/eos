@@ -20,7 +20,7 @@
 
 
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
-from eos.fit.tuples import DamageTypesTotal
+from eos.fit.helpers import DamageTypesTotal
 from .base import BaseStatRegister
 
 

@@ -32,7 +32,7 @@ from .messages import (
 )
 from .restriction import RestrictionService
 from .stats import StatService
-from .tuples import DamageTypes
+from .helpers import DamageTypes
 from .volatile import FitVolatileManager
 
 

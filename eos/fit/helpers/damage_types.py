@@ -19,15 +19,8 @@
 # ===============================================================================
 
 
-__version__ = '0.0.0.dev10'
+from collections import namedtuple
 
 
-from .const.eos import State, Restriction
-from .data.cache_handler.exception import TypeFetchError
-from .data.source import SourceManager
-from .fit import Fit
-from .fit.restriction.exception import ValidationError
-from .fit.helpers import DamageTypes
-from .data.cache_handler import *
-from .data.data_handler import *
-from .fit.item import *
+DamageTypes = namedtuple('DamageTypes', ('em', 'thermal', 'kinetic', 'explosive'))
+DamageTypesTotal = namedtuple('DamageTypesTotal', ('em', 'thermal', 'kinetic', 'explosive', 'total'))

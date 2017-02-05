@@ -24,5 +24,3 @@ from collections import namedtuple
 
 TankingLayers = namedtuple('TankingLayers', ('hull', 'armor', 'shield'))
 TankingLayersTotal = namedtuple('TankingLayersTotal', ('hull', 'armor', 'shield', 'total'))
-DamageTypes = namedtuple('DamageTypes', ('em', 'thermal', 'kinetic', 'explosive'))
-DamageTypesTotal = namedtuple('DamageTypesTotal', ('em', 'thermal', 'kinetic', 'explosive', 'total'))

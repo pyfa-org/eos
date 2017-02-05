@@ -22,7 +22,7 @@
 from enum import IntEnum, unique
 
 from eos.const.eve import Attribute, Effect
-from eos.fit.tuples import DamageTypesTotal
+from eos.fit.helpers import DamageTypesTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, VolatileProperty
 from .base import BaseItemMixin
 from .misc import DefaultEffectAttribMixin
