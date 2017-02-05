@@ -23,15 +23,16 @@ from collections import namedtuple
 
 
 __all__ = [
-    'ItemAdded',
-    'ItemRemoved',
-    'ItemStateChanged',
-    'EffectsEnabled',
-    'EffectsDisabled',
     'AttrValueChanged',
     'AttrValueChangedOverride',
-    'EnableServices',
+    'DefaultIncomingDamageChanged',
     'DisableServices',
+    'EffectsDisabled',
+    'EffectsEnabled',
+    'EnableServices',
+    'ItemAdded',
+    'ItemStateChanged',
+    'ItemRemoved',
     'RefreshSource'
 ]
 
@@ -49,3 +50,5 @@ AttrValueChangedOverride = namedtuple('AttrValueChangedOverride', ('item', 'attr
 EnableServices = namedtuple('EnableServices', ('items',))
 DisableServices = namedtuple('DisableServices', ('items',))
 RefreshSource = namedtuple('RefreshSource', ())
+# Miscellanea
+DefaultIncomingDamageChanged = namedtuple('DefaultIncomingDamageChanged', ())

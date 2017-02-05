@@ -26,9 +26,13 @@ from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
 from .item import *
-from .messages import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
+from .messages import (
+    ItemAdded, ItemRemoved, EnableServices, DisableServices,
+    RefreshSource, DefaultIncomingDamageChanged
+)
 from .restriction import RestrictionService
 from .stats import StatService
+from .tuples import DamageTypes
 from .volatile import FitVolatileManager
 
 
@@ -43,6 +47,7 @@ class Fit(MessageBroker, BaseSubscriber):
     def __init__(self, source=None):
         MessageBroker.__init__(self)
         self.__source = None
+        self.__default_incoming_damage = DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)
         # Keep list of all items which belong to this fit
         self._items = set()
         self._subscribe(self, self._handler_map.keys())
@@ -117,6 +122,18 @@ class Fit(MessageBroker, BaseSubscriber):
         # Enable source-dependent services
         if new_source is not None:
             self._publish(EnableServices(self._items))
+
+    @property
+    def default_incoming_damage(self):
+        return self.__default_incoming_damage
+
+    @default_incoming_damage.setter
+    def default_incoming_damage(self, new_profile):
+        old_profile = self.__default_incoming_damage
+        if new_profile == old_profile:
+            return
+        self.__default_incoming_damage = new_profile
+        self._publish(DefaultIncomingDamageChanged())
 
     # Message handling
     def _handle_item_addition(self, message):

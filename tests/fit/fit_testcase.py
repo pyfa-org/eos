@@ -35,8 +35,10 @@ class FitTestCase(EosTestCase):
 
     def assert_fit_buffers_empty(self, fit):
         item_num = 0
-        item_num += self._get_object_buffer_entry_amount(
-            fit, ignore=('message_store', '_message_assertions', '_MessageBroker__subscribers'))
+        item_num += self._get_object_buffer_entry_amount(fit, ignore=(
+            '_Fit__default_incoming_damage', 'message_store', '_message_assertions',
+            '_MessageBroker__subscribers'
+        ))
         # As volatile manager always has one entry added to it
         # (stats service), make sure it's ignored for calculation
         # purposes
