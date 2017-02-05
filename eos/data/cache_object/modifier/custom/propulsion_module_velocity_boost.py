@@ -24,8 +24,8 @@ from logging import getLogger
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
 from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
-from ..python import BasePythonModifier
 from ..exception import ModificationCalculationError
+from ..python import BasePythonModifier
 
 
 logger = getLogger(__name__)

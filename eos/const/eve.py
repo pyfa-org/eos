@@ -75,6 +75,7 @@ class Attribute(IntEnum):
     shield_capacity = 263
     # Repairing
     armor_damage_amount = 84
+    charged_armor_damage_multiplier = 1886
     # Charge-related
     charge_group_1 = 604
     charge_group_2 = 605

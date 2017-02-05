@@ -21,7 +21,8 @@
 
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Type
-from eos.fit.messages import ItemAdded, ItemRemoved
+from eos.fit.messages import ItemAdded, ItemRemoved, AttrValueChanged, AttrValueChangedOverride
+from ..exception import ModificationCalculationError
 from ..python import BasePythonModifier
 
 
@@ -36,12 +37,19 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def get_modification(self, carrier_item, fit):
         """
-        If carrier item has charge and it's paste, provide
-        modification multiplier 3, otherwise multiplier 1.
+        If carrier item has charge and it's paste, use on-carrier
+        rep amount multiplier, otherwise do nothing (multipy by 1).
         """
         charge = getattr(carrier_item, 'charge', None)
         if charge is not None and charge._eve_type_id == Type.nanite_repair_paste:
-            multiplier = 3
+            try:
+                carrier_attributes = carrier_item.attributes
+            except AttributeError as e:
+                raise ModificationCalculationError from e
+            try:
+                multiplier = carrier_attributes[Attribute.charged_armor_damage_multiplier]
+            except KeyError as e:
+                raise ModificationCalculationError from e
         else:
             multiplier = 1
         return ModifierOperator.pre_mul, multiplier
@@ -58,9 +66,20 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             return True
         return False
 
+    def _revise_on_attr_change(self, message, carrier_item, _):
+        """
+        If armor rep multiplier changes, then result of modification
+        also should change.
+        """
+        if message.item is carrier_item and message.attr == Attribute.charged_armor_damage_multiplier:
+            return True
+        return False
+
     _revision_map = {
         ItemAdded: _revise_on_item_add_remove,
-        ItemRemoved: _revise_on_item_add_remove
+        ItemRemoved: _revise_on_item_add_remove,
+        AttrValueChanged: _revise_on_attr_change,
+        AttrValueChangedOverride: _revise_on_attr_change
     }
 
     @property
