@@ -41,7 +41,7 @@ class AffectionRegister:
     """
 
     def __init__(self, fit):
-        self._fit = fit
+        self.__fit = fit
 
         # Items belonging to certain domain
         # Format: {domain: set(target items)}
@@ -85,73 +85,73 @@ class AffectionRegister:
 
     # Helpers for affectee getter - they find map and get data
     # from it according to passed affector
-    def _affectee_getter_item_self(self, affector):
+    def __affectee_getter_item_self(self, affector):
         return (affector.carrier_item,)
 
-    def _affectee_getter_item_character(self, _):
-        character = self._fit.character
+    def __affectee_getter_item_character(self, _):
+        character = self.__fit.character
         if character is not None:
             return (character,)
         else:
             return ()
 
-    def _affectee_getter_item_ship(self, _):
-        ship = self._fit.ship
+    def __affectee_getter_item_ship(self, _):
+        ship = self.__fit.ship
         if ship is not None:
             return (ship,)
         else:
             return ()
 
-    def _affectee_getter_item_other(self, affector):
+    def __affectee_getter_item_other(self, affector):
         other_item = self.__get_other_linked_item(affector.carrier_item)
         if other_item is not None:
             return (other_item,)
         else:
             return ()
 
-    _affectee_getters_item = {
-        ModifierDomain.self: _affectee_getter_item_self,
-        ModifierDomain.character: _affectee_getter_item_character,
-        ModifierDomain.ship: _affectee_getter_item_ship,
-        ModifierDomain.other: _affectee_getter_item_other
+    __affectee_getters_item = {
+        ModifierDomain.self: __affectee_getter_item_self,
+        ModifierDomain.character: __affectee_getter_item_character,
+        ModifierDomain.ship: __affectee_getter_item_ship,
+        ModifierDomain.other: __affectee_getter_item_other
     }
 
-    def _affectee_getter_item(self, affector):
+    def __affectee_getter_item(self, affector):
         try:
-            getter = self._affectee_getters_item[affector.modifier.tgt_domain]
+            getter = self.__affectee_getters_item[affector.modifier.tgt_domain]
         except KeyError as e:
             raise UnexpectedDomainError(affector.modifier.tgt_domain) from e
         else:
             return getter(self, affector)
 
-    def _affectee_getter_domain(self, affector):
+    def __affectee_getter_domain(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         return self.__affectee_domain.get(domain, ())
 
-    def _affectee_getter_domain_group(self, affector):
+    def __affectee_getter_domain_group(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         group = affector.modifier.tgt_filter_extra_arg
         return self.__affectee_domain_group.get((domain, group), ())
 
-    def _affectee_getter_domain_skillrq(self, affector):
+    def __affectee_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         skill = affector.modifier.tgt_filter_extra_arg
         if skill == EosEveTypes.current_self:
             skill = affector.carrier_item._eve_type_id
         return self.__affectee_domain_skillrq.get((domain, skill), ())
 
-    def _affectee_getter_owner_skillrq(self, affector):
+    def __affectee_getter_owner_skillrq(self, affector):
         skill = affector.modifier.tgt_filter_extra_arg
         if skill == EosEveTypes.current_self:
             skill = affector.carrier_item._eve_type_id
         return self.__affectee_owner_skillrq.get(skill, ())
 
-    _affectee_getters = {
-        ModifierTargetFilter.item: _affectee_getter_item,
-        ModifierTargetFilter.domain: _affectee_getter_domain,
-        ModifierTargetFilter.domain_group: _affectee_getter_domain_group,
-        ModifierTargetFilter.domain_skillrq: _affectee_getter_domain_skillrq,
-        ModifierTargetFilter.owner_skillrq: _affectee_getter_owner_skillrq
+    __affectee_getters = {
+        ModifierTargetFilter.item: __affectee_getter_item,
+        ModifierTargetFilter.domain: __affectee_getter_domain,
+        ModifierTargetFilter.domain_group: __affectee_getter_domain_group,
+        ModifierTargetFilter.domain_skillrq: __affectee_getter_domain_skillrq,
+        ModifierTargetFilter.owner_skillrq: __affectee_getter_owner_skillrq
     }
 
     # Affectee processing
@@ -159,7 +159,7 @@ class AffectionRegister:
         """Get iterable with items influenced by passed affector"""
         try:
             try:
-                getter = self._affectee_getters[affector.modifier.tgt_filter]
+                getter = self.__affectee_getters[affector.modifier.tgt_filter]
             except KeyError as e:
                 raise UnknownTargetFilterError(affector.modifier.tgt_filter) from e
             else:
@@ -224,10 +224,10 @@ class AffectionRegister:
         if other_item is not None:
             affectors_to_enable = self.__find_affectors_for_tgt_other(
                 chain(*self.__affector_item_awaiting.values()), other_item)
-        elif target_item is self._fit.ship:
+        elif target_item is self.__fit.ship:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
                 chain(*self.__affector_item_awaiting.values()), ModifierDomain.ship)
-        elif target_item is self._fit.character:
+        elif target_item is self.__fit.character:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
                 chain(*self.__affector_item_awaiting.values()), ModifierDomain.character)
         else:
@@ -302,7 +302,7 @@ class AffectionRegister:
         possible for the affector to modify other items.
         """
         try:
-            key, affector_map = self._get_affector_map(affector)
+            key, affector_map = self.__get_affector_map(affector)
             affector_map.add_data(key, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
@@ -313,83 +313,83 @@ class AffectionRegister:
         impossible for the affector to modify any other items.
         """
         try:
-            key, affector_map = self._get_affector_map(affector)
+            key, affector_map = self.__get_affector_map(affector)
             affector_map.rm_data(key, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 
     # Helpers for affector registering/unregistering, they find
     # affector map and key to it
-    def _affector_map_getter_item_self(self, affector):
+    def __affector_map_getter_item_self(self, affector):
         return affector.carrier_item, self.__affector_item_active
 
-    def _affector_map_getter_item_character(self, affector):
-        character = self._fit.character
+    def __affector_map_getter_item_character(self, affector):
+        character = self.__fit.character
         if character is not None:
             return character, self.__affector_item_active
         else:
             return affector.carrier_item, self.__affector_item_awaiting
 
-    def _affector_map_getter_item_ship(self, affector):
-        ship = self._fit.ship
+    def __affector_map_getter_item_ship(self, affector):
+        ship = self.__fit.ship
         if ship is not None:
             return ship, self.__affector_item_active
         else:
             return affector.carrier_item, self.__affector_item_awaiting
 
-    def _affector_map_getter_item_other(self, affector):
+    def __affector_map_getter_item_other(self, affector):
         other_item = self.__get_other_linked_item(affector.carrier_item)
         if other_item is not None:
             return other_item, self.__affector_item_active
         else:
             return affector.carrier_item, self.__affector_item_awaiting
 
-    _affector_map_getters_item = {
-        ModifierDomain.self: _affector_map_getter_item_self,
-        ModifierDomain.character: _affector_map_getter_item_character,
-        ModifierDomain.ship: _affector_map_getter_item_ship,
-        ModifierDomain.other: _affector_map_getter_item_other
+    __affector_map_getters_item = {
+        ModifierDomain.self: __affector_map_getter_item_self,
+        ModifierDomain.character: __affector_map_getter_item_character,
+        ModifierDomain.ship: __affector_map_getter_item_ship,
+        ModifierDomain.other: __affector_map_getter_item_other
     }
 
-    def _affector_map_getter_item(self, affector):
+    def __affector_map_getter_item(self, affector):
         try:
-            getter = self._affector_map_getters_item[affector.modifier.tgt_domain]
+            getter = self.__affector_map_getters_item[affector.modifier.tgt_domain]
         except KeyError as e:
             raise UnexpectedDomainError(affector.modifier.tgt_domain) from e
         else:
             return getter(self, affector)
 
-    def _affector_map_getter_domain(self, affector):
+    def __affector_map_getter_domain(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         return domain, self.__affector_domain
 
-    def _affector_map_getter_domain_group(self, affector):
+    def __affector_map_getter_domain_group(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         group = affector.modifier.tgt_filter_extra_arg
         return (domain, group), self.__affector_domain_group
 
-    def _affector_map_getter_domain_skillrq(self, affector):
+    def __affector_map_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         skill = affector.modifier.tgt_filter_extra_arg
         if skill == EosEveTypes.current_self:
             skill = affector.carrier_item._eve_type_id
         return (domain, skill), self.__affector_domain_skillrq
 
-    def _affector_map_getter_owner_skillrq(self, affector):
+    def __affector_map_getter_owner_skillrq(self, affector):
         skill = affector.modifier.tgt_filter_extra_arg
         if skill == EosEveTypes.current_self:
             skill = affector.carrier_item._eve_type_id
         return skill, self.__affector_owner_skillrq
 
-    _affector_map_getters = {
-        ModifierTargetFilter.item: _affector_map_getter_item,
-        ModifierTargetFilter.domain: _affector_map_getter_domain,
-        ModifierTargetFilter.domain_group: _affector_map_getter_domain_group,
-        ModifierTargetFilter.domain_skillrq: _affector_map_getter_domain_skillrq,
-        ModifierTargetFilter.owner_skillrq: _affector_map_getter_owner_skillrq
+    __affector_map_getters = {
+        ModifierTargetFilter.item: __affector_map_getter_item,
+        ModifierTargetFilter.domain: __affector_map_getter_domain,
+        ModifierTargetFilter.domain_group: __affector_map_getter_domain_group,
+        ModifierTargetFilter.domain_skillrq: __affector_map_getter_domain_skillrq,
+        ModifierTargetFilter.owner_skillrq: __affector_map_getter_owner_skillrq
     }
 
-    def _get_affector_map(self, affector):
+    def __get_affector_map(self, affector):
         """
         Return place where passed affector should be stored, in
         (key, affector map) form.
@@ -401,7 +401,7 @@ class AffectionRegister:
             type is not supported
         """
         try:
-            getter = self._affector_map_getters[affector.modifier.tgt_filter]
+            getter = self.__affector_map_getters[affector.modifier.tgt_filter]
         except KeyError as e:
             raise UnknownTargetFilterError(affector.modifier.tgt_filter) from e
         else:
@@ -422,9 +422,9 @@ class AffectionRegister:
         carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain
         if domain == ModifierDomain.self:
-            if carrier_item is self._fit.ship:
+            if carrier_item is self.__fit.ship:
                 return ModifierDomain.ship
-            elif carrier_item is self._fit.character:
+            elif carrier_item is self.__fit.character:
                 return ModifierDomain.character
             else:
                 raise UnexpectedDomainError(domain)
