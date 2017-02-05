@@ -30,6 +30,7 @@ from .online import fix_online_category
 _effect_custom_map = {
     Effect.fueled_armor_repair: add_aar_modifier,
     Effect.module_bonus_afterburner: add_ab_modifiers,
+    Effect.module_bonus_ancillary_remote_armor_repairer: add_aar_modifier,
     Effect.module_bonus_microwarpdrive: add_mwd_modifiers,
     Effect.online: fix_online_category
 }
