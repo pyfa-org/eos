@@ -35,9 +35,9 @@ class TestItemMixinDamageFighterBomberNominalDps(ItemMixinTestCase):
         mixin._eve_type = Mock()
         mixin._eve_type.default_effect.id = Effect.fighter_missile
         mixin._eve_type.default_effect._state = State.active
-        mixin.attributes = {}
+        mixin._eve_type.default_effect.duration_attribute = 1
+        mixin.attributes = {1: 500}
         mixin.state = State.active
-        mixin.cycle_time = 0.5
         self.mixin = mixin
 
     def test_no_reload(self):

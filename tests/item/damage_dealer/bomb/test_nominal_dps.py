@@ -35,9 +35,9 @@ class TestItemMixinDamageBombNominalDps(ItemMixinTestCase):
         mixin._eve_type = Mock()
         mixin._eve_type.default_effect.id = Effect.use_missiles
         mixin._eve_type.default_effect._state = State.active
-        mixin.attributes = {}
+        mixin._eve_type.default_effect.duration_attribute = 1
+        mixin.attributes = {1: 500}
         mixin.state = State.active
-        mixin.cycle_time = 0.5
         mixin.reactivation_delay = 1.5
         mixin.charge = Mock()
         mixin.charge._eve_type.default_effect.id = Effect.bomb_launching

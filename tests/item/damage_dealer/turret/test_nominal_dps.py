@@ -35,9 +35,9 @@ class TestItemMixinDamageTurretNominalDps(ItemMixinTestCase):
         mixin._eve_type = Mock()
         mixin._eve_type.default_effect.id = Effect.projectile_fired
         mixin._eve_type.default_effect._state = State.active
-        mixin.attributes = {}
+        mixin._eve_type.default_effect.duration_attribute = 1
+        mixin.attributes = {1: 500}
         mixin.state = State.active
-        mixin.cycle_time = 0.5
         mixin.reactivation_delay = None
         mixin.charge = Mock()
         mixin.charge.attributes = {}
