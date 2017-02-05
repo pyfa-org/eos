@@ -86,14 +86,14 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     these types or groups.
 
     Details:
-    Only modules are tracked.
+    Only module-class items are restricted.
     It's enough to satisfy any of conditions to make item usable
-    (e.g. ship's group may not satisfy canFitShipGroupX
-    restriction, but its type may be suitable to use item).
+        (e.g. ship's group may not satisfy canFitShipGroupX
+        restriction, but its type may be suitable to use item).
     If item has at least one restriction attribute, it is enabled
-    for tracking by this register.
+        for tracking by this register.
     For validation, canFitShipTypeX and canFitShipGroupX attribute
-    values of eve type are taken.
+        values of eve type are taken.
     """
 
     def __init__(self, fit):

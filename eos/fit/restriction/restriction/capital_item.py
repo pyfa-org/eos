@@ -43,14 +43,13 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     have IsCapitalShip attribute set to 1.
 
     Details:
-    Only modules are tracked.
-    For validation, eve type volume value is taken. If
-    volume attribute is absent, item is not restricted.
+    Only modules are restricted.
+    For validation, eve type volume value is taken. If volume
+        attribute is absent, item is not restricted.
     """
 
     def __init__(self, fit):
         self.__fit = fit
-        # Container for all tracked items
         self.__capital_items = set()
 
     def register_item(self, item):

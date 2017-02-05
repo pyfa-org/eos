@@ -43,7 +43,7 @@ class DroneGroupRestriction(BaseRestriction):
     allowed cannot be put into drone bay.
 
     Details:
-    Only drones are tracked.
+    Only items in fit.drones container are restricted.
     For validation, allowedDroneGroupX attribute values of eve type
         are taken.
     Validation fails if ship's eve type has any restriction attribute,

@@ -133,7 +133,7 @@ class DroneBayVolumeRegister(ResourceRestrictionRegister):
     drone bay volume.
 
     Details:
-    Only items placed to fit.drones are tracked.
+    Only items of Drone class are restricted.
     For validation, stats module data is used.
     """
 

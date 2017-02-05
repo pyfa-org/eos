@@ -114,7 +114,7 @@ class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
     else item with such restriction is tainted.
 
     Details:
-    Only modules are tracked.
+    Only module-class items are restricted.
     For validation, modified value of restriction attribute is taken.
     """
 
@@ -130,7 +130,7 @@ class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
     else item with such restriction is tainted.
 
     Details:
-    Only modules are tracked.
+    Only module-class items are restricted.
     For validation, modified value of restriction attribute is taken.
     """
 
@@ -146,7 +146,7 @@ class MaxGroupActiveRegister(MaxGroupRestrictionRegister):
     else item with such restriction is tainted.
 
     Details:
-    Only modules are tracked.
+    Only module-class items are restricted.
     For validation, modified value of restriction attribute is taken.
     """
 

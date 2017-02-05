@@ -85,7 +85,7 @@ class SubsystemIndexRegister(SlotIndexRestrictionRegister):
     Multiple subsystems can't be added into the same subsystem slot.
 
     Details:
-    Slot to fill is determined by eve type attributes.
+    Slot to occupy is determined by eve type attributes.
     """
 
     def __init__(self):
@@ -98,7 +98,7 @@ class ImplantIndexRegister(SlotIndexRestrictionRegister):
     Multiple implants can't be added into the same implant slot.
 
     Details:
-    Slot to fill is determined by eve type attributes.
+    Slot to occupy is determined by eve type attributes.
     """
 
     def __init__(self):
@@ -111,7 +111,7 @@ class BoosterIndexRegister(SlotIndexRestrictionRegister):
     Multiple boosters can't be added into the same booster slot.
 
     Details:
-    Slot to fill is determined by eve type attributes.
+    Slot to occupy is determined by eve type attributes.
     """
 
     def __init__(self):

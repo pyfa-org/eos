@@ -32,11 +32,7 @@ SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_ma
 
 
 class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
-    """
-    Class which implements common functionality for all
-    registers, which track amount of occupied ship slots
-    against number of available ship slots.
-    """
+    """Base class for all slot amount restrictions"""
 
     def __init__(self, fit, stat_name, restriction_type):
         self.__restrictionType = restriction_type
@@ -72,6 +68,7 @@ class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
 
 
 class SlotAmountRestrictionRegister(SlotAmountRestriction, BaseRestrictionRegister):
+    """Base class for all slot amount restriction registers"""
 
     def __init__(self, fit, stat_name, restriction_type):
         SlotAmountRestriction.__init__(self, fit, stat_name, restriction_type)
@@ -94,7 +91,7 @@ class HighSlotRestriction(SlotAmountRestriction):
     high slots ship provides.
 
     Details:
-    Only items placed to fit.modules.high are tracked.
+    Only items placed to fit.modules.high are restricted.
     For validation, stats module data is used.
     """
 
@@ -112,7 +109,7 @@ class MediumSlotRestriction(SlotAmountRestriction):
     medium slots ship provides.
 
     Details:
-    Only items placed to fit.modules.med are tracked.
+    Only items placed to fit.modules.med are restricted.
     For validation, stats module data is used.
     """
 
@@ -130,7 +127,7 @@ class LowSlotRestriction(SlotAmountRestriction):
     low slots ship provides.
 
     Details:
-    Only items placed to fit.modules.low are tracked.
+    Only items placed to fit.modules.low are restricted.
     For validation, stats module data is used.
     """
 
@@ -148,7 +145,7 @@ class RigSlotRestriction(SlotAmountRestriction):
     rig slots ship provides.
 
     Details:
-    Only items placed to fit.rigs are tracked.
+    Only items placed to fit.rigs are restricted.
     For validation, stats module data is used.
     """
 
@@ -166,7 +163,7 @@ class SubsystemSlotRestriction(SlotAmountRestriction):
     subsystem slots ship provides.
 
     Details:
-    Only items placed to fit.subsystems are tracked.
+    Only items placed to fit.subsystems are restricted.
     For validation, stats module data is used.
     """
 
@@ -184,7 +181,7 @@ class TurretSlotRestrictionRegister(SlotAmountRestrictionRegister, BaseRestricti
     turret slots ship provides.
 
     Details:
-    Only items which take turret slot are tracked.
+    Only items which take turret slot are restricted.
     For validation, stats module data is used.
     """
 
@@ -203,7 +200,7 @@ class LauncherSlotRestrictionRegister(SlotAmountRestrictionRegister):
     launcher slots ship provides.
 
     Details:
-    Only items which take launcher slot are tracked.
+    Only items which take launcher slot are restricted.
     For validation, stats module data is used.
     """
 
@@ -222,7 +219,7 @@ class LaunchedDroneRestrictionRegister(SlotAmountRestrictionRegister):
     drones you're allowed to launch.
 
     Details:
-    Only items of Drone class are tracked.
+    Only items of Drone class are restricted.
     For validation, stats module data is used.
     """
 
