@@ -27,48 +27,29 @@ __all__ = [
 ]
 
 
-from eos.const.eve import Type, Group, Category
-
-
-TURRET_GROUPS = (Group.projectile_weapon, Group.energy_weapon, Group.hydrid_weapon)
-MISSILE_LAUNCHER_GROUPS = (
-    Group.missile_launcher_rocket,
-    Group.missile_launcher_light,
-    Group.missile_launcher_rapid_light,
-    Group.missile_launcher_heavy_assault,
-    Group.missile_launcher_heavy,
-    Group.missile_launcher_rapid_heavy,
-    Group.missile_launcher_torpedo,
-    Group.missile_launcher_cruise,
-    Group.missile_launcher_citadel
-)
+from eos.const.eos import Slot
+from eos.const.eve import Type, Category
 
 
 def turret_filter(item):
-    """
-    True for all items belonging to projectile,
-    hybrid and energy weapon groups.
-    """
+    """True for all items which occupy turret hardpoint"""
     try:
-        group = item._eve_type.group
+        slots = item._eve_type.slots
     except AttributeError:
         return False
-    if group in TURRET_GROUPS:
+    if Slot.turret in slots:
         return True
     else:
         return False
 
 
 def missile_filter(item):
-    """
-    True for all items which belong to various missile
-    launcher groups.
-    """
+    """True for all items which occupy launcher hardpoint"""
     try:
-        group = item._eve_type.group
+        slots = item._eve_type.slots
     except AttributeError:
         return False
-    if group in MISSILE_LAUNCHER_GROUPS:
+    if Slot.turret in slots:
         return True
     else:
         return False
