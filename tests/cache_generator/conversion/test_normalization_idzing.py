@@ -129,5 +129,3 @@ class TestNormalizationIdzing(GeneratorTestCase):
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        expressions = mod_builder.mock_calls[0][1][0]
-

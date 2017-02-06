@@ -19,7 +19,6 @@
 # ===============================================================================
 
 
-import re
 from logging import getLogger
 
 from eos.const.eve import Attribute, Group, Operand
