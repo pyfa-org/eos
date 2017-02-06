@@ -94,24 +94,24 @@ class ReferenceSeeker(ast.NodeVisitor):
             return node.id
         elif isinstance(node, ast.Attribute):
             return self.__get_rightmost_value(node.value)
-        # We're not interested in all constructs besides obj1.obj2.obj3.attr,
+        # We're not interested in any constructs besides obj1.obj2.obj3.attr,
         # which are composed of Attribute and Name nodes, thus we're not
-        # interested in anything else
+        # handling any other node types
         else:
             return None
 
 
-def get_enum_data(root_dir):
+def get_enum_data(path):
+    """Return data about fields used in const enums as map"""
     # Format: {enum name: {enum item names}}
     enum_data = {}
-    # Cycle through all .py files in consts directory
-    const_path = os.path.join(root_dir, 'eos', 'const')
-    for ast_root in _get_asts_in_dir(const_path):
+    for ast_root in _get_asts_in_dir(path):
         EnumSeeker(enum_data).visit(ast_root)
     return enum_data
 
 
 def get_used_enums(path, enum_data):
+    """Find out which fields from passed enums are used"""
     # Format: {enum name: {enum item names}}
     used_enums = {}
     for ast_root in _get_asts_in_dir(path):
@@ -120,6 +120,7 @@ def get_used_enums(path, enum_data):
 
 
 def _get_asts_in_dir(path):
+    """Iterate through all source files' ASTs"""
     for dir_path, dirs, files in os.walk(path):
         for file in filter(lambda f: os.path.splitext(f)[1] == '.py', files):
             with open(os.path.join(dir_path, file)) as f:
@@ -148,7 +149,7 @@ if __name__ == '__main__':
     script_dir = os.path.dirname(os.path.abspath(__file__))
     root_dir = os.path.abspath(os.path.join(script_dir, '..'))
 
-    enum_data = get_enum_data(root_dir)
+    enum_data = get_enum_data(os.path.join(root_dir, 'eos', 'const'))
     used_by_eos = get_used_enums(os.path.join(root_dir, 'eos'), enum_data)
     used_by_tests = get_used_enums(os.path.join(root_dir, 'tests'), enum_data)
 
