@@ -21,7 +21,7 @@
 
 from eos.const.eos import Slot, State
 from eos.const.eve import Attribute, Effect, EffectCategory
-from eos.util.cached_property import CachedProperty
+from eos.util.cached_property import cachedproperty
 from eos.util.repr import make_repr_str
 from .custom import customize_type
 
@@ -78,7 +78,7 @@ class Type:
         Attribute.required_skill_6: Attribute.required_skill_6_level
     }
 
-    @CachedProperty
+    @cachedproperty
     def required_skills(self):
         """
         Get skill requirements.
@@ -102,7 +102,7 @@ class Type:
             required_skills[int(srq)] = int(srq_lvl)
         return required_skills
 
-    @CachedProperty
+    @cachedproperty
     def max_state(self):
         """
         Get highest state this type is allowed to take.
@@ -120,7 +120,7 @@ class Type:
             max_state = max(max_state, effect._state)
         return max_state
 
-    @CachedProperty
+    @cachedproperty
     def is_targeted(self):
         """
         Report if type is targeted or not. Targeted types cannot be
@@ -149,7 +149,7 @@ class Type:
         Effect.subsystem: Slot.subsystem
     }
 
-    @CachedProperty
+    @cachedproperty
     def slots(self):
         """
         Get types of slots this type occupies.

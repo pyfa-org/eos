@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-class VolatileProperty:
+class volatileproperty:
     """
     Caches attribute on instance and adds note
     about it to special set, which should be added
@@ -29,7 +29,7 @@ class VolatileProperty:
     def __init__(self, method):
         self.__method = method
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, _):
         if instance is None:
             return self
         value = self.__method(instance)

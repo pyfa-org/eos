@@ -114,8 +114,7 @@ class Converter:
             ('evegroups', 'groupID', 'groupName_en-us', 'expressionGroupID', Operand.def_grp),
             ('evetypes', 'typeID', 'typeName_en-us', 'expressionTypeID', Operand.def_type)
         )
-        for entry in replacement_desc:
-            entity_table, id_column, symname_column, tgt_column, operand = entry
+        for entity_table, id_column, symname_column, tgt_column, operand in replacement_desc:
             name_id_map = {}
             for entity_row in sorted(data[entity_table], key=lambda row: row['table_pos']):
                 entity_id = entity_row[id_column]
@@ -145,11 +144,14 @@ class Converter:
                 sym_name = exp_row['expressionValue']
                 # If we don't have expression value in our name-id map,
                 # then we can't help anyhow too
+
                 if sym_name not in name_id_map:
                     failures += 1
+                    print(entity_table, sym_name, 'fail')
                     continue
                 repl_ids = name_id_map[sym_name]
                 repl_id = repl_ids[0]
+                print(entity_table, sym_name, repl_id)
                 if len(repl_ids) > 1:
                     if sym_name not in warned_conflicts:
                         msg = 'multiple {}s found for symbolic name "{}": ({}), using {}'.format(

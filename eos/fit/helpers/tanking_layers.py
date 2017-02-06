@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.util.cached_property import CachedProperty
+from eos.util.cached_property import cachedproperty
 from eos.util.repr import make_repr_str
 
 
@@ -66,7 +66,7 @@ class TankingLayers:
 class TankingLayersTotal(TankingLayers):
     """On top of storing tanking layer amounts, calculates their sum"""
 
-    @CachedProperty
+    @cachedproperty
     def total(self):
         total = (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
         if total == 0 and self.hull is None and self.armor is None and self.shield is None:

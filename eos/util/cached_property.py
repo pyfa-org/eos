@@ -24,7 +24,7 @@ Original code by Entity, as seen in reverence.
 """
 
 
-class CachedProperty:
+class cachedproperty:
     """
     Decorator class, imitates property behavior, but additionally
     caches results returned by decorated method as attribute of
@@ -37,7 +37,7 @@ class CachedProperty:
     def __init__(self, method):
         self.__method = method
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, _):
         # Return descriptor if called from class
         if instance is None:
             return self

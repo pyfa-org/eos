@@ -24,7 +24,7 @@ Recipe taken from http://code.activestate.com/recipes/414283-frozen-dictionaries
 """
 
 
-from .cached_property import CachedProperty
+from .cached_property import cachedproperty
 
 
 class FrozenDict(dict):
@@ -40,7 +40,7 @@ class FrozenDict(dict):
     # Prohibit use of methods which modify dictionary
     __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = __blocked_attribute
 
-    @CachedProperty
+    @cachedproperty
     def _hash(self):
         return hash(frozenset(self.items()))
 
