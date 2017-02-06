@@ -22,30 +22,51 @@
 """Find all defined constants which are not actually used in eos code"""
 
 
+import ast
 import os
-import sys
 
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(script_dir, '..')))
+class EnumSeeker(ast.NodeVisitor):
+
+    def __init__(self, enums):
+        self.enums = enums
+
+    def visit_ClassDef(self, enum_class_node):
+        # Check only enums inherited from IntEnum class
+        if (
+            len(enum_class_node.bases) != 1 or
+            not isinstance(enum_class_node.bases[0], ast.Name) or
+            enum_class_node.bases[0].id != 'IntEnum'
+        ):
+            return
+        for enum_assignment_node in enum_class_node.body:
+            # Only assignments to name are recorded
+            if not isinstance(enum_assignment_node, ast.Assign):
+                continue
+            for enum_item_name_node in enum_assignment_node.targets:
+                if not isinstance(enum_item_name_node, ast.Name):
+                    continue
+                item_names = self.enums.setdefault(enum_class_node.name, set())
+                item_names.add(enum_item_name_node.id)
 
 
-from enum import IntEnum
-
-import eos.const.eos
-import eos.const.eve
-
-
-enums = []
-
-
-for module in (eos.const.eos, eos.const.eve):
-    for item in module.__dict__.values():
-        try:
-            if issubclass(item, IntEnum) and item is not IntEnum:
-                enums.append(item)
-        # Not all of module level items are classes
-        except TypeError:
-            continue
+def get_enums(base_path):
+    # Format: {enum name: {enum item names}}
+    enums = {}
+    # Cycle through all .py files in consts directory
+    const_path = os.path.join(base_path, 'eos', 'const')
+    for dir_path, dirs, files in os.walk(const_path):
+        for file in filter(lambda f: os.path.splitext(f)[1] == '.py', files):
+            with open(os.path.join(dir_path, file)) as f:
+                data = f.read()
+            ast_root = ast.parse(data)
+            EnumSeeker(enums).visit(ast_root)
+    return enums
 
 
+if __name__ == '__main__':
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    eos_dir = os.path.abspath(os.path.join(script_dir, '..'))
+
+    enums = get_enums(eos_dir)
