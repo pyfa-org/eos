@@ -119,7 +119,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         try:
             hp_data = ship_item.hp
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
+            return TankingLayersTotal(hull=None, armor=None, shield=None)
         else:
             # Build tuple here because the object we fetched
             # from ship is access point to stats, which are
@@ -127,8 +127,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             return TankingLayersTotal(
                 hull=hp_data.hull,
                 armor=hp_data.armor,
-                shield=hp_data.shield,
-                total=hp_data.total
+                shield=hp_data.shield
             )
 
     @VolatileProperty
@@ -160,7 +159,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         try:
             return ship_item.get_ehp(damage_profile)
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
+            return TankingLayersTotal(hull=None, armor=None, shield=None)
 
     @VolatileProperty
     def worst_case_ehp(self):
@@ -173,7 +172,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         try:
             return ship_item.worst_case_ehp
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None, total=None)
+            return TankingLayersTotal(hull=None, armor=None, shield=None)
 
     def get_nominal_volley(self, item_filter=None, target_resistances=None):
         """

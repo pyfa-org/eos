@@ -43,10 +43,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         hull = self.attributes.get(Attribute.hp, None)
         armor = self.attributes.get(Attribute.armor_hp, None)
         shield = self.attributes.get(Attribute.shield_capacity, None)
-        total = (hull or 0) + (armor or 0) + (shield or 0)
-        if total == 0 and hull is None and armor is None and shield is None:
-            total = None
-        return TankingLayersTotal(hull=hull, armor=armor, shield=shield, total=total)
+        return TankingLayersTotal(hull=hull, armor=armor, shield=shield)
 
     @VolatileProperty
     def resistances(self):
@@ -114,10 +111,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         hull_ehp = self.__get_layer_ehp(self.hp.hull, self.resistances.hull, damage_profile)
         armor_ehp = self.__get_layer_ehp(self.hp.armor, self.resistances.armor, damage_profile)
         shield_ehp = self.__get_layer_ehp(self.hp.shield, self.resistances.shield, damage_profile)
-        total_ehp = (hull_ehp or 0) + (armor_ehp or 0) + (shield_ehp or 0)
-        if total_ehp == 0 and hull_ehp is None and armor_ehp is None and shield_ehp is None:
-            total_ehp = None
-        return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
+        return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp)
 
     def __get_layer_ehp(self, layer_hp, layer_resists, damage_profile):
         """
@@ -164,10 +158,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         hull_ehp = self.__get_layer_worst_case_ehp(self.hp.hull, self.resistances.hull)
         armor_ehp = self.__get_layer_worst_case_ehp(self.hp.armor, self.resistances.armor)
         shield_ehp = self.__get_layer_worst_case_ehp(self.hp.shield, self.resistances.shield)
-        total_ehp = (hull_ehp or 0) + (armor_ehp or 0) + (shield_ehp or 0)
-        if total_ehp == 0 and hull_ehp is None and armor_ehp is None and shield_ehp is None:
-            total_ehp = None
-        return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp, total=total_ehp)
+        return TankingLayersTotal(hull=hull_ehp, armor=armor_ehp, shield=shield_ehp)
 
     def __get_layer_worst_case_ehp(self, layer_hp, layer_resists):
         """

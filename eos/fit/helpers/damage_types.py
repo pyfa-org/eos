@@ -22,12 +22,13 @@
 from numbers import Real
 
 from eos.util.cached_property import CachedProperty
+from eos.util.repr import make_repr_str
 
 
 class DamageTypes:
     """
-    Base class for all containers which need to track damage types.
-    Just stores them and provides few additional methods.
+    Base class for all containers with damage types. Just stores
+    them and provides few additional methods.
     """
 
     def __init__(self, em, thermal, kinetic, explosive):
@@ -53,7 +54,7 @@ class DamageTypes:
         return self.__explosive
 
     def __iter__(self):
-        """Iterator is needed to do tuple-style unpacking"""
+        """Iterator is needed to support tuple-style unpacking"""
         yield self.em
         yield self.thermal
         yield self.kinetic
@@ -65,17 +66,24 @@ class DamageTypes:
             self.kinetic == other.kinetic, self.explosive == other.explosive
         ))
 
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.em, self.thermal, self.kinetic, self.explosive))
+
+    def __repr__(self):
+        spec = ['em', 'thermal', 'kinetic', 'explosive']
+        return make_repr_str(self, spec)
+
 
 class DamageTypesTotal(DamageTypes):
-    """On top of storing damage types, calculates their sum"""
+    """On top of storing damage type amounts, calculates their sum"""
 
     @CachedProperty
     def total(self):
         total = (self.em or 0) + (self.thermal or 0) + (self.kinetic or 0) + (self.explosive or 0)
-        if total == 0 and all((
-            self.em is None, self.thermal is None,
-            self.kinetic is None, self.explosive is None
-        )):
+        if total == 0 and (
+            self.em is None and self.thermal is None and
+            self.kinetic is None and self.explosive is None
+        ):
             return None
         return total
 
