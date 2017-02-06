@@ -33,9 +33,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 1, 'typeName_en-us': ''})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -50,9 +50,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(len(data['types']), 0)
 
     def test_single_invalid(self):
@@ -63,9 +63,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(len(data['types']), 0)
 
     def test_single_duplicate(self):
@@ -77,9 +77,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -96,9 +96,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -115,9 +115,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -129,9 +129,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 50, 'value': 100.0})
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -148,9 +148,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -165,9 +165,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -183,9 +183,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -204,9 +204,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -223,9 +223,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -246,9 +246,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evegroups have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -266,9 +266,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmattribs have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -286,9 +286,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmeffects have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -306,9 +306,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeeffects have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -337,9 +337,9 @@ class TestPrimaryKey(GeneratorTestCase):
         self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmexpressions have invalid PKs, removing them')
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[1]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)

@@ -46,9 +46,9 @@ class TestDefaultEffects(GeneratorTestCase):
         self.eff_link2['isDefault'] = True
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -62,9 +62,9 @@ class TestDefaultEffects(GeneratorTestCase):
         self.eff_link2['isDefault'] = True
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -89,9 +89,9 @@ class TestDefaultEffects(GeneratorTestCase):
         self.eff_link2['isDefault'] = True
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)

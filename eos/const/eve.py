@@ -172,6 +172,7 @@ class Group(IntEnum):
     effect_beacon = 920
     energy_weapon = 53
     hydrid_weapon = 74
+    mining_laser = 54
     missile_launcher_citadel = 524
     missile_launcher_cruise = 506
     missile_launcher_heavy = 510

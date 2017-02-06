@@ -30,55 +30,23 @@ from tests.cache_generator.generator_testcase import GeneratorTestCase
 class TestNormalizationIdzing(GeneratorTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
-    def test_type_idzing(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 3'})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-            'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-            'expressionGroupID': 567, 'expressionAttributeID': 102
-        })
-        mod_builder.return_value.build.return_value = ([], 0)
-        self.run_generator()
-        self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
-        self.assertEqual(
-            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
-        # As in expression conversion, we're verifying expressions
-        # passed to modifier builder, as it's much easier to do
-        expressions = mod_builder.mock_calls[0][1][0]
-        self.assertEqual(len(expressions), 1)
-        expected = {
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
-            'expressionAttributeID': 102, 'table_pos': 0
-        }
-        self.assertIn(expected, expressions)
-
     def test_group_idzing(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 668, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 668, 'categoryID': 16, 'groupName_en-us': 'Big Guns'})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
-            'arg2': 66, 'expressionValue': 'BigGuns', 'expressionTypeID': 567,
+            'arg2': 66, 'expressionValue': 'EnergyWeapon', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102
         })
         mod_builder.return_value.build.return_value = ([], 0)
+        # Action
         self.run_generator()
+        # Verification
         self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
-        self.assertEqual(
-            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
@@ -86,152 +54,80 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertEqual(len(expressions), 1)
         expected = {
             'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
-            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 668,
+            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 53,
             'expressionAttributeID': 102, 'table_pos': 0
         }
         self.assertIn(expected, expressions)
 
-    def test_attribute_idzing(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 668, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 668, 'categoryID': 16, 'groupName_en-us': ''})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 556, 'attributeID': 334, 'value': 2})
-        self.dh.data['dgmattribs'].append({'attributeID': 334, 'attributeName': 'Big Goons'})
+    def test_group_ignorelist(self, mod_builder):
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': ''})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 34, 'postExpression': 34})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 34, 'operandID': Operand.def_attr, 'arg1': 2357,
-            'arg2': 66, 'expressionValue': 'BigGoons', 'expressionTypeID': 567,
-            'expressionGroupID': 322, 'expressionAttributeID': None
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'PowerCore', 'expressionTypeID': 567,
+            'expressionGroupID': None, 'expressionAttributeID': 102
         })
         mod_builder.return_value.build.return_value = ([], 0)
+        # Action
         self.run_generator()
+        # Verification
         self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
-        self.assertEqual(
-            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expected = {
-            'expressionID': 34, 'operandID': Operand.def_attr, 'arg1': 2357, 'arg2': 66,
-            'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 322,
-            'expressionAttributeID': 334, 'table_pos': 0
-        }
-        self.assertIn(expected, expressions)
-
-    def test_unstripped(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 3'})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-            'arg2': 66, 'expressionValue': 'Big Gun 3', 'expressionTypeID': None,
-            'expressionGroupID': 567, 'expressionAttributeID': 102
-        })
-        mod_builder.return_value.build.return_value = ([], 0)
-        self.run_generator()
-        self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
-        self.assertEqual(
-            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 1 successful, 0 failed')
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
-        expressions = mod_builder.mock_calls[0][1][0]
-        self.assertEqual(len(expressions), 1)
-        expected = {
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': 'PowerCore', 'expressionTypeID': 567, 'expressionGroupID': None,
             'expressionAttributeID': 102, 'table_pos': 0
         }
         self.assertIn(expected, expressions)
 
-    def test_multiple_warning(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 3'})
-        self.dh.data['evetypes'].append({'typeID': 35, 'groupID': 1, 'typeName_en-us': '     BigGun 3  '})
-        # Using this name, we'll also check that already 'stripped' name (without space
-        # symbols) does not add carrier's ID multiple times anywhere, including warning
-        self.dh.data['evetypes'].append({'typeID': 22, 'groupID': 1, 'typeName_en-us': 'BigGun3'})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 35, 'effectID': 11})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmeffects'].append({'effectID': 11, 'preExpression': 589, 'postExpression': 589})
-        self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-            'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-            'expressionGroupID': 567, 'expressionAttributeID': 102
-        })
-        self.dh.data['dgmexpressions'].append({
-            'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507,
-            'arg2': 6, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-            'expressionGroupID': 57, 'expressionAttributeID': 12
-        })
+    def test_warning_unused(self, mod_builder):
         mod_builder.return_value.build.return_value = ([], 0)
+        # Action
         self.run_generator()
-        self.assertEqual(len(self.log), 3)
-        multiple_warning = self.log[0]
-        self.assertEqual(multiple_warning.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(multiple_warning.levelno, logging.WARNING)
+        # Verification
+        self.assertEqual(len(self.log), 1)
+        idzing_stats = self.log[0]
+        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(
-            multiple_warning.msg,
-            'multiple typeIDs found for symbolic name "BigGun3": (556, 35, 22), using 556'
+            idzing_stats.msg, '4 replacements for expressionGroupID were not used: '
+            '"EnergyWeapon", "HybridWeapon", "MiningLaser", "ProjectileWeapon"'
         )
-        literal_stats = self.log[1]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
+
+    def test_warning_unknown(self, mod_builder):
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
+        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
+        self.dh.data['dgmexpressions'].append({
+            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'arg2': 66, 'expressionValue': 'EnergyWeaponry', 'expressionTypeID': 567,
+            'expressionGroupID': None, 'expressionAttributeID': 102
+        })
+        mod_builder.return_value.build.return_value = ([], 0)
+        # Action
+        self.run_generator()
+        # Verification
+        self.assertEqual(len(self.log), 3)
+        idzing_stats_unused = self.log[0]
+        self.assertEqual(idzing_stats_unused.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats_unused.levelno, logging.WARNING)
+        idzing_stats_failures = self.log[1]
+        self.assertEqual(idzing_stats_failures.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats_failures.levelno, logging.WARNING)
         self.assertEqual(
-            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 2 successful, 0 failed')
+            idzing_stats_failures.msg, 'unable to convert 1 literal references '
+            'to expressionGroupID: "EnergyWeaponry"'
+        )
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
-        self.assertEqual(len(expressions), 2)
-        expected = {
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 567,
-            'expressionAttributeID': 102, 'table_pos': 0
-        }
-        self.assertIn(expected, expressions)
-        expected = {
-            'expressionID': 589, 'operandID': Operand.def_type, 'arg1': 507, 'arg2': 6,
-            'expressionValue': None, 'expressionTypeID': 556, 'expressionGroupID': 57,
-            'expressionAttributeID': 12, 'table_pos': 1
-        }
-        self.assertIn(expected, expressions)
 
-    def test_failed_conversion(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': 'Big Gun 4'})
-        self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
-        self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007,
-            'arg2': 66, 'expressionValue': 'BigGun3', 'expressionTypeID': None,
-            'expressionGroupID': 567, 'expressionAttributeID': 102
-        })
-        mod_builder.return_value.build.return_value = ([], 0)
-        self.run_generator()
-        self.assertEqual(len(self.log), 2)
-        literal_stats = self.log[0]
-        self.assertEqual(literal_stats.name, 'eos.data.cache_generator.converter')
-        self.assertEqual(literal_stats.levelno, logging.INFO)
-        self.assertEqual(
-            literal_stats.msg, 'conversion of literal references to IDs in dgmexpressions: 0 successful, 1 failed')
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
-        # As in expression conversion, we're verifying expressions
-        # passed to modifier builder, as it's much easier to do
-        expressions = mod_builder.mock_calls[0][1][0]
-        self.assertEqual(len(expressions), 1)
-        expected = {
-            'expressionID': 57, 'operandID': Operand.def_type, 'arg1': 5007, 'arg2': 66,
-            'expressionValue': 'BigGun3', 'expressionTypeID': None, 'expressionGroupID': 567,
-            'expressionAttributeID': 102, 'table_pos': 0
-        }
-        self.assertIn(expected, expressions)

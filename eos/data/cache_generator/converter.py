@@ -22,7 +22,7 @@
 import re
 from logging import getLogger
 
-from eos.const.eve import Attribute, Operand
+from eos.const.eve import Attribute, Group, Operand
 from eos.util.frozen_dict import FrozenDict
 from .modifier_builder import ModifierBuilder
 
@@ -105,74 +105,69 @@ class Converter:
         Some of entities in dgmexpressions table are defined not as
         IDs, but as symbolic references. Convert them to IDs here.
         """
-        successes = 0
-        failures = 0
         data = self.data
         dgmexpressions = data['dgmexpressions']
-        replacement_desc = (
-            ('dgmattribs', 'attributeID', 'attributeName', 'expressionAttributeID', Operand.def_attr),
-            ('evegroups', 'groupID', 'groupName_en-us', 'expressionGroupID', Operand.def_grp),
-            ('evetypes', 'typeID', 'typeName_en-us', 'expressionTypeID', Operand.def_type)
+        # Format: ((operator, column name for entity ID, {replacement_map}, (ignored names, ...)), ...)
+        replacement_spec = (
+            (Operand.def_attr, 'expressionAttributeID', {}, ('shieldDamage',)),
+            (
+                Operand.def_grp, 'expressionGroupID',
+                {
+                    'EnergyWeapon': Group.energy_weapon,
+                    'HybridWeapon': Group.hydrid_weapon,
+                    'MiningLaser': Group.mining_laser,
+                    'ProjectileWeapon': Group.projectile_weapon
+                },
+                ('Structure', 'PowerCore', '    None')
+            ),
+            (Operand.def_type, 'expressionTypeID', {}, ('Acceration Control',))
         )
-        for entity_table, id_column, symname_column, tgt_column, operand in replacement_desc:
-            name_id_map = {}
-            for entity_row in sorted(data[entity_table], key=lambda row: row['table_pos']):
-                entity_id = entity_row[id_column]
-                entity_name_normal = entity_row.get(symname_column)
-                if not entity_name_normal:
-                    continue
-                ids_normal = name_id_map.setdefault(entity_name_normal, [])
-                ids_normal.append(entity_id)
-                # Entities can be referred via names with stripped space
-                entity_name_stripped = re.sub('\s', '', entity_name_normal)
-                # Do not add id of entity against stripped name, if it's
-                # already stripped
-                if entity_name_stripped == entity_name_normal:
-                    continue
-                ids_stripped = name_id_map.setdefault(entity_name_stripped, [])
-                ids_stripped.append(entity_id)
-            # Set to keep symbolic names about which we've already
-            # logged warnings
-            warned_conflicts = set()
+        for operand, id_column_name, replacements, ignored_names in replacement_spec:
+            used_replacements = set()
+            unknown_names = set()
             # We're modifying only rows with specific operands
-            for exp_row in filter(lambda r: r['operandID'] == operand, dgmexpressions):
-                exp_entity_id = exp_row[tgt_column]
+            for expression_row in tuple(filter(lambda r: r['operandID'] == operand, dgmexpressions)):
+                expression_entity_id = expression_row[id_column_name]
                 # If entity is already referenced via ID, nothing
                 # to do here
-                if exp_entity_id is not None:
+                if expression_entity_id is not None:
                     continue
-                sym_name = exp_row['expressionValue']
-                # If we don't have expression value in our name-id map,
-                # then we can't help anyhow too
-
-                if sym_name not in name_id_map:
-                    failures += 1
-                    print(entity_table, sym_name, 'fail')
+                symbolic_entity_name = expression_row['expressionValue']
+                # Skip names we've set to ignore explicitly
+                if symbolic_entity_name in ignored_names:
                     continue
-                repl_ids = name_id_map[sym_name]
-                repl_id = repl_ids[0]
-                print(entity_table, sym_name, repl_id)
-                if len(repl_ids) > 1:
-                    if sym_name not in warned_conflicts:
-                        msg = 'multiple {}s found for symbolic name "{}": ({}), using {}'.format(
-                            id_column, sym_name, ', '.join(str(i) for i in repl_ids), repl_id)
-                        logger.warning(msg)
-                        warned_conflicts.add(sym_name)
-                # As rows are frozen dicts, we compose new mutable dict, update
-                # data there, freeze it, and add to replacement maps
-                new_exp_row = {}
-                new_exp_row.update(exp_row)
-                new_exp_row['expressionValue'] = None
-                new_exp_row[tgt_column] = repl_id
-                new_exp_row = FrozenDict(new_exp_row)
-                dgmexpressions.remove(exp_row)
-                dgmexpressions.add(new_exp_row)
-                successes += 1
-        # Report results to log, it will help to indicate when CCP finally stops
-        # using literal references, and we can get rid of this conversion
-        msg = 'conversion of literal references to IDs in dgmexpressions: {} successful, {} failed'.format(
-            successes, failures)
-        logger.info(msg)
+                # Do replacements if they're known to us
+                if symbolic_entity_name in replacements:
+                    # As rows are frozen dicts, we compose new mutable dict, update
+                    # data there, freeze it, and do actual replacement
+                    new_expression_row = {}
+                    new_expression_row.update(expression_row)
+                    new_expression_row['expressionValue'] = None
+                    new_expression_row[id_column_name] = replacements[symbolic_entity_name]
+                    new_expression_row = FrozenDict(new_expression_row)
+                    dgmexpressions.remove(expression_row)
+                    dgmexpressions.add(new_expression_row)
+                    used_replacements.add(symbolic_entity_name)
+                    continue
+                # If we do not know it, add to special container which
+                # We will use later
+                unknown_names.add(symbolic_entity_name)
+            # Report results to log, it will help to indicate when CCP finally stops
+            # using literal references, and we can get rid of this conversion, or add
+            # some new
+            unused_replacements = set(replacements).difference(used_replacements)
+            if len(unused_replacements) > 0:
+                msg = '{} replacements for {} were not used: {}'.format(
+                    len(unused_replacements), id_column_name,
+                    ', '.join('"{}"'.format(name) for name in sorted(unused_replacements))
+                )
+                logger.warning(msg)
+            if len(unknown_names) > 0:
+                msg = 'unable to convert {} literal references to {}: {}'.format(
+                    len(unknown_names), id_column_name,
+                    ', '.join('"{}"'.format(name) for name in sorted(unknown_names))
+                )
+                logger.warning(msg)
 
     def convert(self, data):
         """
