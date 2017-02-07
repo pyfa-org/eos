@@ -74,7 +74,7 @@ class TestOverride(CalculatorTestCase):
         self.assertAlmostEqual(item.attributes[self.attr4.id], 55)
         messages_before = len(self.fit.message_store)
         # Action
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (lambda x, y, z: x - y + z, (55,), {'y': 11, 'z': 33}))
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
@@ -88,30 +88,14 @@ class TestOverride(CalculatorTestCase):
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_override_set_unchanged(self):
-        # Setup
-        item = self.item
-        self.assertAlmostEqual(item.attributes[self.attr4.id], 55)
-        messages_before = len(self.fit.message_store)
-        # Action
-        item.attributes._override_set(self.attr3.id, 10)
-        # Verification
-        messages_after = len(self.fit.message_store)
-        self.assertEqual(messages_after - messages_before, 0)
-        self.assertAlmostEqual(item.attributes[self.attr3.id], 10)
-        self.assertAlmostEqual(item.attributes[self.attr4.id], 55)
-        # Cleanup
-        self.fit.items.remove(item)
-        self.assert_calculator_buffers_empty(self.fit)
-
     def test_override_reset(self):
         # Setup
         item = self.item
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         messages_before = len(self.fit.message_store)
         # Action
-        item.attributes._override_set(self.attr3.id, 88)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 88, (), {}))
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
@@ -127,12 +111,16 @@ class TestOverride(CalculatorTestCase):
 
     def test_override_reset_unchanged(self):
         # Setup
+
+        def callback_func(x, y=0):
+            return x+y
+
         item = self.item
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (callback_func, (66,), {'y': 11}))
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         messages_before = len(self.fit.message_store)
         # Action
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (callback_func, (66,), {'y': 11}))
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 0)
@@ -148,7 +136,7 @@ class TestOverride(CalculatorTestCase):
         # Force fetching attribute to make sure it's stored in
         # dictionary of modified attributes
         self.assertAlmostEqual(item.attributes[self.attr3.id], 10)
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
         # Force change of attribute which affects overridden attr3 only
         # after attr3 override has been set. This way we're checking
         # that after override is deleted, value is properly refreshed
@@ -156,7 +144,7 @@ class TestOverride(CalculatorTestCase):
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         messages_before = len(self.fit.message_store)
         # Action
-        item.attributes._override_del(self.attr3.id)
+        item.attributes._del_override_callback(self.attr3.id)
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
@@ -176,15 +164,15 @@ class TestOverride(CalculatorTestCase):
         # Force fetching attribute to make sure it's stored in
         # dictionary of modified attributes
         self.assertAlmostEqual(item.attributes[self.attr3.id], 10)
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
         # Force change of attribute which affects overridden attr3 only
         # after attr3 override has been set. This way we're checking
         # that after override is deleted, value is properly refreshed
-        item.attributes._override_set(self.attr2.id, 200)
+        item.attributes._set_override_callback(self.attr2.id, (lambda: 200, (), {}))
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         messages_before = len(self.fit.message_store)
         # Action
-        item.attributes._override_del(self.attr3.id)
+        item.attributes._del_override_callback(self.attr3.id)
         # Verification
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
@@ -198,52 +186,27 @@ class TestOverride(CalculatorTestCase):
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_override_delete_persistent(self):
+    def test_override_persistence_delete(self):
         # Setup
         item = self.item
-        item.attributes._override_set(self.attr3.id, 77, persist=True)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         messages_before = len(self.fit.message_store)
         # Action
-        item.attributes._override_del(self.attr3.id)
+        del item.attributes[self.attr3.id]
         # Verification
         messages_after = len(self.fit.message_store)
-        self.assertEqual(messages_after - messages_before, 1)
-        message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
-        self.assertIs(message.item, self.item)
-        self.assertEqual(message.attr, self.attr3.id)
-        self.assertAlmostEqual(item.attributes[self.attr3.id], 10)
-        self.assertAlmostEqual(item.attributes[self.attr4.id], 55)
+        self.assertEqual(messages_after - messages_before, 0)
+        self.assertAlmostEqual(item.attributes[self.attr3.id], 77)
+        self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
-    def test_override_clear(self):
+    def test_override_persistence_clear(self):
         # Setup
         item = self.item
-        item.attributes._override_set(self.attr3.id, 77)
-        self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
-        messages_before = len(self.fit.message_store)
-        # Action
-        item.attributes.clear()
-        # Verification
-        messages_after = len(self.fit.message_store)
-        self.assertEqual(messages_after - messages_before, 1)
-        message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
-        self.assertIs(message.item, self.item)
-        self.assertEqual(message.attr, self.attr3.id)
-        self.assertAlmostEqual(item.attributes[self.attr3.id], 10)
-        self.assertAlmostEqual(item.attributes[self.attr4.id], 55)
-        # Cleanup
-        self.fit.items.remove(item)
-        self.assert_calculator_buffers_empty(self.fit)
-
-    def test_override_clear_persistent(self):
-        # Setup
-        item = self.item
-        item.attributes._override_set(self.attr3.id, 77, persist=True)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
         messages_before = len(self.fit.message_store)
         # Action
@@ -267,7 +230,7 @@ class TestOverride(CalculatorTestCase):
         # Force fetching attribute to make sure it's stored in
         # dictionary of modified attributes
         self.assertAlmostEqual(item.attributes[self.attr3.id], 10)
-        item.attributes._override_set(self.attr3.id, 77)
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
         messages_before = len(fit.message_store)
         # Action
         item.state = State.online
