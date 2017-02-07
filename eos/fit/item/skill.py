@@ -44,7 +44,7 @@ class Skill(ImmutableStateMixin):
     def __init__(self, type_id, level=0, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
         self.__level = level
-        self.attributes._set_override_callback(getattr, (self, 'level'))
+        self.attributes._set_override_callback(Attribute.skill_level, (getattr, (self, 'level'), {}))
 
     @property
     def level(self):
