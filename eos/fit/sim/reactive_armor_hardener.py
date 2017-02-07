@@ -22,7 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged, AttrValueChangedOverride
-from eos.util.pubsub import BaseSubscriber, SubscriberPriority
+from eos.util.pubsub import BaseSubscriber
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
@@ -31,7 +31,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         self.__rah_items = set()
         self.__fit = fit
         self.__running = False
-        fit._subscribe(self, self._handler_map.keys(), priority=SubscriberPriority.low)
+        fit._subscribe(self, self._handler_map.keys())
 
     def run_simulation(self):
         if len(self.__rah_items) == 0:
