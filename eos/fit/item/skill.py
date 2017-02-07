@@ -21,7 +21,6 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
-from eos.fit.messages import AttrValueChangedOverride
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
 

@@ -113,7 +113,7 @@ class TestOverride(CalculatorTestCase):
         # Setup
 
         def callback_func(x, y=0):
-            return x+y
+            return x + y
 
         item = self.item
         item.attributes._set_override_callback(self.attr3.id, (callback_func, (66,), {'y': 11}))
