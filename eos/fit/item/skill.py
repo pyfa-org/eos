@@ -21,6 +21,7 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.const.eve import Attribute
+from eos.fit.messages import AttrValueChangedOverride
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
 
@@ -42,15 +43,22 @@ class Skill(ImmutableStateMixin):
 
     def __init__(self, type_id, level=0, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
-        self.level = level
+        self.__level = level
+        self.attributes._set_override_callback(getattr, (self, 'level'))
 
     @property
     def level(self):
-        return self.attributes.get(Attribute.skill_level)
+        return self.__level
 
     @level.setter
     def level(self, new_lvl):
-        self.attributes._override_set(Attribute.skill_level, int(new_lvl), persist=True)
+        old_lvl = self.__level
+        if new_lvl == old_lvl:
+            return
+        self.__level = new_lvl
+        fit = self._fit
+        if fit is not None:
+            fit._publish(AttrValueChangedOverride(item=self, attr=Attribute.skill_level))
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character

@@ -119,13 +119,14 @@ class MutableAttributeMap:
         # Override and cap maps are initialized as None
         # to save memory, as they are not needed most of
         # the time
-        self.__overridden_attributes = None
+        self.__overridde_callbacks = None
         self.__cap_map = None
 
     def __getitem__(self, attr):
         # Try getting override first
-        if attr in self._overrides:
-            return self._overrides[attr].value
+        if attr in self._override_callbacks:
+            callback, args, kwargs = self._override_callbacks[attr]
+            return callback(*args, **kwargs)
         # If value is stored in modified map, it's considered as valid
         try:
             val = self.__modified_attributes[attr]
@@ -164,14 +165,14 @@ class MutableAttributeMap:
         # present, fetched value of this attribute will not
         # change anyway. Overrides are removed using override-
         # specific method
-        if attr in self._overrides:
+        if attr in self._override_callbacks:
             return
         # Clear the value in our calculated attributes dictionary
         try:
             del self.__modified_attributes[attr]
         # Do nothing if it wasn't calculated
         except KeyError:
-            pass
+            return
         # And make sure services are aware of changed value if it
         # actually was changed
         else:
@@ -195,11 +196,6 @@ class MutableAttributeMap:
         """Reset map to its initial state."""
         self.__modified_attributes.clear()
         self.__cap_map = None
-        # Clear only non-persistent overrides
-        if self.__overridden_attributes is not None:
-            overrides = self.__overridden_attributes
-            for attr in tuple(filter(lambda attr: overrides[attr].persistent is False, overrides)):
-                self._override_del(attr)
 
     def __calculate(self, attr):
         """
@@ -347,45 +343,38 @@ class MutableAttributeMap:
 
     # Override-related methods
     @property
-    def _overrides(self):
+    def _override_callbacks(self):
         # Container for overriden attributes
-        # Format: {attribute ID: (value, persistent)}
-        return self.__overridden_attributes or {}
+        # Format: {attribute ID: (function, (args), {kw: args})}
+        return self.__overridde_callbacks or {}
 
-    def _override_set(self, attr, value, persist=False):
-        """
-        Override attribute value. Persist flag controls
-        if this value will be kept throughout map cleanups.
-        """
-        if self.__overridden_attributes is None:
-            self.__overridden_attributes = {}
-        # Get old value, regardless if it was override or not
-        if attr in self.__overridden_attributes:
-            old_composite = self.__overridden_attributes[attr].value
-        else:
-            old_composite = self.__modified_attributes.get(attr)
-        self.__overridden_attributes[attr] = OverrideData(value=value, persistent=persist)
-        # If value of attribute is changing after operation, force refresh
-        # of attributes which rely on it
-        fit = self.__item._fit
-        if fit is not None and value != old_composite:
-            fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
-
-    def _override_del(self, attr):
-        overrides = self._overrides
-        if attr not in overrides:
+    def _set_override_callback(self, attr, callback):
+        """Set override for the attribute in the form of callback"""
+        if self.__overridde_callbacks is None:
+            self.__overridde_callbacks = {}
+        # If the same callback is set, do nothing
+        if self.__overridde_callbacks.get(attr) == callback:
             return
-        del overrides[attr]
-        # Set overrides map to None if there're none left
-        # to save some memory
-        if len(overrides) == 0:
-            self.__overridden_attributes = None
-        # If value of attribute was calculated at some point,
-        # remove it - as potentially it might've changed
+        # Set override callback and remove modified value
+        self.__overridde_callbacks[attr] = callback
         try:
             del self.__modified_attributes[attr]
         except KeyError:
             pass
+        # Publish notification about changes
+        fit = self.__item._fit
+        if fit is not None:
+            fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
+
+    def _del_override_callback(self, attr):
+        overrides = self._override_callbacks
+        if attr not in overrides:
+            return
+        del overrides[attr]
+        # Set overrides map to None if there're none left to save some memory
+        if len(overrides) == 0:
+            self.__overridde_callbacks = None
+        # Notify everyone of changed attribute
         fit = self.__item._fit
         if fit is not None:
             fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
