@@ -58,12 +58,11 @@ class Slot(IntEnum):
 
 @unique
 class EffectBuildStatus(IntEnum):
-    not_built = 1
-    skipped = 2
-    error = 3
-    success_partial = 4
-    success = 5
-    custom = 6
+    skipped = 1
+    error = 2
+    success_partial = 3
+    success = 4
+    custom = 5
 
 
 @unique

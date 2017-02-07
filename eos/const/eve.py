@@ -173,15 +173,6 @@ class Group(IntEnum):
     energy_weapon = 53
     hydrid_weapon = 74
     mining_laser = 54
-    missile_launcher_citadel = 524
-    missile_launcher_cruise = 506
-    missile_launcher_heavy = 510
-    missile_launcher_heavy_assault = 771
-    missile_launcher_light = 509
-    missile_launcher_rapid_heavy = 1245
-    missile_launcher_rapid_light = 511
-    missile_launcher_rocket = 507
-    missile_launcher_torpedo = 508
     projectile_weapon = 55
     ship_modifier = 1306
 
