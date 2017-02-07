@@ -24,10 +24,12 @@ from .aar import add_aar_modifier
 from .afterburner import add_ab_modifiers
 from .microwarpdrive import add_mwd_modifiers
 from .online import fix_online_category
+from .rah import add_rah_modifiers
 
 
 # Format: {effect ID: customization method}
 _effect_custom_map = {
+    Effect.adaptive_armor_hardener: add_rah_modifiers,
     Effect.fueled_armor_repair: add_aar_modifier,
     Effect.module_bonus_afterburner: add_ab_modifiers,
     Effect.module_bonus_ancillary_remote_armor_repairer: add_aar_modifier,

@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State
-from eos.const.eve import Effect
+from eos.const.eve import Attribute, Effect
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged
 from eos.util.pubsub import BaseSubscriber
 
@@ -32,10 +32,19 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         self.__fit = fit
         fit._subscribe(self, self._handler_map.keys())
 
+    def run_simulation(self):
+        # Reset attributes on all known RAHs
+        for rah in self.__rah_items:
+            for attr in ():
+                pass
+
+    def get_next_profile(self, current_profile, received_damage):
+        pass
+
+    # TODO: for now all message handling is dirty, but will be
+    # reworked after i change state and effect handling on item level
     def _handle_item_addition(self, message):
-        if message.item.state < State.active:
-            return
-        if self.__check_if_rah(message.item) is True:
+        if self.__check_if_rah(message.item) is True and message.item.state >= State.active:
             self.__rah_items.add(message.item)
 
     def _handle_item_removal(self, message):
