@@ -190,6 +190,7 @@ class Category(IntEnum):
 
 @unique
 class Effect(IntEnum):
+    adaptive_armor_hardener = 4928
     bomb_launching = 2971
     emp_wave = 38
     fighter_missile = 4729

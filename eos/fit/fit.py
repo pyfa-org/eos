@@ -31,6 +31,7 @@ from .messages import (
     RefreshSource, DefaultIncomingDamageChanged
 )
 from .restriction import RestrictionService
+from .sim import *
 from .stats import StatService
 from .helper import DamageTypes
 from .volatile import FitVolatileManager
@@ -65,12 +66,14 @@ class Fit(MessageBroker, BaseSubscriber):
         self.rigs = ItemSet(self, Rig)
         self.drones = ItemSet(self, Drone)
         # Initialize services. Some of services rely on fit structure
-        # (module racks, implant set), thus they have to be initialized
-        # after it
+        # (module racks, implant set) even during initialization, thus
+        # they have to be initialized after item containers
         self._calculator = CalculationService(self)
         self._restriction = RestrictionService(self)
         self.stats = StatService(self)
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
+        # Initialize simulators
+        self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Use default source, unless specified otherwise. Source setting may
         # enable services (if there's source), thus it has to be after service
         # initialization

@@ -48,7 +48,7 @@ class Module(
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_type_id'], 'state', 'charge']
+        spec = [['type_id', '_eve_type_id'], 'state', 'charge']
         return make_repr_str(self, spec)
 
 

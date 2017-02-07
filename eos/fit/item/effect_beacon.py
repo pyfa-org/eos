@@ -45,5 +45,5 @@ class EffectBeacon(ImmutableStateMixin):
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_type_id']]
+        spec = [['type_id', '_eve_type_id']]
         return make_repr_str(self, spec)

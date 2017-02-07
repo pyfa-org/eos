@@ -220,8 +220,7 @@ class ItemList(ItemContainerBase):
         list with Nones until index becomes available.
         """
         allocated_num = len(self.__list)
-        for _ in range(max(index - allocated_num + 1, 0)):
-            self.__list.append(None)
+        self.__list.extend([None] * max(index - allocated_num + 1, 0))
 
     def _cleanup(self):
         """Remove trailing Nones from list."""

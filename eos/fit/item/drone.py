@@ -55,5 +55,5 @@ class Drone(
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_type_id'], 'state']
+        spec = [['type_id', '_eve_type_id'], 'state']
         return make_repr_str(self, spec)
