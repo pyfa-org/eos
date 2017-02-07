@@ -133,10 +133,9 @@ class Fit(MessageBroker, BaseSubscriber):
     @default_incoming_damage.setter
     def default_incoming_damage(self, new_profile):
         old_profile = self.__default_incoming_damage
-        if new_profile == old_profile:
-            return
         self.__default_incoming_damage = new_profile
-        self._publish(DefaultIncomingDamageChanged())
+        if new_profile != old_profile:
+            self._publish(DefaultIncomingDamageChanged())
 
     # Message handling
     def _handle_item_addition(self, message):

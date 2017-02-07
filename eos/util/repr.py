@@ -38,6 +38,6 @@ def make_repr_str(instance, spec=None):
             repr_name, attr_name = field, field
         else:
             repr_name, attr_name = field
-        attr_val = getattr(instance, attr_name)
+        attr_val = getattr(instance, attr_name, 'N/A')
         arg_list.append('{}={}'.format(repr_name, attr_val))
     return '<{}({})>'.format(type(instance).__name__, ', '.join(arg_list))

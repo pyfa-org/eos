@@ -272,8 +272,7 @@ class MutableAttributeMap:
         # They are penalized on per-operator basis
         for operator, mod_list in penalized_mods.items():
             penalized_value = self.__penalize_values(mod_list)
-            mod_list = normal_mods.setdefault(operator, [])
-            mod_list.append(penalized_value)
+            normal_mods.setdefault(operator, []).append(penalized_value)
         # Calculate result of normal dictionary, according to operator order
         for operator in sorted(normal_mods):
             mod_list = normal_mods[operator]
@@ -373,7 +372,7 @@ class MutableAttributeMap:
             fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
 
     def _override_del(self, attr):
-        overrides = self.__overridden_attributes
+        overrides = self._overrides
         if attr not in overrides:
             return
         del overrides[attr]

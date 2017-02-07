@@ -200,13 +200,11 @@ class Converter:
         # Format: {type ID: [effect IDs]}
         type_effects = {}
         for row in data['dgmtypeeffects']:
-            type_effects_row = type_effects.setdefault(row['typeID'], [])
-            type_effects_row.append(row['effectID'])
+            type_effects.setdefault(row['typeID'], []).append(row['effectID'])
         # Format: {type ID: {attr ID: value}}
         type_attribs = {}
         for row in data['dgmtypeattribs']:
-            type_attribs_row = type_attribs.setdefault(row['typeID'], {})
-            type_attribs_row[row['attributeID']] = row['value']
+            type_attribs.setdefault(row['typeID'], {})[row['attributeID']] = row['value']
 
         # We will build new data structure from scratch
         assembly = {}
@@ -290,8 +288,7 @@ class Converter:
                 # them in conversion process
                 frozen_modifier = self._freeze_modifier(modifier)
                 # Gather data about which effects use which modifier
-                used_by_effects = modifier_effect_map.setdefault(frozen_modifier, [])
-                used_by_effects.append(effect_row['effect_id'])
+                modifier_effect_map.setdefault(frozen_modifier, []).append(effect_row['effect_id'])
                 # Assign ID only to each unique modifier
                 if frozen_modifier not in modifier_id_map:
                     modifier_id_map[frozen_modifier] = modifier_id
@@ -302,8 +299,7 @@ class Converter:
         effect_modifier_map = {}
         for frozen_modifier, effect_ids in modifier_effect_map.items():
             for effect_id in effect_ids:
-                effect_modifiers = effect_modifier_map.setdefault(effect_id, [])
-                effect_modifiers.append(frozen_modifier)
+                effect_modifier_map.setdefault(effect_id, []).append(frozen_modifier)
 
         # For each effect, add IDs of each modifiers it uses
         for effect_row in data['effects']:

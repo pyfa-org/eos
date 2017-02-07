@@ -196,8 +196,7 @@ class Cleaner:
                     # this is not a valid FK reference
                     if fk_value is None:
                         continue
-                    tgt_values = tgt_data.setdefault((tgt_table_name, tgt_column_name), set())
-                    tgt_values.add(fk_value)
+                    tgt_data.setdefault((tgt_table_name, tgt_column_name), set()).add(fk_value)
 
     def _get_targets_yaml(self, tgt_data):
         """
@@ -218,9 +217,7 @@ class Cleaner:
                 # If there're any references for given entity, add them to
                 # dictionary
                 if len(references) > 0:
-                    tgt_values = tgt_data.setdefault((tgt_table_name, tgt_column_name), set())
-                    tgt_values.update(references)
-
+                    tgt_data.setdefault((tgt_table_name, tgt_column_name), set()).update(references)
     @cachedproperty
     def _yaml_modinfo_relations(self):
         """
@@ -304,8 +301,7 @@ class Cleaner:
         table_name -- name of table for which we're pumping data
         datarows -- set with rows to pump
         """
-        strong_rows = self.strong_data.setdefault(table_name, set())
-        strong_rows.update(datarows)
+        self.strong_data.setdefault(table_name, set()).update(datarows)
 
     def _trash_data(self, table_name, datarows):
         """

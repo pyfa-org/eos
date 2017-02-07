@@ -25,6 +25,14 @@ Implementation of publish-subscribe pattern.
 
 
 from abc import ABCMeta, abstractmethod
+from enum import IntEnum, unique
+
+
+@unique
+class SubscriberPriority(IntEnum):
+    high = 1
+    normal = 2
+    low = 3
 
 
 class MessageBroker:
@@ -34,27 +42,38 @@ class MessageBroker:
     """
 
     def __init__(self):
-        # Format: {event class: subscribers}
+        # Format: {event class: {priority: subscribers}}
         self.__subscribers = {}
 
-    def _subscribe(self, subscriber, message_types):
+    def _subscribe(self, subscriber, message_types, priority=SubscriberPriority.normal):
         """
         Register subscriber for passed message types.
         """
         for message_type in message_types:
-            subscribers = self.__subscribers.setdefault(message_type, set())
-            subscribers.add(subscriber)
+            subscribers_for_priority = self.__subscribers.setdefault(message_type, {}).setdefault(priority, set())
+            subscribers_for_priority.add(subscriber)
 
     def _unsubscribe(self, subscriber, message_types):
         """
         Unregister subscriber from passed message types.
         """
+        message_types_to_remove = set()
         for message_type in message_types:
             try:
-                subscribers = self.__subscribers[message_type]
+                subscribers_all = self.__subscribers[message_type]
             except KeyError:
                 continue
-            subscribers.discard(subscriber)
+            priority_to_remove = set()
+            for priority, subscribers_for_priority in subscribers_all.items():
+                subscribers_for_priority.discard(subscriber)
+                if len(subscribers_for_priority) == 0:
+                    priority_to_remove.add(priority)
+            for priority in priority_to_remove:
+                del subscribers_all[priority]
+            if len(subscribers_all) == 0:
+                message_types_to_remove.add(message_type)
+        for message_type in message_types_to_remove:
+            del self.__subscribers[message_type]
 
     def _publish(self, message):
         """
@@ -62,8 +81,9 @@ class MessageBroker:
         interested subscribers are notified.
         """
         subscribers = self.__subscribers.get(type(message), ())
-        for subscriber in subscribers:
-            subscriber._notify(message)
+        for priority in sorted(subscribers):
+            for subscriber in subscribers[priority]:
+                subscriber._notify(message)
 
 
 class BaseSubscriber(metaclass=ABCMeta):

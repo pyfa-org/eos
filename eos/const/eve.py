@@ -64,6 +64,7 @@ class Attribute(IntEnum):
     em_damage_resonance = 113
     explosive_damage_resonance = 111
     kinetic_damage_resonance = 109
+    resistance_shift_amount = 1849
     thermal_damage_resonance = 110
     shield_em_damage_resonance = 271
     shield_explosive_damage_resonance = 272

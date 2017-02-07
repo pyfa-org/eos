@@ -131,8 +131,7 @@ class RestrictionService(BaseSubscriber):
                 for item in exception_data:
                     item_error = exception_data[item]
                     # Fill container for invalid items
-                    item_errors = invalid_items.setdefault(item, {})
-                    item_errors[restriction_type] = item_error
+                    invalid_items.setdefault(item, {})[restriction_type] = item_error
         # Raise validation error only if we got any
         # failures
         if invalid_items:
