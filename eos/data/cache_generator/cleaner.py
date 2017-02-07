@@ -218,6 +218,7 @@ class Cleaner:
                 # dictionary
                 if len(references) > 0:
                     tgt_data.setdefault((tgt_table_name, tgt_column_name), set()).update(references)
+
     @cachedproperty
     def _yaml_modinfo_relations(self):
         """

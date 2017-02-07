@@ -21,6 +21,7 @@
 
 from unittest.mock import Mock, call
 
+from eos.fit.item.mixin.base import BaseItemMixin
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChangedOverride, RefreshSource
@@ -28,6 +29,24 @@ from eos.fit.messages import (
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 from tests.fit.environment import Fit
 from tests.fit.fit_testcase import FitTestCase
+
+
+class TestVolatileInheritable(BaseItemMixin, InheritableVolatileMixin):
+
+    _parent_modifier_domain = None
+    _owner_modifiable = None
+
+
+class TestVolatileCooperative(BaseItemMixin, CooperativeVolatileMixin):
+
+    _parent_modifier_domain = None
+    _owner_modifiable = None
+
+
+class ItemOther(BaseItemMixin):
+
+    _parent_modifier_domain = None
+    _owner_modifiable = None
 
 
 class TestVolatileData(FitTestCase):
@@ -47,7 +66,7 @@ class TestVolatileData(FitTestCase):
 
     def test_carrier_inheritable(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -63,7 +82,7 @@ class TestVolatileData(FitTestCase):
 
     def test_carrier_cooperative(self):
         # Setup
-        item = Mock(spec=CooperativeVolatileMixin)
+        item = Mock(spec=TestVolatileCooperative(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -79,8 +98,8 @@ class TestVolatileData(FitTestCase):
 
     def test_message_item_added(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
-        item_other = Mock()
+        item = Mock(spec=TestVolatileInheritable(1))
+        item_other = Mock(spec=ItemOther(2))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -101,8 +120,8 @@ class TestVolatileData(FitTestCase):
 
     def test_message_item_removed(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
-        item_other = Mock()
+        item = Mock(spec=TestVolatileInheritable(1))
+        item_other = Mock(spec=ItemOther(2))
         fit = Fit()
         fit._publish(ItemAdded(item))
         fit._publish(ItemAdded(item_other))
@@ -123,7 +142,7 @@ class TestVolatileData(FitTestCase):
 
     def test_message_item_state_changed(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -143,7 +162,7 @@ class TestVolatileData(FitTestCase):
 
     def test_message_effects_enabled(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -163,7 +182,7 @@ class TestVolatileData(FitTestCase):
 
     def test_message_effects_disabled(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -183,7 +202,7 @@ class TestVolatileData(FitTestCase):
 
     def test_message_override(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
@@ -203,7 +222,7 @@ class TestVolatileData(FitTestCase):
 
     def test_message_refresh_source(self):
         # Setup
-        item = Mock(spec=InheritableVolatileMixin)
+        item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
         fit._publish(ItemAdded(item))
         item_calls_before = len(item.mock_calls)
