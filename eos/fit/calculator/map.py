@@ -190,7 +190,7 @@ class MutableAttributeMap:
         except NoSourceError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
-        return self.__modified_attributes.keys() | base_attrs.keys() | self._overrides.keys()
+        return self.__modified_attributes.keys() | base_attrs.keys() | self._override_callbacks.keys()
 
     def clear(self):
         """Reset map to its initial state."""
