@@ -56,9 +56,7 @@ class Skill(ImmutableStateMixin):
         if new_lvl == old_lvl:
             return
         self.__level = new_lvl
-        fit = self._fit
-        if fit is not None:
-            fit._publish(AttrValueChangedOverride(item=self, attr=Attribute.skill_level))
+        self.attributes._override_value_may_change(Attribute.skill_level)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character

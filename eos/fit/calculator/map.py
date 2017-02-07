@@ -362,9 +362,7 @@ class MutableAttributeMap:
         except KeyError:
             pass
         # Publish notification about changes
-        fit = self.__item._fit
-        if fit is not None:
-            fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
+        self._override_value_may_change(attr)
 
     def _del_override_callback(self, attr):
         overrides = self._override_callbacks
@@ -374,7 +372,15 @@ class MutableAttributeMap:
         # Set overrides map to None if there're none left to save some memory
         if len(overrides) == 0:
             self.__overridde_callbacks = None
-        # Notify everyone of changed attribute
+        # Publish notification about changes
+        self._override_value_may_change(attr)
+
+    def _override_value_may_change(self, attr):
+        """
+        When originator of callback knows that callback return
+        value may (or will) change for an attribute, it should
+        invoke this method.
+        """
         fit = self.__item._fit
         if fit is not None:
             fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
