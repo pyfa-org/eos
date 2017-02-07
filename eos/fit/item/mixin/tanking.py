@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.helpers import TankingLayers, TankingLayersTotal, DamageTypes
+from eos.fit.helper import TankingLayers, TankingLayersTotal, DamageTypes
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatileproperty
 from .base import BaseItemMixin
 
@@ -87,13 +87,14 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         else:
             return 1 - resonance
 
-    def get_ehp(self, damage_profile):
+    def get_ehp(self, damage_profile=None):
         """
         Get effective HP of an item against passed damage profile.
 
-        Required arguments:
+        Optional arguments:
         damage_profile -- object which has numbers as its following attibutes:
-            em, thermal, kinetic and explosive
+            em, thermal, kinetic and explosive. If not specified, default on-fit
+            value is used.
 
         Object with following attributes is returned:
         .hull, .armor, .shield -- number, or None if HP for layer can't be fetched
@@ -101,13 +102,11 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             defaults effective hp of this layer to 0; if data for all layers
             is not available, equals None.
         """
-        if (
-            damage_profile.em == 0 and
-            damage_profile.thermal == 0 and
-            damage_profile.kinetic == 0 and
-            damage_profile.explosive == 0
-        ):
-            raise ValueError('damage profile cannot have all damage components as 0')
+        if damage_profile is None:
+            damage_profile = self._fit.default_incoming_damage
+        # If damage profile is not specified anywhere, return Nones
+        if damage_profile is None:
+            return TankingLayersTotal(hull=None, armor=None, shield=None)
         hull_ehp = self.__get_layer_ehp(self.hp.hull, self.resistances.hull, damage_profile)
         armor_ehp = self.__get_layer_ehp(self.hp.armor, self.resistances.armor, damage_profile)
         shield_ehp = self.__get_layer_ehp(self.hp.shield, self.resistances.shield, damage_profile)

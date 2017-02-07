@@ -92,6 +92,10 @@ class DamageTypesTotal(DamageTypes):
             yield item
         yield self.total
 
+    def __repr__(self):
+        spec = ['em', 'thermal', 'kinetic', 'explosive', 'total']
+        return make_repr_str(self, spec)
+
 
 class DamageProfile(DamageTypes):
     """

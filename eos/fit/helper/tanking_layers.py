@@ -77,3 +77,7 @@ class TankingLayersTotal(TankingLayers):
         for item in TankingLayers.__iter__(self):
             yield item
         yield self.total
+
+    def __repr__(self):
+        spec = ['hull', 'armor', 'shield', 'total']
+        return make_repr_str(self, spec)

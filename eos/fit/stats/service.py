@@ -24,7 +24,7 @@ import math
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
-from eos.fit.helpers import DamageTypes, TankingLayers, TankingLayersTotal
+from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.pubsub import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, volatileproperty
 from .container import *
@@ -147,13 +147,14 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             empty = DamageTypes(em=None, thermal=None, kinetic=None, explosive=None)
             return TankingLayers(hull=empty, armor=empty, shield=empty)
 
-    def get_ehp(self, damage_profile):
+    def get_ehp(self, damage_profile=None):
         """
-        Same as hp, but takes damage_profile argument which defines damage
-        profile (should have em, thermal, kinetic and explosive arguments defined
-        as numbers). Returns effective HP of a ship against this profile.
+        Same as hp, but takes damage_profile argument which optionally defines
+        damage profile (should have em, thermal, kinetic and explosive arguments
+        defined as numbers). Returns effective HP of a ship against this profile.
         If fit has no ship or some data cannot be fetched, corresponding attribs
-        will be set to None.
+        will be set to None. If no profile is specified, default fit profile is
+        taken.
         """
         ship_item = self._fit.ship
         try:

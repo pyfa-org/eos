@@ -27,7 +27,7 @@ from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
 from .fit import Fit
 from .fit.restriction.exception import ValidationError
-from .fit.helpers import DamageProfile, ResistanceProfile
+from .fit.helper import DamageProfile, ResistanceProfile
 from .data.cache_handler import *
 from .data.data_handler import *
 from .fit.item import *
