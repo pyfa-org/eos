@@ -61,6 +61,34 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {rah item: damage received during cycle}
         damage_during_cycle = {rah: (0, 0, 0, 0) for rah in self.__rah_items}
         for time_passed, cycled_rahs, rah_states in self.__rah_state_iter():
+
+            # Calculate damage received over passed time
+            damage_current = (
+                time_passed * incoming_damage.em * ship_attrs[Attribute.armor_em_damage_resonance],
+                time_passed * incoming_damage.thermal * ship_attrs[Attribute.armor_thermal_damage_resonance],
+                time_passed * incoming_damage.kinetic * ship_attrs[Attribute.armor_kinetic_damage_resonance],
+                time_passed * incoming_damage.explosive * ship_attrs[Attribute.armor_explosive_damage_resonance]
+            )
+            for rah, damage_old in damage_during_cycle.items():
+                damage_during_cycle[rah] = (
+                    damage_old[0] + damage_current[0], damage_old[1] + damage_current[1],
+                    damage_old[2] + damage_current[2], damage_old[3] + damage_current[3]
+                )
+            for rah_item in cycled_rahs:
+                rah_profile = tuple(rah_item.attributes.get(attr) for attr in (
+                    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
+                    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
+                ))
+                new_profile = self.__get_next_profile(
+                    rah_profile, damage_during_cycle[rah_item],
+                    rah_item.attributes[Attribute.resistance_shift_amount]
+                )
+                rah_item.attributes._override_set(Attribute.armor_em_damage_resonance, new_profile[0])
+                rah_item.attributes._override_set(Attribute.armor_thermal_damage_resonance, new_profile[1])
+                rah_item.attributes._override_set(Attribute.armor_kinetic_damage_resonance, new_profile[2])
+                rah_item.attributes._override_set(Attribute.armor_explosive_damage_resonance, new_profile[3])
+                damage_during_cycle[rah_item] = (0, 0, 0, 0)
+
             # Get current resonance values and record state
             history_entry = set()
             for rah_item in self.__rah_items:
@@ -79,29 +107,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 self.__running = False
                 return
             history.append(history_entry)
-            # Calculate damage received over passed time
-            damage_current = (
-                time_passed * incoming_damage.em * ship_attrs[Attribute.armor_em_damage_resonance],
-                time_passed * incoming_damage.thermal * ship_attrs[Attribute.armor_thermal_damage_resonance],
-                time_passed * incoming_damage.kinetic * ship_attrs[Attribute.armor_kinetic_damage_resonance],
-                time_passed * incoming_damage.explosive * ship_attrs[Attribute.armor_explosive_damage_resonance]
-            )
-            for rah, damage_old in damage_during_cycle.items():
-                damage_during_cycle[rah] = (
-                    damage_old[0] + damage_current[0], damage_old[1] + damage_current[1],
-                    damage_old[2] + damage_current[2], damage_old[3] + damage_current[3]
-                )
-            for rah_item in cycled_rahs:
-                rah_profile = tuple(rah_item.attributes.get(attr) for attr in (
-                    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-                    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
-                ))
-                new_profile = self.__get_next_profile(rah_profile, damage_during_cycle[rah_item])
-                rah_item.attributes._override_set(Attribute.armor_em_damage_resonance, new_profile[0])
-                rah_item.attributes._override_set(Attribute.armor_thermal_damage_resonance, new_profile[1])
-                rah_item.attributes._override_set(Attribute.armor_kinetic_damage_resonance, new_profile[2])
-                rah_item.attributes._override_set(Attribute.armor_explosive_damage_resonance, new_profile[3])
-                damage_during_cycle[rah_item] = (0, 0, 0, 0)
 
             # Break cycle if slowest RAH reached its limit
             if slow_rah in cycled_rahs:
@@ -118,8 +123,31 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     self.__running = False
                     return
 
-    def __get_next_profile(self, current_profile, received_damage):
-        return current_profile
+    def __get_next_profile(self, current_profile, received_damage, shift_amount):
+        attr_position_map = {
+            Attribute.armor_em_damage_resonance: 0,
+            Attribute.armor_thermal_damage_resonance: 1,
+            Attribute.armor_kinetic_damage_resonance: 2,
+            Attribute.armor_explosive_damage_resonance: 3
+        }
+        shift_amount = shift_amount / 100
+        victims = max(2, len(tuple(filter(lambda i: i == 0, received_damage))))
+        burglars = 4 - victims
+        received_damage_map = {attr: received_damage[pos] for attr, pos in attr_position_map.items()}
+        profile_map = {attr: current_profile[pos] for attr, pos in attr_position_map.items()}
+        attr_damage_sorted = sorted(received_damage_map.items(), key=lambda t: (t[1], t[0]))
+        stolen_amount = 0
+        # Steal
+        for resonance_attr, dmg_taken in attr_damage_sorted[:victims]:
+            to_steal = min(1 - profile_map[resonance_attr], shift_amount)
+            stolen_amount += to_steal
+            profile_map[resonance_attr] += to_steal
+        # Give
+        for resonance_attr, dmg_taken in attr_damage_sorted[victims:]:
+            profile_map[resonance_attr] -= stolen_amount / burglars
+        result = tuple(profile_map[attr] for attr in sorted(attr_position_map, key=attr_position_map.get))
+        print(result)
+        return result
 
     def __rah_state_iter(self):
         # Format: {rah item: current cycle time}
