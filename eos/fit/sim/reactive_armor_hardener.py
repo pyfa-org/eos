@@ -211,16 +211,14 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__dependencies_changed()
 
     def _handle_attr_change(self, message):
-        if message.item is self.__fit.ship and message.attr in (
-            Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-            Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
-        ):
+        # Ship resistances changed
+        if message.item is self.__fit.ship and message.attr in res_attrs:
             self.__dependencies_changed()
+        # RAH resistances, shift amount and cycle time
         elif message.item in self.__rah_items and (message.attr in (
-            Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-            Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance,
-            Attribute.resistance_shift_amount
-        ) or message.attr == self.__get_duration_attr_id(message.item)):
+            *res_attrs, Attribute.resistance_shift_amount,
+            self.__get_duration_attr_id(message.item)
+        )):
             self.__dependencies_changed()
 
     _handler_map = {

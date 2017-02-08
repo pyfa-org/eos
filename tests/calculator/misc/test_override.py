@@ -220,6 +220,30 @@ class TestOverride(CalculatorTestCase):
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
 
+    def test_override_ignore(self):
+        # Setup
+        item = self.item
+        item.attributes._set_override_callback(self.attr3.id, (lambda: 77, (), {}))
+        messages_before = len(self.fit.message_store)
+        # Action
+        self.assertAlmostEqual(item.attributes._get_without_overrides(self.attr3.id), 10)
+        # Verification
+        messages_after = len(self.fit.message_store)
+        self.assertEqual(messages_after - messages_before, 2)
+        message1 = self.fit.message_store[-2]
+        self.assertTrue(isinstance(message1, AttrValueChangedOverride))
+        self.assertIs(message1.item, self.item)
+        self.assertEqual(message1.attr, self.attr3.id)
+        message2 = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message2, AttrValueChangedOverride))
+        self.assertIs(message2.item, self.item)
+        self.assertEqual(message2.attr, self.attr3.id)
+        self.assertAlmostEqual(item.attributes[self.attr3.id], 77)
+        self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
+        # Cleanup
+        self.fit.items.remove(item)
+        self.assert_calculator_buffers_empty(self.fit)
+
     def test_chain_damaging_override(self):
         # Here we make sure that when damaging of attribute
         # tree is initiated, it's stopped on override

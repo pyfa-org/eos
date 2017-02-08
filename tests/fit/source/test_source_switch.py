@@ -31,6 +31,11 @@ from tests.fit.fit_testcase import FitTestCase
 @patch('eos.fit.fit.SourceManager')
 class FitSourceSwitch(FitTestCase):
 
+    def make_source(self):
+        source = Mock(spec_set=Source)
+        source.cache_handler.get_type.return_value = NullSourceItem
+        return source
+
     def test_none_to_none(self, source_mgr):
         source_mgr.default = None
         item = Item()
@@ -49,7 +54,7 @@ class FitSourceSwitch(FitTestCase):
 
     def test_none_to_source(self, source_mgr):
         source_mgr.default = None
-        source = Mock(spec_set=Source)
+        source = self.make_source()
         item = Item()
         assertions = {
             RefreshSource: lambda f: self.assertIs(f.source, source),
@@ -75,8 +80,7 @@ class FitSourceSwitch(FitTestCase):
 
     def test_source_to_none(self, source_mgr):
         source_mgr.default = None
-        source = Mock(spec_set=Source)
-        source.cache_handler.get_type.return_value = NullSourceItem
+        source = self.make_source()
         item = Item()
         assertions = {
             DisableServices: lambda f: self.assertIs(f.source, source),
@@ -102,9 +106,8 @@ class FitSourceSwitch(FitTestCase):
 
     def test_source_to_source(self, source_mgr):
         source_mgr.default = None
-        source1 = Mock(spec_set=Source)
-        source1.cache_handler.get_type.return_value = NullSourceItem
-        source2 = Mock(spec_set=Source)
+        source1 = self.make_source()
+        source2 = self.make_source()
         item = Item()
         assertions = {
             DisableServices: lambda f: self.assertIs(f.source, source1),
@@ -134,8 +137,7 @@ class FitSourceSwitch(FitTestCase):
 
     def test_source_to_source_same(self, source_mgr):
         source_mgr.default = None
-        source = Mock(spec_set=Source)
-        source.cache_handler.get_type.return_value = NullSourceItem
+        source = self.make_source()
         item = Item()
         fit = Fit(source=source)
         fit._publish(ItemAdded(item))
@@ -151,7 +153,7 @@ class FitSourceSwitch(FitTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_literal_source(self, source_mgr):
-        source = Mock(spec_set=Source)
+        source = self.make_source()
         source_mgr.get.side_effect = lambda alias: source if alias == 'src_alias' else None
         source_mgr.default = None
         item = Item()
