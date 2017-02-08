@@ -21,7 +21,7 @@
 
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Type
-from eos.fit.messages import ItemAdded, ItemRemoved, AttrValueChanged, AttrValueChangedOverride
+from eos.fit.messages import ItemAdded, ItemRemoved, AttrValueChanged
 from ..exception import ModificationCalculationError
 from ..python import BasePythonModifier
 
@@ -78,8 +78,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     __revision_map = {
         ItemAdded: __revise_on_item_add_remove,
         ItemRemoved: __revise_on_item_add_remove,
-        AttrValueChanged: __revise_on_attr_change,
-        AttrValueChangedOverride: __revise_on_attr_change
+        AttrValueChanged: __revise_on_attr_change
     }
 
     @property

@@ -38,24 +38,22 @@ class UnexpectedDomainError(AttributeCalculatorError):
 
 
 class UnknownTargetFilterError(AttributeCalculatorError):
-    """
-    Raised when modifier has unknown target filter type.
-    """
+    """Raised when modifier has unknown target filter type"""
     pass
 
 
 # Exception classes used by map's calculation method
-class BaseValueError(AttributeCalculatorError):
-    """
-    Raised when value, upon which attribute calculation should be based,
-    cannot be determined, thus making it impossible to calculate attribute.
-    """
-    pass
-
-
 class AttributeMetaError(AttributeCalculatorError):
     """
     Raised when attribute being calculated cannot be found in
     attribute database.
+    """
+    pass
+
+
+class BaseValueError(AttributeCalculatorError):
+    """
+    Raised when value, upon which attribute calculation should be based,
+    cannot be determined, thus making it impossible to calculate attribute.
     """
     pass

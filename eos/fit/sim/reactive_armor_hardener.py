@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
-from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged, AttrValueChangedOverride
+from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged
 from eos.util.pubsub import BaseSubscriber
 
 
@@ -225,8 +225,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         ItemAdded: _handle_item_addition,
         ItemRemoved: _handle_item_removal,
         ItemStateChanged: _handle_state_switch,
-        AttrValueChanged: _handle_attr_change,
-        AttrValueChangedOverride: _handle_attr_change
+        AttrValueChanged: _handle_attr_change
     }
 
     def _notify(self, message):

@@ -24,7 +24,7 @@ from collections import namedtuple
 
 __all__ = [
     'AttrValueChanged',
-    'AttrValueChangedOverride',
+    'AttrValueChangedMasked',
     'DefaultIncomingDamageChanged',
     'DisableServices',
     'EffectsDisabled',
@@ -33,7 +33,8 @@ __all__ = [
     'ItemAdded',
     'ItemStateChanged',
     'ItemRemoved',
-    'RefreshSource'
+    'RefreshSource',
+    'SkillLevelChanged'
 ]
 
 
@@ -43,9 +44,10 @@ ItemRemoved = namedtuple('ItemRemoved', ('item',))
 ItemStateChanged = namedtuple('ItemStateChanged', ('item', 'old', 'new'))
 EffectsEnabled = namedtuple('EffectsEnabled', ('item', 'effects'))
 EffectsDisabled = namedtuple('EffectsDisabled', ('item', 'effects'))
+SkillLevelChanged = namedtuple('SkillLevelChanged', ('item',))
 # Attribute-related
 AttrValueChanged = namedtuple('AttrValueChanged', ('item', 'attr'))
-AttrValueChangedOverride = namedtuple('AttrValueChangedOverride', ('item', 'attr'))
+AttrValueChangedMasked = namedtuple('AttrValueChangedMasked', ('item', 'attr'))
 # Source change-related
 EnableServices = namedtuple('EnableServices', ('items',))
 DisableServices = namedtuple('DisableServices', ('items',))

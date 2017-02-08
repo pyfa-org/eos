@@ -21,7 +21,7 @@
 
 from .messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
-    AttrValueChangedOverride, RefreshSource
+    SkillLevelChanged, RefreshSource
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 
@@ -65,7 +65,7 @@ class FitVolatileManager:
         ItemStateChanged: _handle_other_changes,
         EffectsEnabled: _handle_other_changes,
         EffectsDisabled: _handle_other_changes,
-        AttrValueChangedOverride: _handle_other_changes,
+        SkillLevelChanged: _handle_other_changes,
         RefreshSource: _handle_other_changes
     }
 

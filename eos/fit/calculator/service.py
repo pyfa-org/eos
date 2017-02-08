@@ -24,7 +24,7 @@ from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculatio
 from eos.data.cache_object.modifier.python import BasePythonModifier
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
-    AttrValueChanged, AttrValueChangedOverride, EnableServices, DisableServices
+    AttrValueChanged, EnableServices, DisableServices
 )
 from eos.util.keyed_set import KeyedSet
 from eos.util.pubsub import BaseSubscriber
@@ -196,7 +196,6 @@ class CalculationService(BaseSubscriber):
         EffectsEnabled: _handle_item_effects_enabling,
         EffectsDisabled: _handle_item_effects_disabling,
         AttrValueChanged: _revise_regular_attrib_dependents,
-        AttrValueChangedOverride: _revise_regular_attrib_dependents,
         EnableServices: _handle_enable_services,
         DisableServices: _handle_disable_services
     }
