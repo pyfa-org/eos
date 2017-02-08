@@ -171,13 +171,13 @@ class MutableAttributeMap:
         return self.__modified_attributes.keys() | base_attrs.keys() | self._override_callbacks.keys()
 
     def clear(self):
-        """Reset map to its initial state."""
-        for attr in self.__modified_attributes:
+        """Reset map to its initial state"""
+        for attr in set(self.__modified_attributes):
             del self[attr]
         self.__cap_map = None
 
     def __get_modified_value(self, attr):
-        """Get modified value of an attribute, skipping overrides"""
+        """Get modified value of an attribute, skipping override checks"""
         # If value is stored in modified map, it's considered as valid
         try:
             val = self.__modified_attributes[attr]

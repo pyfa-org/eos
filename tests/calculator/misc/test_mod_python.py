@@ -23,7 +23,7 @@ from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierO
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.data.cache_object.modifier.python import BasePythonModifier
-from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
+from eos.fit.messages import AttrValueChanged
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 
@@ -60,7 +60,7 @@ class TestModifierPython(CalculatorTestCase):
 
             @property
             def revise_message_types(self):
-                return {AttrValueChanged, AttrValueChangedOverride}
+                return {AttrValueChanged}
 
             def revise_modification(self, message, carrier_item, fit):
                 item, attr = message

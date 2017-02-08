@@ -22,7 +22,7 @@
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
-from eos.fit.messages import AttrValueChanged, AttrValueChangedOverride
+from eos.fit.messages import AttrValueChanged, AttrValueChangedMasked
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import Fit, IndependentItem
 
@@ -65,7 +65,7 @@ class TestOverride(CalculatorTestCase):
             type_id=1, effects=(effect,),
             attributes={self.attr1.id: 50, self.attr2.id: 100, self.attr3.id: 5, self.attr4.id: 50}
         ))
-        self.fit = Fit(self.ch, msgstore_filter=lambda m: isinstance(m, AttrValueChangedOverride))
+        self.fit = Fit(self.ch, msgstore_filter=lambda m: isinstance(m, (AttrValueChanged, AttrValueChangedMasked)))
         self.fit.items.add(self.item)
 
     def test_override_set(self):
@@ -79,7 +79,7 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
         message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message, AttrValueChanged))
         self.assertIs(message.item, self.item)
         self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(item.attributes[self.attr3.id], 77)
@@ -100,7 +100,7 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
         message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message, AttrValueChanged))
         self.assertIs(message.item, self.item)
         self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(item.attributes[self.attr3.id], 88)
@@ -149,7 +149,7 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
         message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message, AttrValueChanged))
         self.assertIs(message.item, self.item)
         self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(item.attributes[self.attr3.id], 12.5)
@@ -177,7 +177,7 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
         message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message, AttrValueChanged))
         self.assertIs(message.item, self.item)
         self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(item.attributes[self.attr3.id], 15)
@@ -231,11 +231,11 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 2)
         message1 = self.fit.message_store[-2]
-        self.assertTrue(isinstance(message1, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message1, AttrValueChanged))
         self.assertIs(message1.item, self.item)
         self.assertEqual(message1.attr, self.attr3.id)
         message2 = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message2, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message2, AttrValueChanged))
         self.assertIs(message2.item, self.item)
         self.assertEqual(message2.attr, self.attr3.id)
         self.assertAlmostEqual(item.attributes[self.attr3.id], 77)
@@ -249,7 +249,7 @@ class TestOverride(CalculatorTestCase):
         # tree is initiated, it's stopped on override
         # Setup
         item = self.item
-        fit = Fit(self.ch, msgstore_filter=lambda m: isinstance(m, (AttrValueChanged, AttrValueChangedOverride)))
+        fit = Fit(self.ch, msgstore_filter=lambda m: isinstance(m, (AttrValueChanged, AttrValueChangedMasked)))
         fit.items.add(item)
         # Force fetching attribute to make sure it's stored in
         # dictionary of modified attributes
@@ -283,7 +283,7 @@ class TestOverride(CalculatorTestCase):
         messages_after = len(self.fit.message_store)
         self.assertEqual(messages_after - messages_before, 1)
         message = self.fit.message_store[-1]
-        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertTrue(isinstance(message, AttrValueChanged))
         self.assertIs(message.item, self.item)
         self.assertEqual(message.attr, self.attr3.id)
         # Cleanup

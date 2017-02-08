@@ -24,7 +24,7 @@ from unittest.mock import Mock, call
 from eos.fit.item.mixin.base import BaseItemMixin
 from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
-    AttrValueChangedOverride, RefreshSource
+    SkillLevelChanged, RefreshSource
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 from tests.fit.environment import Fit
@@ -200,7 +200,7 @@ class TestVolatileData(FitTestCase):
         fit._publish(ItemRemoved(item))
         self.assert_fit_buffers_empty(fit)
 
-    def test_message_override(self):
+    def test_message_skill_level(self):
         # Setup
         item = Mock(spec=TestVolatileInheritable(1))
         fit = Fit()
@@ -208,7 +208,7 @@ class TestVolatileData(FitTestCase):
         item_calls_before = len(item.mock_calls)
         ss_calls_before = len(fit.stats.mock_calls)
         # Action
-        fit._publish(AttrValueChangedOverride(None, None))
+        fit._publish(SkillLevelChanged(None))
         # Verification
         item_calls_after = len(item.mock_calls)
         ss_calls_after = len(fit.stats.mock_calls)
