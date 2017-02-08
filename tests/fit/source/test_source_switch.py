@@ -23,6 +23,7 @@ from unittest.mock import Mock, patch
 
 from eos.data.source import Source
 from eos.fit.messages import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
+from eos.fit.null_source import NullSourceItem
 from tests.fit.environment import Fit, Item
 from tests.fit.fit_testcase import FitTestCase
 
@@ -75,6 +76,7 @@ class FitSourceSwitch(FitTestCase):
     def test_source_to_none(self, source_mgr):
         source_mgr.default = None
         source = Mock(spec_set=Source)
+        source.cache_handler.get_type.return_value = NullSourceItem
         item = Item()
         assertions = {
             DisableServices: lambda f: self.assertIs(f.source, source),
@@ -101,6 +103,7 @@ class FitSourceSwitch(FitTestCase):
     def test_source_to_source(self, source_mgr):
         source_mgr.default = None
         source1 = Mock(spec_set=Source)
+        source1.cache_handler.get_type.return_value = NullSourceItem
         source2 = Mock(spec_set=Source)
         item = Item()
         assertions = {
@@ -132,6 +135,7 @@ class FitSourceSwitch(FitTestCase):
     def test_source_to_source_same(self, source_mgr):
         source_mgr.default = None
         source = Mock(spec_set=Source)
+        source.cache_handler.get_type.return_value = NullSourceItem
         item = Item()
         fit = Fit(source=source)
         fit._publish(ItemAdded(item))

@@ -194,7 +194,8 @@ class MutableAttributeMap:
 
     def clear(self):
         """Reset map to its initial state."""
-        self.__modified_attributes.clear()
+        for attr in self.keys():
+            del self[attr]
         self.__cap_map = None
 
     def __calculate(self, attr):
@@ -365,6 +366,7 @@ class MutableAttributeMap:
         self._override_value_may_change(attr)
 
     def _del_override_callback(self, attr):
+        """Remove override callback from attribute"""
         overrides = self._override_callbacks
         if attr not in overrides:
             return
@@ -384,6 +386,18 @@ class MutableAttributeMap:
         fit = self.__item._fit
         if fit is not None:
             fit._publish(AttrValueChangedOverride(item=self.__item, attr=attr))
+
+    def _get_without_overrides(self, attr, default=None):
+        """Get attribute value with overrides disabled"""
+        try:
+            callback = self._override_callbacks[attr]
+        except KeyError:
+            return self.get(attr, default=default)
+        # Remove callback, get attribute value and return callback to its place
+        self._del_override_callback(attr)
+        value = self.get(attr, default=default)
+        self._set_override_callback(attr, callback)
+        return value
 
     # Cap-related methods
     @property

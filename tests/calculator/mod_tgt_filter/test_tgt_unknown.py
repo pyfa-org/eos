@@ -81,5 +81,4 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
         self.fit.items.remove(item)
-        self.assertEqual(len(self.log), 5)
         self.assert_calculator_buffers_empty(self.fit)
