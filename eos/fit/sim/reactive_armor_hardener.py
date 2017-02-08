@@ -25,10 +25,17 @@ from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValue
 from eos.util.pubsub import BaseSubscriber
 
 
+res_attrs = resattr_em, resattr_thermal, resattr_kinetic, resattr_explosive = (
+    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
+    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
+)
+
+
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def __init__(self, fit):
         self.__rah_items = set()
+        self.__simulation_results = {}
         self.__fit = fit
         self.__running = False
         fit._subscribe(self, self._handler_map.keys())
@@ -185,12 +192,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def _handle_item_addition(self, message):
         if self.__check_if_rah(message.item) is True and message.item.state >= State.active:
             self.__rah_items.add(message.item)
-            self.run_simulation()
+            self.__dependencies_changed()
 
     def _handle_item_removal(self, message):
         if self.__check_if_rah(message.item) is True and message.item.state >= State.active:
             self.__rah_items.discard(message.item)
-            self.run_simulation()
+            self.__dependencies_changed()
 
     def _handle_state_switch(self, message):
         if self.__check_if_rah(message.item) is not True:
@@ -198,23 +205,23 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         old_state, new_state = message.old, message.new
         if old_state < State.active and new_state >= State.active:
             self.__rah_items.add(message.item)
-            self.run_simulation()
+            self.__dependencies_changed()
         elif new_state < State.active and old_state >= State.active:
             self.__rah_items.discard(message.item)
-            self.run_simulation()
+            self.__dependencies_changed()
 
     def _handle_attr_change(self, message):
         if message.item is self.__fit.ship and message.attr in (
             Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
             Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
         ):
-            self.run_simulation()
+            self.__dependencies_changed()
         elif message.item in self.__rah_items and (message.attr in (
             Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
             Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance,
             Attribute.resistance_shift_amount
         ) or message.attr == self.__get_duration_attr_id(message.item)):
-            self.run_simulation()
+            self.__dependencies_changed()
 
     _handler_map = {
         ItemAdded: _handle_item_addition,
@@ -246,3 +253,17 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             return item.default_effect.duration_attribute
         except AttributeError:
             return None
+
+    def __install_callbacks(self, item):
+        for res_attr in res_attrs:
+            item.attributes._set_override_callback(res_attr, (self.get_rah_resonance, (item, res_attr), {}))
+
+    def __remove_callbacks(self, item):
+        for res_attr in res_attrs:
+            item.attributes._del_override_callback(res_attr)
+
+    def __dependencies_changed(self):
+        self.__simulation_results.clear()
+
+    def get_rah_resonance(self, item, attr):
+        return self.__simulation_results[item][attr]
