@@ -248,3 +248,20 @@ class TestOverride(CalculatorTestCase):
         # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
+
+    def test_override_notification_changing(self):
+        # Setup
+        item = self.item
+        messages_before = len(self.fit.message_store)
+        # Action
+        item.attributes._override_value_may_change(self.attr3.id)
+        # Verification
+        messages_after = len(self.fit.message_store)
+        self.assertEqual(messages_after - messages_before, 1)
+        message = self.fit.message_store[-1]
+        self.assertTrue(isinstance(message, AttrValueChangedOverride))
+        self.assertIs(message.item, self.item)
+        self.assertEqual(message.attr, self.attr3.id)
+        # Cleanup
+        self.fit.items.remove(item)
+        self.assert_calculator_buffers_empty(self.fit)
