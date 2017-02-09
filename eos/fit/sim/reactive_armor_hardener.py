@@ -34,23 +34,19 @@ from eos.util.pubsub import BaseSubscriber
 logger = getLogger(__name__)
 
 
-# We will be rounding almost each and every involved number to this
-# amount of significant digits during simulation to cancel out float
-# errors, which is needed for more reliable loop detection
-KEEP_DIGITS = 10
-
 res_attrs = (
     Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
     Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
 )
-res_attr_pattern_map = {
+# Format: {resonance attribute: damage profile field}
+profile_attrib_map = {
     Attribute.armor_em_damage_resonance: 'em',
     Attribute.armor_thermal_damage_resonance: 'thermal',
     Attribute.armor_kinetic_damage_resonance: 'kinetic',
     Attribute.armor_explosive_damage_resonance: 'explosive'
 }
 # When equal damage is received across several damage types, those which
-# come earlier in this list will be picked as resistance donators
+# come earlier in this list will be picked as donors
 default_sorting = (
     Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
     Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
@@ -127,7 +123,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
             # Calculate damage received over passed time
             damage_current = {attr: (
-                time_passed * getattr(incoming_damage, res_attr_pattern_map[attr]) * ship_attrs[attr]
+                time_passed * getattr(incoming_damage, profile_attrib_map[attr]) * ship_attrs[attr]
             ) for attr in res_attrs}
 
             # Add it up to damage already received by RAHs during past cycles
@@ -174,24 +170,24 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     return
 
     def __get_next_profile(self, current_profile, received_damage, shift_amount):
-        # We take from at least 2 resists, possibly more if they do not take damage
-        feeders = max(2, len(tuple(filter(lambda rah: received_damage[rah] == 0, received_damage))))
-        stealers = 4 - feeders
+        # We take from at least 2 resist types, possibly more if they do not take damage
+        donors = max(2, len(tuple(filter(lambda rah: received_damage[rah] == 0, received_damage))))
+        recipients = 4 - donors
         # Primary key for sorting is received damage, secondary is default order.
         # Secondary "sorting" happens due to default list order and stable sort
         sorted_damage_types = sorted(default_sorting, key=received_damage.get)
-        fed_amount = 0
+        donated_amount = 0
         new_profile = {}
-        # Steal
-        for resonance_attr in sorted_damage_types[:feeders]:
+        # Donate
+        for resonance_attr in sorted_damage_types[:donors]:
             current_resonance = current_profile[resonance_attr]
             to_feed = min(1 - current_resonance, shift_amount)
-            fed_amount += to_feed
+            donated_amount += to_feed
             new_profile[resonance_attr] = current_resonance + to_feed
-        # Give
-        for resonance_attr in sorted_damage_types[feeders:]:
+        # Take
+        for resonance_attr in sorted_damage_types[donors:]:
             current_resonance = current_profile[resonance_attr]
-            new_profile[resonance_attr] = current_resonance - fed_amount / stealers
+            new_profile[resonance_attr] = current_resonance - donated_amount / recipients
         return new_profile
 
     def __sim_tick_iter(self):
