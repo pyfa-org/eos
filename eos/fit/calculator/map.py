@@ -127,8 +127,22 @@ class MutableAttributeMap:
         if attr in self._override_callbacks:
             callback, args, kwargs = self._override_callbacks[attr]
             return callback(*args, **kwargs)
-        # If no override is set, use modified value
-        return self.__get_modified_value(attr)
+        # If value is stored in modified map, it's considered as valid
+        try:
+            val = self.__modified_attributes[attr]
+        # Else, we have to run full calculation process
+        except KeyError:
+            try:
+                val = self.__modified_attributes[attr] = self.__calculate(attr)
+            except (NoSourceError, AttributeMetaError, BaseValueError) as e:
+                raise KeyError(attr) from e
+            else:
+                # Special message type if modified attribute is masked by override
+                if attr in self._override_callbacks:
+                    self.__publish(AttrValueChangedMasked(item=self.__item, attr=attr))
+                else:
+                    self.__publish(AttrValueChanged(item=self.__item, attr=attr))
+        return val
 
     def __len__(self):
         return len(self.keys())
@@ -175,25 +189,6 @@ class MutableAttributeMap:
         for attr in set(self.__modified_attributes):
             del self[attr]
         self.__cap_map = None
-
-    def __get_modified_value(self, attr):
-        """Get modified value of an attribute, skipping override checks"""
-        # If value is stored in modified map, it's considered as valid
-        try:
-            val = self.__modified_attributes[attr]
-        # Else, we have to run full calculation process
-        except KeyError:
-            try:
-                val = self.__modified_attributes[attr] = self.__calculate(attr)
-            except (NoSourceError, AttributeMetaError, BaseValueError) as e:
-                raise KeyError(attr) from e
-            else:
-                # Special message type if modified attribute is masked by override
-                if attr in self._override_callbacks:
-                    self.__publish(AttrValueChangedMasked(item=self.__item, attr=attr))
-                else:
-                    self.__publish(AttrValueChanged(item=self.__item, attr=attr))
-        return val
 
     def __calculate(self, attr):
         """
@@ -386,10 +381,21 @@ class MutableAttributeMap:
 
     def _get_without_overrides(self, attr, default=None):
         """Get attribute value without using overrides"""
+        # Almost the same as __getitem__ code, with few changes.
+        # The reason they're split is performance
         try:
-            return self.__get_modified_value(attr)
+            val = self.__modified_attributes[attr]
         except KeyError:
-            return default
+            try:
+                val = self.__modified_attributes[attr] = self.__calculate(attr)
+            except (NoSourceError, AttributeMetaError, BaseValueError):
+                return default
+            else:
+                if attr in self._override_callbacks:
+                    self.__publish(AttrValueChangedMasked(item=self.__item, attr=attr))
+                else:
+                    self.__publish(AttrValueChanged(item=self.__item, attr=attr))
+        return val
 
     # Cap-related methods
     @property

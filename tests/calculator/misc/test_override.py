@@ -38,6 +38,7 @@ class TestOverride(CalculatorTestCase):
         self.attr2 = self.ch.attribute(attribute_id=2)
         self.attr3 = self.ch.attribute(attribute_id=3)
         self.attr4 = self.ch.attribute(attribute_id=4)
+        self.attr5 = self.ch.attribute(attribute_id=5)
         modifier1 = DogmaModifier()
         modifier1.state = State.online
         modifier1.tgt_filter = ModifierTargetFilter.item
@@ -117,6 +118,19 @@ class TestOverride(CalculatorTestCase):
         self.assertIs(message.item, self.item)
         self.assertEqual(message.attr, self.attr3.id)
         self.assertAlmostEqual(item.attributes[self.attr4.id], 88.5)
+        # Cleanup
+        self.fit.items.remove(item)
+        self.assert_calculator_buffers_empty(self.fit)
+
+    def test_get_ignore_overrides_default(self):
+        # Setup
+        item = self.item
+        messages_before = len(self.fit.message_store)
+        # Action
+        self.assertAlmostEqual(item.attributes._get_without_overrides(self.attr5.id, 1000), 1000)
+        # Verification
+        messages_after = len(self.fit.message_store)
+        self.assertEqual(messages_after - messages_before, 0)
         # Cleanup
         self.fit.items.remove(item)
         self.assert_calculator_buffers_empty(self.fit)
