@@ -27,6 +27,9 @@ from eos.util.pubsub import BaseSubscriber
 from eos.util.round import round_to_significant_digits as round_sig
 
 
+# We will be rounding almost each and every involved number to this
+# amount of significant digits during simulation to cancel out float
+# errors, which is needed for more reliable loop detection
 KEEP_DIGITS = 10
 
 res_attrs = (
