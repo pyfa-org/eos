@@ -187,12 +187,6 @@ class MutableAttributeMap:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
             except (NoSourceError, AttributeMetaError, BaseValueError) as e:
                 raise KeyError(attr) from e
-            else:
-                # Special message type if modified attribute is masked by override
-                if attr in self._override_callbacks:
-                    self.__publish(AttrValueChangedMasked(item=self.__item, attr=attr))
-                else:
-                    self.__publish(AttrValueChanged(item=self.__item, attr=attr))
         return val
 
     def __calculate(self, attr):
