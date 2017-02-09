@@ -26,19 +26,22 @@ from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
 
 
-res_attrs = resattr_em, resattr_thermal, resattr_kinetic, resattr_explosive = (
+res_attrs = (
     Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
     Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
 )
 res_attr_pattern_map = {
-    resattr_em: 'em',
-    resattr_thermal: 'thermal',
-    resattr_kinetic: 'kinetic',
-    resattr_explosive: 'explosive'
+    Attribute.armor_em_damage_resonance: 'em',
+    Attribute.armor_thermal_damage_resonance: 'thermal',
+    Attribute.armor_kinetic_damage_resonance: 'kinetic',
+    Attribute.armor_explosive_damage_resonance: 'explosive'
 }
 # When equal damage is received across several damage types, those which
 # come earlier in this list will be picked as resistance donators
-default_sorting = (resattr_em, resattr_explosive, resattr_kinetic, resattr_thermal)
+default_sorting = (
+    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
+    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
+)
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
@@ -215,10 +218,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         if message.item is self.__fit.ship and message.attr in res_attrs:
             self.__clear_results()
         # RAH shift amount or cycle time
-        elif message.item in self.__rah_items and (message.attr in (
-            Attribute.resistance_shift_amount,
-            self.__get_duration_attr_id(message.item)
-        )):
+        elif message.item in self.__rah_items and (
+            message.attr == Attribute.resistance_shift_amount or
+            # Duration change invalidates results only when there're
+            # more than 1 RAHs
+            (message.attr == self.__get_duration_attr_id(message.item) and len(self.__rah_items) > 1)
+        ):
             self.__clear_results()
 
     def _handle_attr_change_masked(self, message):
