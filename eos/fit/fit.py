@@ -31,7 +31,7 @@ from .messages import (
     RefreshSource, DefaultIncomingDamageChanged
 )
 from .restriction import RestrictionService
-# from .sim import *
+from .sim import *
 from .stats import StatService
 from .helper import DamageTypes
 from .volatile import FitVolatileManager
@@ -73,7 +73,7 @@ class Fit(MessageBroker, BaseSubscriber):
         self.stats = StatService(self)
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
         # Initialize simulators
-        # self.__rah_sim = ReactiveArmorHardenerSimulator(self)
+        self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Use default source, unless specified otherwise. Source setting may
         # enable services (if there's source), thus it has to be after service
         # initialization

@@ -21,7 +21,8 @@
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
-from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged
+from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged, AttrValueChangedMasked
+from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
 
 
@@ -29,13 +30,22 @@ res_attrs = resattr_em, resattr_thermal, resattr_kinetic, resattr_explosive = (
     Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
     Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
 )
+res_attr_pattern_map = {
+    resattr_em: 'em',
+    resattr_thermal: 'thermal',
+    resattr_kinetic: 'kinetic',
+    resattr_explosive: 'explosive'
+}
+# When equal damage is received across several damage types, those which
+# come earlier in this list will be picked as resistance donators
+default_sorting = (resattr_em, resattr_explosive, resattr_kinetic, resattr_thermal)
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def __init__(self, fit):
-        self.__rah_items = set()
-        self.__simulation_results = {}
+        # Format: {rah item: {resonance attribute: resonance value}}
+        self.__rah_items = {}
         self.__fit = fit
         self.__running = False
         fit._subscribe(self, self._handler_map.keys())
@@ -44,73 +54,65 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         if len(self.__rah_items) == 0:
             return
         self.__running = True
-        # Reset attributes on all known RAHs
-        for rah in self.__rah_items:
-            for attr in (
-                Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-                Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
-            ):
-                rah.attributes._override_del(attr)
         # If there's no ship, simulation is meaningless
         try:
             ship_attrs = self.__fit.ship.attributes
         except AttributeError:
             self.__running = False
             return
-        # Format: [{(rah item1, time cycling, profile), (rah item2, time cycling, profile), ...}, ...],
+        # Initialize results with base values (modified by other items, but not by sim)
+        for rah_item, rah_resonances in self.__rah_items.items():
+            for res_attr in res_attrs:
+                rah_resonances[res_attr] = rah_item.attributes._get_without_overrides(res_attr)
+        # Format: [{(RAH item 1, time cycling, profile), (RAH item 2, time cycling, profile), ...}, ...],
         history = []
         incoming_damage = self.__fit.default_incoming_damage
         # Find RAH with the slowest cycle time
         slow_rah = max(self.__rah_items, key=lambda i: i.cycle_time)
-        # Simulation will stop when this RAH cycles this amount of times
+        # Simulation will stop when the slowest RAH cycles this amount of times
         slow_cycles_max = 500
         slow_cycles_current = 0
-        # Format: {rah item: damage received during cycle}
-        damage_during_cycle = {rah: (0, 0, 0, 0) for rah in self.__rah_items}
-        for time_passed, cycled_rahs, rah_states in self.__rah_state_iter():
+
+        # Format: {RAH item: {resonance attribute: damage received during RAH cycle for this resonance}}
+        damage_during_cycle = {rah: {attr: 0 for attr in res_attrs} for rah in self.__rah_items}
+        for time_passed, cycled_rahs, rah_states in self.__sim_tick_iter():
 
             # Calculate damage received over passed time
-            damage_current = (
-                time_passed * incoming_damage.em * ship_attrs[Attribute.armor_em_damage_resonance],
-                time_passed * incoming_damage.thermal * ship_attrs[Attribute.armor_thermal_damage_resonance],
-                time_passed * incoming_damage.kinetic * ship_attrs[Attribute.armor_kinetic_damage_resonance],
-                time_passed * incoming_damage.explosive * ship_attrs[Attribute.armor_explosive_damage_resonance]
-            )
-            for rah, damage_old in damage_during_cycle.items():
-                damage_during_cycle[rah] = (
-                    damage_old[0] + damage_current[0], damage_old[1] + damage_current[1],
-                    damage_old[2] + damage_current[2], damage_old[3] + damage_current[3]
-                )
+            damage_current = {attr: (
+                time_passed * getattr(incoming_damage, res_attr_pattern_map[attr]) * ship_attrs[attr]
+            ) for attr in res_attrs}
+
+            # Add it up to damage already received by RAHs during past cycles
+            for rah_item, rah_damage_during_cycle in damage_during_cycle.items():
+                for attr in res_attrs:
+                    rah_damage_during_cycle[attr] += damage_current[attr]
+
             for rah_item in cycled_rahs:
-                rah_profile = tuple(rah_item.attributes.get(attr) for attr in (
-                    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-                    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
-                ))
                 new_profile = self.__get_next_profile(
-                    rah_profile, damage_during_cycle[rah_item],
-                    rah_item.attributes[Attribute.resistance_shift_amount]
+                    self.__rah_items[rah_item], damage_during_cycle[rah_item],
+                    rah_item.attributes[Attribute.resistance_shift_amount] / 100
                 )
-                rah_item.attributes._override_set(Attribute.armor_em_damage_resonance, new_profile[0])
-                rah_item.attributes._override_set(Attribute.armor_thermal_damage_resonance, new_profile[1])
-                rah_item.attributes._override_set(Attribute.armor_kinetic_damage_resonance, new_profile[2])
-                rah_item.attributes._override_set(Attribute.armor_explosive_damage_resonance, new_profile[3])
-                damage_during_cycle[rah_item] = (0, 0, 0, 0)
+
+                # Set new profile and notify about changes
+                self.__rah_items[rah_item].update(new_profile)
+                for attr in res_attrs:
+                    rah_item.attributes._override_value_may_change(attr)
+
+                # Reset damage counter for RAH which completed its cycle
+                for attr in res_attrs:
+                    damage_during_cycle[rah_item][attr] = 0
 
             # Get current resonance values and record state
             history_entry = set()
-            for rah_item in self.__rah_items:
-                rah_profile = tuple(rah_item.attributes.get(attr) for attr in (
-                    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-                    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
-                ))
-                history_entry.add((rah_item, rah_states[rah_item], rah_profile))
+            for rah_item, rah_profile in self.__rah_items.items():
+                history_entry.add((rah_item, rah_states[rah_item], FrozenDict(rah_profile)))
+
             # See if we're in loop, end if we are
             if history_entry in history:
                 for rah, profile in self.__average_history(history[history.index(history_entry):]).items():
-                    rah.attributes._override_set(Attribute.armor_em_damage_resonance, profile[0])
-                    rah.attributes._override_set(Attribute.armor_thermal_damage_resonance, profile[1])
-                    rah.attributes._override_set(Attribute.armor_kinetic_damage_resonance, profile[2])
-                    rah.attributes._override_set(Attribute.armor_explosive_damage_resonance, profile[3])
+                    self.__rah_items[rah] = profile
+                    for attr in res_attrs:
+                        rah.attributes._override_value_may_change(attr)
                 self.__running = False
                 return
             history.append(history_entry)
@@ -123,40 +125,39 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     # ignoring ceil(15/6)*2 first cycles
                     cycles_to_ignore = 6
                     for rah, profile in self.__average_history(history[cycles_to_ignore:]).items():
-                        rah.attributes._override_set(Attribute.armor_em_damage_resonance, profile[0])
-                        rah.attributes._override_set(Attribute.armor_thermal_damage_resonance, profile[1])
-                        rah.attributes._override_set(Attribute.armor_kinetic_damage_resonance, profile[2])
-                        rah.attributes._override_set(Attribute.armor_explosive_damage_resonance, profile[3])
+                        self.__rah_items[rah] = profile
+                        for attr in res_attrs:
+                            rah.attributes._override_value_may_change(attr)
                     self.__running = False
                     return
 
     def __get_next_profile(self, current_profile, received_damage, shift_amount):
-        attr_position_map = {
-            Attribute.armor_em_damage_resonance: 0,
-            Attribute.armor_thermal_damage_resonance: 1,
-            Attribute.armor_kinetic_damage_resonance: 2,
-            Attribute.armor_explosive_damage_resonance: 3
-        }
-        shift_amount = shift_amount / 100
-        victims = max(2, len(tuple(filter(lambda i: i == 0, received_damage))))
-        burglars = 4 - victims
-        received_damage_map = {attr: received_damage[pos] for attr, pos in attr_position_map.items()}
-        profile_map = {attr: current_profile[pos] for attr, pos in attr_position_map.items()}
-        attr_damage_sorted = sorted(received_damage_map.items(), key=lambda t: (t[1], t[0]))
-        stolen_amount = 0
+        # We take from at least 2 resists, possibly more if they do not take damage
+        feeders = max(2, len(tuple(filter(lambda rah: received_damage[rah] == 0, received_damage))))
+        stealers = 4 - feeders
+        # Primary key for sorting is received damage, secondary is default order.
+        # Secondary "sorting" happens due to default list order and stable sort
+        sorted_damage_types = sorted(default_sorting, key=received_damage.get)
+        fed_amount = 0
+        new_profile = {}
         # Steal
-        for resonance_attr, dmg_taken in attr_damage_sorted[:victims]:
-            to_steal = min(1 - profile_map[resonance_attr], shift_amount)
-            stolen_amount += to_steal
-            profile_map[resonance_attr] += to_steal
+        for resonance_attr in sorted_damage_types[:feeders]:
+            current_resonance = current_profile[resonance_attr]
+            to_feed = min(1 - current_resonance, shift_amount)
+            fed_amount += to_feed
+            new_profile[resonance_attr] = current_resonance + to_feed
         # Give
-        for resonance_attr, dmg_taken in attr_damage_sorted[victims:]:
-            profile_map[resonance_attr] -= stolen_amount / burglars
-        result = tuple(profile_map[attr] for attr in sorted(attr_position_map, key=attr_position_map.get))
-        print(result)
-        return result
+        for resonance_attr in sorted_damage_types[feeders:]:
+            current_resonance = current_profile[resonance_attr]
+            new_profile[resonance_attr] = current_resonance - fed_amount / stealers
+        return new_profile
 
-    def __rah_state_iter(self):
+    def __sim_tick_iter(self):
+        """
+        Iterate over points in time when cycle of any RAH is finished.
+        Return time passed since last tick, list of RAHs finished cycling
+        and map with info on how long each RAH has been in current cycle.
+        """
         # Format: {rah item: current cycle time}
         state = {rah: 0 for rah in self.__rah_items}
         yield 0, (), state
@@ -181,51 +182,58 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {rah: profile}
         result = {}
         for rah, profiles in used_profiles.items():
-            result[rah] = (
-                sum(profile[0] for profile in profiles) / len(profiles),
-                sum(profile[1] for profile in profiles) / len(profiles),
-                sum(profile[2] for profile in profiles) / len(profiles),
-                sum(profile[3] for profile in profiles) / len(profiles)
-            )
+            for attr in res_attrs:
+                result.setdefault(rah, {})[attr] = sum(p[attr] for p in profiles) / len(profiles)
         return result
 
+    # Message handling
     def _handle_item_addition(self, message):
-        if self.__check_if_rah(message.item) is True and message.item.state >= State.active:
-            self.__rah_items.add(message.item)
-            self.__dependencies_changed()
+        item = message.item
+        if self.__check_if_rah(item) is True and item.state >= State.active:
+            self.__register_rah(item)
+            self.__clear_results()
 
     def _handle_item_removal(self, message):
-        if self.__check_if_rah(message.item) is True and message.item.state >= State.active:
-            self.__rah_items.discard(message.item)
-            self.__dependencies_changed()
+        item = message.item
+        if self.__check_if_rah(item) is True and item.state >= State.active:
+            self.__unregister_rah(item)
+            self.__clear_results()
 
     def _handle_state_switch(self, message):
         if self.__check_if_rah(message.item) is not True:
             return
-        old_state, new_state = message.old, message.new
+        item, old_state, new_state = message
         if old_state < State.active and new_state >= State.active:
-            self.__rah_items.add(message.item)
-            self.__dependencies_changed()
+            self.__register_rah(item)
+            self.__clear_results()
         elif new_state < State.active and old_state >= State.active:
-            self.__rah_items.discard(message.item)
-            self.__dependencies_changed()
+            self.__unregister_rah(item)
+            self.__clear_results()
 
     def _handle_attr_change(self, message):
-        # Ship resistances changed
+        # Ship resistances
         if message.item is self.__fit.ship and message.attr in res_attrs:
-            self.__dependencies_changed()
-        # RAH resistances, shift amount and cycle time
+            self.__clear_results()
+        # RAH shift amount or cycle time
         elif message.item in self.__rah_items and (message.attr in (
-            *res_attrs, Attribute.resistance_shift_amount,
+            Attribute.resistance_shift_amount,
             self.__get_duration_attr_id(message.item)
         )):
-            self.__dependencies_changed()
+            self.__clear_results()
+
+    def _handle_attr_change_masked(self, message):
+        # We've set up overrides on RAHs' resonance attributes, but when
+        # base (not modified by simulator) values of these attributes change,
+        # we should re-run simulator
+        if message.item in self.__rah_items and message.attr in res_attrs:
+            self.__clear_results()
 
     _handler_map = {
         ItemAdded: _handle_item_addition,
         ItemRemoved: _handle_item_removal,
         ItemStateChanged: _handle_state_switch,
-        AttrValueChanged: _handle_attr_change
+        AttrValueChanged: _handle_attr_change,
+        AttrValueChangedMasked: _handle_attr_change_masked
     }
 
     def _notify(self, message):
@@ -237,6 +245,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             return
         handler(self, message)
 
+    # Auxiliary message handling methods
     def __check_if_rah(self, item):
         if not hasattr(item, 'cycle_time'):
             return False
@@ -251,16 +260,29 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         except AttributeError:
             return None
 
-    def __install_callbacks(self, item):
+    def __register_rah(self, rah_item):
         for res_attr in res_attrs:
-            item.attributes._set_override_callback(res_attr, (self.get_rah_resonance, (item, res_attr), {}))
+            rah_item.attributes._set_override_callback(res_attr, (self.get_rah_resonance, (rah_item, res_attr), {}))
+        self.__rah_items.setdefault(rah_item, {})
 
-    def __remove_callbacks(self, item):
+    def __unregister_rah(self, rah_item):
         for res_attr in res_attrs:
-            item.attributes._del_override_callback(res_attr)
+            rah_item.attributes._del_override_callback(res_attr)
+        try:
+            del self.__rah_items[rah_item]
+        except KeyError:
+            pass
 
-    def __dependencies_changed(self):
-        self.__simulation_results.clear()
+    def __clear_results(self):
+        for ress in self.__rah_items.values():
+            ress.clear()
 
     def get_rah_resonance(self, item, attr):
-        return self.__simulation_results[item][attr]
+        resonances = self.__rah_items[item]
+        try:
+            resonance = resonances[attr]
+        except KeyError:
+            self.__clear_results()
+            self.run_simulation()
+            resonance = resonances[attr]
+        return resonance
