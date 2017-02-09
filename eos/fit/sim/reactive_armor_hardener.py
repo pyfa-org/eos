@@ -24,7 +24,10 @@ from eos.const.eve import Attribute, Effect
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged, AttrValueChangedMasked
 from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
+from eos.util.round import round_to_significant_digits as round_sig
 
+
+KEEP_DIGITS = 10
 
 res_attrs = (
     Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
@@ -66,7 +69,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Initialize results with base values (modified by other items, but not by sim)
         for rah_item, rah_resonances in self.__rah_items.items():
             for res_attr in res_attrs:
-                rah_resonances[res_attr] = rah_item.attributes._get_without_overrides(res_attr)
+                rah_resonances[res_attr] = round_sig(rah_item.attributes._get_without_overrides(res_attr), KEEP_DIGITS)
         # Format: [{(RAH item 1, time cycling, profile), (RAH item 2, time cycling, profile), ...}, ...],
         history = []
         incoming_damage = self.__fit.default_incoming_damage
