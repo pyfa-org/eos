@@ -80,9 +80,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # In case of any errors, use regular RAH attributes
             except Exception:
                 logger.error('unexpected exception in RAH simulator')
-                for rah_item, rah_resonances in self.__rah_items.items():
-                    for attr in res_attrs:
-                        rah_resonances[attr] = rah_item.attributes._get_without_overrides(attr)
+                self.__set_unsimulated_resonances()
                 resonance = self.__rah_items[item][attr]
             # Fetch requested resonance after successful simulation
             else:
@@ -99,10 +97,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def _run_simulation(self):
         if len(self.__rah_items) == 0:
             return
-        # Initialize results with base values (modified by other items, but not by sim)
-        for rah_item, rah_resonances in self.__rah_items.items():
-            for res_attr in res_attrs:
-                rah_resonances[res_attr] = rah_item.attributes._get_without_overrides(res_attr)
+        self.__set_unsimulated_resonances()
         # If there's no ship, simulation is meaningless
         try:
             ship_attrs = self.__fit.ship.attributes
@@ -168,6 +163,15 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     for rah, profile in self.__average_history(history[cycles_to_ignore:]).items():
                         self.__rah_items[rah] = profile
                     return
+
+    def __set_unsimulated_resonances(self):
+        """
+        Put unsimulated (modified by other items, but not modified
+        by overrides from simulator) resonance values into results.
+        """
+        for rah_item, rah_resonances in self.__rah_items.items():
+            for attr in res_attrs:
+                rah_resonances[attr] = rah_item.attributes._get_without_overrides(attr)
 
     def __get_next_profile(self, current_profile, received_damage, shift_amount):
         # We take from at least 2 resist types, possibly more if they do not take damage
