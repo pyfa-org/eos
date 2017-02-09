@@ -105,7 +105,7 @@ class EosTestCase(TestCase):
         useful to detect memory leaks.
         """
         entry_num = 0
-        for attr_name, attr_val in object_.__dict__.items():
+        for attr_name, attr_val in vars(object_).items():
             if attr_name in ignore:
                 continue
             attr_val = getattr(object_, attr_name)
