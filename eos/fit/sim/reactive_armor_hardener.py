@@ -34,7 +34,7 @@ from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
 
 
-RahHistoryEntry = namedtuple('RahHistoryEntry', ('rah', 'cycling', 'resonances'))
+RahHistoryEntry = namedtuple('RahHistoryEntry', ('cycling', 'resonances'))
 
 
 logger = getLogger(__name__)
@@ -150,9 +150,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     damage_during_cycle[rah_item][attr] = 0
 
             # Get current resonance values and record state
-            history_entry = set()
+            history_entry = {}
             for rah_item, rah_profile in self.__rah_items.items():
-                history_entry.add(RahHistoryEntry(rah_item, rah_states[rah_item], FrozenDict(rah_profile)))
+                history_entry[rah_item] = RahHistoryEntry(rah_states[rah_item], FrozenDict(rah_profile))
 
             # See if we're in loop, end if we are
             if history_entry in history:
@@ -160,6 +160,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     self.__rah_items[rah] = profile
                 return
             history.append(history_entry)
+
+        # If we didn't find any RAH state loops during specified amount of sim ticks,
+        # consider limited amount of tick results for final result calculation
         else:
             # TODO: make it not hardcoded, something along the lines of ignoring ceil(15/6)*2 first cycles
             ticks_to_ignore = 6
@@ -240,9 +243,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {rah: [profiles]}
         used_profiles = {}
         for entry in history:
-            for rah, cycle_time, profile in entry:
-                if cycle_time == 0:
-                    used_profiles.setdefault(rah, []).append(profile)
+            for rah_item, rah_data in entry.items():
+                if rah_data.cycling == 0:
+                    used_profiles.setdefault(rah_item, []).append(rah_data.resonances)
         # Format: {rah: profile}
         result = {}
         for rah, profiles in used_profiles.items():
