@@ -20,7 +20,9 @@
 
 
 from collections import namedtuple
+from copy import copy
 from logging import getLogger
+from math import ceil
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
@@ -32,12 +34,13 @@ from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
 
 
-HistorySubEntry = namedtuple('HistorySubEntry', ('rah', 'cycling_for', 'resonances'))
+RahHistoryEntry = namedtuple('RahHistoryEntry', ('rah', 'cycling', 'resonances'))
 
 
 logger = getLogger(__name__)
 
 
+MAX_SIMULATION_TICKS = 500
 # List all armor resonance attributes and also define default sorting order.
 # When equal damage is received across several damage types, those which
 # come earlier in this list will be picked as donors
@@ -116,15 +119,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: [{(RAH item 1, time cycling, profile), (RAH item 2, time cycling, profile), ...}, ...],
         history = []
         incoming_damage = self.__fit.default_incoming_damage
-        # Find RAH with the slowest cycle time
-        slow_rah = max(self.__rah_items, key=lambda i: i.cycle_time)
-        # Simulation will stop when the slowest RAH cycles this amount of times
-        slow_cycles_max = 500
-        slow_cycles_current = 0
 
         # Format: {RAH item: {resonance attribute: damage received during RAH cycle for this resonance}}
         damage_during_cycle = {rah: {attr: 0 for attr in res_attrs} for rah in self.__rah_items}
-        for time_passed, cycled_rahs, rah_states in self.__sim_tick_iter():
+        for time_passed, cycled_rahs, rah_states in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
 
             # Calculate damage received over passed time
             damage_current = {attr: (
@@ -154,7 +152,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # Get current resonance values and record state
             history_entry = set()
             for rah_item, rah_profile in self.__rah_items.items():
-                history_entry.add(HistorySubEntry(rah_item, rah_states[rah_item], FrozenDict(rah_profile)))
+                history_entry.add(RahHistoryEntry(rah_item, rah_states[rah_item], FrozenDict(rah_profile)))
 
             # See if we're in loop, end if we are
             if history_entry in history:
@@ -162,17 +160,51 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     self.__rah_items[rah] = profile
                 return
             history.append(history_entry)
+        else:
+            # TODO: make it not hardcoded, something along the lines of ignoring ceil(15/6)*2 first cycles
+            ticks_to_ignore = 6
+            ticks_to_consider = max(len(history) - ticks_to_ignore, ceil(len(history) / 2))
+            for rah, profile in self.__average_history(history[-ticks_to_consider:]).items():
+                self.__rah_items[rah] = profile
+            return
 
-            # Break cycle if slowest RAH reached its limit
-            if slow_rah in cycled_rahs:
-                slow_cycles_current += 1
-                if slow_cycles_current >= slow_cycles_max:
-                    # TODO: make it not hardcoded, something along lines of
-                    # ignoring ceil(15/6)*2 first cycles
-                    cycles_to_ignore = 6
-                    for rah, profile in self.__average_history(history[cycles_to_ignore:]).items():
-                        self.__rah_items[rah] = profile
-                    return
+    def __sim_tick_iter(self, max_ticks):
+        """
+        Iterate over points in time when cycle of any RAH is finished.
+        Return time passed since last tick, list of RAHs finished cycling
+        and map with info on how long each RAH has been in current cycle.
+        """
+        if max_ticks < 1:
+            raise StopIteration
+        # Keep track of RAH cycle data in this map
+        # Format: {rah item: current cycle time}
+        iter_cycle_data = {rah: 0 for rah in self.__rah_items}
+        # Always copy cycle data map to make sure it's not getting
+        # modified from outside, which may alter iter state
+        yield 0, (), copy(iter_cycle_data)
+        # We've already yielded 1 value
+        tick = 1
+        while True:
+            # Stopping iteration when current
+            # tick exceedes passed limit
+            tick += 1
+            if tick > max_ticks:
+                raise StopIteration
+            # Format: {remaining cycle time: {rah items}}
+            remaining_time_map = {}
+            for rah_item, rah_cycling_time in iter_cycle_data.items():
+                rah_remaining_cycle_time = rah_item.cycle_time - rah_cycling_time
+                remaining_time_map.setdefault(rah_remaining_cycle_time, set()).add(rah_item)
+            # Pick time remaining until any of RAHs finishes its cycle
+            time_passed = min(remaining_time_map)
+            rahs_finished_cycle = remaining_time_map[time_passed]
+            # Update map which tracks RAHs' cycle states
+            for rah_item in iter_cycle_data:
+                if rah_item in rahs_finished_cycle:
+                    iter_cycle_data[rah_item] = 0
+                else:
+                    iter_cycle_data[rah_item] += time_passed
+            yield time_passed, rahs_finished_cycle, copy(iter_cycle_data)
 
     def __set_unsimulated_resonances(self):
         """
@@ -203,26 +235,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             current_resonance = current_profile[resonance_attr]
             new_profile[resonance_attr] = current_resonance - donated_amount / recipients
         return new_profile
-
-    def __sim_tick_iter(self):
-        """
-        Iterate over points in time when cycle of any RAH is finished.
-        Return time passed since last tick, list of RAHs finished cycling
-        and map with info on how long each RAH has been in current cycle.
-        """
-        # Format: {rah item: current cycle time}
-        state = {rah: 0 for rah in self.__rah_items}
-        yield 0, (), state
-        while True:
-            # Format: {remaining time: {rah items}}
-            remaining_map = {}
-            for rah, current_time in state.items():
-                remaining_time = rah.cycle_time - current_time
-                remaining_map.setdefault(remaining_time, set()).add(rah)
-            time_passed = min(remaining_map)
-            finished_cycle = remaining_map[time_passed]
-            state = {rah: 0 if rah in finished_cycle else state[rah] + time_passed for rah in state}
-            yield time_passed, finished_cycle, state
 
     def __average_history(self, history):
         # Format: {rah: [profiles]}
