@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from collections import namedtuple
 from logging import getLogger
 
 from eos.const.eos import State
@@ -31,9 +32,15 @@ from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
 
 
+HistorySubEntry = namedtuple('HistorySubEntry', ('rah', 'cycling_for', 'resonances'))
+
+
 logger = getLogger(__name__)
 
 
+# List all armor resonance attributes and also define default sorting order.
+# When equal damage is received across several damage types, those which
+# come earlier in this list will be picked as donors
 res_attrs = (
     Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
     Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
@@ -45,17 +52,16 @@ profile_attrib_map = {
     Attribute.armor_kinetic_damage_resonance: 'kinetic',
     Attribute.armor_explosive_damage_resonance: 'explosive'
 }
-# When equal damage is received across several damage types, those which
-# come earlier in this list will be picked as donors
-default_sorting = (
-    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
-)
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
+    """
+    Simulator which enables RAH's adaptation to incoming
+    damage pattern.
+    """
 
     def __init__(self, fit):
+        # Contains all known RAHs and results of simulation
         # Format: {rah item: {resonance attribute: resonance value}}
         self.__rah_items = {}
         self.__fit = fit
@@ -67,8 +73,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         Get specified resonance for specified RAH item.
         """
         # Try fetching already simulated results
+        rah_resonances = self.__rah_items[item]
         try:
-            resonance = self.__rah_items[item][attr]
+            rah_resonance = rah_resonances[attr]
         # If no results are readily available, run simulatiomn
         except KeyError:
             self.__clear_results()
@@ -77,28 +84,31 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 self._run_simulation()
             except KeyboardInterrupt:
                 raise
-            # In case of any errors, use regular RAH attributes
+            # In case of any errors, use unsimulated RAH attributes
             except Exception:
                 logger.error('unexpected exception in RAH simulator')
                 self.__set_unsimulated_resonances()
-                resonance = self.__rah_items[item][attr]
+                rah_resonance = self.__rah_items[item][attr]
             # Fetch requested resonance after successful simulation
             else:
-                resonance = self.__rah_items[item][attr]
-            # Do notification and cleanup regardless of simulation
+                rah_resonance = self.__rah_items[item][attr]
+            # Send notifications and do cleanup regardless of simulation
             # success
             finally:
+                # Even though caller requested specific resonance of specific
+                # RAH, we've calculated all resonances for all RAHs, thus we
+                # need to send notifications about all calculated values
                 for rah_item in self.__rah_items:
-                    for attr in res_attrs:
-                        rah_item.attributes._override_value_may_change(attr)
+                    for res_attr in res_attrs:
+                        rah_item.attributes._override_value_may_change(res_attr)
                 self.__running = False
-        return resonance
+        return rah_resonance
 
     def _run_simulation(self):
-        if len(self.__rah_items) == 0:
-            return
+        """Controls flow of actual RAH simulation"""
+        # Put unsimulated resonances into container for results
         self.__set_unsimulated_resonances()
-        # If there's no ship, simulation is meaningless
+        # If there's no ship, simulation is meaningless - keep unsimulated results
         try:
             ship_attrs = self.__fit.ship.attributes
         except AttributeError:
@@ -144,7 +154,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # Get current resonance values and record state
             history_entry = set()
             for rah_item, rah_profile in self.__rah_items.items():
-                history_entry.add((rah_item, rah_states[rah_item], FrozenDict(rah_profile)))
+                history_entry.add(HistorySubEntry(rah_item, rah_states[rah_item], FrozenDict(rah_profile)))
 
             # See if we're in loop, end if we are
             if history_entry in history:
@@ -179,17 +189,17 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         recipients = 4 - donors
         # Primary key for sorting is received damage, secondary is default order.
         # Secondary "sorting" happens due to default list order and stable sort
-        sorted_damage_types = sorted(default_sorting, key=received_damage.get)
+        sorted_resonance_attrs = sorted(res_attrs, key=received_damage.get)
         donated_amount = 0
         new_profile = {}
         # Donate
-        for resonance_attr in sorted_damage_types[:donors]:
+        for resonance_attr in sorted_resonance_attrs[:donors]:
             current_resonance = current_profile[resonance_attr]
-            to_feed = min(1 - current_resonance, shift_amount)
-            donated_amount += to_feed
-            new_profile[resonance_attr] = current_resonance + to_feed
+            to_donate = min(1 - current_resonance, shift_amount)
+            donated_amount += to_donate
+            new_profile[resonance_attr] = current_resonance + to_donate
         # Take
-        for resonance_attr in sorted_damage_types[donors:]:
+        for resonance_attr in sorted_resonance_attrs[donors:]:
             current_resonance = current_profile[resonance_attr]
             new_profile[resonance_attr] = current_resonance - donated_amount / recipients
         return new_profile
@@ -231,18 +241,18 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     # Message handling
     def _handle_item_addition(self, message):
         item = message.item
-        if self.__check_if_rah(item) is True and item.state >= State.active:
+        if self.__is_rah(item) is True and item.state >= State.active:
             self.__register_rah(item)
             self.__clear_results()
 
     def _handle_item_removal(self, message):
         item = message.item
-        if self.__check_if_rah(item) is True and item.state >= State.active:
+        if self.__is_rah(item) is True and item.state >= State.active:
             self.__unregister_rah(item)
             self.__clear_results()
 
     def _handle_state_switch(self, message):
-        if self.__check_if_rah(message.item) is not True:
+        if self.__is_rah(message.item) is not True:
             return
         item, old_state, new_state = message
         if old_state < State.active and new_state >= State.active:
@@ -267,8 +277,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def _handle_attr_change_masked(self, message):
         # We've set up overrides on RAHs' resonance attributes, but when
-        # base (not modified by simulator) values of these attributes change,
-        # we should re-run simulator
+        # base (not modified by simulator) values of these attributes changes,
+        # we should re-run simulator - as now we have different resonance value
+        # to base sim results off
         if message.item in self.__rah_items and message.attr in res_attrs:
             self.__clear_results()
 
@@ -294,7 +305,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         handler(self, message)
 
     # Auxiliary message handling methods
-    def __check_if_rah(self, item):
+    def __is_rah(self, item):
+        """Verify if passed item is a RAH or not"""
         if not hasattr(item, 'cycle_time'):
             return False
         for effect in item._eve_type.effects:
@@ -303,17 +315,20 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         return False
 
     def __get_duration_attr_id(self, item):
+        """Get ID of an attribute which stores cycle time for this module"""
         try:
             return item.default_effect.duration_attribute
         except AttributeError:
             return None
 
     def __register_rah(self, rah_item):
+        """Make sure the sim knows about the RAH and the RAH knows about the sim"""
         for res_attr in res_attrs:
             rah_item.attributes._set_override_callback(res_attr, (self.get_rah_resonance, (rah_item, res_attr), {}))
         self.__rah_items.setdefault(rah_item, {})
 
     def __unregister_rah(self, rah_item):
+        """Remove all connections between the sim and passed RAH"""
         for res_attr in res_attrs:
             rah_item.attributes._del_override_callback(res_attr)
         try:
@@ -322,5 +337,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             pass
 
     def __clear_results(self):
-        for ress in self.__rah_items.values():
-            ress.clear()
+        """Remove simulation results, if there're any"""
+        for rah_resonances in self.__rah_items.values():
+            rah_resonances.clear()
