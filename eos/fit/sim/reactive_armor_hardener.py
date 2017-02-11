@@ -30,7 +30,6 @@ from eos.fit.messages import (
     ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged,
     AttrValueChangedMasked, DefaultIncomingDamageChanged
 )
-from eos.util.frozen_dict import FrozenDict
 from eos.util.pubsub import BaseSubscriber
 
 
@@ -119,10 +118,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         except AttributeError:
             return
 
-        # Container for history. We need history to detect profile loops, which help
-        # to receive more accurate resonances and do it faster in majority of cases
-        # Format: [{RAH item: RAH history entry}, ...],
-        history = []
+        # Container for tick state history. We need history to detect loops, which helps
+        # to receive more accurate resonances and do it faster in majority of the cases
+        # Format: [{RAH item: RAH history entry}, ...]
+        tick_state_history = []
         incoming_damage = self.__fit.default_incoming_damage
 
         # Container for damage each RAH received during its cycle. May
@@ -130,50 +129,60 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {RAH item: {resonance attribute: damage received}}
         damage_during_cycle = {rah_item: {res_attr: 0 for res_attr in res_attrs} for rah_item in self.__rah_items}
 
-        for time_passed, cycled_rahs, rah_states in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
+        for time_passed, cycled_rahs, rahs_cycling_data in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
             # For each RAH, calculate damage received during this tick and
             # add it to damage received during RAH cycle
             for rah_item, rah_damage_during_cycle in damage_during_cycle.items():
                 for res_attr in res_attrs:
                     rah_damage_during_cycle[res_attr] += (
-                        time_passed * getattr(incoming_damage, profile_attrib_map[res_attr]) * ship_attrs[res_attr]
+                        getattr(incoming_damage, profile_attrib_map[res_attr]) *
+                        # Default ship resonance to 1 when not specified
+                        ship_attrs.get(res_attr, 1) *
+                        time_passed
                     )
 
             for rah_item in cycled_rahs:
+                # If RAH just finished its cycle, make resist switch - get new
+                # resonance profile
                 new_profile = self.__get_next_profile(
                     self.__rah_items[rah_item], damage_during_cycle[rah_item],
                     rah_item.attributes[Attribute.resistance_shift_amount] / 100
                 )
 
-                # Set new profile and notify about changes
+                # Then write this profile to dictionary with results and notify
+                # everyone about these changes. This is needed to get updated ship
+                # resonances next tick
                 self.__rah_items[rah_item].update(new_profile)
-                for attr in res_attrs:
-                    rah_item.attributes._override_value_may_change(attr)
+                for res_attr in res_attrs:
+                    rah_item.attributes._override_value_may_change(res_attr)
 
                 # Reset damage counter for RAH which completed its cycle
-                for attr in res_attrs:
-                    damage_during_cycle[rah_item][attr] = 0
+                for res_attr in res_attrs:
+                    damage_during_cycle[rah_item][res_attr] = 0
 
-            # Get current resonance values and record state
-            history_entry = {}
+            # Record current tick state
+            tick_state = {}
             for rah_item, rah_profile in self.__rah_items.items():
-                history_entry[rah_item] = RahHistoryEntry(rah_states[rah_item], FrozenDict(rah_profile))
+                tick_state[rah_item] = RahHistoryEntry(rahs_cycling_data[rah_item], copy(rah_profile))
 
-            # See if we're in loop, end if we are
-            if history_entry in history:
-                for rah, profile in self.__get_average_resonances(history[history.index(history_entry):]).items():
-                    self.__rah_items[rah] = profile
+            # See if we're in a loop, if we are - calculate average
+            # resists across tick states which are withing the loop
+            if tick_state in tick_state_history:
+                loop_tick_states = tick_state_history[tick_state_history.index(tick_state):]
+                for rah_item, rah_profile in self.__get_average_resonances(loop_tick_states).items():
+                    self.__rah_items[rah_item] = rah_profile
                 return
-            history.append(history_entry)
+            tick_state_history.append(tick_state)
 
         # If we didn't find any RAH state loops during specified amount of sim ticks,
-        # consider limited amount of tick results for final result calculation
+        # calculate average profiles based on whole history, excluding initial adaptation
+        # period
         else:
-            # TODO: make it not hardcoded, something along the lines of ignoring ceil(15/6)*2 first cycles
-            ticks_to_ignore = 6
-            ticks_to_consider = max(len(history) - ticks_to_ignore, ceil(len(history) / 2))
-            for rah, profile in self.__get_average_resonances(history[-ticks_to_consider:]).items():
-                self.__rah_items[rah] = profile
+            ticks_to_ignore = self.__get_initial_adaptation_ticks(tick_state_history)
+            # Never ignore more than half of the history
+            ticks_to_consider = max(len(tick_state_history) - ticks_to_ignore, ceil(len(tick_state_history) / 2))
+            for rah_item, rah_profile in self.__get_average_resonances(tick_state_history[-ticks_to_consider:]).items():
+                self.__rah_items[rah_item] = rah_profile
             return
 
     def __set_unsimulated_resonances(self):
@@ -202,8 +211,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # We've already yielded 1 value
         tick = 1
         while True:
-            # Stopping iteration when current
-            # tick exceedes passed limit
+            # Stop iteration when current tick exceedes limit
             tick += 1
             if tick > max_ticks:
                 raise StopIteration
@@ -274,6 +282,46 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             for res_attr in res_attrs:
                 rah_resonances[res_attr] = sum(p[res_attr] for p in rah_profiles) / len(rah_profiles)
         return averaged_resonances
+
+    def __get_initial_adaptation_ticks(self, tick_state_history):
+        """
+        Pick RAH which has the slowest adaptation and guesstimate
+        its approximate adaptation period in ticks for the worst-case
+        """
+        # Get max amount of time it takes to exhaust the highest resistance
+        # of each RAH
+        # Format: {rah item: amount of cycles}
+        exhaustion_cycles = {}
+        for rah_item in self.__rah_items:
+            # Calculate how many cycles it would take for highest resistance
+            # (lowest resonance) to be exhausted
+            exhaustion_cycles[rah_item] = max(ceil(
+                (1 - rah_item.attributes._get_without_overrides(res_attr)) /
+                (rah_item.attributes[Attribute.resistance_shift_amount] / 100)
+            ) for res_attr in res_attrs)
+        # Slowest RAH is the one which takes the most time to exhaust
+        # its highest resistance when it's used strictly as donor
+        slowest_rah = max(self.__rah_items, key=lambda i: exhaustion_cycles[i] * i.cycle_time)
+        # Multiply amount of resistance exhaustion cycles by 1.5, to give
+        # RAH more time for 'finer' adjustments
+        slowest_cycles = ceil(exhaustion_cycles[slowest_rah] * 1.5)
+        if slowest_cycles == 0:
+            return 0
+        # We rely on cycling time attribute to be zero in order to determine
+        # that cycle for the slowest RAH has just ended. It is zero for the
+        # very first tick in the history too, thus we skip it, but take it
+        # into initial tick count
+        ignored_tick_amount = 1
+        tick_count = ignored_tick_amount
+        cycle_count = 0
+        for tick_state in tick_state_history[ignored_tick_amount:]:
+            tick_count += 1
+                # Once slowest RAH cycles desired amount of times, break the loop
+            if tick_state[slowest_rah].cycling_time == 0:
+                cycle_count += 1
+                if cycle_count >= slowest_cycles:
+                    break
+        return tick_count
 
     # Message handling
     def _handle_item_addition(self, message):
