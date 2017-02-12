@@ -22,7 +22,7 @@
 from math import floor, log10
 
 
-def round_to_significant_digits(x, sig_digits):
+def sig_round(x, sig_digits):
     """
     Keep passed amount of highest significant digits of
     passed number and round everything past them.

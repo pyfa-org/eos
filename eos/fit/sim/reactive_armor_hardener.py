@@ -31,6 +31,7 @@ from eos.fit.messages import (
     AttrValueChangedMasked, DefaultIncomingDamageChanged
 )
 from eos.util.pubsub import BaseSubscriber
+from eos.util.round import sig_round
 
 
 RahHistoryEntry = namedtuple('RahHistoryEntry', ('cycling_time', 'resonances'))
@@ -40,6 +41,7 @@ logger = getLogger(__name__)
 
 
 MAX_SIMULATION_TICKS = 500
+SIG_DIGITS = 10
 # List all armor resonance attributes and also define default sorting order.
 # When equal damage is received across several damage types, those which
 # come earlier in this list will be picked as donors
@@ -64,20 +66,20 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def __init__(self, fit):
         # Contains all known RAHs and results of simulation
-        # Format: {rah item: {resonance attribute: resonance value}}
-        self.__rah_items = {}
+        # Format: {RAH item: {resonance attribute: resonance value}}
+        self.__data = {}
         self.__fit = fit
         self.__running = False
         fit._subscribe(self, self._handler_map.keys())
 
-    def get_rah_resonance(self, rah_item, res_attr):
+    def get_resonance(self, item, attr):
         """
         Get specified resonance for specified RAH item.
         """
         # Try fetching already simulated results
-        rah_resonances = self.__rah_items[rah_item]
+        resonances = self.__data[item]
         try:
-            rah_resonance = rah_resonances[res_attr]
+            resonance = resonances[attr]
         # If no results are readily available, run simulatiomn
         except KeyError:
             self.__clear_results()
@@ -90,24 +92,26 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             except Exception:
                 logger.error('unexpected exception in RAH simulator')
                 self.__set_unsimulated_resonances()
-                rah_resonance = self.__rah_items[rah_item][res_attr]
+                resonance = self.__data[item][attr]
             # Fetch requested resonance after successful simulation
             else:
-                rah_resonance = self.__rah_items[rah_item][res_attr]
+                resonance = self.__data[item][attr]
             # Send notifications and do cleanup regardless of simulation
             # success
             finally:
                 # Even though caller requested specific resonance of specific
                 # RAH, we've calculated all resonances for all RAHs, thus we
                 # need to send notifications about all calculated values
-                for rah_item in self.__rah_items:
-                    for res_attr in res_attrs:
-                        rah_item.attributes._override_value_may_change(res_attr)
+                for item in self.__data:
+                    for attr in res_attrs:
+                        item.attributes._override_value_may_change(attr)
                 self.__running = False
-        return rah_resonance
+        return resonance
 
     def _run_simulation(self):
         """Controls flow of actual RAH simulation"""
+        from time import time
+        t = time()
 
         # Put unsimulated resonances into container for results
         self.__set_unsimulated_resonances()
@@ -127,50 +131,55 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Container for damage each RAH received during its cycle. May
         # span across several simulation ticks for multi-RAH setups
         # Format: {RAH item: {resonance attribute: damage received}}
-        damage_during_cycle = {rah_item: {res_attr: 0 for res_attr in res_attrs} for rah_item in self.__rah_items}
+        cycle_damage_data = {item: {attr: 0 for attr in res_attrs} for item in self.__data}
 
-        for time_passed, cycled_rahs, rahs_cycling_data in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
+        for time_passed, cycled, cycling_data in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
             # For each RAH, calculate damage received during this tick and
             # add it to damage received during RAH cycle
-            for rah_item, rah_damage_during_cycle in damage_during_cycle.items():
-                for res_attr in res_attrs:
-                    rah_damage_during_cycle[res_attr] += (
-                        getattr(incoming_damage, profile_attrib_map[res_attr]) *
+            for item, item_cycle_damage in cycle_damage_data.items():
+                for attr in res_attrs:
+                    item_cycle_damage[attr] += (
+                        getattr(incoming_damage, profile_attrib_map[attr]) *
                         # Default ship resonance to 1 when not specified
-                        ship_attrs.get(res_attr, 1) *
+                        ship_attrs.get(attr, 1) *
                         time_passed
                     )
 
-            for rah_item in cycled_rahs:
+            for item in cycled:
                 # If RAH just finished its cycle, make resist switch - get new
                 # resonance profile
                 new_profile = self.__get_next_profile(
-                    self.__rah_items[rah_item], damage_during_cycle[rah_item],
-                    rah_item.attributes[Attribute.resistance_shift_amount] / 100
+                    self.__data[item], cycle_damage_data[item],
+                    item.attributes[Attribute.resistance_shift_amount] / 100
                 )
 
                 # Then write this profile to dictionary with results and notify
                 # everyone about these changes. This is needed to get updated ship
                 # resonances next tick
-                self.__rah_items[rah_item].update(new_profile)
-                for res_attr in res_attrs:
-                    rah_item.attributes._override_value_may_change(res_attr)
+                self.__data[item].update(new_profile)
+                for attr in res_attrs:
+                    item.attributes._override_value_may_change(attr)
 
                 # Reset damage counter for RAH which completed its cycle
-                for res_attr in res_attrs:
-                    damage_during_cycle[rah_item][res_attr] = 0
+                for attr in res_attrs:
+                    cycle_damage_data[item][attr] = 0
 
             # Record current tick state
             tick_state = {}
-            for rah_item, rah_profile in self.__rah_items.items():
-                tick_state[rah_item] = RahHistoryEntry(rahs_cycling_data[rah_item], copy(rah_profile))
+            for item, profile in self.__data.items():
+                tick_state[item] = RahHistoryEntry(
+                    cycling_data[item],
+                    # Round resonances in history entries for better loop detection
+                    {attr: sig_round(value, SIG_DIGITS) for attr, value in profile.items()}
+                )
 
             # See if we're in a loop, if we are - calculate average
-            # resists across tick states which are withing the loop
+            # resists across tick states which are within the loop
             if tick_state in tick_state_history:
                 loop_tick_states = tick_state_history[tick_state_history.index(tick_state):]
-                for rah_item, rah_profile in self.__get_average_resonances(loop_tick_states).items():
-                    self.__rah_items[rah_item] = rah_profile
+                for item, profile in self.__get_average_resonances(loop_tick_states).items():
+                    self.__data[item] = profile
+                print(time() - t)
                 return
             tick_state_history.append(tick_state)
 
@@ -183,8 +192,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # Never ignore more than half of the history
                 floor(len(tick_state_history) / 2)
             )
-            for rah_item, rah_profile in self.__get_average_resonances(tick_state_history[ticks_to_ignore:]).items():
-                self.__rah_items[rah_item] = rah_profile
+            for item, profile in self.__get_average_resonances(tick_state_history[ticks_to_ignore:]).items():
+                self.__data[item] = profile
             return
 
     def __set_unsimulated_resonances(self):
@@ -192,9 +201,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         Put unsimulated (modified by other items, but not modified
         by overrides from simulator) resonance values into results.
         """
-        for rah_item, rah_resonances in self.__rah_items.items():
+        for item, resonances in self.__data.items():
             for attr in res_attrs:
-                rah_resonances[attr] = rah_item.attributes._get_without_overrides(attr)
+                resonances[attr] = item.attributes._get_without_overrides(attr)
 
     def __sim_tick_iter(self, max_ticks):
         """
@@ -205,8 +214,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         if max_ticks < 1:
             raise StopIteration
         # Keep track of RAH cycle data in this map
-        # Format: {rah item: current cycle time}
-        iter_cycle_data = {rah: 0 for rah in self.__rah_items}
+        # Format: {RAH item: current cycle time}
+        iter_cycle_data = {item: 0 for item in self.__data}
         # Always copy cycle data map to make sure it's not getting
         # modified from outside, which may alter iter state
         yield 0, (), copy(iter_cycle_data)
@@ -217,21 +226,37 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             tick += 1
             if tick > max_ticks:
                 raise StopIteration
-            # Format: {remaining cycle time: {rah items}}
+            # Format: {remaining cycle time: {RAH items}}
             remaining_time_map = {}
-            for rah_item, rah_cycling_time in iter_cycle_data.items():
-                rah_remaining_cycle_time = rah_item.cycle_time - rah_cycling_time
-                remaining_time_map.setdefault(rah_remaining_cycle_time, set()).add(rah_item)
-            # Pick time remaining until any of RAHs finishes its cycle
-            time_passed = min(remaining_time_map)
-            rahs_finished_cycle = remaining_time_map[time_passed]
-            # Update map which tracks RAHs' cycle states
-            for rah_item in iter_cycle_data:
-                if rah_item in rahs_finished_cycle:
-                    iter_cycle_data[rah_item] = 0
+            for item, cycling_time in iter_cycle_data.items():
+                remaining_cycle_time = item.cycle_time - cycling_time
+                remaining_time_map.setdefault(remaining_cycle_time, set()).add(item)
+            sorted_remaining_times = sorted(remaining_time_map)
+            # Pick time remaining until some RAH finishes its cycle
+            time_passed = sorted_remaining_times[0]
+            finished_cycle = remaining_time_map[time_passed]
+            # Have time tolerance to cancel float calculation errors:
+            # take not just 1st RAHs which strictly finished cycle,
+            # but also a few beneath them, if they are really close.
+            # If it's not done, it's possible to miss tick state loop
+            # formed by multiple RAHs which are out of sync with each
+            # other in some cases. E.g., while normal RAH does 17
+            # cycles, heated one does 20. This is supposed to be loop,
+            # if their profiles match, but
+            # >>> sum([0.85]*20) == 17
+            # False
+            for remaining_cycle_time in sorted_remaining_times[1:]:
+                if sig_round(remaining_cycle_time, SIG_DIGITS) <= 0:
+                    finished_cycle.add(remaining_time_map[remaining_cycle_time])
                 else:
-                    iter_cycle_data[rah_item] += time_passed
-            yield time_passed, rahs_finished_cycle, copy(iter_cycle_data)
+                    break
+            # Update map which tracks RAHs' cycle states
+            for item in iter_cycle_data:
+                if item in finished_cycle:
+                    iter_cycle_data[item] = 0
+                else:
+                    iter_cycle_data[item] += time_passed
+            yield time_passed, finished_cycle, copy(iter_cycle_data)
 
     def __get_next_profile(self, current_profile, received_damage, shift_amount):
         """
@@ -262,27 +287,29 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             new_profile[resonance_attr] = current_resonance - donated_amount / recipients
         return new_profile
 
-    def __get_average_resonances(self, history):
+    def __get_average_resonances(self, tick_state_history):
         """
         Receive iterable with history entries and use it to calculate
         average resonance value for each RAH
         """
         # Container for resonance profiles each RAH used
-        # Format: {rah item: [profiles]}
+        # Format: {RAH item: [profiles]}
         used_profiles = {}
-        for entry in history:
-            for rah_item, rah_data in entry.items():
+        for tick_state in tick_state_history:
+            for item, data in tick_state.items():
                 # Add profile to container only when RAH cycle
                 # is just starting
-                if rah_data.cycling_time == 0:
-                    used_profiles.setdefault(rah_item, []).append(rah_data.resonances)
+                if data.cycling_time == 0:
+                    used_profiles.setdefault(item, []).append(data.resonances)
         # Calculate average values
-        # Format: {rah item: averaged profile}
+        # Format: {RAH item: averaged profile}
         averaged_resonances = {}
-        for rah_item, rah_profiles in used_profiles.items():
-            rah_resonances = averaged_resonances[rah_item] = {}
-            for res_attr in res_attrs:
-                rah_resonances[res_attr] = sum(p[res_attr] for p in rah_profiles) / len(rah_profiles)
+        for item, profiles in used_profiles.items():
+            resonances = averaged_resonances[item] = {}
+            for attr in res_attrs:
+                resonances[attr] = sig_round(
+                    sum(p[attr] for p in profiles) / len(profiles), SIG_DIGITS
+                )
         return averaged_resonances
 
     def __estimate_initial_adaptation_ticks(self, tick_state_history):
@@ -292,18 +319,18 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """
         # Get max amount of time it takes to exhaust the highest resistance
         # of each RAH
-        # Format: {rah item: amount of cycles}
+        # Format: {RAH item: amount of cycles}
         exhaustion_cycles = {}
-        for rah_item in self.__rah_items:
+        for item in self.__data:
             # Calculate how many cycles it would take for highest resistance
             # (lowest resonance) to be exhausted
-            exhaustion_cycles[rah_item] = max(ceil(
-                (1 - rah_item.attributes._get_without_overrides(res_attr)) /
-                (rah_item.attributes[Attribute.resistance_shift_amount] / 100)
-            ) for res_attr in res_attrs)
+            exhaustion_cycles[item] = max(ceil(
+                (1 - item.attributes._get_without_overrides(attr)) /
+                (item.attributes[Attribute.resistance_shift_amount] / 100)
+            ) for attr in res_attrs)
         # Slowest RAH is the one which takes the most time to exhaust
         # its highest resistance when it's used strictly as donor
-        slowest_rah = max(self.__rah_items, key=lambda i: exhaustion_cycles[i] * i.cycle_time)
+        slowest_rah = max(self.__data, key=lambda i: exhaustion_cycles[i] * i.cycle_time)
         # Multiply amount of resistance exhaustion cycles by 1.5, to give
         # RAH more time for 'finer' adjustments
         slowest_cycles = ceil(exhaustion_cycles[slowest_rah] * 1.5)
@@ -330,13 +357,13 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def _handle_item_addition(self, message):
         item = message.item
         if self.__is_rah(item) is True and item.state >= State.active:
-            self.__register_rah(item)
+            self.__register(item)
             self.__clear_results()
 
     def _handle_item_removal(self, message):
         item = message.item
         if self.__is_rah(item) is True and item.state >= State.active:
-            self.__unregister_rah(item)
+            self.__unregister(item)
             self.__clear_results()
 
     def _handle_state_switch(self, message):
@@ -344,10 +371,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             return
         item, old_state, new_state = message
         if old_state < State.active and new_state >= State.active:
-            self.__register_rah(item)
+            self.__register(item)
             self.__clear_results()
         elif new_state < State.active and old_state >= State.active:
-            self.__unregister_rah(item)
+            self.__unregister(item)
             self.__clear_results()
 
     def _handle_attr_change(self, message):
@@ -355,11 +382,11 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         if message.item is self.__fit.ship and message.attr in res_attrs:
             self.__clear_results()
         # RAH shift amount or cycle time
-        elif message.item in self.__rah_items and (
+        elif message.item in self.__data and (
             message.attr == Attribute.resistance_shift_amount or
             # Duration change invalidates results only when there're
             # more than 1 RAHs
-            (message.attr == self.__get_duration_attr_id(message.item) and len(self.__rah_items) > 1)
+            (message.attr == self.__get_duration_attr_id(message.item) and len(self.__data) > 1)
         ):
             self.__clear_results()
 
@@ -368,7 +395,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # base (not modified by simulator) values of these attributes changes,
         # we should re-run simulator - as now we have different resonance value
         # to base sim results off
-        if message.item in self.__rah_items and message.attr in res_attrs:
+        if message.item in self.__data and message.attr in res_attrs:
             self.__clear_results()
 
     def _handle_changed_damage_profile(self, _):
@@ -409,22 +436,22 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         except AttributeError:
             return None
 
-    def __register_rah(self, rah_item):
+    def __register(self, item):
         """Make sure the sim knows about the RAH and the RAH knows about the sim"""
-        for res_attr in res_attrs:
-            rah_item.attributes._set_override_callback(res_attr, (self.get_rah_resonance, (rah_item, res_attr), {}))
-        self.__rah_items.setdefault(rah_item, {})
+        for attr in res_attrs:
+            item.attributes._set_override_callback(attr, (self.get_resonance, (item, attr), {}))
+        self.__data.setdefault(item, {})
 
-    def __unregister_rah(self, rah_item):
+    def __unregister(self, item):
         """Remove all connections between the sim and passed RAH"""
-        for res_attr in res_attrs:
-            rah_item.attributes._del_override_callback(res_attr)
+        for attr in res_attrs:
+            item.attributes._del_override_callback(attr)
         try:
-            del self.__rah_items[rah_item]
+            del self.__data[item]
         except KeyError:
             pass
 
     def __clear_results(self):
         """Remove simulation results, if there're any"""
-        for rah_resonances in self.__rah_items.values():
-            rah_resonances.clear()
+        for resonances in self.__data.values():
+            resonances.clear()
