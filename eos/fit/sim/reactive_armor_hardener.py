@@ -234,7 +234,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             sorted_remaining_times = sorted(remaining_time_map)
             # Pick time remaining until some RAH finishes its cycle
             time_passed = sorted_remaining_times[0]
-            finished_cycle = remaining_time_map[time_passed]
+            cycled = remaining_time_map[time_passed]
             # Have time tolerance to cancel float calculation errors:
             # take not just 1st RAHs which strictly finished cycle,
             # but also a few beneath them, if they are really close.
@@ -247,16 +247,16 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # False
             for remaining_cycle_time in sorted_remaining_times[1:]:
                 if sig_round(remaining_cycle_time, SIG_DIGITS) <= 0:
-                    finished_cycle.add(remaining_time_map[remaining_cycle_time])
+                    cycled.add(remaining_time_map[remaining_cycle_time])
                 else:
                     break
             # Update map which tracks RAHs' cycle states
             for item in iter_cycle_data:
-                if item in finished_cycle:
+                if item in cycled:
                     iter_cycle_data[item] = 0
                 else:
                     iter_cycle_data[item] += time_passed
-            yield time_passed, finished_cycle, copy(iter_cycle_data)
+            yield time_passed, cycled, copy(iter_cycle_data)
 
     def __get_next_profile(self, current_profile, received_damage, shift_amount):
         """
