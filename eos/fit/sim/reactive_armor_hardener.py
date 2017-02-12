@@ -22,7 +22,7 @@
 from collections import namedtuple
 from copy import copy
 from logging import getLogger
-from math import ceil
+from math import ceil, floor
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
@@ -178,10 +178,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # calculate average profiles based on whole history, excluding initial adaptation
         # period
         else:
-            ticks_to_ignore = self.__get_initial_adaptation_ticks(tick_state_history)
-            # Never ignore more than half of the history
-            ticks_to_consider = max(len(tick_state_history) - ticks_to_ignore, ceil(len(tick_state_history) / 2))
-            for rah_item, rah_profile in self.__get_average_resonances(tick_state_history[-ticks_to_consider:]).items():
+            ticks_to_ignore = min(
+                self.__estimate_initial_adaptation_ticks(tick_state_history),
+                # Never ignore more than half of the history
+                floor(len(tick_state_history) / 2)
+            )
+            for rah_item, rah_profile in self.__get_average_resonances(tick_state_history[ticks_to_ignore:]).items():
                 self.__rah_items[rah_item] = rah_profile
             return
 
@@ -283,7 +285,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 rah_resonances[res_attr] = sum(p[res_attr] for p in rah_profiles) / len(rah_profiles)
         return averaged_resonances
 
-    def __get_initial_adaptation_ticks(self, tick_state_history):
+    def __estimate_initial_adaptation_ticks(self, tick_state_history):
         """
         Pick RAH which has the slowest adaptation and guesstimate
         its approximate adaptation period in ticks for the worst-case

@@ -101,6 +101,9 @@ LIMITED_PRECISION = (
     Attribute.power_output
 )
 
+# List of exceptions calculate method may throw
+CALCULATE_EXCEPTIONS = (NoSourceError, AttributeMetaError, BaseValueError)
+
 
 class MutableAttributeMap:
     """
@@ -123,12 +126,22 @@ class MutableAttributeMap:
         self.__cap_map = None
 
     def __getitem__(self, attr):
-        # Overridden values are priority
-        if attr in self._override_callbacks:
-            callback, args, kwargs = self._override_callbacks[attr]
+        # Overridden values are priority. Access 'private' override callbacks map
+        # directly due to performance reasons
+        if self.__overridde_callbacks is not None and attr in self.__overridde_callbacks:
+            callback, args, kwargs = self.__overridde_callbacks[attr]
             return callback(*args, **kwargs)
-        # If no override is set, use modified value
-        return self.__get_modified_value(attr)
+        # If no override is set, use modified value. If value is stored in
+        # modified map, it's considered valid
+        try:
+            val = self.__modified_attributes[attr]
+        # Else, we have to run full calculation process
+        except KeyError:
+            try:
+                val = self.__modified_attributes[attr] = self.__calculate(attr)
+            except CALCULATE_EXCEPTIONS as e:
+                raise KeyError(attr) from e
+        return val
 
     def __len__(self):
         return len(self.keys())
@@ -157,10 +170,20 @@ class MutableAttributeMap:
                 self.__publish(AttrValueChanged(item=self.__item, attr=attr))
 
     def get(self, attr, default=None):
+        # Almost copy-paste of __getitem__ due to performance reasons - attribute
+        # getters should make as few calls as possible, especially when attribute
+        # is already calculated
+        if self.__overridde_callbacks is not None and attr in self.__overridde_callbacks:
+            callback, args, kwargs = self.__overridde_callbacks[attr]
+            return callback(*args, **kwargs)
         try:
-            return self[attr]
+            val = self.__modified_attributes[attr]
         except KeyError:
-            return default
+            try:
+                val = self.__modified_attributes[attr] = self.__calculate(attr)
+            except CALCULATE_EXCEPTIONS:
+                return default
+        return val
 
     def keys(self):
         try:
@@ -175,19 +198,6 @@ class MutableAttributeMap:
         for attr in set(self.__modified_attributes):
             del self[attr]
         self.__cap_map = None
-
-    def __get_modified_value(self, attr):
-        """Get modified value of an attribute, skipping override checks"""
-        # If value is stored in modified map, it's considered as valid
-        try:
-            val = self.__modified_attributes[attr]
-        # Else, we have to run full calculation process
-        except KeyError:
-            try:
-                val = self.__modified_attributes[attr] = self.__calculate(attr)
-            except (NoSourceError, AttributeMetaError, BaseValueError) as e:
-                raise KeyError(attr) from e
-        return val
 
     def __calculate(self, attr):
         """
@@ -380,10 +390,15 @@ class MutableAttributeMap:
 
     def _get_without_overrides(self, attr, default=None):
         """Get attribute value without using overrides"""
+        # Partially borrowed from get method
         try:
-            return self.__get_modified_value(attr)
+            val = self.__modified_attributes[attr]
         except KeyError:
-            return default
+            try:
+                val = self.__modified_attributes[attr] = self.__calculate(attr)
+            except CALCULATE_EXCEPTIONS:
+                return default
+        return val
 
     # Cap-related methods
     @property
