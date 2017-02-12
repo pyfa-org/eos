@@ -315,12 +315,13 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         tick_count = ignored_tick_amount
         cycle_count = 0
         for tick_state in tick_state_history[ignored_tick_amount:]:
-            tick_count += 1
-                # Once slowest RAH cycles desired amount of times, break the loop
+            # Once slowest RAH cycles desired amount of times, do not count
+            # this tick and break the loop
             if tick_state[slowest_rah].cycling_time == 0:
                 cycle_count += 1
                 if cycle_count >= slowest_cycles:
                     break
+            tick_count += 1
         return tick_count
 
     # Message handling
