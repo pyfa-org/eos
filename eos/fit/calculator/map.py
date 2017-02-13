@@ -341,10 +341,10 @@ class MutableAttributeMap:
         chain_negative.sort()
         # Base final multiplier on 1
         list_result = 1
-        for chain in (chain_positive, chain_negative):
+        for penalty_chain in (chain_positive, chain_negative):
             # Same for intermediate per-chain result
             chain_result = 1
-            for position, modification in enumerate(chain):
+            for position, modification in enumerate(penalty_chain):
                 # Ignore 12th modification and further as non-significant
                 if position > 10:
                     break
