@@ -110,9 +110,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def _run_simulation(self):
         """Controls flow of actual RAH simulation"""
-        from time import time
-        t = time()
-
         # Put unsimulated resonances into container for results
         self.__set_unsimulated_resonances()
 
@@ -139,10 +136,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             for item, item_cycle_damage in cycle_damage_data.items():
                 for attr in res_attrs:
                     item_cycle_damage[attr] += (
-                        getattr(incoming_damage, profile_attrib_map[attr]) *
-                        # Default ship resonance to 1 when not specified
-                        ship_attrs.get(attr, 1) *
-                        time_passed
+                        getattr(incoming_damage, profile_attrib_map[attr]) * ship_attrs[attr] * time_passed
                     )
 
             for item in cycled:
@@ -179,7 +173,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 loop_tick_states = tick_state_history[tick_state_history.index(tick_state):]
                 for item, profile in self.__get_average_resonances(loop_tick_states).items():
                     self.__data[item] = profile
-                print(time() - t)
                 return
             tick_state_history.append(tick_state)
 

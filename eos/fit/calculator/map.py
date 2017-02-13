@@ -20,6 +20,7 @@
 
 
 from collections import namedtuple
+from itertools import chain
 from logging import getLogger
 from math import exp
 
@@ -191,7 +192,7 @@ class MutableAttributeMap:
         except NoSourceError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
-        return self.__modified_attributes.keys() | base_attrs.keys() | self._override_callbacks.keys()
+        return set(chain(base_attrs, self.__modified_attributes, self._override_callbacks))
 
     def clear(self):
         """Reset map to its initial state"""
