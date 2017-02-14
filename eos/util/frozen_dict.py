@@ -24,9 +24,6 @@ Recipe taken from http://code.activestate.com/recipes/414283-frozen-dictionaries
 """
 
 
-from .cached_property import cachedproperty
-
-
 class FrozenDict(dict):
 
     def __new__(cls, *args):
