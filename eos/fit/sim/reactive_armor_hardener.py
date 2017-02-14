@@ -34,9 +34,6 @@ from eos.util.pubsub import BaseSubscriber
 from eos.util.round import sig_round
 
 
-RahHistoryEntry = namedtuple('RahHistoryEntry', ('cycling_time', 'resonances'))
-
-
 logger = getLogger(__name__)
 
 
@@ -56,6 +53,25 @@ profile_attrib_map = {
     Attribute.armor_kinetic_damage_resonance: 'kinetic',
     Attribute.armor_explosive_damage_resonance: 'explosive'
 }
+
+
+class RahHistoryEntry:
+
+    def __init__(self, item, cycling, resonances):
+        self.item = item
+        self.cycling = cycling
+        self.resonances = resonances
+        self._rounded_resonances = {attr: sig_round(value, SIG_DIGITS) for attr, value in resonances.items()}
+
+    def __hash__(self):
+        return hash((id(self.item), self.cycling, frozenset(self._rounded_resonances.items())))
+
+    def __eq__(self, other):
+        return all((
+            self.item is other.item,
+            self.cycling == other.cycling,
+            self._rounded_resonances == other._rounded_resonances
+        ))
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
@@ -121,8 +137,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
         # Container for tick state history. We need history to detect loops, which helps
         # to receive more accurate resonances and do it faster in majority of the cases
-        # Format: [{RAH item: RAH history entry}, ...]
-        tick_state_history = []
+        # Format: {frozenset(RAH history entries): position}
+        seen_tick_states = set()
+        
+        tick_state_history = {}
         incoming_damage = self.__fit.default_incoming_damage
 
         # Container for damage each RAH received during its cycle. May
@@ -169,23 +187,23 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
             # See if we're in a loop, if we are - calculate average
             # resists across tick states which are within the loop
-            if tick_state in tick_state_history:
-                loop_tick_states = tick_state_history[tick_state_history.index(tick_state):]
+            if tick_state in tick_history_list:
+                loop_tick_states = tick_history_list[tick_history_list.index(tick_state):]
                 for item, profile in self.__get_average_resonances(loop_tick_states).items():
                     self.__data[item] = profile
                 return
-            tick_state_history.append(tick_state)
+            tick_history_list.append(tick_state)
 
         # If we didn't find any RAH state loops during specified amount of sim ticks,
         # calculate average profiles based on whole history, excluding initial adaptation
         # period
         else:
             ticks_to_ignore = min(
-                self.__estimate_initial_adaptation_ticks(tick_state_history),
+                self.__estimate_initial_adaptation_ticks(tick_history_list),
                 # Never ignore more than half of the history
-                floor(len(tick_state_history) / 2)
+                floor(len(tick_history_list) / 2)
             )
-            for item, profile in self.__get_average_resonances(tick_state_history[ticks_to_ignore:]).items():
+            for item, profile in self.__get_average_resonances(tick_history_list[ticks_to_ignore:]).items():
                 self.__data[item] = profile
             return
 

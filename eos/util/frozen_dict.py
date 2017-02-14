@@ -40,12 +40,8 @@ class FrozenDict(dict):
     # Prohibit use of methods which modify dictionary
     __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = __blocked_attribute
 
-    @cachedproperty
-    def _hash(self):
-        return hash(frozenset(self.items()))
-
     def __hash__(self):
-        return self._hash
+        return hash(frozenset(self.items()))
 
     def __repr__(self):
         return 'frozendict({})'.format(dict.__repr__(self))
