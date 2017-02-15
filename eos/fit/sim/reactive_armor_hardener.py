@@ -42,8 +42,8 @@ SIG_DIGITS = 10
 # When equal damage is received across several damage types, those which
 # come earlier in this list will be picked as donors
 res_attrs = (
-    Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-    Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
+    Attribute.armor_em_damage_resonance, Attribute.armor_explosive_damage_resonance,
+    Attribute.armor_kinetic_damage_resonance, Attribute.armor_thermal_damage_resonance
 )
 # Format: {resonance attribute: damage profile field}
 profile_attrib_map = {
@@ -469,5 +469,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def __clear_results(self):
         """Remove simulation results, if there're any"""
-        for resonances in self.__data.values():
+        for item, resonances in self.__data.items():
             resonances.clear()
+            for attr in res_attrs:
+                item.attributes._override_value_may_change(attr)
