@@ -54,7 +54,7 @@ profile_attrib_map = {
 }
 
 
-class RahHistoryEntry:
+class RahState:
     """Store state of one RAH for single simulation tick"""
 
     def __init__(self, item, cycling, resonances):
@@ -164,17 +164,16 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     )
 
             for item in cycled:
-                # If RAH just finished its cycle, make resist switch - get new
-                # resonance profile
-                new_profile = self.__get_next_profile(
+                # If RAH just finished its cycle, make resist switch - get new resonances
+                new_resonances = self.__get_next_resonances(
                     self.__data[item], cycle_damage_data[item],
                     item.attributes[Attribute.resistance_shift_amount] / 100
                 )
 
-                # Then write this profile to dictionary with results and notify
+                # Then write these resonances to dictionary with results and notify
                 # everyone about these changes. This is needed to get updated ship
                 # resonances next tick
-                self.__data[item].update(new_profile)
+                self.__data[item].update(new_resonances)
                 for attr in res_attrs:
                     item.attributes._override_value_may_change(attr)
 
@@ -184,32 +183,33 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
             # Record current tick state
             tick_state = frozenset(
-                RahHistoryEntry(item, cycling_data[item], profile) for item, profile in self.__data.items()
+                # Copy resonances, as we will be modifying them each tick
+                RahState(item, cycling_data[item], copy(resonances)) for item, resonances in self.__data.items()
             )
 
             # See if we're in a loop, if we are - calculate average
             # resists across tick states which are within the loop
             if tick_state in tick_states_seen:
-                loop_tick_states = tick_states_chronology[tick_states_chronology.index(tick_state):]
-                for item, profile in self.__get_average_resonances(loop_tick_states).items():
-                    self.__data[item] = profile
+                tick_states_loop = tick_states_chronology[tick_states_chronology.index(tick_state):]
+                for item, resonances in self.__get_average_resonances(tick_states_loop).items():
+                    self.__data[item] = resonances
                 return
 
-            # Update history
+            # Update history only if we don't have such entries
             tick_states_seen.add(tick_state)
             tick_states_chronology.append(tick_state)
 
         # If we didn't find any RAH state loops during specified amount of sim ticks,
-        # calculate average profiles based on whole history, excluding initial adaptation
-        # period
+        # calculate average resonances based on whole history, excluding initial
+        # adaptation period
         else:
             ticks_to_ignore = min(
                 self.__estimate_initial_adaptation_ticks(tick_states_chronology),
                 # Never ignore more than half of the history
                 floor(len(tick_states_chronology) / 2)
             )
-            for item, profile in self.__get_average_resonances(tick_states_chronology[ticks_to_ignore:]).items():
-                self.__data[item] = profile
+            for item, resonances in self.__get_average_resonances(tick_states_chronology[ticks_to_ignore:]).items():
+                self.__data[item] = resonances
             return
 
     def __set_unsimulated_resonances(self):
@@ -258,7 +258,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # formed by multiple RAHs which are out of sync with each
             # other in some cases. E.g., while normal RAH does 17
             # cycles, heated one does 20. This is supposed to be loop,
-            # if their profiles match, but
+            # if their resonances match, but
             # >>> sum([0.85]*20) == 17
             # False
             for remaining_cycle_time in sorted_remaining_times[1:]:
@@ -274,11 +274,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                     iter_cycle_data[item] += time_passed
             yield time_passed, cycled, copy(iter_cycle_data)
 
-    def __get_next_profile(self, current_profile, received_damage, shift_amount):
+    def __get_next_resonances(self, current_resonances, received_damage, shift_amount):
         """
-        Calculate new resonance profile RAH should take on the next cycle,
-        based on current resonance profile, damage received during current
-        cycle and shift amount.
+        Calculate new resonances RAH should take on the next cycle, based on current
+        resonances, damage received during current cycle and shift amount.
         """
         # We borrow resistances from at least 2 resist types,
         # possibly more if ship didn't take damage of these types
@@ -289,41 +288,41 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # and stable sorting against primary key.
         sorted_resonance_attrs = sorted(res_attrs, key=received_damage.get)
         donated_amount = 0
-        new_profile = {}
+        new_resonances = {}
         # Donate
         for resonance_attr in sorted_resonance_attrs[:donors]:
-            current_resonance = current_profile[resonance_attr]
+            current_resonance = current_resonances[resonance_attr]
             # Can't borrow more than it has
             to_donate = min(1 - current_resonance, shift_amount)
             donated_amount += to_donate
-            new_profile[resonance_attr] = current_resonance + to_donate
+            new_resonances[resonance_attr] = current_resonance + to_donate
         # Take
         for resonance_attr in sorted_resonance_attrs[donors:]:
-            current_resonance = current_profile[resonance_attr]
-            new_profile[resonance_attr] = current_resonance - donated_amount / recipients
-        return new_profile
+            current_resonance = current_resonances[resonance_attr]
+            new_resonances[resonance_attr] = current_resonance - donated_amount / recipients
+        return new_resonances
 
     def __get_average_resonances(self, tick_states):
         """
         Receive iterable with tick states and use it to calculate
         average resonance value for each RAH
         """
-        # Container for resonance profiles each RAH used
-        # Format: {RAH item: [profiles]}
-        used_profiles = {}
+        # Container for resonances each RAH used
+        # Format: {RAH item: [resonance maps]}
+        used_resonances = {}
         for tick_state in tick_states:
-            for entry in tick_state:
-                # Add profile to container only when RAH cycle
+            for item_state in tick_state:
+                # Add resonances to container only when RAH cycle
                 # is just starting
-                if entry.cycling == 0:
-                    used_profiles.setdefault(entry.item, []).append(entry.resonances)
+                if item_state.cycling == 0:
+                    used_resonances.setdefault(item_state.item, []).append(item_state.resonances)
         # Calculate average values
-        # Format: {RAH item: averaged profile}
+        # Format: {RAH item: averaged resonances}
         averaged_resonances = {}
-        for item, profiles in used_profiles.items():
-            resonances = averaged_resonances[item] = {}
-            for attr in res_attrs:
-                resonances[attr] = sum(p[attr] for p in profiles) / len(profiles)
+        for item, resonances in used_resonances.items():
+            averaged_resonances[item] = {
+                attr: sum(r[attr] for r in resonances) / len(resonances) for attr in res_attrs
+            }
         return averaged_resonances
 
     def __estimate_initial_adaptation_ticks(self, tick_states):
@@ -360,10 +359,13 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         for tick_state in tick_states[ignored_tick_amount:]:
             # Once slowest RAH cycles desired amount of times, do not count
             # this tick and break the loop
-            if tick_state[slowest_rah].cycling_time == 0:
-                cycle_count += 1
-                if cycle_count >= slowest_cycles:
+            for item_state in tick_state:
+                if item_state.item is slowest_rah:
+                    if item_state.cycling == 0:
+                        cycle_count += 1
                     break
+            if cycle_count >= slowest_cycles:
+                break
             tick_count += 1
         return tick_count
 
