@@ -343,10 +343,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             ) for attr in res_attrs)
         # Slowest RAH is the one which takes the most time to exhaust
         # its highest resistance when it's used strictly as donor
-        slowest_rah = max(self.__data, key=lambda i: exhaustion_cycles[i] * i.cycle_time)
+        slowest_item = max(self.__data, key=lambda i: exhaustion_cycles[i] * i.cycle_time)
         # Multiply amount of resistance exhaustion cycles by 1.5, to give
         # RAH more time for 'finer' adjustments
-        slowest_cycles = ceil(exhaustion_cycles[slowest_rah] * 1.5)
+        slowest_cycles = ceil(exhaustion_cycles[slowest_item] * 1.5)
         if slowest_cycles == 0:
             return 0
         # We rely on cycling time attribute to be zero in order to determine
@@ -360,7 +360,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # Once slowest RAH cycles desired amount of times, do not count
             # this tick and break the loop
             for item_state in tick_state:
-                if item_state.item is slowest_rah:
+                if item_state.item is slowest_item:
                     if item_state.cycling == 0:
                         cycle_count += 1
                     break
