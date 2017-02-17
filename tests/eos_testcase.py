@@ -63,6 +63,7 @@ class EosTestCase(TestCase):
     """
 
     def setUp(self):
+        super().setUp()
         logger = getLogger()
         # Save existing data about logging system (log level and handlers)
         self.__old_loglevel = logger.getEffectiveLevel()

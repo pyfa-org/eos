@@ -19,12 +19,9 @@
 # ===============================================================================
 
 
-from eos.fit.item import ModuleLow
-from tests.sim.rah.rah_testcase import RahTestCase
-
-
-class TestSimRahSimulation(RahTestCase):
-
-    def test_single(self):
-        rah = self.make_item_mock(ModuleLow, self.ch.type(type_id=1, attributes={}, effects=()))
-
+"""
+All tests in this module do not try to use any Eos parts directly or hack them,
+tests are just verify particular situations with all eos components working
+together as a whole. With the only one exception - we do not use actual cache
+generator and handler, we make test data on the go.
+"""
