@@ -39,9 +39,8 @@ class FitTestCase(EosTestCase):
             '_Fit__default_incoming_damage', 'message_store', '_message_assertions',
             '_MessageBroker__subscribers'
         ))
-        # As volatile manager always has one entry added to it
-        # (stats service), make sure it's ignored for calculation
-        # purposes
+        # As volatile manager always has one entry added to it (stats service),
+        # make sure it's ignored for assertion purposes
         fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(fit.stats)
         item_num += self._get_object_buffer_entry_amount(fit._volatile_mgr)
         fit._volatile_mgr._FitVolatileManager__volatile_objects.add(fit.stats)

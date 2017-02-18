@@ -101,11 +101,12 @@ class RestrictionTestCase(EosTestCase):
     def assert_restriction_buffers_empty(self):
         entry_num = 0
         # Get all registers used by service and cycle through them
-        for register in chain(
-                self.rs._RestrictionService__rest_regs_stateless,
-                *self.rs._RestrictionService__rest_regs_stateful.values()
+        for restriction in chain(
+            self.rs._RestrictionService__rests,
+            self.rs._RestrictionService__rest_regs_stateless,
+            *self.rs._RestrictionService__rest_regs_stateful.values()
         ):
-            entry_num += self._get_object_buffer_entry_amount(register)
+            entry_num += self._get_object_buffer_entry_amount(restriction)
         # Raise error if we found any data in any register
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'

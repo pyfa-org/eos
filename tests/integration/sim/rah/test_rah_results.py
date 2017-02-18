@@ -19,6 +19,8 @@
 # ===============================================================================
 
 
+from unittest.mock import patch
+
 from eos import *
 from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.integration_testcase import IntegrationTestCase
@@ -26,42 +28,88 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 class TestRahResults(IntegrationTestCase):
 
-    def test_single_run(self):
+    def setUp(self):
+        super().setUp()
         # Attribute setup
-        max_attr = self.ch.attribute(
+        self.max_attr = self.ch.attribute(
             attribute_id=100000, default_value=1.0, high_is_good=False, stackable=False
         )
-        cycle_attr = self.ch.attribute(
+        self.cycle_attr = self.ch.attribute(
             attribute_id=100001, high_is_good=False, stackable=True
         )
-        shift_attr = self.ch.attribute(
+        self.shift_attr = self.ch.attribute(
             attribute_id=Attribute.resistance_shift_amount, high_is_good=True, stackable=True
         )
-        armor_em, armor_therm, armor_kin, armor_exp = (self.ch.attribute(
-            attribute_id=attr, max_attribute=max_attr.id, high_is_good=False, stackable=False
+        self.armor_em, self.armor_therm, self.armor_kin, self.armor_exp = (self.ch.attribute(
+            attribute_id=attr, max_attribute=self.max_attr.id, high_is_good=False, stackable=False
         ) for attr in (
             Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
             Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
         ))
         # Effect setup
-        rah_effect = self.ch.effect(
+        self.rah_effect = self.ch.effect(
             effect_id=Effect.adaptive_armor_hardener, category=EffectCategory.active,
-            duration_attribute=cycle_attr.id
+            duration_attribute=self.cycle_attr.id
         )
-        # Type setup
-        ship_type = self.ch.type(type_id=1, attributes={
-            armor_em.id: 0.5, armor_therm.id: 0.65, armor_kin.id: 0.75, armor_exp.id: 0.9
-        }, effects=())
-        rah_type = self.ch.type(type_id=2, attributes={
-            armor_em.id: 0.85, armor_therm.id: 0.85, armor_kin.id: 0.85, armor_exp.id: 0.85,
-            shift_attr.id: 6, cycle_attr.id: 5.2
-        }, effects=(rah_effect,))
+
+    def make_ship_type(self, type_id, resonances):
+        attr_order = (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id)
+        self.ch.type(type_id=type_id, attributes=dict(zip(attr_order, resonances)), effects=())
+
+    def make_rah_type(self, type_id, resonances, shift_amount, cycle_time):
+        attr_order = (
+            self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
+            self.armor_exp.id, self.shift_attr.id, self.cycle_attr.id
+        )
+        self.ch.type(
+            type_id=type_id, effects=(self.rah_effect,), default_effect=self.rah_effect,
+            attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time)))
+        )
+
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    def test_single_run(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
         # Compose fit
         fit = Fit()
-        ship_item = Ship(ship_type.id)
+        ship_item = Ship(ship_type_id)
         fit.ship = ship_item
-        rah_item = ModuleLow(rah_type.id, state=State.active)
+        rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
         # Verify
-        # self.assertAlmostEqual(rah_item.attributes[armor_em.id], 0)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=3)
+    def test_order_multi(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        # Verify
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.88)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.88)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

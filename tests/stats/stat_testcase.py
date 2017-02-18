@@ -85,8 +85,8 @@ class StatTestCase(EosTestCase):
         entry_num = 0
         # Get all registers used by service and cycle through them
         for register in chain(
-                self.ss._StatService__regs_stateless,
-                *self.ss._StatService__regs_stateful.values()
+            self.ss._StatService__regs_stateless,
+            *self.ss._StatService__regs_stateful.values()
         ):
             entry_num += self._get_object_buffer_entry_amount(register)
         # Raise error if we found any data in any register
