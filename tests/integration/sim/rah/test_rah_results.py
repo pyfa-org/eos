@@ -104,6 +104,11 @@ class TestRahResults(IntegrationTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
         # Verify
+        # From real tests, gecko vs gnosis
+        # ---
+        # 0 0.850 0.850 0.850 0.850
+        # 1 0.910 0.790 0.790 0.910 (kin therm > em explo)
+        # Loop: 0-1
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.88)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
@@ -129,6 +134,15 @@ class TestRahResults(IntegrationTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
         # Verify
+        # From real tests, gecko vs gnosis with 2 EM hardeners
+        # 0 0.850 0.850 0.850 0.850
+        # 1 0.910 0.790 0.790 0.910 (kin therm > explo)
+        # 2 0.970 0.730 0.850 0.850 (therm > kin)
+        # ---
+        # 3 1.000 0.790 0.805 0.805
+        # 4 1.000 0.850 0.775 0.775
+        # 5 1.000 0.820 0.745 0.835 (kin > explo)
+        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.775)
@@ -154,6 +168,15 @@ class TestRahResults(IntegrationTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
         # Verify
+        # From real tests, gecko vs gnosis with 2 thermal hardeners
+        # 0 0.850 0.850 0.850 0.850
+        # 1 0.910 0.910 0.790 0.790 (kin explo > em)
+        # 2 0.850 0.970 0.730 0.850 (kin > explo)
+        # ---
+        # 3 0.805 1.000 0.790 0.805
+        # 4 0.775 1.000 0.850 0.775
+        # 5 0.835 1.000 0.820 0.745 (explo > em)
+        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
@@ -179,6 +202,15 @@ class TestRahResults(IntegrationTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
         # Verify
+        # From real tests, gecko vs gnosis with 2 kinetic hardeners
+        # 0 0.850 0.850 0.850 0.850
+        # 1 0.910 0.790 0.910 0.790 (explo therm > em)
+        # 2 0.850 0.730 0.970 0.850 (therm > explo)
+        # ---
+        # 3 0.805 0.790 1.000 0.805
+        # 4 0.775 0.850 1.000 0.775
+        # 5 0.835 0.820 1.000 0.745 (explo > em)
+        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 1)
@@ -190,7 +222,7 @@ class TestRahResults(IntegrationTestCase):
         self.assert_fit_buffers_empty(fit)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
-    def test_order_em_therm_kin_exp(self):
+    def test_order_em_therm_kin(self):
         # Setup
         ship_type_id = 1
         rah_type_id = 2
@@ -204,6 +236,15 @@ class TestRahResults(IntegrationTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
         # Verify
+        # From real tests, gecko vs gnosis with 2 explosive hardeners
+        # 0 0.850 0.850 0.850 0.850
+        # 1 0.910 0.790 0.790 0.910 (kin therm > em)
+        # 2 0.850 0.730 0.850 0.970 (therm > kin)
+        # ---
+        # 3 0.805 0.790 0.805 1.000
+        # 4 0.775 0.850 0.775 1.000
+        # 5 0.835 0.820 0.745 1.000 (kin > em)
+        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.775)
