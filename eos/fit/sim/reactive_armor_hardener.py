@@ -30,6 +30,7 @@ from eos.fit.messages import (
     AttrValueChangedMasked, DefaultIncomingDamageChanged
 )
 from eos.util.pubsub import BaseSubscriber
+from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
 
 
@@ -76,6 +77,10 @@ class RahState:
             self.cycling == other.cycling,
             self._rounded_resonances == other._rounded_resonances
         ))
+
+    def __repr__(self):
+        spec = ['item', 'cycling', 'resonances']
+        return make_repr_str(self, spec)
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):

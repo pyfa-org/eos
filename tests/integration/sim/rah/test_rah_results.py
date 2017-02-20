@@ -113,3 +113,103 @@ class TestRahResults(IntegrationTestCase):
         fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    def test_order_therm_kin_exp(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        fit.default_incoming_damage = DamageProfile(0, 1, 1, 1)
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        # Verify
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.775)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.805)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    def test_order_em_kin_exp(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        fit.default_incoming_damage = DamageProfile(1, 0, 1, 1)
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        # Verify
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.775)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    def test_order_em_therm_exp(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        fit.default_incoming_damage = DamageProfile(1, 1, 0, 1)
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        # Verify
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.775)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    def test_order_em_therm_kin_exp(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        fit.default_incoming_damage = DamageProfile(1, 1, 1, 0)
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        # Verify
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.775)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 1)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
