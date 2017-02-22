@@ -22,7 +22,9 @@
 from unittest.mock import patch
 
 from eos import *
+from eos.const.eos import State
 from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
@@ -37,6 +39,9 @@ class TestRahResults(IntegrationTestCase):
         self.cycle_attr = self.ch.attribute(
             attribute_id=100001, high_is_good=False, stackable=True
         )
+        self.heat_attr = self.ch.attribute(
+            attribute_id=100002, high_is_good=False, stackable=True
+        )
         self.shift_attr = self.ch.attribute(
             attribute_id=Attribute.resistance_shift_amount, high_is_good=True, stackable=True
         )
@@ -50,6 +55,12 @@ class TestRahResults(IntegrationTestCase):
         self.rah_effect = self.ch.effect(
             effect_id=Effect.adaptive_armor_hardener, category=EffectCategory.active,
             duration_attribute=self.cycle_attr.id
+        )
+        heat_modifier = DogmaModifier(
+            state=
+        )
+        self.heat_effect = self.ch.effect(
+            effect_id=100000, category=EffectCategory.overload
         )
 
     def make_ship_type(self, type_id, resonances):
@@ -66,7 +77,7 @@ class TestRahResults(IntegrationTestCase):
             attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time)))
         )
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_single_run(self):
         # Setup
         ship_type_id = 1
@@ -84,6 +95,78 @@ class TestRahResults(IntegrationTestCase):
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.601, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.589, places=3)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
+    def test_double_run(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item1 = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item1)
+        rah_item2 = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item2)
+        # Verify
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.88)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.805)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_therm.id], 0.88)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_kin.id], 0.805)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.472, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.512, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.501, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.522, places=3)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    #@patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
+    def test_double_run_unsynced(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item1 = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item1)
+        rah_item2 = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item2)
+        # Verify
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.88)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.805)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_therm.id], 0.88)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_kin.id], 0.805)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.472, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.512, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.501, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.522, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
@@ -105,21 +188,24 @@ class TestRahResults(IntegrationTestCase):
         fit.modules.low.equip(rah_item)
         # Verify
         # From real tests, gecko vs gnosis
-        # ---
+        # ---loop---
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.790 0.910 (kin therm > em explo)
-        # Loop: 0-1
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.88)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.88)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.594, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.554, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.554, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.594, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_therm_kin_exp(self):
         # Setup
         ship_type_id = 1
@@ -138,22 +224,25 @@ class TestRahResults(IntegrationTestCase):
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.790 0.910 (kin therm > explo)
         # 2 0.970 0.730 0.850 0.850 (therm > kin)
-        # ---
+        # ---loop---
         # 3 1.000 0.790 0.805 0.805
         # 4 1.000 0.850 0.775 0.775
         # 5 1.000 0.820 0.745 0.835 (kin > explo)
-        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.775)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.805)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.675, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.553, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.523, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.543, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_kin_exp(self):
         # Setup
         ship_type_id = 1
@@ -172,22 +261,25 @@ class TestRahResults(IntegrationTestCase):
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.910 0.790 0.790 (kin explo > em)
         # 2 0.850 0.970 0.730 0.850 (kin > explo)
-        # ---
+        # ---loop---
         # 3 0.805 1.000 0.790 0.805
         # 4 0.775 1.000 0.850 0.775
         # 5 0.835 1.000 0.820 0.745 (explo > em)
-        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.775)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.543, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.675, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.553, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.523, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_exp(self):
         # Setup
         ship_type_id = 1
@@ -206,22 +298,25 @@ class TestRahResults(IntegrationTestCase):
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.910 0.790 (explo therm > em)
         # 2 0.850 0.730 0.970 0.850 (therm > explo)
-        # ---
+        # ---loop---
         # 3 0.805 0.790 1.000 0.805
         # 4 0.775 0.850 1.000 0.775
         # 5 0.835 0.820 1.000 0.745 (explo > em)
-        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.775)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.543, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.553, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.675, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.523, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=6)
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_kin(self):
         # Setup
         ship_type_id = 1
@@ -240,15 +335,18 @@ class TestRahResults(IntegrationTestCase):
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.790 0.910 (kin therm > em)
         # 2 0.850 0.730 0.850 0.970 (therm > kin)
-        # ---
+        # ---loop---
         # 3 0.805 0.790 0.805 1.000
         # 4 0.775 0.850 0.775 1.000
         # 5 0.835 0.820 0.745 1.000 (kin > em)
-        # Loop: 3-5
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.775)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 1)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.543, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.553, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.523, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.675, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()

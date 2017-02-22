@@ -195,6 +195,18 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # See if we're in a loop, if we are - calculate average
             # resists across tick states which are within the loop
             if tick_state in tick_states_seen:
+                if False:
+                    print('loop {}-{}'.format(tick_states_chronology.index(tick_state), len(tick_states_chronology)-1))
+                    tn = 0
+                    for ts in tick_states_chronology:
+                        print('Tick {}'.format(tn))
+                        for rs in sorted(ts, key=lambda rs: id(rs.item)):
+                            print('  {}'.format(rs.item))
+                            print('    cycling: {}'.format(rs.cycling))
+                            print('    resonances: {}'.format(', '.join(str(round(rs.resonances[res], 5)) for res in (Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance, Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance))))
+                        tn += 1
+
+
                 tick_states_loop = tick_states_chronology[tick_states_chronology.index(tick_state):]
                 for item, resonances in self.__get_average_resonances(tick_states_loop).items():
                     self.__data[item] = resonances
@@ -208,6 +220,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # calculate average resonances based on whole history, excluding initial
         # adaptation period
         else:
+            print('no loop')
             ticks_to_ignore = min(
                 self.__estimate_initial_adaptation_ticks(tick_states_chronology),
                 # Never ignore more than half of the history
