@@ -195,18 +195,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # See if we're in a loop, if we are - calculate average
             # resists across tick states which are within the loop
             if tick_state in tick_states_seen:
-                if False:
-                    print('loop {}-{}'.format(tick_states_chronology.index(tick_state), len(tick_states_chronology)-1))
-                    tn = 0
-                    for ts in tick_states_chronology:
-                        print('Tick {}'.format(tn))
-                        for rs in sorted(ts, key=lambda rs: id(rs.item)):
-                            print('  {}'.format(rs.item))
-                            print('    cycling: {}'.format(rs.cycling))
-                            print('    resonances: {}'.format(', '.join(str(round(rs.resonances[res], 5)) for res in (Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance, Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance))))
-                        tn += 1
-
-
                 tick_states_loop = tick_states_chronology[tick_states_chronology.index(tick_state):]
                 for item, resonances in self.__get_average_resonances(tick_states_loop).items():
                     self.__data[item] = resonances
@@ -220,7 +208,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # calculate average resonances based on whole history, excluding initial
         # adaptation period
         else:
-            print('no loop')
             ticks_to_ignore = min(
                 self.__estimate_initial_adaptation_ticks(tick_states_chronology),
                 # Never ignore more than half of the history
@@ -260,30 +247,19 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             tick += 1
             if tick > max_ticks:
                 raise StopIteration
-            # Format: {remaining cycle time: {RAH items}}
-            remaining_time_map = {}
-            for item, cycling_time in iter_cycle_data.items():
-                remaining_cycle_time = item.cycle_time - cycling_time
-                remaining_time_map.setdefault(remaining_cycle_time, set()).add(item)
-            sorted_remaining_times = sorted(remaining_time_map)
             # Pick time remaining until some RAH finishes its cycle
-            time_passed = sorted_remaining_times[0]
-            cycled = remaining_time_map[time_passed]
-            # Have time tolerance to cancel float calculation errors:
-            # take not just 1st RAHs which strictly finished cycle,
-            # but also a few beneath them, if they are really close.
-            # If it's not done, it's possible to miss tick state loop
-            # formed by multiple RAHs which are out of sync with each
-            # other in some cases. E.g., while normal RAH does 17
-            # cycles, heated one does 20. This is supposed to be loop,
-            # if their resonances match, but
-            # >>> sum([0.85]*20) == 17
-            # False
-            for remaining_cycle_time in sorted_remaining_times[1:]:
-                if sig_round(remaining_cycle_time, SIG_DIGITS) <= 0:
-                    cycled.add(remaining_time_map[remaining_cycle_time])
-                else:
-                    break
+            time_passed = min(item.cycle_time - cycling for item, cycling in iter_cycle_data.items())
+            # Compose set of RAHs which will finish cycle after passed
+            # amount of time
+            cycled = set()
+            for item, cycling in iter_cycle_data.items():
+                # Have time tolerance to cancel float calculation errors.
+                # It's needed for multi-RAH configurations, e.g. when normal
+                # RAH does 17 cycles, heated one does 20, but
+                # >>> sum([0.85] * 20) == 17
+                # False
+                if sig_round(cycling + time_passed, SIG_DIGITS) == sig_round(item.cycle_time, SIG_DIGITS):
+                    cycled.add(item)
             # Update map which tracks RAHs' cycle states
             for item in iter_cycle_data:
                 if item in cycled:

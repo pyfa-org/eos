@@ -22,7 +22,7 @@
 from unittest.mock import patch
 
 from eos import *
-from eos.const.eos import State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.integration_testcase import IntegrationTestCase
@@ -57,25 +57,49 @@ class TestRahResults(IntegrationTestCase):
             duration_attribute=self.cycle_attr.id
         )
         heat_modifier = DogmaModifier(
-            state=
+            state=State.overload,
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.cycle_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=self.heat_attr.id
         )
         self.heat_effect = self.ch.effect(
-            effect_id=100000, category=EffectCategory.overload
+            effect_id=100000, category=EffectCategory.overload, modifiers=(heat_modifier,)
         )
 
     def make_ship_type(self, type_id, resonances):
         attr_order = (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id)
         self.ch.type(type_id=type_id, attributes=dict(zip(attr_order, resonances)), effects=())
 
-    def make_rah_type(self, type_id, resonances, shift_amount, cycle_time):
+    def make_rah_type(self, type_id, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
         attr_order = (
-            self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
-            self.armor_exp.id, self.shift_attr.id, self.cycle_attr.id
+            self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id,
+            self.shift_attr.id, self.cycle_attr.id, self.heat_attr.id
         )
         self.ch.type(
-            type_id=type_id, effects=(self.rah_effect,), default_effect=self.rah_effect,
-            attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time)))
+            type_id=type_id, effects=(self.rah_effect, self.heat_effect), default_effect=self.rah_effect,
+            attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time, heat_cycle_mod)))
         )
+
+    def test_no_ship(self):
+        # Setup
+        rah_type_id = 1
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
+        # Compose fit
+        fit = Fit()
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        # Verify
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.85)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_single_run(self):
@@ -83,7 +107,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         ship_item = Ship(ship_type_id)
@@ -111,7 +135,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         ship_item = Ship(ship_type_id)
@@ -139,34 +163,34 @@ class TestRahResults(IntegrationTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    #@patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
+    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=82)
     def test_double_run_unsynced(self):
         # Setup
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         ship_item = Ship(ship_type_id)
         fit.ship = ship_item
         rah_item1 = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item1)
-        rah_item2 = ModuleLow(rah_type_id, state=State.active)
+        rah_item2 = ModuleLow(rah_type_id, state=State.overload)
         fit.modules.low.equip(rah_item2)
         # Verify
-        self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.97)
-        self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.88)
-        self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.805)
-        self.assertAlmostEqual(rah_item1.attributes[self.armor_exp.id], 0.745)
-        self.assertAlmostEqual(rah_item2.attributes[self.armor_em.id], 0.97)
-        self.assertAlmostEqual(rah_item2.attributes[self.armor_therm.id], 0.88)
-        self.assertAlmostEqual(rah_item2.attributes[self.armor_kin.id], 0.805)
-        self.assertAlmostEqual(rah_item2.attributes[self.armor_exp.id], 0.745)
-        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.472, places=3)
-        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.512, places=3)
-        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.501, places=3)
-        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.522, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.975, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.835, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.83, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_exp.id], 0.76, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_em.id], 0.979, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_therm.id], 0.91, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_kin.id], 0.796, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_exp.id], 0.715, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.479, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.5, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.509, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.509, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
@@ -179,7 +203,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         ship_item = Ship(ship_type_id)
@@ -211,7 +235,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         fit.default_incoming_damage = DamageProfile(0, 1, 1, 1)
@@ -248,7 +272,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         fit.default_incoming_damage = DamageProfile(1, 0, 1, 1)
@@ -285,7 +309,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         fit.default_incoming_damage = DamageProfile(1, 1, 0, 1)
@@ -322,7 +346,7 @@ class TestRahResults(IntegrationTestCase):
         ship_type_id = 1
         rah_type_id = 2
         self.make_ship_type(ship_type_id, (0.675, 0.675, 0.675, 0.675))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 5)
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         # Compose fit
         fit = Fit()
         fit.default_incoming_damage = DamageProfile(1, 1, 1, 0)
