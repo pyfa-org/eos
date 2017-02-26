@@ -115,7 +115,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 raise
             # In case of any errors, use unsimulated RAH attributes
             except Exception:
-                logger.error('unexpected exception in RAH simulator')
+                logger.warning('unexpected exception, setting unsimulated resonances')
                 self.__set_unsimulated_resonances()
                 resonance = self.__data[item][attr]
             # Fetch requested resonance after successful simulation
@@ -434,9 +434,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """Verify if passed item is a RAH or not"""
         if not hasattr(item, 'cycle_time'):
             return False
-        for effect in item._eve_type.effects:
-            if effect.id == Effect.adaptive_armor_hardener:
-                return True
+        default_effect = item._eve_type.default_effect
+        if default_effect is not None and default_effect.id == Effect.adaptive_armor_hardener:
+            return True
         return False
 
     def __get_duration_attr_id(self, item):
