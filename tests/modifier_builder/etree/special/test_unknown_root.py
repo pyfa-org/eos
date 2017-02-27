@@ -22,7 +22,7 @@
 import logging
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -32,8 +32,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         e_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         effect_row = {
             'pre_expression': e_stub['expressionID'],
-            'post_expression': e_stub['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_stub['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.skipped)
@@ -49,8 +48,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         e_stub = self.ef.make(1, operandID=567)
         effect_row = {
             'pre_expression': e_stub['expressionID'],
-            'post_expression': e_stub['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_stub['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.skipped)

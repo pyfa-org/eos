@@ -20,7 +20,6 @@
 
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import EffectCategory
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -29,7 +28,6 @@ class TestBuilderModinfoMultiple(ModBuilderTestCase):
 
     def test_multiple(self):
         effect_row = {
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'

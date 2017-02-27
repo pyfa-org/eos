@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import EffectBuildStatus, EosEveTypes
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -60,8 +60,7 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         )
         self.effect_row = {
             'pre_expression': e_add_mod['expressionID'],
-            'post_expression': e_rm_mod['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_mod['expressionID']
         }
 
     def test_mod_domain_skillrq(self):

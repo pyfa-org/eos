@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -58,14 +58,12 @@ class TestBuilderPriority(ModBuilderTestCase):
         effect_row = {
             'pre_expression': self.e_add_mod['expressionID'],
             'post_expression': self.e_rm_mod['expressionID'],
-            'effect_category': EffectCategory.passive,
             'modifier_info': None
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -78,7 +76,6 @@ class TestBuilderPriority(ModBuilderTestCase):
         effect_row = {
             'pre_expression': self.e_add_mod['expressionID'],
             'post_expression': self.e_rm_mod['expressionID'],
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
                 '  modifyingAttributeID: 175\n  operator: 2\n'
@@ -87,7 +84,6 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertIsNone(modifier.tgt_filter_extra_arg)

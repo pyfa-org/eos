@@ -21,8 +21,7 @@
 
 import logging
 
-from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -35,7 +34,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_error_func(self):
         effect_row = {
             'effect_id': 1,
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- text\n'
@@ -53,7 +51,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_no_func(self):
         effect_row = {
             'effect_id': 1,
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: GangItemModifiero\n  modifiedAttributeID: 33\n'
@@ -72,7 +69,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_error_unexpected_in_handler(self):
         effect_row = {
             'effect_id': 22,
-            'effect_category': EffectCategory.passive,
             'modifier_info': (
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
@@ -92,7 +88,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_validation_failure(self):
         effect_row = {
             'effect_id': 1,
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: shipID\n  func: OwnerRequiredSkillModifier\n  modifiedAttributeID: 33\n'
@@ -111,7 +106,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_building_and_validation_failure(self):
         effect_row = {
             'effect_id': 1,
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: shipID\n  func: OwnerRequiredSkillModifier\n  modifiedAttributeID: 33\n'
@@ -132,7 +126,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_error_before(self):
         effect_row = {
             'effect_id': 94,
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier22\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
@@ -142,7 +135,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -154,7 +146,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
     def test_error_after(self):
         effect_row = {
             'effect_id': 94,
-            'effect_category': EffectCategory.passive,
             'modifier_info':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: ItemModifier22\n  modifiedAttributeID: 33\n'
@@ -164,7 +155,6 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertIsNone(modifier.tgt_filter_extra_arg)

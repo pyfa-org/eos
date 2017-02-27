@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -59,8 +59,7 @@ class TestBuilderEtreeTgtDomGrp(ModBuilderTestCase):
         )
         self.effect_row = {
             'pre_expression': e_add_mod['expressionID'],
-            'post_expression': e_rm_mod['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_mod['expressionID']
         }
 
     def test_domain_self(self):
@@ -69,7 +68,6 @@ class TestBuilderEtreeTgtDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.tgt_filter_extra_arg, 46)
@@ -84,7 +82,6 @@ class TestBuilderEtreeTgtDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertEqual(modifier.tgt_filter_extra_arg, 46)
@@ -99,7 +96,6 @@ class TestBuilderEtreeTgtDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertEqual(modifier.tgt_filter_extra_arg, 46)
@@ -114,7 +110,6 @@ class TestBuilderEtreeTgtDomGrp(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_group)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
         self.assertEqual(modifier.tgt_filter_extra_arg, 46)

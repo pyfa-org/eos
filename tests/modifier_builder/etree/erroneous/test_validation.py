@@ -22,7 +22,7 @@
 import logging
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -64,8 +64,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
     def test_single(self):
         effect_row = {
             'pre_expression': self.e_add_mod_invalid['expressionID'],
-            'post_expression': self.e_rm_mod_invalid['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': self.e_rm_mod_invalid['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
@@ -114,8 +113,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         )
         effect_row = {
             'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -164,8 +162,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         )
         effect_row = {
             'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -225,8 +222,7 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         )
         effect_row = {
             'pre_expression': e_add_splice2['expressionID'],
-            'post_expression': e_rm_splice2['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_splice2['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)

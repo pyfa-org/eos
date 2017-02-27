@@ -19,8 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -34,15 +33,11 @@ class TestBuilderModinfoTgtItm(ModBuilderTestCase):
         return yaml.format(domain)
 
     def test_domain_none(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('null')
-        }
+        effect_row = {'modifier_info': self._make_yaml('null')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -52,15 +47,11 @@ class TestBuilderModinfoTgtItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_item(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('itemID')
-        }
+        effect_row = {'modifier_info': self._make_yaml('itemID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -70,15 +61,11 @@ class TestBuilderModinfoTgtItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_char(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('charID')
-        }
+        effect_row = {'modifier_info': self._make_yaml('charID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -88,15 +75,11 @@ class TestBuilderModinfoTgtItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('shipID')
-        }
+        effect_row = {'modifier_info': self._make_yaml('shipID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -106,15 +89,11 @@ class TestBuilderModinfoTgtItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_target(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('targetID')
-        }
+        effect_row = {'modifier_info': self._make_yaml('targetID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
@@ -124,15 +103,11 @@ class TestBuilderModinfoTgtItm(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):
-        effect_row = {
-            'effect_category': EffectCategory.passive,
-            'modifier_info': self._make_yaml('otherID')
-        }
+        effect_row = {'modifier_info': self._make_yaml('otherID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.state, State.offline)
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.other)
         self.assertIsNone(modifier.tgt_filter_extra_arg)

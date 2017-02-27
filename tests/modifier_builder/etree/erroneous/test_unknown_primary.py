@@ -22,7 +22,7 @@
 import logging
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import EffectCategory, Operand
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -96,8 +96,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         )
         effect_row = {
             'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -146,8 +145,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         )
         effect_row = {
             'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID'],
-            'effect_category': EffectCategory.passive
+            'post_expression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
