@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -29,20 +29,19 @@ from tests.calculator.environment import IndependentItem
 
 
 class TestOperatorUnknown(CalculatorTestCase):
-    """Test unknown operator type"""
 
     def test_log_other(self):
         # Check how unknown operator value influences
         # attribute calculator
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
-        invalid_modifier = DogmaModifier()
-        invalid_modifier.tgt_filter = ModifierTargetFilter.item
-        invalid_modifier.tgt_domain = ModifierDomain.self
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = src_attr.id
-        invalid_modifier.operator = 1008
-        invalid_modifier.tgt_attr = tgt_attr.id
+        invalid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=1008,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier,)
         item = IndependentItem(self.ch.type(
@@ -68,20 +67,20 @@ class TestOperatorUnknown(CalculatorTestCase):
         # method made it to crash
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
-        invalid_modifier = DogmaModifier()
-        invalid_modifier.tgt_filter = ModifierTargetFilter.item
-        invalid_modifier.tgt_domain = ModifierDomain.self
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = src_attr.id
-        invalid_modifier.operator = None
-        invalid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier = DogmaModifier()
-        valid_modifier.tgt_filter = ModifierTargetFilter.item
-        valid_modifier.tgt_domain = ModifierDomain.self
-        valid_modifier.state = State.offline
-        valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = ModifierOperator.post_mul
-        valid_modifier.tgt_attr = tgt_attr.id
+        invalid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=None,
+            src_attr=src_attr.id
+        )
+        valid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         item = IndependentItem(self.ch.type(
@@ -104,20 +103,20 @@ class TestOperatorUnknown(CalculatorTestCase):
     def test_combination(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
-        invalid_modifier = DogmaModifier()
-        invalid_modifier.tgt_filter = ModifierTargetFilter.item
-        invalid_modifier.tgt_domain = ModifierDomain.self
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = src_attr.id
-        invalid_modifier.operator = 1008
-        invalid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier = DogmaModifier()
-        valid_modifier.tgt_filter = ModifierTargetFilter.item
-        valid_modifier.tgt_domain = ModifierDomain.self
-        valid_modifier.state = State.offline
-        valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = ModifierOperator.post_mul
-        valid_modifier.tgt_attr = tgt_attr.id
+        invalid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=1008,
+            src_attr=src_attr.id
+        )
+        valid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         item = IndependentItem(self.ch.type(

@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -31,20 +31,20 @@ class TestTgtDomainDomainUnknown(CalculatorTestCase):
     def test_combination(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
-        invalid_modifier = DogmaModifier()
-        invalid_modifier.tgt_filter = ModifierTargetFilter.domain
-        invalid_modifier.tgt_domain = 1972
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = src_attr.id
-        invalid_modifier.operator = ModifierOperator.post_percent
-        invalid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier = DogmaModifier()
-        valid_modifier.tgt_filter = ModifierTargetFilter.domain
-        valid_modifier.tgt_domain = ModifierDomain.ship
-        valid_modifier.state = State.offline
-        valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = ModifierOperator.post_percent
-        valid_modifier.tgt_attr = tgt_attr.id
+        invalid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=1972,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
+        valid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(
             effect_id=1, category=EffectCategory.passive,
             modifiers=(invalid_modifier, valid_modifier)

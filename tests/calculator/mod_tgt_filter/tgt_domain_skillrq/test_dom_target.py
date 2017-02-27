@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -31,14 +31,14 @@ class TestTgtDomainSkillrqDomainTarget(CalculatorTestCase):
     def test_no_effect(self):
         tgt_attr = self.ch.attribute(attribute_id=1)
         src_attr = self.ch.attribute(attribute_id=2)
-        modifier = DogmaModifier()
-        modifier.state = State.offline
-        modifier.tgt_filter = ModifierTargetFilter.domain_skillrq
-        modifier.tgt_domain = ModifierDomain.target
-        modifier.tgt_filter_extra_arg = 56
-        modifier.tgt_attr = tgt_attr.id
-        modifier.operator = ModifierOperator.post_percent
-        modifier.src_attr = src_attr.id
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain_skillrq,
+            tgt_domain=ModifierDomain.target,
+            tgt_filter_extra_arg=56,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         influence_source = IndependentItem(self.ch.type(

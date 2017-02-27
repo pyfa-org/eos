@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -35,20 +35,20 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         tgt_attr = self.ch.attribute(attribute_id=1)
         abs_attr = self.ch.attribute(attribute_id=2)
         src_attr = self.ch.attribute(attribute_id=3)
-        invalid_modifier = DogmaModifier()
-        invalid_modifier.tgt_filter = ModifierTargetFilter.item
-        invalid_modifier.tgt_domain = ModifierDomain.self
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = abs_attr.id
-        invalid_modifier.operator = ModifierOperator.post_percent
-        invalid_modifier.tgt_attr = tgt_attr.id
-        valid_modifier = DogmaModifier()
-        valid_modifier.tgt_filter = ModifierTargetFilter.item
-        valid_modifier.tgt_domain = ModifierDomain.self
-        valid_modifier.state = State.offline
-        valid_modifier.src_attr = src_attr.id
-        valid_modifier.operator = ModifierOperator.post_mul
-        valid_modifier.tgt_attr = tgt_attr.id
+        invalid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=abs_attr.id
+        )
+        valid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (invalid_modifier, valid_modifier)
         item = IndependentItem(self.ch.type(

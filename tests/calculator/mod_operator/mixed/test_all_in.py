@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -32,13 +32,13 @@ class TestOperatorAllIn(CalculatorTestCase):
     def test_all_in(self):
         tgt_attr = self.ch.attribute(attribute_id=1, stackable=0)
         src_attr = self.ch.attribute(attribute_id=2)
-        modifier_pre_ass = DogmaModifier()
-        modifier_pre_ass.state = State.offline
-        modifier_pre_ass.tgt_filter = ModifierTargetFilter.domain
-        modifier_pre_ass.tgt_domain = ModifierDomain.ship
-        modifier_pre_ass.tgt_attr = tgt_attr.id
-        modifier_pre_ass.operator = ModifierOperator.pre_assign
-        modifier_pre_ass.src_attr = src_attr.id
+        modifier_pre_ass = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.pre_assign,
+            src_attr=src_attr.id
+        )
         effect_pre_ass = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect_pre_ass.modifiers = (modifier_pre_ass,)
         value_pre_ass = 5
@@ -47,13 +47,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_pre_ass}
         ))
         self.fit.items.add(influence_source_pre_ass)
-        modifier_pre_mul = DogmaModifier()
-        modifier_pre_mul.state = State.offline
-        modifier_pre_mul.tgt_filter = ModifierTargetFilter.domain
-        modifier_pre_mul.tgt_domain = ModifierDomain.ship
-        modifier_pre_mul.tgt_attr = tgt_attr.id
-        modifier_pre_mul.operator = ModifierOperator.pre_mul
-        modifier_pre_mul.src_attr = src_attr.id
+        modifier_pre_mul = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.pre_mul,
+            src_attr=src_attr.id
+        )
         effect_pre_mul = self.ch.effect(effect_id=2, category=EffectCategory.passive)
         effect_pre_mul.modifiers = (modifier_pre_mul,)
         value_pre_mul = 50
@@ -62,13 +62,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_pre_mul}
         ))
         self.fit.items.add(influence_source_pre_mul)
-        modifier_pre_div = DogmaModifier()
-        modifier_pre_div.state = State.offline
-        modifier_pre_div.tgt_filter = ModifierTargetFilter.domain
-        modifier_pre_div.tgt_domain = ModifierDomain.ship
-        modifier_pre_div.tgt_attr = tgt_attr.id
-        modifier_pre_div.operator = ModifierOperator.pre_div
-        modifier_pre_div.src_attr = src_attr.id
+        modifier_pre_div = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.pre_div,
+            src_attr=src_attr.id
+        )
         effect_pre_div = self.ch.effect(effect_id=3, category=EffectCategory.passive)
         effect_pre_div.modifiers = (modifier_pre_div,)
         value_pre_div = 0.5
@@ -77,13 +77,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_pre_div}
         ))
         self.fit.items.add(influence_source_pre_div)
-        modifier_mod_add = DogmaModifier()
-        modifier_mod_add.state = State.offline
-        modifier_mod_add.tgt_filter = ModifierTargetFilter.domain
-        modifier_mod_add.tgt_domain = ModifierDomain.ship
-        modifier_mod_add.tgt_attr = tgt_attr.id
-        modifier_mod_add.operator = ModifierOperator.mod_add
-        modifier_mod_add.src_attr = src_attr.id
+        modifier_mod_add = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.mod_add,
+            src_attr=src_attr.id
+        )
         effect_mod_add = self.ch.effect(effect_id=4, category=EffectCategory.passive)
         effect_mod_add.modifiers = (modifier_mod_add,)
         value_mod_add = 10
@@ -92,13 +92,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_mod_add}
         ))
         self.fit.items.add(influence_source_mod_add)
-        modifier_mod_sub = DogmaModifier()
-        modifier_mod_sub.state = State.offline
-        modifier_mod_sub.tgt_filter = ModifierTargetFilter.domain
-        modifier_mod_sub.tgt_domain = ModifierDomain.ship
-        modifier_mod_sub.tgt_attr = tgt_attr.id
-        modifier_mod_sub.operator = ModifierOperator.mod_sub
-        modifier_mod_sub.src_attr = src_attr.id
+        modifier_mod_sub = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.mod_sub,
+            src_attr=src_attr.id
+        )
         effect_mod_sub = self.ch.effect(effect_id=5, category=EffectCategory.passive)
         effect_mod_sub.modifiers = (modifier_mod_sub,)
         value_mod_sub = 63
@@ -107,13 +107,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_mod_sub}
         ))
         self.fit.items.add(influence_source_mod_sub)
-        modifier_post_mul = DogmaModifier()
-        modifier_post_mul.state = State.offline
-        modifier_post_mul.tgt_filter = ModifierTargetFilter.domain
-        modifier_post_mul.tgt_domain = ModifierDomain.ship
-        modifier_post_mul.tgt_attr = tgt_attr.id
-        modifier_post_mul.operator = ModifierOperator.post_mul
-        modifier_post_mul.src_attr = src_attr.id
+        modifier_post_mul = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
         effect_post_mul = self.ch.effect(effect_id=6, category=EffectCategory.passive)
         effect_post_mul.modifiers = (modifier_post_mul,)
         value_post_mul = 1.35
@@ -122,13 +122,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_post_mul}
         ))
         self.fit.items.add(influence_source_post_mul)
-        modifier_post_div = DogmaModifier()
-        modifier_post_div.state = State.offline
-        modifier_post_div.tgt_filter = ModifierTargetFilter.domain
-        modifier_post_div.tgt_domain = ModifierDomain.ship
-        modifier_post_div.tgt_attr = tgt_attr.id
-        modifier_post_div.operator = ModifierOperator.post_div
-        modifier_post_div.src_attr = src_attr.id
+        modifier_post_div = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_div,
+            src_attr=src_attr.id
+        )
         effect_post_div = self.ch.effect(effect_id=7, category=EffectCategory.passive)
         effect_post_div.modifiers = (modifier_post_div,)
         value_post_div = 2.7
@@ -137,13 +137,13 @@ class TestOperatorAllIn(CalculatorTestCase):
             attributes={src_attr.id: value_post_div}
         ))
         self.fit.items.add(influence_source_post_div)
-        modifier_post_perc = DogmaModifier()
-        modifier_post_perc.state = State.offline
-        modifier_post_perc.tgt_filter = ModifierTargetFilter.domain
-        modifier_post_perc.tgt_domain = ModifierDomain.ship
-        modifier_post_perc.tgt_attr = tgt_attr.id
-        modifier_post_perc.operator = ModifierOperator.post_percent
-        modifier_post_perc.src_attr = src_attr.id
+        modifier_post_perc = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
         effect_post_perc = self.ch.effect(effect_id=8, category=EffectCategory.passive)
         effect_post_perc.modifiers = (modifier_post_perc,)
         value_post_perc = 15

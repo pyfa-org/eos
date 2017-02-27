@@ -38,31 +38,33 @@ class TestOverride(CalculatorTestCase):
         self.attr2 = self.ch.attribute(attribute_id=2)
         self.attr3 = self.ch.attribute(attribute_id=3)
         self.attr4 = self.ch.attribute(attribute_id=4)
-        modifier1 = DogmaModifier()
-        modifier1.state = State.online
-        modifier1.tgt_filter = ModifierTargetFilter.item
-        modifier1.tgt_domain = ModifierDomain.self
-        modifier1.tgt_attr = self.attr2.id
-        modifier1.operator = ModifierOperator.post_percent
-        modifier1.src_attr = self.attr1.id
-        modifier2 = DogmaModifier()
-        modifier2.state = State.offline
-        modifier2.tgt_filter = ModifierTargetFilter.item
-        modifier2.tgt_domain = ModifierDomain.self
-        modifier2.tgt_attr = self.attr3.id
-        modifier2.operator = ModifierOperator.post_percent
-        modifier2.src_attr = self.attr2.id
-        modifier3 = DogmaModifier()
-        modifier3.state = State.offline
-        modifier3.tgt_filter = ModifierTargetFilter.item
-        modifier3.tgt_domain = ModifierDomain.self
-        modifier3.tgt_attr = self.attr4.id
-        modifier3.operator = ModifierOperator.post_percent
-        modifier3.src_attr = self.attr3.id
-        effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
-        effect.modifiers = (modifier1, modifier2, modifier3)
+        modifier1 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr2.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=self.attr1.id
+        )
+        modifier2 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr3.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=self.attr2.id
+        )
+        modifier3 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr4.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=self.attr3.id
+        )
+        effect1 = self.ch.effect(effect_id=1, category=EffectCategory.online)
+        effect1.modifiers = (modifier1,)
+        effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)
+        effect2.modifiers = (modifier2, modifier3)
         self.item = IndependentItem(self.ch.type(
-            type_id=1, effects=(effect,),
+            type_id=1, effects=(effect1, effect2),
             attributes={self.attr1.id: 50, self.attr2.id: 100, self.attr3.id: 5, self.attr4.id: 50}
         ))
         self.fit = Fit(self.ch, msgstore_filter=lambda m: (isinstance(m, AttrValueChangedMasked)))

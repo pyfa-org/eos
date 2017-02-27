@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from eos.fit.messages import EnableServices, DisableServices
@@ -42,13 +42,13 @@ class TestTransitionFit(CalculatorTestCase):
         # be able to get refreshed value of attribute
         src_attr = self.ch.attribute(attribute_id=1)
         tgt_attr = self.ch.attribute(attribute_id=2)
-        modifier = DogmaModifier()
-        modifier.state = State.offline
-        modifier.tgt_filter = ModifierTargetFilter.domain
-        modifier.tgt_domain = ModifierDomain.ship
-        modifier.tgt_attr = tgt_attr.id
-        modifier.operator = ModifierOperator.post_percent
-        modifier.src_attr = src_attr.id
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
         effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         effect.modifiers = (modifier,)
         ship1 = IndependentItem(self.ch.type(type_id=1, effects=(effect,), attributes={src_attr.id: 10}))
@@ -81,13 +81,13 @@ class TestTransitionFit(CalculatorTestCase):
         src_attr2 = cache_handler2.attribute(attribute_id=1)
         tgt_attr2 = cache_handler2.attribute(attribute_id=2, max_attribute=333)
         cache_handler2.attribute(attribute_id=333, default_value=500)
-        modifier = DogmaModifier()
-        modifier.state = State.offline
-        modifier.tgt_filter = ModifierTargetFilter.domain
-        modifier.tgt_domain = ModifierDomain.ship
-        modifier.tgt_attr = 2
-        modifier.operator = ModifierOperator.post_percent
-        modifier.src_attr = 1
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=2,
+            operator=ModifierOperator.post_percent,
+            src_attr=1
+        )
         effect1 = cache_handler1.effect(effect_id=1, category=EffectCategory.passive)
         effect1.modifiers = (modifier,)
         effect2 = cache_handler1.effect(effect_id=111, category=EffectCategory.passive)

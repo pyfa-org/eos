@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -34,13 +34,13 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         super().setUp()
         self.tgt_attr = tgt_attr = self.ch.attribute(attribute_id=1)
         self.src_attr = src_attr = self.ch.attribute(attribute_id=2)
-        self.invalid_modifier = invalid_modifier = DogmaModifier()
-        invalid_modifier.tgt_filter = 26500
-        invalid_modifier.tgt_domain = ModifierDomain.self
-        invalid_modifier.state = State.offline
-        invalid_modifier.src_attr = src_attr.id
-        invalid_modifier.operator = ModifierOperator.post_percent
-        invalid_modifier.tgt_attr = tgt_attr.id
+        self.invalid_modifier = DogmaModifier(
+            tgt_filter=26500,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
 
     def test_log(self):
@@ -62,13 +62,13 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         self.assert_calculator_buffers_empty(self.fit)
 
     def test_combination(self):
-        valid_modifier = DogmaModifier()
-        valid_modifier.tgt_filter = ModifierTargetFilter.item
-        valid_modifier.tgt_domain = ModifierDomain.self
-        valid_modifier.state = State.offline
-        valid_modifier.src_attr = self.src_attr.id
-        valid_modifier.operator = ModifierOperator.post_percent
-        valid_modifier.tgt_attr = self.tgt_attr.id
+        valid_modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=self.src_attr.id
+        )
         self.effect.modifiers = (self.invalid_modifier, valid_modifier)
         item = IndependentItem(self.ch.type(
             type_id=1, effects=(self.effect,),

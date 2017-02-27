@@ -36,27 +36,27 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr1 = self.ch.attribute(attribute_id=2)
         src_attr2 = self.ch.attribute(attribute_id=3)
         src_attr3 = self.ch.attribute(attribute_id=4)
-        modifier1 = DogmaModifier()
-        modifier1.state = State.offline
-        modifier1.tgt_filter = ModifierTargetFilter.item
-        modifier1.tgt_domain = ModifierDomain.self
-        modifier1.tgt_attr = self.tgt_attr.id
-        modifier1.operator = ModifierOperator.post_mul
-        modifier1.src_attr = src_attr1.id
-        modifier2 = DogmaModifier()
-        modifier2.state = State.offline
-        modifier2.tgt_filter = ModifierTargetFilter.item
-        modifier2.tgt_domain = ModifierDomain.self
-        modifier2.tgt_attr = self.tgt_attr.id
-        modifier2.operator = ModifierOperator.post_mul
-        modifier2.src_attr = src_attr2.id
-        modifier_active = DogmaModifier()
-        modifier_active.state = State.active
-        modifier_active.tgt_filter = ModifierTargetFilter.item
-        modifier_active.tgt_domain = ModifierDomain.self
-        modifier_active.tgt_attr = self.tgt_attr.id
-        modifier_active.operator = ModifierOperator.post_mul
-        modifier_active.src_attr = src_attr3.id
+        modifier1 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr1.id
+        )
+        modifier2 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr2.id
+        )
+        modifier_active = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr3.id
+        )
         self.effect1 = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect1.modifiers = (modifier1,)
         self.effect2 = self.ch.effect(effect_id=2, category=EffectCategory.passive)

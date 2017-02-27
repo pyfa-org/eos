@@ -40,9 +40,8 @@ class TestModifierPython(CalculatorTestCase):
 
             def __init__(self):
                 BasePythonModifier.__init__(
-                    self, state=State.online, tgt_filter=ModifierTargetFilter.item,
-                    tgt_domain=ModifierDomain.self, tgt_filter_extra_arg=None,
-                    tgt_attr=attr1.id
+                    self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.self,
+                    tgt_filter_extra_arg=None, tgt_attr=attr1.id
                 )
 
             def get_modification(self, carrier_item, fit):
@@ -111,7 +110,6 @@ class TestModifierPython(CalculatorTestCase):
         # python modifier target value is updated
         attr4 = self.ch.attribute(attribute_id=4)
         dogma_modifier = DogmaModifier(
-            state=State.active,
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr2.id,
@@ -139,7 +137,6 @@ class TestModifierPython(CalculatorTestCase):
         # from message type needed by calculator, calculator
         # still receives that message type
         modifier1 = DogmaModifier(
-            state=State.offline,
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr1.id,
@@ -148,7 +145,6 @@ class TestModifierPython(CalculatorTestCase):
         )
         effect1 = self.ch.effect(effect_id=2, category=EffectCategory.passive, modifiers=(modifier1,))
         modifier2 = DogmaModifier(
-            state=State.online,
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr2.id,

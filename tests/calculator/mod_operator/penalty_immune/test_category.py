@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Category, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.calculator.calculator_testcase import CalculatorTestCase
@@ -36,13 +36,13 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         super().setUp()
         self.tgt_attr = self.ch.attribute(attribute_id=1, stackable=0)
         self.src_attr = self.ch.attribute(attribute_id=2)
-        modifier = DogmaModifier()
-        modifier.state = State.offline
-        modifier.tgt_filter = ModifierTargetFilter.domain
-        modifier.tgt_domain = ModifierDomain.ship
-        modifier.tgt_attr = self.tgt_attr.id
-        modifier.operator = ModifierOperator.post_percent
-        modifier.src_attr = self.src_attr.id
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=self.tgt_attr.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=self.src_attr.id
+        )
         self.effect = self.ch.effect(effect_id=1, category=EffectCategory.passive)
         self.effect.modifiers = (modifier,)
 
