@@ -443,7 +443,6 @@ class TestRahSimResult(RahSimTestCase):
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
         self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 0)
         skill_modifier = DogmaModifier(
-            state=State.offline,
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.armor_em.id,

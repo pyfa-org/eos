@@ -179,7 +179,6 @@ class TestRahSimCleanup(RahSimTestCase):
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
         self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         skill_modifier = DogmaModifier(
-            state=State.offline,
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.armor_therm.id,
@@ -233,7 +232,6 @@ class TestRahSimCleanup(RahSimTestCase):
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
         self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         skill_modifier = DogmaModifier(
-            state=State.offline,
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.armor_kin.id,
@@ -287,7 +285,6 @@ class TestRahSimCleanup(RahSimTestCase):
         self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
         self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
         skill_modifier = DogmaModifier(
-            state=State.offline,
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.shift_attr.id,

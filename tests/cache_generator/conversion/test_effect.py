@@ -43,7 +43,7 @@ class TestConversionEffect(GeneratorTestCase):
             'modifierInfo': None
         })
         mod = self.mod(
-            state=2, tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
             tgt_attr=6, operator=7, src_attr=8
         )
         mod_builder.return_value.build.return_value = ([mod], 29)

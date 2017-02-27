@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.integration_testcase import IntegrationTestCase
@@ -62,7 +62,6 @@ class RahSimTestCase(IntegrationTestCase):
             duration_attribute=self.cycle_attr.id
         )
         heat_modifier = DogmaModifier(
-            state=State.overload,
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.cycle_attr.id,

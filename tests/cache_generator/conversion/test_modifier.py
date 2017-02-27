@@ -41,7 +41,7 @@ class TestConversionModifier(GeneratorTestCase):
             'modifierInfo': 'YAML stuff'
         })
         mod = self.mod(
-            state=2, tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
             tgt_attr=6, operator=7, src_attr=8
         )
         mod_builder.return_value.build.return_value = ([mod], 0)
@@ -56,8 +56,8 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
         expected = {
-            'modifier_id': 1, 'state': 2, 'tgt_filter': 3, 'tgt_domain': 4,
-            'tgt_filter_extra_arg': 5, 'tgt_attr': 6, 'operator': 7, 'src_attr': 8
+            'modifier_id': 1, 'tgt_filter': 3, 'tgt_domain': 4, 'tgt_filter_extra_arg': 5,
+            'tgt_attr': 6, 'operator': 7, 'src_attr': 8
         }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(111, data['effects'])
@@ -74,11 +74,11 @@ class TestConversionModifier(GeneratorTestCase):
             'modifierInfo': 'YAML stuff'
         })
         mod1 = self.mod(
-            state=20, tgt_filter=30, tgt_domain=40, tgt_filter_extra_arg=50,
+            tgt_filter=30, tgt_domain=40, tgt_filter_extra_arg=50,
             tgt_attr=60, operator=70, src_attr=80
         )
         mod2 = self.mod(
-            state=200, tgt_filter=300, tgt_domain=400, tgt_filter_extra_arg=500,
+            tgt_filter=300, tgt_domain=400, tgt_filter_extra_arg=500,
             tgt_attr=600, operator=700, src_attr=800
         )
         mod_builder.return_value.build.return_value = ([mod1, mod2], 0)
@@ -93,14 +93,14 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(len(data['modifiers']), 2)
         self.assertIn(1, data['modifiers'])
         expected = {
-            'modifier_id': 1, 'state': 20, 'tgt_filter': 30, 'tgt_domain': 40,
-            'tgt_filter_extra_arg': 50, 'tgt_attr': 60, 'operator': 70, 'src_attr': 80
+            'modifier_id': 1, 'tgt_filter': 30, 'tgt_domain': 40, 'tgt_filter_extra_arg': 50,
+            'tgt_attr': 60, 'operator': 70, 'src_attr': 80
         }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(2, data['modifiers'])
         expected = {
-            'modifier_id': 2, 'state': 200, 'tgt_filter': 300, 'tgt_domain': 400,
-            'tgt_filter_extra_arg': 500, 'tgt_attr': 600, 'operator': 700, 'src_attr': 800
+            'modifier_id': 2, 'tgt_filter': 300, 'tgt_domain': 400, 'tgt_filter_extra_arg': 500,
+            'tgt_attr': 600, 'operator': 700, 'src_attr': 800
         }
         self.assertEqual(data['modifiers'][2], expected)
         self.assertIn(111, data['effects'])
@@ -123,11 +123,11 @@ class TestConversionModifier(GeneratorTestCase):
             'modifierInfo': 'YAML stuff'
         })
         mod1 = self.mod(
-            state=2, tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
             tgt_attr=6, operator=7, src_attr=8
         )
         mod2 = self.mod(
-            state=22, tgt_filter=33, tgt_domain=44, tgt_filter_extra_arg=55,
+            tgt_filter=33, tgt_domain=44, tgt_filter_extra_arg=55,
             tgt_attr=66, operator=77, src_attr=88
         )
         arg_map = {333: mod1, 444: mod2}
@@ -143,14 +143,14 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(len(data['modifiers']), 2)
         self.assertIn(1, data['modifiers'])
         expected = {
-            'modifier_id': 1, 'state': 2, 'tgt_filter': 3, 'tgt_domain': 4,
-            'tgt_filter_extra_arg': 5, 'tgt_attr': 6, 'operator': 7, 'src_attr': 8
+            'modifier_id': 1, 'tgt_filter': 3, 'tgt_domain': 4, 'tgt_filter_extra_arg': 5,
+            'tgt_attr': 6, 'operator': 7, 'src_attr': 8
         }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(2, data['modifiers'])
         expected = {
-            'modifier_id': 2, 'state': 22, 'tgt_filter': 33, 'tgt_domain': 44,
-            'tgt_filter_extra_arg': 55, 'tgt_attr': 66, 'operator': 77, 'src_attr': 88
+            'modifier_id': 2, 'tgt_filter': 33, 'tgt_domain': 44, 'tgt_filter_extra_arg': 55,
+            'tgt_attr': 66, 'operator': 77, 'src_attr': 88
         }
         self.assertEqual(data['modifiers'][2], expected)
         self.assertIn(333, data['effects'])
@@ -172,11 +172,11 @@ class TestConversionModifier(GeneratorTestCase):
             'modifierInfo': 'YAML stuff'
         })
         mod1 = self.mod(
-            state=32, tgt_filter=43, tgt_domain=54, tgt_filter_extra_arg=65,
+            tgt_filter=43, tgt_domain=54, tgt_filter_extra_arg=65,
             tgt_attr=76, operator=87, src_attr=98
         )
         mod2 = self.mod(
-            state=32, tgt_filter=43, tgt_domain=54, tgt_filter_extra_arg=65,
+            tgt_filter=43, tgt_domain=54, tgt_filter_extra_arg=65,
             tgt_attr=76, operator=87, src_attr=98
         )
         mod_builder.return_value.build.return_value = ([mod1, mod2], 0)
@@ -191,8 +191,8 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
         expected = {
-            'modifier_id': 1, 'state': 32, 'tgt_filter': 43, 'tgt_domain': 54,
-            'tgt_filter_extra_arg': 65, 'tgt_attr': 76, 'operator': 87, 'src_attr': 98
+            'modifier_id': 1, 'tgt_filter': 43, 'tgt_domain': 54, 'tgt_filter_extra_arg': 65,
+            'tgt_attr': 76, 'operator': 87, 'src_attr': 98
         }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(111, data['effects'])
@@ -216,11 +216,11 @@ class TestConversionModifier(GeneratorTestCase):
             'modifierInfo': 'YAML stuff'
         })
         mod1 = self.mod(
-            state=2, tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
             tgt_attr=6, operator=7, src_attr=8
         )
         mod2 = self.mod(
-            state=2, tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
             tgt_attr=6, operator=7, src_attr=8
         )
         arg_map = {333: mod1, 444: mod2}
@@ -236,8 +236,8 @@ class TestConversionModifier(GeneratorTestCase):
         self.assertEqual(len(data['modifiers']), 1)
         self.assertIn(1, data['modifiers'])
         expected = {
-            'modifier_id': 1, 'state': 2, 'tgt_filter': 3, 'tgt_domain': 4,
-            'tgt_filter_extra_arg': 5, 'tgt_attr': 6, 'operator': 7, 'src_attr': 8
+            'modifier_id': 1, 'tgt_filter': 3, 'tgt_domain': 4, 'tgt_filter_extra_arg': 5,
+            'tgt_attr': 6, 'operator': 7, 'src_attr': 8
         }
         self.assertEqual(data['modifiers'][1], expected)
         self.assertIn(333, data['effects'])
