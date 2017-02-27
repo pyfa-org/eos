@@ -39,7 +39,7 @@ class TestRahSimCriteria(RahSimTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         # Action
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
@@ -68,7 +68,7 @@ class TestRahSimCriteria(RahSimTestCase):
         fit.modules.low.equip(rah_item)
         # Action
         rah_item.state = State.active
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
@@ -96,7 +96,7 @@ class TestRahSimCriteria(RahSimTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.online)
         # Action
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
@@ -125,7 +125,7 @@ class TestRahSimCriteria(RahSimTestCase):
         fit.modules.low.equip(rah_item)
         # Action
         rah_item.state = State.online
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
@@ -156,7 +156,7 @@ class TestRahSimCriteria(RahSimTestCase):
         rah_item = ModuleLow(rah_type_id, state=State.active)
         # Action
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)

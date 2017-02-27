@@ -442,7 +442,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def __get_duration_attr_id(self, item):
         """Get ID of an attribute which stores cycle time for this module"""
         try:
-            return item.default_effect.duration_attribute
+            return item._eve_type.default_effect.duration_attribute
         except AttributeError:
             return None
 

@@ -20,7 +20,9 @@
 
 
 from eos import *
-from eos.const.eos import State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -37,14 +39,18 @@ class TestRahSimCleanup(RahSimTestCase):
         ship_item = Ship(ship_type_id)
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
-        # Force ship resist calculation
+        # Force resonance calculation
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Action
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
@@ -67,14 +73,18 @@ class TestRahSimCleanup(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Force ship resist calculation
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Action
         fit.modules.low.remove(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
@@ -96,14 +106,22 @@ class TestRahSimCleanup(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.online)
         fit.modules.low.equip(rah_item)
-        # Force ship resist calculation
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.85)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Action
         rah_item.state = State.active
-        # Verify
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
@@ -126,18 +144,236 @@ class TestRahSimCleanup(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Force ship resist calculation
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Action
         rah_item.state = State.online
-        # Verify
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.85)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_ship_resonance(self):
+        # Setup
+        skill_attr = self.ch.attribute(attribute_id=200000, high_is_good=False, stackable=False)
+        ship_type_id = 1
+        rah_type_id = 2
+        skill_type_id = 3
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
+        skill_modifier = DogmaModifier(
+            state=State.offline,
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=self.armor_therm.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=skill_attr.id
+        )
+        skill_effect = self.ch.effect(
+            effect_id=200000, category=EffectCategory.passive, modifiers=(skill_modifier,)
+        )
+        self.ch.type(type_id=skill_type_id, attributes={skill_attr.id: 0.5}, effects=(skill_effect,))
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        skill_item = Skill(skill_type_id)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
+        # Action
+        fit.skills.add(skill_item)
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.7)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.7)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.325)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.525)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.63)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        fit.skills.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_rah_resonance(self):
+        # Setup
+        skill_attr = self.ch.attribute(attribute_id=200000, high_is_good=False, stackable=False)
+        ship_type_id = 1
+        rah_type_id = 2
+        skill_type_id = 3
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
+        skill_modifier = DogmaModifier(
+            state=State.offline,
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=self.armor_kin.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=skill_attr.id
+        )
+        skill_effect = self.ch.effect(
+            effect_id=200000, category=EffectCategory.passive, modifiers=(skill_modifier,)
+        )
+        self.ch.type(type_id=skill_type_id, attributes={skill_attr.id: 0.5}, effects=(skill_effect,))
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        skill_item = Skill(skill_type_id)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
+        # Action
+        fit.skills.add(skill_item)
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.79)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.65)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.565)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.485)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.5135)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.4875)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5085)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        fit.skills.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_rah_shift(self):
+        # Setup
+        skill_attr = self.ch.attribute(attribute_id=200000, high_is_good=False, stackable=False)
+        ship_type_id = 1
+        rah_type_id = 2
+        skill_type_id = 3
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
+        skill_modifier = DogmaModifier(
+            state=State.offline,
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=self.shift_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=skill_attr.id
+        )
+        skill_effect = self.ch.effect(
+            effect_id=200000, category=EffectCategory.passive, modifiers=(skill_modifier,)
+        )
+        self.ch.type(type_id=skill_type_id, attributes={skill_attr.id: 0.1}, effects=(skill_effect,))
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        skill_item = Skill(skill_type_id)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
+        # Action
+        fit.skills.add(skill_item)
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.928)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.802)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.67)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.6032)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.6015)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.603)
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        fit.skills.clear()
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_cycle_time(self):
+        # Setup
+        ship_type_id = 1
+        rah_type_id = 2
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item1 = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item1)
+        rah_item2 = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item2)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.88)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.805)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_em.id], 0.97)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_therm.id], 0.88)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_kin.id], 0.805)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.472, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.512, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.501, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.522, places=3)
+        # Action
+        rah_item2.state = State.overload
+        # Verification
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.975, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.835, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.83, places=3)
+        self.assertAlmostEqual(rah_item1.attributes[self.armor_exp.id], 0.76, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_em.id], 0.979, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_therm.id], 0.91, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_kin.id], 0.796, places=3)
+        self.assertAlmostEqual(rah_item2.attributes[self.armor_exp.id], 0.715, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.479, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.5, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.509, places=3)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.509, places=3)
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
@@ -156,14 +392,22 @@ class TestRahSimCleanup(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Force ship resist calculation
+        # Force resonance calculation
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.655)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Action
         fit.default_incoming_damage = DamageProfile(em=1, thermal=0, kinetic=0, explosive=0)
-        # Verify
+        # Verification
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.4)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 1)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 1)
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.2)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)

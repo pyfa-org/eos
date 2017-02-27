@@ -23,7 +23,9 @@ import logging
 from unittest.mock import patch
 
 from eos import *
-from eos.const.eos import State
+from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -42,7 +44,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.82)
@@ -72,7 +74,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.modules.low.equip(rah_item1)
         rah_item2 = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item2)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.97)
         self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.88)
         self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.805)
@@ -106,7 +108,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.modules.low.equip(rah_item1)
         rah_item2 = ModuleLow(rah_type_id, state=State.overload)
         fit.modules.low.equip(rah_item2)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.975, places=3)
         self.assertAlmostEqual(rah_item1.attributes[self.armor_therm.id], 0.835, places=3)
         self.assertAlmostEqual(rah_item1.attributes[self.armor_kin.id], 0.83, places=3)
@@ -142,7 +144,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.modules.low.equip(rah_item1)
         rah_item2 = ModuleLow(rah_type_id, state=State.overload)
         fit.modules.low.equip(rah_item2)
-        # Verify
+        # Verification
         # We ignored 10 first ticks, which corresponds to 5 cycles of non-heated RAH
         # ceil(ceil(15 / 6) * 1.5). 10 ticks instead of 5 because heated RAH is also
         # cycling, and we stop taking ticks only when slowest (unheated) RAH just
@@ -180,7 +182,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.modules.low.equip(rah_item1)
         rah_item2 = ModuleLow(rah_type_id, state=State.overload)
         fit.modules.low.equip(rah_item2)
-        # Verify
+        # Verification
         # Same as previous test, but here whole history is just 5 ticks, and we cannot
         # ignore all of them - here we should ignore just 2 first ticks
         self.assertAlmostEqual(rah_item1.attributes[self.armor_em.id], 0.94, places=3)
@@ -214,7 +216,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         # From real tests, gecko vs gnosis
         # ---loop---
         # 0 0.850 0.850 0.850 0.850
@@ -247,7 +249,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         # From real tests, gecko vs gnosis with 2 EM hardeners
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.790 0.910 (kin therm > explo)
@@ -284,7 +286,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         # From real tests, gecko vs gnosis with 2 thermal hardeners
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.910 0.790 0.790 (kin explo > em)
@@ -321,7 +323,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         # From real tests, gecko vs gnosis with 2 kinetic hardeners
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.910 0.790 (explo therm > em)
@@ -358,7 +360,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         # From real tests, gecko vs gnosis with 2 explosive hardeners
         # 0 0.850 0.850 0.850 0.850
         # 1 0.910 0.790 0.790 0.910 (kin therm > em)
@@ -389,7 +391,7 @@ class TestRahSimResult(RahSimTestCase):
         fit = Fit()
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
@@ -412,7 +414,7 @@ class TestRahSimResult(RahSimTestCase):
         fit.ship = ship_item
         rah_item = ModuleLow(rah_type_id, state=State.active)
         fit.modules.low.equip(rah_item)
-        # Verify
+        # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
@@ -429,5 +431,56 @@ class TestRahSimResult(RahSimTestCase):
         # Cleanup
         fit.ship = None
         fit.modules.low.clear()
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_unexpected_exception_with_modification(self):
+        # Setup
+        skill_attr = self.ch.attribute(attribute_id=200000, high_is_good=False, stackable=False)
+        ship_type_id = 1
+        rah_type_id = 2
+        skill_type_id = 3
+        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
+        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 0)
+        skill_modifier = DogmaModifier(
+            state=State.offline,
+            tgt_filter=ModifierTargetFilter.domain,
+            tgt_domain=ModifierDomain.ship,
+            tgt_attr=self.armor_em.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=skill_attr.id
+        )
+        skill_effect = self.ch.effect(
+            effect_id=200000, category=EffectCategory.passive, modifiers=(skill_modifier,)
+        )
+        self.ch.type(type_id=skill_type_id, attributes={skill_attr.id: 0.5}, effects=(skill_effect,))
+        # Compose fit
+        fit = Fit()
+        ship_item = Ship(ship_type_id)
+        fit.ship = ship_item
+        rah_item = ModuleLow(rah_type_id, state=State.active)
+        fit.modules.low.equip(rah_item)
+        skill_item = Skill(skill_type_id)
+        fit.skills.add(skill_item)
+        # Verification
+        # Skill should change RAH unsimulated EM resonance, and ship EM resonance
+        # via RAH effect
+        self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.425)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
+        self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.85)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.2125)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.5525)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.6375)
+        self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.765)
+        self.assertEqual(len(self.log), 1)
+        log_record = self.log[0]
+        self.assertEqual(log_record.name, 'eos.fit.sim.reactive_armor_hardener')
+        self.assertEqual(log_record.levelno, logging.WARNING)
+        self.assertEqual(log_record.msg, 'unexpected exception, setting unsimulated resonances')
+        # Cleanup
+        fit.ship = None
+        fit.modules.low.clear()
+        fit.skills.clear()
         self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
