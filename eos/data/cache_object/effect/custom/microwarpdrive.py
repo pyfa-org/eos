@@ -37,18 +37,16 @@ def add_mwd_modifiers(effect):
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.mass_addition,
+        tgt_attr=Attribute.mass,
         operator=ModifierOperator.mod_add,
-        tgt_attr=Attribute.mass
+        src_attr=Attribute.mass_addition
     )
     signature_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.signature_radius_bonus,
+        tgt_attr=Attribute.signature_radius,
         operator=ModifierOperator.post_percent,
-        tgt_attr=Attribute.signature_radius
+        src_attr=Attribute.signature_radius_bonus
     )
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)

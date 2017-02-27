@@ -38,9 +38,9 @@ def add_character_missile_damage_multiplier(eve_type):
         Attribute.kinetic_damage, Attribute.explosive_damage
     ):
         modifiers.append(DogmaModifier(
-            state=State.offline, tgt_filter=ModifierTargetFilter.owner_skillrq,
-            tgt_domain=ModifierDomain.character, tgt_filter_extra_arg=Type.missile_launcher_operation,
-            tgt_attr=damage_attr, operator=ModifierOperator.pre_mul, src_attr=Attribute.missile_damage_multiplier
+            tgt_filter=ModifierTargetFilter.owner_skillrq, tgt_domain=ModifierDomain.character,
+            tgt_filter_extra_arg=Type.missile_launcher_operation, tgt_attr=damage_attr,
+            operator=ModifierOperator.pre_mul, src_attr=Attribute.missile_damage_multiplier
         ))
     effect = Effect(
         category=EffectCategory.passive,

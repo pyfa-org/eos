@@ -35,9 +35,8 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, state=State.active, tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.ship, tgt_filter_extra_arg=None,
-            tgt_attr=Attribute.max_velocity
+            self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.ship,
+            tgt_filter_extra_arg=None, tgt_attr=Attribute.max_velocity
         )
 
     def get_modification(self, carrier_item, fit):

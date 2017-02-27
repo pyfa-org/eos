@@ -175,13 +175,12 @@ class JsonCacheHandler(BaseCacheHandler):
                 raise ModifierFetchError(modifier_id) from e
             modifier = DogmaModifier(
                 modifier_id=modifier_id,
-                state=modifier_data[0],
-                tgt_filter=modifier_data[1],
-                tgt_domain=modifier_data[2],
-                tgt_filter_extra_arg=modifier_data[3],
-                tgt_attr=modifier_data[4],
-                operator=modifier_data[5],
-                src_attr=modifier_data[6]
+                tgt_filter=modifier_data[0],
+                tgt_domain=modifier_data[1],
+                tgt_filter_extra_arg=modifier_data[2],
+                tgt_attr=modifier_data[3],
+                operator=modifier_data[4],
+                src_attr=modifier_data[5]
             )
             self.__modifier_obj_cache[modifier_id] = modifier
         return modifier
@@ -260,7 +259,6 @@ class JsonCacheHandler(BaseCacheHandler):
         for modifier_row in data['modifiers']:
             modifier_id = modifier_row['modifier_id']
             slim_modifiers[modifier_id] = (
-                modifier_row['state'],
                 modifier_row['tgt_filter'],
                 modifier_row['tgt_domain'],
                 modifier_row['tgt_filter_extra_arg'],

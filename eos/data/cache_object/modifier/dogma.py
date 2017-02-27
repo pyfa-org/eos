@@ -34,11 +34,12 @@ class DogmaModifier(BaseModifier):
     """
 
     def __init__(
-            self, modifier_id=None, state=None, tgt_filter=None, tgt_domain=None,
-            tgt_filter_extra_arg=None, tgt_attr=None, operator=None, src_attr=None
+            self, modifier_id=None, tgt_filter=None,
+            tgt_domain=None, tgt_filter_extra_arg=None,
+            tgt_attr=None, operator=None, src_attr=None
     ):
         BaseModifier.__init__(
-            self, state=state, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
+            self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
             tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr
         )
         self.id = modifier_id

@@ -324,9 +324,8 @@ class Converter:
         values assigned according to modifier's ones.
         """
         # Fields which we need to write into row
-        # Format: {'get name': 'set name'}
         fields = (
-            'state', 'tgt_filter', 'tgt_domain', 'tgt_filter_extra_arg',
+            'tgt_filter', 'tgt_domain', 'tgt_filter_extra_arg',
             'tgt_attr', 'operator', 'src_attr'
         )
         modifier_row = {}

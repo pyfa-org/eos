@@ -239,9 +239,9 @@ class CalculationService(BaseSubscriber):
         for effect in item._eve_type.effects:
             if effect.id not in effect_filter:
                 continue
+            if effect._state not in state_filter:
+                continue
             for modifier in effect.modifiers:
-                if modifier.state not in state_filter:
-                    continue
                 if modifier.tgt_domain not in self._supported_domains:
                     continue
                 affector = Affector(modifier, item)

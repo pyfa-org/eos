@@ -36,34 +36,30 @@ def add_rah_modifiers(effect):
     em_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.armor_em_damage_resonance,
+        tgt_attr=Attribute.armor_em_damage_resonance,
         operator=ModifierOperator.pre_mul,
-        tgt_attr=Attribute.armor_em_damage_resonance
+        src_attr=Attribute.armor_em_damage_resonance
     )
     thermal_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.armor_thermal_damage_resonance,
+        tgt_attr=Attribute.armor_thermal_damage_resonance,
         operator=ModifierOperator.pre_mul,
-        tgt_attr=Attribute.armor_thermal_damage_resonance
+        src_attr=Attribute.armor_thermal_damage_resonance
     )
     kinetic_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.armor_kinetic_damage_resonance,
+        tgt_attr=Attribute.armor_kinetic_damage_resonance,
         operator=ModifierOperator.pre_mul,
-        tgt_attr=Attribute.armor_kinetic_damage_resonance
+        src_attr=Attribute.armor_kinetic_damage_resonance
     )
     explosive_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.armor_explosive_damage_resonance,
+        tgt_attr=Attribute.armor_explosive_damage_resonance,
         operator=ModifierOperator.pre_mul,
-        tgt_attr=Attribute.armor_explosive_damage_resonance
+        src_attr=Attribute.armor_explosive_damage_resonance
     )
     effect.modifiers = (em_modifier, thermal_modifier, kinetic_modifier, explosive_modifier)
     effect.build_status = EffectBuildStatus.custom

@@ -37,10 +37,9 @@ def add_ab_modifiers(effect):
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        state=State.active,
-        src_attr=Attribute.mass_addition,
+        tgt_attr=Attribute.mass,
         operator=ModifierOperator.mod_add,
-        tgt_attr=Attribute.mass
+        src_attr=Attribute.mass_addition
     )
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, velocity_modifier)

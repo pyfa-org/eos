@@ -32,8 +32,7 @@ class BaseModifier(metaclass=ABCMeta):
     how to apply it, and so on.
     """
 
-    def __init__(self, state, tgt_filter, tgt_domain, tgt_filter_extra_arg, tgt_attr):
-        self.state = state
+    def __init__(self, tgt_filter, tgt_domain, tgt_filter_extra_arg, tgt_attr):
         self.tgt_filter = tgt_filter
         self.tgt_domain = tgt_domain
         self.tgt_filter_extra_arg = tgt_filter_extra_arg
@@ -50,12 +49,6 @@ class BaseModifier(metaclass=ABCMeta):
 
     # Validation-related methods
     def _validate_base(self):
-        return all((
-            self.state in State.__members__.values(),
-            self.__validate_tgt_spec()
-        ))
-
-    def __validate_tgt_spec(self):
         tgt_validators = {
             ModifierTargetFilter.item: self.__validate_tgt_filter_item,
             ModifierTargetFilter.domain: self.__validate_tgt_filter_domain,

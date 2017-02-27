@@ -23,7 +23,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Operand
 from eos.data.cache_object import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
-from .shared import STATE_CONVERSION_MAP
 from ..exception import UnknownEtreeRootOperandError
 
 
@@ -34,20 +33,18 @@ class ExpressionTreeConverter:
     """
 
     def __init__(self, expressions):
-        self._effect_category = None
         self._build_failures = None
         self._modifiers = None
         self.__expressions = self.__prepare_expressions(expressions)
 
-    def convert(self, effect_row):
+    def convert(self, pre_root_id):
         """Generate *Modifier objects for passed effect."""
         # Initialize instance attributes which
         # will be used during conversion
-        self._effect_category = effect_row['effect_category']
         self._build_failures = 0
         self._modifiers = []
         # Run conversion
-        root_expression = self.__expressions.get(effect_row['pre_expression'])
+        root_expression = self.__expressions.get(pre_root_id)
         self._parse(root_expression, root=True)
         return self._modifiers, self._build_failures
 
@@ -89,7 +86,6 @@ class ExpressionTreeConverter:
 
     def _handle_item_modifier(self, expression):
         self._modifiers.append(DogmaModifier(
-            state=self._get_state(),
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
@@ -99,7 +95,6 @@ class ExpressionTreeConverter:
 
     def _handle_domain_modifier(self, expression):
         self._modifiers.append(DogmaModifier(
-            state=self._get_state(),
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1),
             tgt_attr=self._get_attribute(expression.arg1.arg2.arg2),
@@ -109,7 +104,6 @@ class ExpressionTreeConverter:
 
     def _handle_domain_group_modifier(self, expression):
         self._modifiers.append(DogmaModifier(
-            state=self._get_state(),
             tgt_filter=ModifierTargetFilter.domain_group,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             tgt_filter_extra_arg=self._get_group(expression.arg1.arg2.arg1.arg2),
@@ -120,7 +114,6 @@ class ExpressionTreeConverter:
 
     def _handle_domain_skillrq_modifer(self, expression):
         self._modifiers.append(DogmaModifier(
-            state=self._get_state(),
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             tgt_filter_extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2),
@@ -131,7 +124,6 @@ class ExpressionTreeConverter:
 
     def _handle_owner_skillrq_modifer(self, expression):
         self._modifiers.append(DogmaModifier(
-            state=self._get_state(),
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=self._get_domain(expression.arg1.arg2.arg1.arg1),
             tgt_filter_extra_arg=self._get_type(expression.arg1.arg2.arg1.arg2),
@@ -139,9 +131,6 @@ class ExpressionTreeConverter:
             operator=self._get_operator(expression.arg1.arg1),
             src_attr=self._get_attribute(expression.arg2)
         ))
-
-    def _get_state(self):
-        return STATE_CONVERSION_MAP[self._effect_category]
 
     def _get_domain(self, expression):
         if expression['operandID'] != Operand.def_dom:

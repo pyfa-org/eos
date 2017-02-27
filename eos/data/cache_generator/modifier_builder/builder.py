@@ -50,9 +50,11 @@ class ModifierBuilder:
         Return value:
         Tuple with list of modifiers and effect build status
         """
-        if effect_row['modifier_info']:
+        modifier_info = effect_row['modifier_info']
+        pre_expression = effect_row['pre_expression']
+        if modifier_info:
             try:
-                modifiers, build_failures = self._info.convert(effect_row)
+                modifiers, build_failures = self._info.convert(modifier_info)
             except YamlParsingError as e:
                 effect_id = effect_row['effect_id']
                 msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
@@ -60,9 +62,9 @@ class ModifierBuilder:
                 return (), EffectBuildStatus.error
         # When no modifierInfo specified, use expression trees
         # to make modifiers
-        elif effect_row['pre_expression']:
+        elif pre_expression:
             try:
-                modifiers, build_failures = self._tree.convert(effect_row)
+                modifiers, build_failures = self._tree.convert(pre_expression)
             # There're quite many root-level operands we do not
             # handle and do not want to handle. Special effects,
             # non-modifier definitions. Handle these somewhat

@@ -30,9 +30,8 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, state=State.offline, tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self, tgt_filter_extra_arg=None,
-            tgt_attr=Attribute.armor_damage_amount
+            self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.self,
+            tgt_filter_extra_arg=None, tgt_attr=Attribute.armor_damage_amount
         )
 
     def get_modification(self, carrier_item, fit):

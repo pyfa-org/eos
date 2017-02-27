@@ -113,9 +113,6 @@ class Type:
         # All types can be at least offline,
         # even when they have no effects
         max_state = State.offline
-        # We cycle through effects, because each effect isn't
-        # guaranteed to produce modifier, thus effects are
-        # more reliable data source
         for effect in self.effects:
             max_state = max(max_state, effect._state)
         return max_state
