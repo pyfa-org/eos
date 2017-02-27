@@ -21,7 +21,7 @@
 
 from numbers import Real
 
-from eos.util.cached_property import cachedproperty
+from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 
 
@@ -77,7 +77,7 @@ class DamageTypes:
 class DamageTypesTotal(DamageTypes):
     """On top of storing damage type amounts, calculates their sum"""
 
-    @cachedproperty
+    @cached_property
     def total(self):
         total = (self.em or 0) + (self.thermal or 0) + (self.kinetic or 0) + (self.explosive or 0)
         if total == 0 and (

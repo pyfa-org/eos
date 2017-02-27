@@ -23,7 +23,7 @@ from enum import IntEnum, unique
 
 from eos.const.eve import Attribute, Effect
 from eos.fit.helper import DamageTypesTotal
-from eos.util.volatile_cache import CooperativeVolatileMixin, volatileproperty
+from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
 from .misc import DefaultEffectAttribMixin
 
@@ -104,7 +104,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         expl = item.attributes.get(Attribute.explosive_damage)
         return em, therm, kin, expl
 
-    @volatileproperty
+    @volatile_property
     def _base_volley(self):
         """
         Return base volley for current item - nominal volley, not modified by
@@ -233,7 +233,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             expl = None
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
 
-    @volatileproperty
+    @volatile_property
     def _weapon_type(self):
         """
         Get weapon type of item. Weapon type defines mechanics used to

@@ -24,7 +24,7 @@ from itertools import chain
 from logging import getLogger
 
 from eos.const.eve import Group, Category
-from eos.util.cached_property import cachedproperty
+from eos.util.cached_property import cached_property
 
 
 logger = getLogger(__name__)
@@ -219,7 +219,7 @@ class Cleaner:
                 if len(references) > 0:
                     tgt_data.setdefault((tgt_table_name, tgt_column_name), set()).update(references)
 
-    @cachedproperty
+    @cached_property
     def _yaml_modinfo_relations(self):
         """
         Generate auxiliary map to avoid re-parsing YAML

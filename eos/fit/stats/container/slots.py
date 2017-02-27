@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.util.volatile_cache import InheritableVolatileMixin, volatileproperty
+from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 
 
 class EntitySlots(InheritableVolatileMixin):
@@ -35,11 +35,11 @@ class EntitySlots(InheritableVolatileMixin):
         self.__slot_carrier = slot_carrier
         self.__slot_attr = slot_attr
 
-    @volatileproperty
+    @volatile_property
     def used(self):
         return len(self.__container)
 
-    @volatileproperty
+    @volatile_property
     def total(self):
         # Get amount of provided slots, setting it to None
         # if fitting doesn't have ship assigned,

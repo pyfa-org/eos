@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import EffectCategory
-from eos.util.cached_property import cachedproperty
+from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 from .custom import customize_effect
 
@@ -93,7 +93,7 @@ class Effect:
         EffectCategory.system: State.offline
     }
 
-    @cachedproperty
+    @cached_property
     def _state(self):
         """
         Return state of effect - if eve type takes this state or

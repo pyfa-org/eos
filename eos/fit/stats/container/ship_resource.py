@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.util.volatile_cache import InheritableVolatileMixin, volatileproperty
+from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 
 
 class ShipResource(InheritableVolatileMixin):
@@ -34,11 +34,11 @@ class ShipResource(InheritableVolatileMixin):
         self.__register = resource_use_register
         self.__output_attr = output_attr
 
-    @volatileproperty
+    @volatile_property
     def used(self):
         return self.__register.get_resource_use()
 
-    @volatileproperty
+    @volatile_property
     def output(self):
         # Get ship's resource output, setting it to None
         # if fitting doesn't have ship assigned,

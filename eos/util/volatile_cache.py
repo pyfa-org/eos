@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-class volatileproperty:
+class volatile_property:
     """
     Caches attribute on instance and adds note
     about it to special set, which should be added
@@ -42,7 +42,7 @@ class volatileproperty:
 class InheritableVolatileMixin:
     """
     Should be added as base class for all
-    classes using volatileproperty on them.
+    classes using volatile_property on them.
     This mixin is to be used in classical
     inheritance trees.
     """
@@ -66,13 +66,12 @@ class InheritableVolatileMixin:
 class CooperativeVolatileMixin:
     """
     Should be added as base class for all
-    classes using volatileproperty on them.
+    classes using volatile_property on them.
     This mixin is to be used in cooperative
     classes (see super() docs).
 
     Cooperative methods:
     __init__
-    _clear_volatile_attrs
     """
 
     def __init__(self, **kwargs):
@@ -83,9 +82,6 @@ class CooperativeVolatileMixin:
         """
         Remove all the cached values which were
         stored since the last cleanup.
-
-        Attempt to call next method in MRO, do nothing
-        on failure to find it.
         """
         for attr_name in self._volatile_attrs:
             try:
@@ -93,11 +89,3 @@ class CooperativeVolatileMixin:
             except AttributeError:
                 pass
         self._volatile_attrs.clear()
-        # Attempt to call next implementation
-        next_in_mro = super()
-        try:
-            method = next_in_mro._clear_volatile_attrs
-        except AttributeError:
-            pass
-        else:
-            method()

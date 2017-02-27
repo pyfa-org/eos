@@ -24,7 +24,7 @@ Original code by Entity, as seen in reverence.
 """
 
 
-class cachedproperty:
+class cached_property:
     """
     Decorator class, imitates property behavior, but additionally
     caches results returned by decorated method as attribute of

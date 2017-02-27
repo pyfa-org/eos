@@ -26,7 +26,7 @@ from eos.const.eve import Attribute
 from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.pubsub import BaseSubscriber
-from eos.util.volatile_cache import InheritableVolatileMixin, volatileproperty
+from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .container import *
 from .register import *
 
@@ -108,7 +108,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         )
         fit._subscribe(self, self._handler_map.keys())
 
-    @volatileproperty
+    @volatile_property
     def hp(self):
         """
         Fetch current ship HP and return object with hull, armor, shield and
@@ -130,7 +130,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
                 shield=hp_data.shield
             )
 
-    @volatileproperty
+    @volatile_property
     def resistances(self):
         """
         Fetch current ship resistances and return object wit following data:
@@ -162,7 +162,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None)
 
-    @volatileproperty
+    @volatile_property
     def worst_case_ehp(self):
         """
         Eve-style EHP for a ship - calculated using worst resistance for each layer.
@@ -222,7 +222,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         )
         return dps
 
-    @volatileproperty
+    @volatile_property
     def agility_factor(self):
         ship_item = self._fit.ship
         try:
@@ -237,7 +237,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         real_agility = -math.log(0.25) * agility * mass / 1000000
         return real_agility
 
-    @volatileproperty
+    @volatile_property
     def align_time(self):
         try:
             return math.ceil(self.agility_factor)
