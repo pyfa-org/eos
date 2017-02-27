@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Type, EffectCategory
 from eos.data.cache_object import Effect, DogmaModifier
 

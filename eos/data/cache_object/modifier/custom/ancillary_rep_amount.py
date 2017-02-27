@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Type
 from eos.fit.messages import ItemAdded, ItemRemoved, AttrValueChanged
 from ..exception import ModificationCalculationError
