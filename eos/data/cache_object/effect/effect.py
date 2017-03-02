@@ -33,11 +33,11 @@ class Effect:
     """
 
     def __init__(
-            self, effect_id=None, category=None, is_offensive=None, is_assistance=None,
-            duration_attribute=None, discharge_attribute=None, range_attribute=None,
-            falloff_attribute=None, tracking_speed_attribute=None,
-            fitting_usage_chance_attribute=None, build_status=None,
-            modifiers=()
+        self, effect_id, category=None, is_offensive=None, is_assistance=None,
+        duration_attribute=None, discharge_attribute=None, range_attribute=None,
+        falloff_attribute=None, tracking_speed_attribute=None,
+        fitting_usage_chance_attribute=None, build_status=None,
+        modifiers=()
     ):
         self.id = effect_id
 

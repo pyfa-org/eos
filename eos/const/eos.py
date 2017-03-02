@@ -135,6 +135,15 @@ class Restriction(IntEnum):
 class EosEveTypes(IntEnum):
     """
     Container for Eos-specific type IDs. Any values defined
-    here must not overlap with regular eve type IDs.
+    here must not overlap with regular EVE type IDs.
     """
     current_self = -1
+
+
+@unique
+class EosEveEffects(IntEnum):
+    """
+    Container for Eos-specific effect IDs. Any values defined
+    here must not overlap with regular EVE effect IDs.
+    """
+    char_missile_dmg = -1
