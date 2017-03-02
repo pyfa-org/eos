@@ -23,7 +23,7 @@ from itertools import chain
 from unittest.mock import Mock
 
 from eos.const.eos import Restriction
-from eos.fit.messages import ItemAdded, ItemRemoved, EnableServices
+from eos.fit.message import ItemAdded, ItemRemoved, EnableServices
 from eos.fit.restriction import RestrictionService, ValidationError
 from tests.eos_testcase import EosTestCase
 

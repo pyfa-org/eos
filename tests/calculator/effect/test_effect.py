@@ -22,7 +22,7 @@
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
-from eos.fit.messages import EffectsEnabled, EffectsDisabled
+from eos.fit.message import EffectsEnabled, EffectsDisabled
 from tests.calculator.calculator_testcase import CalculatorTestCase
 from tests.calculator.environment import IndependentItem
 

@@ -24,7 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import State
 from eos.fit.container import ItemList
 from eos.fit.item import ModuleHigh, Charge
-from eos.fit.messages import ItemAdded, ItemRemoved
+from eos.fit.message import ItemAdded, ItemRemoved
 from tests.container.environment import Fit, OtherItem
 from tests.container.container_testcase import ContainerTestCase
 

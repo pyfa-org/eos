@@ -22,7 +22,7 @@
 from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Rig
-from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
+from eos.fit.message import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from tests.restriction.restriction_testcase import RestrictionTestCase
 
 

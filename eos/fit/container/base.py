@@ -20,7 +20,7 @@
 
 
 from .exception import ItemAlreadyAssignedError, ItemFitMismatchError
-from eos.fit.messages import ItemAdded, ItemRemoved
+from eos.fit.message import ItemAdded, ItemRemoved
 
 
 class ItemContainerBase:

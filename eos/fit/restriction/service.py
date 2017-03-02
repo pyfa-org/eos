@@ -22,7 +22,7 @@
 from itertools import chain
 
 from eos.const.eos import State
-from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
+from eos.fit.message import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from eos.util.pubsub import BaseSubscriber
 from .exception import RegisterValidationError, ValidationError
 from .restriction import *

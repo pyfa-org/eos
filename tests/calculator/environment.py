@@ -21,7 +21,7 @@
 
 from eos.const.eos import State, ModifierDomain
 from eos.fit.calculator import CalculationService, MutableAttributeMap
-from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices
+from eos.fit.message import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices
 from eos.util.pubsub import MessageBroker
 
 

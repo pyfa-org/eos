@@ -22,7 +22,7 @@
 from unittest.mock import Mock, patch
 
 from eos.data.source import Source
-from eos.fit.messages import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
+from eos.fit.message import ItemAdded, ItemRemoved, EnableServices, DisableServices, RefreshSource
 from eos.fit.null_source import NullSourceItem
 from tests.fit.environment import Fit, Item
 from tests.fit.fit_testcase import FitTestCase

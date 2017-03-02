@@ -24,7 +24,7 @@ from collections import namedtuple
 from random import random
 
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.messages import EffectsEnabled, EffectsDisabled, RefreshSource
+from eos.fit.message import EffectsEnabled, EffectsDisabled, RefreshSource
 from eos.fit.null_source import NullSourceItem
 from eos.util.pubsub import BaseSubscriber
 

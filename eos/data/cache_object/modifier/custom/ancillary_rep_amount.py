@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Type
-from eos.fit.messages import ItemAdded, ItemRemoved, AttrValueChanged
+from eos.fit.message import ItemAdded, ItemRemoved, AttrValueChanged
 from ..exception import ModificationCalculationError
 from ..python import BasePythonModifier
 

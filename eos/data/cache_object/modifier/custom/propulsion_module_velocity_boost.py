@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
-from eos.fit.messages import AttrValueChanged
+from eos.fit.message import AttrValueChanged
 from ..exception import ModificationCalculationError
 from ..python import BasePythonModifier
 

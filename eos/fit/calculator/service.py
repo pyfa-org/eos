@@ -22,7 +22,7 @@
 from eos.const.eos import State, ModifierDomain
 from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.data.cache_object.modifier.python import BasePythonModifier
-from eos.fit.messages import (
+from eos.fit.message import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     AttrValueChanged, EnableServices, DisableServices
 )

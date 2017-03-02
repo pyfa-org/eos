@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.fit.messages import ItemStateChanged
+from eos.fit.message import ItemStateChanged
 from .base import BaseItemMixin
 
 

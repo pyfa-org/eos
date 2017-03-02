@@ -23,7 +23,7 @@ import math
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.messages import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
+from eos.fit.message import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.pubsub import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property

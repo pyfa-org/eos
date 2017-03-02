@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from .messages import (
+from .message import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     SkillLevelChanged, RefreshSource
 )

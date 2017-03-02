@@ -25,7 +25,7 @@ from math import ceil, floor
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
-from eos.fit.messages import (
+from eos.fit.message import (
     ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged,
     AttrValueChangedMasked, DefaultIncomingDamageChanged
 )

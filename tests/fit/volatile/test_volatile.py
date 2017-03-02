@@ -22,7 +22,7 @@
 from unittest.mock import Mock, call
 
 from eos.fit.item.mixin.base import BaseItemMixin
-from eos.fit.messages import (
+from eos.fit.message import (
     ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
     SkillLevelChanged, RefreshSource
 )

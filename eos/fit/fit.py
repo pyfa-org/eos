@@ -26,7 +26,7 @@ from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
 from .item import *
-from .messages import (
+from .message import (
     ItemAdded, ItemRemoved, EnableServices, DisableServices,
     RefreshSource, DefaultIncomingDamageChanged
 )

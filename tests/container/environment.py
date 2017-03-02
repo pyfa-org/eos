@@ -25,7 +25,7 @@ from eos.const.eos import State
 from eos.fit.container import ItemDescriptorOnFit
 from eos.fit.item import Ship
 from eos.fit.item.mixin.state import MutableStateMixin
-from eos.fit.messages import ItemAdded, ItemRemoved
+from eos.fit.message import ItemAdded, ItemRemoved
 
 
 class Item(MutableStateMixin):
