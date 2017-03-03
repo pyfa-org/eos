@@ -50,7 +50,7 @@ class SourceChanged(BaseMessage):
         return make_repr_str(self, spec)
 
 
-class RefreshSource(BaseMessage)
+class RefreshSource(BaseMessage):
 
     def __repr__(self):
         return make_repr_str(self, ())
