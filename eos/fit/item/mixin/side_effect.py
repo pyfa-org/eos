@@ -19,7 +19,11 @@
 # ===============================================================================
 
 
+from collections import namedtuple
 from .base import BaseItemMixin
+
+
+SideEffectData = namedtuple('SideEffectData', ('effect', 'chance', 'status'))
 
 
 class SideEffectMixin(BaseItemMixin):
@@ -35,12 +39,12 @@ class SideEffectMixin(BaseItemMixin):
 
         Return data as dictionary:
         {side-effect ID: (effect=effect object for this side-effect,
-        chance=chance of setting in, status=side-effect status)}
+        chance=chance of setting in, enabled=side-effect status)}
         """
         side_effects = {}
-        for effect_id, data in self._effect_data.items():
-            if data.chance is not None:
-                side_effects[effect_id] = data
+        for effect_id, edata in self._effects_data.items():
+            if edata.chance is not None:
+                side_effects[effect_id] = SideEffectData(edata.effect, edata.chance, edata.activable)
         return side_effects
 
     def set_side_effect_status(self, effect_id, status):
@@ -51,7 +55,7 @@ class SideEffectMixin(BaseItemMixin):
         effect_id -- ID of side-effect
         status -- True for enabling, False for disabling
         """
-        self._set_effects_status((effect_id,), status)
+        self._set_effects_activability((effect_id,), status)
 
     def randomize_side_effects(self):
         """

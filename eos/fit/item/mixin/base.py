@@ -29,7 +29,7 @@ from eos.fit.null_source import NullSourceItem
 from eos.util.pubsub import BaseSubscriber
 
 
-EffectData = namedtuple('EffectData', ('effect', 'chance', 'status'))
+EffectData = namedtuple('EffectData', ('effect', 'chance', 'activable'))
 
 
 class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
@@ -54,13 +54,10 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         self.attributes = MutableAttributeMap(self)
         # Which fit this item is bound to
         self.__fit = None
-        # Contains IDs of effects which are prohibited to be run on this item.
-        # It means that if there's an ID here - it does not mean that item._eve_type
-        # has such effect, but if item has it, it will be disabled. We need to keep
-        # such IDs for case when item has effect disabled, then it switches source
-        # where it doesn't have effect with this ID anymore, then when it switches
-        # back - this effect will be disabled like it has been before source switch
-        self.__disabled_effects = set()
+        # Contains IDs of effects which are prohibited to be activated on this item.
+        # IDs are stored here without actual effects because we want to keep blocked
+        # effect info even when item's fit switches sources
+        self.__blocked_effect_ids = set()
         # Which eve type this item wraps. Use null source item by default,
         # as item doesn't have fit with source yet
         self._eve_type = NullSourceItem
@@ -93,37 +90,48 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     # Effect methods
     @property
-    def _effect_data(self):
+    def _effects_data(self):
         """
         Return map with effects and their item-specific data.
 
         Return data as dictionary:
         {effect ID: (effect=effect object, chance=chance to apply
-            on effect activation, status=effect status)}
+            on effect activation, activable=activable flag)}
         """
         data = {}
         for effect in self._eve_type.effects:
             # Get chance from modified attributes, if specified
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
-            # Get effect status
-            status = effect.id not in self.__disabled_effects
-            data[effect.id] = EffectData(effect, chance, status)
+            # Get effect activable flag
+            activable = effect.id not in self.__blocked_effect_ids
+            data[effect.id] = EffectData(effect, chance, activable)
         return data
 
-    def _set_effects_status(self, effect_ids, status):
+    def _set_effects_activability(self, effect_ids, activable):
         """
-        Enable or disable effects for this item.
+        Set activability of effects for this item.
 
         Required arguments:
         effect_ids -- iterable with effect IDs, for which we're
-            changing status
-        status -- True for enabling, False for disabling
+            setting activability flag
+        activable -- True if effect should be activable, False
+            if effect should be blocked
         """
-        if status:
-            self.__enable_effects(effect_ids)
+        if activable:
+            to_unblock_ids = self.__blocked_effect_ids.intersection(effect_ids)
+            if len(to_unblock_ids) == 0:
+                return
+            self.__blocked_effect_ids.difference_update(to_unblock_ids)
+            if self.__fit is not None:
+                self.__fit._publish(EffectsEnabled(self, to_unblock_ids))
         else:
-            self.__disable_effects(effect_ids)
+            to_block_ids = set(effect_ids).difference(self.__blocked_effect_ids)
+            if len(to_block_ids) == 0:
+                return
+            if self.__fit is not None:
+                self.__fit._publish(EffectsDisabled(self, to_block_ids))
+            self.__blocked_effect_ids.update(to_block_ids)
 
     def _randomize_effects_status(self, effect_filter=None):
         """
@@ -137,7 +145,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         """
         to_enable = set()
         to_disable = set()
-        for effect_id, data in self._effect_data.items():
+        for effect_id, data in self._effects_data.items():
             if effect_filter is not None and effect_id not in effect_filter:
                 continue
             # If effect is not chance-based, it always gets run
@@ -149,13 +157,13 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 to_enable.add(effect_id)
             else:
                 to_disable.add(effect_id)
-        self._set_effects_status(to_enable, True)
-        self._set_effects_status(to_disable, False)
+        self._set_effects_activability(to_enable, True)
+        self._set_effects_activability(to_disable, False)
 
     @property
     def _enabled_effects(self):
         """Return set with IDs of enabled effects"""
-        return set(e.id for e in self._eve_type.effects).difference(self.__disabled_effects)
+        return set(e.id for e in self._eve_type.effects).difference(self.__blocked_effect_ids)
 
     @property
     def _disabled_effects(self):
@@ -166,37 +174,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         Unlike self.__disabled_effects, this property returns
         IDs of actual effects which are not active on this item.
         """
-        return set(e.id for e in self._eve_type.effects).intersection(self.__disabled_effects)
-
-    def __enable_effects(self, effect_ids):
-        """
-        Enable effects with passed IDs. For effects which
-        are already enabled, do nothing.
-
-        Required arguments:
-        effect_ids -- iterable with effect IDs to enable
-        """
-        to_enable = self.__disabled_effects.intersection(effect_ids)
-        if len(to_enable) == 0:
-            return
-        self.__disabled_effects.difference_update(to_enable)
-        if self.__fit is not None:
-            self.__fit._publish(EffectsEnabled(self, to_enable))
-
-    def __disable_effects(self, effect_ids):
-        """
-        Disable effects with passed IDs. For effects which
-        are already disabled, do nothing.
-
-        Required arguments:
-        effect_ids -- iterable with effect IDs to disable
-        """
-        to_disable = set(effect_ids).difference(self.__disabled_effects)
-        if len(to_disable) == 0:
-            return
-        if self.__fit is not None:
-            self.__fit._publish(EffectsDisabled(self, to_disable))
-        self.__disabled_effects.update(to_disable)
+        return set(e.id for e in self._eve_type.effects).intersection(self.__blocked_effect_ids)
 
     # Message handling
     def _handle_refresh_source(self, message):

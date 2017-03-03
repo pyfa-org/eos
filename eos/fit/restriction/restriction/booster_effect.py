@@ -32,18 +32,17 @@ BoosterEffectErrorData = namedtuple('BoosterEffectErrorData', ('illegally_disabl
 class BoosterEffectRestriction(BaseRestriction):
     """
     Implements restriction:
-    Booster must have all of its non-side-effects enabled.
+    Booster must have all of its non-side-effects activable.
 
-    If booster item has some side-effect disabled, it may become
-    disabled regular effect when fit source is switched. Regular
-    effects are hidden from booster side-effect API. Such effects
-    are raised as an issue by this register.
+    If booster item has some side-effect disabled (set to blocked,
+    or unactivable), it may become disabled regular effect when fit
+    source is switched. Regular effects are not shown on booster
+    side-effect API. Such effects are raised as an issue by this
+    register.
 
     Details:
-    Uses set of actually disabled effects during validation,
-    rather than set of IDs of effects which are not allowed
-    to be active on the booster (see __disabled_effects vs
-    _disabled_effects comments on BaseItemMixin class).
+    Uses set of actually unactivable effects during validation,
+    rather than set of IDs of effects which are unactivable.
     """
 
     def __init__(self, fit):
