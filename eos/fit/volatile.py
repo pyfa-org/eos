@@ -20,8 +20,8 @@
 
 
 from .pubsub.message import (
-    InputStateChanged, InputEffectsStatusChanged, InputSkillLevelChanged, InputSourceChanged,
-    InstrItemAdd, InstrItemRemove
+    InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsStatusChanged,
+    InputSkillLevelChanged, InputSourceChanged, InputDefaultIncomingDamageChanged
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 
@@ -60,12 +60,13 @@ class FitVolatileManager:
         self.__clear_volatile_attrs()
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
+        InputItemAdded: _handle_item_addition,
+        InputItemRemoved: _handle_item_removal,
         InputStateChanged: _handle_other_changes,
         InputEffectsStatusChanged: _handle_other_changes,
         InputSkillLevelChanged: _handle_other_changes,
-        InputSourceChanged: _handle_other_changes
+        InputSourceChanged: _handle_other_changes,
+        InputDefaultIncomingDamageChanged: _handle_other_changes
     }
 
     def _notify(self, message):
