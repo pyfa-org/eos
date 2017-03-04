@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
+from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved
 from .exception import ItemAlreadyAssignedError, ItemFitMismatchError
-from eos.fit.message import ItemAdded, ItemRemoved
 
 
 class ItemContainerBase:
@@ -61,7 +61,7 @@ class ItemContainerBase:
         charge = getattr(item, 'charge', None)
         if charge is not None:
             self._handle_item_addition(fit, charge)
-        fit._publish(ItemAdded(item))
+        fit._publish(InputItemAdded(item))
 
     def _handle_item_removal(self, fit, item):
         """
@@ -75,7 +75,7 @@ class ItemContainerBase:
             raise ItemFitMismatchError(item)
         # Fire removal event before unlinking, same reason
         # as in addition handling method
-        fit._publish(ItemRemoved(item))
+        fit._publish(InputItemRemoved(item))
         charge = getattr(item, 'charge', None)
         if charge is not None:
             self._handle_item_removal(fit, charge)

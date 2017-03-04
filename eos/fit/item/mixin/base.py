@@ -24,9 +24,9 @@ from collections import namedtuple
 from random import random
 
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.message import EffectsEnabled, EffectsDisabled, RefreshSource
+from eos.fit.pubsub.message import InputEffectsStatusChanged, InstrRefreshSource
+from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.fit.null_source import NullSourceItem
-from eos.util.pubsub import BaseSubscriber
 
 
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'activable'))
@@ -71,11 +71,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     def _fit(self, new_fit):
         old_fit = self.__fit
         if old_fit is not None:
-            old_fit._unsubscribe(self, (RefreshSource,))
+            old_fit._unsubscribe(self, self._handler_map.keys())
         self.__fit = new_fit
         self.__refresh_source()
         if new_fit is not None:
-            new_fit._subscribe(self, (RefreshSource,))
+            new_fit._subscribe(self, self._handler_map.keys())
 
     # Properties used by attribute calculator
     @property
@@ -99,7 +99,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             on effect activation, activable=activable flag)}
         """
         data = {}
-        for effect in self._eve_type.effects:
+        for effect in self._eve_type.effects.values():
             # Get chance from modified attributes, if specified
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None
@@ -124,13 +124,13 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 return
             self.__blocked_effect_ids.difference_update(to_unblock_ids)
             if self.__fit is not None:
-                self.__fit._publish(EffectsEnabled(self, to_unblock_ids))
+                self.__fit._publish(InputEffectsStatusChanged(self, {eid: True for eid in to_unblock_ids}))
         else:
             to_block_ids = set(effect_ids).difference(self.__blocked_effect_ids)
             if len(to_block_ids) == 0:
                 return
             if self.__fit is not None:
-                self.__fit._publish(EffectsDisabled(self, to_block_ids))
+                self.__fit._publish(InputEffectsStatusChanged(self, {eid: False for eid in to_block_ids}))
             self.__blocked_effect_ids.update(to_block_ids)
 
     def _randomize_effects_status(self, effect_filter=None):
@@ -161,27 +161,20 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         self._set_effects_activability(to_disable, False)
 
     @property
-    def _enabled_effects(self):
-        """Return set with IDs of enabled effects"""
-        return set(e.id for e in self._eve_type.effects).difference(self.__blocked_effect_ids)
+    def _activable_effects(self):
+        return {eid: e for eid, e in self._eve_type.effects.items() if eid not in self.__blocked_effect_ids}
 
     @property
-    def _disabled_effects(self):
-        """
-        Return set with IDs of effects which exist on this item
-        and are disabled.
-
-        Unlike self.__disabled_effects, this property returns
-        IDs of actual effects which are not active on this item.
-        """
-        return set(e.id for e in self._eve_type.effects).intersection(self.__blocked_effect_ids)
+    @abstractmethod
+    def _active_effects(self):
+        ...
 
     # Message handling
-    def _handle_refresh_source(self, message):
+    def _handle_refresh_source(self, _):
         self.__refresh_source()
 
     _handler_map = {
-        RefreshSource: _handle_refresh_source
+        InstrRefreshSource: _handle_refresh_source
     }
 
     def _notify(self, message):

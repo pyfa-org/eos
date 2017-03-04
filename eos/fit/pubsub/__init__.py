@@ -19,26 +19,6 @@
 # ===============================================================================
 
 
-from eos.exception import EosError
-
-
-class RestrictionServiceError(EosError):
-    """
-    All restriction service exceptions are based on this class.
-    """
-    ...
-
-
-class RegisterValidationError(RestrictionServiceError):
-    """
-    All errors raised during validation process on register level
-    are instances of this class.
-    """
-    ...
-
-
-class ValidationError(RestrictionServiceError):
-    """
-    Raised when service-wide validation fails.
-    """
-    ...
+"""
+Implementation of publish-subscribe pattern.
+"""

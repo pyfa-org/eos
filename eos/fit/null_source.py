@@ -27,7 +27,7 @@ class NoSourceError(EosError):
     Raised on attempt to use anything which needs source
     to be assigned to function.
     """
-    pass
+    ...
 
 
 class NullSourceMeta(type):
@@ -42,4 +42,4 @@ class NullSourceItem(metaclass=NullSourceMeta):
     from use when fit (or other entity) has no source assigned.
     Any attempts to access its attributes will raise NoSourceError.
     """
-    pass
+    ...

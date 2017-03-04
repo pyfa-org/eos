@@ -20,37 +20,26 @@
 
 
 from eos.util.repr import make_repr_str
-from .base import BaseMessage
-from .item import ItemAdded, ItemRemoved
+from .base import BaseInstructionMessage
 
 
-class SourceChanged(BaseMessage):
+class InstrAttrValueChanged(BaseInstructionMessage):
 
-    def __init__(self, old, new, items):
-        self.old = old
-        self.new = new
-        self.items = items
-
-    def expand(self):
-        expanded = []
-        # If old source wasn't None, ask to remove all items from everywhere but fit
-        if self.old is not None:
-            for item in self.items:
-                expanded.extend(ItemRemoved(item, source_switch=True).expand())
-        # Ask every source-dependent to update source
-        expanded.append(RefreshSource())
-        # If new source isn't None, add new items back
-        if self.new is not None:
-            for item in self.items:
-                expanded.extend(ItemAdded(item, source_switch=True).expand())
-        return expanded
+    def __init__(self, item, attr):
+        self.item = item
+        self.attr = attr
 
     def __repr__(self):
-        spec = ['old', 'new', 'items']
+        spec = ['item', 'attr']
         return make_repr_str(self, spec)
 
 
-class RefreshSource(BaseMessage):
+class InstrAttrValueChangedMasked(BaseInstructionMessage):
+
+    def __init__(self, item, attr):
+        self.item = item
+        self.attr = attr
 
     def __repr__(self):
-        return make_repr_str(self, ())
+        spec = ['item', 'attr']
+        return make_repr_str(self, spec)

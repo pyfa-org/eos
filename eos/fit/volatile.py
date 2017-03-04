@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from .message import (
-    ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
-    SkillLevelChanged, RefreshSource
+from .pubsub.message import (
+    InputStateChanged, InputEffectsStatusChanged, InputSkillLevelChanged, InputSourceChanged,
+    InstrItemAdd, InstrItemRemove
 )
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 
@@ -60,13 +60,12 @@ class FitVolatileManager:
         self.__clear_volatile_attrs()
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        ItemStateChanged: _handle_other_changes,
-        EffectsEnabled: _handle_other_changes,
-        EffectsDisabled: _handle_other_changes,
-        SkillLevelChanged: _handle_other_changes,
-        RefreshSource: _handle_other_changes
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal,
+        InputStateChanged: _handle_other_changes,
+        InputEffectsStatusChanged: _handle_other_changes,
+        InputSkillLevelChanged: _handle_other_changes,
+        InputSourceChanged: _handle_other_changes
     }
 
     def _notify(self, message):

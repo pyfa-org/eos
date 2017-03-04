@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.fit.message import ItemStateChanged
+from eos.fit.pubsub.message import InputStateChanged
 from .base import BaseItemMixin
 
 
@@ -42,6 +42,10 @@ class ImmutableStateMixin(BaseItemMixin):
     @property
     def state(self):
         return self.__state
+
+    @property
+    def _active_effects(self):
+        return {eid: e for eid, e in self._activable_effects.items() if e._state <= self.state}
 
 
 class MutableStateMixin(BaseItemMixin):
@@ -73,5 +77,9 @@ class MutableStateMixin(BaseItemMixin):
         # fit-specific state switch of our item
         fit = self._fit
         if fit is not None:
-            fit._publish(ItemStateChanged(self, old_state, new_state))
+            fit._publish(InputStateChanged(self, old_state, new_state))
         self.__state = new_state
+
+    @property
+    def _active_effects(self):
+        return {eid: e for eid, e in self._activable_effects.items() if e._state <= self.state}

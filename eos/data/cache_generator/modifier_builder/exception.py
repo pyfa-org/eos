@@ -26,18 +26,18 @@ class ModifierBuilderError(EosError):
     """
     All exceptions raised by modifier builder are based on this class.
     """
-    pass
+    ...
 
 
 class UnknownEtreeRootOperandError(ModifierBuilderError):
     """
     Raised when expression tree root operand cannot be handled by converter.
     """
-    pass
+    ...
 
 
 class YamlParsingError(ModifierBuilderError):
     """
     Raised when YAML parser fails to parse modifierInfo.
     """
-    pass
+    ...

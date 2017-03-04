@@ -19,24 +19,36 @@
 # ===============================================================================
 
 
-from .tuples import (
-    ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
-    SkillLevelChanged, AttrValueChanged, AttrValueChangedMasked,
-    EnableServices, DisableServices, RefreshSource, DefaultIncomingDamageChanged
-)
+"""
+There're two message types in eos: input messages and instructions. Input messages
+are always generated as consequence of user activity, one per change he makes.
+One such input message can lead to generation of multiple instructions. Services
+listen to message types according to their needs.
+"""
 
 
-__all__ = [
-    'AttrValueChanged',
-    'AttrValueChangedMasked',
-    'DefaultIncomingDamageChanged',
-    'DisableServices',
-    'EffectsDisabled',
-    'EffectsEnabled',
-    'EnableServices',
-    'ItemAdded',
-    'ItemStateChanged',
-    'ItemRemoved',
-    'RefreshSource',
-    'SkillLevelChanged'
-]
+from abc import ABCMeta, abstractmethod
+
+from eos.util.repr import make_repr_str
+
+
+class BaseInputMessage(metaclass=ABCMeta):
+    """
+    Base class for all input messages.
+    """
+
+    @abstractmethod
+    def get_instructions(self):
+        ...
+
+    def __repr__(self):
+        return make_repr_str(self, ())
+
+
+class BaseInstructionMessage:
+    """
+    Base class for all instruction messages.
+    """
+
+    def __repr__(self):
+        return make_repr_str(self, ())

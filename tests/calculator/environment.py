@@ -108,7 +108,7 @@ class BaseItem:
         self._eve_type_id = eve_type.id
         self._eve_type = eve_type
         self.attributes = MutableAttributeMap(self)
-        self._disabled_effects = set()
+        self._blocked_effect_ids = set()
         self.__state = State.offline
 
     @property
@@ -132,8 +132,11 @@ class BaseItem:
             self.__fit._calculator._notify(ItemStateChanged(self, old_state, new_state))
 
     @property
-    def _enabled_effects(self):
-        return set(e.id for e in self._eve_type.effects).difference(self._disabled_effects)
+    def _active_effects(self):
+        return {
+            effect.id: effect for effect in self._eve_type.effects
+            if effect._state <= self.__state and effect.id not in self._blocked_effect_ids
+        }
 
 
 class IndependentItem(BaseItem):

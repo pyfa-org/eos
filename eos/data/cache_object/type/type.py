@@ -49,23 +49,14 @@ class Type:
         # Format: {attribute ID: attribute value}
         self.attributes = attributes if attributes is not None else {}
 
-        # Iterable with effects this type has, they describe modifications
-        # which this type applies
-        self.effects = effects
+        # Map with effects this type has
+        # Format: {effect ID: effect object}
+        self.effects = {e.id: e for e in effects}
 
         # Default effect of eve type, which defines its several major properties
         self.default_effect = default_effect
 
         customize_type(self)
-
-    @property
-    def modifiers(self):
-        """ Get all modifiers spawned by eve type effects."""
-        modifiers = []
-        for effect in self.effects:
-            for modifier in effect.modifiers:
-                modifiers.append(modifier)
-        return modifiers
 
     # Define attributes which describe eve type skill requirement details
     # Format: {skill eve type attribute ID: skill level attribute ID}
@@ -106,14 +97,11 @@ class Type:
     def max_state(self):
         """
         Get highest state this type is allowed to take.
-
-        Return value:
-        State class' attribute value, representing highest state
         """
         # All types can be at least offline,
         # even when they have no effects
         max_state = State.offline
-        for effect in self.effects:
+        for effect in self.effects.values():
             max_state = max(max_state, effect._state)
         return max_state
 
@@ -128,7 +116,7 @@ class Type:
         """
         # Assume type is unable to target by default
         targeted = False
-        for effect in self.effects:
+        for effect in self.effects.values():
             # If any of effects is targeted, then type is targeted
             if effect.category == EffectCategory.target:
                 targeted = True
@@ -156,7 +144,7 @@ class Type:
         """
         # Container for slot types eve type uses
         slots = set()
-        for effect in self.effects:
+        for effect in self.effects.values():
             # Convert effect ID to slot type eve type takes
             try:
                 slot = self.__effect_slot_map[effect.id]

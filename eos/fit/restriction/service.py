@@ -22,8 +22,8 @@
 from itertools import chain
 
 from eos.const.eos import State
-from eos.fit.message import ItemAdded, ItemRemoved, ItemStateChanged, EnableServices, DisableServices
-from eos.util.pubsub import BaseSubscriber
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
+from eos.fit.pubsub.subscriber import BaseSubscriber
 from .exception import RegisterValidationError, ValidationError
 from .restriction import *
 
@@ -40,18 +40,17 @@ class RestrictionService(BaseSubscriber):
     """
 
     def __init__(self, fit):
-        self.__enabled = False
         # Set of restrictions which do not need
         # item registration
         self.__rests = (
             BoosterEffectRestriction(fit),
             DroneGroupRestriction(fit),
             HighSlotRestriction(fit),
-            ItemClassRestriction(fit),
+            ItemClassRestrictionRegister(),
             LowSlotRestriction(fit),
             MediumSlotRestriction(fit),
             RigSlotRestriction(fit),
-            StateRestriction(fit),
+            StateRestrictionRegister(),
             SubsystemSlotRestriction(fit)
         )
         # Set with 'stateless' restriction registers. Items
@@ -105,8 +104,6 @@ class RestrictionService(BaseSubscriber):
         validation, this exception is thrown, with all failure
         data in its arguments.
         """
-        if self.__enabled is not True:
-            return
         # Container for validation error data
         # Format: {item: {error type: error data}}
         invalid_items = {}
@@ -139,49 +136,38 @@ class RestrictionService(BaseSubscriber):
 
     # Message handling
     def _handle_item_addition(self, message):
-        if not self.__enabled:
-            return
-        self.__add_item(message.item)
+        for register in self.__rest_regs_stateless:
+            register.register_item(message.item)
 
     def _handle_item_removal(self, message):
-        if not self.__enabled:
-            return
-        self.__remove_item(message.item)
+        for register in self.__rest_regs_stateless:
+            register.unregister_item(message.item)
 
-    def _handle_item_state_change(self, message):
-        if not self.__enabled:
-            return
-        item, old_state, new_state = message
-        if new_state > old_state:
-            states = set(filter(lambda s: old_state < s <= new_state, State))
-            self.__enable_states(item, states)
-        elif new_state < old_state:
-            states = set(filter(lambda s: new_state < s <= old_state, State))
-            self.__disable_states(item, states)
+    def _handle_item_states_activate(self, message):
+        for state in message.states:
+            # Not all states have corresponding registers,
+            # just skip those which don't
+            try:
+                registers = self.__rest_regs_stateful[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.register_item(message.item)
 
-    def _handle_enable_services(self, message):
-        """
-        Enable service and register passed items.
-        """
-        self.__enabled = True
-        for item in message.items:
-            self.__add_item(item)
-
-    def _handle_disable_services(self, message):
-        """
-        Unregister passed items from this service and
-        disable it.
-        """
-        for item in message.items:
-            self.__remove_item(item)
-        self.__enabled = False
+    def _handle_item_states_deactivate(self, message):
+        for state in message.states:
+            try:
+                registers = self.__rest_regs_stateful[state]
+            except KeyError:
+                continue
+            for register in registers:
+                register.unregister_item(message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        ItemStateChanged: _handle_item_state_change,
-        EnableServices: _handle_enable_services,
-        DisableServices: _handle_disable_services
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal,
+        InstrStatesActivate: _handle_item_states_activate,
+        InstrStatesDeactivate: _handle_item_states_deactivate
     }
 
     def _notify(self, message):
@@ -190,52 +176,3 @@ class RestrictionService(BaseSubscriber):
         except KeyError:
             return
         handler(self, message)
-
-    # Private methods for message handlers
-    def __add_item(self, item):
-        for register in self.__rest_regs_stateless:
-            register.register_item(item)
-        states = set(filter(lambda s: s <= item.state, State))
-        self.__enable_states(item, states)
-
-    def __remove_item(self, item):
-        states = set(filter(lambda s: s <= item.state, State))
-        self.__disable_states(item, states)
-        for register in self.__rest_regs_stateless:
-            register.unregister_item(item)
-
-    def __enable_states(self, item, states):
-        """
-        Handle state switch upwards.
-
-        Required arguments:
-        item -- item, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for initial state
-        """
-        for state in states:
-            # Not all states have corresponding registers,
-            # just skip those which don't
-            try:
-                registers = self.__rest_regs_stateful[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.register_item(item)
-
-    def __disable_states(self, item, states):
-        """
-        Handle state switch downwards.
-
-        Required arguments:
-        item -- item, for which states are switched
-        states -- iterable with states, which are passed
-        during state switch, except for final state
-        """
-        for state in states:
-            try:
-                registers = self.__rest_regs_stateful[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.unregister_item(item)

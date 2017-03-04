@@ -19,26 +19,24 @@
 # ===============================================================================
 
 
-from eos.exception import EosError
+from eos.util.repr import make_repr_str
+from .base import BaseInputMessage
 
 
-class RestrictionServiceError(EosError):
-    """
-    All restriction service exceptions are based on this class.
-    """
-    ...
+class InputSkillLevelChanged(BaseInputMessage):
+
+    def __init__(self, item):
+        self.item = item
+
+    def get_instructions(self):
+        return ()
+
+    def __repr__(self):
+        spec = ['item']
+        return make_repr_str(self, spec)
 
 
-class RegisterValidationError(RestrictionServiceError):
-    """
-    All errors raised during validation process on register level
-    are instances of this class.
-    """
-    ...
+class InputDefaultIncomingDamageChanged(BaseInputMessage):
 
-
-class ValidationError(RestrictionServiceError):
-    """
-    Raised when service-wide validation fails.
-    """
-    ...
+    def get_instructions(self):
+        return ()

@@ -24,24 +24,24 @@ from eos.exception import EosError
 
 class CacheHandlerError(EosError):
     """All cache handler exceptions are based on this class."""
-    pass
+    ...
 
 
 class TypeFetchError(CacheHandlerError):
     """Raised when cache handler can't find type with requested ID."""
-    pass
+    ...
 
 
 class AttributeFetchError(CacheHandlerError):
     """Raised when cache handler can't find attribute with requested ID."""
-    pass
+    ...
 
 
 class EffectFetchError(CacheHandlerError):
     """Raised when cache handler can't find effect with requested ID."""
-    pass
+    ...
 
 
 class ModifierFetchError(CacheHandlerError):
     """Raised when cache handler can't find modifier with requested ID."""
-    pass
+    ...

@@ -21,23 +21,21 @@
 
 from eos.const.eve import Type
 from eos.data.source import SourceManager, Source
-from eos.util.pubsub import MessageBroker, BaseSubscriber
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
+from .helper import DamageTypes
 from .item import *
-from .message import (
-    ItemAdded, ItemRemoved, EnableServices, DisableServices,
-    RefreshSource, DefaultIncomingDamageChanged
-)
+from .pubsub.broker import FitMessageBroker
+from .pubsub.message import InputItemAdded, InputItemRemoved, InputSourceChanged, InputDefaultIncomingDamageChanged
+from .pubsub.subscriber import BaseSubscriber
 from .restriction import RestrictionService
 from .sim import *
 from .stats import StatService
-from .helper import DamageTypes
 from .volatile import FitVolatileManager
 
 
-class Fit(MessageBroker, BaseSubscriber):
+class Fit(FitMessageBroker, BaseSubscriber):
     """
     Fit holds all fit items and facilities to calculate their attributes.
 
@@ -46,11 +44,11 @@ class Fit(MessageBroker, BaseSubscriber):
     """
 
     def __init__(self, source=None):
-        MessageBroker.__init__(self)
+        FitMessageBroker.__init__(self)
         self.__source = None
         self.__default_incoming_damage = DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)
         # Keep list of all items which belong to this fit
-        self._items = set()
+        self.__items = set()
         self._subscribe(self, self._handler_map.keys())
         # Character-related item containers
         self.skills = ItemRestrictedSet(self, Skill)
@@ -116,15 +114,9 @@ class Fit(MessageBroker, BaseSubscriber):
         # Do not update anything if sources are the same
         if new_source is old_source:
             return
-        # Disable everything dependent on old source prior to switch
-        if old_source is not None:
-            self._publish(DisableServices(self._items))
-        # Assign new source and feed new data to all items
+        # Assign new source and send message about update
         self.__source = new_source
-        self._publish(RefreshSource())
-        # Enable source-dependent services
-        if new_source is not None:
-            self._publish(EnableServices(self._items))
+        self._publish(InputSourceChanged(old_source, new_source, self.__items))
 
     @property
     def default_incoming_damage(self):
@@ -135,18 +127,18 @@ class Fit(MessageBroker, BaseSubscriber):
         old_profile = self.__default_incoming_damage
         self.__default_incoming_damage = new_profile
         if new_profile != old_profile:
-            self._publish(DefaultIncomingDamageChanged())
+            self._publish(InputDefaultIncomingDamageChanged())
 
     # Message handling
     def _handle_item_addition(self, message):
-        self._items.add(message.item)
+        self.__items.add(message.item)
 
     def _handle_item_removal(self, message):
-        self._items.discard(message.item)
+        self.__items.discard(message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal
+        InputItemAdded: _handle_item_addition,
+        InputItemRemoved: _handle_item_removal
     }
 
     def _notify(self, message):

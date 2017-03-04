@@ -22,14 +22,14 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
 StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'))
 
 
-class StateRestriction(BaseRestriction):
+class StateRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Verify that current state of item is not bigger than max state
@@ -38,12 +38,18 @@ class StateRestriction(BaseRestriction):
     and so on).
     """
 
-    def __init__(self, fit):
-        self.__fit = fit
+    def __init__(self):
+        self.__items = set()
+
+    def register_item(self, item):
+        self.__items.add(item)
+
+    def unregister_item(self, item):
+        self.__items.discard(item)
 
     def validate(self):
         tainted_items = {}
-        for item in self.__fit._items:
+        for item in self.__items:
             if item.state > item._eve_type.max_state:
                 allowed_states = tuple(filter(lambda s: s <= item._eve_type.max_state, State))
                 tainted_items[item] = StateErrorData(

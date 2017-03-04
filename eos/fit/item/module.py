@@ -69,7 +69,7 @@ class ModuleHigh(Module):
     Cooperative methods:
     __init__
     """
-    pass
+    ...
 
 
 class ModuleMed(Module):
@@ -89,7 +89,7 @@ class ModuleMed(Module):
     Cooperative methods:
     __init__
     """
-    pass
+    ...
 
 
 class ModuleLow(Module):
@@ -109,4 +109,4 @@ class ModuleLow(Module):
     Cooperative methods:
     __init__
     """
-    pass
+    ...

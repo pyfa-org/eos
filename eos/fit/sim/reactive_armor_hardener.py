@@ -25,11 +25,11 @@ from math import ceil, floor
 
 from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
-from eos.fit.message import (
-    ItemAdded, ItemRemoved, ItemStateChanged, AttrValueChanged,
-    AttrValueChangedMasked, DefaultIncomingDamageChanged
+from eos.fit.pubsub.message import (
+    InputDefaultIncomingDamageChanged, InstrEffectsActivate, InstrEffectsDeactivate,
+    InstrAttrValueChanged, InstrAttrValueChangedMasked
 )
-from eos.util.pubsub import BaseSubscriber
+from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
 
@@ -364,28 +364,22 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         return tick_count
 
     # Message handling
-    def _handle_item_addition(self, message):
-        item = message.item
-        if self.__is_rah(item) is True and item.state >= State.active:
-            self.__register(item)
-            self.__clear_results()
+    def _handle_effects_activation(self, message):
+        if Effect.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
+            for attr in res_attrs:
+                message.item.attributes._set_override_callback(attr, (self.get_resonance, (message.item, attr), {}))
+            self.__data.setdefault(message.item, {})
+        self.__clear_results()
 
-    def _handle_item_removal(self, message):
-        item = message.item
-        if self.__is_rah(item) is True and item.state >= State.active:
-            self.__unregister(item)
-            self.__clear_results()
-
-    def _handle_state_switch(self, message):
-        if self.__is_rah(message.item) is not True:
-            return
-        item, old_state, new_state = message
-        if old_state < State.active and new_state >= State.active:
-            self.__register(item)
-            self.__clear_results()
-        elif new_state < State.active and old_state >= State.active:
-            self.__unregister(item)
-            self.__clear_results()
+    def _handle_effects_deactivation(self, message):
+        if Effect.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
+            for attr in res_attrs:
+                message.item.attributes._del_override_callback(attr)
+            try:
+                del self.__data[message.item]
+            except KeyError:
+                pass
+        self.__clear_results()
 
     def _handle_attr_change(self, message):
         # Ship resistances
@@ -412,12 +406,11 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         self.__clear_results()
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        ItemStateChanged: _handle_state_switch,
-        AttrValueChanged: _handle_attr_change,
-        AttrValueChangedMasked: _handle_attr_change_masked,
-        DefaultIncomingDamageChanged: _handle_changed_damage_profile
+        InstrEffectsActivate: _handle_effects_activation,
+        InstrEffectsDeactivate: _handle_effects_deactivation,
+        InstrAttrValueChanged: _handle_attr_change,
+        InstrAttrValueChangedMasked: _handle_attr_change_masked,
+        InputDefaultIncomingDamageChanged: _handle_changed_damage_profile
     }
 
     def _notify(self, message):
@@ -430,36 +423,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         handler(self, message)
 
     # Auxiliary message handling methods
-    def __is_rah(self, item):
-        """Verify if passed item is a RAH or not"""
-        if not hasattr(item, 'cycle_time'):
-            return False
-        default_effect = item._eve_type.default_effect
-        if default_effect is not None and default_effect.id == Effect.adaptive_armor_hardener:
-            return True
-        return False
-
     def __get_duration_attr_id(self, item):
         """Get ID of an attribute which stores cycle time for this module"""
         try:
             return item._eve_type.default_effect.duration_attribute
         except AttributeError:
             return None
-
-    def __register(self, item):
-        """Make sure the sim knows about the RAH and the RAH knows about the sim"""
-        for attr in res_attrs:
-            item.attributes._set_override_callback(attr, (self.get_resonance, (item, attr), {}))
-        self.__data.setdefault(item, {})
-
-    def __unregister(self, item):
-        """Remove all connections between the sim and passed RAH"""
-        for attr in res_attrs:
-            item.attributes._del_override_callback(attr)
-        try:
-            del self.__data[item]
-        except KeyError:
-            pass
 
     def __clear_results(self):
         """Remove simulation results, if there're any"""

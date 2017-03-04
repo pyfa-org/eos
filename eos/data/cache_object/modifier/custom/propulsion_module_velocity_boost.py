@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
-from eos.fit.message import AttrValueChanged
+from eos.fit.pubsub.message import InstrAttrValueChanged
 from ..exception import ModificationCalculationError
 from ..python import BasePythonModifier
 
@@ -76,7 +76,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         return False
 
     __revision_map = {
-        AttrValueChanged: __revise_on_attr_change
+        InstrAttrValueChanged: __revise_on_attr_change
     }
 
     @property

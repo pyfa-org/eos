@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.item import *
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RegisterValidationError
 
 
@@ -70,7 +70,7 @@ CLASS_VALIDATORS = {
 }
 
 
-class ItemClassRestriction(BaseRestriction):
+class ItemClassRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Check that eve type is wrapped by corresponding item class
@@ -82,12 +82,18 @@ class ItemClassRestriction(BaseRestriction):
     attributes are used.
     """
 
-    def __init__(self, fit):
-        self.__fit = fit
+    def __init__(self):
+        self.__items = set()
+
+    def register_item(self, item):
+        self.__items.add(item)
+
+    def unregister_item(self, item):
+        self.__items.discard(item)
 
     def validate(self):
         tainted_items = {}
-        for item in self.__fit._items:
+        for item in self.__items:
             # Get validator function for class of passed item.
             # If it is not found or fails, seek for 'right'
             # item class for the eve type

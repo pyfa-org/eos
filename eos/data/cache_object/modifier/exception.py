@@ -26,4 +26,4 @@ class ModificationCalculationError(EosError):
     """
     Raised when modifier is unable to calculate modification value.
     """
-    pass
+    ...

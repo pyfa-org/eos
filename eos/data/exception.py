@@ -28,7 +28,7 @@ class UnknownSourceError(EosError):
     Raised when source corresponding to passed alias
     cannot be found.
     """
-    pass
+    ...
 
 
 class ExistingSourceError(EosError):
@@ -36,4 +36,4 @@ class ExistingSourceError(EosError):
     Raised on attempt to add source with alias which
     already exists.
     """
-    pass
+    ...

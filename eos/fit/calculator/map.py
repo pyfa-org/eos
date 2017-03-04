@@ -28,7 +28,7 @@ from eos.const.eos import ModifierOperator
 from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.null_source import NoSourceError
-from eos.fit.message import AttrValueChanged, AttrValueChangedMasked
+from eos.fit.pubsub.message import InstrAttrValueChanged, InstrAttrValueChangedMasked
 from eos.util.keyed_set import KeyedSet
 from .exception import AttributeMetaError, BaseValueError
 
@@ -166,9 +166,9 @@ class MutableAttributeMap:
         else:
             # Special message type if modified attribute is masked by override
             if attr in self._override_callbacks:
-                self.__publish(AttrValueChangedMasked(item=self.__item, attr=attr))
+                self.__publish(InstrAttrValueChangedMasked(item=self.__item, attr=attr))
             else:
-                self.__publish(AttrValueChanged(item=self.__item, attr=attr))
+                self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def get(self, attr, default=None):
         # Almost copy-paste of __getitem__ due to performance reasons - attribute
@@ -368,7 +368,7 @@ class MutableAttributeMap:
         if self.__overridde_callbacks.get(attr) == callback:
             return
         self.__overridde_callbacks[attr] = callback
-        self.__publish(AttrValueChanged(item=self.__item, attr=attr))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _del_override_callback(self, attr):
         """Remove override callback from attribute"""
@@ -379,7 +379,7 @@ class MutableAttributeMap:
         # Set overrides map to None if there're none left to save some memory
         if len(overrides) == 0:
             self.__overridde_callbacks = None
-        self.__publish(AttrValueChanged(item=self.__item, attr=attr))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _override_value_may_change(self, attr):
         """
@@ -387,7 +387,7 @@ class MutableAttributeMap:
         value may (or will) change for an attribute, it should
         invoke this method.
         """
-        self.__publish(AttrValueChanged(item=self.__item, attr=attr))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _get_without_overrides(self, attr, default=None):
         """Get attribute value without using overrides"""

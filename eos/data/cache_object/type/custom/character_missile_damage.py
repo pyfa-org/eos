@@ -50,4 +50,4 @@ def add_character_missile_damage_multiplier(eve_type):
         build_status=EffectBuildStatus.custom,
         modifiers=tuple(modifiers)
     )
-    eve_type.effects = (*eve_type.effects, effect)
+    eve_type.effects[effect.id] = effect

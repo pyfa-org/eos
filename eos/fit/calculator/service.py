@@ -19,15 +19,15 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierDomain
+from eos.const.eos import ModifierDomain
 from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.data.cache_object.modifier.python import BasePythonModifier
-from eos.fit.message import (
-    ItemAdded, ItemRemoved, ItemStateChanged, EffectsEnabled, EffectsDisabled,
-    AttrValueChanged, EnableServices, DisableServices
+from eos.fit.pubsub.message import (
+    InstrItemAdd, InstrItemRemove, InstrEffectsActivate, InstrEffectsDeactivate,
+    InstrAttrValueChanged
 )
+from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_set import KeyedSet
-from eos.util.pubsub import BaseSubscriber
 from .affector import Affector
 from .register import AffectionRegister
 
@@ -43,7 +43,6 @@ class CalculationService(BaseSubscriber):
     """
 
     def __init__(self, fit):
-        self.__enabled = False
         self.__fit = fit
         self.__affections = AffectionRegister(fit)
         # Container with affectors which will receive messages
@@ -75,59 +74,28 @@ class CalculationService(BaseSubscriber):
                 modifications.add((mod_oper, mod_value, carrier_item))
         return modifications
 
-    # Handle item addition/removal
+    # Handle item changes which are significant for calculator
     def _handle_item_addition(self, message):
-        self.__add_item(message.item)
+        self.__affections.register_affectee(message.item)
 
     def _handle_item_removal(self, message):
-        self.__remove_item(message.item)
+        self.__affections.unregister_affectee(message.item)
 
-    def __add_item(self, item):
-        """Make service aware of fit item"""
-        self.__affections.register_affectee(item)
-        self.__enable_affectors(self.__generate_affectors(
-            item, effect_filter=item._enabled_effects,
-            state_filter=set(filter(lambda s: s <= item.state, State))
-        ))
+    def _handle_item_effects_activation(self, message):
+        affectors = self.__generate_affectors(message.item, message.effects)
+        for affector in affectors:
+            self.__subscribe_affector(affector)
+            self.__affections.register_affector(affector)
+            for target_item in self.__affections.get_affectees(affector):
+                del target_item.attributes[affector.modifier.tgt_attr]
 
-    def __remove_item(self, item):
-        """Make service to forget about fit item"""
-        self.__disable_affectors(self.__generate_affectors(
-            item, effect_filter=item._enabled_effects,
-            state_filter=set(filter(lambda s: s <= item.state, State))
-        ))
-        self.__affections.unregister_affectee(item)
-
-    # Handle item changes which are significant for calculator
-    def _handle_item_state_change(self, message):
-        """Enable/disable affectors based on state change direction"""
-        item, old_state, new_state = message
-        if new_state > old_state:
-            self.__enable_affectors(self.__generate_affectors(
-                item, effect_filter=item._enabled_effects,
-                state_filter=set(filter(lambda s: old_state < s <= new_state, State))
-            ))
-        elif new_state < old_state:
-            self.__disable_affectors(self.__generate_affectors(
-                item, effect_filter=item._enabled_effects,
-                state_filter=set(filter(lambda s: new_state < s <= old_state, State))
-            ))
-
-    def _handle_item_effects_enabling(self, message):
-        """Enable effects carried by the item"""
-        affectors = self.__generate_affectors(
-            message.item, effect_filter=message.effects,
-            state_filter=set(filter(lambda s: s <= message.item.state, State))
-        )
-        self.__enable_affectors(affectors)
-
-    def _handle_item_effects_disabling(self, message):
-        """Disable effects carried by the item"""
-        affectors = self.__generate_affectors(
-            message.item, effect_filter=message.effects,
-            state_filter=set(filter(lambda s: s <= message.item.state, State))
-        )
-        self.__disable_affectors(affectors)
+    def _handle_item_effects_deactivation(self, message):
+        affectors = self.__generate_affectors(message.item, message.effects)
+        for affector in affectors:
+            for target_item in self.__affections.get_affectees(affector):
+                del target_item.attributes[affector.modifier.tgt_attr]
+            self.__affections.unregister_affector(affector)
+            self.__unsubscribe_affector(affector)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attrib_dependents(self, message):
@@ -139,20 +107,16 @@ class CalculationService(BaseSubscriber):
         via affectors with dogma modifiers. Affectors with python
         modifiers are processed separately.
         """
-        item, attr = message
         # Remove values of target attributes capped by changing attribute
-        for capped_attr in (item.attributes._cap_map.get(attr, ())):
-            del item.attributes[capped_attr]
+        for capped_attr in (message.item.attributes._cap_map.get(message.attr, ())):
+            del message.item.attributes[capped_attr]
         # Remove values of target attributes which are using changing attribute
         # as modification source
-        for affector in self.__generate_affectors(
-            item, effect_filter=item._enabled_effects,
-            state_filter=set(filter(lambda s: s <= item.state, State))
-        ):
+        for affector in self.__generate_affectors(message.item, message.item._active_effects.keys()):
             modifier = affector.modifier
             # Only dogma modifiers have source attribute specified,
             # python modifiers are processed separately
-            if not isinstance(modifier, DogmaModifier) or modifier.src_attr != attr:
+            if not isinstance(modifier, DogmaModifier) or modifier.src_attr != message.attr:
                 continue
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[modifier.tgt_attr]
@@ -175,36 +139,16 @@ class CalculationService(BaseSubscriber):
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr]
 
-    # Service state management
-    def _handle_enable_services(self, message):
-        """Enable service and register passed items"""
-        self.__enabled = True
-        for item in message.items:
-            self.__add_item(item)
-
-    def _handle_disable_services(self, message):
-        """Unregister passed items from this service and disable it"""
-        for item in message.items:
-            self.__remove_item(item)
-        self.__enabled = False
-
     # Message routing
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        ItemStateChanged: _handle_item_state_change,
-        EffectsEnabled: _handle_item_effects_enabling,
-        EffectsDisabled: _handle_item_effects_disabling,
-        AttrValueChanged: _revise_regular_attrib_dependents,
-        EnableServices: _handle_enable_services,
-        DisableServices: _handle_disable_services
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal,
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation,
+        InstrAttrValueChanged: _revise_regular_attrib_dependents
     }
 
     def _notify(self, message):
-        # When service is disabled, we are processing
-        # only message which enables it
-        if not self.__enabled and type(message) is not EnableServices:
-            return
         try:
             handler = self._handler_map[type(message)]
         except KeyError:
@@ -219,27 +163,21 @@ class CalculationService(BaseSubscriber):
     _supported_domains = set(filter(lambda d: d != ModifierDomain.target, ModifierDomain))
 
     # Affector generation and manipulation
-    def __generate_affectors(self, item, effect_filter, state_filter):
+    def __generate_affectors(self, item, effect_ids):
         """
         Get all affectors spawned by the item.
 
         Required arguments:
         item -- item, for which affectors are generated
-
-        Optional arguments:
-        effect filter -- filter results to include affectors, which carry
-            modifiers generated from effects with IDs on this list
-        state_filter -- filter results by state required by affector's
-            modifier, which should be in this iterable
+        effect_ids -- iterable with effect IDs, for which
+            affectors should be generated
 
         Return value:
-        Set with Affector objects, which satisfy passed filters
+        Set with Affector objects
         """
         affectors = set()
-        for effect in item._eve_type.effects:
-            if effect.id not in effect_filter:
-                continue
-            if effect._state not in state_filter:
+        for effect_id, effect in item._eve_type.effects.items():
+            if effect_id not in effect_ids:
                 continue
             for modifier in effect.modifiers:
                 if modifier.tgt_domain not in self._supported_domains:
@@ -247,22 +185,6 @@ class CalculationService(BaseSubscriber):
                 affector = Affector(modifier, item)
                 affectors.add(affector)
         return affectors
-
-    def __enable_affectors(self, affectors):
-        """Enable effect of affectors on their target items"""
-        for affector in affectors:
-            self.__subscribe_affector(affector)
-            self.__affections.register_affector(affector)
-            for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr]
-
-    def __disable_affectors(self, affectors):
-        """Remove effect of affectors from their target items"""
-        for affector in affectors:
-            for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr]
-            self.__affections.unregister_affector(affector)
-            self.__unsubscribe_affector(affector)
 
     # Python affector subscription/unsubscription
     def __subscribe_affector(self, affector):

@@ -73,7 +73,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.items.add(self.item)
         # Action
-        self.item._disabled_effects.add(self.effect1.id)
+        self.item._blocked_effect_ids.add(self.effect1.id)
         self.fit._calculator._notify(EffectsDisabled(self.item, (self.effect1.id,)))
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
@@ -87,7 +87,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.items.add(self.item)
         # Action
-        self.item._disabled_effects.update((self.effect1.id, self.effect2.id, self.effect_active.id))
+        self.item._blocked_effect_ids.update((self.effect1.id, self.effect2.id, self.effect_active.id))
         self.fit._calculator._notify(EffectsDisabled(
             self.item, (self.effect1.id, self.effect2.id, self.effect_active.id)
         ))
@@ -101,11 +101,11 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling(self):
         # Setup
         self.item.state = State.offline
-        self.item._disabled_effects.add(self.effect1.id)
+        self.item._blocked_effect_ids.add(self.effect1.id)
         self.fit.items.add(self.item)
         # Action
         self.fit._calculator._notify(EffectsEnabled(self.item, (self.effect1.id,)))
-        self.item._disabled_effects.discard(self.effect1.id)
+        self.item._blocked_effect_ids.discard(self.effect1.id)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
@@ -116,13 +116,13 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling_multiple(self):
         # Setup
         self.item.state = State.offline
-        self.item._disabled_effects.update((self.effect1.id, self.effect2.id))
+        self.item._blocked_effect_ids.update((self.effect1.id, self.effect2.id))
         self.fit.items.add(self.item)
         # Action
         self.fit._calculator._notify(EffectsEnabled(
             self.item, (self.effect1.id, self.effect2.id, self.effect_active.id)
         ))
-        self.item._disabled_effects.difference_update((self.effect1.id, self.effect2.id, self.effect_active.id))
+        self.item._blocked_effect_ids.difference_update((self.effect1.id, self.effect2.id, self.effect_active.id))
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup

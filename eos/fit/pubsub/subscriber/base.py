@@ -19,26 +19,15 @@
 # ===============================================================================
 
 
-from eos.exception import EosError
+from abc import ABCMeta, abstractmethod
 
 
-class RestrictionServiceError(EosError):
+class BaseSubscriber(metaclass=ABCMeta):
     """
-    All restriction service exceptions are based on this class.
+    Base class for subscribers. Forces them to
+    implement methods all subscribers should have.
     """
-    ...
 
-
-class RegisterValidationError(RestrictionServiceError):
-    """
-    All errors raised during validation process on register level
-    are instances of this class.
-    """
-    ...
-
-
-class ValidationError(RestrictionServiceError):
-    """
-    Raised when service-wide validation fails.
-    """
-    ...
+    @abstractmethod
+    def _notify(self, message):
+        ...

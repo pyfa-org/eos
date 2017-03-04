@@ -19,13 +19,4 @@
 # ===============================================================================
 
 
-class BaseMessage:
-    """
-    Base class for all messages.
-    """
-
-    def expand(self):
-        """
-        By default, do not return any additional messages.
-        """
-        return (self,)
+from .base import BaseSubscriber

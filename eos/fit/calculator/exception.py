@@ -24,7 +24,7 @@ from eos.exception import EosError
 
 class AttributeCalculatorError(EosError):
     """All attribute calculator exceptions are based on this class."""
-    pass
+    ...
 
 
 # Exception classes used by affection register
@@ -34,12 +34,12 @@ class UnexpectedDomainError(AttributeCalculatorError):
     have this domain (which domains are supported depends on
     modifier target filter and its context).
     """
-    pass
+    ...
 
 
 class UnknownTargetFilterError(AttributeCalculatorError):
     """Raised when modifier has unknown target filter type"""
-    pass
+    ...
 
 
 # Exception classes used by map's calculation method
@@ -48,7 +48,7 @@ class AttributeMetaError(AttributeCalculatorError):
     Raised when attribute being calculated cannot be found in
     attribute database.
     """
-    pass
+    ...
 
 
 class BaseValueError(AttributeCalculatorError):
@@ -56,4 +56,4 @@ class BaseValueError(AttributeCalculatorError):
     Raised when value, upon which attribute calculation should be based,
     cannot be determined, thus making it impossible to calculate attribute.
     """
-    pass
+    ...

@@ -19,15 +19,10 @@
 # ===============================================================================
 
 
-"""
-Implementation of publish-subscribe pattern.
-"""
+from ..message.base import BaseInputMessage
 
 
-from abc import ABCMeta, abstractmethod
-
-
-class MessageBroker:
+class FitMessageBroker:
     """
     Manages subscriptions and dispatches received
     publications according to active subscriptions.
@@ -62,19 +57,13 @@ class MessageBroker:
 
     def _publish(self, message):
         """
-        Publish message and make sure that all
-        interested subscribers are notified.
+        Publish message and make sure that all interested
+        subscribers are notified.
         """
-        for subscriber in self.__subscribers.get(type(message), ()):
-            subscriber._notify(message)
-
-
-class BaseSubscriber(metaclass=ABCMeta):
-    """
-    Base class for subscribers. Forces them to
-    implement methods all subscribers should have.
-    """
-
-    @abstractmethod
-    def _notify(self, message):
-        ...
+        if isinstance(message, BaseInputMessage):
+            for message in (message, *message.get_instructions()):
+                for subscriber in self.__subscribers.get(type(message), ()):
+                    subscriber._notify(message)
+        else:
+            for subscriber in self.__subscribers.get(type(message), ()):
+                subscriber._notify(message)

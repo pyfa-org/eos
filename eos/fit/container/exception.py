@@ -27,7 +27,7 @@ class ItemContainerError(EosError):
     Custom exceptions thrown by item containers are based
     on this class.
     """
-    pass
+    ...
 
 
 class ItemAlreadyAssignedError(ItemContainerError):
@@ -35,7 +35,7 @@ class ItemAlreadyAssignedError(ItemContainerError):
     Raised on attempt to add item, when
     it's already assigned to fit.
     """
-    pass
+    ...
 
 
 class ItemFitMismatchError(ItemContainerError):
@@ -43,7 +43,7 @@ class ItemFitMismatchError(ItemContainerError):
     Raised during removal of item, when item's fit reference
     does not reference fit item being removed from.
     """
-    pass
+    ...
 
 
 class SlotTakenError(ItemContainerError):
@@ -51,4 +51,4 @@ class SlotTakenError(ItemContainerError):
     When attempt to overwrite another item in ordered container
     is detected, this exception is raised.
     """
-    pass
+    ...

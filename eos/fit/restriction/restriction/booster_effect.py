@@ -54,7 +54,12 @@ class BoosterEffectRestriction(BaseRestriction):
             # Check if any disabled effects cannot be found in
             # side-effect list
             disablable = set(booster.side_effects)
-            illegal = booster._disabled_effects.difference(disablable)
+            illegal = set()
+            for effect_id, effect_data in booster._effects_data.items():
+                if effect_id in disablable:
+                    continue
+                if effect_data.activable is False:
+                    illegal.add(effect_id)
             if len(illegal) == 0:
                 continue
             tainted_items[booster] = BoosterEffectErrorData(
