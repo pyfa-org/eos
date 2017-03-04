@@ -23,7 +23,6 @@ from copy import copy
 from logging import getLogger
 from math import ceil, floor
 
-from eos.const.eos import State
 from eos.const.eve import Attribute, Effect
 from eos.fit.pubsub.message import (
     InputDefaultIncomingDamageChanged, InstrEffectsActivate, InstrEffectsDeactivate,

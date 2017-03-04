@@ -62,7 +62,7 @@ class IntegrationTestCase(EosTestCase):
         entry_num = 0
         # Fit itself
         entry_num += self._get_object_buffer_entry_amount(fit, ignore=(
-            '_Fit__source', '_Fit__default_incoming_damage', '_MessageBroker__subscribers'
+            '_Fit__source', '_Fit__default_incoming_damage', '_FitMessageBroker__subscribers'
         ))
         # Volatile manager. As volatile manager always has one entry added to it
         # (stats service), make sure it's ignored for assertion purposes
