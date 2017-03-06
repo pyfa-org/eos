@@ -28,9 +28,9 @@ class TestRahSimCriteria(RahSimTestCase):
 
     def test_active_added(self):
         # Setup
-        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
         # Action
         self.fit.modules.low.equip(rah_item)
         # Verification
@@ -50,9 +50,9 @@ class TestRahSimCriteria(RahSimTestCase):
 
     def test_active_switched(self):
         # Setup
-        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
+        rah_item = ModuleLow(self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
         self.fit.modules.low.equip(rah_item)
         # Action
         rah_item.state = State.active
@@ -73,9 +73,9 @@ class TestRahSimCriteria(RahSimTestCase):
 
     def test_inactive_added(self):
         # Setup
-        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
+        rah_item = ModuleLow(self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
         # Action
         self.fit.modules.low.equip(rah_item)
         # Verification
@@ -95,9 +95,9 @@ class TestRahSimCriteria(RahSimTestCase):
 
     def test_inactive_switched(self):
         # Setup
-        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
         self.fit.modules.low.equip(rah_item)
         # Action
         rah_item.state = State.online
@@ -118,12 +118,12 @@ class TestRahSimCriteria(RahSimTestCase):
 
     def test_not_rah(self):
         # Setup
-        rah_type = self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000)
+        rah_eve_type = self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000)
         # RAH is detected using effect, thus if item doesn't have RAH effect, it's not RAH
-        rah_type.effects = {}
-        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        rah_eve_type.effects = {}
+        ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(rah_type.id, state=State.active)
+        rah_item = ModuleLow(rah_eve_type.id, state=State.active)
         # Action
         self.fit.modules.low.equip(rah_item)
         # Verification

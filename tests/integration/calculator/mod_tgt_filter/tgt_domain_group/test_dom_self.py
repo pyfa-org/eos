@@ -21,11 +21,11 @@
 
 import logging
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, CharDomainItem, ShipDomainItem
 
 
 class TestTgtDomainGroupDomainSelf(CalculatorTestCase):
@@ -43,16 +43,14 @@ class TestTgtDomainGroupDomainSelf(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 20}
-        ))
+        self.source_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 20})
 
     def test_ship(self):
-        influence_target = ShipDomainItem(self.ch.type(group=35, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
+        influence_source = Ship(self.source_eve_type.id)
+        influence_target = Rig(self.ch.type(group=35, attributes={self.tgt_attr.id: 100}).id)
+        self.fit.rigs.add(influence_target)
         # Action
-        self.fit.ship = self.influence_source
+        self.fit.ship = influence_source
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
@@ -60,15 +58,16 @@ class TestTgtDomainGroupDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_target)
+        self.fit.rigs.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_character(self):
-        influence_target = CharDomainItem(self.ch.type(group=35, attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
+        influence_source = Character(self.source_eve_type.id)
+        influence_target = Implant(self.ch.type(group=35, attributes={self.tgt_attr.id: 100}).id)
+        self.fit.implants.add(influence_target)
         # Action
-        self.fit.character = self.influence_source
+        self.fit.character = influence_source
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
@@ -76,25 +75,26 @@ class TestTgtDomainGroupDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_target)
+        self.fit.implants.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_unpositioned_error(self):
+        influence_source = Implant(self.source_eve_type.id)
         # Action
         # Here we do not position item in fit, this way attribute
         # calculator won't know that source is 'owner' of some domain
         # and will log corresponding error
-        self.fit.items.add(self.influence_source)
+        self.fit.implants.add(influence_source)
         # Verification
         self.assertEqual(len(self.log), 2)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.fit.calculator.register')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(
-            log_record.msg,
-            'malformed modifier on eve type 1061: unsupported target domain 1'
-        )
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.fit.calculator.register')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg, 'malformed modifier on eve type {}: '
+                'unsupported target domain 1'.format(self.source_eve_type.id)
+            )
         # Cleanup
-        self.fit.items.remove(self.influence_source)
+        self.fit.implants.remove(influence_source)
         self.assert_fit_buffers_empty(self.fit)

@@ -23,7 +23,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestRounding(CalculatorTestCase):
@@ -57,10 +56,7 @@ class TestRounding(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        item = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 20, tgt_attr.id: 1.9444}
-        ))
+        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 1.9444}).id)
         self.fit.items.add(item)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 2.33)
         self.fit.items.remove(item)

@@ -23,7 +23,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestOperatorAdd(CalculatorTestCase):
@@ -40,18 +39,9 @@ class TestOperatorAdd(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source1 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 10}
-        ))
-        self.influence_source2 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: -20}
-        ))
-        self.influence_source3 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 53}
-        ))
+        self.influence_source1 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 10}).id)
+        self.influence_source2 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: -20}).id)
+        self.influence_source3 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 53}).id)
         self.influence_target = ShipDomainItem(self.ch.type(attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(self.influence_source1)
         self.fit.items.add(self.influence_source2)

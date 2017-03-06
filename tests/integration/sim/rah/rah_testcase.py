@@ -30,8 +30,8 @@ class RahSimTestCase(IntegrationTestCase):
     """
     Additional functionality provided:
 
-    self.make_ship_type -- create ship EVE type with specified resonances
-    self.make_rah_type -- create RAH EVE type with specified resonances,
+    self.make_ship_eve_type -- create ship EVE type with specified resonances
+    self.make_rah_eve_type -- create RAH EVE type with specified resonances,
         resonance shift amount and cycle time
     self.*_attr -- assortment of RAH-related attributes
     """
@@ -67,11 +67,11 @@ class RahSimTestCase(IntegrationTestCase):
         # Misc
         self.fit = Fit()
 
-    def make_ship_type(self, resonances):
+    def make_ship_eve_type(self, resonances):
         attr_order = (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id)
         return self.ch.type(attributes=dict(zip(attr_order, resonances)), effects=())
 
-    def make_rah_type(self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
+    def make_rah_eve_type(self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
         attr_order = (
             self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id,
             self.shift_attr.id, self.cycle_attr.id, self.heat_attr.id

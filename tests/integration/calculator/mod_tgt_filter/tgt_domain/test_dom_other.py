@@ -21,11 +21,11 @@
 
 import logging
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestTgtDomainDomainOther(CalculatorTestCase):
@@ -41,23 +41,21 @@ class TestTgtDomainDomainOther(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        influence_source = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 20}
-        ))
+        source_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 20})
+        influence_source = Rig(source_eve_type.id)
         # Action
         # Charge's container or module's charge can't be 'owner'
         # of other items, thus such modification type is unsupported
-        self.fit.items.add(influence_source)
+        self.fit.rigs.add(influence_source)
         # Verification
         self.assertEqual(len(self.log), 2)
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
-                log_record.msg,
-                'malformed modifier on eve type 90: unsupported target domain {}'.format(ModifierDomain.other)
+                log_record.msg, 'malformed modifier on eve type {}: '
+                'unsupported target domain {}'.format(source_eve_type.id, ModifierDomain.other)
             )
         # Cleanup
-        self.fit.items.remove(influence_source)
+        self.fit.rigs.remove(influence_source)
         self.assert_fit_buffers_empty(self.fit)

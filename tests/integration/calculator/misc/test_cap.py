@@ -47,10 +47,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_default(self):
         # Check that cap is applied properly when item
         # doesn't have base value of capping attribute
-        item = IndependentItem(self.ch.type(
-            effects=(self.effect,),
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
-        ))
+        item = IndependentItem(self.ch.type(effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6}).id)
         self.fit.items.add(item)
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 5)
         self.fit.items.remove(item)
@@ -60,10 +57,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_attr_eve_type(self):
         # Make sure that item's own specified attribute
         # value is taken as cap
-        item = IndependentItem(self.ch.type(
-            effects=(self.effect,),
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
-        ))
+        item = IndependentItem(self.ch.type(effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}).id)
         self.fit.items.add(item)
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         self.fit.items.remove(item)
@@ -82,10 +76,7 @@ class TestCap(CalculatorTestCase):
             src_attr=self.source_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        item = IndependentItem(self.ch.type(
-            effects=(self.effect, effect),
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}
-        ))
+        item = IndependentItem(self.ch.type(effects=(self.effect, effect), attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}).id)
         self.fit.items.add(item)
         # Attr value is 3 * 6 = 18, but cap value is 0.1 * 6 = 0.6
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 0.6)
@@ -96,10 +87,7 @@ class TestCap(CalculatorTestCase):
     def test_cap_update(self):
         # If cap updates, capped attributes should
         # be updated too
-        item = ShipDomainItem(self.ch.type(
-            effects=(self.effect,),
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
-        ))
+        item = ShipDomainItem(self.ch.type(effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}).id)
         self.fit.items.add(item)
         # Check attribute vs initial cap
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
@@ -112,10 +100,7 @@ class TestCap(CalculatorTestCase):
             src_attr=self.source_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        cap_updater = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={self.source_attr.id: 3.5}
-        ))
+        cap_updater = IndependentItem(self.ch.type(effects=(effect,), attributes={self.source_attr.id: 3.5}).id)
         self.fit.items.add(cap_updater)
         # As capping attribute is updated, capped attribute must be updated too
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 7)

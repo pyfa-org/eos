@@ -23,7 +23,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestOperatorForcedValue(CalculatorTestCase):
@@ -41,10 +40,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_pre_ass = self.ch.effect(category=EffectCategory.passive)
         effect_pre_ass.modifiers = (modifier_pre_ass,)
-        influence_source_pre_ass = IndependentItem(self.ch.type(
-            effects=(effect_pre_ass,),
-            attributes={src_attr.id: 5}
-        ))
+        influence_source_pre_ass = IndependentItem(self.ch.type(effects=(effect_pre_ass,), attributes={src_attr.id: 5}).id)
         self.fit.items.add(influence_source_pre_ass)
         modifier_pre_mul = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -55,10 +51,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_pre_mul = self.ch.effect(category=EffectCategory.passive)
         effect_pre_mul.modifiers = (modifier_pre_mul,)
-        influence_source_pre_mul = IndependentItem(self.ch.type(
-            effects=(effect_pre_mul,),
-            attributes={src_attr.id: 50}
-        ))
+        influence_source_pre_mul = IndependentItem(self.ch.type(effects=(effect_pre_mul,), attributes={src_attr.id: 50}).id)
         self.fit.items.add(influence_source_pre_mul)
         modifier_pre_div = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -69,10 +62,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_pre_div = self.ch.effect(category=EffectCategory.passive)
         effect_pre_div.modifiers = (modifier_pre_div,)
-        influence_source_pre_div = IndependentItem(self.ch.type(
-            effects=(effect_pre_div,),
-            attributes={src_attr.id: 0.5}
-        ))
+        influence_source_pre_div = IndependentItem(self.ch.type(effects=(effect_pre_div,), attributes={src_attr.id: 0.5}).id)
         self.fit.items.add(influence_source_pre_div)
         modifier_mod_add = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -83,10 +73,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_mod_add = self.ch.effect(category=EffectCategory.passive)
         effect_mod_add.modifiers = (modifier_mod_add,)
-        influence_source_mod_add = IndependentItem(self.ch.type(
-            effects=(effect_mod_add,),
-            attributes={src_attr.id: 10}
-        ))
+        influence_source_mod_add = IndependentItem(self.ch.type(effects=(effect_mod_add,), attributes={src_attr.id: 10}).id)
         self.fit.items.add(influence_source_mod_add)
         modifier_mod_sub = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -97,10 +84,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_mod_sub = self.ch.effect(category=EffectCategory.passive)
         effect_mod_sub.modifiers = (modifier_mod_sub,)
-        influence_source_mod_sub = IndependentItem(self.ch.type(
-            effects=(effect_mod_sub,),
-            attributes={src_attr.id: 63}
-        ))
+        influence_source_mod_sub = IndependentItem(self.ch.type(effects=(effect_mod_sub,), attributes={src_attr.id: 63}).id)
         self.fit.items.add(influence_source_mod_sub)
         modifier_post_mul = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -111,10 +95,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_post_mul = self.ch.effect(category=EffectCategory.passive)
         effect_post_mul.modifiers = (modifier_post_mul,)
-        influence_source_post_mul = IndependentItem(self.ch.type(
-            effects=(effect_post_mul,),
-            attributes={src_attr.id: 1.35}
-        ))
+        influence_source_post_mul = IndependentItem(self.ch.type(effects=(effect_post_mul,), attributes={src_attr.id: 1.35}).id)
         self.fit.items.add(influence_source_post_mul)
         modifier_post_div = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -125,10 +106,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_post_div = self.ch.effect(category=EffectCategory.passive)
         effect_post_div.modifiers = (modifier_post_div,)
-        influence_source_post_div = IndependentItem(self.ch.type(
-            effects=(effect_post_div,),
-            attributes={src_attr.id: 2.7}
-        ))
+        influence_source_post_div = IndependentItem(self.ch.type(effects=(effect_post_div,), attributes={src_attr.id: 2.7}).id)
         self.fit.items.add(influence_source_post_div)
         modifier_post_perc = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -139,10 +117,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_post_perc = self.ch.effect(category=EffectCategory.passive)
         effect_post_perc.modifiers = (modifier_post_perc,)
-        influence_source_post_perc = IndependentItem(self.ch.type(
-            effects=(effect_post_perc,),
-            attributes={src_attr.id: 15}
-        ))
+        influence_source_post_perc = IndependentItem(self.ch.type(effects=(effect_post_perc,), attributes={src_attr.id: 15}).id)
         self.fit.items.add(influence_source_post_perc)
         modifier_post_ass = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
@@ -153,10 +128,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
         )
         effect_post_ass = self.ch.effect(category=EffectCategory.passive)
         effect_post_ass.modifiers = (modifier_post_ass,)
-        influence_source_post_ass = IndependentItem(self.ch.type(
-            effects=(effect_post_ass,),
-            attributes={src_attr.id: 68}
-        ))
+        influence_source_post_ass = IndependentItem(self.ch.type(effects=(effect_post_ass,), attributes={src_attr.id: 68}).id)
         self.fit.items.add(influence_source_post_ass)
         influence_target = ShipDomainItem(self.ch.type(attributes={tgt_attr.id: 100}))
         # Action

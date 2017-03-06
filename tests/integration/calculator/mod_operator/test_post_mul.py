@@ -23,7 +23,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestOperatorPostMul(CalculatorTestCase):
@@ -40,26 +39,11 @@ class TestOperatorPostMul(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source1 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 1.2}
-        ))
-        self.influence_source2 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 1.5}
-        ))
-        self.influence_source3 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 0.1}
-        ))
-        self.influence_source4 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 0.75}
-        ))
-        self.influence_source5 = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 5}
-        ))
+        self.influence_source1 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2}).id)
+        self.influence_source2 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5}).id)
+        self.influence_source3 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 0.1}).id)
+        self.influence_source4 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 0.75}).id)
+        self.influence_source5 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 5}).id)
         self.influence_target = ShipDomainItem(self.ch.type(attributes={self.tgt_attr.id: 100}))
         self.fit.items.add(self.influence_source1)
         self.fit.items.add(self.influence_source2)

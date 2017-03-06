@@ -19,11 +19,11 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestTgtDomainDomainUnknown(CalculatorTestCase):
@@ -49,19 +49,16 @@ class TestTgtDomainDomainUnknown(CalculatorTestCase):
             category=EffectCategory.passive,
             modifiers=(invalid_modifier, valid_modifier)
         )
-        influence_source = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 20}
-        ))
-        influence_target = ShipDomainItem(self.ch.type(attributes={tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
+        influence_source = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
+        influence_target = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)
+        self.fit.rigs.add(influence_target)
         # Action
-        self.fit.items.add(influence_source)
+        self.fit.implants.add(influence_source)
         # Verification
         # Invalid domain in modifier should prevent proper processing of other modifiers
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
         # Cleanup
-        self.fit.items.remove(influence_target)
-        self.fit.items.remove(influence_source)
+        self.fit.rigs.remove(influence_target)
+        self.fit.implants.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

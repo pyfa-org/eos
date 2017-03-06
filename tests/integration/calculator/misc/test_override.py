@@ -24,7 +24,6 @@ from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from eos.fit.message import AttrValueChangedMasked
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import Fit, IndependentItem
 
 
 class TestOverride(CalculatorTestCase):
@@ -63,10 +62,7 @@ class TestOverride(CalculatorTestCase):
         effect1.modifiers = (modifier1,)
         effect2 = self.ch.effect(category=EffectCategory.passive)
         effect2.modifiers = (modifier2, modifier3)
-        self.item = IndependentItem(self.ch.type(
-            effects=(effect1, effect2),
-            attributes={self.attr1.id: 50, self.attr2.id: 100, self.attr3.id: 5, self.attr4.id: 50}
-        ))
+        self.item = IndependentItem(self.ch.type(effects=(effect1, effect2), attributes={self.attr1.id: 50, self.attr2.id: 100, self.attr3.id: 5, self.attr4.id: 50}).id)
         self.fit = Fit(self.ch, msgstore_filter=lambda m: (isinstance(m, AttrValueChangedMasked)))
         self.fit.items.add(self.item)
 

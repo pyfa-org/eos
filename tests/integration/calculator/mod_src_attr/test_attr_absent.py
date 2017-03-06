@@ -25,7 +25,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestSourceAttrAbsent(CalculatorTestCase):
@@ -50,10 +49,7 @@ class TestSourceAttrAbsent(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 1.5, tgt_attr.id: 100}
-        ))
+        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
         # Action
         self.fit.items.add(item)
         # Verification

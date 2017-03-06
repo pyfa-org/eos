@@ -22,7 +22,6 @@
 import logging
 
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestNonExistent(CalculatorTestCase):

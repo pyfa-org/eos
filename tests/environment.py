@@ -33,12 +33,14 @@ class CacheHandler:
         self.__attribute_data = {}
         self.__effect_data = {}
 
-    def type(self, type_id=None, **kwargs):
+    def type(self, type_id=None, required_skills=None, **kwargs):
         if type_id is None:
             type_id = max((TEST_ID_START - 1, *self.__type_data.keys())) + 1
         eve_type = Type(type_id=type_id, **kwargs)
         if eve_type.id in self.__type_data:
             raise KeyError(eve_type.id)
+        if required_skills is not None:
+            eve_type.required_skills = required_skills
         self.__type_data[eve_type.id] = eve_type
         return eve_type
 

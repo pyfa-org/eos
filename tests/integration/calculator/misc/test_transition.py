@@ -24,7 +24,6 @@ from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from eos.fit.message import EnableServices, DisableServices
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import Fit, IndependentItem, ShipDomainItem
 from tests.environment import CacheHandler
 
 

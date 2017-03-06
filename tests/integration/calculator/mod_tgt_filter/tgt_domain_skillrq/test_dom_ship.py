@@ -19,11 +19,11 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipDomainItem, OwnerModifiableItem
 
 
 class TestTgtDomainSkillrqDomainShip(CalculatorTestCase):
@@ -41,55 +41,46 @@ class TestTgtDomainSkillrqDomainShip(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 20}
-        ))
+        self.influence_source = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
 
-    def test_ship(self):
-        eve_type = self.ch.type(attributes={self.tgt_attr.id: 100})
-        eve_type.required_skills = {56: 1}
-        influence_target = ShipDomainItem(eve_type)
-        self.fit.items.add(influence_target)
+    def test_parent_domain_ship(self):
+        influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={56: 1}).id)
+        self.fit.rigs.add(influence_target)
         # Action
-        self.fit.items.add(self.influence_source)
+        self.fit.implants.add(self.influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
-        self.fit.items.remove(self.influence_source)
+        self.fit.implants.remove(self.influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_target)
+        self.fit.rigs.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
-    def test_other_domain(self):
-        eve_type = self.ch.type(attributes={self.tgt_attr.id: 100})
-        eve_type.required_skills = {56: 1}
-        influence_target = OwnerModifiableItem(eve_type)
-        self.fit.items.add(influence_target)
+    def test_parent_domain_other(self):
+        influence_target = Booster(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={56: 1}).id)
+        self.fit.boosters.add(influence_target)
         # Action
-        self.fit.items.add(self.influence_source)
+        self.fit.implants.add(self.influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(self.influence_source)
-        self.fit.items.remove(influence_target)
+        self.fit.implants.remove(self.influence_source)
+        self.fit.boosters.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
-    def test_other_skill(self):
-        eve_type = self.ch.type(attributes={self.tgt_attr.id: 100})
-        eve_type.required_skills = {87: 1}
-        influence_target = ShipDomainItem(eve_type)
-        self.fit.items.add(influence_target)
+    def test_skill_other(self):
+        influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={87: 1}).id)
+        self.fit.rigs.add(influence_target)
         # Action
-        self.fit.items.add(self.influence_source)
+        self.fit.implants.add(self.influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(self.influence_source)
-        self.fit.items.remove(influence_target)
+        self.fit.implants.remove(self.influence_source)
+        self.fit.rigs.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

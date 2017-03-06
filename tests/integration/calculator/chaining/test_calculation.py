@@ -51,10 +51,7 @@ class TestCalculationChain(CalculatorTestCase):
         )
         effect2 = self.ch.effect(category=EffectCategory.passive)
         effect2.modifiers = (modifier2,)
-        item1 = CharDomainItem(self.ch.type(
-            effects=(effect1, effect2),
-            attributes={attr1.id: 5, attr2.id: 20}
-        ))
+        item1 = CharDomainItem(self.ch.type(effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}).id)
         modifier3 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,

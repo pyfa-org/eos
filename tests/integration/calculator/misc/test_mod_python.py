@@ -25,7 +25,6 @@ from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculatio
 from eos.data.cache_object.modifier.python import BasePythonModifier
 from eos.fit.message import AttrValueChanged
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestModifierPython(CalculatorTestCase):
@@ -58,7 +57,7 @@ class TestModifierPython(CalculatorTestCase):
                 return ModifierOperator.post_mul, carrier_mul * ship_mul
 
             @property
-            def revise_message_types(self):
+            def revise_message_eve_types(self):
                 return {AttrValueChanged}
 
             def revise_modification(self, message, carrier_item, fit):
@@ -153,10 +152,7 @@ class TestModifierPython(CalculatorTestCase):
         )
         effect2 = self.ch.effect(category=EffectCategory.online, modifiers=(modifier2,))
         item1 = self.item
-        item2 = IndependentItem(self.ch.type(
-            effects=(effect1, effect2),
-            attributes={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3}
-        ))
+        item2 = IndependentItem(self.ch.type(effects=(effect1, effect2), attributes={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3}).id)
         self.fit.items.add(item1)
         self.assertAlmostEqual(item1.attributes[self.attr1.id], 100)
         item1.state = State.online

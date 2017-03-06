@@ -23,7 +23,6 @@ from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierO
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestStateSwitching(CalculatorTestCase):
@@ -82,13 +81,10 @@ class TestStateSwitching(CalculatorTestCase):
         effect_over.modifiers = (modifier_over,)
         effect_disabled = self.ch.effect(category=EffectCategory.active)
         effect_disabled.modifiers = (modifier_disabled,)
-        self.item = IndependentItem(self.ch.type(
-            effects=(effect_off, effect_on, effect_act, effect_over, effect_disabled),
-            attributes={
+        self.item = IndependentItem(self.ch.type(effects=(effect_off, effect_on, effect_act, effect_over, effect_disabled), attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
-            }
-        ))
+            }).id)
         self.item._blocked_effect_ids.add(effect_disabled.id)
 
     def test_fit_offline(self):
