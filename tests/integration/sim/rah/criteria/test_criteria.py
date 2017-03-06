@@ -28,17 +28,11 @@ class TestRahSimCriteria(RahSimTestCase):
 
     def test_active_added(self):
         # Setup
-        ship_type_id = 1
-        rah_type_id = 2
-        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
-        # Compose fit
-        fit = Fit()
-        ship_item = Ship(ship_type_id)
-        fit.ship = ship_item
-        rah_item = ModuleLow(rah_type_id, state=State.active)
+        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship_item
+        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
         # Action
-        fit.modules.low.equip(rah_item)
+        self.fit.modules.low.equip(rah_item)
         # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.925)
@@ -49,23 +43,17 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        fit.ship = None
-        fit.modules.low.clear()
+        self.fit.ship = None
+        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_active_switched(self):
         # Setup
-        ship_type_id = 1
-        rah_type_id = 2
-        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
-        # Compose fit
-        fit = Fit()
-        ship_item = Ship(ship_type_id)
-        fit.ship = ship_item
-        rah_item = ModuleLow(rah_type_id, state=State.online)
-        fit.modules.low.equip(rah_item)
+        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship_item
+        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
+        self.fit.modules.low.equip(rah_item)
         # Action
         rah_item.state = State.active
         # Verification
@@ -78,24 +66,18 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        fit.ship = None
-        fit.modules.low.clear()
+        self.fit.ship = None
+        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_inactive_added(self):
         # Setup
-        ship_type_id = 1
-        rah_type_id = 2
-        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
-        # Compose fit
-        fit = Fit()
-        ship_item = Ship(ship_type_id)
-        fit.ship = ship_item
-        rah_item = ModuleLow(rah_type_id, state=State.online)
+        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship_item
+        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
         # Action
-        fit.modules.low.equip(rah_item)
+        self.fit.modules.low.equip(rah_item)
         # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
@@ -106,23 +88,17 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        fit.ship = None
-        fit.modules.low.clear()
+        self.fit.ship = None
+        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_inactive_switched(self):
         # Setup
-        ship_type_id = 1
-        rah_type_id = 2
-        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
-        # Compose fit
-        fit = Fit()
-        ship_item = Ship(ship_type_id)
-        fit.ship = ship_item
-        rah_item = ModuleLow(rah_type_id, state=State.active)
-        fit.modules.low.equip(rah_item)
+        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship_item
+        rah_item = ModuleLow(self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        self.fit.modules.low.equip(rah_item)
         # Action
         rah_item.state = State.online
         # Verification
@@ -135,26 +111,21 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        fit.ship = None
-        fit.modules.low.clear()
+        self.fit.ship = None
+        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_not_rah(self):
         # Setup
-        ship_type_id = 1
-        rah_type_id = 2
-        self.make_ship_type(ship_type_id, (0.5, 0.65, 0.75, 0.9))
-        rah_type = self.make_rah_type(rah_type_id, (0.85, 0.85, 0.85, 0.85), 6, 1000)
+        rah_type = self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000)
         # RAH is detected using effect, thus if item doesn't have RAH effect, it's not RAH
         rah_type.effects = {}
-        # Compose fit
-        fit = Fit()
-        ship_item = Ship(ship_type_id)
-        fit.ship = ship_item
-        rah_item = ModuleLow(rah_type_id, state=State.active)
+        ship_item = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship_item
+        rah_item = ModuleLow(rah_type.id, state=State.active)
         # Action
-        fit.modules.low.equip(rah_item)
+        self.fit.modules.low.equip(rah_item)
         # Verification
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_therm.id], 0.85)
@@ -166,7 +137,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        fit.ship = None
-        fit.modules.low.clear()
+        self.fit.ship = None
+        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

@@ -23,6 +23,9 @@ from eos.data.cache_handler.exception import TypeFetchError, AttributeFetchError
 from eos.data.cache_object import Attribute, Effect, Type
 
 
+TEST_ID_START = 1000000
+
+
 class CacheHandler:
 
     def __init__(self):
@@ -30,22 +33,28 @@ class CacheHandler:
         self.__attribute_data = {}
         self.__effect_data = {}
 
-    def type(self, **kwargs):
-        eve_type = Type(**kwargs)
+    def type(self, type_id=None, **kwargs):
+        if type_id is None:
+            type_id = max((TEST_ID_START - 1, *self.__type_data.keys())) + 1
+        eve_type = Type(type_id=type_id, **kwargs)
         if eve_type.id in self.__type_data:
             raise KeyError(eve_type.id)
         self.__type_data[eve_type.id] = eve_type
         return eve_type
 
-    def attribute(self, **kwargs):
-        attr = Attribute(**kwargs)
+    def attribute(self, attribute_id=None, **kwargs):
+        if attribute_id is None:
+            attribute_id = max((TEST_ID_START - 1, *self.__attribute_data.keys())) + 1
+        attr = Attribute(attribute_id=attribute_id, **kwargs)
         if attr.id in self.__attribute_data:
             raise KeyError(attr.id)
         self.__attribute_data[attr.id] = attr
         return attr
 
-    def effect(self, **kwargs):
-        eff = Effect(**kwargs)
+    def effect(self, effect_id=None, **kwargs):
+        if effect_id is None:
+            effect_id = max((TEST_ID_START - 1, *self.__effect_data.keys())) + 1
+        eff = Effect(effect_id=effect_id, **kwargs)
         if eff.id in self.__effect_data:
             raise KeyError(eff.id)
         self.__effect_data[eff.id] = eff
