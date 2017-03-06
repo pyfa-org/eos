@@ -39,16 +39,11 @@ class TestTgtItemDomainShip(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (modifier,)
-        source_type_id = 1
-        self.ch.type(type_id=source_type_id, effects=(effect,), attributes={src_attr.id: 20})
-        self.influence_source = Implant(source_type_id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        self.influence_source = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
 
     def test_ship(self):
-        target_type_id = 2
-        self.ch.type(type_id=target_type_id, attributes={self.tgt_attr.id: 100})
-        influence_target = Ship(target_type_id)
+        influence_target = Ship(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.ship = influence_target
         # Action
         self.fit.implants.add(self.influence_source)
@@ -64,9 +59,7 @@ class TestTgtItemDomainShip(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_parent_domain_ship(self):
-        target_type_id = 2
-        self.ch.type(type_id=target_type_id, attributes={self.tgt_attr.id: 100})
-        influence_target = Rig(target_type_id)
+        influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_target)
         # Action
         self.fit.implants.add(self.influence_source)

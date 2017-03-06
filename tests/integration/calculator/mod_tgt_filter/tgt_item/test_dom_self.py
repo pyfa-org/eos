@@ -39,16 +39,10 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive)
-        self.effect.modifiers = (modifier,)
+        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
 
     def test_independent(self):
-        item_type_id = 1
-        self.ch.type(
-            type_id=item_type_id, effects=(self.effect,),
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
-        )
-        item = Ship(item_type_id)
+        item = Ship(self.ch.type(effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}).id)
         # Action
         self.fit.ship = item
         # Verification
@@ -59,12 +53,9 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_parent_domain_character(self):
-        item_type_id = 1
-        self.ch.type(
-            type_id=item_type_id, effects=(self.effect,),
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
-        )
-        item = Implant(item_type_id)
+        item = Implant(self.ch.type(
+            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ).id)
         # Action
         self.fit.implants.add(item)
         # Verification
@@ -75,12 +66,9 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_parent_domain_ship(self):
-        item_type_id = 1
-        self.ch.type(
-            type_id=item_type_id, effects=(self.effect,),
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
-        )
-        item = Rig(item_type_id)
+        item = Rig(self.ch.type(
+            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ).id)
         # Action
         self.fit.rigs.add(item)
         # Verification
@@ -95,15 +83,10 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # and nothing else is affected. We position item as character and
         # check another item which has character modifier domain to ensure
         # that items 'belonging' to self are not affected too
-        source_type_id = 1
-        self.ch.type(
-            type_id=source_type_id, effects=(self.effect,),
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
-        )
-        influence_source = Character(source_type_id)
-        item_type_id = 2
-        self.ch.type(type_id=item_type_id, attributes={self.tgt_attr.id: 100})
-        item = Implant(item_type_id)
+        influence_source = Character(self.ch.type(
+            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ).id)
+        item = Implant(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(item)
         # Action
         self.fit.character = influence_source

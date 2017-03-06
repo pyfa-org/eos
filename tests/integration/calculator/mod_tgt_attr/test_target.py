@@ -48,8 +48,7 @@ class TestTargetAttribute(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (modifier1, modifier2)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1, modifier2))
         item = IndependentItem(self.ch.type(
             effects=(effect,),
             attributes={tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20}

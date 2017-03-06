@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -37,15 +38,10 @@ class TestTgtItemAwaitingDomainChar(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (modifier,)
-        influence_source = IndependentItem(self.ch.type(
-            effects=(effect,), attributes={src_attr.id: 20}
-        ))
-        self.fit.items.add(influence_source)
-        influence_target = IndependentItem(self.ch.type(
-            attributes={tgt_attr.id: 100}
-        ))
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        influence_source = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
+        self.fit.implants.add(influence_source)
+        influence_target = Character(self.ch.type(attributes={tgt_attr.id: 100}).id)
         # Action
         # Here we add influence target after adding source, to make sure
         # modifiers wait for target to appear, and then are applied onto it
@@ -54,6 +50,6 @@ class TestTgtItemAwaitingDomainChar(CalculatorTestCase):
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
         # Cleanup
         self.fit.character = None
-        self.fit.items.remove(influence_source)
+        self.fit.implants.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

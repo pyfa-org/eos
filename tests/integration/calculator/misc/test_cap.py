@@ -23,7 +23,6 @@ from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem, ShipDomainItem
 
 
 class TestCap(CalculatorTestCase):
@@ -43,8 +42,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.source_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive)
-        self.effect.modifiers = (modifier,)
+        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
 
     def test_cap_default(self):
         # Check that cap is applied properly when item
@@ -83,8 +81,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.source_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (modifier,)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
         item = IndependentItem(self.ch.type(
             effects=(self.effect, effect),
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}
@@ -114,8 +111,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.source_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (modifier,)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
         cap_updater = IndependentItem(self.ch.type(
             effects=(effect,),
             attributes={self.source_attr.id: 3.5}

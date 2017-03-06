@@ -42,8 +42,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=1008,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (invalid_modifier,)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
         item = IndependentItem(self.ch.type(
             effects=(effect,),
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}
@@ -117,8 +116,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (invalid_modifier, valid_modifier)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
         item = IndependentItem(self.ch.type(
             effects=(effect,),
             attributes={src_attr.id: 1.5, tgt_attr.id: 100}

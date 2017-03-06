@@ -42,90 +42,62 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
 
     def test_other_domain_container(self):
-        source_type_id = 1
-        self.ch.type(effects=(self.effect,), attributes={self.src_attr.id: 20})
-        influence_source = ModuleHigh(source_type_id)
-        target_type_id = 2
-        self.ch.type(attributes={self.tgt_attr.id: 100})
-        influence_target = ChargeItem()
-        self.fit.items.add(influence_target)
-        # Action
+        influence_source = ModuleHigh(self.ch.type(effects=(self.effect,), attributes={self.src_attr.id: 20}).id)
+        influence_target = Charge(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         influence_source.charge = influence_target
-        influence_target.container = influence_source
-        self.fit.items.add(influence_source)
+        # Action
+        self.fit.modules.high.append(influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
-        # Action
-        self.fit.items.remove(influence_source)
-        influence_source.charge = None
-        influence_target.container = None
-        # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_target)
+        self.fit.modules.high.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_other_domain_charge(self):
-        influence_source = ChargeItem(self.ch.type(
-            effects=(self.effect,),
-            attributes={self.src_attr.id: 20}
-        ))
-        influence_target = ContainerItem(self.ch.type(attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
+        influence_source = Charge(self.ch.type(effects=(self.effect,), attributes={self.src_attr.id: 20}).id)
+        influence_target = ModuleHigh(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        self.fit.modules.high.append(influence_target)
         # Action
-        influence_source.container = influence_target
         influence_target.charge = influence_source
-        self.fit.items.add(influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Action
-        self.fit.items.remove(influence_source)
-        influence_source.container = None
         influence_target.charge = None
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_target)
+        self.fit.modules.high.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_self(self):
         # Check that source item isn't modified
-        influence_source = ContainerItem(self.ch.type(
-            effects=(self.effect,),
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
-        ))
-        influence_target = ChargeItem(self.ch.type(attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
-        # Action
+        influence_source = ModuleHigh(self.ch.type(
+            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+        ).id)
+        influence_target = Charge(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         influence_source.charge = influence_target
-        influence_target.container = influence_source
-        self.fit.items.add(influence_source)
+        # Action
+        self.fit.modules.high.append(influence_source)
         # Verification
         self.assertAlmostEqual(influence_source.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_target)
-        influence_source.charge = None
-        influence_target.container = None
-        self.fit.items.remove(influence_source)
+        self.fit.modules.high.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_other_item(self):
         # Here we check some "random" item, w/o linking items
-        influence_source = ContainerItem(self.ch.type(
-            effects=(self.effect,),
-            attributes={self.src_attr.id: 20}
-        ))
-        influence_target = IndependentItem(self.ch.type(attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(influence_target)
+        influence_source = ModuleHigh(self.ch.type(effects=(self.effect,), attributes={self.src_attr.id: 20}).id)
+        influence_target = Ship(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        self.fit.ship = influence_target
         # Action
-        self.fit.items.add(influence_source)
+        self.fit.modules.high.append(influence_source)
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(influence_source)
-        self.fit.items.remove(influence_target)
+        self.fit.modules.high.remove(influence_source)
+        self.fit.ship = None
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

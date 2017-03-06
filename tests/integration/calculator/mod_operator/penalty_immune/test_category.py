@@ -43,8 +43,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive)
-        self.effect.modifiers = (modifier,)
+        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
 
     def test_ship(self):
         influence_source1 = IndependentItem(self.ch.type(

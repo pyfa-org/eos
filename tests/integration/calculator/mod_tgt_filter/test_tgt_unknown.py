@@ -41,12 +41,11 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive)
 
     def test_log(self):
-        self.effect.modifiers = (self.invalid_modifier,)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(self.invalid_modifier,))
         item = IndependentItem(self.ch.type(
-            effects=(self.effect,),
+            effects=(effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr: 100}
         ))
         # Action
@@ -69,9 +68,9 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id
         )
-        self.effect.modifiers = (self.invalid_modifier, valid_modifier)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(self.invalid_modifier, valid_modifier))
         item = IndependentItem(self.ch.type(
-            effects=(self.effect,),
+            effects=(effect,),
             attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}
         ))
         # Action

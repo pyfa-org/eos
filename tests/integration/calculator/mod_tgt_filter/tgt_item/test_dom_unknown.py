@@ -19,11 +19,11 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
-from tests.calculator.environment import IndependentItem
 
 
 class TestTgtItemDomainUnknown(CalculatorTestCase):
@@ -45,19 +45,13 @@ class TestTgtItemDomainUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(
-            category=EffectCategory.passive,
-            modifiers=(invalid_modifier, valid_modifier)
-        )
-        item = IndependentItem(self.ch.type(
-            effects=(effect,),
-            attributes={src_attr.id: 20, tgt_attr.id: 100}
-        ))
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
+        item = Ship(self.ch.type(effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 100}).id)
         # Action
-        self.fit.items.add(item)
+        self.fit.ship = item
         # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         # Cleanup
-        self.fit.items.remove(item)
+        self.fit.ship = None
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

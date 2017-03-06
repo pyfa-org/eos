@@ -39,8 +39,7 @@ class TestOperatorPostAssign(CalculatorTestCase):
             operator=ModifierOperator.post_assign,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (modifier,)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
         self.influence_source1 = IndependentItem(self.ch.type(
             effects=(effect,),
             attributes={src_attr.id: 10}
