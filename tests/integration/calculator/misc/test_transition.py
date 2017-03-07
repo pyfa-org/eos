@@ -19,10 +19,10 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
-from eos.fit.message import EnableServices, DisableServices
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 from tests.environment import CacheHandler
 
@@ -60,12 +60,12 @@ class TestTransitionFit(CalculatorTestCase):
         self.assertAlmostEqual(module.attributes.get(tgt_attr.id), 55)
         fit1.items.remove(module)
         fit1.ship = None
-        self.assert_calculator_buffers_empty(fit1)
+        self.assert_fit_buffers_empty(fit1)
         fit2.items.add(module)
         self.assertAlmostEqual(module.attributes.get(tgt_attr.id), 60)
         fit2.ship = None
         fit2.items.remove(module)
-        self.assert_calculator_buffers_empty(fit2)
+        self.assert_fit_buffers_empty(fit2)
 
     def test_source_attr_update(self):
         # Here we check if attributes are updated if fit gets new
@@ -86,10 +86,8 @@ class TestTransitionFit(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=1
         )
-        effect1 = cache_handler1.effect(category=EffectCategory.passive)
-        effect1.modifiers = (modifier,)
-        effect2 = cache_handler1.effect(category=EffectCategory.passive)
-        effect2.modifiers = (modifier,)
+        effect1 = cache_handler1.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        effect2 = cache_handler1.effect(category=EffectCategory.passive, modifiers=(modifier,))
         # Our items from test environment do not update undelying eve type
         # automatically when source is changed, thus we do it manually
         ship_eve_type1 = cache_handler1.type(effects=(effect1,), attributes={src_attr1.id: 10})
@@ -127,4 +125,4 @@ class TestTransitionFit(CalculatorTestCase):
         self.assertAlmostEqual(module.attributes.get(tgt_attr2.id), 90)
         fit.ship = None
         fit.items.remove(module)
-        self.assert_calculator_buffers_empty(fit)
+        self.assert_fit_buffers_empty(fit)

@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -40,9 +41,7 @@ class TestCleanupChainRemoval(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=attr1.id
         )
-        effect1 = self.ch.effect(category=EffectCategory.passive)
-        effect1.modifiers = (modifier1,)
-        item1 = CharDomainItem(self.ch.type(effects=(effect1,), attributes={attr1.id: 5}))
+        effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1,))
         modifier2 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
@@ -50,22 +49,22 @@ class TestCleanupChainRemoval(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=attr2.id
         )
-        effect2 = self.ch.effect(category=EffectCategory.passive)
-        effect2.modifiers = (modifier2,)
-        item2 = IndependentItem(self.ch.type(effects=(effect2,), attributes={attr2.id: 7.5}))
-        item3 = ShipDomainItem(self.ch.type(attributes={attr3.id: 0.5}))
-        self.fit.items.add(item1)
-        self.fit.ship = item2
-        self.fit.items.add(item3)
-        self.assertAlmostEqual(item3.attributes[attr3.id], 0.6875)
+        effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier2,))
+        implant_item = Implant(self.ch.type(effects=(effect1,), attributes={attr1.id: 5}).id)
+        ship_item = Ship(self.ch.type(effects=(effect2,), attributes={attr2.id: 7.5}).id)
+        rig_item = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
+        self.fit.implants.add(implant_item)
+        self.fit.ship = ship_item
+        self.fit.rigs.add(rig_item)
+        self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.6875)
         # Action
-        self.fit.items.remove(item1)
+        self.fit.implants.remove(implant_item)
         # Verification
         # When item1 is removed, attr2 of item2 and attr3 of item3
         # must be cleaned to allow recalculation of attr3 based on new data
-        self.assertAlmostEqual(item3.attributes[attr3.id], 0.5375)
+        self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.5375)
         # Cleanup
         self.fit.ship = None
-        self.fit.items.remove(item3)
+        self.fit.rigs.remove(rig_item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

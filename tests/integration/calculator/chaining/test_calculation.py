@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -40,8 +41,7 @@ class TestCalculationChain(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=attr1.id
         )
-        effect1 = self.ch.effect(category=EffectCategory.passive)
-        effect1.modifiers = (modifier1,)
+        effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1,))
         modifier2 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
@@ -49,9 +49,7 @@ class TestCalculationChain(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=attr2.id
         )
-        effect2 = self.ch.effect(category=EffectCategory.passive)
-        effect2.modifiers = (modifier2,)
-        item1 = CharDomainItem(self.ch.type(effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}).id)
+        effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier2,))
         modifier3 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
@@ -59,24 +57,24 @@ class TestCalculationChain(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=attr3.id
         )
-        effect3 = self.ch.effect(category=EffectCategory.passive)
-        effect3.modifiers = (modifier3,)
-        item2 = IndependentItem(self.ch.type(effects=(effect3,), attributes={attr3.id: 150}))
-        item3 = ShipDomainItem(self.ch.type(attributes={attr4.id: 12.5}))
-        self.fit.items.add(item1)
-        self.fit.ship = item2
+        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier3,))
+        implant_item = Implant(self.ch.type(effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}).id)
+        ship_item = Ship(self.ch.type(effects=(effect3,), attributes={attr3.id: 150}).id)
+        rig_item = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
+        self.fit.implants.add(implant_item)
+        self.fit.ship = ship_item
         # Action
-        self.fit.items.add(item3)
+        self.fit.rigs.add(rig_item)
         # Verification
         # If everything is processed properly, item1 will multiply attr2 by attr1
         # on self, resulting in 20 * 5 = 100, then apply it as percentage modifier
         # on ship's (item2) attr3, resulting in 150 + 100% = 300, then it is applied
         # to all entities assigned to ship, including item3, to theirs attr4 as
         # percentage modifier again - so final result is 12.5 + 300% = 50
-        self.assertAlmostEqual(item3.attributes[attr4.id], 50)
+        self.assertAlmostEqual(rig_item.attributes[attr4.id], 50)
         # Cleanup
-        self.fit.items.remove(item1)
+        self.fit.implants.remove(implant_item)
         self.fit.ship = None
-        self.fit.items.remove(item3)
+        self.fit.rigs.remove(rig_item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

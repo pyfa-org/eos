@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -48,9 +49,11 @@ class TestTargetAttribute(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1, modifier2))
-        item = IndependentItem(self.ch.type(effects=(effect,), attributes={tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20}).id)
+        item = Rig(self.ch.type(effects=(effect,), attributes={
+            tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20
+        }).id)
         # Action
-        self.fit.items.add(item)
+        self.fit.rigs.add(item)
         # Verification
         # First attribute should be modified by modifier1
         self.assertAlmostEqual(item.attributes[tgt_attr1.id], 60)
@@ -59,6 +62,6 @@ class TestTargetAttribute(CalculatorTestCase):
         # Third should stay unmodified
         self.assertAlmostEqual(item.attributes[tgt_attr3.id], 100)
         # Cleanup
-        self.fit.items.remove(item)
+        self.fit.rigs.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

@@ -21,6 +21,7 @@
 
 import logging
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -41,19 +42,22 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=1008,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier,))
+        item_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100})
+        item = Rig(item_eve_type.id)
         # Action
-        self.fit.items.add(item)
+        self.fit.rigs.add(item)
         # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on eve type 83: unknown operator 1008')
+        self.assertEqual(
+            log_record.msg, 'malformed modifier on eve type {}: unknown operator 1008'.format(item_eve_type.id)
+        )
         # Cleanup
-        self.fit.items.remove(item)
+        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_log_unorderable_combination(self):
@@ -76,20 +80,22 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive)
-        effect.modifiers = (invalid_modifier, valid_modifier)
-        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
+        item_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100})
+        item = Rig(item_eve_type.id)
         # Action
-        self.fit.items.add(item)
+        self.fit.rigs.add(item)
         # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'malformed modifier on eve type 83: unknown operator None')
+        self.assertEqual(
+            log_record.msg, 'malformed modifier on eve type {}: unknown operator None'.format(item_eve_type.id)
+        )
         # Cleanup
-        self.fit.items.remove(item)
+        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_combination(self):
@@ -110,14 +116,14 @@ class TestOperatorUnknown(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
+        item = Rig(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
         # Action
-        self.fit.items.add(item)
+        self.fit.rigs.add(item)
         # Verification
         # Make sure presence of invalid operator doesn't prevent
         # from calculating value based on valid modifiers
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
         # Cleanup
-        self.fit.items.remove(item)
+        self.fit.rigs.remove(item)
         self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)

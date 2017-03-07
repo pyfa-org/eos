@@ -125,11 +125,11 @@ class InputEffectsStatusChanged(BaseInputMessage):
             return ()
         instructions = []
         # If there're effects set for activation, issue activation command
-        activate = (e for e in self.effects if self.effects[e])
+        activate = tuple(e for e in self.effects if self.effects[e])
         if len(activate) > 0:
             instructions.append(InstrEffectsActivate(self.item, activate))
         # Same for deactivation
-        deactivate = (e for e in self.effects if not self.effects[e])
+        deactivate = tuple(e for e in self.effects if not self.effects[e])
         if len(deactivate) > 0:
             instructions.append(InstrEffectsDeactivate(self.item, deactivate))
         return instructions

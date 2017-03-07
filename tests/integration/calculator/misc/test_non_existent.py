@@ -21,6 +21,7 @@
 
 import logging
 
+from eos import *
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -30,39 +31,47 @@ class TestNonExistent(CalculatorTestCase):
     def test_attribute_data_error(self):
         # Check case when attribute value is available, but
         # cache handler doesn't know about such attribute
-        item = IndependentItem(self.ch.type(attributes={105: 20}))
-        self.fit.items.add(item)
+        item_eve_type = self.ch.type(attributes={105: 20})
+        item = Implant(item_eve_type.id)
+        self.fit.implants.add(item)
         self.assertRaises(KeyError, item.attributes.__getitem__, 105)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        self.assertEqual(log_record.msg, 'unable to fetch metadata for attribute 105, requested for eve type 57')
-        self.fit.items.remove(item)
+        self.assertEqual(
+            log_record.msg,
+            'unable to fetch metadata for attribute 105, requested for eve type {}'.format(item_eve_type.id)
+        )
+        self.fit.implants.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_absent_base_value_error(self):
         # Check case when default value of attribute cannot be
         # determined. and eve type doesn't define any value either
         attr = self.ch.attribute()
-        item = IndependentItem(self.ch.type())
-        self.fit.items.add(item)
+        item_eve_type = self.ch.type()
+        item = Implant(item_eve_type.id)
+        self.fit.implants.add(item)
         self.assertRaises(KeyError, item.attributes.__getitem__, attr.id)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'unable to find base value for attribute 89 on eve type 649')
-        self.fit.items.remove(item)
+        self.assertEqual(
+            log_record.msg,
+            'unable to find base value for attribute {} on eve type {}'.format(attr.id, item_eve_type.id)
+        )
+        self.fit.implants.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_absent_default_value(self):
         # Default value should be used if attribute
         # value is not available on eve type
         attr = self.ch.attribute(default_value=5.6)
-        item = IndependentItem(self.ch.type())
-        self.fit.items.add(item)
+        item = Implant(self.ch.type().id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 5.6)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

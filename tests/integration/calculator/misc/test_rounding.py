@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -29,19 +30,19 @@ class TestRounding(CalculatorTestCase):
 
     def test_cpu_down(self):
         attr = self.ch.attribute(attribute_id=Attribute.cpu)
-        item = IndependentItem(self.ch.type(attributes={attr.id: 2.3333}))
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(attributes={attr.id: 2.3333}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 2.33)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cpu_up(self):
         attr = self.ch.attribute(attribute_id=Attribute.cpu)
-        item = IndependentItem(self.ch.type(attributes={attr.id: 2.6666}))
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -56,45 +57,45 @@ class TestRounding(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 1.9444}).id)
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 1.9444}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 2.33)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cpu_output(self):
         attr = self.ch.attribute(attribute_id=Attribute.cpu_output)
-        item = IndependentItem(self.ch.type(attributes={attr.id: 2.6666}))
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_power(self):
         attr = self.ch.attribute(attribute_id=Attribute.power)
-        item = IndependentItem(self.ch.type(attributes={attr.id: 2.6666}))
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_power_output(self):
         attr = self.ch.attribute(attribute_id=Attribute.power_output)
-        item = IndependentItem(self.ch.type(attributes={attr.id: 2.6666}))
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_other(self):
         attr = self.ch.attribute()
-        item = IndependentItem(self.ch.type(attributes={attr.id: 2.6666}))
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[attr.id], 2.6666)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

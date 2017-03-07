@@ -21,6 +21,7 @@
 
 import logging
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -49,9 +50,9 @@ class TestSourceAttrAbsent(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
+        item = Rig(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
         # Action
-        self.fit.items.add(item)
+        self.fit.rigs.add(item)
         # Verification
         # Invalid source value shouldn't screw whole calculation process
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
@@ -61,5 +62,5 @@ class TestSourceAttrAbsent(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on eve type 1')
         # Cleanup
-        self.fit.items.remove(item)
+        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)

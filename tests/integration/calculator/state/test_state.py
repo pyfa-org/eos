@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -26,7 +27,6 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestStateSwitching(CalculatorTestCase):
-    """Test item state switching and modifier states"""
 
     def setUp(self):
         super().setUp()
@@ -71,31 +71,29 @@ class TestStateSwitching(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        effect_off = self.ch.effect(category=EffectCategory.passive)
-        effect_off.modifiers = (modifier_off,)
-        effect_on = self.ch.effect(category=EffectCategory.online)
-        effect_on.modifiers = (modifier_on,)
-        effect_act = self.ch.effect(category=EffectCategory.active)
-        effect_act.modifiers = (modifier_act,)
-        effect_over = self.ch.effect(category=EffectCategory.overload)
-        effect_over.modifiers = (modifier_over,)
-        effect_disabled = self.ch.effect(category=EffectCategory.active)
-        effect_disabled.modifiers = (modifier_disabled,)
-        self.item = IndependentItem(self.ch.type(effects=(effect_off, effect_on, effect_act, effect_over, effect_disabled), attributes={
+        effect_off = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_off,))
+        effect_on = self.ch.effect(category=EffectCategory.online, modifiers=(modifier_on,))
+        effect_act = self.ch.effect(category=EffectCategory.active, modifiers=(modifier_act,))
+        effect_over = self.ch.effect(category=EffectCategory.overload, modifiers=(modifier_over,))
+        effect_disabled = self.ch.effect(category=EffectCategory.active, modifiers=(modifier_disabled,))
+        self.item = ModuleHigh(self.ch.type(
+            effects=(effect_off, effect_on, effect_act, effect_over, effect_disabled),
+            attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
-            }).id)
-        self.item._blocked_effect_ids.add(effect_disabled.id)
+            }
+        ).id)
+        self.item._set_effects_activability((effect_disabled.id,), False)
 
     def test_fit_offline(self):
         # Setup
         self.item.state = State.offline
         # Action
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -103,11 +101,11 @@ class TestStateSwitching(CalculatorTestCase):
         # Setup
         self.item.state = State.online
         # Action
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -115,11 +113,11 @@ class TestStateSwitching(CalculatorTestCase):
         # Setup
         self.item.state = State.active
         # Action
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -127,62 +125,62 @@ class TestStateSwitching(CalculatorTestCase):
         # Setup
         self.item.state = State.overload
         # Action
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_switch_up_single(self):
         # Setup
         self.item.state = State.offline
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Action
         self.item.state = State.online
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_switch_up_multiple(self):
         # Setup
         self.item.state = State.online
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Action
         self.item.state = State.overload
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_switch_down_single(self):
         # Setup
         self.item.state = State.overload
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Action
         self.item.state = State.active
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_switch_down_multiple(self):
         # Setup
         self.item.state = State.active
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Action
         self.item.state = State.offline
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

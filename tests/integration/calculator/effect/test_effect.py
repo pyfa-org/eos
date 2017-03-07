@@ -19,10 +19,10 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
-from eos.fit.message import EffectsEnabled, EffectsDisabled
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -56,72 +56,64 @@ class TestEffectToggling(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        self.effect1 = self.ch.effect(category=EffectCategory.passive)
-        self.effect1.modifiers = (modifier1,)
-        self.effect2 = self.ch.effect(category=EffectCategory.passive)
-        self.effect2.modifiers = (modifier2,)
-        self.effect_active = self.ch.effect(category=EffectCategory.active)
-        self.effect_active.modifiers = (modifier_active,)
-        self.item = IndependentItem(self.ch.type(effects=(self.effect1, self.effect2, self.effect_active), attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2}).id)
+        self.effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1,))
+        self.effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier2,))
+        self.effect_active = self.ch.effect(category=EffectCategory.active, modifiers=(modifier_active,))
+        self.item = ModuleHigh(self.ch.type(
+            effects=(self.effect1, self.effect2, self.effect_active),
+            attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2}
+        ).id)
 
     def test_effect_disabling(self):
         # Setup
         self.item.state = State.offline
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Action
-        self.item._blocked_effect_ids.add(self.effect1.id)
-        self.fit._calculator._notify(EffectsDisabled(self.item, (self.effect1.id,)))
+        self.item._set_effects_activability((self.effect1.id,), False)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_effect_disabling_multiple(self):
         # Setup
         self.item.state = State.offline
-        self.fit.items.add(self.item)
+        self.fit.modules.high.append(self.item)
         # Action
-        self.item._blocked_effect_ids.update((self.effect1.id, self.effect2.id, self.effect_active.id))
-        self.fit._calculator._notify(EffectsDisabled(
-            self.item, (self.effect1.id, self.effect2.id, self.effect_active.id)
-        ))
+        self.item._set_effects_activability((self.effect1.id, self.effect2.id, self.effect_active.id), False)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_effect_enabling(self):
         # Setup
         self.item.state = State.offline
-        self.item._blocked_effect_ids.add(self.effect1.id)
-        self.fit.items.add(self.item)
+        self.item._set_effects_activability((self.effect1.id,), False)
+        self.fit.modules.high.append(self.item)
         # Action
-        self.fit._calculator._notify(EffectsEnabled(self.item, (self.effect1.id,)))
-        self.item._blocked_effect_ids.discard(self.effect1.id)
+        self.item._set_effects_activability((self.effect1.id,), True)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_effect_enabling_multiple(self):
         # Setup
         self.item.state = State.offline
-        self.item._blocked_effect_ids.update((self.effect1.id, self.effect2.id))
-        self.fit.items.add(self.item)
+        self.item._set_effects_activability((self.effect1.id, self.effect2.id), False)
+        self.fit.modules.high.append(self.item)
         # Action
-        self.fit._calculator._notify(EffectsEnabled(
-            self.item, (self.effect1.id, self.effect2.id, self.effect_active.id)
-        ))
-        self.item._blocked_effect_ids.difference_update((self.effect1.id, self.effect2.id, self.effect_active.id))
+        self.item._set_effects_activability((self.effect1.id, self.effect2.id, self.effect_active.id), True)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.items.remove(self.item)
+        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

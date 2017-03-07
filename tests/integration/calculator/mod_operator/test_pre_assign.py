@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -39,24 +40,24 @@ class TestOperatorPreAssign(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source1 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 10}).id)
-        self.influence_source2 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: -20}).id)
-        self.influence_source3 = IndependentItem(self.ch.type(effects=(effect,), attributes={src_attr.id: 53}).id)
-        self.influence_target = ShipDomainItem(self.ch.type(attributes={self.tgt_attr.id: 100}))
-        self.fit.items.add(self.influence_source1)
-        self.fit.items.add(self.influence_source2)
-        self.fit.items.add(self.influence_source3)
-        self.fit.items.add(self.influence_target)
+        self.influence_source1 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 10}).id)
+        self.influence_source2 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: -20}).id)
+        self.influence_source3 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 53}).id)
+        self.influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        self.fit.implants.add(self.influence_source1)
+        self.fit.implants.add(self.influence_source2)
+        self.fit.implants.add(self.influence_source3)
+        self.fit.rigs.add(self.influence_target)
 
     def test_high_good(self):
         self.tgt_attr.high_is_good = True
         # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 53)
         # Cleanup
-        self.fit.items.remove(self.influence_source1)
-        self.fit.items.remove(self.influence_source2)
-        self.fit.items.remove(self.influence_source3)
-        self.fit.items.remove(self.influence_target)
+        self.fit.implants.remove(self.influence_source1)
+        self.fit.implants.remove(self.influence_source2)
+        self.fit.implants.remove(self.influence_source3)
+        self.fit.rigs.remove(self.influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -65,9 +66,9 @@ class TestOperatorPreAssign(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], -20)
         # Cleanup
-        self.fit.items.remove(self.influence_source1)
-        self.fit.items.remove(self.influence_source2)
-        self.fit.items.remove(self.influence_source3)
-        self.fit.items.remove(self.influence_target)
+        self.fit.implants.remove(self.influence_source1)
+        self.fit.implants.remove(self.influence_source2)
+        self.fit.implants.remove(self.influence_source3)
+        self.fit.rigs.remove(self.influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

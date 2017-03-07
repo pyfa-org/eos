@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
@@ -30,8 +31,8 @@ class TestCap(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.capped_attr = self.ch.attribute(max_attribute=2)
         self.capping_attr = self.ch.attribute(default_value=5)
+        self.capped_attr = self.ch.attribute(max_attribute=self.capping_attr.id)
         self.source_attr = self.ch.attribute()
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification modifier
@@ -47,20 +48,25 @@ class TestCap(CalculatorTestCase):
     def test_cap_default(self):
         # Check that cap is applied properly when item
         # doesn't have base value of capping attribute
-        item = IndependentItem(self.ch.type(effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6}).id)
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(
+            effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
+        ).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 5)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cap_attr_eve_type(self):
         # Make sure that item's own specified attribute
         # value is taken as cap
-        item = IndependentItem(self.ch.type(effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}).id)
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(
+            effects=(self.effect,),
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
+        ).id)
+        self.fit.implants.add(item)
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -76,19 +82,25 @@ class TestCap(CalculatorTestCase):
             src_attr=self.source_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        item = IndependentItem(self.ch.type(effects=(self.effect, effect), attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}).id)
-        self.fit.items.add(item)
+        item = Implant(self.ch.type(
+            effects=(self.effect, effect),
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}
+        ).id)
+        self.fit.implants.add(item)
         # Attr value is 3 * 6 = 18, but cap value is 0.1 * 6 = 0.6
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 0.6)
-        self.fit.items.remove(item)
+        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cap_update(self):
         # If cap updates, capped attributes should
         # be updated too
-        item = ShipDomainItem(self.ch.type(effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}).id)
-        self.fit.items.add(item)
+        item = Rig(self.ch.type(
+            effects=(self.effect,),
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
+        ).id)
+        self.fit.rigs.add(item)
         # Check attribute vs initial cap
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
@@ -100,11 +112,11 @@ class TestCap(CalculatorTestCase):
             src_attr=self.source_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        cap_updater = IndependentItem(self.ch.type(effects=(effect,), attributes={self.source_attr.id: 3.5}).id)
-        self.fit.items.add(cap_updater)
+        cap_updater = Implant(self.ch.type(effects=(effect,), attributes={self.source_attr.id: 3.5}).id)
+        self.fit.implants.add(cap_updater)
         # As capping attribute is updated, capped attribute must be updated too
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 7)
-        self.fit.items.remove(item)
-        self.fit.items.remove(cap_updater)
+        self.fit.rigs.remove(item)
+        self.fit.implants.remove(cap_updater)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

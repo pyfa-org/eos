@@ -19,6 +19,10 @@
 # ===============================================================================
 
 
+from eos import *
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -29,31 +33,77 @@ class TestMapMethods(CalculatorTestCase):
         super().setUp()
         self.attr1 = self.ch.attribute()
         self.attr2 = self.ch.attribute()
-        self.attr3 = self.ch.attribute()
-        self.item = IndependentItem(self.ch.type(attributes={self.attr1.id: 5, self.attr2.id: 10}))
-        self.fit.items.add(self.item)
-        self.item.attributes._MutableAttributeMap__modified_attributes = {self.attr2.id: 20, self.attr3.id: 40}
+        self.attr3 = self.ch.attribute(default_value=11)
+        self.attr4 = self.ch.attribute()
+        self.attr5 = self.ch.attribute()
+        modifier1 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr1.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=self.attr5.id
+        )
+        modifier2 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr2.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=self.attr5.id
+        )
+        modifier3 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr3.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=self.attr5.id
+        )
+        modifier4 = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=self.attr4.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=self.attr5.id
+        )
+        effect = self.ch.effect(
+            category=EffectCategory.passive, modifiers=(modifier1, modifier2, modifier3, modifier4)
+        )
+        self.item = Implant(self.ch.type(
+            effects=(effect,), attributes={self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4}
+        ).id)
+        self.fit.implants.add(self.item)
+
+    def calculate_attrs(self, special=()):
+        for attr in (self.attr1.id, self.attr2.id, self.attr3.id, self.attr4.id, self.attr5.id, *special):
+            self.item.attributes.get(attr)
 
     def test_get(self):
         # Make sure map's get method replicates functionality
         # of dictionary get method
-        self.assertEqual(self.item.attributes.get(self.attr1.id), 5)
-        self.assertEqual(self.item.attributes.get(self.attr2.id), 20)
-        self.assertEqual(self.item.attributes.get(self.attr3.id), 40)
+        self.assertAlmostEqual(self.item.attributes.get(self.attr1.id), 20)
+        self.assertAlmostEqual(self.item.attributes.get(self.attr2.id), 40)
+        self.assertAlmostEqual(self.item.attributes.get(self.attr3.id), 44)
+        self.assertIsNone(self.item.attributes.get(self.attr4.id))
+        self.assertAlmostEqual(self.item.attributes.get(self.attr5.id), 4)
         self.assertIsNone(self.item.attributes.get(1008))
         self.assertEqual(self.item.attributes.get(1008, 60), 60)
-        self.fit.items.remove(self.item)
-        # Attempt to fetch non-existent attribute generates
-        # error, which is not related to this test
-        self.assertEqual(len(self.log), 2)
+        self.fit.implants.remove(self.item)
+        # Attempts to fetch non-existent attribute and attribute without base value
+        # generate errors, which is not related to this test
+        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_len(self):
-        # Length should return length, counting unique
-        # IDs from both attribute containers
+        # Length should return length, counting unique IDs from
+        # both attribute containers. First, values are not calculated
         self.assertEqual(len(self.item.attributes), 3)
-        self.fit.items.remove(self.item)
-        self.assertEqual(len(self.log), 0)
+        # Force calculation
+        self.calculate_attrs(special=(1008,))
+        # Length should change, as it now includes attr which had no
+        # value on item but has default value
+        self.assertEqual(len(self.item.attributes), 4)
+        self.fit.implants.remove(self.item)
+        # Log entries are unrelated to this test
+        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_contains(self):
@@ -62,25 +112,44 @@ class TestMapMethods(CalculatorTestCase):
         # which were not found
         self.assertTrue(self.attr1.id in self.item.attributes)
         self.assertTrue(self.attr2.id in self.item.attributes)
-        self.assertTrue(self.attr3.id in self.item.attributes)
+        self.assertFalse(self.attr3.id in self.item.attributes)
+        self.assertFalse(self.attr4.id in self.item.attributes)
+        self.assertTrue(self.attr5.id in self.item.attributes)
         self.assertFalse(1008 in self.item.attributes)
-        self.fit.items.remove(self.item)
-        self.assertEqual(len(self.log), 0)
+        self.calculate_attrs(special=(1008,))
+        self.assertTrue(self.attr1.id in self.item.attributes)
+        self.assertTrue(self.attr2.id in self.item.attributes)
+        self.assertTrue(self.attr3.id in self.item.attributes)
+        self.assertFalse(self.attr4.id in self.item.attributes)
+        self.assertTrue(self.attr5.id in self.item.attributes)
+        self.assertFalse(1008 in self.item.attributes)
+        self.fit.implants.remove(self.item)
+        # Log entries are unrelated to this test
+        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_keys(self):
         # When we request map keys, they should include all unique
         # attribute IDs w/o duplication
-        self.assertCountEqual(self.item.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr3.id))
-        self.fit.items.remove(self.item)
-        self.assertEqual(len(self.log), 0)
+        self.assertCountEqual(self.item.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr5.id))
+        self.calculate_attrs(special=(1008,))
+        self.assertCountEqual(
+            self.item.attributes.keys(),
+            (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id)
+        )
+        self.fit.implants.remove(self.item)
+        # Log entries are unrelated to this test
+        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_iter(self):
         # Iter should return the same keys as keys(). CountEqual
         # takes any iterable - we just check its contents here,
         # w/o checking format of returned data
-        self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr3.id))
-        self.fit.items.remove(self.item)
-        self.assertEqual(len(self.log), 0)
+        self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr5.id))
+        self.calculate_attrs(special=(1008,))
+        self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
+        self.fit.implants.remove(self.item)
+        # Log entries are unrelated to this test
+        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
