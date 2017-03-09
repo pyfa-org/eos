@@ -27,7 +27,6 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestTargetAttribute(CalculatorTestCase):
-    """Test that only targeted attributes are modified"""
 
     def test_target_attributes(self):
         tgt_attr1 = self.ch.attribute()

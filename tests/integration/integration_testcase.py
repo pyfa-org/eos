@@ -64,6 +64,15 @@ class IntegrationTestCase(EosTestCase):
         cache_handler.type(type_id=Type.character_static, group=Group.character)
         return source
 
+    def allocate_type_id(self, *cache_handlers):
+        return max(ch.allocate_type_id() for ch in cache_handlers)
+
+    def allocate_attribute_id(self, *cache_handlers):
+        return max(ch.allocate_attribute_id() for ch in cache_handlers)
+
+    def allocate_effect_id(self, *cache_handlers):
+        return max(ch.allocate_effect_id() for ch in cache_handlers)
+
     def assert_fit_buffers_empty(self, fit):
         # Temporarily remove all objects which fit has built into it and which
         # are too hard to handle via ignore

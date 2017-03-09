@@ -64,7 +64,7 @@ class RahSimTestCase(IntegrationTestCase):
             src_attr=self.heat_attr.id
         )
         self.heat_effect = self.ch.effect(category=EffectCategory.overload, modifiers=(heat_modifier,))
-        # Misc
+        # Cleanup
         self.fit = Fit()
 
     def make_ship_eve_type(self, resonances):

@@ -33,4 +33,3 @@ class CalculatorTestCase(IntegrationTestCase):
     def setUp(self):
         super().setUp()
         self.fit = Fit()
-        self.fit.character = None

@@ -82,7 +82,7 @@ class TestModifierPython(CalculatorTestCase):
         item.state = State.online
         # Verification
         self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
-        # Misc
+        # Cleanup
         self.fit.modules.high.remove(item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
@@ -98,7 +98,7 @@ class TestModifierPython(CalculatorTestCase):
         item.state = State.offline
         # Verification
         self.assertAlmostEqual(item.attributes[self.attr1.id], 100)
-        # Misc
+        # Cleanup
         self.fit.modules.high.remove(item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
@@ -126,7 +126,7 @@ class TestModifierPython(CalculatorTestCase):
         item.state = State.active
         # Verification
         self.assertAlmostEqual(item.attributes[self.attr1.id], 3000)
-        # Misc
+        # Cleanup
         self.fit.modules.high.remove(item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
@@ -171,7 +171,7 @@ class TestModifierPython(CalculatorTestCase):
         # If value is updated, then calculator service received attribute
         # updated message
         self.assertAlmostEqual(dogma_item.attributes[self.attr1.id], 600)
-        # Misc
+        # Cleanup
         self.fit.modules.high.remove(dogma_item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)

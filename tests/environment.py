@@ -32,10 +32,13 @@ class CacheHandler:
         self.__type_data = {}
         self.__attribute_data = {}
         self.__effect_data = {}
+        self.__allocated_type = 0
+        self.__allocated_attribute = 0
+        self.__allocated_effect = 0
 
     def type(self, type_id=None, required_skills=None, **kwargs):
         if type_id is None:
-            type_id = max((TEST_ID_START - 1, *self.__type_data.keys())) + 1
+            type_id = self.allocate_type_id()
         eve_type = Type(type_id=type_id, **kwargs)
         if eve_type.id in self.__type_data:
             raise KeyError(eve_type.id)
@@ -46,7 +49,7 @@ class CacheHandler:
 
     def attribute(self, attribute_id=None, **kwargs):
         if attribute_id is None:
-            attribute_id = max((TEST_ID_START - 1, *self.__attribute_data.keys())) + 1
+            attribute_id = self.allocate_attribute_id()
         attr = Attribute(attribute_id=attribute_id, **kwargs)
         if attr.id in self.__attribute_data:
             raise KeyError(attr.id)
@@ -55,7 +58,7 @@ class CacheHandler:
 
     def effect(self, effect_id=None, **kwargs):
         if effect_id is None:
-            effect_id = max((TEST_ID_START - 1, *self.__effect_data.keys())) + 1
+            effect_id = self.allocate_effect_id()
         eff = Effect(effect_id=effect_id, **kwargs)
         if eff.id in self.__effect_data:
             raise KeyError(eff.id)
@@ -79,3 +82,18 @@ class CacheHandler:
             return self.__effect_data[eff_id]
         except KeyError:
             raise EffectFetchError(eff_id)
+
+    def allocate_type_id(self):
+        allocated = max((TEST_ID_START - 1, self.__allocated_type, *self.__type_data.keys())) + 1
+        self.__allocated_type = allocated
+        return allocated
+
+    def allocate_attribute_id(self):
+        allocated = max((TEST_ID_START - 1, self.__allocated_attribute, *self.__attribute_data.keys())) + 1
+        self.__allocated_attribute = allocated
+        return allocated
+
+    def allocate_effect_id(self):
+        allocated = max((TEST_ID_START - 1, self.__allocated_effect, *self.__effect_data.keys())) + 1
+        self.__allocated_effect = allocated
+        return allocated

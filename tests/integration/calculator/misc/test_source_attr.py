@@ -28,9 +28,9 @@ from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
-class TestSourceAttrAbsent(CalculatorTestCase):
+class TestSourceAttribute(CalculatorTestCase):
 
-    def test_combination(self):
+    def test_absent_attr_combination(self):
         # Check how calculator reacts to source attribute which is absent
         tgt_attr = self.ch.attribute()
         abs_attr = self.ch.attribute()
