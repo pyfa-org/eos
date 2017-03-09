@@ -66,17 +66,17 @@ class EosTestCase(TestCase):
         super().setUp()
         logger = getLogger()
         # Save existing data about logging system (log level and handlers)
-        self.__old_loglevel = logger.getEffectiveLevel()
+        self.__backup_loglevel = logger.getEffectiveLevel()
         logger.setLevel(DEBUG)
-        self.__removed_log_handlers = []
+        self.__backup_log_handlers = []
         for handler in logger.handlers:
-            self.__removed_log_handlers.append(handler)
+            self.__backup_log_handlers.append(handler)
             logger.removeHandler(handler)
         # Place test logger instead of them
         self.__test_log_handler = TestLogHandler()
         logger.addHandler(self.__test_log_handler)
         # Add cache handler to each test case
-        self.ch = CacheHandler()
+        self.ch = self._make_cache_handler()
 
     def tearDown(self):
         # Remove test logger and restore loggers which
@@ -84,13 +84,16 @@ class EosTestCase(TestCase):
         logger = getLogger()
         logger.removeHandler(self.__test_log_handler)
         self.__test_log_handler.close()
-        for handler in self.__removed_log_handlers:
+        for handler in self.__backup_log_handlers:
             logger.addHandler(handler)
-        logger.setLevel(self.__old_loglevel)
+        logger.setLevel(self.__backup_loglevel)
 
     @property
     def log(self):
         return self.__test_log_handler.buffer
+
+    def _make_cache_handler(self):
+        return CacheHandler()
 
     def assert_object_buffers_empty(self, object_, ignore=()):
         entry_num = self._get_object_buffer_entry_amount(object_, ignore=ignore)

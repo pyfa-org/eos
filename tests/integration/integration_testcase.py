@@ -22,7 +22,7 @@
 from copy import copy
 from itertools import chain
 
-from eos.const.eve import Type
+from eos.const.eve import Type, Group
 from eos.data.source import SourceManager, Source
 from tests.eos_testcase import EosTestCase
 
@@ -31,28 +31,38 @@ class IntegrationTestCase(EosTestCase):
     """
     Additional functionality provided:
 
+    Two sources for fit are set up, src1 (default) and src2
+    self.ch2 -- cache handler for second source
     self.assert_fit_buffers_empty -- checks if fit contains anything
         in object containers which are designed to hold temporary data
     """
 
     def setUp(self):
         super().setUp()
+        self.ch2 = self._make_cache_handler()
         # Replace existing sources with test source
-        self.__sources = copy(SourceManager._sources)
-        self.__default_source = SourceManager.default
+        self.__backup_sources = copy(SourceManager._sources)
+        self.__backup_default_source = SourceManager.default
         SourceManager._sources.clear()
-        test_source = Source('test', self.ch)
-        SourceManager._sources['test'] = test_source
-        SourceManager.default = test_source
-        # Instantiate character type, as it's used in every test
-        self.ch.type(type_id=Type.character_static)
+        self.__make_source('src1', self.ch, make_default=True)
+        self.__make_source('src2', self.ch2)
 
     def tearDown(self):
         # Revert source change
         SourceManager._sources.clear()
-        SourceManager._sources.update(self.__sources)
-        SourceManager.default = self.__default_source
+        SourceManager._sources.update(self.__backup_sources)
+        SourceManager.default = self.__backup_default_source
         super().tearDown()
+
+    def __make_source(self, alias, cache_handler, make_default=False):
+        source = Source(alias, cache_handler)
+        # Add source 'manually' to avoid building cache
+        SourceManager._sources[alias] = source
+        if make_default is True:
+            SourceManager.default = source
+        # Instantiate character type, as it's used in every test
+        cache_handler.type(type_id=Type.character_static, group=Group.character)
+        return source
 
     def assert_fit_buffers_empty(self, fit):
         # Temporarily remove all objects which fit has built into it and which
