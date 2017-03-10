@@ -48,7 +48,6 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.fit.ship = None
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -61,7 +60,6 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -74,7 +72,6 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -93,7 +90,5 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.character = None
-        self.fit.implants.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

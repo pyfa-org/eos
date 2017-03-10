@@ -58,7 +58,5 @@ class TestTgtDomainDomainUnknown(CalculatorTestCase):
         # Invalid domain in modifier should prevent proper processing of other modifiers
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
         # Cleanup
-        self.fit.rigs.remove(influence_target)
-        self.fit.implants.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

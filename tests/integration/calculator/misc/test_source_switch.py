@@ -74,10 +74,7 @@ class TestSourceSwitch(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 60)
         # Cleanup
-        fit1.ship = None
         self.assert_fit_buffers_empty(fit1)
-        fit2.ship = None
-        fit2.rigs.remove(item)
         self.assert_fit_buffers_empty(fit2)
 
     def test_switch_fit(self):
@@ -122,6 +119,4 @@ class TestSourceSwitch(CalculatorTestCase):
         # 75 * 1.2, but capped at 88
         self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 88)
         # Cleanup
-        fit.ship = None
-        fit.rigs.remove(item)
         self.assert_fit_buffers_empty(fit)

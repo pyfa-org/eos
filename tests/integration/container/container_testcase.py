@@ -19,7 +19,6 @@
 # ===============================================================================
 
 
-from eos import Fit
 from tests.integration.integration_testcase import IntegrationTestCase
 
 

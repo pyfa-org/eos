@@ -66,5 +66,4 @@ class TestSourceAttribute(CalculatorTestCase):
             'unable to find base value for attribute {} on eve type {}'.format(abs_attr.id, item_eve_type.id)
         )
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)

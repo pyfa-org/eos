@@ -73,8 +73,5 @@ class TestCalculationChain(CalculatorTestCase):
         # percentage modifier again - so final result is 12.5 + 300% = 50
         self.assertAlmostEqual(rig_item.attributes[attr4.id], 50)
         # Cleanup
-        self.fit.implants.remove(implant_item)
-        self.fit.ship = None
-        self.fit.rigs.remove(rig_item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

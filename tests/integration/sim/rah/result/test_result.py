@@ -48,8 +48,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -77,8 +75,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.501, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.522, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -106,8 +102,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.509, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.509, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -141,8 +135,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.506, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.508, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -172,8 +164,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.535, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.52, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -198,8 +188,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.554, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.594, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -229,8 +217,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.523, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.543, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -260,8 +246,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.553, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.523, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -291,8 +275,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.675, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.523, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -322,8 +304,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.523, places=3)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.675, places=3)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -337,7 +317,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.85)
         # Cleanup
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -363,8 +342,6 @@ class TestRahSimResult(RahSimTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unexpected exception, setting unsimulated resonances')
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -402,8 +379,5 @@ class TestRahSimResult(RahSimTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unexpected exception, setting unsimulated resonances')
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
-        self.fit.skills.clear()
         self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)

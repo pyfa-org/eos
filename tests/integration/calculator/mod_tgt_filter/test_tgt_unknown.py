@@ -58,7 +58,6 @@ class TestTgtFilterUnknown(CalculatorTestCase):
                 'invalid target filter 26500'.format(item_eve_type.id)
             )
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_combination(self):
@@ -77,5 +76,4 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         # Invalid filter type in modifier should prevent proper processing of other modifiers
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)

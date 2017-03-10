@@ -147,15 +147,5 @@ class TestOperatorForcedValue(CalculatorTestCase):
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 68)
         # Cleanup
-        self.fit.implants.remove(influence_source_pre_ass)
-        self.fit.implants.remove(influence_source_pre_mul)
-        self.fit.implants.remove(influence_source_pre_div)
-        self.fit.implants.remove(influence_source_mod_add)
-        self.fit.implants.remove(influence_source_mod_sub)
-        self.fit.implants.remove(influence_source_post_mul)
-        self.fit.implants.remove(influence_source_post_div)
-        self.fit.implants.remove(influence_source_post_perc)
-        self.fit.implants.remove(influence_source_post_ass)
-        self.fit.rigs.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

@@ -50,7 +50,6 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.fit.modules.high.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -67,7 +66,6 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.modules.high.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -83,7 +81,6 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_source.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.modules.high.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -97,7 +94,5 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.modules.high.remove(influence_source)
-        self.fit.ship = None
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

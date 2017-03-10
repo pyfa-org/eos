@@ -58,12 +58,6 @@ class TestOperatorPostMul(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 67.5)
         # Cleanup
-        self.fit.implants.remove(self.influence_source1)
-        self.fit.implants.remove(self.influence_source2)
-        self.fit.implants.remove(self.influence_source3)
-        self.fit.implants.remove(self.influence_source4)
-        self.fit.implants.remove(self.influence_source5)
-        self.fit.rigs.remove(self.influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -72,11 +66,5 @@ class TestOperatorPostMul(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 62.55, places=3)
         # Cleanup
-        self.fit.implants.remove(self.influence_source1)
-        self.fit.implants.remove(self.influence_source2)
-        self.fit.implants.remove(self.influence_source3)
-        self.fit.implants.remove(self.influence_source4)
-        self.fit.implants.remove(self.influence_source5)
-        self.fit.rigs.remove(self.influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

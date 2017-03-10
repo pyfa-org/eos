@@ -32,8 +32,9 @@ class TestRounding(CalculatorTestCase):
         attr = self.ch.attribute(attribute_id=Attribute.cpu)
         item = Implant(self.ch.type(attributes={attr.id: 2.3333}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.33)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -41,8 +42,9 @@ class TestRounding(CalculatorTestCase):
         attr = self.ch.attribute(attribute_id=Attribute.cpu)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -59,8 +61,9 @@ class TestRounding(CalculatorTestCase):
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
         item = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20, tgt_attr.id: 1.9444}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 2.33)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -68,8 +71,9 @@ class TestRounding(CalculatorTestCase):
         attr = self.ch.attribute(attribute_id=Attribute.cpu_output)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -77,8 +81,9 @@ class TestRounding(CalculatorTestCase):
         attr = self.ch.attribute(attribute_id=Attribute.power)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -86,8 +91,9 @@ class TestRounding(CalculatorTestCase):
         attr = self.ch.attribute(attribute_id=Attribute.power_output)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -95,7 +101,8 @@ class TestRounding(CalculatorTestCase):
         attr = self.ch.attribute()
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.6666)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

@@ -34,7 +34,9 @@ class TestNonExistent(CalculatorTestCase):
         item_eve_type = self.ch.type(attributes={105: 20})
         item = Implant(item_eve_type.id)
         self.fit.implants.add(item)
+        # Action
         self.assertRaises(KeyError, item.attributes.__getitem__, 105)
+        # Verification
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
@@ -43,7 +45,7 @@ class TestNonExistent(CalculatorTestCase):
             log_record.msg,
             'unable to fetch metadata for attribute 105, requested for eve type {}'.format(item_eve_type.id)
         )
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 
     def test_absent_base_value_error(self):
@@ -53,7 +55,9 @@ class TestNonExistent(CalculatorTestCase):
         item_eve_type = self.ch.type()
         item = Implant(item_eve_type.id)
         self.fit.implants.add(item)
+        # Action
         self.assertRaises(KeyError, item.attributes.__getitem__, attr.id)
+        # Verification
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
@@ -62,7 +66,7 @@ class TestNonExistent(CalculatorTestCase):
             log_record.msg,
             'unable to find base value for attribute {} on eve type {}'.format(attr.id, item_eve_type.id)
         )
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 
     def test_absent_default_value(self):
@@ -70,8 +74,10 @@ class TestNonExistent(CalculatorTestCase):
         # value is not available on eve type
         attr = self.ch.attribute(default_value=5.6)
         item = Implant(self.ch.type().id)
+        # Action
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 5.6)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

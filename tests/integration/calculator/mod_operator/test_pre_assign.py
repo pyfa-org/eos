@@ -54,10 +54,6 @@ class TestOperatorPreAssign(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 53)
         # Cleanup
-        self.fit.implants.remove(self.influence_source1)
-        self.fit.implants.remove(self.influence_source2)
-        self.fit.implants.remove(self.influence_source3)
-        self.fit.rigs.remove(self.influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -66,9 +62,5 @@ class TestOperatorPreAssign(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], -20)
         # Cleanup
-        self.fit.implants.remove(self.influence_source1)
-        self.fit.implants.remove(self.influence_source2)
-        self.fit.implants.remove(self.influence_source3)
-        self.fit.rigs.remove(self.influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

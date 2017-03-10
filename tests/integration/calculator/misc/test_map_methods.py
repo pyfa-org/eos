@@ -101,7 +101,7 @@ class TestMapMethods(CalculatorTestCase):
         # Length should change, as it now includes attr which had no
         # value on item but has default value
         self.assertEqual(len(self.item.attributes), 4)
-        self.fit.implants.remove(self.item)
+        # Cleanup
         # Log entries are unrelated to this test
         self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
@@ -123,7 +123,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertFalse(self.attr4.id in self.item.attributes)
         self.assertTrue(self.attr5.id in self.item.attributes)
         self.assertFalse(1008 in self.item.attributes)
-        self.fit.implants.remove(self.item)
+        # Cleanup
         # Log entries are unrelated to this test
         self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
@@ -137,7 +137,7 @@ class TestMapMethods(CalculatorTestCase):
             self.item.attributes.keys(),
             (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id)
         )
-        self.fit.implants.remove(self.item)
+        # Cleanup
         # Log entries are unrelated to this test
         self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)
@@ -149,7 +149,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr5.id))
         self.calculate_attrs(special=(1008,))
         self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
-        self.fit.implants.remove(self.item)
+        # Cleanup
         # Log entries are unrelated to this test
         self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(self.fit)

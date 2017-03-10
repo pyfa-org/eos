@@ -52,8 +52,9 @@ class TestCap(CalculatorTestCase):
             effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
         ).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 5)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -65,8 +66,9 @@ class TestCap(CalculatorTestCase):
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ).id)
         self.fit.implants.add(item)
+        # Verification
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -87,9 +89,10 @@ class TestCap(CalculatorTestCase):
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}
         ).id)
         self.fit.implants.add(item)
+        # Verification
         # Attr value is 3 * 6 = 18, but cap value is 0.1 * 6 = 0.6
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 0.6)
-        self.fit.implants.remove(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -114,9 +117,9 @@ class TestCap(CalculatorTestCase):
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
         cap_updater = Implant(self.ch.type(effects=(effect,), attributes={self.source_attr.id: 3.5}).id)
         self.fit.implants.add(cap_updater)
+        # Verification
         # As capping attribute is updated, capped attribute must be updated too
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 7)
-        self.fit.rigs.remove(item)
-        self.fit.implants.remove(cap_updater)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

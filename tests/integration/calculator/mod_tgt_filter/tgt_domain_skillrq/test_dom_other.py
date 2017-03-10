@@ -58,5 +58,4 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
                 'unsupported target domain {}'.format(source_eve_type.id, ModifierDomain.other)
             )
         # Cleanup
-        self.fit.rigs.remove(influence_source)
         self.assert_fit_buffers_empty(self.fit)

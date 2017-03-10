@@ -73,7 +73,24 @@ class IntegrationTestCase(EosTestCase):
     def allocate_effect_id(self, *cache_handlers):
         return max(ch.allocate_effect_id() for ch in cache_handlers)
 
-    def assert_fit_buffers_empty(self, fit):
+    def clear_fit(self, fit):
+        fit.ship = None
+        fit.stance = None
+        fit.character = None
+        fit.effect_beacon = None
+        fit.subsystems.clear()
+        fit.modules.high.clear()
+        fit.modules.med.clear()
+        fit.modules.low.clear()
+        fit.rigs.clear()
+        fit.drones.clear()
+        fit.skills.clear()
+        fit.implants.clear()
+        fit.boosters.clear()
+
+    def assert_fit_buffers_empty(self, fit, clear=True):
+        if clear:
+            self.clear_fit(fit)
         # Temporarily remove all objects which fit has built into it and which
         # are too hard to handle via ignore
         fit_char = fit.character

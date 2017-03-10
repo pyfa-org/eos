@@ -80,9 +80,6 @@ class TestRahSimAttributeOverride(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
-        self.fit.skills.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -115,7 +112,5 @@ class TestRahSimAttributeOverride(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        self.fit.ship = None
-        self.fit.modules.low.clear()
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

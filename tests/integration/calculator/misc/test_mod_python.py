@@ -83,7 +83,6 @@ class TestModifierPython(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
         # Cleanup
-        self.fit.modules.high.remove(item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
 
@@ -99,7 +98,6 @@ class TestModifierPython(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.attr1.id], 100)
         # Cleanup
-        self.fit.modules.high.remove(item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
 
@@ -127,7 +125,6 @@ class TestModifierPython(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.attr1.id], 3000)
         # Cleanup
-        self.fit.modules.high.remove(item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
 
@@ -172,6 +169,5 @@ class TestModifierPython(CalculatorTestCase):
         # updated message
         self.assertAlmostEqual(dogma_item.attributes[self.attr1.id], 600)
         # Cleanup
-        self.fit.modules.high.remove(dogma_item)
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)

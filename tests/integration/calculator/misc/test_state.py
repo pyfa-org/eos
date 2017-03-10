@@ -93,7 +93,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -105,7 +104,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -117,7 +115,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -129,7 +126,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -142,7 +138,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -155,7 +150,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -168,7 +162,6 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -181,6 +174,5 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

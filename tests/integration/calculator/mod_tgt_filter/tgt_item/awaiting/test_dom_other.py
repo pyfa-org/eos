@@ -49,7 +49,5 @@ class TestTgtItemAwaitingDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
         # Cleanup
-        influence_source.charge = None
-        self.fit.modules.high.remove(influence_source)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

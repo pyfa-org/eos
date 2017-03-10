@@ -58,7 +58,6 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.rigs.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -71,8 +70,6 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.fit.character = None
-        self.fit.implants.remove(influence_target)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -93,5 +90,4 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
                 'unsupported target domain 1'.format(self.source_eve_type.id)
             )
         # Cleanup
-        self.fit.rigs.remove(influence_source)
         self.assert_fit_buffers_empty(self.fit)

@@ -73,7 +73,6 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -86,7 +85,6 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -100,7 +98,6 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
@@ -114,6 +111,5 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.fit.modules.high.remove(self.item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

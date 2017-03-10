@@ -61,6 +61,5 @@ class TestTargetAttribute(CalculatorTestCase):
         # Third should stay unmodified
         self.assertAlmostEqual(item.attributes[tgt_attr3.id], 100)
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

@@ -64,7 +64,5 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         # must be cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.5375)
         # Cleanup
-        self.fit.ship = None
-        self.fit.rigs.remove(rig_item)
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

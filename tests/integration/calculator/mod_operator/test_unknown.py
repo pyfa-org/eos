@@ -57,7 +57,6 @@ class TestOperatorUnknown(CalculatorTestCase):
             log_record.msg, 'malformed modifier on eve type {}: unknown operator 1008'.format(item_eve_type.id)
         )
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_log_unorderable_combination(self):
@@ -95,7 +94,6 @@ class TestOperatorUnknown(CalculatorTestCase):
             log_record.msg, 'malformed modifier on eve type {}: unknown operator None'.format(item_eve_type.id)
         )
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_combination(self):
@@ -124,6 +122,5 @@ class TestOperatorUnknown(CalculatorTestCase):
         # from calculating value based on valid modifiers
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
         # Cleanup
-        self.fit.rigs.remove(item)
         self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
