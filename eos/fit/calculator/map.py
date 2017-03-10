@@ -123,14 +123,14 @@ class MutableAttributeMap:
         # Override and cap maps are initialized as None
         # to save memory, as they are not needed most of
         # the time
-        self.__overridde_callbacks = None
+        self.__override_callbacks = None
         self.__cap_map = None
 
     def __getitem__(self, attr):
         # Overridden values are priority. Access 'private' override callbacks map
         # directly due to performance reasons
-        if self.__overridde_callbacks is not None and attr in self.__overridde_callbacks:
-            callback, args, kwargs = self.__overridde_callbacks[attr]
+        if self.__override_callbacks is not None and attr in self.__override_callbacks:
+            callback, args, kwargs = self.__override_callbacks[attr]
             return callback(*args, **kwargs)
         # If no override is set, use modified value. If value is stored in
         # modified map, it's considered valid
@@ -165,7 +165,7 @@ class MutableAttributeMap:
         # actually was changed
         else:
             # Special message type if modified attribute is masked by override
-            if attr in self._override_callbacks:
+            if self.__override_callbacks is not None and attr in self.__override_callbacks:
                 self.__publish(InstrAttrValueChangedMasked(item=self.__item, attr=attr))
             else:
                 self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
@@ -174,8 +174,8 @@ class MutableAttributeMap:
         # Almost copy-paste of __getitem__ due to performance reasons - attribute
         # getters should make as few calls as possible, especially when attribute
         # is already calculated
-        if self.__overridde_callbacks is not None and attr in self.__overridde_callbacks:
-            callback, args, kwargs = self.__overridde_callbacks[attr]
+        if self.__override_callbacks is not None and attr in self.__override_callbacks:
+            callback, args, kwargs = self.__override_callbacks[attr]
             return callback(*args, **kwargs)
         try:
             val = self.__modified_attributes[attr]
@@ -192,7 +192,7 @@ class MutableAttributeMap:
         except NoSourceError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
-        return set(chain(base_attrs, self.__modified_attributes, self._override_callbacks))
+        return set(chain(base_attrs, self.__modified_attributes, self.__override_callbacks or {}))
 
     def clear(self):
         """Reset map to its initial state"""
@@ -354,31 +354,25 @@ class MutableAttributeMap:
         return list_result
 
     # Override-related methods
-    @property
-    def _override_callbacks(self):
-        # Container for overriden attributes
-        # Format: {attribute ID: (function, (args), {kw: args})}
-        return self.__overridde_callbacks or {}
-
     def _set_override_callback(self, attr, callback):
         """Set override for the attribute in the form of callback"""
-        if self.__overridde_callbacks is None:
-            self.__overridde_callbacks = {}
+        if self.__override_callbacks is None:
+            self.__override_callbacks = {}
         # If the same callback is set, do nothing
-        if self.__overridde_callbacks.get(attr) == callback:
+        if self.__override_callbacks.get(attr) == callback:
             return
-        self.__overridde_callbacks[attr] = callback
+        self.__override_callbacks[attr] = callback
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _del_override_callback(self, attr):
         """Remove override callback from attribute"""
-        overrides = self._override_callbacks
+        overrides = self.__override_callbacks or {}
         if attr not in overrides:
             return
         del overrides[attr]
         # Set overrides map to None if there're none left to save some memory
         if len(overrides) == 0:
-            self.__overridde_callbacks = None
+            self.__override_callbacks = None
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _override_value_may_change(self, attr):
