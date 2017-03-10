@@ -30,8 +30,8 @@ class RahSimTestCase(IntegrationTestCase):
     """
     Additional functionality provided:
 
-    self.make_ship_eve_type -- create ship EVE type with specified resonances
-    self.make_rah_eve_type -- create RAH EVE type with specified resonances,
+    self.make_ship_eve_type -- create ship eve type with specified resonances
+    self.make_rah_eve_type -- create RAH eve type with specified resonances,
         resonance shift amount and cycle time
     self.*_attr -- assortment of RAH-related attributes
     """

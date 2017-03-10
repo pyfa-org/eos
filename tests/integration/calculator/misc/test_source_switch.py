@@ -29,7 +29,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestSourceSwitch(CalculatorTestCase):
     """
     Test cases when item is transferred from fit to fit, when both
-    fits have source assigned (i.e. item's eve type doesn't change).
+    fits have source assigned (i.e. item's eve type ID doesn't change).
     """
 
     def test_switch_item(self):

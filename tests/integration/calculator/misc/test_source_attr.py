@@ -50,7 +50,8 @@ class TestSourceAttribute(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = Rig(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
+        item_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100})
+        item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
         # Verification
@@ -60,7 +61,10 @@ class TestSourceAttribute(CalculatorTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, 'unable to find base value for attribute 2 on eve type 1')
+        self.assertEqual(
+            log_record.msg,
+            'unable to find base value for attribute {} on eve type {}'.format(abs_attr.id, item_eve_type.id)
+        )
         # Cleanup
         self.fit.rigs.remove(item)
         self.assert_fit_buffers_empty(self.fit)
