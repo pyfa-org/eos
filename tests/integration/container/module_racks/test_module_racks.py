@@ -22,7 +22,7 @@
 from unittest.mock import Mock
 
 from eos.fit.container import ModuleRacks
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerModuleRacks(ContainerTestCase):

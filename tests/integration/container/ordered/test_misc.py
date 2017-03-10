@@ -23,9 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.container import ItemList
-from eos.fit.message import ItemAdded, ItemRemoved
-from tests.container.environment import Fit, Item
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedMisc(ContainerTestCase):
@@ -40,9 +38,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
         return fit
 
     def test_len(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         self.assertEqual(len(fit.container), 0)
         fit.container.append(item1)
         self.assertEqual(len(fit.container), 1)
@@ -56,9 +53,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_contains(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         self.assertFalse(item1 in fit.container)
         self.assertFalse(None in fit.container)
         self.assertFalse(item2 in fit.container)
@@ -82,9 +78,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_iter(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         self.assertEqual(list(item for item in fit.container), [])
         fit.container.append(item1)
         self.assertEqual(list(item for item in fit.container), [item1])
@@ -98,14 +93,12 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_clear(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.place(3, item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.clear()
+        fit.container.clear()
         # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -115,9 +108,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_slice(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.place(3, item2)
         slice_full = fit.container[:]
@@ -144,9 +136,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_item_view(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         view = fit.container.items()
         self.assertEqual(len(view), 0)
         self.assertEqual(list(view), [])

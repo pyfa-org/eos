@@ -23,9 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.container import ItemSet
-from eos.fit.message import ItemAdded, ItemRemoved
-from tests.container.environment import Fit, Item, OtherItem
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerSet(ContainerTestCase):
@@ -40,10 +38,8 @@ class TestContainerSet(ContainerTestCase):
         return fit
 
     def test_add_none(self):
-        fit = self.make_fit()
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(TypeError, fit.container.add, None)
+        self.assertRaises(TypeError, fit.container.add, None)
         # Verification
         self.assertEqual(len(fit.container), 0)
         # Cleanup
@@ -51,11 +47,9 @@ class TestContainerSet(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_add_item(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.add(item)
+        fit.container.add(item)
         # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIn(item, fit.container)
@@ -66,11 +60,9 @@ class TestContainerSet(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_add_item_type_failure(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.offline, spec_set=OtherItem(1))
+        item = OtherItem(self.ch.type().id)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(TypeError, fit.container.add, item)
+        self.assertRaises(TypeError, fit.container.add, item)
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
@@ -79,13 +71,11 @@ class TestContainerSet(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_add_item_value_failure(self):
-        fit = self.make_fit()
         fit_other = self.make_fit()
-        item = Mock(_fit=None, state=State.overload, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit_other.container.add(item)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.add, item)
+        self.assertRaises(ValueError, fit.container.add, item)
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertEqual(len(fit_other.container), 1)
@@ -99,12 +89,10 @@ class TestContainerSet(ContainerTestCase):
         self.assert_object_buffers_empty(fit_other.container)
 
     def test_remove_item(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit.container.add(item)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(item)
+        fit.container.remove(item)
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
@@ -113,11 +101,9 @@ class TestContainerSet(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_remove_item_failure(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.overload, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(KeyError, fit.container.remove, item)
+        self.assertRaises(KeyError, fit.container.remove, item)
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item._fit)
@@ -126,14 +112,12 @@ class TestContainerSet(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_clear(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.active, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.add(item1)
         fit.container.add(item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.clear()
+        fit.container.clear()
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item1._fit)

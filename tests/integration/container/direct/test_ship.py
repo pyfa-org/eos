@@ -19,126 +19,105 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
+from eos import *
 from eos.const.eos import State
 from eos.fit.item import Ship
-from eos.fit.message import ItemAdded, ItemRemoved
-from tests.container.environment import Fit, OtherItem
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestDirectItemShip(ContainerTestCase):
 
-    def make_fit(self):
-        assertions = {
-            ItemAdded: lambda f, m: self.assertIs(f.ship, m.item),
-            ItemRemoved: lambda f, m: self.assertIs(f.ship, m.item)
-        }
-        fit = Fit(self, message_assertions=assertions)
-        return fit
-
     def test_none_to_none(self):
-        fit = self.make_fit()
+        fit = Fit()
         # Action
-        with self.fit_assertions(fit):
-            fit.ship = None
+        fit.ship = None
         # Verification
         self.assertIsNone(fit.ship)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item(self):
-        fit = self.make_fit()
-        fit.ship = None
-        item = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit = Fit()
+        item = Ship(self.ch.type().id)
         # Action
-        with self.fit_assertions(fit):
-            fit.ship = item
+        fit.ship = item
         # Verification
         self.assertIs(fit.ship, item)
-        self.assertIs(item._fit, fit)
         # Cleanup
         fit.ship = None
-        self.assertIsNone(fit.ship)
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item_type_failure(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.active, spec_set=OtherItem(1))
+        fit = Fit()
+        item = Stance(self.ch.type().id)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(TypeError, fit.__setattr__, 'ship', item)
+        self.assertRaises(TypeError, fit.__setattr__, 'ship', item)
         # Verification
         self.assertIsNone(fit.ship)
-        self.assertIsNone(item._fit)
+        # Check that item which failed to be added
+        # can be assigned to other field
+        fit.stance = item
         # Cleanup
+        fit.stance = None
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item_value_failure(self):
-        fit = self.make_fit()
-        fit_other = self.make_fit()
-        item = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit = Fit()
+        fit_other = Fit()
+        item = Ship(self.ch.type().id)
         fit_other.ship = item
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.__setattr__, 'ship', item)
+        self.assertRaises(ValueError, fit.__setattr__, 'ship', item)
         # Verification
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, item)
-        self.assertIs(item._fit, fit_other)
         # Cleanup
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
     def test_item_to_item(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.offline, spec_set=Ship(1))
-        item2 = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit = Fit()
+        ship_eve_type = self.ch.type()
+        item1 = Ship(ship_eve_type.id)
+        item2 = Ship(ship_eve_type.id)
         fit.ship = item1
         # Action
-        with self.fit_assertions(fit):
-            fit.ship = item2
+        fit.ship = item2
         # Verification
         self.assertIs(fit.ship, item2)
-        self.assertIsNone(item1._fit)
-        self.assertIs(item2._fit, fit)
         # Cleanup
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
     def test_item_to_item_type_failure(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
-        item2 = Mock(_fit=None, state=State.overload, spec_set=OtherItem(1))
+        fit = Fit()
+        item1 = Ship(self.ch.type().id)
+        item2 = Stance(self.ch.type().id)
         fit.ship = item1
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(TypeError, fit.__setattr__, 'ship', item2)
+        self.assertRaises(TypeError, fit.__setattr__, 'ship', item2)
         # Verification
         self.assertIs(fit.ship, item1)
-        self.assertIs(item1._fit, fit)
-        self.assertIsNone(item2._fit)
+        fit.stance = item2
         # Cleanup
         fit.ship = None
+        fit.stance = None
         self.assert_fit_buffers_empty(fit)
 
     def test_item_to_item_value_failure(self):
-        fit = self.make_fit()
-        fit_other = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Ship(1))
-        item2 = Mock(_fit=None, state=State.overload, spec_set=Ship(1))
+        fit = Fit()
+        fit_other = Fit()
+        ship_eve_type = self.ch.type()
+        item1 = Ship(ship_eve_type.id)
+        item2 = Ship(ship_eve_type.id)
         fit.ship = item1
         fit_other.ship = item2
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.__setattr__, 'ship', item2)
+        self.assertRaises(ValueError, fit.__setattr__, 'ship', item2)
         # Verification
         self.assertIs(fit.ship, item1)
         self.assertIs(fit_other.ship, item2)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit_other)
         # Cleanup
         fit.ship = None
         fit_other.ship = None
@@ -146,14 +125,12 @@ class TestDirectItemShip(ContainerTestCase):
         self.assert_fit_buffers_empty(fit_other)
 
     def test_item_to_none(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.active, spec_set=Ship(1))
+        fit = Fit()
+        item = Ship(self.ch.type().id)
         fit.ship = item
         # Action
-        with self.fit_assertions(fit):
-            fit.ship = None
+        fit.ship = None
         # Verification
         self.assertIsNone(fit.ship)
-        self.assertIsNone(item._fit)
         # Cleanup
         self.assert_fit_buffers_empty(fit)

@@ -23,9 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.container import ItemList
-from eos.fit.message import ItemAdded, ItemRemoved
-from tests.container.environment import Fit, Item
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedFree(ContainerTestCase):
@@ -40,14 +38,12 @@ class TestContainerOrderedFree(ContainerTestCase):
         return fit
 
     def test_none(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.active, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.append(item2)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.free, None)
+        self.assertRaises(ValueError, fit.container.free, None)
         # Verification
         self.assertIs(len(fit.container), 2)
         self.assertIs(fit.container[0], item1)
@@ -57,8 +53,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Cleanup
         fit.container.free(item1)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(None)
+        fit.container.free(None)
         # Verification
         self.assertIs(len(fit.container), 2)
         self.assertIsNone(fit.container[0])
@@ -71,14 +66,12 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_item(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.append(item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(item1)
+        fit.container.free(item1)
         # Verification
         self.assertIs(len(fit.container), 2)
         self.assertIsNone(fit.container[0])
@@ -86,8 +79,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(item1._fit)
         self.assertIs(item2._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(item2)
+        fit.container.free(item2)
         # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -97,13 +89,11 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_item_failure(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.free, item2)
+        self.assertRaises(ValueError, fit.container.free, item2)
         # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
@@ -112,8 +102,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Cleanup
         fit.container.free(item1)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.free, item1)
+        self.assertRaises(ValueError, fit.container.free, item1)
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -123,16 +112,14 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_item_after_nones(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
-        item3 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
+        item3 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.place(3, item2)
         fit.container.place(6, item3)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(item2)
+        fit.container.free(item2)
         # Verification
         self.assertEqual(len(fit.container), 7)
         self.assertIs(fit.container[0], item1)
@@ -146,8 +133,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(item2._fit)
         self.assertIs(item3._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(item3)
+        fit.container.free(item3)
         # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
@@ -160,14 +146,12 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_item(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.append(item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(0)
+        fit.container.free(0)
         # Verification
         self.assertEqual(len(fit.container), 2)
         self.assertIsNone(fit.container[0])
@@ -175,8 +159,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(item1._fit)
         self.assertIs(item2._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(1)
+        fit.container.free(1)
         # Verification
         self.assertEqual(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -186,12 +169,10 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_none(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit.container.place(1, item)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(0)
+        fit.container.free(0)
         # Verification
         self.assertEqual(len(fit.container), 2)
         self.assertIsNone(fit.container[0])
@@ -203,16 +184,14 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_after_nones(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.active, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item3 = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
+        item3 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.place(3, item2)
         fit.container.place(6, item3)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(3)
+        fit.container.free(3)
         # Verification
         self.assertEqual(len(fit.container), 7)
         self.assertIs(fit.container[0], item1)
@@ -226,8 +205,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(item2._fit)
         self.assertIs(item3._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.free(6)
+        fit.container.free(6)
         # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
@@ -240,12 +218,10 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_outside(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit.container.append(item)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(IndexError, fit.container.free, 5)
+        self.assertRaises(IndexError, fit.container.free, 5)
         # Verification
         self.assertEqual(len(fit.container), 1)
         self.assertIs(fit.container[0], item)

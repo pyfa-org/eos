@@ -23,9 +23,7 @@ from unittest.mock import Mock
 
 from eos.const.eos import State
 from eos.fit.container import ItemList
-from eos.fit.message import ItemAdded, ItemRemoved
-from tests.container.environment import Fit, Item
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedRemove(ContainerTestCase):
@@ -40,22 +38,19 @@ class TestContainerOrderedRemove(ContainerTestCase):
         return fit
 
     def test_item(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.append(item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(item1)
+        fit.container.remove(item1)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item2)
         self.assertIsNone(item1._fit)
         self.assertIs(item2._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(item2)
+        fit.container.remove(item2)
         # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -65,16 +60,14 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_item_after_nones(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.active, spec_set=Item(1))
-        item3 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
+        item3 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.place(3, item2)
         fit.container.place(6, item3)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(item2)
+        fit.container.remove(item2)
         # Verification
         self.assertIs(len(fit.container), 6)
         self.assertIs(fit.container[0], item1)
@@ -87,8 +80,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIsNone(item2._fit)
         self.assertIs(item3._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(item3)
+        fit.container.remove(item3)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
@@ -101,13 +93,11 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_item_failure(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.remove, item2)
+        self.assertRaises(ValueError, fit.container.remove, item2)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
@@ -116,8 +106,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Cleanup
         fit.container.remove(item1)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.remove, item1)
+        self.assertRaises(ValueError, fit.container.remove, item1)
         # checks
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -128,14 +117,12 @@ class TestContainerOrderedRemove(ContainerTestCase):
 
     def test_none(self):
         # Check that first found None is removed
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.active, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.place(1, item1)
         fit.container.place(3, item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(None)
+        fit.container.remove(None)
         # Verification
         self.assertIs(len(fit.container), 3)
         self.assertIs(fit.container[0], item1)
@@ -150,12 +137,10 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_none_failure(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.overload, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit.container.append(item)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(ValueError, fit.container.remove, None)
+        self.assertRaises(ValueError, fit.container.remove, None)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item)
@@ -166,22 +151,19 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_item(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.active, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.overload, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.append(item2)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(0)
+        fit.container.remove(0)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item2)
         self.assertIsNone(item1._fit)
         self.assertIs(item2._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(0)
+        fit.container.remove(0)
         # Verification
         self.assertIs(len(fit.container), 0)
         self.assertIsNone(item1._fit)
@@ -191,12 +173,10 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_none(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.online, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit.container.place(1, item)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(0)
+        fit.container.remove(0)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item)
@@ -207,16 +187,14 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_after_nones(self):
-        fit = self.make_fit()
-        item1 = Mock(_fit=None, state=State.offline, spec_set=Item(1))
-        item2 = Mock(_fit=None, state=State.online, spec_set=Item(1))
-        item3 = Mock(_fit=None, state=State.active, spec_set=Item(1))
+        item1 = Item(self.ch.type().id)
+        item2 = Item(self.ch.type().id)
+        item3 = Item(self.ch.type().id)
         fit.container.append(item1)
         fit.container.place(3, item2)
         fit.container.place(6, item3)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(3)
+        fit.container.remove(3)
         # Verification
         self.assertIs(len(fit.container), 6)
         self.assertIs(fit.container[0], item1)
@@ -229,8 +207,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIsNone(item2._fit)
         self.assertIs(item3._fit, fit)
         # Action
-        with self.fit_assertions(fit):
-            fit.container.remove(5)
+        fit.container.remove(5)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item1)
@@ -243,12 +220,10 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assert_object_buffers_empty(fit.container)
 
     def test_index_outside(self):
-        fit = self.make_fit()
-        item = Mock(_fit=None, state=State.offline, spec_set=Item(1))
+        item = Item(self.ch.type().id)
         fit.container.append(item)
         # Action
-        with self.fit_assertions(fit):
-            self.assertRaises(IndexError, fit.container.remove, 5)
+        self.assertRaises(IndexError, fit.container.remove, 5)
         # Verification
         self.assertIs(len(fit.container), 1)
         self.assertIs(fit.container[0], item)

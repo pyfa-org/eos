@@ -19,26 +19,12 @@
 # ===============================================================================
 
 
-from tests.eos_testcase import EosTestCase
-from .environment import FitAssertion
+from eos import Fit
+from tests.integration.integration_testcase import IntegrationTestCase
 
 
-class ContainerTestCase(EosTestCase):
+class ContainerTestCase(IntegrationTestCase):
     """
-    Additional functionality provided:
-
-    self.assert_fit_buffers_empty -- checks if fit has any
-    items assigned to it
-    self.fit_assertions -- returns context manager which
-    turns on on-fit per-message type assertions
+    No additional functionality provided
     """
-
-    def assert_fit_buffers_empty(self, fit):
-        item_num = self._get_object_buffer_entry_amount(fit, ignore=('_message_assertions',))
-        if item_num > 0:
-            plu = 'y' if item_num == 1 else 'ies'
-            msg = '{} entr{} in buffers: buffers must be empty'.format(item_num, plu)
-            self.fail(msg=msg)
-
-    def fit_assertions(self, fit):
-        return FitAssertion(fit)
+    ...

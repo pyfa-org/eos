@@ -24,9 +24,7 @@ from unittest.mock import Mock
 from eos.const.eos import State
 from eos.fit.container import ItemList
 from eos.fit.item import ModuleHigh, Charge
-from eos.fit.message import ItemAdded, ItemRemoved
-from tests.container.environment import Fit, OtherItem
-from tests.container.container_testcase import ContainerTestCase
+from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class ChargeableAssertion:
@@ -133,7 +131,7 @@ class TestModuleCharge(ContainerTestCase):
 
     def test_detached_module_none_to_non_charge(self):
         module = ModuleHigh(1, state=State.active, charge=None)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherItem(1))
+        non_charge = OtherItem(self.ch.type().id)
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Verification
@@ -144,7 +142,7 @@ class TestModuleCharge(ContainerTestCase):
     def test_detached_module_charge_to_non_charge(self):
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherItem(1))
+        non_charge = OtherItem(self.ch.type().id)
         module.charge = charge
         # Action
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
@@ -200,11 +198,10 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit_other)
 
     def test_fit_none_to_none(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         fit.ordered.append(module)
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = None
         # Verification
         self.assertIsNone(module.charge)
@@ -214,12 +211,11 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_none_to_free_charge(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = charge
         # Verification
         self.assertIs(module.charge, charge)
@@ -231,14 +227,13 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_charge_to_free_charge(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge1 = Charge(2)
         charge2 = Charge(3)
         fit.ordered.append(module)
         module.charge = charge1
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = charge2
         # Verification
         self.assertIs(module.charge, charge2)
@@ -252,13 +247,12 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_charge_to_none(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
         fit.ordered.append(module)
         module.charge = charge
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             module.charge = None
         # Verification
         self.assertIsNone(module.charge)
@@ -270,12 +264,11 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_none_to_non_charge(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherItem(1))
+        non_charge = OtherItem(self.ch.type().id)
         fit.ordered.append(module)
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Verification
         self.assertIsNone(module.charge)
@@ -286,14 +279,13 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_charge_to_non_charge(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
-        non_charge = Mock(_fit=None, state=State.offline, spec_set=OtherItem(1))
+        non_charge = OtherItem(self.ch.type().id)
         fit.ordered.append(module)
         module.charge = charge
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Verification
         self.assertIs(module.charge, charge)
@@ -306,7 +298,6 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_none_to_bound_charge(self):
-        fit = self.make_fit()
         fit_other = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         module_other = ModuleHigh(3, state=State.active, charge=None)
@@ -315,7 +306,7 @@ class TestModuleCharge(ContainerTestCase):
         fit.ordered.append(module)
         fit_other.ordered.append(module_other)
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Verification
         self.assertIsNone(module.charge)
@@ -331,7 +322,6 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit_other)
 
     def test_fit_charge_to_bound_charge(self):
-        fit = self.make_fit()
         fit_other = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
@@ -342,7 +332,7 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Verification
         self.assertIs(module.charge, charge)
@@ -360,12 +350,11 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit_other)
 
     def test_fit_add_charged_module(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
         module.charge = charge
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             fit.ordered.append(module)
         # Verification
         self.assertEqual(len(fit.ordered), 1)
@@ -379,13 +368,12 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fit_remove_charged_module(self):
-        fit = self.make_fit()
         module = ModuleHigh(1, state=State.active, charge=None)
         charge = Charge(2)
         module.charge = charge
         fit.ordered.append(module)
         # Action
-        with self.fit_assertions(fit), self.chargeable_assertions(charged=True):
+        with fit_assertions(fit), self.chargeable_assertions(charged=True):
             fit.ordered.remove(module)
         # Verification
         self.assertEqual(len(fit.ordered), 0)
