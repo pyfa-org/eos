@@ -73,28 +73,8 @@ class IntegrationTestCase(EosTestCase):
     def allocate_effect_id(self, *cache_handlers):
         return max(ch.allocate_effect_id() for ch in cache_handlers)
 
-    def clear_fit(self, fit):
-        fit.ship = None
-        fit.stance = None
-        fit.character = None
-        fit.effect_beacon = None
-        fit.subsystems.clear()
-        fit.modules.high.clear()
-        fit.modules.med.clear()
-        fit.modules.low.clear()
-        fit.rigs.clear()
-        fit.drones.clear()
-        fit.skills.clear()
-        fit.implants.clear()
-        fit.boosters.clear()
-
-    def assert_fit_buffers_empty(self, fit, clear=True):
-        if clear:
-            self.clear_fit(fit)
-        # Temporarily remove all objects which fit has built into it and which
-        # are too hard to handle via ignore
-        fit_char = fit.character
-        fit.character = None
+    def assert_fit_buffers_empty(self, fit):
+        self.__clear_fit(fit)
         entry_num = 0
         # Fit itself
         entry_num += self._get_object_buffer_entry_amount(fit, ignore=(
@@ -123,9 +103,22 @@ class IntegrationTestCase(EosTestCase):
             entry_num += self._get_object_buffer_entry_amount(register)
         # RAH simulator
         entry_num += self._get_object_buffer_entry_amount(fit._Fit__rah_sim)
-        # Restore removed objects
-        fit.character = fit_char
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(entry_num, plu)
             self.fail(msg=msg)
+
+    def __clear_fit(self, fit):
+        fit.ship = None
+        fit.stance = None
+        fit.character = None
+        fit.effect_beacon = None
+        fit.subsystems.clear()
+        fit.modules.high.clear()
+        fit.modules.med.clear()
+        fit.modules.low.clear()
+        fit.rigs.clear()
+        fit.drones.clear()
+        fit.skills.clear()
+        fit.implants.clear()
+        fit.boosters.clear()

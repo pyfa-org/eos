@@ -19,109 +19,88 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import State
-from eos.fit.container import ItemSet
+from eos import *
 from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerSet(ContainerTestCase):
 
-    def make_fit(self):
-        assertions = {
-            ItemAdded: lambda f, m: self.assertIn(m.item, f.container),
-            ItemRemoved: lambda f, m: self.assertIn(m.item, f.container)
-        }
-        fit = Fit(self, message_assertions=assertions)
-        fit.container = ItemSet(fit, Item)
-        return fit
-
     def test_add_none(self):
+        fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.container.add, None)
+        self.assertRaises(TypeError, fit.implants.add, None)
         # Verification
-        self.assertEqual(len(fit.container), 0)
+        self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_add_item(self):
-        item = Item(self.ch.type().id)
+        fit = Fit()
+        item = Implant(self.ch.type().id)
         # Action
-        fit.container.add(item)
+        fit.implants.add(item)
         # Verification
-        self.assertEqual(len(fit.container), 1)
-        self.assertIn(item, fit.container)
-        self.assertIs(item._fit, fit)
+        self.assertEqual(len(fit.implants), 1)
+        self.assertIn(item, fit.implants)
         # Cleanup
-        fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_add_item_type_failure(self):
-        item = OtherItem(self.ch.type().id)
+        fit = Fit()
+        item = Booster(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.container.add, item)
+        self.assertRaises(TypeError, fit.implants.add, item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.implants), 0)
+        fit.boosters.add(item)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_add_item_value_failure(self):
-        fit_other = self.make_fit()
-        item = Item(self.ch.type().id)
-        fit_other.container.add(item)
+        fit = Fit()
+        fit_other = Fit()
+        item = Implant(self.ch.type().id)
+        fit_other.implants.add(item)
         # Action
-        self.assertRaises(ValueError, fit.container.add, item)
+        self.assertRaises(ValueError, fit.implants.add, item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertEqual(len(fit_other.container), 1)
-        self.assertIn(item, fit_other.container)
-        self.assertIs(item._fit, fit_other)
+        self.assertEqual(len(fit.implants), 0)
+        self.assertEqual(len(fit_other.implants), 1)
+        self.assertIn(item, fit_other.implants)
         # Cleanup
-        fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
         self.assert_fit_buffers_empty(fit_other)
-        self.assert_object_buffers_empty(fit_other.container)
 
     def test_remove_item(self):
-        item = Item(self.ch.type().id)
-        fit.container.add(item)
+        fit = Fit()
+        item = Implant(self.ch.type().id)
+        fit.implants.add(item)
         # Action
-        fit.container.remove(item)
+        fit.implants.remove(item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_remove_item_failure(self):
-        item = Item(self.ch.type().id)
+        fit = Fit()
+        item = Implant(self.ch.type().id)
         # Action
-        self.assertRaises(KeyError, fit.container.remove, item)
+        self.assertRaises(KeyError, fit.implants.remove, item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_clear(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        fit.container.add(item1)
-        fit.container.add(item2)
+        fit = Fit()
+        item1 = Implant(self.ch.type().id)
+        item2 = Implant(self.ch.type().id)
+        fit.implants.add(item1)
+        fit.implants.add(item2)
         # Action
-        fit.container.clear()
+        fit.implants.clear()
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item1._fit)
-        self.assertIsNone(item2._fit)
+        self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)

@@ -19,153 +19,155 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import State
-from eos.fit.container import ItemRestrictedSet
+from eos import *
 from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerRestrictedSet(ContainerTestCase):
 
-    def make_fit(self):
-        assertions = {
-            ItemAdded: lambda f, m: self.assertIn(m.item, f.container),
-            ItemRemoved: lambda f, m: self.assertIn(m.item, f.container)
-        }
-        fit = Fit(self, message_assertions=assertions)
-        fit.container = ItemRestrictedSet(fit, Item)
-        return fit
-
     def test_add_none(self):
+        fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.container.add, None)
+        self.assertRaises(TypeError, fit.skills.add, None)
         # Verification
-        self.assertEqual(len(fit.container), 0)
+        self.assertEqual(len(fit.skills), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_add_item(self):
-        item = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=Item(1))
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item = Skill(item_eve_type.id)
         # Action
-        fit.container.add(item)
+        fit.skills.add(item)
         # Verification
-        self.assertEqual(len(fit.container), 1)
-        self.assertIs(fit.container[1], item)
-        self.assertIn(item, fit.container)
-        self.assertIs(item._fit, fit)
+        self.assertEqual(len(fit.skills), 1)
+        self.assertIs(fit.skills[item_eve_type.id], item)
+        self.assertIn(item, fit.skills)
+        self.assertIn(item_eve_type.id, fit.skills)
         # Cleanup
-        fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_add_item_type_failure(self):
-        item = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=OtherItem(1))
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item = Implant(item_eve_type.id)
         # Action
-        self.assertRaises(TypeError, fit.container.add, item)
+        self.assertRaises(TypeError, fit.skills.add, item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.skills), 0)
+        self.assertNotIn(item, fit.skills)
+        self.assertNotIn(item_eve_type.id, fit.skills)
+        fit.implants.add(item)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_add_item_value_failure_has_fit(self):
-        fit_other = self.make_fit()
-        item = Mock(_fit=None, _eve_type_id=1, state=State.overload, spec_set=Item(1))
-        fit_other.container.add(item)
+        fit = Fit()
+        fit_other = Fit()
+        item_eve_type = self.ch.type()
+        item = Skill(item_eve_type.id)
+        fit_other.skills.add(item)
         # Action
-        self.assertRaises(ValueError, fit.container.add, item)
+        self.assertRaises(ValueError, fit.skills.add, item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertEqual(len(fit_other.container), 1)
-        self.assertIs(fit_other.container[1], item)
-        self.assertIn(item, fit_other.container)
-        self.assertIs(item._fit, fit_other)
+        self.assertEqual(len(fit.skills), 0)
+        self.assertEqual(len(fit_other.skills), 1)
+        self.assertIs(fit_other.skills[item_eve_type.id], item)
+        self.assertIn(item, fit_other.skills)
         # Cleanup
-        fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
         self.assert_fit_buffers_empty(fit_other)
-        self.assert_object_buffers_empty(fit_other.container)
 
     def test_add_item_value_failure_existing_type_id(self):
-        item1 = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=Item(1))
-        item2 = Mock(_fit=None, _eve_type_id=1, state=State.offline, spec_set=Item(1))
-        fit.container.add(item1)
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item1 = Skill(item_eve_type.id)
+        item2 = Skill(item_eve_type.id)
+        fit.skills.add(item1)
         # Action
-        self.assertRaises(ValueError, fit.container.add, item2)
+        self.assertRaises(ValueError, fit.skills.add, item2)
         # Verification
-        self.assertEqual(len(fit.container), 1)
-        self.assertIs(fit.container[1], item1)
-        self.assertIn(item1, fit.container)
-        self.assertIs(item1._fit, fit)
-        self.assertIsNone(item2._fit)
+        self.assertEqual(len(fit.skills), 1)
+        self.assertIs(fit.skills[item_eve_type.id], item1)
+        self.assertIn(item1, fit.skills)
+        self.assertIn(item_eve_type.id, fit.skills)
+        fit.skills.remove(item1)
+        fit.skills.add(item2)
         # Cleanup
-        fit.container.remove(item1)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_remove_item(self):
-        item = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Item(1))
-        fit.container.add(item)
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item = Skill(item_eve_type.id)
+        fit.skills.add(item)
         # Action
-        fit.container.remove(item)
+        fit.skills.remove(item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.skills), 0)
+        self.assertNotIn(item, fit.skills)
+        self.assertNotIn(item_eve_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_remove_item_failure(self):
-        item = Mock(_fit=None, _eve_type_id=1, state=State.overload, spec_set=Item(1))
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item = Skill(item_eve_type.id)
         # Action
-        self.assertRaises(KeyError, fit.container.remove, item)
+        self.assertRaises(KeyError, fit.skills.remove, item)
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.skills), 0)
+        self.assertNotIn(item, fit.skills)
+        self.assertNotIn(item_eve_type.id, fit.skills)
+        fit.skills.add(item)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_delitem_item(self):
-        item = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Item(1))
-        fit.container.add(item)
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item = Skill(item_eve_type.id)
+        fit.skills.add(item)
         # Action
-        del fit.container[1]
+        del fit.skills[item_eve_type.id]
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertEqual(len(fit.skills), 0)
+        self.assertNotIn(item, fit.skills)
+        self.assertNotIn(item_eve_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_delitem_item_failure(self):
-        item = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Item(1))
-        fit.container.add(item)
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item = Skill(item_eve_type.id)
+        fit.skills.add(item)
         # Action
-        self.assertRaises(KeyError, fit.container.__delitem__, 3)
+        self.assertRaises(KeyError, fit.skills.__delitem__, item_eve_type.id + 1)
         # Verification
-        self.assertEqual(len(fit.container), 1)
-        self.assertIs(item._fit, fit)
+        self.assertEqual(len(fit.skills), 1)
+        self.assertIn(item, fit.skills)
+        self.assertIn(item_eve_type.id, fit.skills)
         # Cleanup
-        fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_clear(self):
-        item1 = Mock(_fit=None, _eve_type_id=1, state=State.active, spec_set=Item(1))
-        item2 = Mock(_fit=None, _eve_type_id=2, state=State.online, spec_set=Item(1))
-        fit.container.add(item1)
-        fit.container.add(item2)
+        fit = Fit()
+        item1_eve_type = self.ch.type()
+        item1 = Skill(item1_eve_type.id)
+        item2_eve_type = self.ch.type()
+        item2 = Skill(item2_eve_type.id)
+        fit.skills.add(item1)
+        fit.skills.add(item2)
         # Action
-        fit.container.clear()
+        fit.skills.clear()
         # Verification
-        self.assertEqual(len(fit.container), 0)
-        self.assertIsNone(item1._fit)
-        self.assertIsNone(item2._fit)
+        self.assertEqual(len(fit.skills), 0)
+        self.assertNotIn(item1, fit.skills)
+        self.assertNotIn(item1_eve_type.id, fit.skills)
+        self.assertNotIn(item2, fit.skills)
+        self.assertNotIn(item2_eve_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)

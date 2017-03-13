@@ -84,3 +84,10 @@ class ItemRestrictedSet(ItemSet):
         """Remove item by type ID"""
         item = self.__eve_type_id_map[eve_type_id]
         self.remove(item)
+
+    def __contains__(self, item):
+        """Check if eve type ID or item are present in set"""
+        return self.__eve_type_id_map.__contains__(item) or ItemSet.__contains__(self, item)
+
+    def __repr__(self):
+        return repr(self.__eve_type_id_map)

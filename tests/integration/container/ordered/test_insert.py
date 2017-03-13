@@ -19,203 +19,153 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import State
-from eos.fit.container import ItemList
+from eos import *
 from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedInsert(ContainerTestCase):
 
-    def make_fit(self):
-        assertions = {
-            ItemAdded: lambda f, m: self.assertIn(m.item, f.container),
-            ItemRemoved: lambda f, m: self.assertIn(m.item, f.container)
-        }
-        fit = Fit(self, message_assertions=assertions)
-        fit.container = ItemList(fit, Item)
-        return fit
-
     def test_item_to_zero(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        item3 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
+        fit = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        item3 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
         # Action
-        fit.container.insert(0, item3)
+        fit.modules.high.insert(0, item3)
         # Verification
-        self.assertIs(len(fit.container), 3)
-        self.assertIs(fit.container[0], item3)
-        self.assertIs(fit.container[1], item1)
-        self.assertIs(fit.container[2], item2)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
-        self.assertIs(item3._fit, fit)
+        self.assertIs(len(fit.modules.high), 3)
+        self.assertIs(fit.modules.high[0], item3)
+        self.assertIs(fit.modules.high[1], item1)
+        self.assertIs(fit.modules.high[2], item2)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
-        fit.container.remove(item3)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_to_end(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        item3 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
+        fit = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        item3 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
         # Action
-        fit.container.insert(2, item3)
+        fit.modules.high.insert(2, item3)
         # Verification
-        self.assertIs(len(fit.container), 3)
-        self.assertIs(fit.container[0], item1)
-        self.assertIs(fit.container[1], item2)
-        self.assertIs(fit.container[2], item3)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
-        self.assertIs(item3._fit, fit)
+        self.assertIs(len(fit.modules.high), 3)
+        self.assertIs(fit.modules.high[0], item1)
+        self.assertIs(fit.modules.high[1], item2)
+        self.assertIs(fit.modules.high[2], item3)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
-        fit.container.remove(item3)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_outside(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        fit.container.append(item1)
+        fit = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
         # Action
-        fit.container.insert(3, item2)
+        fit.modules.high.insert(3, item2)
         # Verification
-        self.assertIs(len(fit.container), 4)
-        self.assertIs(fit.container[0], item1)
-        self.assertIsNone(fit.container[1])
-        self.assertIsNone(fit.container[2])
-        self.assertIs(fit.container[3], item2)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
+        self.assertIs(len(fit.modules.high), 4)
+        self.assertIs(fit.modules.high[0], item1)
+        self.assertIsNone(fit.modules.high[1])
+        self.assertIsNone(fit.modules.high[2])
+        self.assertIs(fit.modules.high[3], item2)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_inside_type_failure(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        item3 = OtherItem(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
+        fit = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        item3 = ModuleMed(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
         # Action
-        self.assertRaises(TypeError, fit.container.insert, 1, item3)
+        self.assertRaises(TypeError, fit.modules.high.insert, 1, item3)
         # Verification
-        self.assertIs(len(fit.container), 2)
-        self.assertIs(fit.container[0], item1)
-        self.assertIs(fit.container[1], item2)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
-        self.assertIsNone(item3._fit)
+        self.assertIs(len(fit.modules.high), 2)
+        self.assertIs(fit.modules.high[0], item1)
+        self.assertIs(fit.modules.high[1], item2)
+        fit.modules.med.insert(0, item3)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_inside_value_failure(self):
-        fit_other = self.make_fit()
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        item3 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
-        fit_other.container.append(item3)
+        fit = Fit()
+        fit_other = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        item3 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
+        fit_other.modules.high.append(item3)
         # Action
-        self.assertRaises(ValueError, fit.container.insert, 1, item3)
+        self.assertRaises(ValueError, fit.modules.high.insert, 1, item3)
         # Verification
-        self.assertIs(len(fit.container), 2)
-        self.assertIs(fit.container[0], item1)
-        self.assertIs(fit.container[1], item2)
-        self.assertIs(len(fit_other.container), 1)
-        self.assertIs(fit_other.container[0], item3)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
-        self.assertIs(item3._fit, fit_other)
+        self.assertIs(len(fit.modules.high), 2)
+        self.assertIs(fit.modules.high[0], item1)
+        self.assertIs(fit.modules.high[1], item2)
+        self.assertIs(len(fit_other.modules.high), 1)
+        self.assertIs(fit_other.modules.high[0], item3)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
-        fit_other.container.remove(item3)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
         self.assert_fit_buffers_empty(fit_other)
-        self.assert_object_buffers_empty(fit_other.container)
 
     def test_item_outside_type_failure(self):
-        item = OtherItem(self.ch.type().id)
+        fit = Fit()
+        item = ModuleMed(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.container.insert, 4, item)
+        self.assertRaises(TypeError, fit.modules.high.insert, 4, item)
         # Verification
-        self.assertIs(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertIs(len(fit.modules.high), 0)
+        fit.modules.med.insert(0, item)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_outside_value_failure(self):
-        fit_other = self.make_fit()
-        item = Item(self.ch.type().id)
-        fit_other.container.append(item)
+        fit = Fit()
+        fit_other = Fit()
+        item = ModuleHigh(self.ch.type().id)
+        fit_other.modules.high.append(item)
         # Action
-        self.assertRaises(ValueError, fit.container.insert, 4, item)
+        self.assertRaises(ValueError, fit.modules.high.insert, 4, item)
         # Verification
-        self.assertIs(len(fit.container), 0)
-        self.assertIs(len(fit_other.container), 1)
-        self.assertIs(fit_other.container[0], item)
-        self.assertIs(item._fit, fit_other)
+        self.assertIs(len(fit.modules.high), 0)
+        self.assertIs(len(fit_other.modules.high), 1)
+        self.assertIs(fit_other.modules.high[0], item)
         # Cleanup
-        fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
         self.assert_fit_buffers_empty(fit_other)
-        self.assert_object_buffers_empty(fit_other.container)
 
     def test_none_inside(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
+        fit = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
         # Action
-        fit.container.insert(1, None)
+        fit.modules.high.insert(1, None)
         # Verification
-        self.assertIs(len(fit.container), 3)
-        self.assertIs(fit.container[0], item1)
-        self.assertIsNone(fit.container[1])
-        self.assertIs(fit.container[2], item2)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
+        self.assertIs(len(fit.modules.high), 3)
+        self.assertIs(fit.modules.high[0], item1)
+        self.assertIsNone(fit.modules.high[1])
+        self.assertIs(fit.modules.high[2], item2)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_none_outside(self):
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
+        fit = Fit()
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
         # Action
-        fit.container.insert(6, None)
+        fit.modules.high.insert(6, None)
         # Verification
-        self.assertIs(len(fit.container), 2)
-        self.assertIs(fit.container[0], item1)
-        self.assertIs(fit.container[1], item2)
-        self.assertIs(item1._fit, fit)
-        self.assertIs(item2._fit, fit)
+        self.assertIs(len(fit.modules.high), 2)
+        self.assertIs(fit.modules.high[0], item1)
+        self.assertIs(fit.modules.high[1], item2)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)

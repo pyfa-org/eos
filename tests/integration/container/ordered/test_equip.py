@@ -19,112 +19,87 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import State
-from eos.fit.container import ItemList
+from eos import *
 from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestContainerOrderedEquip(ContainerTestCase):
 
-    def make_fit(self):
-        assertions = {
-            ItemAdded: lambda f, m: self.assertIn(m.item, f.container),
-            ItemRemoved: lambda f, m: self.assertIn(m.item, f.container)
-        }
-        fit = Fit(self, message_assertions=assertions)
-        fit.container = ItemList(fit, Item)
-        return fit
-
     def test_none_to_empty(self):
+        fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.container.equip, None)
+        self.assertRaises(TypeError, fit.modules.high.equip, None)
         # Verification
-        self.assertIs(len(fit.container), 0)
+        self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_to_empty(self):
-        item = Item(self.ch.type().id)
+        fit = Fit()
+        item = ModuleHigh(self.ch.type().id)
         # Action
-        fit.container.equip(item)
+        fit.modules.high.equip(item)
         # Verification
-        self.assertIs(len(fit.container), 1)
-        self.assertIs(fit.container[0], item)
-        self.assertIs(item._fit, fit)
+        self.assertIs(len(fit.modules.high), 1)
+        self.assertIs(fit.modules.high[0], item)
         # Cleanup
-        fit.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
-    def test_item_to_empty_type_failure(self):
-        item = OtherItem(self.ch.type().id)
+    def test_item_type_failure(self):
+        fit = Fit()
+        item = ModuleMed(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.container.equip, item)
+        self.assertRaises(TypeError, fit.modules.high.equip, item)
         # Verification
-        self.assertIs(len(fit.container), 0)
-        self.assertIsNone(item._fit)
+        self.assertIs(len(fit.modules.high), 0)
+        fit.modules.med.equip(item)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
-    def test_item_to_empty_value_failure(self):
-        fit_other = self.make_fit()
-        item = Item(self.ch.type().id)
-        fit_other.container.equip(item)
+    def test_item_value_failure(self):
+        fit = Fit()
+        fit_other = Fit()
+        item = ModuleHigh(self.ch.type().id)
+        fit_other.modules.high.equip(item)
         # Action
-        self.assertRaises(ValueError, fit.container.equip, item)
+        self.assertRaises(ValueError, fit.modules.high.equip, item)
         # Verification
-        self.assertIs(len(fit.container), 0)
-        self.assertIs(len(fit_other.container), 1)
-        self.assertIs(fit_other.container[0], item)
-        self.assertIs(item._fit, fit_other)
+        self.assertIs(len(fit.modules.high), 0)
+        self.assertIs(len(fit_other.modules.high), 1)
+        self.assertIs(fit_other.modules.high[0], item)
         # Cleanup
-        fit_other.container.remove(item)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_solid(self):
+        fit = Fit()
         # Check case when all slots of list are filled
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        item3 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.append(item2)
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        item3 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
         # Action
-        fit.container.equip(item3)
+        fit.modules.high.equip(item3)
         # Verification
-        self.assertIs(len(fit.container), 3)
-        self.assertIs(fit.container[2], item3)
-        self.assertIs(item3._fit, fit)
+        self.assertIs(len(fit.modules.high), 3)
+        self.assertIs(fit.modules.high[2], item3)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
-        fit.container.remove(item3)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
 
     def test_item_first_hole(self):
+        fit = Fit()
         # Check that leftmost empty slot is taken
-        item1 = Item(self.ch.type().id)
-        item2 = Item(self.ch.type().id)
-        item3 = Item(self.ch.type().id)
-        item4 = Item(self.ch.type().id)
-        fit.container.append(item1)
-        fit.container.insert(3, item2)
-        fit.container.insert(6, item3)
+        item1 = ModuleHigh(self.ch.type().id)
+        item2 = ModuleHigh(self.ch.type().id)
+        item3 = ModuleHigh(self.ch.type().id)
+        item4 = ModuleHigh(self.ch.type().id)
+        fit.modules.high.append(item1)
+        fit.modules.high.insert(3, item2)
+        fit.modules.high.insert(6, item3)
         # Action
-        fit.container.equip(item4)
+        fit.modules.high.equip(item4)
         # Verification
-        self.assertIs(len(fit.container), 7)
-        self.assertIs(fit.container[1], item4)
-        self.assertIs(item4._fit, fit)
+        self.assertIs(len(fit.modules.high), 7)
+        self.assertIs(fit.modules.high[1], item4)
         # Cleanup
-        fit.container.remove(item1)
-        fit.container.remove(item2)
-        fit.container.remove(item3)
-        fit.container.remove(item4)
         self.assert_fit_buffers_empty(fit)
-        self.assert_object_buffers_empty(fit.container)
